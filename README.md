@@ -1,6 +1,6 @@
 # aspnetcore-extensions
 
-This repo contains some extensions to use with an [asp.net core web app](https://docs.microsoft.com/en-us/aspnet/core) and its integration tests as described in [introduction to integration tests](https://docs.microsoft.com/en-us/aspnet/core/test/integration-tests?#introduction-to-integration-tests).
+This repo contains some extensions to use with an [asp.net core web app](https://docs.microsoft.com/en-us/aspnet/core) and its [integration tests](https://docs.microsoft.com/en-us/aspnet/core/test/integration-tests?#introduction-to-integration-tests).
 
 ## Extensions list
 
