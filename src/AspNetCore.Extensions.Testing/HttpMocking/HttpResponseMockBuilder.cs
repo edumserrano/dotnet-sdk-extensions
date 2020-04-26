@@ -63,10 +63,10 @@ namespace AspNetCore.Extensions.Testing.HttpMocking
 
         public HttpResponseMockBuilder RespondWith(HttpResponseMessage httpResponseMessage)
         {
-            return RespondWith(httpRequestMessage => httpResponseMessage);
+            return RespondWithAsync(httpRequestMessage => httpResponseMessage);
         }
 
-        public HttpResponseMockBuilder RespondWith(Func<HttpRequestMessage, HttpResponseMessage> handler)
+        public HttpResponseMockBuilder RespondWithAsync(Func<HttpRequestMessage, HttpResponseMessage> handler)
         {
             // convert to 'async' handler
             return RespondWith(httpRequestMessage => Task.FromResult(handler(httpRequestMessage)));
