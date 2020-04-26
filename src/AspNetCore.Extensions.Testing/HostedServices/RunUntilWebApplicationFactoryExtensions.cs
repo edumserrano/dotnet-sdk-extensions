@@ -38,7 +38,7 @@ namespace AspNetCore.Extensions.Testing.HostedServices
             webApplicationFactory.Dispose(); //shutdown the server (non graceful)
             if (runUntilResult == RunUntilResult.TimedOut && throwExceptionIfTimeout)
             {
-                throw new RunUntilException("RunUntilAsync timed out. This usually means the test server was shutdown before the RunUntilAsync predicate returned true. If you want to run the server for a period of time consider using RunUntilTimeout instead");
+                throw new RunUntilException($"RunUntilAsync timed out {options.Timeout}. This usually means the test server was shutdown before the RunUntilAsync predicate returned true. If you want to run the server for a period of time consider using RunUntilTimeout instead");
             }
         }
     }
