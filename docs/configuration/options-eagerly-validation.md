@@ -1,4 +1,4 @@
-﻿# Mocking HttpClient's responses
+﻿# Eagerly validating options
 
 ## Motivation
 
