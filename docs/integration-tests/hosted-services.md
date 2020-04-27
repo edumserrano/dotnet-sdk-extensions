@@ -81,11 +81,13 @@ The DemoTest is using the [NSubstitute library](https://github.com/nsubstitute/N
 
 The main difference from the integration test examples shown in [introduction to integration tests](https://docs.microsoft.com/en-us/aspnet/core/test/integration-tests?#introduction-to-integration-tests) is that you do not use the `WebApplicationFactory.CreateClient()` and then use the returned HttpClient do to calls into the test server but instead you use the `WebApplicationFactory.RunUntilAsync` extension method with a custom conditions that will control the lifetime of the test server when using Hosted Services.
 
-`Note`: when thinking about your test scenario understand that your code running on your Hosted Service won't immediatly stop when the test condition is reached. Furthermore, the set condition is checked periodically to understand if the test server should be stopped.
+**Note**: when thinking about your test scenario understand that your code running on your Hosted Service won't immediatly stop when the test condition is reached. In reality, the set condition is checked periodically to understand if the test server should be stopped.
 
 To put it another way, the set condition actually means *don't stop the server before at least this condition is met*.
 
-This is important when planning your stop condition and asserts as it might mean that more of your code executed than you might initially think.
+This is important when planning your stop condition and asserts as it might mean that more of your code executed than you might initially think if you don't plan your stop condition appropriately.
+
+ As an example if your Hosted Service is in a while loop doing some operation and your keeping count of how many times that operation has run before stopping the test server, then the stop condition should probably be `numberOfRuns >= <some value>` instead of `numberOfRuns == <some value>`.
 
 ### Use a time condition to stop the test server
 
@@ -160,7 +162,7 @@ Setting the `RunUntilOptions.PredicateCheckInterval` to high values might mean y
 
 So if for your test it will take X time to meet the condition and the `RunUntilOptions.PredicateCheckInterval` is represented by Y than in the worst case scenario the time to run your test will be close to X + Y.
 
-`Note`: when debugging it might be useful to set this to a larger period to allow you to step through your code more easily before the check for the condition kicks in and potentially shuts down the test server.
+**Note**: when debugging it might be useful to set this to a larger period to allow you to step through your code more easily before the check for the condition kicks in and potentially shuts down the test server.
 
 ### Manually terminating the test server
 

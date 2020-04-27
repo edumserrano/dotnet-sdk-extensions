@@ -14,9 +14,6 @@ namespace AspNetCore.Extensions.Testing.HostedServices
          */
         public TimeSpan Timeout { get; set; } = Debugger.IsAttached ? TimeSpan.FromDays(1) : TimeSpan.FromSeconds(5);
         
-        // Not sure what's a good default for this. It seems that very low values might not be indicated
-        // I couldn't reproduce consistently but in some tests I was doing they seemed to fail because of this
-        // After I've added tests for this I should be able to understand better and delete this comment
-        public TimeSpan PredicateCheckInterval { get; set; } = TimeSpan.FromMilliseconds(10);
+        public TimeSpan PredicateCheckInterval { get; set; } = TimeSpan.FromMilliseconds(5);
     }
 }
