@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
@@ -8,6 +9,37 @@ namespace AspNetCore.Extensions.Options
 {
     public static class OptionsBuilderExtensions
     {
+        /*
+         * Small quality of life improvement for the boilerplate of adding an options configuration
+         */
+        public static OptionsBuilder<T> AddOptions<T>(
+            this IServiceCollection services,
+            IConfiguration configuration) where T : class
+        {
+            if (services == null) throw new ArgumentNullException(nameof(services));
+            if (configuration == null) throw new ArgumentNullException(nameof(configuration));
+
+            return services
+                .AddOptions<T>()
+                .Bind(configuration);
+        }
+
+        /*
+         * Small quality of life improvement for the boilerplate of adding an options configuration
+         */
+        public static OptionsBuilder<T> AddOptions<T>(
+            this IServiceCollection services,
+            IConfiguration configuration,
+            string sectionName) where T : class
+        {
+            if (services == null) throw new ArgumentNullException(nameof(services));
+            if (configuration == null) throw new ArgumentNullException(nameof(configuration));
+
+            return services
+                .AddOptions<T>()
+                .Bind(configuration.GetSection(sectionName));
+        }
+
         /*
          * first call services.AddOptions to setup the IOption<T> as you wish
          * if you rather just have injected T and not IOptions<T> then use the AddOptionsValue method below
@@ -51,7 +83,7 @@ namespace AspNetCore.Extensions.Options
                     if (options != null)
                     {
                         // Retrieve the value to trigger validation
-                        var optionsValue = ((IOptions<object>)options).Value;
+                        _ = ((IOptions<object>)options).Value;
                     }
 
                     next(builder);

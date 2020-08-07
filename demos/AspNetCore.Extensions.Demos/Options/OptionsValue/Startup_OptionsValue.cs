@@ -21,8 +21,7 @@ namespace AspNetCore.Extensions.Demos.Options.OptionsValue
         {
             services.AddSingleton<ISomeClass, SomeClass>();
             services
-                .AddOptions<MyOptions>()
-                .Bind(_configuration.GetSection("MyOptionsSection"))
+                .AddOptions<MyOptions>(_configuration, sectionName: "MyOptionsSection")
                 .AddOptionsValue();
         }
 
