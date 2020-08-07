@@ -13,35 +13,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspNetCore.Extensions", "sr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspNetCore.Extensions.Testing", "src\AspNetCore.Extensions.Testing\AspNetCore.Extensions.Testing.csproj", "{6E452C8A-C9A1-4B3B-8E63-FF2224D1CB0A}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{DF4E1608-9981-4082-8D2D-AA3BC73DD845}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "configuration", "configuration", "{532A6C39-3B54-4244-A586-8EF941738E2D}"
-	ProjectSection(SolutionItems) = preProject
-		docs\configuration\options-eagerly-validation.md = docs\configuration\options-eagerly-validation.md
-		docs\configuration\options-without-IOptions.md = docs\configuration\options-without-IOptions.md
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "integration-tests", "integration-tests", "{A2A90A61-FB79-4E8A-B6EF-3E55430A493E}"
-	ProjectSection(SolutionItems) = preProject
-		docs\integration-tests\configuring-webhost.md = docs\integration-tests\configuring-webhost.md
-		docs\integration-tests\hosted-services.md = docs\integration-tests\hosted-services.md
-		docs\integration-tests\http-mocking.md = docs\integration-tests\http-mocking.md
-	EndProjectSection
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspNetCore.Extensions.Tests", "tests\AspNetCore.Extensions.Tests\AspNetCore.Extensions.Tests.csproj", "{9F9B050B-712D-4507-9EB6-D8649762AE8C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspNetCore.Extensions.Testing.Tests", "tests\AspNetCore.Extensions.Testing.Tests\AspNetCore.Extensions.Testing.Tests.csproj", "{8DFDE99D-B01E-4B6E-A213-04CCC56F99FA}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspNetCore.Extensions.Demos", "demos\AspNetCore.Extensions.Demos\AspNetCore.Extensions.Demos.csproj", "{E3220F32-4AF0-4198-BB5B-08A54ADEB019}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNetCore.Extensions.Testing.Demos", "demos\AspNetCore.Extensions.Testing.Demos\AspNetCore.Extensions.Testing.Demos.csproj", "{11B46FB8-75B9-4EA5-A6F3-14B8ABA835DD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspNetCore.Extensions.Testing.Demos", "demos\AspNetCore.Extensions.Testing.Demos\AspNetCore.Extensions.Testing.Demos.csproj", "{11B46FB8-75B9-4EA5-A6F3-14B8ABA835DD}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C2E64ACE-ED6F-4BD1-886B-316E9A21AD0A}"
-	ProjectSection(SolutionItems) = preProject
-		README.md = README.md
-	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNetCore.Extensions.Testing.Demos.TestApp", "demos\AspNetCore.Extensions.Testing.Demos.TestApp\AspNetCore.Extensions.Testing.Demos.TestApp.csproj", "{2FC166E7-F43A-46F9-95E4-A6B2F0D66F28}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspNetCore.Extensions.Testing.Demos.TestApp", "demos\AspNetCore.Extensions.Testing.Demos.TestApp\AspNetCore.Extensions.Testing.Demos.TestApp.csproj", "{2FC166E7-F43A-46F9-95E4-A6B2F0D66F28}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -84,8 +64,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{F52FE0DA-D691-445F-A0D1-7062A0AB8825} = {8B0D1AA7-8148-4255-908D-F7DF31C45EDD}
 		{6E452C8A-C9A1-4B3B-8E63-FF2224D1CB0A} = {8B0D1AA7-8148-4255-908D-F7DF31C45EDD}
-		{532A6C39-3B54-4244-A586-8EF941738E2D} = {DF4E1608-9981-4082-8D2D-AA3BC73DD845}
-		{A2A90A61-FB79-4E8A-B6EF-3E55430A493E} = {DF4E1608-9981-4082-8D2D-AA3BC73DD845}
 		{9F9B050B-712D-4507-9EB6-D8649762AE8C} = {7C89114F-A737-404C-AA35-768180DD7A79}
 		{8DFDE99D-B01E-4B6E-A213-04CCC56F99FA} = {7C89114F-A737-404C-AA35-768180DD7A79}
 		{E3220F32-4AF0-4198-BB5B-08A54ADEB019} = {96F3F6C6-DD26-4555-A2D1-9F9C6BB15689}
