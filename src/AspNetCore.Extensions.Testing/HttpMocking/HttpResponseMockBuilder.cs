@@ -7,9 +7,9 @@ namespace AspNetCore.Extensions.Testing.HttpMocking
 {
     public class HttpResponseMockBuilder
     {
-        private readonly Func<HttpRequestMessage, CancellationToken, Task<bool>> _defaultPredicateAsync = (httpRequestMessage, cancellationToken) => Task.FromResult(true);
-        private Func<HttpRequestMessage, CancellationToken, Task<bool>> _predicateAsync;
-        private Func<HttpRequestMessage, CancellationToken, Task<HttpResponseMessage>> _handlerAsync;
+        private readonly HttpResponseMockPredicateAsyncDelegate _defaultPredicateAsync = (httpRequestMessage, cancellationToken) => Task.FromResult(true);
+        private HttpResponseMockPredicateAsyncDelegate _predicateAsync;
+        private HttpResponseMockHandlerAsyncDelegate _handlerAsync;
         private Type _httpClientType;
         private string _httpClientName;
         private bool _clientTypeConfigured;
@@ -52,7 +52,7 @@ namespace AspNetCore.Extensions.Testing.HttpMocking
             return Where((httpRequestMessage, cancellationToken) => Task.FromResult(predicate(httpRequestMessage)));
         }
 
-        public HttpResponseMockBuilder Where(Func<HttpRequestMessage, CancellationToken, Task<bool>> predicateAsync)
+        public HttpResponseMockBuilder Where(HttpResponseMockPredicateAsyncDelegate predicateAsync)
         {
             if (_predicateAsync != null)
             {
@@ -73,7 +73,7 @@ namespace AspNetCore.Extensions.Testing.HttpMocking
             return RespondWithAsync((httpRequestMessage, cancellationToken) => Task.FromResult(handler(httpRequestMessage)));
         }
 
-        public HttpResponseMockBuilder RespondWithAsync(Func<HttpRequestMessage, CancellationToken, Task<HttpResponseMessage>> handlerAsync)
+        public HttpResponseMockBuilder RespondWithAsync(HttpResponseMockHandlerAsyncDelegate handlerAsync)
         {
             if (_handlerAsync != null)
             {

@@ -1,18 +1,21 @@
-﻿using System;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace AspNetCore.Extensions.Testing.HttpMocking
 {
+    public delegate Task<bool> HttpResponseMockPredicateAsyncDelegate(HttpRequestMessage httpRequestMessage, CancellationToken cancellationToken);
+
+    public delegate Task<HttpResponseMessage> HttpResponseMockHandlerAsyncDelegate(HttpRequestMessage httpRequestMessage, CancellationToken cancellationToken);
+
     public class HttpResponseMock
     {
-        private readonly Func<HttpRequestMessage, CancellationToken, Task<bool>> _predicateAsync;
-        private readonly Func<HttpRequestMessage, CancellationToken, Task<HttpResponseMessage>> _handlerAsync;
+        private readonly HttpResponseMockPredicateAsyncDelegate _predicateAsync;
+        private readonly HttpResponseMockHandlerAsyncDelegate _handlerAsync;
 
         public HttpResponseMock(
-            Func<HttpRequestMessage, CancellationToken, Task<bool>> predicateAsync,
-            Func<HttpRequestMessage, CancellationToken, Task<HttpResponseMessage>> handlerAsync)
+            HttpResponseMockPredicateAsyncDelegate predicateAsync,
+            HttpResponseMockHandlerAsyncDelegate handlerAsync)
         {
             _predicateAsync = predicateAsync;
             _handlerAsync = handlerAsync;

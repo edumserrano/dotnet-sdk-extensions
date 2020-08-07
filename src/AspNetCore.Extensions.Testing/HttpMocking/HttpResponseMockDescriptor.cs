@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace AspNetCore.Extensions.Testing.HttpMocking
 {
@@ -15,8 +12,8 @@ namespace AspNetCore.Extensions.Testing.HttpMocking
 
         public static HttpResponseMockDescriptor Typed(
             Type httpClientType,
-            Func<HttpRequestMessage, CancellationToken, Task<bool>> predicateAsync,
-            Func<HttpRequestMessage, CancellationToken, Task<HttpResponseMessage>> handlerAsync)
+            HttpResponseMockPredicateAsyncDelegate predicateAsync,
+            HttpResponseMockHandlerAsyncDelegate handlerAsync)
         {
             if (predicateAsync == null) throw new ArgumentNullException(nameof(predicateAsync));
             if (handlerAsync == null) throw new ArgumentNullException(nameof(handlerAsync));
@@ -31,8 +28,8 @@ namespace AspNetCore.Extensions.Testing.HttpMocking
 
         public static HttpResponseMockDescriptor Named(
             string httpClientName,
-            Func<HttpRequestMessage, CancellationToken, Task<bool>> predicateAsync,
-            Func<HttpRequestMessage, CancellationToken, Task<HttpResponseMessage>> handlerAsync)
+            HttpResponseMockPredicateAsyncDelegate predicateAsync,
+            HttpResponseMockHandlerAsyncDelegate handlerAsync)
         {
             if (string.IsNullOrEmpty(httpClientName))
             {
@@ -50,8 +47,8 @@ namespace AspNetCore.Extensions.Testing.HttpMocking
         }
 
         public static HttpResponseMockDescriptor Basic(
-            Func<HttpRequestMessage, CancellationToken, Task<bool>> predicateAsync,
-            Func<HttpRequestMessage, CancellationToken, Task<HttpResponseMessage>> handlerAsync)
+            HttpResponseMockPredicateAsyncDelegate predicateAsync,
+            HttpResponseMockHandlerAsyncDelegate handlerAsync)
         {
             if (predicateAsync == null) throw new ArgumentNullException(nameof(predicateAsync));
             if (handlerAsync == null) throw new ArgumentNullException(nameof(handlerAsync));
