@@ -1,4 +1,3 @@
-using AspNetCore.Extensions.Demos.Options.OptionsValue;
 using AspNetCore.Extensions.Options;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;

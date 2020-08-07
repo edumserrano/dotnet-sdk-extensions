@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Net.Http;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace AspNetCore.Extensions.Testing.HttpMocking
@@ -70,10 +69,10 @@ namespace AspNetCore.Extensions.Testing.HttpMocking
         public HttpResponseMockBuilder RespondWith(Func<HttpRequestMessage, HttpResponseMessage> handler)
         {
             // convert to 'async' handler
-            return RespondWithAsync((httpRequestMessage, cancellationToken) => Task.FromResult(handler(httpRequestMessage)));
+            return RespondWith((httpRequestMessage, cancellationToken) => Task.FromResult(handler(httpRequestMessage)));
         }
 
-        public HttpResponseMockBuilder RespondWithAsync(HttpResponseMockHandlerAsyncDelegate handlerAsync)
+        public HttpResponseMockBuilder RespondWith(HttpResponseMockHandlerAsyncDelegate handlerAsync)
         {
             if (_handlerAsync != null)
             {
