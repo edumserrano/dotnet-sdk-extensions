@@ -24,7 +24,7 @@ namespace AspNetCore.Extensions.Testing.HttpMocking
         {
             foreach (var httpResponseMock in _httpResponseMocks)
             {
-                var responseMockResult = await  httpResponseMock.ExecuteAsync(request);
+                var responseMockResult = await  httpResponseMock.ExecuteAsync(request, cancellationToken);
                 if (responseMockResult.Status == HttpResponseMockResults.Executed)
                 {
                     return responseMockResult.HttpResponseMessage;

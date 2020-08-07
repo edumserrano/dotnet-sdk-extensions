@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace AspNetCore.Extensions.Testing.HttpMocking
@@ -11,11 +12,11 @@ namespace AspNetCore.Extensions.Testing.HttpMocking
         public string HttpClientName { get; private set; }
 
         public HttpResponseMock HttpResponseMock { get; private set; }
-        
+
         public static HttpResponseMockDescriptor Typed(
             Type httpClientType,
-            Func<HttpRequestMessage, Task<bool>> predicateAsync,
-            Func<HttpRequestMessage, Task<HttpResponseMessage>> handlerAsync)
+            Func<HttpRequestMessage, CancellationToken, Task<bool>> predicateAsync,
+            Func<HttpRequestMessage, CancellationToken, Task<HttpResponseMessage>> handlerAsync)
         {
             if (predicateAsync == null) throw new ArgumentNullException(nameof(predicateAsync));
             if (handlerAsync == null) throw new ArgumentNullException(nameof(handlerAsync));
@@ -24,14 +25,14 @@ namespace AspNetCore.Extensions.Testing.HttpMocking
             {
                 HttpResponseMockType = HttpResponseMockTypes.TypedClient,
                 HttpClientName = httpClientType.Name,
-                HttpResponseMock = new HttpResponseMock(predicateAsync,handlerAsync)
+                HttpResponseMock = new HttpResponseMock(predicateAsync, handlerAsync)
             };
         }
 
         public static HttpResponseMockDescriptor Named(
             string httpClientName,
-            Func<HttpRequestMessage, Task<bool>> predicateAsync,
-            Func<HttpRequestMessage, Task<HttpResponseMessage>> handlerAsync)
+            Func<HttpRequestMessage, CancellationToken, Task<bool>> predicateAsync,
+            Func<HttpRequestMessage, CancellationToken, Task<HttpResponseMessage>> handlerAsync)
         {
             if (string.IsNullOrEmpty(httpClientName))
             {
@@ -49,8 +50,8 @@ namespace AspNetCore.Extensions.Testing.HttpMocking
         }
 
         public static HttpResponseMockDescriptor Basic(
-            Func<HttpRequestMessage, Task<bool>> predicateAsync,
-            Func<HttpRequestMessage, Task<HttpResponseMessage>> handlerAsync)
+            Func<HttpRequestMessage, CancellationToken, Task<bool>> predicateAsync,
+            Func<HttpRequestMessage, CancellationToken, Task<HttpResponseMessage>> handlerAsync)
         {
             if (predicateAsync == null) throw new ArgumentNullException(nameof(predicateAsync));
             if (handlerAsync == null) throw new ArgumentNullException(nameof(handlerAsync));

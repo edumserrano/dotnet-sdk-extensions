@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace AspNetCore.Extensions.Testing.HttpMocking
 {
     public class HttpResponseMockBuilder
     {
-        private readonly Func<HttpRequestMessage, Task<bool>> _defaultPredicateAsync = httpRequestMessage => Task.FromResult(true);
-        private Func<HttpRequestMessage, Task<bool>> _predicateAsync;
-        private Func<HttpRequestMessage, Task<HttpResponseMessage>> _handlerAsync;
+        private readonly Func<HttpRequestMessage, CancellationToken, Task<bool>> _defaultPredicateAsync = (httpRequestMessage, cancellationToken) => Task.FromResult(true);
+        private Func<HttpRequestMessage, CancellationToken, Task<bool>> _predicateAsync;
+        private Func<HttpRequestMessage, CancellationToken, Task<HttpResponseMessage>> _handlerAsync;
         private Type _httpClientType;
         private string _httpClientName;
         private bool _clientTypeConfigured;
@@ -48,10 +49,10 @@ namespace AspNetCore.Extensions.Testing.HttpMocking
         public HttpResponseMockBuilder Where(Func<HttpRequestMessage, bool> predicate)
         {
             // convert to 'async' predicate
-            return Where(httpRequestMessage => Task.FromResult(predicate(httpRequestMessage)));
+            return Where((httpRequestMessage, cancellationToken) => Task.FromResult(predicate(httpRequestMessage)));
         }
 
-        public HttpResponseMockBuilder Where(Func<HttpRequestMessage, Task<bool>> predicateAsync)
+        public HttpResponseMockBuilder Where(Func<HttpRequestMessage, CancellationToken, Task<bool>> predicateAsync)
         {
             if (_predicateAsync != null)
             {
@@ -69,10 +70,10 @@ namespace AspNetCore.Extensions.Testing.HttpMocking
         public HttpResponseMockBuilder RespondWith(Func<HttpRequestMessage, HttpResponseMessage> handler)
         {
             // convert to 'async' handler
-            return RespondWithAsync(httpRequestMessage => Task.FromResult(handler(httpRequestMessage)));
+            return RespondWithAsync((httpRequestMessage, cancellationToken) => Task.FromResult(handler(httpRequestMessage)));
         }
 
-        public HttpResponseMockBuilder RespondWithAsync(Func<HttpRequestMessage, Task<HttpResponseMessage>> handlerAsync)
+        public HttpResponseMockBuilder RespondWithAsync(Func<HttpRequestMessage, CancellationToken, Task<HttpResponseMessage>> handlerAsync)
         {
             if (_handlerAsync != null)
             {
@@ -88,7 +89,7 @@ namespace AspNetCore.Extensions.Testing.HttpMocking
             {
                 throw new HttpResponseMockBuilderException("Client type not configured for HttpResponseMock. Use ForTypedClient, ForNamedClient or ForBasicClient to configure it.");
             }
-            if (_predicateAsync is null)
+            if (_predicateAsync is null) // predicate is not mandatory, a mock can always be applied. The default predicate represents an always apply condition.
             {
                 _predicateAsync = _defaultPredicateAsync;
             }
