@@ -26,12 +26,7 @@ namespace AspNetCore.Extensions.Testing.HttpMocking
                     throw new InvalidOperationException($"Cannot retrieve HttpResponseMessage unless Status is HttpResponseMockResults.Executed. Status is {Status}");
                 }
 
-                if (_httpResponseMessage is null)
-                {
-                    throw new InvalidOperationException("Unexpected exception. HttpResponseMessage is null.");
-                }
-
-                return _httpResponseMessage;
+                return _httpResponseMessage!;
             }
             private set => _httpResponseMessage = value;
         }
