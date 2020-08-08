@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net.Http;
 
-namespace AspNetCore.Extensions.Testing.HttpMocking
+namespace AspNetCore.Extensions.Testing.HttpMocking.HttpMessageHandlers
 {
     public enum HttpResponseMockResults
     {

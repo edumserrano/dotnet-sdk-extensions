@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AspNetCore.Extensions.Testing.HttpMocking
+namespace AspNetCore.Extensions.Testing.HttpMocking.HttpMessageHandlers
 {
     internal class HttpResponseMockBuilderException : Exception
     {

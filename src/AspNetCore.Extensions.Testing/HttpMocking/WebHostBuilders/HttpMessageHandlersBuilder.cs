@@ -1,31 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using AspNetCore.Extensions.Testing.HttpMocking.HttpMessageHandlers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Http;
 
-namespace AspNetCore.Extensions.Testing.HttpMocking
+namespace AspNetCore.Extensions.Testing.HttpMocking.WebHostBuilders
 {
     public class HttpMessageHandlersBuilder
     {
         private readonly IServiceCollection _services;
-        private readonly List<HttpResponseMockBuilder> _httpResponseMockBuilders;
+        private readonly List<HttpResponseMockDescriptorBuilder> _httpResponseMockBuilders;
 
         public HttpMessageHandlersBuilder(IServiceCollection services)
         {
             _services = services;
-            _httpResponseMockBuilders = new List<HttpResponseMockBuilder>();
+            _httpResponseMockBuilders = new List<HttpResponseMockDescriptorBuilder>();
         }
 
-        public HttpMessageHandlersBuilder MockHttpResponse(HttpResponseMockBuilder httpResponseMockBuilder)
+        public HttpMessageHandlersBuilder MockHttpResponse(HttpResponseMockDescriptorBuilder httpResponseMockBuilder)
         {
             _httpResponseMockBuilders.Add(httpResponseMockBuilder);
             return this;
         }
 
-        public HttpMessageHandlersBuilder MockHttpResponse(Action<HttpResponseMockBuilder> configure)
+        public HttpMessageHandlersBuilder MockHttpResponse(Action<HttpResponseMockDescriptorBuilder> configure)
         {
-            var builder = new HttpResponseMockBuilder();
+            var builder = new HttpResponseMockDescriptorBuilder();
             configure(builder);
             _httpResponseMockBuilders.Add(builder);
             return this;
