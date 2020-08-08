@@ -7,41 +7,40 @@ namespace AspNetCore.Extensions.Testing.HttpMocking
     public class HttpResponseMockBuilder
     {
         private readonly HttpResponseMockPredicateAsyncDelegate _defaultPredicateAsync = (httpRequestMessage, cancellationToken) => Task.FromResult(true);
-        private HttpResponseMockPredicateAsyncDelegate _predicateAsync;
-        private HttpResponseMockHandlerAsyncDelegate _handlerAsync;
-        private Type _httpClientType;
-        private string _httpClientName;
-        private bool _clientTypeConfigured;
+        private HttpResponseMockPredicateAsyncDelegate? _predicateAsync;
+        private HttpResponseMockHandlerAsyncDelegate? _handlerAsync;
+        private Type? _httpClientType;
+        private string? _httpClientName;
+        private HttpClientMockTypes _httpClientMockType = HttpClientMockTypes.Undefined;
+
+        private enum HttpClientMockTypes
+        {
+            Undefined,
+            Typed,
+            Named,
+            Basic
+        }
 
         public HttpResponseMockBuilder ForTypedClient<TClient>()
         {
-            if (_clientTypeConfigured)
-            {
-                throw new HttpResponseMockBuilderException("Client type already configured.");
-            }
+            EnsureHttpClientMockTypeIsDefinedOnlyOnce();
             _httpClientType = typeof(TClient);
-            _clientTypeConfigured = true;
+            _httpClientMockType = HttpClientMockTypes.Typed;
             return this;
         }
 
         public HttpResponseMockBuilder ForNamedClient(string name)
         {
-            if (_clientTypeConfigured)
-            {
-                throw new HttpResponseMockBuilderException("Client type already configured.");
-            }
+            EnsureHttpClientMockTypeIsDefinedOnlyOnce();
             _httpClientName = name;
-            _clientTypeConfigured = true;
+            _httpClientMockType = HttpClientMockTypes.Named;
             return this;
         }
 
         public HttpResponseMockBuilder ForBasicClient()
         {
-            if (_clientTypeConfigured)
-            {
-                throw new HttpResponseMockBuilderException("Client type already configured.");
-            }
-            _clientTypeConfigured = true;
+            EnsureHttpClientMockTypeIsDefinedOnlyOnce();
+            _httpClientMockType = HttpClientMockTypes.Basic;
             return this;
         }
 
@@ -84,29 +83,29 @@ namespace AspNetCore.Extensions.Testing.HttpMocking
 
         public HttpResponseMockDescriptor Build()
         {
-            if (!_clientTypeConfigured)
-            {
-                throw new HttpResponseMockBuilderException("Client type not configured for HttpResponseMock. Use ForTypedClient, ForNamedClient or ForBasicClient to configure it.");
-            }
-            if (_predicateAsync is null) // predicate is not mandatory, a mock can always be applied. The default predicate represents an always apply condition.
-            {
-                _predicateAsync = _defaultPredicateAsync;
-            }
+            // predicate is not mandatory. The default predicate represents an always apply condition.
+            _predicateAsync ??= _defaultPredicateAsync;
             if (_handlerAsync is null)
             {
-                throw new HttpResponseMockBuilderException("Response message not configured for HttpResponseMock. Use RespondWith to configure it.");
+                throw new HttpResponseMockBuilderException("HttpResponseMessage not configured for HttpResponseMock. Use RespondWith to configure it.");
             }
 
-            if (_httpClientType != null)
+            return _httpClientMockType switch
             {
-                return HttpResponseMockDescriptor.Typed(_httpClientType, _predicateAsync, _handlerAsync);
-            }
-            if (!string.IsNullOrEmpty(_httpClientName))
-            {
-                return HttpResponseMockDescriptor.Named(_httpClientName, _predicateAsync, _handlerAsync);
-            }
+                HttpClientMockTypes.Undefined => throw new HttpResponseMockBuilderException("Client type not configured for HttpResponseMock. Use ForTypedClient, ForNamedClient or ForBasicClient to configure it."),
+                HttpClientMockTypes.Typed => HttpResponseMockDescriptor.Typed(_httpClientType!, _predicateAsync, _handlerAsync),
+                HttpClientMockTypes.Named => HttpResponseMockDescriptor.Named(_httpClientName!, _predicateAsync, _handlerAsync),
+                HttpClientMockTypes.Basic => HttpResponseMockDescriptor.Basic(_predicateAsync, _handlerAsync),
+                _ => throw new ArgumentOutOfRangeException(nameof(_httpClientMockType))
+            };
+        }
 
-            return HttpResponseMockDescriptor.Basic(_predicateAsync, _handlerAsync);
+        private void EnsureHttpClientMockTypeIsDefinedOnlyOnce()
+        {
+            if (_httpClientMockType != HttpClientMockTypes.Undefined)
+            {
+                throw new HttpResponseMockBuilderException("Client type already configured.");
+            }
         }
     }
 }

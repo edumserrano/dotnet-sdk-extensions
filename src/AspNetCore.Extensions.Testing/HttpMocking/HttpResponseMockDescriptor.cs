@@ -4,11 +4,13 @@ namespace AspNetCore.Extensions.Testing.HttpMocking
 {
     public class HttpResponseMockDescriptor
     {
+        private HttpResponseMockDescriptor() { }
+
         public HttpResponseMockTypes HttpResponseMockType { get; private set; }
 
-        public string HttpClientName { get; private set; }
+        public string HttpClientName { get; private set; } = default!;
 
-        public HttpResponseMock HttpResponseMock { get; private set; }
+        public HttpResponseMock HttpResponseMock { get; private set; } = default!;
 
         public static HttpResponseMockDescriptor Typed(
             Type httpClientType,

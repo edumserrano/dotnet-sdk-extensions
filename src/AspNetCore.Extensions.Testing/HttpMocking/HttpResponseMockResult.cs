@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 
 namespace AspNetCore.Extensions.Testing.HttpMocking
 {
@@ -10,9 +11,30 @@ namespace AspNetCore.Extensions.Testing.HttpMocking
 
     public class HttpResponseMockResult
     {
+        private HttpResponseMessage? _httpResponseMessage;
+
+        private HttpResponseMockResult() { }
+
         public HttpResponseMockResults Status { get; private set; }
 
-        public HttpResponseMessage HttpResponseMessage { get; private set; }
+        public HttpResponseMessage HttpResponseMessage
+        {
+            get
+            {
+                if (Status != HttpResponseMockResults.Executed)
+                {
+                    throw new InvalidOperationException($"Cannot retrieve HttpResponseMessage unless Status is HttpResponseMockResults.Executed. Status is {Status}");
+                }
+
+                if (_httpResponseMessage is null)
+                {
+                    throw new InvalidOperationException("Unexpected exception. HttpResponseMessage is null.");
+                }
+
+                return _httpResponseMessage;
+            }
+            private set => _httpResponseMessage = value;
+        }
 
         public static HttpResponseMockResult Executed(HttpResponseMessage httpResponseMessage)
         {
