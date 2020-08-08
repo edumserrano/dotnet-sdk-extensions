@@ -2,7 +2,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using AspNetCore.Extensions.Testing.Demos.TestApp.DemoStartups.HttpMocking;
-using AspNetCore.Extensions.Testing.HttpMocking;
+using AspNetCore.Extensions.Testing.HttpMocking.WebHostBuilders;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;

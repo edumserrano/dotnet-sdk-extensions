@@ -2,47 +2,13 @@
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace AspNetCore.Extensions.Testing.HttpMocking
+namespace AspNetCore.Extensions.Testing.HttpMocking.HttpMessageHandlers
 {
     public class HttpResponseMockBuilder
     {
         private readonly HttpResponseMockPredicateAsyncDelegate _defaultPredicateAsync = (httpRequestMessage, cancellationToken) => Task.FromResult(true);
         private HttpResponseMockPredicateAsyncDelegate? _predicateAsync;
         private HttpResponseMockHandlerAsyncDelegate? _handlerAsync;
-        private Type? _httpClientType;
-        private string? _httpClientName;
-        private HttpClientMockTypes _httpClientMockType = HttpClientMockTypes.Undefined;
-
-        private enum HttpClientMockTypes
-        {
-            Undefined,
-            Typed,
-            Named,
-            Basic
-        }
-
-        public HttpResponseMockBuilder ForTypedClient<TClient>()
-        {
-            EnsureHttpClientMockTypeIsDefinedOnlyOnce();
-            _httpClientType = typeof(TClient);
-            _httpClientMockType = HttpClientMockTypes.Typed;
-            return this;
-        }
-
-        public HttpResponseMockBuilder ForNamedClient(string name)
-        {
-            EnsureHttpClientMockTypeIsDefinedOnlyOnce();
-            _httpClientName = name;
-            _httpClientMockType = HttpClientMockTypes.Named;
-            return this;
-        }
-
-        public HttpResponseMockBuilder ForBasicClient()
-        {
-            EnsureHttpClientMockTypeIsDefinedOnlyOnce();
-            _httpClientMockType = HttpClientMockTypes.Basic;
-            return this;
-        }
 
         public HttpResponseMockBuilder Where(Func<HttpRequestMessage, bool> predicate)
         {
@@ -81,7 +47,7 @@ namespace AspNetCore.Extensions.Testing.HttpMocking
             return this;
         }
 
-        public HttpResponseMockDescriptor Build()
+        public HttpResponseMock Build()
         {
             // predicate is not mandatory. The default predicate represents an always apply condition.
             _predicateAsync ??= _defaultPredicateAsync;
@@ -90,22 +56,7 @@ namespace AspNetCore.Extensions.Testing.HttpMocking
                 throw new HttpResponseMockBuilderException("HttpResponseMessage not configured for HttpResponseMock. Use RespondWith to configure it.");
             }
 
-            return _httpClientMockType switch
-            {
-                HttpClientMockTypes.Undefined => throw new HttpResponseMockBuilderException("Client type not configured for HttpResponseMock. Use ForTypedClient, ForNamedClient or ForBasicClient to configure it."),
-                HttpClientMockTypes.Typed => HttpResponseMockDescriptor.Typed(_httpClientType!, _predicateAsync, _handlerAsync),
-                HttpClientMockTypes.Named => HttpResponseMockDescriptor.Named(_httpClientName!, _predicateAsync, _handlerAsync),
-                HttpClientMockTypes.Basic => HttpResponseMockDescriptor.Basic(_predicateAsync, _handlerAsync),
-                _ => throw new ArgumentOutOfRangeException(nameof(_httpClientMockType))
-            };
-        }
-
-        private void EnsureHttpClientMockTypeIsDefinedOnlyOnce()
-        {
-            if (_httpClientMockType != HttpClientMockTypes.Undefined)
-            {
-                throw new HttpResponseMockBuilderException("Client type already configured.");
-            }
+            return new HttpResponseMock(_predicateAsync, _handlerAsync);
         }
     }
 }

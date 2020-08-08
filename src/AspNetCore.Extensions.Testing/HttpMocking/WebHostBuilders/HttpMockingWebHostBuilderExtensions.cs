@@ -2,9 +2,9 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 
-namespace AspNetCore.Extensions.Testing.HttpMocking
+namespace AspNetCore.Extensions.Testing.HttpMocking.WebHostBuilders
 {
-    public static class HttpMessageHandlersBuilderExtensions
+    public static class HttpMockingWebHostBuilderExtensions
     {
         public static IWebHostBuilder UseHttpMocks(this IWebHostBuilder webHostBuilder, Action<HttpMessageHandlersBuilder> configure)
         {

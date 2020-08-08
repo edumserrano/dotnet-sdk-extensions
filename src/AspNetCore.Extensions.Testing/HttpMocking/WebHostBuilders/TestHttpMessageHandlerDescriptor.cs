@@ -1,4 +1,6 @@
-﻿namespace AspNetCore.Extensions.Testing.HttpMocking
+﻿using AspNetCore.Extensions.Testing.HttpMocking.HttpMessageHandlers;
+
+namespace AspNetCore.Extensions.Testing.HttpMocking.WebHostBuilders
 {
     internal class TestHttpMessageHandlerDescriptor
     {
