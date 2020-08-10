@@ -10,23 +10,23 @@ namespace AspNetCore.Extensions.Testing.HttpMocking.WebHostBuilders
     public class HttpMessageHandlersBuilder
     {
         private readonly IServiceCollection _services;
-        private readonly List<HttpResponseMockDescriptorBuilder> _httpResponseMockBuilders;
+        private readonly List<HttpResponseMessageMockDescriptorBuilder> _httpResponseMockBuilders;
 
         public HttpMessageHandlersBuilder(IServiceCollection services)
         {
             _services = services;
-            _httpResponseMockBuilders = new List<HttpResponseMockDescriptorBuilder>();
+            _httpResponseMockBuilders = new List<HttpResponseMessageMockDescriptorBuilder>();
         }
 
-        public HttpMessageHandlersBuilder MockHttpResponse(HttpResponseMockDescriptorBuilder httpResponseMockBuilder)
+        public HttpMessageHandlersBuilder MockHttpResponse(HttpResponseMessageMockDescriptorBuilder httpResponseMockBuilder)
         {
             _httpResponseMockBuilders.Add(httpResponseMockBuilder);
             return this;
         }
 
-        public HttpMessageHandlersBuilder MockHttpResponse(Action<HttpResponseMockDescriptorBuilder> configure)
+        public HttpMessageHandlersBuilder MockHttpResponse(Action<HttpResponseMessageMockDescriptorBuilder> configure)
         {
-            var builder = new HttpResponseMockDescriptorBuilder();
+            var builder = new HttpResponseMessageMockDescriptorBuilder();
             configure(builder);
             _httpResponseMockBuilders.Add(builder);
             return this;
@@ -72,7 +72,7 @@ namespace AspNetCore.Extensions.Testing.HttpMocking.WebHostBuilders
             }
         }
 
-        private TestHttpMessageHandlerDescriptor CreateTestHttpMessageHandlers(IGrouping<string, HttpResponseMockDescriptor> httpResponseMockDescriptorsGrouping)
+        private TestHttpMessageHandlerDescriptor CreateTestHttpMessageHandlers(IGrouping<string, HttpResponseMessageMockDescriptor> httpResponseMockDescriptorsGrouping)
         {
             var httpClientName = httpResponseMockDescriptorsGrouping.Key;
             var httpResponseMockDescriptors = httpResponseMockDescriptorsGrouping.ToList();

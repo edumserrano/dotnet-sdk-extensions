@@ -8,12 +8,12 @@ namespace AspNetCore.Extensions.Testing.HttpMocking.HttpMessageHandlers
 
     public delegate Task<HttpResponseMessage> HttpResponseMockHandlerAsyncDelegate(HttpRequestMessage httpRequestMessage, CancellationToken cancellationToken);
 
-    public class HttpResponseMock
+    public class HttpResponseMessageMock
     {
         private readonly HttpResponseMockPredicateAsyncDelegate _predicateAsync;
         private readonly HttpResponseMockHandlerAsyncDelegate _handlerAsync;
 
-        public HttpResponseMock(
+        public HttpResponseMessageMock(
             HttpResponseMockPredicateAsyncDelegate predicateAsync,
             HttpResponseMockHandlerAsyncDelegate handlerAsync)
         {
@@ -21,15 +21,15 @@ namespace AspNetCore.Extensions.Testing.HttpMocking.HttpMessageHandlers
             _handlerAsync = handlerAsync;
         }
 
-        public async Task<HttpResponseMockResult> ExecuteAsync(HttpRequestMessage request, CancellationToken cancellationToken = default)
+        public async Task<HttpResponseMessageMockResult> ExecuteAsync(HttpRequestMessage request, CancellationToken cancellationToken = default)
         {
             var shouldExecute = await _predicateAsync(request, cancellationToken);
             if (!shouldExecute)
             {
-                return HttpResponseMockResult.Skipped();
+                return HttpResponseMessageMockResult.Skipped();
             }
             var httpResponseMessage = await _handlerAsync(request, cancellationToken);
-            return HttpResponseMockResult.Executed(httpResponseMessage);
+            return HttpResponseMessageMockResult.Executed(httpResponseMessage);
         }
     }
 }

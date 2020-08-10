@@ -8,14 +8,14 @@ namespace AspNetCore.Extensions.Testing.HttpMocking.HttpMessageHandlers
 {
     public class TestHttpMessageHandler : DelegatingHandler
     {
-        private readonly List<HttpResponseMock> _httpResponseMocks;
+        private readonly List<HttpResponseMessageMock> _httpResponseMocks;
 
         public TestHttpMessageHandler()
         {
-            _httpResponseMocks = new List<HttpResponseMock>();
+            _httpResponseMocks = new List<HttpResponseMessageMock>();
         }
 
-        public TestHttpMessageHandler MockHttpResponse(HttpResponseMock httpResponseMock)
+        public TestHttpMessageHandler MockHttpResponse(HttpResponseMessageMock httpResponseMock)
         {
             _httpResponseMocks.Add(httpResponseMock);
             return this;
@@ -26,7 +26,7 @@ namespace AspNetCore.Extensions.Testing.HttpMocking.HttpMessageHandlers
             foreach (var httpResponseMock in _httpResponseMocks)
             {
                 var responseMockResult = await httpResponseMock.ExecuteAsync(request, cancellationToken);
-                if (responseMockResult.Status == HttpResponseMockResults.Executed)
+                if (responseMockResult.Status == HttpResponseMessageMockResults.Executed)
                 {
                     return responseMockResult.HttpResponseMessage;
                 }

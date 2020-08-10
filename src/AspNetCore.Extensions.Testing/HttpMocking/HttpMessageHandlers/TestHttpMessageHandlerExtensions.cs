@@ -6,9 +6,9 @@ namespace AspNetCore.Extensions.Testing.HttpMocking.HttpMessageHandlers
     {
         public static TestHttpMessageHandler MockHttpResponse(
             this TestHttpMessageHandler testHttpMessageHandler,
-            Action<HttpResponseMockBuilder> configure)
+            Action<HttpResponseMessageMockBuilder> configure)
         {
-            var httpResponseMockBuilder = new HttpResponseMockBuilder();
+            var httpResponseMockBuilder = new HttpResponseMessageMockBuilder();
             configure(httpResponseMockBuilder);
             var httpResponseMock = httpResponseMockBuilder.Build();
             testHttpMessageHandler.MockHttpResponse(httpResponseMock);

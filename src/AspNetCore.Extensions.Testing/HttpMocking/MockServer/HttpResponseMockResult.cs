@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Net.Http;
 
 namespace AspNetCore.Extensions.Testing.HttpMocking.HttpMessageHandlers
@@ -11,32 +12,32 @@ namespace AspNetCore.Extensions.Testing.HttpMocking.HttpMessageHandlers
 
     public class HttpResponseMockResult
     {
-        private HttpResponseMessage? _httpResponseMessage;
+        private HttpResponse? _httpResponse;
 
         private HttpResponseMockResult() { }
 
         public HttpResponseMockResults Status { get; private set; }
 
-        public HttpResponseMessage HttpResponseMessage
+        public HttpResponse HttpResponse
         {
             get
             {
                 if (Status != HttpResponseMockResults.Executed)
                 {
-                    throw new InvalidOperationException($"Cannot retrieve HttpResponseMessage unless Status is HttpResponseMockResults.Executed. Status is {Status}");
+                    throw new InvalidOperationException($"Cannot retrieve {nameof(HttpResponse)} unless Status is {HttpResponseMockResults.Executed}. Status is {Status}");
                 }
 
-                return _httpResponseMessage!;
+                return _httpResponse!;
             }
-            private set => _httpResponseMessage = value;
+            private set => _httpResponse = value;
         }
 
-        public static HttpResponseMockResult Executed(HttpResponseMessage httpResponseMessage)
+        public static HttpResponseMockResult Executed(HttpResponse httpResponseMessage)
         {
             return new HttpResponseMockResult
             {
                 Status = HttpResponseMockResults.Executed,
-                HttpResponseMessage = httpResponseMessage
+                HttpResponse = httpResponseMessage
             };
         }
 

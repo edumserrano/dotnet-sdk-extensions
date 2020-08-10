@@ -48,11 +48,11 @@ namespace AspNetCore.Extensions.Testing.Demos.HttpMocking
                         {
                             // inject mocks for any other services
                         })
-                        .UseHttpMocks(httpMessageHandlersBuilder =>
+                        .UseHttpMocks(httpMockBuilder =>
                         {
-                            httpMessageHandlersBuilder.MockHttpResponse(mockBuilder =>
+                            httpMockBuilder.MockHttpResponse(responseBuilder =>
                             {
-                                mockBuilder
+                                responseBuilder
                                     .ForTypedClient<IMyApiClient>()
                                     .RespondWith(httpRequestMessage =>
                                     {
