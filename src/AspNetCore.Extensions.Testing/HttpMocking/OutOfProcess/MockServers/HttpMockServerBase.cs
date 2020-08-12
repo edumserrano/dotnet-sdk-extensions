@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 
@@ -6,15 +8,24 @@ namespace AspNetCore.Extensions.Testing.HttpMocking.OutOfProcess.MockServers
 {
     public abstract class HttpMockServerBase : IAsyncDisposable
     {
+        private readonly HttpMockServerArgs _mockServerArgs;
         private IHost? _host;
 
-        public async Task Start(string[] args)
+        protected HttpMockServerBase(HttpMockServerArgs mockServerArgs)
         {
-            _host = CreateHostBuilder(args).Build();
-            await _host.StartAsync();
+            _mockServerArgs = mockServerArgs ?? throw new ArgumentNullException(nameof(mockServerArgs));
         }
 
-        public abstract IHostBuilder CreateHostBuilder(string[] args);
+        public async Task<List<HttpMockServerUrl>> StartAsync()
+        {
+            _host = CreateHostBuilder(_mockServerArgs.HostArgs).Build();
+            await _host.StartAsync();
+            return _mockServerArgs.HostUrls
+                .Select(x => new HttpMockServerUrl(x.Scheme, x.Port))
+                .ToList();
+        }
+
+        protected abstract IHostBuilder CreateHostBuilder(string[] args);
 
         public async ValueTask DisposeAsync()
         {

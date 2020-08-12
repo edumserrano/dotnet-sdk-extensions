@@ -10,12 +10,12 @@ namespace AspNetCore.Extensions.Testing.HttpMocking.OutOfProcess.MockServers.Res
     {
         private readonly HttpResponseMocksProvider _httpResponseMocksProvider;
 
-        public HttpMockServer(ICollection<HttpResponseMock> httpResponseMocks)
+        public HttpMockServer(HttpMockServerArgs mockServerArgs, ICollection<HttpResponseMock> httpResponseMocks) : base(mockServerArgs)
         {
             _httpResponseMocksProvider = new HttpResponseMocksProvider(httpResponseMocks);
         }
 
-        public override IHostBuilder CreateHostBuilder(string[] args)
+        protected override IHostBuilder CreateHostBuilder(string[] args)
         {
             return Host
                 .CreateDefaultBuilder(args)

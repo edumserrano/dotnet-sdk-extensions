@@ -1,5 +1,3 @@
-using System;
-using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using AspNetCore.Extensions.Testing.HttpMocking.OutOfProcess;
@@ -7,6 +5,7 @@ using AspNetCore.Extensions.Testing.HttpMocking.OutOfProcess.ResponseMocking;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
 using Xunit;
@@ -31,6 +30,9 @@ namespace AspNetCore.Extensions.Testing.Tests
                 .Build();
 
             await using var mock = new HttpMockServerBuilder()
+                .UseUrl(HttpScheme.Http, 31245)
+                .UseUrl(HttpScheme.Http, 31246)
+                .UseUrl(HttpScheme.Https, 31247)
                 .UseHttpResponseMocks()
                 .MockHttpResponse(httpResponseMock)
                 .MockHttpResponse(builder =>
@@ -45,43 +47,37 @@ namespace AspNetCore.Extensions.Testing.Tests
                 })
                 .Build();
 
-            var portNumber = "31245";
-            var randomPortNumber = "0";
-            var serverPortNumber = string.IsNullOrEmpty(portNumber) ? randomPortNumber : portNumber;
-            await mock.Start(new[] { "--urls", $"http://*:{serverPortNumber}" });
+            var urls = await mock.StartAsync();
 
             var httpClient = new HttpClient();
-            var responseBody = await httpClient.GetStringAsync("http://localhost:31245");
+            var responseBody = await httpClient.GetStringAsync(urls[0]);
+            var responseBody2 = await httpClient.GetStringAsync(urls[1]);
+            var responseBody3 = await httpClient.GetStringAsync(urls[2]);
             responseBody.ShouldBe("hi");
+            responseBody2.ShouldBe("hi");
+            responseBody3.ShouldBe("hi");
 
         }
 
         [Fact]
         public async Task Test2()
         {
-
-            var httpResponseMockBuilder = new HttpResponseMockBuilder();
-            var httpResponseMock = httpResponseMockBuilder
-                .RespondWith(async (request, response, cancellationToken) =>
-                {
-                    response.StatusCode = StatusCodes.Status201Created;
-                    await response.WriteAsync("hi", cancellationToken);
-                    //return Task.CompletedTask;
-                })
-                .Build();
-
             await using var mock = new HttpMockServerBuilder()
+                .UseUrl(HttpScheme.Http, 31245)
+                .UseUrl(HttpScheme.Http, 31246)
+                .UseUrl(HttpScheme.Https, 31247)
                 .UseStartup<MyMockStartup>()
                 .Build();
 
-            var portNumber = "31245";
-            var randomPortNumber = "0";
-            var serverPortNumber = string.IsNullOrEmpty(portNumber) ? randomPortNumber : portNumber;
-            await mock.Start(new[] { "--urls", $"http://*:{serverPortNumber}" });
+            var urls = await mock.StartAsync();
 
             var httpClient = new HttpClient();
-            var responseBody = await httpClient.GetAsync("http://localhost:31245");
-            responseBody.StatusCode.ShouldBe(HttpStatusCode.Found);
+            var responseBody = await httpClient.GetStringAsync(urls[0]);
+            var responseBody2 = await httpClient.GetStringAsync(urls[1]);
+            var responseBody3 = await httpClient.GetStringAsync(urls[2]);
+            responseBody.ShouldBe("hi2");
+            responseBody2.ShouldBe("hi2");
+            responseBody3.ShouldBe("hi2");
 
         }
 
@@ -91,14 +87,13 @@ namespace AspNetCore.Extensions.Testing.Tests
             {
             }
 
-            public void Configure(
-                IApplicationBuilder app,
-                IWebHostEnvironment env)
+            public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
             {
-                app.Run(httpContext =>
+                app.Run(async httpContext =>
                 {
-                    httpContext.Response.StatusCode = StatusCodes.Status302Found;
-                    return Task.CompletedTask;
+                    httpContext.Response.StatusCode = StatusCodes.Status201Created;
+                    await httpContext.Response.WriteAsync("hi2");
+                    //return Task.CompletedTask;
                 });
             }
         }
