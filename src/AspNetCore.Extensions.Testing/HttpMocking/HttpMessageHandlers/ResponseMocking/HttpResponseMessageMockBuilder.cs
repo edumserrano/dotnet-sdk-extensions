@@ -2,7 +2,7 @@
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace AspNetCore.Extensions.Testing.HttpMocking.HttpMessageHandlers
+namespace AspNetCore.Extensions.Testing.HttpMocking.HttpMessageHandlers.ResponseMocking
 {
     public class HttpResponseMessageMockBuilder
     {

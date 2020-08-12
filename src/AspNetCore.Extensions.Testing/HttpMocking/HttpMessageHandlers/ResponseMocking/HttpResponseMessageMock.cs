@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace AspNetCore.Extensions.Testing.HttpMocking.HttpMessageHandlers
+namespace AspNetCore.Extensions.Testing.HttpMocking.HttpMessageHandlers.ResponseMocking
 {
     public delegate Task<bool> HttpResponseMessageMockPredicateDelegate(HttpRequestMessage httpRequestMessage, CancellationToken cancellationToken);
 

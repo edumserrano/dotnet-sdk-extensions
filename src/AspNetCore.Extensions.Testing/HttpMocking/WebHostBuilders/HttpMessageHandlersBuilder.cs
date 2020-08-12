@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using AspNetCore.Extensions.Testing.HttpMocking.HttpMessageHandlers;
+using AspNetCore.Extensions.Testing.HttpMocking.WebHostBuilders.ResponseMocking;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Http;
 

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Net.Http;
-using AspNetCore.Extensions.Testing.HttpMocking.MockServer;
+using AspNetCore.Extensions.Testing.HttpMocking.OutOfProcess.ResponseMocking;
 
-namespace AspNetCore.Extensions.Testing.HttpMocking.HttpMessageHandlers
+namespace AspNetCore.Extensions.Testing.HttpMocking.HttpMessageHandlers.ResponseMocking
 {
     public enum HttpResponseMessageMockResults
     {

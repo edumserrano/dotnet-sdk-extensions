@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using AspNetCore.Extensions.Testing.HttpMocking.OutOfProcess.MockServers.ResponseBased;
+using AspNetCore.Extensions.Testing.HttpMocking.OutOfProcess.MockServers.StartupBased;
+using AspNetCore.Extensions.Testing.HttpMocking.OutOfProcess.ResponseMocking;
 
-namespace AspNetCore.Extensions.Testing.HttpMocking.MockServer
+namespace AspNetCore.Extensions.Testing.HttpMocking.OutOfProcess
 {
     public class HttpMockServerBuilder
     {

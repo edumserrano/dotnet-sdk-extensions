@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 
-namespace AspNetCore.Extensions.Testing.HttpMocking.MockServer
+namespace AspNetCore.Extensions.Testing.HttpMocking.OutOfProcess.ResponseMocking
 {
     public class HttpResponseMockBuilder
     {

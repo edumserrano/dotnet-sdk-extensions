@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using AspNetCore.Extensions.Testing.HttpMocking.HttpMessageHandlers.ResponseMocking;
 
 namespace AspNetCore.Extensions.Testing.HttpMocking.HttpMessageHandlers
 {

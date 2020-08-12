@@ -1,7 +1,7 @@
-﻿using AspNetCore.Extensions.Testing.HttpMocking.HttpMessageHandlers;
-using System;
+﻿using System;
+using AspNetCore.Extensions.Testing.HttpMocking.HttpMessageHandlers.ResponseMocking;
 
-namespace AspNetCore.Extensions.Testing.HttpMocking.WebHostBuilders
+namespace AspNetCore.Extensions.Testing.HttpMocking.WebHostBuilders.ResponseMocking
 {
     public class HttpResponseMessageMockDescriptorBuilder
     {

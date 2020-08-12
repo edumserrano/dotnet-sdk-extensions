@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AspNetCore.Extensions.Testing.HttpMocking.MockServer
+namespace AspNetCore.Extensions.Testing.HttpMocking.OutOfProcess.ResponseMocking
 {
     internal class HttpResponseMockBuilderException : Exception
     {
