@@ -8,7 +8,7 @@ namespace AspNetCore.Extensions.Testing.HttpMocking.WebHostBuilders
         private Type? _httpClientType;
         private string? _httpClientName;
         private HttpClientMockTypes _httpClientMockType;
-        private HttpResponseMessageMockBuilder _httpResponseMockBuilder;
+        private readonly HttpResponseMessageMockBuilder _httpResponseMockBuilder;
 
         private enum HttpClientMockTypes
         {

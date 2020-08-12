@@ -21,6 +21,15 @@ namespace AspNetCore.Extensions.Testing.HttpMocking.HttpMessageHandlers
             return this;
         }
 
+        public TestHttpMessageHandler MockHttpResponse(Func<HttpResponseMessageMockBuilder, HttpResponseMessageMockBuilder> configure)
+        {
+            var httpResponseMockBuilder = new HttpResponseMessageMockBuilder();
+            httpResponseMockBuilder = configure(httpResponseMockBuilder);
+            var httpResponseMock = httpResponseMockBuilder.Build();
+            MockHttpResponse(httpResponseMock);
+            return this;
+        }
+
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             foreach (var httpResponseMock in _httpResponseMocks)

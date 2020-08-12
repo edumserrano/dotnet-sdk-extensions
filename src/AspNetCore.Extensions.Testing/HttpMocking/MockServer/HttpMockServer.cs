@@ -1,59 +1,113 @@
-﻿using AspNetCore.Extensions.Testing.HttpMocking.HttpMessageHandlers;
+﻿using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace AspNetCore.Extensions.Testing.HttpMocking.MockServer
 {
-    public class HttpMockServer
+    public class HttpMockServer : IAsyncDisposable
     {
-        public void Start(string[] args)
+        private readonly List<HttpResponseMock> _httpResponseMocks;
+        private IHost? _host;
+
+        public HttpMockServer(List<HttpResponseMock> httpResponseMocks)
         {
-            CreateHostBuilder(args).Build().Run();
+            _httpResponseMocks = httpResponseMocks ?? throw new ArgumentNullException(nameof(httpResponseMocks));
         }
 
-
-        public HttpMockServer MockHttpResponse(HttpResponseMessageMock httpResponseMock)
+        public async Task Start(string[] args)
         {
-            _httpResponseMocks.Add(httpResponseMock);
-            return this;
+            _host = CreateHostBuilder(args).Build();
+            await _host.StartAsync();
+        }
+
+        public IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    webBuilder.ConfigureServices(services =>
+                    {
+                        var httpResponseMocksProvider = new HttpResponseMocksProvider(_httpResponseMocks);
+                        services.AddSingleton(httpResponseMocksProvider);
+                    });
+                    webBuilder.UseStartup<HttpMockServerStartup>();
+                });
+
+        public async ValueTask DisposeAsync()
+        {
+            _host?.StopAsync();
+            switch (_host)
+            {
+                case IAsyncDisposable asyncDisposable:
+                    await asyncDisposable.DisposeAsync();
+                    break;
+                case IDisposable disposable:
+                    disposable.Dispose();
+                    break;
+            }
+        }
+    }
+    
+    public class HttpResponseMocksProvider
+    {
+        private readonly ICollection<HttpResponseMock> _httpResponseMocks;
+
+        public HttpResponseMocksProvider(ICollection<HttpResponseMock> httpResponseMocks)
+        {
+            _httpResponseMocks = httpResponseMocks ?? throw new ArgumentNullException(nameof(httpResponseMocks));
+        }
+
+        public IEnumerable<HttpResponseMock> HttpResponseMocks => _httpResponseMocks.ToList();
+    }
+
+    public class HttpMockServer<T> : IAsyncDisposable where T : class
+    {
+        private IHost? _host;
+
+        public async Task Start(string[] args)
+        {
+            _host = CreateHostBuilder(args).Build();
+            await _host.StartAsync();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseStartup<HttpMockServerStartup>();
+                    webBuilder.UseStartup(typeof(T));
+                    webBuilder.UseStartup<T>();
                 });
-    }
 
-    public class HttpMockServerResponse
-    {
-        public void T()
+        public async ValueTask DisposeAsync()
         {
-            DefaultHttpContext a = new DefaultHttpContext();
-            var request = a.Request;
-            var response = a.Response;
+            _host?.StopAsync();
+            switch (_host)
+            {
+                case IAsyncDisposable asyncDisposable:
+                    await asyncDisposable.DisposeAsync();
+                    break;
+                case IDisposable disposable:
+                    disposable.Dispose();
+                    break;
+            }
         }
     }
 
-
-
     public class HttpMockServerStartup
     {
-        private readonly List<HttpResponseMessageMock> _httpResponseMocks = new List<HttpResponseMessageMock>();
-
         public void ConfigureServices(IServiceCollection services)
         {
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(
+            IApplicationBuilder app, 
+            IWebHostEnvironment env, 
+            HttpResponseMocksProvider httpResponseMocksProvider)
         {
             if (env.IsDevelopment())
             {
@@ -62,30 +116,30 @@ namespace AspNetCore.Extensions.Testing.HttpMocking.MockServer
 
             app.Use(async (httpContext, next) =>
             {
-                foreach(var httpResponseMock in _httpResponseMocks)
+                foreach (var httpResponseMock in httpResponseMocksProvider.HttpResponseMocks)
                 {
-                    var result = await httpResponseMock.ExecuteAsync(httpContext.Request, httpContext.RequestAborted);
-                    if(result.Status == HttpResponseMessageMockResults.Executed)
+                    var result = await httpResponseMock.ExecuteAsync(httpContext);
+                    if (result == HttpResponseMockResults.Executed)
                     {
-                        return result.HttpResponseMessage;
+                        return;
                     }
                 }
 
-                return next();
+                await next();
             });
             app.Run(httpContext =>
             {
                 return Task.CompletedTask;
             });
 
-            app.UseRouting();
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapGet("/", async context =>
-                {
-                    await context.Response.WriteAsync("Hello World!");
-                });
-            });
+            //app.UseRouting();
+            //app.UseEndpoints(endpoints =>
+            //{
+            //    endpoints.MapGet("/", async context =>
+            //    {
+            //        await context.Response.WriteAsync("Hello World!");
+            //    });
+            //});
         }
 
     }

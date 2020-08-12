@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.Http;
+using AspNetCore.Extensions.Testing.HttpMocking.MockServer;
 
 namespace AspNetCore.Extensions.Testing.HttpMocking.HttpMessageHandlers
 {

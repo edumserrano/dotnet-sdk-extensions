@@ -4,31 +4,31 @@ using System.Threading.Tasks;
 
 namespace AspNetCore.Extensions.Testing.HttpMocking.HttpMessageHandlers
 {
-    public delegate Task<bool> HttpResponseMockPredicateAsyncDelegate(HttpRequestMessage httpRequestMessage, CancellationToken cancellationToken);
+    public delegate Task<bool> HttpResponseMessageMockPredicateDelegate(HttpRequestMessage httpRequestMessage, CancellationToken cancellationToken);
 
-    public delegate Task<HttpResponseMessage> HttpResponseMockHandlerAsyncDelegate(HttpRequestMessage httpRequestMessage, CancellationToken cancellationToken);
+    public delegate Task<HttpResponseMessage> HttpResponseMessageMockHandlerDelegate(HttpRequestMessage httpRequestMessage, CancellationToken cancellationToken);
 
     public class HttpResponseMessageMock
     {
-        private readonly HttpResponseMockPredicateAsyncDelegate _predicateAsync;
-        private readonly HttpResponseMockHandlerAsyncDelegate _handlerAsync;
+        private readonly HttpResponseMessageMockPredicateDelegate _predicate;
+        private readonly HttpResponseMessageMockHandlerDelegate _handler;
 
         public HttpResponseMessageMock(
-            HttpResponseMockPredicateAsyncDelegate predicateAsync,
-            HttpResponseMockHandlerAsyncDelegate handlerAsync)
+            HttpResponseMessageMockPredicateDelegate predicate,
+            HttpResponseMessageMockHandlerDelegate handler)
         {
-            _predicateAsync = predicateAsync;
-            _handlerAsync = handlerAsync;
+            _predicate = predicate;
+            _handler = handler;
         }
 
         public async Task<HttpResponseMessageMockResult> ExecuteAsync(HttpRequestMessage request, CancellationToken cancellationToken = default)
         {
-            var shouldExecute = await _predicateAsync(request, cancellationToken);
+            var shouldExecute = await _predicate(request, cancellationToken);
             if (!shouldExecute)
             {
                 return HttpResponseMessageMockResult.Skipped();
             }
-            var httpResponseMessage = await _handlerAsync(request, cancellationToken);
+            var httpResponseMessage = await _handler(request, cancellationToken);
             return HttpResponseMessageMockResult.Executed(httpResponseMessage);
         }
     }
