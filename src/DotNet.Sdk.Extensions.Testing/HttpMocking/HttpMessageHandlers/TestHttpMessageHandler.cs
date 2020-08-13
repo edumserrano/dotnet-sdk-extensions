@@ -24,12 +24,12 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers
             return this;
         }
 
-        public TestHttpMessageHandler MockHttpResponse(Func<HttpResponseMessageMockBuilder, HttpResponseMessageMockBuilder> configure)
+        public TestHttpMessageHandler MockHttpResponse(Action<HttpResponseMessageMockBuilder> configure)
         {
             if (configure == null) throw new ArgumentNullException(nameof(configure));
 
             var httpResponseMockBuilder = new HttpResponseMessageMockBuilder();
-            httpResponseMockBuilder = configure(httpResponseMockBuilder);
+            configure(httpResponseMockBuilder);
             var httpResponseMock = httpResponseMockBuilder.Build();
             MockHttpResponse(httpResponseMock);
             return this;

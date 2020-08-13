@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 
 namespace DotNet.Sdk.Extensions.Testing.HostedServices
 {
+    public delegate Task<bool> RunUntilPredicate();
+
     internal class HostRunController
     {
         private readonly RunUntilOptions _options;
@@ -13,7 +15,7 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
             _options = options ?? throw new ArgumentNullException(nameof(options));
         }
 
-        public async Task<RunUntilResult> RunUntil(Func<Task<bool>> predicateAsync, CancellationToken hostCancellationToken)
+        public async Task<RunUntilResult> RunUntil(RunUntilPredicate predicateAsync, CancellationToken hostCancellationToken)
         {
             if (predicateAsync == null) throw new ArgumentNullException(nameof(predicateAsync));
 

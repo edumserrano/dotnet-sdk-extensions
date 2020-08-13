@@ -14,7 +14,7 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
         {
             if (webApplicationFactory == null) throw new ArgumentNullException(nameof(webApplicationFactory));
 
-            Func<Task<bool>> noOpPredicate = () => Task.FromResult(false);
+            RunUntilPredicate noOpPredicate = () => Task.FromResult(false);
             var options = new RunUntilOptions { Timeout = timeout };
             return webApplicationFactory.RunUntilAsync(noOpPredicate, options, throwExceptionIfTimeout: false, runUntilCancellationToken: default);
         }
@@ -27,7 +27,7 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
         */
         internal static async Task RunUntilAsync<T>(
             this WebApplicationFactory<T> webApplicationFactory,
-            Func<Task<bool>> predicateAsync,
+            RunUntilPredicate predicateAsync,
             RunUntilOptions options,
             bool throwExceptionIfTimeout,
             CancellationToken runUntilCancellationToken) where T : class

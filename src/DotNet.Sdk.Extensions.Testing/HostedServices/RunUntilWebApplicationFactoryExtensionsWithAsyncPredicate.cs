@@ -13,7 +13,7 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
     {
         public static Task RunUntilAsync<T>(
             this WebApplicationFactory<T> webApplicationFactory,
-            Func<Task<bool>> predicateAsync,
+            RunUntilPredicate predicateAsync,
             CancellationToken runUntilCancellationToken = default) where T : class
         {
             if (webApplicationFactory == null) throw new ArgumentNullException(nameof(webApplicationFactory));
@@ -30,7 +30,7 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
 
         public static Task RunUntilAsync<T>(
             this WebApplicationFactory<T> webApplicationFactory,
-            Func<Task<bool>> predicateAsync,
+            RunUntilPredicate predicateAsync,
             Action<RunUntilOptions> configureOptions,
             CancellationToken runUntilCancellationToken = default) where T : class
         {
