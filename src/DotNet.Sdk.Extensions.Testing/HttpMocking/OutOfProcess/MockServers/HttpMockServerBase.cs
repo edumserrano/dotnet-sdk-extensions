@@ -20,8 +20,9 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers
         {
             _host = CreateHostBuilder(_mockServerArgs.HostArgs).Build();
             await _host.StartAsync();
-            return _mockServerArgs.HostUrls
-                .Select(x => new HttpMockServerUrl(x.Scheme, x.Port))
+            return _host
+                .GetServerAddresses()
+                .Select(x => x.ToHttpMockServerUrl())
                 .ToList();
         }
 

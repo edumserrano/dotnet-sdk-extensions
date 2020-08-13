@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
@@ -7,16 +6,10 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers
 {
     public class HttpMockServerArgs
     {
-        private readonly ICollection<HttpMockServerUrlDescriptor> _urlDescriptors;
+        private const string _defaultUrls = "http://*:0;https://*:0";
 
         public HttpMockServerArgs(List<HttpMockServerUrlDescriptor> urlDescriptors, string[] hostArgs)
         {
-            if (urlDescriptors is null || !urlDescriptors.Any())
-            {
-                throw new HttpMockServerException($"You need to configure at least one host URL: use {nameof(HttpMockServerBuilder)}.{nameof(HttpMockServerBuilder.UseUrl)} method to configure mock server URLs.");
-            }
-
-            _urlDescriptors = urlDescriptors ?? throw new ArgumentNullException(nameof(urlDescriptors));
             var urls = BuildUrls(urlDescriptors);
             HostArgs = hostArgs
                 .Concat(new List<string> { "--urls", urls })
@@ -25,10 +18,13 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers
 
         public string[] HostArgs { get; }
 
-        public IEnumerable<HttpMockServerUrlDescriptor> HostUrls => _urlDescriptors.ToList();
-
         private string BuildUrls(List<HttpMockServerUrlDescriptor> urlDescriptors)
         {
+            if (urlDescriptors is null || !urlDescriptors.Any())
+            {
+                return _defaultUrls;
+            }
+
             var sb = new StringBuilder();
             foreach (var url in urlDescriptors.Select(x => x.ToString()))
             {

@@ -30,9 +30,9 @@ namespace DotNet.Sdk.Extensions.Testing.Tests
                 .Build();
 
             await using var mock = new HttpMockServerBuilder()
-                .UseUrl(HttpScheme.Http, 31245)
-                .UseUrl(HttpScheme.Http, 31246)
-                .UseUrl(HttpScheme.Https, 31247)
+                //.UseUrl(HttpScheme.Http, 80)
+                //.UseUrl(HttpScheme.Http, 31246)
+                //.UseUrl(HttpScheme.Https, 443)
                 .UseHttpResponseMocks()
                 .MockHttpResponse(httpResponseMock)
                 .MockHttpResponse(builder =>
@@ -52,10 +52,10 @@ namespace DotNet.Sdk.Extensions.Testing.Tests
             var httpClient = new HttpClient();
             var responseBody = await httpClient.GetStringAsync(urls[0]);
             var responseBody2 = await httpClient.GetStringAsync(urls[1]);
-            var responseBody3 = await httpClient.GetStringAsync(urls[2]);
+            //var responseBody3 = await httpClient.GetStringAsync(urls[2]);
             responseBody.ShouldBe("hi");
             responseBody2.ShouldBe("hi");
-            responseBody3.ShouldBe("hi");
+            //responseBody3.ShouldBe("hi");
 
         }
 
