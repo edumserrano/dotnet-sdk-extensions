@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 
@@ -8,6 +9,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers.Res
     {
         public static IApplicationBuilder RunDefaultResponse(this IApplicationBuilder builder)
         {
+            if (builder == null) throw new ArgumentNullException(nameof(builder));
             return builder.UseMiddleware<DefaultResponseMiddleware>();
         }
     }

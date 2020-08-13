@@ -14,6 +14,9 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
             this WebApplicationFactory<T> webApplicationFactory,
             Func<bool> predicate) where T : class
         {
+            if (webApplicationFactory == null) throw new ArgumentNullException(nameof(webApplicationFactory));
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
+
             Func<Task<bool>> predicateAsync = () => Task.FromResult(predicate());
             return webApplicationFactory.RunUntilAsync(predicateAsync);
         }
@@ -23,6 +26,9 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
             Func<bool> predicate,
             Action<RunUntilOptions> configureOptions) where T : class
         {
+            if (webApplicationFactory == null) throw new ArgumentNullException(nameof(webApplicationFactory));
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
+
             Func<Task<bool>> predicateAsync = () => Task.FromResult(predicate());
             return webApplicationFactory.RunUntilAsync(predicateAsync, configureOptions, runUntilCancellationToken: default);
         }

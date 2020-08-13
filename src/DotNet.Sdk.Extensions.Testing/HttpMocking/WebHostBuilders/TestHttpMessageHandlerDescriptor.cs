@@ -1,4 +1,5 @@
-﻿using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers;
+﻿using System;
+using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers;
 
 namespace DotNet.Sdk.Extensions.Testing.HttpMocking.WebHostBuilders
 {
@@ -7,7 +8,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.WebHostBuilders
         public TestHttpMessageHandlerDescriptor(string httpClientName, TestHttpMessageHandler httpMessageHandler)
         {
             HttpClientName = httpClientName;
-            HttpMessageHandler = httpMessageHandler;
+            HttpMessageHandler = httpMessageHandler ?? throw new ArgumentNullException(nameof(httpMessageHandler));
         }
 
         public string HttpClientName { get; }

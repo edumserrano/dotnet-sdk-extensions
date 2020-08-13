@@ -13,6 +13,8 @@ namespace DotNet.Sdk.Extensions.Testing.Configuration
             this IWebHostBuilder builder,
             params string[] appsettingsFilenames)
         {
+            if (builder == null) throw new ArgumentNullException(nameof(builder));
+
             var options = new TestConfigurationOptions();
             return builder.AddTestConfiguration(options, appsettingsFilenames);
         }
@@ -22,6 +24,9 @@ namespace DotNet.Sdk.Extensions.Testing.Configuration
             Action<TestConfigurationOptions> configureOptions,
             params string[] appsettingsFilenames)
         {
+            if (builder == null) throw new ArgumentNullException(nameof(builder));
+            if (configureOptions == null) throw new ArgumentNullException(nameof(configureOptions));
+
             var options = new TestConfigurationOptions();
             configureOptions(options);
             return builder.AddTestConfiguration(options, appsettingsFilenames);
@@ -40,6 +45,10 @@ namespace DotNet.Sdk.Extensions.Testing.Configuration
             TestConfigurationOptions options,
             params string[] appsettingsFilenames)
         {
+            if (builder == null) throw new ArgumentNullException(nameof(builder));
+            if (options == null) throw new ArgumentNullException(nameof(options));
+            if (appsettingsFilenames == null) throw new ArgumentNullException(nameof(appsettingsFilenames));
+
             var projectDir = Path.Combine(Directory.GetCurrentDirectory(), options.AppSettingsDir);
             return builder.ConfigureAppConfiguration((context, config) =>
             {

@@ -34,6 +34,11 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.WebHostBuilders.ResponseMock
 
         public HttpResponseMessageMockBuilder ForNamedClient(string name)
         {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                throw new ArgumentException("Must have a value.", nameof(name));
+            }
+
             EnsureHttpClientMockTypeIsDefinedOnlyOnce();
             _httpClientName = name;
             _httpClientMockType = HttpClientMockTypes.Named;

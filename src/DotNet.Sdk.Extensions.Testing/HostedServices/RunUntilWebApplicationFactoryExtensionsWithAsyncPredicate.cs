@@ -16,6 +16,8 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
             Func<Task<bool>> predicateAsync,
             CancellationToken runUntilCancellationToken = default) where T : class
         {
+            if (webApplicationFactory == null) throw new ArgumentNullException(nameof(webApplicationFactory));
+
             var configureOptionsAction = new Action<RunUntilOptions>(DefaultConfigureOptionsDelegate);
             return webApplicationFactory.RunUntilAsync(predicateAsync, configureOptionsAction, runUntilCancellationToken);
 
@@ -32,6 +34,9 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
             Action<RunUntilOptions> configureOptions,
             CancellationToken runUntilCancellationToken = default) where T : class
         {
+            if (webApplicationFactory == null) throw new ArgumentNullException(nameof(webApplicationFactory));
+            if (configureOptions == null) throw new ArgumentNullException(nameof(configureOptions));
+
             var defaultOptions = new RunUntilOptions();
             configureOptions(defaultOptions);
             return webApplicationFactory.RunUntilAsync(predicateAsync, defaultOptions, throwExceptionIfTimeout: true, runUntilCancellationToken);

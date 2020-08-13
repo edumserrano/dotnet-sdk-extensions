@@ -12,6 +12,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.Response
 
         public HttpResponseMessageMockBuilder Where(Func<HttpRequestMessage, bool> predicate)
         {
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
             // convert to 'async' predicate
             return Where((httpRequestMessage, cancellationToken) => Task.FromResult(predicate(httpRequestMessage)));
         }
@@ -22,7 +23,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.Response
             {
                 throw new HttpResponseMessageMockBuilderException("Where condition already configured.");
             }
-            _predicateAsync = predicate;
+            _predicateAsync = predicate ?? throw new ArgumentNullException(nameof(predicate));
             return this;
         }
 
@@ -33,6 +34,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.Response
 
         public HttpResponseMessageMockBuilder RespondWith(Func<HttpRequestMessage, HttpResponseMessage> handler)
         {
+            if (handler == null) throw new ArgumentNullException(nameof(handler));
             // convert to 'async' handler
             return RespondWith((httpRequestMessage, cancellationToken) => Task.FromResult(handler(httpRequestMessage)));
         }
@@ -43,7 +45,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.Response
             {
                 throw new HttpResponseMessageMockBuilderException("RespondWith already configured.");
             }
-            _handlerAsync = handler;
+            _handlerAsync = handler ?? throw new ArgumentNullException(nameof(handler));
             return this;
         }
 

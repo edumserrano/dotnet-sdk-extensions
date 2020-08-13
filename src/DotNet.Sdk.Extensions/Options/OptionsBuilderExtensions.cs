@@ -17,7 +17,6 @@ namespace DotNet.Sdk.Extensions.Options
             IConfiguration configuration) where T : class
         {
             if (services == null) throw new ArgumentNullException(nameof(services));
-            if (configuration == null) throw new ArgumentNullException(nameof(configuration));
 
             return services
                 .AddOptions<T>()
@@ -46,12 +45,16 @@ namespace DotNet.Sdk.Extensions.Options
          */
         public static OptionsBuilder<T> AddOptionsValue<T>(this OptionsBuilder<T> optionsBuilder) where T : class, new()
         {
+            if (optionsBuilder == null) throw new ArgumentNullException(nameof(optionsBuilder));
+
             optionsBuilder.Services.AddOptionsValue<T>();
             return optionsBuilder;
         }
 
         private static IServiceCollection AddOptionsValue<T>(this IServiceCollection services) where T : class, new()
         {
+            if (services == null) throw new ArgumentNullException(nameof(services));
+
             services.AddSingleton(serviceProvider =>
             {
                 var options = serviceProvider.GetService<IOptions<T>>();
@@ -66,6 +69,7 @@ namespace DotNet.Sdk.Extensions.Options
          */
         public static OptionsBuilder<TOptions> ValidateEagerly<TOptions>(this OptionsBuilder<TOptions> optionsBuilder) where TOptions : class
         {
+            if (optionsBuilder == null) throw new ArgumentNullException(nameof(optionsBuilder));
             optionsBuilder.Services.AddTransient<IStartupFilter, StartupOptionsValidation<TOptions>>();
             return optionsBuilder;
         }

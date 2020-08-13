@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -17,8 +18,8 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.Response
             HttpResponseMessageMockPredicateDelegate predicate,
             HttpResponseMessageMockHandlerDelegate handler)
         {
-            _predicate = predicate;
-            _handler = handler;
+            _predicate = predicate ?? throw new ArgumentNullException(nameof(predicate));
+            _handler = handler ?? throw new ArgumentNullException(nameof(handler));
         }
 
         public async Task<HttpResponseMessageMockResult> ExecuteAsync(HttpRequestMessage request, CancellationToken cancellationToken = default)

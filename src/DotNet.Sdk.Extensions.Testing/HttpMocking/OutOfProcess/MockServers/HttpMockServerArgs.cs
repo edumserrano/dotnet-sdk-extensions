@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
@@ -10,6 +11,8 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers
 
         public HttpMockServerArgs(List<HttpMockServerUrlDescriptor> urlDescriptors, string[] hostArgs)
         {
+            if (hostArgs == null) throw new ArgumentNullException(nameof(hostArgs));
+
             var urls = BuildUrls(urlDescriptors);
             HostArgs = hostArgs
                 .Concat(new List<string> { "--urls", urls })

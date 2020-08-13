@@ -13,7 +13,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess
         private string[] _hostArgs = new string[0];
         private readonly List<HttpMockServerUrlDescriptor> _hostUrls = new List<HttpMockServerUrlDescriptor>();
 
-        public HttpMockServerBuilder UseUrl(HttpScheme scheme = HttpScheme.Http, int port = 0)
+        public HttpMockServerBuilder UseUrl(HttpScheme scheme, int port)
         {
             var urlDescriptor = new HttpMockServerUrlDescriptor(scheme, port);
             _hostUrls.Add(urlDescriptor);
@@ -22,7 +22,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess
 
         public HttpMockServerBuilder UseHostArgs(string[] hostArgs)
         {
-            _hostArgs = hostArgs;
+            _hostArgs = hostArgs ?? throw new ArgumentNullException(nameof(hostArgs));
             return this;
         }
 
@@ -37,7 +37,6 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess
             var args = new HttpMockServerArgs(_hostUrls, _hostArgs);
             return new StartupBasedHttpMockServerBuilder<T>(args);
         }
-
     }
 
     public class DefaultHttpMockServerBuilder
@@ -52,12 +51,16 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess
 
         public DefaultHttpMockServerBuilder MockHttpResponse(HttpResponseMock httpResponseMock)
         {
+            if (httpResponseMock == null) throw new ArgumentNullException(nameof(httpResponseMock));
+
             _httpResponseMocks.Add(httpResponseMock);
             return this;
         }
 
         public DefaultHttpMockServerBuilder MockHttpResponse(Action<HttpResponseMockBuilder> configureHttpResponseMock)
         {
+            if (configureHttpResponseMock == null) throw new ArgumentNullException(nameof(configureHttpResponseMock));
+
             var httpResponseMockBuilder = new HttpResponseMockBuilder();
             configureHttpResponseMock(httpResponseMockBuilder);
             var httpResponseMock = httpResponseMockBuilder.Build();

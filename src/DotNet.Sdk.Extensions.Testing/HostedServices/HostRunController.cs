@@ -10,11 +10,13 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
 
         public HostRunController(RunUntilOptions options)
         {
-            _options = options;
+            _options = options ?? throw new ArgumentNullException(nameof(options));
         }
 
         public async Task<RunUntilResult> RunUntil(Func<Task<bool>> predicateAsync, CancellationToken hostCancellationToken)
         {
+            if (predicateAsync == null) throw new ArgumentNullException(nameof(predicateAsync));
+
             var runUntilResult = await Task.Run(async () =>
             {
                 try

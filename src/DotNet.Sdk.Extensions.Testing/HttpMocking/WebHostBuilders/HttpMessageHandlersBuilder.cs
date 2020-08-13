@@ -15,18 +15,22 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.WebHostBuilders
 
         public HttpMessageHandlersBuilder(IServiceCollection services)
         {
-            _services = services;
+            _services = services ?? throw new ArgumentNullException(nameof(services));
             _httpResponseMockBuilders = new List<HttpResponseMessageMockDescriptorBuilder>();
         }
 
         public HttpMessageHandlersBuilder MockHttpResponse(HttpResponseMessageMockDescriptorBuilder httpResponseMockBuilder)
         {
+            if (httpResponseMockBuilder == null) throw new ArgumentNullException(nameof(httpResponseMockBuilder));
+
             _httpResponseMockBuilders.Add(httpResponseMockBuilder);
             return this;
         }
 
         public HttpMessageHandlersBuilder MockHttpResponse(Action<HttpResponseMessageMockDescriptorBuilder> configure)
         {
+            if (configure == null) throw new ArgumentNullException(nameof(configure));
+
             var builder = new HttpResponseMessageMockDescriptorBuilder();
             configure(builder);
             _httpResponseMockBuilders.Add(builder);
@@ -75,6 +79,8 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.WebHostBuilders
 
         private TestHttpMessageHandlerDescriptor CreateTestHttpMessageHandlers(IGrouping<string, HttpResponseMessageMockDescriptor> httpResponseMockDescriptorsGrouping)
         {
+            if (httpResponseMockDescriptorsGrouping == null) throw new ArgumentNullException(nameof(httpResponseMockDescriptorsGrouping));
+
             var httpClientName = httpResponseMockDescriptorsGrouping.Key;
             var httpResponseMockDescriptors = httpResponseMockDescriptorsGrouping.ToList();
             var testHttpMessageHandler = new TestHttpMessageHandler();

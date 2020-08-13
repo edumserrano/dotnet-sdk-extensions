@@ -10,10 +10,10 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
      */
     public static partial class RunUntilWebApplicationFactoryExtensions
     {
-        public static Task RunUntilTimeoutAsync<T>(
-            this WebApplicationFactory<T> webApplicationFactory,
-            TimeSpan timeout) where T : class
+        public static Task RunUntilTimeoutAsync<T>(this WebApplicationFactory<T> webApplicationFactory, TimeSpan timeout) where T : class
         {
+            if (webApplicationFactory == null) throw new ArgumentNullException(nameof(webApplicationFactory));
+
             Func<Task<bool>> noOpPredicate = () => Task.FromResult(false);
             var options = new RunUntilOptions { Timeout = timeout };
             return webApplicationFactory.RunUntilAsync(noOpPredicate, options, throwExceptionIfTimeout: false, runUntilCancellationToken: default);
@@ -32,6 +32,9 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
             bool throwExceptionIfTimeout,
             CancellationToken runUntilCancellationToken) where T : class
         {
+            if (webApplicationFactory == null) throw new ArgumentNullException(nameof(webApplicationFactory));
+            if (options == null) throw new ArgumentNullException(nameof(options));
+
             _ = webApplicationFactory.Server; //starts the server
             var hostRunController = new HostRunController(options);
             var runUntilResult = await hostRunController.RunUntil(predicateAsync, runUntilCancellationToken);

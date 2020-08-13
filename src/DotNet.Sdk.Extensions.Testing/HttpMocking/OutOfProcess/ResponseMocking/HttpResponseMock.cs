@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 
@@ -22,12 +23,14 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.ResponseMocking
             HttpResponseMockPredicateAsyncDelegate predicateAsync,
             HttpResponseMockHandlerAsyncDelegate handlerAsync)
         {
-            _predicateAsync = predicateAsync;
-            _handlerAsync = handlerAsync;
+            _predicateAsync = predicateAsync ?? throw new ArgumentNullException(nameof(predicateAsync));
+            _handlerAsync = handlerAsync ?? throw new ArgumentNullException(nameof(handlerAsync));
         }
 
         public async Task<HttpResponseMockResults> ExecuteAsync(HttpContext httpContext)
         {
+            if (httpContext == null) throw new ArgumentNullException(nameof(httpContext));
+
             var shouldExecute = await _predicateAsync(httpContext.Request, httpContext.RequestAborted);
             if (!shouldExecute)
             {

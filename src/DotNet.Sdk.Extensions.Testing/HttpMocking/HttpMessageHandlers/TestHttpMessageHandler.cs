@@ -18,12 +18,16 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers
 
         public TestHttpMessageHandler MockHttpResponse(HttpResponseMessageMock httpResponseMock)
         {
+            if (httpResponseMock == null) throw new ArgumentNullException(nameof(httpResponseMock));
+
             _httpResponseMocks.Add(httpResponseMock);
             return this;
         }
 
         public TestHttpMessageHandler MockHttpResponse(Func<HttpResponseMessageMockBuilder, HttpResponseMessageMockBuilder> configure)
         {
+            if (configure == null) throw new ArgumentNullException(nameof(configure));
+
             var httpResponseMockBuilder = new HttpResponseMessageMockBuilder();
             httpResponseMockBuilder = configure(httpResponseMockBuilder);
             var httpResponseMock = httpResponseMockBuilder.Build();
