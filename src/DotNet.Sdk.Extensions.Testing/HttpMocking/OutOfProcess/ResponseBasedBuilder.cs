@@ -6,26 +6,26 @@ using DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.ResponseMocking;
 
 namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess
 {
-    public interface IResponseMockBasedHttpMockServerBuilder
+    public interface IResponseBasedBuilder
     {
         IHttpMockServer Build();
 
-        IResponseMockBasedHttpMockServerBuilder MockHttpResponse(Action<IHttpResponseMockBuilder> configureHttpResponseMock);
+        IResponseBasedBuilder MockHttpResponse(Action<IHttpResponseMockBuilder> configureHttpResponseMock);
 
-        IResponseMockBasedHttpMockServerBuilder MockHttpResponse(IHttpResponseMock httpResponseMock);
+        IResponseBasedBuilder MockHttpResponse(IHttpResponseMock httpResponseMock);
     }
 
-    internal class ResponseMockBasedHttpMockServerBuilder : IResponseMockBasedHttpMockServerBuilder
+    internal class ResponseBasedBuilder : IResponseBasedBuilder
     {
         private readonly HttpMockServerArgs _mockServerArgs;
         private readonly List<IHttpResponseMock> _httpResponseMocks = new List<IHttpResponseMock>();
 
-        public ResponseMockBasedHttpMockServerBuilder(HttpMockServerArgs args)
+        public ResponseBasedBuilder(HttpMockServerArgs args)
         {
             _mockServerArgs = args ?? throw new ArgumentNullException(nameof(args));
         }
 
-        public IResponseMockBasedHttpMockServerBuilder MockHttpResponse(IHttpResponseMock httpResponseMock)
+        public IResponseBasedBuilder MockHttpResponse(IHttpResponseMock httpResponseMock)
         {
             if (httpResponseMock == null) throw new ArgumentNullException(nameof(httpResponseMock));
 
@@ -33,7 +33,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess
             return this;
         }
 
-        public IResponseMockBasedHttpMockServerBuilder MockHttpResponse(Action<IHttpResponseMockBuilder> configureHttpResponseMock)
+        public IResponseBasedBuilder MockHttpResponse(Action<IHttpResponseMockBuilder> configureHttpResponseMock)
         {
             if (configureHttpResponseMock == null) throw new ArgumentNullException(nameof(configureHttpResponseMock));
 

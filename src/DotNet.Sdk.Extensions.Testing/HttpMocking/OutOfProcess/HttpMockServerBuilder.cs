@@ -9,9 +9,9 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess
     {
         IHttpMockServerBuilder UseHostArgs(string[] hostArgs);
 
-        IResponseMockBasedHttpMockServerBuilder UseHttpResponseMocks();
+        IResponseBasedBuilder UseHttpResponseMocks();
 
-        IStartupBasedHttpMockServerBuilder<T> UseStartup<T>() where T : class;
+        IStartupBasedBuilder<T> UseStartup<T>() where T : class;
 
         IHttpMockServerBuilder UseUrl(HttpScheme scheme, int port);
     }
@@ -34,16 +34,16 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess
             return this;
         }
 
-        public IResponseMockBasedHttpMockServerBuilder UseHttpResponseMocks()
+        public IResponseBasedBuilder UseHttpResponseMocks()
         {
             var args = new HttpMockServerArgs(_hostUrls, _hostArgs);
-            return new ResponseMockBasedHttpMockServerBuilder(args);
+            return new ResponseBasedBuilder(args);
         }
 
-        public IStartupBasedHttpMockServerBuilder<T> UseStartup<T>() where T : class
+        public IStartupBasedBuilder<T> UseStartup<T>() where T : class
         {
             var args = new HttpMockServerArgs(_hostUrls, _hostArgs);
-            return new StartupBasedHttpMockServerBuilder<T>(args);
+            return new StartupBasedBuilder<T>(args);
         }
     }
 }
