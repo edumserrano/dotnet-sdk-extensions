@@ -9,7 +9,12 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.Response
 
     public delegate Task<HttpResponseMessage> HttpResponseMessageMockHandlerDelegate(HttpRequestMessage httpRequestMessage, CancellationToken cancellationToken);
 
-    public class HttpResponseMessageMock
+    public interface IHttpResponseMessageMock
+    {
+        Task<IHttpResponseMessageMockResult> ExecuteAsync(HttpRequestMessage request, CancellationToken cancellationToken = default);
+    }
+
+    internal class HttpResponseMessageMock : IHttpResponseMessageMock
     {
         private readonly HttpResponseMessageMockPredicateDelegate _predicate;
         private readonly HttpResponseMessageMockHandlerDelegate _handler;
@@ -22,7 +27,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.Response
             _handler = handler ?? throw new ArgumentNullException(nameof(handler));
         }
 
-        public async Task<HttpResponseMessageMockResult> ExecuteAsync(HttpRequestMessage request, CancellationToken cancellationToken = default)
+        public async Task<IHttpResponseMessageMockResult> ExecuteAsync(HttpRequestMessage request, CancellationToken cancellationToken = default)
         {
             var shouldExecute = await _predicate(request, cancellationToken);
             if (!shouldExecute)

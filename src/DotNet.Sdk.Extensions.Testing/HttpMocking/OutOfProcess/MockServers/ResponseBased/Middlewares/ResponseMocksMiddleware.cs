@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers.ResponseBased.Middlewares
 {
-    public static class ResponseMocksMiddlewareExtensions
+    internal static class ResponseMocksMiddlewareExtensions
     {
         public static IApplicationBuilder UseResponseMocks(this IApplicationBuilder builder)
         {
@@ -15,7 +15,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers.Res
         }
     }
 
-    public class ResponseMocksMiddleware : IMiddleware
+    internal class ResponseMocksMiddleware : IMiddleware
     {
         private readonly HttpResponseMocksProvider _httpResponseMocksProvider;
 

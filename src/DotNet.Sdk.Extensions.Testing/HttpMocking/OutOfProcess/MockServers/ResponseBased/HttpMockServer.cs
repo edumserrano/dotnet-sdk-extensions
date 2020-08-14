@@ -6,11 +6,11 @@ using Microsoft.Extensions.Hosting;
 
 namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers.ResponseBased
 {
-    public class HttpMockServer : HttpMockServerBase
+    internal class HttpMockServer : HttpMockServerBase
     {
         private readonly HttpResponseMocksProvider _httpResponseMocksProvider;
 
-        public HttpMockServer(HttpMockServerArgs mockServerArgs, ICollection<HttpResponseMock> httpResponseMocks) : base(mockServerArgs)
+        public HttpMockServer(HttpMockServerArgs mockServerArgs, ICollection<IHttpResponseMock> httpResponseMocks) : base(mockServerArgs)
         {
             _httpResponseMocksProvider = new HttpResponseMocksProvider(httpResponseMocks);
         }

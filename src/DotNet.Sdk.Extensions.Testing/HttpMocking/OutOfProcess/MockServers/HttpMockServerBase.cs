@@ -6,7 +6,12 @@ using Microsoft.Extensions.Hosting;
 
 namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers
 {
-    public abstract class HttpMockServerBase : IAsyncDisposable
+    public interface IHttpMockServer : IAsyncDisposable
+    {
+        Task<List<HttpMockServerUrl>> StartAsync();
+    }
+
+    internal abstract class HttpMockServerBase : IHttpMockServer
     {
         private readonly HttpMockServerArgs _mockServerArgs;
         private IHost? _host;

@@ -5,15 +5,15 @@ using DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.ResponseMocking;
 
 namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers.ResponseBased
 {
-    public class HttpResponseMocksProvider
+    internal class HttpResponseMocksProvider
     {
-        private readonly ICollection<HttpResponseMock> _httpResponseMocks;
+        private readonly ICollection<IHttpResponseMock> _httpResponseMocks;
 
-        public HttpResponseMocksProvider(ICollection<HttpResponseMock> httpResponseMocks)
+        public HttpResponseMocksProvider(ICollection<IHttpResponseMock> httpResponseMocks)
         {
             _httpResponseMocks = httpResponseMocks ?? throw new ArgumentNullException(nameof(httpResponseMocks));
         }
 
-        public IEnumerable<HttpResponseMock> HttpResponseMocks => _httpResponseMocks.ToList();
+        public IEnumerable<IHttpResponseMock> HttpResponseMocks => _httpResponseMocks.ToList();
     }
 }

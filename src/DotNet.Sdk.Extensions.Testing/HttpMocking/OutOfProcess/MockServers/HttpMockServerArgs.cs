@@ -5,7 +5,7 @@ using System.Text;
 
 namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers
 {
-    public class HttpMockServerArgs
+    internal class HttpMockServerArgs
     {
         private const string _defaultUrls = "http://*:0;https://*:0";
 

@@ -8,7 +8,7 @@ using Microsoft.Extensions.Hosting;
 
 namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers
 {
-    public static class HttpMockServerExtensions
+    internal static class HttpMockServerExtensions
     {
         public static ICollection<string> GetServerAddresses(this IHost host)
         {

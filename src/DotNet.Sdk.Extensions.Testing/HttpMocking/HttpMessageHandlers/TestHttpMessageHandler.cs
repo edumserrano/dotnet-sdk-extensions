@@ -9,14 +9,14 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers
 {
     public class TestHttpMessageHandler : DelegatingHandler
     {
-        private readonly List<HttpResponseMessageMock> _httpResponseMocks;
+        private readonly List<IHttpResponseMessageMock> _httpResponseMocks;
 
         public TestHttpMessageHandler()
         {
-            _httpResponseMocks = new List<HttpResponseMessageMock>();
+            _httpResponseMocks = new List<IHttpResponseMessageMock>();
         }
 
-        public TestHttpMessageHandler MockHttpResponse(HttpResponseMessageMock httpResponseMock)
+        public TestHttpMessageHandler MockHttpResponse(IHttpResponseMessageMock httpResponseMock)
         {
             if (httpResponseMock == null) throw new ArgumentNullException(nameof(httpResponseMock));
 
@@ -24,7 +24,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers
             return this;
         }
 
-        public TestHttpMessageHandler MockHttpResponse(Action<HttpResponseMessageMockBuilder> configure)
+        public TestHttpMessageHandler MockHttpResponse(Action<IHttpResponseMessageMockBuilder> configure)
         {
             if (configure == null) throw new ArgumentNullException(nameof(configure));
 

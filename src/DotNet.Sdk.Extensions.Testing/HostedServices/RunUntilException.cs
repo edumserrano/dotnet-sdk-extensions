@@ -2,7 +2,7 @@
 
 namespace DotNet.Sdk.Extensions.Testing.HostedServices
 {
-    public class RunUntilException : Exception
+    internal class RunUntilException : Exception
     {
         public RunUntilException(string message)
             : base(message)

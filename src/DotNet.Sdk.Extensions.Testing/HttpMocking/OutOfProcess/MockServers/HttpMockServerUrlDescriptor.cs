@@ -2,7 +2,7 @@
 
 namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers
 {
-    public readonly struct HttpMockServerUrlDescriptor
+    internal readonly struct HttpMockServerUrlDescriptor
     {
         public HttpMockServerUrlDescriptor(HttpScheme scheme, int port)
         {

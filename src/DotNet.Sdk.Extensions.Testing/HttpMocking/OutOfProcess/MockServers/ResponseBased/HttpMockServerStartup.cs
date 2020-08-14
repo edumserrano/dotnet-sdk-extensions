@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers.ResponseBased
 {
-    public class HttpMockServerStartup
+    internal class HttpMockServerStartup
     {
         public void ConfigureServices(IServiceCollection services)
         {

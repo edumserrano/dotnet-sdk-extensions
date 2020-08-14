@@ -14,7 +14,12 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.ResponseMocking
         HttpResponse httpResponse,
         CancellationToken cancellationToken);
 
-    public class HttpResponseMock
+    public interface IHttpResponseMock
+    {
+        Task<HttpResponseMockResults> ExecuteAsync(HttpContext httpContext);
+    }
+
+    internal class HttpResponseMock : IHttpResponseMock
     {
         private readonly HttpResponseMockPredicateAsyncDelegate _predicateAsync;
         private readonly HttpResponseMockHandlerAsyncDelegate _handlerAsync;

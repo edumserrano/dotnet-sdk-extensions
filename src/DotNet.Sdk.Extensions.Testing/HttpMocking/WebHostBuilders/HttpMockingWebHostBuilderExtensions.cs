@@ -6,7 +6,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.WebHostBuilders
 {
     public static class HttpMockingWebHostBuilderExtensions
     {
-        public static IWebHostBuilder UseHttpMocks(this IWebHostBuilder webHostBuilder, Action<HttpMessageHandlersBuilder> configure)
+        public static IWebHostBuilder UseHttpMocks(this IWebHostBuilder webHostBuilder, Action<IHttpMessageHandlersBuilder> configure)
         {
             if (webHostBuilder == null) throw new ArgumentNullException(nameof(webHostBuilder));
             if (configure == null) throw new ArgumentNullException(nameof(configure));

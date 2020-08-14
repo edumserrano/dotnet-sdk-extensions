@@ -6,7 +6,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers
     {
         private readonly string _url;
 
-        public HttpMockServerUrl(HttpScheme scheme, string host, int port)
+        internal HttpMockServerUrl(HttpScheme scheme, string host, int port)
         {
             Scheme = scheme;
             Host = host;

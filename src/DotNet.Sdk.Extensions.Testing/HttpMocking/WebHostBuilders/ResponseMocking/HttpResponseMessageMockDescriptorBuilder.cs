@@ -1,14 +1,26 @@
 ﻿using System;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.ResponseMocking;
+using DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.ResponseMocking;
 
 namespace DotNet.Sdk.Extensions.Testing.HttpMocking.WebHostBuilders.ResponseMocking
 {
-    public class HttpResponseMessageMockDescriptorBuilder
+    public interface IHttpResponseMessageMockDescriptorBuilder
+    {
+        IHttpResponseMessageMockDescriptor Build();
+
+        IHttpResponseMessageMockBuilder ForBasicClient();
+
+        IHttpResponseMessageMockBuilder ForNamedClient(string name);
+
+        IHttpResponseMessageMockBuilder ForTypedClient<TClient>();
+    }
+
+    internal class HttpResponseMessageMockDescriptorBuilder : IHttpResponseMessageMockDescriptorBuilder
     {
         private Type? _httpClientType;
         private string? _httpClientName;
         private HttpClientMockTypes _httpClientMockType;
-        private readonly HttpResponseMessageMockBuilder _httpResponseMockBuilder;
+        private readonly IHttpResponseMessageMockBuilder _httpResponseMockBuilder;
 
         private enum HttpClientMockTypes
         {
@@ -24,7 +36,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.WebHostBuilders.ResponseMock
             _httpClientMockType = HttpClientMockTypes.Undefined;
         }
 
-        public HttpResponseMessageMockBuilder ForTypedClient<TClient>()
+        public IHttpResponseMessageMockBuilder ForTypedClient<TClient>()
         {
             EnsureHttpClientMockTypeIsDefinedOnlyOnce();
             _httpClientType = typeof(TClient);
@@ -32,7 +44,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.WebHostBuilders.ResponseMock
             return _httpResponseMockBuilder;
         }
 
-        public HttpResponseMessageMockBuilder ForNamedClient(string name)
+        public IHttpResponseMessageMockBuilder ForNamedClient(string name)
         {
             if (string.IsNullOrWhiteSpace(name))
             {
@@ -45,18 +57,18 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.WebHostBuilders.ResponseMock
             return _httpResponseMockBuilder;
         }
 
-        public HttpResponseMessageMockBuilder ForBasicClient()
+        public IHttpResponseMessageMockBuilder ForBasicClient()
         {
             EnsureHttpClientMockTypeIsDefinedOnlyOnce();
             _httpClientMockType = HttpClientMockTypes.Basic;
             return _httpResponseMockBuilder;
         }
 
-        public HttpResponseMessageMockDescriptor Build()
+        public IHttpResponseMessageMockDescriptor Build()
         {
             return _httpClientMockType switch
             {
-                HttpClientMockTypes.Undefined => throw new HttpResponseMessageMockDescriptorBuilderException("Client type not configured for HttpResponseMock. Use ForTypedClient, ForNamedClient or ForBasicClient to configure it."),
+                HttpClientMockTypes.Undefined => throw new HttpResponseMessageMockDescriptorBuilderException($"Client type not configured for {nameof(IHttpResponseMock)}. Use {nameof(IHttpResponseMessageMockDescriptorBuilder)}.{nameof(ForTypedClient)}, {nameof(IHttpResponseMessageMockDescriptorBuilder)}.{nameof(ForNamedClient)} or {nameof(IHttpResponseMessageMockDescriptorBuilder)}.{nameof(ForBasicClient)} to configure it."),
                 HttpClientMockTypes.Typed => HttpResponseMessageMockDescriptor.Typed(_httpClientType!, _httpResponseMockBuilder),
                 HttpClientMockTypes.Named => HttpResponseMessageMockDescriptor.Named(_httpClientName!, _httpResponseMockBuilder),
                 HttpClientMockTypes.Basic => HttpResponseMessageMockDescriptor.Basic(_httpResponseMockBuilder),

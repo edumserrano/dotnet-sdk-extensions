@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers.ResponseBased.Middlewares
 {
-    public static class DefaultResponseMiddlewareExtensions
+    internal static class DefaultResponseMiddlewareExtensions
     {
         public static IApplicationBuilder RunDefaultResponse(this IApplicationBuilder builder)
         {
@@ -14,7 +14,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers.Res
         }
     }
 
-    public class DefaultResponseMiddleware : IMiddleware
+    internal class DefaultResponseMiddleware : IMiddleware
     {
         public Task InvokeAsync(HttpContext httpContext, RequestDelegate next)
         {

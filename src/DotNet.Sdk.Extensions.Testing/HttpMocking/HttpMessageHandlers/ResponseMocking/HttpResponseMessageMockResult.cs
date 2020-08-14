@@ -10,7 +10,14 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.Response
         Executed
     }
 
-    public class HttpResponseMessageMockResult
+    public interface IHttpResponseMessageMockResult
+    {
+        HttpResponseMessage HttpResponseMessage { get; }
+
+        HttpResponseMessageMockResults Status { get; }
+    }
+
+    internal class HttpResponseMessageMockResult : IHttpResponseMessageMockResult
     {
         private HttpResponseMessage? _httpResponseMessage;
 
@@ -32,7 +39,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.Response
             private set => _httpResponseMessage = value;
         }
 
-        public static HttpResponseMessageMockResult Executed(HttpResponseMessage httpResponseMessage)
+        public static IHttpResponseMessageMockResult Executed(HttpResponseMessage httpResponseMessage)
         {
             return new HttpResponseMessageMockResult
             {
@@ -41,7 +48,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.Response
             };
         }
 
-        public static HttpResponseMessageMockResult Skipped()
+        public static IHttpResponseMessageMockResult Skipped()
         {
             return new HttpResponseMessageMockResult
             {
