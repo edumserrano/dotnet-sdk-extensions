@@ -7,11 +7,11 @@ using Microsoft.Extensions.Hosting;
 
 namespace DotNet.Sdk.Extensions.Testing.Demos.TestApp.DemoStartups.HostedServices
 {
-    public class Startup_HostedService
+    public class StartupHostedService
     {
         private readonly IConfiguration _configuration;
 
-        public Startup_HostedService(IConfiguration configuration)
+        public StartupHostedService(IConfiguration configuration)
         {
             _configuration = configuration;
         }

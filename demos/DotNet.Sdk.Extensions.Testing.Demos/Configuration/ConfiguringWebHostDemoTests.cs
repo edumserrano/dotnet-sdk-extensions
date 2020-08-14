@@ -8,11 +8,11 @@ using Xunit;
 
 namespace DotNet.Sdk.Extensions.Testing.Demos.Configuration
 {
-    public class ConfiguringWebHostDemoTests : IClassFixture<WebApplicationFactory<Startup_ConfiguringWebHost>>
+    public class ConfiguringWebHostDemoTests : IClassFixture<WebApplicationFactory<StartupConfiguringWebHost>>
     {
-        private readonly WebApplicationFactory<Startup_ConfiguringWebHost> _webApplicationFactory;
+        private readonly WebApplicationFactory<StartupConfiguringWebHost> _webApplicationFactory;
 
-        public ConfiguringWebHostDemoTests(WebApplicationFactory<Startup_ConfiguringWebHost> webApplicationFactory)
+        public ConfiguringWebHostDemoTests(WebApplicationFactory<StartupConfiguringWebHost> webApplicationFactory)
         {
             _webApplicationFactory = webApplicationFactory;
 
@@ -24,7 +24,7 @@ namespace DotNet.Sdk.Extensions.Testing.Demos.Configuration
             _webApplicationFactory = _webApplicationFactory
                 .WithWebHostBuilder(builder =>
                 {
-                    builder.UseStartup<Startup_ConfiguringWebHost>();
+                    builder.UseStartup<StartupConfiguringWebHost>();
                 });
         }
 

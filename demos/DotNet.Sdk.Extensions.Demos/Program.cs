@@ -1,22 +1,16 @@
-using DotNet.Sdk.Extensions.Demos.Options.OptionsValue;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Hosting;
+using System.Threading.Tasks;
+using CliFx;
 
 namespace DotNet.Sdk.Extensions.Demos
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main()
         {
-            CreateHostBuilder(args).Build().Run();
+            await new CliApplicationBuilder()
+                .AddCommandsFromThisAssembly()
+                .Build()
+                .RunAsync();
         }
-
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup_OptionsValue>();
-                    //webBuilder.UseStartup<Startup_EagerValidateOptions>();
-                });
     }
 }

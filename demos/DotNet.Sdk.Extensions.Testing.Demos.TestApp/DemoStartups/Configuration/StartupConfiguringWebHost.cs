@@ -1,28 +1,24 @@
-using DotNet.Sdk.Extensions.Options;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace DotNet.Sdk.Extensions.Demos.Options.OptionsValue
+namespace DotNet.Sdk.Extensions.Testing.Demos.TestApp.DemoStartups.Configuration
 {
-    public class Startup_OptionsValue
+    public class StartupConfiguringWebHost
     {
         private readonly IConfiguration _configuration;
 
-        public Startup_OptionsValue(IConfiguration configuration)
+        public StartupConfiguringWebHost(IConfiguration configuration)
         {
             _configuration = configuration;
         }
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<ISomeClass, SomeClass>();
-            services
-                .AddOptions<MyOptions>(_configuration, sectionName: "MyOptionsSection")
-                .AddOptionsValue();
+
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -32,11 +28,13 @@ namespace DotNet.Sdk.Extensions.Demos.Options.OptionsValue
                 .UseRouting()
                 .UseEndpoints(endpoints =>
                 {
-                    endpoints.MapGet("/", async context =>
+                    endpoints.MapGet("/message-one", async context =>
                     {
-                        var someClass = context.RequestServices.GetRequiredService<ISomeClass>();
-                        var message = someClass.GetMessage();
-                        await context.Response.WriteAsync(message);
+                        await context.Response.WriteAsync(_configuration["MessageOne"]);
+                    });
+                    endpoints.MapGet("/message-two", async context =>
+                    {
+                        await context.Response.WriteAsync(_configuration["MessageTwo"]);
                     });
                 });
         }

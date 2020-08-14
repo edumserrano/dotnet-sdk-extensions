@@ -13,11 +13,11 @@ using Xunit;
 
 namespace DotNet.Sdk.Extensions.Testing.Demos.HostedServices
 {
-    public class HostedServicesDemoTests : IClassFixture<WebApplicationFactory<Startup_HostedService>>
+    public class HostedServicesDemoTests : IClassFixture<WebApplicationFactory<StartupHostedService>>
     {
-        private readonly WebApplicationFactory<Startup_HostedService> _webApplicationFactory;
+        private readonly WebApplicationFactory<StartupHostedService> _webApplicationFactory;
 
-        public HostedServicesDemoTests(WebApplicationFactory<Startup_HostedService> webApplicationFactory)
+        public HostedServicesDemoTests(WebApplicationFactory<StartupHostedService> webApplicationFactory)
         {
             _webApplicationFactory = webApplicationFactory;
 
@@ -29,7 +29,7 @@ namespace DotNet.Sdk.Extensions.Testing.Demos.HostedServices
             _webApplicationFactory = _webApplicationFactory
                 .WithWebHostBuilder(builder =>
                 {
-                    builder.UseStartup<Startup_HostedService>();
+                    builder.UseStartup<StartupHostedService>();
                 });
         }
 

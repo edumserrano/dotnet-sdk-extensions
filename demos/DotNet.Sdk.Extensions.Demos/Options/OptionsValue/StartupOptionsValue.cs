@@ -6,24 +6,23 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace DotNet.Sdk.Extensions.Demos.Options.EagerValidateOptions
+namespace DotNet.Sdk.Extensions.Demos.Options.OptionsValue
 {
-    public class Startup_EagerValidateOptions
+    public class StartupOptionsValue
     {
         private readonly IConfiguration _configuration;
 
-        public Startup_EagerValidateOptions(IConfiguration configuration)
+        public StartupOptionsValue(IConfiguration configuration)
         {
             _configuration = configuration;
         }
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<ISomeClassEager, SomeClassEager>();
+            services.AddSingleton<ISomeClass, SomeClass>();
             services
-                .AddOptions<MyOptionsEager>(_configuration, sectionName: "MyOptionsSection")
-                .ValidateDataAnnotations()
-                .ValidateEagerly();
+                .AddOptions<MyOptions>(_configuration, sectionName: "MyOptionsSection")
+                .AddOptionsValue();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -35,13 +34,7 @@ namespace DotNet.Sdk.Extensions.Demos.Options.EagerValidateOptions
                 {
                     endpoints.MapGet("/", async context =>
                     {
-                        await context.Response.WriteAsync("hi from asp.net core");
-                    });
-                    endpoints.MapGet("/my-awesome-endpoint", async context =>
-                    {
-                        // because eager validation is enabled you don't have to wait for the app to run
-                        // this path of the code to realise that a required configuration value is missing
-                        var someClass = context.RequestServices.GetRequiredService<ISomeClassEager>();
+                        var someClass = context.RequestServices.GetRequiredService<ISomeClass>();
                         var message = someClass.GetMessage();
                         await context.Response.WriteAsync(message);
                     });

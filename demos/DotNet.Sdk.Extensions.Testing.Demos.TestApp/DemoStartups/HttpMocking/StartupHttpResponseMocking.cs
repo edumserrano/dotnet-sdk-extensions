@@ -8,11 +8,11 @@ using Microsoft.Extensions.Hosting;
 
 namespace DotNet.Sdk.Extensions.Testing.Demos.TestApp.DemoStartups.HttpMocking
 {
-    public class Startup_HttpResponseMocking
+    public class StartupHttpResponseMocking
     {
         private readonly IConfiguration _configuration;
 
-        public Startup_HttpResponseMocking(IConfiguration configuration)
+        public StartupHttpResponseMocking(IConfiguration configuration)
         {
             _configuration = configuration;
         }

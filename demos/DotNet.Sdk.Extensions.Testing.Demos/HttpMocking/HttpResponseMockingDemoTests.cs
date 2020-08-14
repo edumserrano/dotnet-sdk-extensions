@@ -17,11 +17,11 @@ namespace DotNet.Sdk.Extensions.Testing.Demos.HttpMocking
      * for each of the http clients and make it return an OK status.
      *
      */
-    public class HttpResponseMockingDemoTests : IClassFixture<WebApplicationFactory<Startup_HttpResponseMocking>>
+    public class HttpResponseMockingDemoTests : IClassFixture<WebApplicationFactory<StartupHttpResponseMocking>>
     {
-        private readonly WebApplicationFactory<Startup_HttpResponseMocking> _webApplicationFactory;
+        private readonly WebApplicationFactory<StartupHttpResponseMocking> _webApplicationFactory;
 
-        public HttpResponseMockingDemoTests(WebApplicationFactory<Startup_HttpResponseMocking> webApplicationFactory)
+        public HttpResponseMockingDemoTests(WebApplicationFactory<StartupHttpResponseMocking> webApplicationFactory)
         {
             _webApplicationFactory = webApplicationFactory;
 
@@ -33,7 +33,7 @@ namespace DotNet.Sdk.Extensions.Testing.Demos.HttpMocking
             _webApplicationFactory = _webApplicationFactory
                 .WithWebHostBuilder(builder =>
                 {
-                    builder.UseStartup<Startup_HttpResponseMocking>();
+                    builder.UseStartup<StartupHttpResponseMocking>();
                 });
         }
 
