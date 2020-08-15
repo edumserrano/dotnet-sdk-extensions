@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 
 namespace DotNet.Sdk.Extensions.Testing.HostedServices
 {
-    public delegate Task<bool> RunUntilPredicate();
 
     internal class HostRunController
     {
@@ -15,9 +14,9 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
             _options = options ?? throw new ArgumentNullException(nameof(options));
         }
 
-        public async Task<RunUntilResult> RunUntil(RunUntilPredicate predicateAsync, CancellationToken hostCancellationToken)
+        public async Task<RunUntilResult> RunUntil(RunUntilPredicateAsync predicateAsyncAsync, CancellationToken hostCancellationToken)
         {
-            if (predicateAsync == null) throw new ArgumentNullException(nameof(predicateAsync));
+            if (predicateAsyncAsync == null) throw new ArgumentNullException(nameof(predicateAsyncAsync));
 
             var runUntilResult = await Task.Run(async () =>
             {
@@ -25,7 +24,7 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
                 {
                     var cts = new CancellationTokenSource(_options.Timeout);
                     var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(cts.Token, hostCancellationToken);
-                    while (!await predicateAsync())
+                    while (!await predicateAsyncAsync())
                     {
                         // before checking again the predicate, wait RunUntilOptions.PredicateLoopPeriod or abort if the RunUntilOptions.Timeout elapses
                         await Task.Delay(_options.PredicateCheckInterval, linkedCts.Token);

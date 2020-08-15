@@ -13,13 +13,13 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
     {
         public static Task RunUntilAsync<T>(
             this WebApplicationFactory<T> webApplicationFactory,
-            RunUntilPredicate predicateAsync,
+            RunUntilPredicateAsync predicateAsyncAsync,
             CancellationToken runUntilCancellationToken = default) where T : class
         {
             if (webApplicationFactory == null) throw new ArgumentNullException(nameof(webApplicationFactory));
 
             var configureOptionsAction = new Action<RunUntilOptions>(DefaultConfigureOptionsDelegate);
-            return webApplicationFactory.RunUntilAsync(predicateAsync, configureOptionsAction, runUntilCancellationToken);
+            return webApplicationFactory.RunUntilAsync(predicateAsyncAsync, configureOptionsAction, runUntilCancellationToken);
 
             void DefaultConfigureOptionsDelegate(RunUntilOptions obj)
             {
@@ -30,7 +30,7 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
 
         public static Task RunUntilAsync<T>(
             this WebApplicationFactory<T> webApplicationFactory,
-            RunUntilPredicate predicateAsync,
+            RunUntilPredicateAsync predicateAsyncAsync,
             Action<RunUntilOptions> configureOptions,
             CancellationToken runUntilCancellationToken = default) where T : class
         {
@@ -39,7 +39,7 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
 
             var defaultOptions = new RunUntilOptions();
             configureOptions(defaultOptions);
-            return webApplicationFactory.RunUntilAsync(predicateAsync, defaultOptions, throwExceptionIfTimeout: true, runUntilCancellationToken);
+            return webApplicationFactory.RunUntilAsync(predicateAsyncAsync, defaultOptions, throwExceptionIfTimeout: true, runUntilCancellationToken);
         }
     }
 }

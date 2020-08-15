@@ -12,25 +12,25 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
     {
         public static Task RunUntilAsync<T>(
             this WebApplicationFactory<T> webApplicationFactory,
-            Func<bool> predicate) where T : class
+            RunUntilPredicate predicate) where T : class
         {
             if (webApplicationFactory == null) throw new ArgumentNullException(nameof(webApplicationFactory));
             if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
-            RunUntilPredicate predicateAsync = () => Task.FromResult(predicate());
-            return webApplicationFactory.RunUntilAsync(predicateAsync);
+            RunUntilPredicateAsync predicateAsyncAsync = () => Task.FromResult(predicate());
+            return webApplicationFactory.RunUntilAsync(predicateAsyncAsync);
         }
 
         public static Task RunUntilAsync<T>(
             this WebApplicationFactory<T> webApplicationFactory,
-            Func<bool> predicate,
+            RunUntilPredicate predicate,
             Action<RunUntilOptions> configureOptions) where T : class
         {
             if (webApplicationFactory == null) throw new ArgumentNullException(nameof(webApplicationFactory));
             if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
-            RunUntilPredicate predicateAsync = () => Task.FromResult(predicate());
-            return webApplicationFactory.RunUntilAsync(predicateAsync, configureOptions, runUntilCancellationToken: default);
+            RunUntilPredicateAsync predicateAsyncAsync = () => Task.FromResult(predicate());
+            return webApplicationFactory.RunUntilAsync(predicateAsyncAsync, configureOptions, runUntilCancellationToken: default);
         }
     }
 }

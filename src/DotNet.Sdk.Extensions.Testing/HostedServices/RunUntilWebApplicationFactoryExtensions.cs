@@ -14,9 +14,9 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
         {
             if (webApplicationFactory == null) throw new ArgumentNullException(nameof(webApplicationFactory));
 
-            RunUntilPredicate noOpPredicate = () => Task.FromResult(false);
+            RunUntilPredicateAsync noOpPredicateAsync = () => Task.FromResult(false);
             var options = new RunUntilOptions { Timeout = timeout };
-            return webApplicationFactory.RunUntilAsync(noOpPredicate, options, throwExceptionIfTimeout: false, runUntilCancellationToken: default);
+            return webApplicationFactory.RunUntilAsync(noOpPredicateAsync, options, throwExceptionIfTimeout: false, runUntilCancellationToken: default);
         }
 
         /*
@@ -27,7 +27,7 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
         */
         internal static async Task RunUntilAsync<T>(
             this WebApplicationFactory<T> webApplicationFactory,
-            RunUntilPredicate predicateAsync,
+            RunUntilPredicateAsync predicateAsyncAsync,
             RunUntilOptions options,
             bool throwExceptionIfTimeout,
             CancellationToken runUntilCancellationToken) where T : class
@@ -37,7 +37,7 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
 
             _ = webApplicationFactory.Server; //starts the server
             var hostRunController = new HostRunController(options);
-            var runUntilResult = await hostRunController.RunUntil(predicateAsync, runUntilCancellationToken);
+            var runUntilResult = await hostRunController.RunUntil(predicateAsyncAsync, runUntilCancellationToken);
             webApplicationFactory.Dispose(); //shutdown the server (non graceful)
             if (runUntilResult == RunUntilResult.TimedOut && throwExceptionIfTimeout)
             {
