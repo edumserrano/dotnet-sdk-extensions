@@ -9,6 +9,13 @@ namespace DotNet.Sdk.Extensions.Testing.Configuration
 {
     public static class WebHostBuilderExtensions
     {
+        /// <summary>
+        /// Clears anyt loaded appsettings files by removing all JsonConfigurationSource
+        /// from the <see cref="IWebHostBuilder"/> and adding only the provided appsettings files.
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <param name="appsettingsFilenames"></param>
+        /// <returns>The <see cref="IWebHostBuilder"/> for chaining.</returns>
         public static IWebHostBuilder AddTestConfiguration(
             this IWebHostBuilder builder,
             params string[] appsettingsFilenames)
