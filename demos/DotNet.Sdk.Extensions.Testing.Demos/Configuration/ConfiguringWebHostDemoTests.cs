@@ -1,31 +1,17 @@
 using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Testing.Configuration;
-using DotNet.Sdk.Extensions.Testing.Demos.TestApp.DemoStartups.Configuration;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc.Testing;
 using Shouldly;
 using Xunit;
 
 namespace DotNet.Sdk.Extensions.Testing.Demos.Configuration
 {
-    public class ConfiguringWebHostDemoTests : IClassFixture<WebApplicationFactory<StartupConfiguringWebHost>>
+    public class ConfiguringWebHostDemoTests : IClassFixture<ConfiguringWebHostWebApplicationFactory>
     {
-        private readonly WebApplicationFactory<StartupConfiguringWebHost> _webApplicationFactory;
+        private readonly ConfiguringWebHostWebApplicationFactory _webApplicationFactory;
 
-        public ConfiguringWebHostDemoTests(WebApplicationFactory<StartupConfiguringWebHost> webApplicationFactory)
+        public ConfiguringWebHostDemoTests(ConfiguringWebHostWebApplicationFactory webApplicationFactory)
         {
             _webApplicationFactory = webApplicationFactory;
-
-            /*
-             * The line below is NOT part of the demo. You don't need to do it!
-             * It's an artifact of having a single web app to test and wanting to test
-             * different Startup classes.
-             */
-            _webApplicationFactory = _webApplicationFactory
-                .WithWebHostBuilder(builder =>
-                {
-                    builder.UseStartup<StartupConfiguringWebHost>();
-                });
         }
 
         [Fact]

@@ -3,8 +3,6 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Testing.Demos.TestApp.DemoStartups.HttpMocking;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.WebHostBuilders;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Shouldly;
 using Xunit;
@@ -17,24 +15,13 @@ namespace DotNet.Sdk.Extensions.Testing.Demos.HttpMocking
      * for each of the http clients and make it return an OK status.
      *
      */
-    public class HttpResponseMockingDemoTests : IClassFixture<WebApplicationFactory<StartupHttpResponseMocking>>
+    public class HttpResponseMockingDemoTests : IClassFixture<HttpResponseMockingWebApplicationFactory>
     {
-        private readonly WebApplicationFactory<StartupHttpResponseMocking> _webApplicationFactory;
+        private readonly HttpResponseMockingWebApplicationFactory _webApplicationFactory;
 
-        public HttpResponseMockingDemoTests(WebApplicationFactory<StartupHttpResponseMocking> webApplicationFactory)
+        public HttpResponseMockingDemoTests(HttpResponseMockingWebApplicationFactory webApplicationFactory)
         {
             _webApplicationFactory = webApplicationFactory;
-
-            /*
-             * The line below is NOT part of the demo. You don't need to do it!
-             * It's an artifact of having a single web app to test and wanting to test
-             * different Startup classes.
-             */
-            _webApplicationFactory = _webApplicationFactory
-                .WithWebHostBuilder(builder =>
-                {
-                    builder.UseStartup<StartupHttpResponseMocking>();
-                });
         }
 
         [Fact]

@@ -3,8 +3,6 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Testing.Demos.TestApp.DemoStartups.HostedServices;
 using DotNet.Sdk.Extensions.Testing.HostedServices;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
@@ -13,24 +11,13 @@ using Xunit;
 
 namespace DotNet.Sdk.Extensions.Testing.Demos.HostedServices
 {
-    public class HostedServicesDemoTests : IClassFixture<WebApplicationFactory<StartupHostedService>>
+    public class HostedServicesDemoTests : IClassFixture<HostedServicesWebApplicationFactory>
     {
-        private readonly WebApplicationFactory<StartupHostedService> _webApplicationFactory;
+        private readonly HostedServicesWebApplicationFactory _webApplicationFactory;
 
-        public HostedServicesDemoTests(WebApplicationFactory<StartupHostedService> webApplicationFactory)
+        public HostedServicesDemoTests(HostedServicesWebApplicationFactory webApplicationFactory)
         {
             _webApplicationFactory = webApplicationFactory;
-
-            /*
-             * The line below is NOT part of the demo. You don't need to do it!
-             * It's an artifact of having a single web app to test and wanting to test
-             * different Startup classes.
-             */
-            _webApplicationFactory = _webApplicationFactory
-                .WithWebHostBuilder(builder =>
-                {
-                    builder.UseStartup<StartupHostedService>();
-                });
         }
 
         [Fact]
