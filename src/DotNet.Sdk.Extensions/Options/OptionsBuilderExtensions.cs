@@ -1,5 +1,4 @@
 ﻿using System;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,9 +8,13 @@ namespace DotNet.Sdk.Extensions.Options
 {
     public static class OptionsBuilderExtensions
     {
-        /*
-         * Small quality of life improvement for the boilerplate of adding an options configuration
-         */
+        /// <summary>
+        /// Binds configuration values to an options type.
+        /// </summary>
+        /// <typeparam name="T">The <see cref="Type"/> of the options to be configured.</typeparam>
+        /// <param name="services">The <see cref="IServiceCollection"/> to add the options to.</param>
+        /// <param name="configuration">The <see cref="IConfiguration"/> instance containing values to bind to the options type.</param>
+        /// <returns>The <see cref="OptionsBuilder&lt;T&gt;"/> for chaining.</returns>
         public static OptionsBuilder<T> AddOptions<T>(
             this IServiceCollection services,
             IConfiguration configuration) where T : class
@@ -23,9 +26,14 @@ namespace DotNet.Sdk.Extensions.Options
                 .Bind(configuration);
         }
 
-        /*
-         * Small quality of life improvement for the boilerplate of adding an options configuration
-         */
+        /// <summary>
+        /// Binds configuration values from a section to an options type.
+        /// </summary>
+        /// <typeparam name="T">The <see cref="Type"/> of the options to be configured.</typeparam>
+        /// <param name="services">The <see cref="IServiceCollection"/> to add the options to.</param>
+        /// <param name="configuration">The <see cref="IConfiguration"/> instance containing values to bind to the options type.</param>
+        /// <param name="sectionName">The name of the section from <see cref="IConfiguration"/> where values will be binded from.</param>
+        /// <returns>The <see cref="OptionsBuilder&lt;T&gt;"/> for chaining.</returns>
         public static OptionsBuilder<T> AddOptions<T>(
             this IServiceCollection services,
             IConfiguration configuration,
@@ -39,10 +47,19 @@ namespace DotNet.Sdk.Extensions.Options
                 .Bind(configuration.GetSection(sectionName));
         }
 
-        /*
-         * first call services.AddOptions to setup the IOption<T> as you wish
-         * if you rather just have injected T and not IOptions<T> then use the AddOptionsValue method below
-         */
+        /// <summary>
+        /// Allows resolving the type of the options added to the <see cref="IServiceCollection"/> instead of having to resolve
+        /// one of the Options interfaces: <see cref="IOptions&lt;T&gt;"/>, <see cref="IOptionsSnapshot&lt;T&gt;"/> or <see cref="IOptionsMonitor&lt;T&gt;"/>.
+        /// </summary>
+        /// <remarks>
+        /// You first need to have configured an options of type T on the <see cref="IServiceCollection"/>.
+        /// One way of doing this is by using:
+        ///   <see cref="AddOptions&lt;T&gt;(IServiceCollection,IConfiguration)"/> or
+        ///   <see cref="AddOptions&lt;T&gt;(IServiceCollection,IConfiguration,string)"/>
+        /// </remarks>
+        /// <typeparam name="T">The <see cref="Type"/> of the options to be configured.</typeparam>
+        /// <param name="optionsBuilder">The <see cref="OptionsBuilder&lt;T&gt;"/> to add the options value to.</param>
+        /// <returns>The <see cref="OptionsBuilder&lt;T&gt;"/> for chaining.</returns>
         public static OptionsBuilder<T> AddOptionsValue<T>(this OptionsBuilder<T> optionsBuilder) where T : class, new()
         {
             if (optionsBuilder == null) throw new ArgumentNullException(nameof(optionsBuilder));
@@ -51,7 +68,20 @@ namespace DotNet.Sdk.Extensions.Options
             return optionsBuilder;
         }
 
-        private static IServiceCollection AddOptionsValue<T>(this IServiceCollection services) where T : class, new()
+        /// <summary>
+        /// Allows resolving the type of the options added to the <see cref="IServiceCollection"/> instead of having to resolve
+        /// one of the Options interfaces: <see cref="IOptions&lt;T&gt;"/>, <see cref="IOptionsSnapshot&lt;T&gt;"/> or <see cref="IOptionsMonitor&lt;T&gt;"/>.
+        /// </summary>
+        /// <remarks>
+        /// You first need to have configured an options of type T on the <see cref="IServiceCollection"/>.
+        /// One way of doing this is by using:
+        ///   <see cref="AddOptions&lt;T&gt;(IServiceCollection,IConfiguration)"/> or
+        ///   <see cref="AddOptions&lt;T&gt;(IServiceCollection,IConfiguration,string)"/>
+        /// </remarks>
+        /// <typeparam name="T">The <see cref="Type"/> of the options to be configured.</typeparam>
+        /// <param name="services">The <see cref="IServiceCollection"/> to add the options value to.</param>
+        /// <returns>The <see cref="IServiceCollection"/> for chaining.</returns>
+        public static IServiceCollection AddOptionsValue<T>(this IServiceCollection services) where T : class, new()
         {
             if (services == null) throw new ArgumentNullException(nameof(services));
 
@@ -63,36 +93,21 @@ namespace DotNet.Sdk.Extensions.Options
             return services;
         }
 
-        /*
-         * At the moment there is no built-in mechanism to force eager validation on options so I've followed
-         * the advice from https://github.com/dotnet/extensions/issues/459
-         */
-        public static OptionsBuilder<TOptions> ValidateEagerly<TOptions>(this OptionsBuilder<TOptions> optionsBuilder) where TOptions : class
+        /// <summary>
+        /// Force options validation at application startup.
+        /// </summary>
+        /// <remarks>
+        /// At the moment there is no built-in mechanism to force eager validation on options so I've followed
+        /// the advice from https://github.com/dotnet/extensions/issues/459
+        /// </remarks>
+        /// <typeparam name="T">The <see cref="Type"/> of the options to be eagerly validated.</typeparam>
+        /// <param name="optionsBuilder">The <see cref="OptionsBuilder&lt;T&gt;"/> for the options to add eager validation to.</param>
+        /// <returns>The <see cref="OptionsBuilder&lt;T&gt;"/> for chaining.</returns>
+        public static OptionsBuilder<T> ValidateEagerly<T>(this OptionsBuilder<T> optionsBuilder) where T : class
         {
             if (optionsBuilder == null) throw new ArgumentNullException(nameof(optionsBuilder));
-            optionsBuilder.Services.AddTransient<IStartupFilter, StartupOptionsValidation<TOptions>>();
+            optionsBuilder.Services.AddTransient<IStartupFilter, StartupOptionsValidation<T>>();
             return optionsBuilder;
-        }
-
-        /*
-         * Since this class is only to be used by the ValidateEagerly extension method I've added it here as a nested private class        
-         */
-        private class StartupOptionsValidation<T> : IStartupFilter
-        {
-            public Action<IApplicationBuilder> Configure(Action<IApplicationBuilder> next)
-            {
-                return builder =>
-                {
-                    var options = builder.ApplicationServices.GetService(typeof(IOptions<>).MakeGenericType(typeof(T)));
-                    if (options != null)
-                    {
-                        // Retrieve the value to trigger validation
-                        _ = ((IOptions<object>)options).Value;
-                    }
-
-                    next(builder);
-                };
-            }
         }
     }
 }
