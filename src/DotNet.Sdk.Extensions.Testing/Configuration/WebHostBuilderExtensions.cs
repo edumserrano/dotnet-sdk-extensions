@@ -10,11 +10,11 @@ namespace DotNet.Sdk.Extensions.Testing.Configuration
     public static class WebHostBuilderExtensions
     {
         /// <summary>
-        /// Clears anyt loaded appsettings files by removing all JsonConfigurationSource
+        /// Clears loaded appsettings files by removing all JsonConfigurationSource
         /// from the <see cref="IWebHostBuilder"/> and adding only the provided appsettings files.
         /// </summary>
-        /// <param name="builder"></param>
-        /// <param name="appsettingsFilenames"></param>
+        /// <param name="builder">The <see cref="IWebHostBuilder"/> to add the appsettings file to.</param>
+        /// <param name="appsettingsFilenames">The appsettings' filenames.</param>
         /// <returns>The <see cref="IWebHostBuilder"/> for chaining.</returns>
         public static IWebHostBuilder AddTestConfiguration(
             this IWebHostBuilder builder,
@@ -26,6 +26,14 @@ namespace DotNet.Sdk.Extensions.Testing.Configuration
             return builder.AddTestConfiguration(options, appsettingsFilenames);
         }
 
+        /// <summary>
+        /// Clears loaded appsettings files by removing all JsonConfigurationSource
+        /// from the <see cref="IWebHostBuilder"/> and adding only the provided appsettings files.
+        /// </summary>
+        /// <param name="builder">The <see cref="IWebHostBuilder"/> to add the appsettings file to.</param>
+        /// <param name="configureOptions">Options for the test appsettings.</param>
+        /// <param name="appsettingsFilenames">The appsettings' filenames.</param>
+        /// <returns>The <see cref="IWebHostBuilder"/> for chaining.</returns>
         public static IWebHostBuilder AddTestConfiguration(
             this IWebHostBuilder builder,
             Action<TestConfigurationOptions> configureOptions,
@@ -39,14 +47,6 @@ namespace DotNet.Sdk.Extensions.Testing.Configuration
             return builder.AddTestConfiguration(options, appsettingsFilenames);
         }
 
-        /*
-         * Allows adding appsettings files to the webhost build used for tests.
-         * Supports combination of appsetings files. I.E:  AddTestConfiguration("appsettings.Test.json")
-         * will add both config files.
-         * 
-         * TestConfigurationOptions.AppSettingsDir is relative to the test project location
-         * 
-         */
         private static IWebHostBuilder AddTestConfiguration(
             this IWebHostBuilder builder,
             TestConfigurationOptions options,
