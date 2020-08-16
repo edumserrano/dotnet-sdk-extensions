@@ -5,11 +5,15 @@ using Microsoft.AspNetCore.Mvc.Testing;
 
 namespace DotNet.Sdk.Extensions.Testing.HostedServices
 {
-    /*
-     * RunUntil WebApplicationFactory extension methods
-     */
     public static partial class RunUntilWebApplicationFactoryExtensions
     {
+        /// <summary>
+        /// Terminates the host after the specified timeout.
+        /// </summary>
+        /// <typeparam name="T">The <see cref="Type"/> of the startup class used with host.</typeparam>
+        /// <param name="webApplicationFactory">The <see cref="WebApplicationFactory&lt;T&gt;"/> to terminate after the timeout.</param>
+        /// <param name="timeout">Timeout value.</param>
+        /// <returns>The <see cref="Task"/> that will execute the host until it's terminated.</returns>
         public static Task RunUntilTimeoutAsync<T>(this WebApplicationFactory<T> webApplicationFactory, TimeSpan timeout) where T : class
         {
             if (webApplicationFactory == null) throw new ArgumentNullException(nameof(webApplicationFactory));

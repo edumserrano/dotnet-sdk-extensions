@@ -11,7 +11,7 @@ namespace DotNet.Sdk.Extensions.Options
         /// <summary>
         /// Binds configuration values to an options type.
         /// </summary>
-        /// <typeparam name="T">The <see cref="Type"/> of the options to be configured.</typeparam>
+        /// <typeparam name="T">The Type of the options to be configured.</typeparam>
         /// <param name="services">The <see cref="IServiceCollection"/> to add the options to.</param>
         /// <param name="configuration">The <see cref="IConfiguration"/> instance containing values to bind to the options type.</param>
         /// <returns>The <see cref="OptionsBuilder&lt;T&gt;"/> for chaining.</returns>
@@ -29,7 +29,7 @@ namespace DotNet.Sdk.Extensions.Options
         /// <summary>
         /// Binds configuration values from a section to an options type.
         /// </summary>
-        /// <typeparam name="T">The <see cref="Type"/> of the options to be configured.</typeparam>
+        /// <typeparam name="T">The Type of the options to be configured.</typeparam>
         /// <param name="services">The <see cref="IServiceCollection"/> to add the options to.</param>
         /// <param name="configuration">The <see cref="IConfiguration"/> instance containing values to bind to the options type.</param>
         /// <param name="sectionName">The name of the section from <see cref="IConfiguration"/> where values will be binded from.</param>
@@ -57,7 +57,7 @@ namespace DotNet.Sdk.Extensions.Options
         ///   <see cref="AddOptions&lt;T&gt;(IServiceCollection,IConfiguration)"/> or
         ///   <see cref="AddOptions&lt;T&gt;(IServiceCollection,IConfiguration,string)"/>
         /// </remarks>
-        /// <typeparam name="T">The <see cref="Type"/> of the options to be configured.</typeparam>
+        /// <typeparam name="T">The Type of the options to be configured.</typeparam>
         /// <param name="optionsBuilder">The <see cref="OptionsBuilder&lt;T&gt;"/> to add the options value to.</param>
         /// <returns>The <see cref="OptionsBuilder&lt;T&gt;"/> for chaining.</returns>
         public static OptionsBuilder<T> AddOptionsValue<T>(this OptionsBuilder<T> optionsBuilder) where T : class, new()
@@ -78,7 +78,7 @@ namespace DotNet.Sdk.Extensions.Options
         ///   <see cref="AddOptions&lt;T&gt;(IServiceCollection,IConfiguration)"/> or
         ///   <see cref="AddOptions&lt;T&gt;(IServiceCollection,IConfiguration,string)"/>
         /// </remarks>
-        /// <typeparam name="T">The <see cref="Type"/> of the options to be configured.</typeparam>
+        /// <typeparam name="T">The Type of the options to be configured.</typeparam>
         /// <param name="services">The <see cref="IServiceCollection"/> to add the options value to.</param>
         /// <returns>The <see cref="IServiceCollection"/> for chaining.</returns>
         public static IServiceCollection AddOptionsValue<T>(this IServiceCollection services) where T : class, new()
@@ -100,7 +100,7 @@ namespace DotNet.Sdk.Extensions.Options
         /// At the moment there is no built-in mechanism to force eager validation on options so I've followed
         /// the advice from https://github.com/dotnet/extensions/issues/459
         /// </remarks>
-        /// <typeparam name="T">The <see cref="Type"/> of the options to be eagerly validated.</typeparam>
+        /// <typeparam name="T">The Type of the options to be eagerly validated.</typeparam>
         /// <param name="optionsBuilder">The <see cref="OptionsBuilder&lt;T&gt;"/> for the options to add eager validation to.</param>
         /// <returns>The <see cref="OptionsBuilder&lt;T&gt;"/> for chaining.</returns>
         public static OptionsBuilder<T> ValidateEagerly<T>(this OptionsBuilder<T> optionsBuilder) where T : class

@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 
 namespace DotNet.Sdk.Extensions.Testing.HostedServices
 {
-
     internal class HostRunController
     {
         private readonly RunUntilOptions _options;
