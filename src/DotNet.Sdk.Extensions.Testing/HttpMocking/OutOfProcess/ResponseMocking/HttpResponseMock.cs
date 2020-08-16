@@ -5,26 +5,12 @@ using Microsoft.AspNetCore.Http;
 
 namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.ResponseMocking
 {
-    public delegate Task<bool> HttpResponseMockPredicateAsyncDelegate(
-        HttpRequest httpRequest,
-        CancellationToken cancellationToken);
-
-    public delegate Task HttpResponseMockHandlerAsyncDelegate(
-        HttpRequest httpRequest,
-        HttpResponse httpResponse,
-        CancellationToken cancellationToken);
-
-    public interface IHttpResponseMock
-    {
-        Task<HttpResponseMockResults> ExecuteAsync(HttpContext httpContext);
-    }
-
-    internal class HttpResponseMock : IHttpResponseMock
+    public class HttpResponseMock
     {
         private readonly HttpResponseMockPredicateAsyncDelegate _predicateAsync;
         private readonly HttpResponseMockHandlerAsyncDelegate _handlerAsync;
 
-        public HttpResponseMock(
+        internal HttpResponseMock(
             HttpResponseMockPredicateAsyncDelegate predicateAsync,
             HttpResponseMockHandlerAsyncDelegate handlerAsync)
         {
@@ -32,7 +18,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.ResponseMocking
             _handlerAsync = handlerAsync ?? throw new ArgumentNullException(nameof(handlerAsync));
         }
 
-        public async Task<HttpResponseMockResults> ExecuteAsync(HttpContext httpContext)
+        internal async Task<HttpResponseMockResults> ExecuteAsync(HttpContext httpContext)
         {
             if (httpContext == null) throw new ArgumentNullException(nameof(httpContext));
 

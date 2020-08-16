@@ -6,26 +6,17 @@ using DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.ResponseMocking;
 
 namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess
 {
-    public interface IResponseBasedBuilder
-    {
-        IHttpMockServer Build();
-
-        IResponseBasedBuilder MockHttpResponse(Action<IHttpResponseMockBuilder> configureHttpResponseMock);
-
-        IResponseBasedBuilder MockHttpResponse(IHttpResponseMock httpResponseMock);
-    }
-
-    internal class ResponseBasedBuilder : IResponseBasedBuilder
+    public class ResponseBasedBuilder
     {
         private readonly HttpMockServerArgs _mockServerArgs;
-        private readonly List<IHttpResponseMock> _httpResponseMocks = new List<IHttpResponseMock>();
+        private readonly List<HttpResponseMock> _httpResponseMocks = new List<HttpResponseMock>();
 
-        public ResponseBasedBuilder(HttpMockServerArgs args)
+        internal ResponseBasedBuilder(HttpMockServerArgs args)
         {
             _mockServerArgs = args ?? throw new ArgumentNullException(nameof(args));
         }
 
-        public IResponseBasedBuilder MockHttpResponse(IHttpResponseMock httpResponseMock)
+        public ResponseBasedBuilder MockHttpResponse(HttpResponseMock httpResponseMock)
         {
             if (httpResponseMock == null) throw new ArgumentNullException(nameof(httpResponseMock));
 
@@ -33,7 +24,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess
             return this;
         }
 
-        public IResponseBasedBuilder MockHttpResponse(Action<IHttpResponseMockBuilder> configureHttpResponseMock)
+        public ResponseBasedBuilder MockHttpResponse(Action<HttpResponseMockBuilder> configureHttpResponseMock)
         {
             if (configureHttpResponseMock == null) throw new ArgumentNullException(nameof(configureHttpResponseMock));
 
@@ -44,9 +35,9 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess
             return this;
         }
 
-        public IHttpMockServer Build()
+        public HttpMockServer Build()
         {
-            return new HttpMockServer(_mockServerArgs, _httpResponseMocks);
+            return new ResponseBasedHttpMockServer(_mockServerArgs, _httpResponseMocks);
         }
     }
 }

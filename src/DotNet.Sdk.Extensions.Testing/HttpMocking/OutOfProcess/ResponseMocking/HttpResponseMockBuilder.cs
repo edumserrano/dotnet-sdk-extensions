@@ -4,45 +4,30 @@ using Microsoft.AspNetCore.Http;
 
 namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.ResponseMocking
 {
-    public interface IHttpResponseMockBuilder
-    {
-        IHttpResponseMock Build();
-
-        IHttpResponseMockBuilder RespondWith(Action<HttpRequest, HttpResponse> handler);
-
-        IHttpResponseMockBuilder RespondWith(Action<HttpResponse> configureHttpResponse);
-
-        IHttpResponseMockBuilder RespondWith(HttpResponseMockHandlerAsyncDelegate handlerAsync);
-
-        IHttpResponseMockBuilder Where(Func<HttpRequest, bool> predicate);
-
-        IHttpResponseMockBuilder Where(HttpResponseMockPredicateAsyncDelegate predicateAsync);
-    }
-
-    internal class HttpResponseMockBuilder : IHttpResponseMockBuilder
+    public class HttpResponseMockBuilder
     {
         private readonly HttpResponseMockPredicateAsyncDelegate _defaultPredicateAsync = (httpRequest, cancellationToken) => Task.FromResult(true);
         private HttpResponseMockPredicateAsyncDelegate? _predicateAsync;
         private HttpResponseMockHandlerAsyncDelegate? _handlerAsync;
 
-        public IHttpResponseMockBuilder Where(Func<HttpRequest, bool> predicate)
+        public HttpResponseMockBuilder Where(Func<HttpRequest, bool> predicate)
         {
             if (predicate == null) throw new ArgumentNullException(nameof(predicate));
             // convert to 'async' predicate
             return Where((httpRequest, cancellationToken) => Task.FromResult(predicate(httpRequest)));
         }
 
-        public IHttpResponseMockBuilder Where(HttpResponseMockPredicateAsyncDelegate predicateAsync)
+        public HttpResponseMockBuilder Where(HttpResponseMockPredicateAsyncDelegate predicateAsync)
         {
             if (_predicateAsync != null)
             {
-                throw new HttpResponseMockBuilderException($"{nameof(IHttpResponseMockBuilder)}.{nameof(Where)} condition already configured.");
+                throw new HttpResponseMockBuilderException($"{nameof(HttpResponseMockBuilder)}.{nameof(Where)} condition already configured.");
             }
             _predicateAsync = predicateAsync ?? throw new ArgumentNullException(nameof(predicateAsync));
             return this;
         }
 
-        public IHttpResponseMockBuilder RespondWith(Action<HttpResponse> configureHttpResponse)
+        public HttpResponseMockBuilder RespondWith(Action<HttpResponse> configureHttpResponse)
         {
             if (configureHttpResponse == null) throw new ArgumentNullException(nameof(configureHttpResponse));
 
@@ -52,7 +37,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.ResponseMocking
             });
         }
 
-        public IHttpResponseMockBuilder RespondWith(Action<HttpRequest, HttpResponse> handler)
+        public HttpResponseMockBuilder RespondWith(Action<HttpRequest, HttpResponse> handler)
         {
             if (handler == null) throw new ArgumentNullException(nameof(handler));
             // convert to 'async' handler
@@ -63,23 +48,23 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.ResponseMocking
             });
         }
 
-        public IHttpResponseMockBuilder RespondWith(HttpResponseMockHandlerAsyncDelegate handlerAsync)
+        public HttpResponseMockBuilder RespondWith(HttpResponseMockHandlerAsyncDelegate handlerAsync)
         {
             if (_handlerAsync != null)
             {
-                throw new HttpResponseMockBuilderException($"{nameof(IHttpResponseMockBuilder)}.{nameof(RespondWith)} already configured.");
+                throw new HttpResponseMockBuilderException($"{nameof(HttpResponseMockBuilder)}.{nameof(RespondWith)} already configured.");
             }
             _handlerAsync = handlerAsync ?? throw new ArgumentNullException(nameof(handlerAsync));
             return this;
         }
 
-        public IHttpResponseMock Build()
+        public HttpResponseMock Build()
         {
             // predicate is not mandatory. The default predicate represents an always apply condition.
             _predicateAsync ??= _defaultPredicateAsync;
             if (_handlerAsync is null)
             {
-                throw new HttpResponseMockBuilderException($"{nameof(HttpResponse)} not configured for {nameof(IHttpResponseMock)}. Use {nameof(IHttpResponseMockBuilder)}.{nameof(RespondWith)} to configure it.");
+                throw new HttpResponseMockBuilderException($"{nameof(HttpResponse)} not configured for {nameof(HttpResponseMock)}. Use {nameof(HttpResponseMockBuilder)}.{nameof(RespondWith)} to configure it.");
             }
 
             return new HttpResponseMock(_predicateAsync, _handlerAsync);

@@ -88,7 +88,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.Response
             _predicateAsync ??= _defaultPredicate;
             if (_handlerAsync is null)
             {
-                throw new HttpResponseMessageMockBuilderException($"{nameof(HttpResponseMessage)} not configured for {nameof(IHttpResponseMock)}. Use {nameof(HttpResponseMessageMockBuilder)}.{nameof(RespondWith)} to configure it.");
+                throw new HttpResponseMessageMockBuilderException($"{nameof(HttpResponseMessage)} not configured for {nameof(HttpResponseMock)}. Use {nameof(HttpResponseMessageMockBuilder)}.{nameof(RespondWith)} to configure it.");
             }
 
             return new HttpResponseMessageMock(_predicateAsync, _handlerAsync);

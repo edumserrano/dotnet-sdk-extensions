@@ -7,13 +7,13 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers.Res
 {
     internal class HttpResponseMocksProvider
     {
-        private readonly ICollection<IHttpResponseMock> _httpResponseMocks;
+        private readonly ICollection<HttpResponseMock> _httpResponseMocks;
 
-        public HttpResponseMocksProvider(ICollection<IHttpResponseMock> httpResponseMocks)
+        public HttpResponseMocksProvider(ICollection<HttpResponseMock> httpResponseMocks)
         {
             _httpResponseMocks = httpResponseMocks ?? throw new ArgumentNullException(nameof(httpResponseMocks));
         }
 
-        public IEnumerable<IHttpResponseMock> HttpResponseMocks => _httpResponseMocks.ToList();
+        public IEnumerable<HttpResponseMock> HttpResponseMocks => _httpResponseMocks.ToList();
     }
 }

@@ -3,9 +3,9 @@ using Microsoft.Extensions.Hosting;
 
 namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers.StartupBased
 {
-    internal class HttpMockServer<T> : HttpMockServerBase where T : class
+    internal class StartupBasedHttpMockServer<T> : HttpMockServer where T : class
     {
-        public HttpMockServer(HttpMockServerArgs mockServerArgs) : base(mockServerArgs)
+        public StartupBasedHttpMockServer(HttpMockServerArgs mockServerArgs) : base(mockServerArgs)
         {
         }
 

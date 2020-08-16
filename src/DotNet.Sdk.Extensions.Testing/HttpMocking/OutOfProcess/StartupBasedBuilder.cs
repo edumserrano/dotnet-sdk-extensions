@@ -4,23 +4,18 @@ using DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers.Startup
 
 namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess
 {
-    public interface IStartupBasedBuilder<T> where T : class
-    {
-        IHttpMockServer Build();
-    }
-
-    internal class StartupBasedBuilder<T> : IStartupBasedBuilder<T> where T : class
+    public class StartupBasedBuilder<T> where T : class
     {
         private readonly HttpMockServerArgs _mockServerArgs;
 
-        public StartupBasedBuilder(HttpMockServerArgs args)
+        internal StartupBasedBuilder(HttpMockServerArgs args)
         {
             _mockServerArgs = args ?? throw new ArgumentNullException(nameof(args));
         }
 
-        public IHttpMockServer Build()
+        public HttpMockServer Build()
         {
-            return new HttpMockServer<T>(_mockServerArgs);
+            return new StartupBasedHttpMockServer<T>(_mockServerArgs);
         }
     }
 }

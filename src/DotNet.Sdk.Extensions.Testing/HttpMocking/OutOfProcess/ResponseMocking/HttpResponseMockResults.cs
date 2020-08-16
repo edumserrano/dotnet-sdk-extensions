@@ -1,6 +1,6 @@
 ﻿namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.ResponseMocking
 {
-    public enum HttpResponseMockResults
+    internal enum HttpResponseMockResults
     {
         Skipped,
         Executed
