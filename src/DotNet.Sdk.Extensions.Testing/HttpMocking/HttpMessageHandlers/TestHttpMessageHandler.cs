@@ -12,15 +12,15 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers
     /// </summary>
     public class TestHttpMessageHandler : DelegatingHandler
     {
-        private readonly List<IHttpResponseMessageMock> _httpResponseMocks = new List<IHttpResponseMessageMock>();
+        private readonly List<HttpResponseMessageMock> _httpResponseMocks = new List<HttpResponseMessageMock>();
 
         /// <summary>
         /// Configure an <see cref="HttpResponseMessage"/> to be returned when executing an HTTP call via
         /// an <see cref="HttpClient"/> configured to use the <see cref="TestHttpMessageHandler"/>.
         /// </summary>
-        /// <param name="httpResponseMock">The <see cref="IHttpResponseMessageMock"/> that defines the <see cref="HttpResponseMessage"/> that will be returned.</param>
+        /// <param name="httpResponseMock">The <see cref="HttpResponseMessageMock"/> that defines the <see cref="HttpResponseMessage"/> that will be returned.</param>
         /// <returns>The <see cref="TestHttpMessageHandler"/> for chaining.</returns>
-        public TestHttpMessageHandler MockHttpResponse(IHttpResponseMessageMock httpResponseMock)
+        public TestHttpMessageHandler MockHttpResponse(HttpResponseMessageMock httpResponseMock)
         {
             if (httpResponseMock == null) throw new ArgumentNullException(nameof(httpResponseMock));
 
@@ -34,7 +34,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers
         /// </summary>
         /// <param name="configure">Action to configure the <see cref="HttpResponseMessage"/> to be returned.</param>
         /// <returns>The <see cref="TestHttpMessageHandler"/> for chaining.</returns>
-        public TestHttpMessageHandler MockHttpResponse(Action<IHttpResponseMessageMockBuilder> configure)
+        public TestHttpMessageHandler MockHttpResponse(Action<HttpResponseMessageMockBuilder> configure)
         {
             if (configure == null) throw new ArgumentNullException(nameof(configure));
 

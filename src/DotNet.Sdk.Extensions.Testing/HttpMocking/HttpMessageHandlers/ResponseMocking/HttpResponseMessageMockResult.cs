@@ -4,14 +4,23 @@ using DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.ResponseMocking;
 
 namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.ResponseMocking
 {
-    internal class HttpResponseMessageMockResult : IHttpResponseMessageMockResult
+    /// <summary>
+    /// Defines the properties that represent the outcome of executing a <see cref="HttpResponseMessageMock"/>.
+    /// </summary>
+    public class HttpResponseMessageMockResult
     {
         private HttpResponseMessage? _httpResponseMessage;
 
         private HttpResponseMessageMockResult() { }
 
+        /// <summary>
+        /// The result of executing the <see cref="HttpResponseMessageMock"/>.
+        /// </summary>
         public HttpResponseMessageMockResults Status { get; private set; }
 
+        /// <summary>
+        /// The <see cref="HttpResponseMessage"/> produced by the <see cref="HttpResponseMessageMock"/>.
+        /// </summary>
         public HttpResponseMessage HttpResponseMessage
         {
             get
@@ -26,7 +35,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.Response
             private set => _httpResponseMessage = value;
         }
 
-        public static IHttpResponseMessageMockResult Executed(HttpResponseMessage httpResponseMessage)
+        public static HttpResponseMessageMockResult Executed(HttpResponseMessage httpResponseMessage)
         {
             return new HttpResponseMessageMockResult
             {
@@ -35,7 +44,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.Response
             };
         }
 
-        public static IHttpResponseMessageMockResult Skipped()
+        public static HttpResponseMessageMockResult Skipped()
         {
             return new HttpResponseMessageMockResult
             {

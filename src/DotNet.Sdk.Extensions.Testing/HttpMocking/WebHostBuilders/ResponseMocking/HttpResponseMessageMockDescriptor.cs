@@ -3,28 +3,12 @@ using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.ResponseMock
 
 namespace DotNet.Sdk.Extensions.Testing.HttpMocking.WebHostBuilders.ResponseMocking
 {
-    public enum HttpResponseMessageMockTypes
-    {
-        TypedClient,
-        NamedClient,
-        Basic
-    }
-
-    public interface IHttpResponseMessageMockDescriptor
-    {
-        string HttpClientName { get; }
-
-        IHttpResponseMessageMock HttpResponseMock { get; }
-
-        HttpResponseMessageMockTypes HttpResponseMockType { get; }
-    }
-
-    internal class HttpResponseMessageMockDescriptor : IHttpResponseMessageMockDescriptor
+    internal class HttpResponseMessageMockDescriptor
     {
         private HttpResponseMessageMockDescriptor(
             HttpResponseMessageMockTypes httpResponseMockType,
             string httpClientName,
-            IHttpResponseMessageMockBuilder httpResponseMockBuilder)
+            HttpResponseMessageMockBuilder httpResponseMockBuilder)
         {
             if (httpResponseMockBuilder is null)
             {
@@ -40,11 +24,11 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.WebHostBuilders.ResponseMock
 
         public string HttpClientName { get; }
 
-        public IHttpResponseMessageMock HttpResponseMock { get; }
+        public HttpResponseMessageMock HttpResponseMock { get; }
 
-        public static IHttpResponseMessageMockDescriptor Typed(
+        public static HttpResponseMessageMockDescriptor Typed(
             Type httpClientType,
-            IHttpResponseMessageMockBuilder httpResponseMockBuilder)
+            HttpResponseMessageMockBuilder httpResponseMockBuilder)
         {
             return new HttpResponseMessageMockDescriptor(
                 HttpResponseMessageMockTypes.TypedClient,
@@ -52,9 +36,9 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.WebHostBuilders.ResponseMock
                 httpResponseMockBuilder);
         }
 
-        public static IHttpResponseMessageMockDescriptor Named(
+        public static HttpResponseMessageMockDescriptor Named(
             string httpClientName,
-            IHttpResponseMessageMockBuilder httpResponseMockBuilder)
+            HttpResponseMessageMockBuilder httpResponseMockBuilder)
         {
             return new HttpResponseMessageMockDescriptor(
                 HttpResponseMessageMockTypes.NamedClient,
@@ -62,7 +46,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.WebHostBuilders.ResponseMock
                 httpResponseMockBuilder);
         }
 
-        public static IHttpResponseMessageMockDescriptor Basic(IHttpResponseMessageMockBuilder httpResponseMockBuilder)
+        public static HttpResponseMessageMockDescriptor Basic(HttpResponseMessageMockBuilder httpResponseMockBuilder)
         {
             return new HttpResponseMessageMockDescriptor(
                 HttpResponseMessageMockTypes.Basic,

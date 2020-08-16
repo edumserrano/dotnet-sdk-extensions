@@ -8,27 +8,18 @@ using Microsoft.Extensions.Http;
 
 namespace DotNet.Sdk.Extensions.Testing.HttpMocking.WebHostBuilders
 {
-    public interface IHttpMessageHandlersBuilder
-    {
-        void ApplyHttpResponseMocks();
-
-        IHttpMessageHandlersBuilder MockHttpResponse(Action<IHttpResponseMessageMockDescriptorBuilder> configure);
-
-        IHttpMessageHandlersBuilder MockHttpResponse(IHttpResponseMessageMockDescriptorBuilder httpResponseMockBuilder);
-    }
-
-    internal class HttpMessageHandlersBuilder : IHttpMessageHandlersBuilder
+    public class HttpMessageHandlersBuilder
     {
         private readonly IServiceCollection _services;
-        private readonly List<IHttpResponseMessageMockDescriptorBuilder> _httpResponseMockBuilders;
+        private readonly List<HttpResponseMessageMockDescriptorBuilder> _httpResponseMockBuilders;
 
         public HttpMessageHandlersBuilder(IServiceCollection services)
         {
             _services = services ?? throw new ArgumentNullException(nameof(services));
-            _httpResponseMockBuilders = new List<IHttpResponseMessageMockDescriptorBuilder>();
+            _httpResponseMockBuilders = new List<HttpResponseMessageMockDescriptorBuilder>();
         }
 
-        public IHttpMessageHandlersBuilder MockHttpResponse(IHttpResponseMessageMockDescriptorBuilder httpResponseMockBuilder)
+        public HttpMessageHandlersBuilder MockHttpResponse(HttpResponseMessageMockDescriptorBuilder httpResponseMockBuilder)
         {
             if (httpResponseMockBuilder == null) throw new ArgumentNullException(nameof(httpResponseMockBuilder));
 
@@ -36,7 +27,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.WebHostBuilders
             return this;
         }
 
-        public IHttpMessageHandlersBuilder MockHttpResponse(Action<IHttpResponseMessageMockDescriptorBuilder> configure)
+        public HttpMessageHandlersBuilder MockHttpResponse(Action<HttpResponseMessageMockDescriptorBuilder> configure)
         {
             if (configure == null) throw new ArgumentNullException(nameof(configure));
 
@@ -46,7 +37,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.WebHostBuilders
             return this;
         }
 
-        public void ApplyHttpResponseMocks()
+        internal void ApplyHttpResponseMocks()
         {
             /*
              * There are 3 ways to create clients using IHttpClientFactory (see https://docs.microsoft.com/en-us/aspnet/core/fundamentals/http-requests)
@@ -86,7 +77,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.WebHostBuilders
             }
         }
 
-        private TestHttpMessageHandlerDescriptor CreateTestHttpMessageHandlers(IGrouping<string, IHttpResponseMessageMockDescriptor> httpResponseMockDescriptorsGrouping)
+        private TestHttpMessageHandlerDescriptor CreateTestHttpMessageHandlers(IGrouping<string, HttpResponseMessageMockDescriptor> httpResponseMockDescriptorsGrouping)
         {
             if (httpResponseMockDescriptorsGrouping == null) throw new ArgumentNullException(nameof(httpResponseMockDescriptorsGrouping));
 
