@@ -4,19 +4,6 @@ using DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.ResponseMocking;
 
 namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.ResponseMocking
 {
-    public enum HttpResponseMessageMockResults
-    {
-        Skipped,
-        Executed
-    }
-
-    public interface IHttpResponseMessageMockResult
-    {
-        HttpResponseMessage HttpResponseMessage { get; }
-
-        HttpResponseMessageMockResults Status { get; }
-    }
-
     internal class HttpResponseMessageMockResult : IHttpResponseMessageMockResult
     {
         private HttpResponseMessage? _httpResponseMessage;

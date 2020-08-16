@@ -5,15 +5,6 @@ using System.Threading.Tasks;
 
 namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.ResponseMocking
 {
-    public delegate Task<bool> HttpResponseMessageMockPredicateDelegate(HttpRequestMessage httpRequestMessage, CancellationToken cancellationToken);
-
-    public delegate Task<HttpResponseMessage> HttpResponseMessageMockHandlerDelegate(HttpRequestMessage httpRequestMessage, CancellationToken cancellationToken);
-
-    public interface IHttpResponseMessageMock
-    {
-        Task<IHttpResponseMessageMockResult> ExecuteAsync(HttpRequestMessage request, CancellationToken cancellationToken = default);
-    }
-
     internal class HttpResponseMessageMock : IHttpResponseMessageMock
     {
         private readonly HttpResponseMessageMockPredicateDelegate _predicate;

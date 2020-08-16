@@ -7,15 +7,19 @@ using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.ResponseMock
 
 namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers
 {
+    /// <summary>
+    /// An implementation of <see cref="DelegatingHandler"/> that can be used for <see cref="HttpClient"/> testing.
+    /// </summary>
     public class TestHttpMessageHandler : DelegatingHandler
     {
-        private readonly List<IHttpResponseMessageMock> _httpResponseMocks;
+        private readonly List<IHttpResponseMessageMock> _httpResponseMocks = new List<IHttpResponseMessageMock>();
 
-        public TestHttpMessageHandler()
-        {
-            _httpResponseMocks = new List<IHttpResponseMessageMock>();
-        }
-
+        /// <summary>
+        /// Configure an <see cref="HttpResponseMessage"/> to be returned when executing an HTTP call via
+        /// an <see cref="HttpClient"/> configured to use the <see cref="TestHttpMessageHandler"/>.
+        /// </summary>
+        /// <param name="httpResponseMock">The <see cref="IHttpResponseMessageMock"/> that defines the <see cref="HttpResponseMessage"/> that will be returned.</param>
+        /// <returns>The <see cref="TestHttpMessageHandler"/> for chaining.</returns>
         public TestHttpMessageHandler MockHttpResponse(IHttpResponseMessageMock httpResponseMock)
         {
             if (httpResponseMock == null) throw new ArgumentNullException(nameof(httpResponseMock));
@@ -24,6 +28,12 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers
             return this;
         }
 
+        /// <summary>
+        /// Configure an <see cref="HttpResponseMessage"/> to be returned when executing an HTTP call via
+        /// an <see cref="HttpClient"/> configured to use the <see cref="TestHttpMessageHandler"/>.
+        /// </summary>
+        /// <param name="configure">Action to configure the <see cref="HttpResponseMessage"/> to be returned.</param>
+        /// <returns>The <see cref="TestHttpMessageHandler"/> for chaining.</returns>
         public TestHttpMessageHandler MockHttpResponse(Action<IHttpResponseMessageMockBuilder> configure)
         {
             if (configure == null) throw new ArgumentNullException(nameof(configure));

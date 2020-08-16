@@ -5,21 +5,6 @@ using DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.ResponseMocking;
 
 namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.ResponseMocking
 {
-    public interface IHttpResponseMessageMockBuilder
-    {
-        IHttpResponseMessageMock Build();
-
-        IHttpResponseMessageMockBuilder RespondWith(Func<HttpRequestMessage, HttpResponseMessage> handler);
-
-        IHttpResponseMessageMockBuilder RespondWith(HttpResponseMessage httpResponseMessage);
-
-        IHttpResponseMessageMockBuilder RespondWith(HttpResponseMessageMockHandlerDelegate handler);
-
-        IHttpResponseMessageMockBuilder Where(Func<HttpRequestMessage, bool> predicate);
-
-        IHttpResponseMessageMockBuilder Where(HttpResponseMessageMockPredicateDelegate predicate);
-    }
-
     internal class HttpResponseMessageMockBuilder : IHttpResponseMessageMockBuilder
     {
         private readonly HttpResponseMessageMockPredicateDelegate _defaultPredicate = (httpRequestMessage, cancellationToken) => Task.FromResult(true);
