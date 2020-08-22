@@ -1,7 +1,7 @@
 ﻿using System;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers;
 
-namespace DotNet.Sdk.Extensions.Testing.HttpMocking.WebHostBuilders
+namespace DotNet.Sdk.Extensions.Testing.HttpMocking.WebHostBuilders.ResponseMocking
 {
     internal class TestHttpMessageHandlerDescriptor
     {

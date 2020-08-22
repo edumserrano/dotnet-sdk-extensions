@@ -1,9 +1,17 @@
 ﻿using System;
+using System.Net.Http;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.ResponseMocking;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.ResponseMocking;
 
 namespace DotNet.Sdk.Extensions.Testing.HttpMocking.WebHostBuilders.ResponseMocking
 {
+    /// <summary>
+    /// Provides methods to mock <see cref="HttpResponseMessage"/> for <see cref="HttpClient"/> calls
+    /// when doing tests using <see cref="HttpMockingWebHostBuilderExtensions.UseHttpMocks"/>
+    /// </summary>
+    /// <remarks>
+    /// This requires that the <see cref="HttpClient"/> 
+    /// </remarks>
     public class HttpResponseMessageMockDescriptorBuilder
     {
         private Type? _httpClientType;
