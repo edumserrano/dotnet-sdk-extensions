@@ -6,11 +6,11 @@ using DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.ResponseMocking;
 namespace DotNet.Sdk.Extensions.Testing.HttpMocking.WebHostBuilders.ResponseMocking
 {
     /// <summary>
-    /// Provides methods to mock <see cref="HttpResponseMessage"/> for <see cref="HttpClient"/> calls
-    /// when doing tests using <see cref="HttpMockingWebHostBuilderExtensions.UseHttpMocks"/>
+    /// Provides methods to mock an <see cref="HttpResponseMessage"/> for <see cref="HttpClient"/> calls
+    /// when doing tests using <see cref="HttpMockingWebHostBuilderExtensions.UseHttpMocks"/>.
     /// </summary>
     /// <remarks>
-    /// This requires that the <see cref="HttpClient"/> 
+    /// This requires that the <see cref="HttpClient"/> used on the app has been resolved via the <see cref="IHttpClientFactory"/>. 
     /// </remarks>
     public class HttpResponseMessageMockDescriptorBuilder
     {
@@ -27,12 +27,20 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.WebHostBuilders.ResponseMock
             Basic
         }
 
+        /// <summary>
+        /// Creates an instance of the <see cref="HttpResponseMessageMockDescriptorBuilder"/>
+        /// </summary>
         public HttpResponseMessageMockDescriptorBuilder()
         {
             _httpResponseMockBuilder = new HttpResponseMessageMockBuilder();
             _httpClientMockType = HttpClientMockTypes.Undefined;
         }
 
+        /// <summary>
+        /// Indicates that the <see cref="HttpResponseMessage"/> will be mocked for the typed <see cref="TClient"/> instance of HttpClient.
+        /// </summary>
+        /// <typeparam name="TClient">The <see cref="Type"/> of the <see cref="HttpClient"/> produced via the <see cref="IHttpClientFactory"/>.</typeparam>
+        /// <returns>An instance of <see cref="HttpResponseMessageMockBuilder"/> to customize the <see cref="HttpResponseMessage"/> to mock.</returns>
         public HttpResponseMessageMockBuilder ForTypedClient<TClient>()
         {
             EnsureHttpClientMockTypeIsDefinedOnlyOnce();
@@ -41,6 +49,11 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.WebHostBuilders.ResponseMock
             return _httpResponseMockBuilder;
         }
 
+        /// <summary>
+        /// Indicates that the <see cref="HttpResponseMessage"/> will be mocked for a named instance of HttpClient.
+        /// </summary>
+        /// <param name="name">The name the <see cref="IHttpClientFactory"/> uses to create the HttpClient instance.</param>
+        /// <returns>An instance of <see cref="HttpResponseMessageMockBuilder"/> to customize the <see cref="HttpResponseMessage"/> to mock.</returns>
         public HttpResponseMessageMockBuilder ForNamedClient(string name)
         {
             if (string.IsNullOrWhiteSpace(name))
@@ -54,6 +67,10 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.WebHostBuilders.ResponseMock
             return _httpResponseMockBuilder;
         }
 
+        /// <summary>
+        /// Indicates that the <see cref="HttpResponseMessage"/> will be mocked for a basic instance of HttpClient.
+        /// </summary>
+        /// <returns>An instance of <see cref="HttpResponseMessageMockBuilder"/> to customize the <see cref="HttpResponseMessage"/> to mock.</returns>
         public HttpResponseMessageMockBuilder ForBasicClient()
         {
             EnsureHttpClientMockTypeIsDefinedOnlyOnce();

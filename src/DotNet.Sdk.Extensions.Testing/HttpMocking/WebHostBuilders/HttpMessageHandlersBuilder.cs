@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.WebHostBuilders.ResponseMocking;
 using Microsoft.Extensions.DependencyInjection;
@@ -8,17 +9,32 @@ using Microsoft.Extensions.Http;
 
 namespace DotNet.Sdk.Extensions.Testing.HttpMocking.WebHostBuilders
 {
+    /// <summary>
+    /// Provides methods to mock an <see cref="HttpResponseMessage"/>.
+    /// </summary>
     public class HttpMessageHandlersBuilder
     {
         private readonly IServiceCollection _services;
         private readonly List<HttpResponseMessageMockDescriptorBuilder> _httpResponseMockBuilders;
 
+        /// <summary>
+        /// Creates an instance of <see cref="HttpMessageHandlerBuilder"/>.
+        /// </summary>
+        /// <param name="services">
+        /// The <see cref="IServiceCollection"/> instance that contains the <see cref="IHttpClientFactory"/> that produces the
+        /// <see cref="HttpClient"/> instances to which the <see cref="HttpResponseMessage"/> mocks will be applied. 
+        /// for </param>
         public HttpMessageHandlersBuilder(IServiceCollection services)
         {
             _services = services ?? throw new ArgumentNullException(nameof(services));
             _httpResponseMockBuilders = new List<HttpResponseMessageMockDescriptorBuilder>();
         }
 
+        /// <summary>
+        /// Mocks an <see cref="HttpResponseMessage"/>.
+        /// </summary>
+        /// <param name="httpResponseMockBuilder">The <see cref="HttpResponseMessageMockDescriptorBuilder"/> instance that describes the <see cref="HttpResponseMessage"/> mock. </param>
+        /// <returns>The <see cref="HttpMessageHandlersBuilder"/> for chaining.</returns>
         public HttpMessageHandlersBuilder MockHttpResponse(HttpResponseMessageMockDescriptorBuilder httpResponseMockBuilder)
         {
             if (httpResponseMockBuilder == null) throw new ArgumentNullException(nameof(httpResponseMockBuilder));
@@ -27,6 +43,11 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.WebHostBuilders
             return this;
         }
 
+        /// <summary>
+        /// Mocks an <see cref="HttpResponseMessage"/>.
+        /// </summary>
+        /// <param name="configure">An action to configure the <see cref="HttpResponseMessage"/> mock.</param>
+        /// <returns>The <see cref="HttpMessageHandlersBuilder"/> for chaining.</returns>
         public HttpMessageHandlersBuilder MockHttpResponse(Action<HttpResponseMessageMockDescriptorBuilder> configure)
         {
             if (configure == null) throw new ArgumentNullException(nameof(configure));
