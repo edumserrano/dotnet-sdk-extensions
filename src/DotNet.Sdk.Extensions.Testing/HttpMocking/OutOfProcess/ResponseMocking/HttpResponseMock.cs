@@ -1,10 +1,12 @@
 ﻿using System;
-using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 
 namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.ResponseMocking
 {
+    /// <summary>
+    /// Represents the mock for an <see cref="HttpResponse"/>.
+    /// </summary>
     public class HttpResponseMock
     {
         private readonly HttpResponseMockPredicateAsyncDelegate _predicateAsync;

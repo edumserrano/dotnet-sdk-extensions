@@ -2,6 +2,9 @@
 
 namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers
 {
+    /// <summary>
+    /// Represents an URL where the HTTP mock server is listening.
+    /// </summary>
     public readonly struct HttpMockServerUrl
     {
         private readonly string _url;
@@ -14,12 +17,25 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers
             _url = $"{scheme.ToString().ToLower()}://{host}:{port}";
         }
 
+        /// <summary>
+        /// The <see cref="HttpScheme"/> part of the URL.
+        /// </summary>
         public HttpScheme Scheme { get; }
 
+        /// <summary>
+        /// The host part of the URL.
+        /// </summary>
         public string Host { get; }
 
+        /// <summary>
+        /// The port part of the URL.
+        /// </summary>
         public int Port { get; }
 
+        /// <summary>
+        /// Returns the string representation of the URL 
+        /// </summary>
+        /// <returns></returns>
         public override string ToString() => _url;
 
         public static implicit operator string(HttpMockServerUrl url) => url.ToString();

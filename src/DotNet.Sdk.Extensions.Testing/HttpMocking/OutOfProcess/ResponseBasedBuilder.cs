@@ -6,6 +6,9 @@ using DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.ResponseMocking;
 
 namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess
 {
+    /// <summary>
+    /// Provides methods to configure and create an <see cref="HttpMockServer"/> when based on a request/response mocking.
+    /// </summary>
     public class ResponseBasedBuilder
     {
         private readonly HttpMockServerArgs _mockServerArgs;
@@ -16,6 +19,11 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess
             _mockServerArgs = args ?? throw new ArgumentNullException(nameof(args));
         }
 
+        /// <summary>
+        /// Defines an <see cref="HttpResponseMock"/> to be returned by the server.
+        /// </summary>
+        /// <param name="httpResponseMock">The <see cref="HttpResponseMock"/> to be added to the server's possible response mocks.</param>
+        /// <returns>The <see cref="ResponseBasedBuilder"/> for chaining.</returns>
         public ResponseBasedBuilder MockHttpResponse(HttpResponseMock httpResponseMock)
         {
             if (httpResponseMock == null) throw new ArgumentNullException(nameof(httpResponseMock));
@@ -24,6 +32,11 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess
             return this;
         }
 
+        /// <summary>
+        /// Defines an <see cref="HttpResponseMock"/> to be returned by the server.
+        /// </summary>
+        /// <param name="configureHttpResponseMock">An action to configure the <see cref="HttpResponseMock"/> to be added to the server's possible response mocks.</param>
+        /// <returns>The <see cref="ResponseBasedBuilder"/> for chaining.</returns>
         public ResponseBasedBuilder MockHttpResponse(Action<HttpResponseMockBuilder> configureHttpResponseMock)
         {
             if (configureHttpResponseMock == null) throw new ArgumentNullException(nameof(configureHttpResponseMock));
@@ -35,6 +48,10 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess
             return this;
         }
 
+        /// <summary>
+        /// Creates an <see cref="HttpMockServer"/> instance.
+        /// </summary>
+        /// <returns>The <see cref="HttpMockServer"/> instance.</returns>
         public HttpMockServer Build()
         {
             return new ResponseBasedHttpMockServer(_mockServerArgs, _httpResponseMocks);

@@ -4,12 +4,20 @@ using Microsoft.AspNetCore.Http;
 
 namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.ResponseMocking
 {
+    /// <summary>
+    /// Defines methods to configure and build an <see cref="HttpResponseMock"/>
+    /// </summary>
     public class HttpResponseMockBuilder
     {
         private readonly HttpResponseMockPredicateAsyncDelegate _defaultPredicateAsync = (httpRequest, cancellationToken) => Task.FromResult(true);
         private HttpResponseMockPredicateAsyncDelegate? _predicateAsync;
         private HttpResponseMockHandlerAsyncDelegate? _handlerAsync;
 
+        /// <summary>
+        /// Define the condition for the <see cref="HttpResponseMock"/> to be executed.
+        /// </summary>
+        /// <param name="predicate">The predicate that determines if the <see cref="HttpResponseMock"/> is executed or not.</param>
+        /// <returns>The <see cref="HttpResponseMockBuilder"/> for chaining.</returns>
         public HttpResponseMockBuilder Where(Func<HttpRequest, bool> predicate)
         {
             if (predicate == null) throw new ArgumentNullException(nameof(predicate));
@@ -17,6 +25,11 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.ResponseMocking
             return Where((httpRequest, cancellationToken) => Task.FromResult(predicate(httpRequest)));
         }
 
+        /// <summary>
+        /// Define the condition for the <see cref="HttpResponseMock"/> to be executed.
+        /// </summary>
+        /// <param name="predicateAsync">The predicate that determines if the <see cref="HttpResponseMock"/> is executed or not.</param>
+        /// <returns>The <see cref="HttpResponseMockBuilder"/> for chaining.</returns>
         public HttpResponseMockBuilder Where(HttpResponseMockPredicateAsyncDelegate predicateAsync)
         {
             if (_predicateAsync != null)
@@ -27,6 +40,11 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.ResponseMocking
             return this;
         }
 
+        /// <summary>
+        /// Configure the <see cref="HttpResponse"/> produced by the mock.
+        /// </summary>
+        /// <param name="configureHttpResponse">An action to configure the <see cref="HttpResponse"/> that the mock returns when executed.</param>
+        /// <returns>The <see cref="HttpResponseMockBuilder"/> for chaining.</returns>
         public HttpResponseMockBuilder RespondWith(Action<HttpResponse> configureHttpResponse)
         {
             if (configureHttpResponse == null) throw new ArgumentNullException(nameof(configureHttpResponse));
@@ -37,6 +55,11 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.ResponseMocking
             });
         }
 
+        /// <summary>
+        /// Configure the <see cref="HttpResponse"/> produced by the mock.
+        /// </summary>
+        /// <param name="handler">An action to configure the <see cref="HttpResponse"/> that the mock returns when executed.</param>
+        /// <returns>The <see cref="HttpResponseMockBuilder"/> for chaining.</returns>
         public HttpResponseMockBuilder RespondWith(Action<HttpRequest, HttpResponse> handler)
         {
             if (handler == null) throw new ArgumentNullException(nameof(handler));
@@ -48,6 +71,11 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.ResponseMocking
             });
         }
 
+        /// <summary>
+        /// Configure the <see cref="HttpResponse"/> produced by the mock.
+        /// </summary>
+        /// <param name="handlerAsync">Delegate to configure the <see cref="HttpResponse"/> that the mock returns when executed.</param>
+        /// <returns>The <see cref="HttpResponseMockBuilder"/> for chaining.</returns>
         public HttpResponseMockBuilder RespondWith(HttpResponseMockHandlerAsyncDelegate handlerAsync)
         {
             if (_handlerAsync != null)
@@ -58,6 +86,10 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.ResponseMocking
             return this;
         }
 
+        /// <summary>
+        /// Creates an instance of <see cref="HttpResponseMock"/>.
+        /// </summary>
+        /// <returns>The <see cref="HttpResponseMock"/> instance.</returns>
         public HttpResponseMock Build()
         {
             // predicate is not mandatory. The default predicate represents an always apply condition.

@@ -6,6 +6,9 @@ using Microsoft.Extensions.Hosting;
 
 namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers
 {
+    /// <summary>
+    /// HTTP server to be used for tests when you want to mock out of process HTTP responses.
+    /// </summary>
     public abstract class HttpMockServer : IAsyncDisposable
     {
         private readonly HttpMockServerArgs _mockServerArgs;
@@ -16,6 +19,10 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers
             _mockServerArgs = mockServerArgs ?? throw new ArgumentNullException(nameof(mockServerArgs));
         }
 
+        /// <summary>
+        /// Starts the server.
+        /// </summary>
+        /// <returns>The URLs where the server is listening for requests.</returns>
         public async Task<List<HttpMockServerUrl>> StartAsync()
         {
             _host = CreateHostBuilder(_mockServerArgs.HostArgs).Build();

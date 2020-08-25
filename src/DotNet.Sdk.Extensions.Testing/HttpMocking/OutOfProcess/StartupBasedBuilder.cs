@@ -4,6 +4,10 @@ using DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers.Startup
 
 namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess
 {
+    /// <summary>
+    /// Provides methods to configure and create an <see cref="HttpMockServer"/> when based on a Startup class.
+    /// </summary>
+    /// <typeparam name="T">The <see cref="Type"/> of the Startup class.</typeparam>
     public class StartupBasedBuilder<T> where T : class
     {
         private readonly HttpMockServerArgs _mockServerArgs;
@@ -13,6 +17,10 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess
             _mockServerArgs = args ?? throw new ArgumentNullException(nameof(args));
         }
 
+        /// <summary>
+        /// Creates an <see cref="HttpMockServer"/> instance.
+        /// </summary>
+        /// <returns>The <see cref="HttpMockServer"/> instance.</returns>
         public HttpMockServer Build()
         {
             return new StartupBasedHttpMockServer<T>(_mockServerArgs);
