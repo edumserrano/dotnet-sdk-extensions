@@ -21,7 +21,8 @@ namespace DotNet.Sdk.Extensions.Demos.Options.EagerValidateOptions
         {
             services.AddSingleton<ISomeClassEager, SomeClassEager>();
             services
-                .AddOptions<MyOptionsEager>(_configuration, sectionName: "MyOptionsSectionEagerValidation")
+                .AddOptions<MyOptionsEager>()
+                .Bind(_configuration.GetSection("MyOptionsSectionEagerValidation"))
                 .ValidateDataAnnotations()
                 .ValidateEagerly();
         }

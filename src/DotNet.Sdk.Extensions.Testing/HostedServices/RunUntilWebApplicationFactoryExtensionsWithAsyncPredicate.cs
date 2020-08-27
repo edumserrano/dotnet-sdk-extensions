@@ -15,7 +15,7 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
         /// Executes the host until the predicate or a timeout is met.
         /// </summary>
         /// <typeparam name="T">The <see cref="Type"/> of the startup class used with host.</typeparam>
-        /// <param name="webApplicationFactory">The <see cref="WebApplicationFactory&lt;T&gt;"/> to execute.</param>
+        /// <param name="webApplicationFactory">The <see cref="WebApplicationFactory{T}"/> to execute.</param>
         /// <param name="predicateAsyncAsync">The async predicate to determine when the host should be terminated.</param>
         /// <param name="runUntilCancellationToken">The <see cref="CancellationToken"/> to abort the predicate check if required.</param>
         /// <returns>The <see cref="Task"/> that will execute the host until it's terminated.</returns>
@@ -40,7 +40,7 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
         /// Executes the host until the predicate or a timeout is met.
         /// </summary>
         /// <typeparam name="T">The <see cref="Type"/> of the startup class used with host.</typeparam>
-        /// <param name="webApplicationFactory">The <see cref="WebApplicationFactory&lt;T&gt;"/> to execute.</param>
+        /// <param name="webApplicationFactory">The <see cref="WebApplicationFactory{T}"/> to execute.</param>
         /// <param name="predicateAsyncAsync">The async predicate to determine when the host should be terminated.</param>
         /// <param name="configureOptions">Action to configure the option values for the host execution.</param>
         /// <param name="runUntilCancellationToken">The <see cref="CancellationToken"/> to abort the predicate check if required.</param>

@@ -58,7 +58,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess
         /// Defines that the <see cref="HttpMockServer"/> will be based on a Startup class.
         /// </summary>
         /// <typeparam name="T">The <see cref="Type"/> of the Startup class to be used by the <see cref="HttpMockServer"/>.</typeparam>
-        /// <returns>The <see cref="StartupBasedBuilder&lt;T&gt;"/> for chaining.</returns>
+        /// <returns>The <see cref="StartupBasedBuilder{T}"/> for chaining.</returns>
         public StartupBasedBuilder<T> UseStartup<T>() where T : class
         {
             var args = new HttpMockServerArgs(_hostUrls, _hostArgs);

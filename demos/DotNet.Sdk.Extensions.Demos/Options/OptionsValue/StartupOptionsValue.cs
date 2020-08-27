@@ -20,9 +20,7 @@ namespace DotNet.Sdk.Extensions.Demos.Options.OptionsValue
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<ISomeClass, SomeClass>();
-            services
-                .AddOptions<MyOptions>(_configuration, sectionName: "MyOptionsSection")
-                .AddOptionsValue();
+            services.AddOptionsValue<MyOptions>(_configuration, sectionName: "MyOptionsSection");
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
