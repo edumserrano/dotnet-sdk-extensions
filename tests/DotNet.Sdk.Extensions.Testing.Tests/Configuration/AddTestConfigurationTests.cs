@@ -5,6 +5,8 @@ using DotNet.Sdk.Extensions.Testing.Configuration;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.CommandLine;
+using Microsoft.Extensions.Configuration.EnvironmentVariables;
 using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
@@ -70,18 +72,14 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
             exception.Message.ShouldBe(exceptionMessage);
         }
 
+        /// <summary>
+        /// No need to test more scenarios because they're covered by <see cref="ValidateArguments1"/>
+        /// </summary>
         public static TheoryData<IWebHostBuilder, Action<TestConfigurationOptions>, string, string[], Type, string> ValidateArguments2Data =>
             new TheoryData<IWebHostBuilder, Action<TestConfigurationOptions>, string, string[], Type, string>
             {
                 { null!, options => { }, "some-appsettings", Array.Empty<string>(), typeof(ArgumentNullException), "Value cannot be null. (Parameter 'builder')" },
-                { new WebHostBuilder(), null!, "some-appsettings", Array.Empty<string>(), typeof(ArgumentNullException), "Value cannot be null. (Parameter 'configureOptions')" },
-                { new WebHostBuilder(), options => { }, null!, Array.Empty<string>(), typeof(ArgumentException), "Cannot be null or white space. (Parameter 'appSettingsFilename')" },
-                { new WebHostBuilder(), options => { }, string.Empty, Array.Empty<string>(), typeof(ArgumentException), "Cannot be null or white space. (Parameter 'appSettingsFilename')" },
-                { new WebHostBuilder(), options => { }, " ", Array.Empty<string>(), typeof(ArgumentException), "Cannot be null or white space. (Parameter 'appSettingsFilename')" },
-                { new WebHostBuilder(), options => { }, "some-appsettings", null!, typeof(ArgumentNullException), "Value cannot be null. (Parameter 'otherAppsettingsFilenames')" },
-                { new WebHostBuilder(), options => { }, "some-appsettings", new[] { "" }, typeof(ArgumentException), "Cannot have an element that is null or white space. (Parameter 'otherAppsettingsFilenames')" },
-                { new WebHostBuilder(), options => { }, "some-appsettings", new[] { " " }, typeof(ArgumentException), "Cannot have an element that is null or white space. (Parameter 'otherAppsettingsFilenames')" },
-                { new WebHostBuilder(), options => { }, "some-appsettings", new[] { "something","" }, typeof(ArgumentException), "Cannot have an element that is null or white space. (Parameter 'otherAppsettingsFilenames')" },
+                { new WebHostBuilder(), null!, "some-appsettings", Array.Empty<string>(), typeof(ArgumentNullException), "Value cannot be null. (Parameter 'configureOptions')" }
             };
 
         /// <summary>
@@ -156,7 +154,6 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
             jsonConfigurationProviders[2].Source.Path.ShouldBe("appsettings.test3.json");
         }
 
-
         /// <summary>
         /// Tests that the <see cref="Testing.Configuration.WebHostBuilderExtensions.AddTestAppSettings(IWebHostBuilder, Action{TestConfigurationOptions} , string, string[])"/>
         /// allows loading files from a specific directory other than the default AppSettings directory.
@@ -207,6 +204,36 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
                 .ToList();
             jsonConfigurationProviders.Count().ShouldBe(1);
             jsonConfigurationProviders[0].Source.Path.ShouldBe("appsettings.test.json");
+        }
+
+        /// <summary>
+        /// Tests that the <see cref="Testing.Configuration.WebHostBuilderExtensions.AddTestAppSettings(IWebHostBuilder, string, string[])"/>
+        /// preserves the expected order for configuration sources and therefore the expected loading configuration behavior.
+        /// Meaning that configuration is taken from command line first, then environment variables, then appsettings files. For this to happen
+        /// the <see cref="CommandLineConfigurationProvider"/> must be the last provider in <see cref="IConfiguration"/> and the
+        /// <see cref="EnvironmentVariablesConfigurationProvider"/> the one before that.
+        /// </summary>
+        [Fact]
+        public void PreservesExpectedConfigurationSourcesOrder()
+        {
+            var webHost = WebHost.CreateDefaultBuilder()
+                .ConfigureAppConfiguration((context, builder) =>
+                {
+                    // The default builder will add an EnvironmentVariablesConfigurationProvider.
+                    // For this test I also need to have a CommandLineConfigurationProvider so the next line takes care of that.
+                    builder.AddCommandLine(Array.Empty<string>());
+                })
+                .Configure((context, applicationBuilder) =>
+                {
+                    // this is required just to provide a configuration for the webhost
+                    // or else it fails when calling webHostBuilder.Build()
+                })
+                .AddTestAppSettings("appsettings.test.json", "appsettings.test2.json", "appsettings.test3.json")
+                .Build();
+            var configuration = (ConfigurationRoot)webHost.Services.GetRequiredService<IConfiguration>();
+            var configurationProviders = configuration.Providers.ToList();
+            configurationProviders[^1].ShouldBeOfType<CommandLineConfigurationProvider>();
+            configurationProviders[^2].ShouldBeOfType<EnvironmentVariablesConfigurationProvider>();
         }
     }
 }
