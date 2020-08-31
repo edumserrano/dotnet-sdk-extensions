@@ -1,7 +1,6 @@
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using DotNet.Sdk.Extensions.Testing.Demos.TestApp.DemoStartups.HttpMocking;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.WebHostBuilders;
 using Microsoft.AspNetCore.TestHost;
 using Shouldly;

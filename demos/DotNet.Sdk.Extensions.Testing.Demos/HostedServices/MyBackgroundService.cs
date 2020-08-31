@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 
-namespace DotNet.Sdk.Extensions.Testing.Demos.TestApp.DemoStartups.HostedServices
+namespace DotNet.Sdk.Extensions.Testing.Demos.HostedServices
 {
     public class MyBackgroundService : BackgroundService
     {

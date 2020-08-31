@@ -5,21 +5,20 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace DotNet.Sdk.Extensions.Testing.Demos.TestApp.DemoStartups.HostedServices
+namespace DotNet.Sdk.Extensions.Testing.Demos.Configuration
 {
-    public class StartupHostedService
+    public class StartupConfiguringWebHost
     {
         private readonly IConfiguration _configuration;
 
-        public StartupHostedService(IConfiguration configuration)
+        public StartupConfiguringWebHost(IConfiguration configuration)
         {
             _configuration = configuration;
         }
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<ICalculator, Calculator>();
-            services.AddHostedService<MyBackgroundService>();
+
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -29,9 +28,13 @@ namespace DotNet.Sdk.Extensions.Testing.Demos.TestApp.DemoStartups.HostedService
                 .UseRouting()
                 .UseEndpoints(endpoints =>
                 {
-                    endpoints.MapGet("/", async context =>
+                    endpoints.MapGet("/message-one", async context =>
                     {
-                        await context.Response.WriteAsync("hi from asp.net core app with background service");
+                        await context.Response.WriteAsync(_configuration["MessageOne"]);
+                    });
+                    endpoints.MapGet("/message-two", async context =>
+                    {
+                        await context.Response.WriteAsync(_configuration["MessageTwo"]);
                     });
                 });
         }
