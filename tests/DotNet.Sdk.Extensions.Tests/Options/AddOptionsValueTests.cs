@@ -35,7 +35,6 @@ namespace DotNet.Sdk.Extensions.Tests.Options
         public void ValidatesArguments1()
         {
             var configuration = new ConfigurationRoot(new List<IConfigurationProvider>());
-            var serviceCollection = new ServiceCollection();
             var servicesArgumentNullException = Should.Throw<ArgumentNullException>(() =>
             {
                 OptionsBuilderExtensions.AddOptionsValue<MyOptions>(services: null!, configuration);

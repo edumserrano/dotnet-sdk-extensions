@@ -20,7 +20,7 @@ namespace DotNet.Sdk.Extensions.Testing.Demos.Configuration
             var httpClient = _webApplicationFactory
                 .WithWebHostBuilder(builder =>
                 {
-                    builder.AddTestConfiguration(options => options.AppSettingsDir = "Configuration/AppSettings", "appsettings.json", "appsettings.Default.json");
+                    builder.AddTestAppSettings(options => options.AppSettingsDir = "Configuration/AppSettings", "appsettings.json", "appsettings.Default.json");
                 })
                 .CreateClient();
 

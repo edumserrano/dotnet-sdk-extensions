@@ -3,11 +3,20 @@
     public class TestConfigurationOptions
     {
         /// <summary>
-        /// Directory for appsettings files.
+        /// Path for the directory of the appsettings files.
         /// </summary>
         /// <remarks>
-        /// It must be a relative directory to the current directory. It defaults to AppSettings.
+        /// <see cref="IsRelative"/> determines if this is a relative or absolute path.
+        /// Defaults to AppSettings.
         /// </remarks>
         public string AppSettingsDir { get; set; } = "AppSettings";
+
+        /// <summary>
+        /// Defines if the <see cref="AppSettingsDir"/> is a relative or absolute path.
+        /// </summary>
+        /// <remarks>
+        /// Defaults to true.
+        /// </remarks>
+        public bool IsRelative { get; set; } = true;
     }
 }
