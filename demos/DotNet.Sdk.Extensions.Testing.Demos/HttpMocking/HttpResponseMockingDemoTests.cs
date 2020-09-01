@@ -22,9 +22,9 @@ namespace DotNet.Sdk.Extensions.Testing.Demos.HttpMocking
         {
             _webApplicationFactory = webApplicationFactory;
         }
-
+        
         [Fact]
-        public async Task MockTypedHttpClientDemoTest()
+        public async Task MockBasicHttpClientDemoTest()
         {
             var httpClient = _webApplicationFactory
                 .WithWebHostBuilder(builder =>
@@ -34,12 +34,12 @@ namespace DotNet.Sdk.Extensions.Testing.Demos.HttpMocking
                         {
                             // inject mocks for any other services
                         })
-                        .UseHttpMocks(httpMockBuilder =>
+                        .UseHttpMocks(handlers =>
                         {
-                            httpMockBuilder.MockHttpResponse(responseBuilder =>
+                            handlers.MockHttpResponse(httpResponseMessageBuilder =>
                             {
-                                responseBuilder
-                                    .ForTypedClient<IMyApiClient>()
+                                httpResponseMessageBuilder
+                                    .ForBasicClient()
                                     .RespondWith(httpRequestMessage =>
                                     {
                                         return new HttpResponseMessage(HttpStatusCode.OK);
@@ -49,9 +49,9 @@ namespace DotNet.Sdk.Extensions.Testing.Demos.HttpMocking
                 })
                 .CreateClient();
 
-            var response = await httpClient.GetAsync("/typed-client");
+            var response = await httpClient.GetAsync("/basic-client");
             var message = await response.Content.ReadAsStringAsync();
-            message.ShouldBe("IMyApiClient typed http client returned: True");
+            message.ShouldBe("Basic http client returned: True");
         }
 
         [Fact]
@@ -66,11 +66,11 @@ namespace DotNet.Sdk.Extensions.Testing.Demos.HttpMocking
                         {
                             // inject mocks for any other services
                         })
-                        .UseHttpMocks(httpMessageHandlersBuilder =>
+                        .UseHttpMocks(handlers =>
                         {
-                            httpMessageHandlersBuilder.MockHttpResponse(mockBuilder =>
+                            handlers.MockHttpResponse(httpResponseMessageBuilder =>
                             {
-                                mockBuilder
+                                httpResponseMessageBuilder
                                     .ForNamedClient(httpClientName)
                                     .RespondWith(httpRequestMessage =>
                                     {
@@ -86,8 +86,9 @@ namespace DotNet.Sdk.Extensions.Testing.Demos.HttpMocking
             message.ShouldBe($"Named http client ({httpClientName}) returned: True");
         }
 
+
         [Fact]
-        public async Task MockBasicHttpClientDemoTest()
+        public async Task MockTypedHttpClientDemoTest()
         {
             var httpClient = _webApplicationFactory
                 .WithWebHostBuilder(builder =>
@@ -97,12 +98,12 @@ namespace DotNet.Sdk.Extensions.Testing.Demos.HttpMocking
                         {
                             // inject mocks for any other services
                         })
-                        .UseHttpMocks(httpMessageHandlersBuilder =>
+                        .UseHttpMocks(handlers =>
                         {
-                            httpMessageHandlersBuilder.MockHttpResponse(mockBuilder =>
+                            handlers.MockHttpResponse(httpResponseMessageBuilder =>
                             {
-                                mockBuilder
-                                    .ForBasicClient()
+                                httpResponseMessageBuilder
+                                    .ForTypedClient<IMyApiClient>()
                                     .RespondWith(httpRequestMessage =>
                                     {
                                         return new HttpResponseMessage(HttpStatusCode.OK);
@@ -112,9 +113,9 @@ namespace DotNet.Sdk.Extensions.Testing.Demos.HttpMocking
                 })
                 .CreateClient();
 
-            var response = await httpClient.GetAsync("/basic-client");
+            var response = await httpClient.GetAsync("/typed-client");
             var message = await response.Content.ReadAsStringAsync();
-            message.ShouldBe("Basic http client returned: True");
+            message.ShouldBe("IMyApiClient typed http client returned: True");
         }
     }
 }
