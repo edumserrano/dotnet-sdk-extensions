@@ -35,7 +35,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.Response
         {
             if (_predicateAsync != null)
             {
-                throw new HttpResponseMessageMockBuilderException($"{nameof(HttpResponseMessageMockBuilder)}.{nameof(Where)} condition already configured.");
+                throw new InvalidOperationException($"{nameof(HttpResponseMessageMockBuilder)}.{nameof(Where)} condition already configured.");
             }
             _predicateAsync = predicate ?? throw new ArgumentNullException(nameof(predicate));
             return this;
@@ -48,6 +48,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.Response
         /// <returns>The <see cref="HttpResponseMessageMockBuilder"/> for chaining.</returns>
         public HttpResponseMessageMockBuilder RespondWith(HttpResponseMessage httpResponseMessage)
         {
+            if (httpResponseMessage == null) throw new ArgumentNullException(nameof(httpResponseMessage));
             return RespondWith(httpRequestMessage => httpResponseMessage);
         }
         
@@ -72,7 +73,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.Response
         {
             if (_handlerAsync != null)
             {
-                throw new HttpResponseMessageMockBuilderException($"{nameof(HttpResponseMessageMockBuilder)}.{nameof(RespondWith)} already configured.");
+                throw new InvalidOperationException($"{nameof(HttpResponseMessageMockBuilder)}.{nameof(RespondWith)} already configured.");
             }
             _handlerAsync = handler ?? throw new ArgumentNullException(nameof(handler));
             return this;
@@ -88,7 +89,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.Response
             _predicateAsync ??= _defaultPredicate;
             if (_handlerAsync is null)
             {
-                throw new HttpResponseMessageMockBuilderException($"{nameof(HttpResponseMessage)} not configured for {nameof(HttpResponseMock)}. Use {nameof(HttpResponseMessageMockBuilder)}.{nameof(RespondWith)} to configure it.");
+                throw new InvalidOperationException($"{nameof(HttpResponseMessage)} not configured for {nameof(HttpResponseMock)}. Use {nameof(HttpResponseMessageMockBuilder)}.{nameof(RespondWith)} to configure it.");
             }
 
             return new HttpResponseMessageMock(_predicateAsync, _handlerAsync);

@@ -13,7 +13,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.Response
         private readonly HttpResponseMessageMockPredicateDelegate _predicate;
         private readonly HttpResponseMessageMockHandlerDelegate _handler;
 
-        public HttpResponseMessageMock(
+        internal HttpResponseMessageMock(
             HttpResponseMessageMockPredicateDelegate predicate,
             HttpResponseMessageMockHandlerDelegate handler)
         {
@@ -21,13 +21,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.Response
             _handler = handler ?? throw new ArgumentNullException(nameof(handler));
         }
 
-        /// <summary>
-        /// Executes the <see cref="HttpResponseMessage"/> mock.
-        /// </summary>
-        /// <param name="request"> The <see cref="HttpRequestMessage"/> passed to the <see cref="HttpResponseMessage"/> mock execution.</param>
-        /// <param name="cancellationToken">The <see cref="CancellationToken"/> passed to the <see cref="HttpResponseMessage"/> mock execution.</param>
-        /// <returns></returns>
-        public async Task<HttpResponseMessageMockResult> ExecuteAsync(HttpRequestMessage request, CancellationToken cancellationToken = default)
+        internal async Task<HttpResponseMessageMockResult> ExecuteAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             var shouldExecute = await _predicate(request, cancellationToken);
             if (!shouldExecute)

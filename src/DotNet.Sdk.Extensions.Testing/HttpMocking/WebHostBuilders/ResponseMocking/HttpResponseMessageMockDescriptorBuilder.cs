@@ -82,7 +82,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.WebHostBuilders.ResponseMock
         {
             return _httpClientMockType switch
             {
-                HttpClientMockTypes.Undefined => throw new HttpResponseMessageMockDescriptorBuilderException($"Client type not configured for {nameof(HttpResponseMock)}. Use {nameof(HttpResponseMessageMockDescriptorBuilder)}.{nameof(ForTypedClient)}, {nameof(HttpResponseMessageMockDescriptorBuilder)}.{nameof(ForNamedClient)} or {nameof(HttpResponseMessageMockDescriptorBuilder)}.{nameof(ForBasicClient)} to configure it."),
+                HttpClientMockTypes.Undefined => throw new InvalidOperationException($"Client type not configured for {nameof(HttpResponseMock)}. Use {nameof(HttpResponseMessageMockDescriptorBuilder)}.{nameof(ForTypedClient)}, {nameof(HttpResponseMessageMockDescriptorBuilder)}.{nameof(ForNamedClient)} or {nameof(HttpResponseMessageMockDescriptorBuilder)}.{nameof(ForBasicClient)} to configure it."),
                 HttpClientMockTypes.Typed => HttpResponseMessageMockDescriptor.Typed(_httpClientType!, _httpResponseMockBuilder),
                 HttpClientMockTypes.Named => HttpResponseMessageMockDescriptor.Named(_httpClientName!, _httpResponseMockBuilder),
                 HttpClientMockTypes.Basic => HttpResponseMessageMockDescriptor.Basic(_httpResponseMockBuilder),
@@ -94,7 +94,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.WebHostBuilders.ResponseMock
         {
             if (_httpClientMockType != HttpClientMockTypes.Undefined)
             {
-                throw new HttpResponseMessageMockDescriptorBuilderException("Client type already configured.");
+                throw new InvalidOperationException("Client type already configured.");
             }
         }
     }

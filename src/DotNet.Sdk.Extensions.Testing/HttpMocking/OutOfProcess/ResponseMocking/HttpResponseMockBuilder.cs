@@ -34,7 +34,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.ResponseMocking
         {
             if (_predicateAsync != null)
             {
-                throw new HttpResponseMockBuilderException($"{nameof(HttpResponseMockBuilder)}.{nameof(Where)} condition already configured.");
+                throw new InvalidOperationException($"{nameof(HttpResponseMockBuilder)}.{nameof(Where)} condition already configured.");
             }
             _predicateAsync = predicateAsync ?? throw new ArgumentNullException(nameof(predicateAsync));
             return this;
@@ -80,7 +80,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.ResponseMocking
         {
             if (_handlerAsync != null)
             {
-                throw new HttpResponseMockBuilderException($"{nameof(HttpResponseMockBuilder)}.{nameof(RespondWith)} already configured.");
+                throw new InvalidOperationException($"{nameof(HttpResponseMockBuilder)}.{nameof(RespondWith)} already configured.");
             }
             _handlerAsync = handlerAsync ?? throw new ArgumentNullException(nameof(handlerAsync));
             return this;
@@ -96,7 +96,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.ResponseMocking
             _predicateAsync ??= _defaultPredicateAsync;
             if (_handlerAsync is null)
             {
-                throw new HttpResponseMockBuilderException($"{nameof(HttpResponse)} not configured for {nameof(HttpResponseMock)}. Use {nameof(HttpResponseMockBuilder)}.{nameof(RespondWith)} to configure it.");
+                throw new InvalidOperationException($"{nameof(HttpResponse)} not configured for {nameof(HttpResponseMock)}. Use {nameof(HttpResponseMockBuilder)}.{nameof(RespondWith)} to configure it.");
             }
 
             return new HttpResponseMock(_predicateAsync, _handlerAsync);
