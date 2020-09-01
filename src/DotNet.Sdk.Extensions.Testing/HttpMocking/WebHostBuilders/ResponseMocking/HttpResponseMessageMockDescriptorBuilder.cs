@@ -30,7 +30,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.WebHostBuilders.ResponseMock
         /// <summary>
         /// Creates an instance of the <see cref="HttpResponseMessageMockDescriptorBuilder"/>
         /// </summary>
-        public HttpResponseMessageMockDescriptorBuilder()
+        internal HttpResponseMessageMockDescriptorBuilder()
         {
             _httpResponseMockBuilder = new HttpResponseMessageMockBuilder();
             _httpClientMockType = HttpClientMockTypes.Undefined;

@@ -1,7 +1,9 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.WebHostBuilders;
+using DotNet.Sdk.Extensions.Testing.HttpMocking.WebHostBuilders.ResponseMocking;
 using DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.WebHostBuilders.Auxiliar;
 using Shouldly;
 using Xunit;
@@ -20,6 +22,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.WebHostBuilders
         /// <summary>
         /// Tests that the <seealso cref="HttpMockingWebHostBuilderExtensions.UseHttpMocks"/> returns the defined
         /// mock for a basic http client mock.
+        /// This test uses the <see cref="HttpMessageHandlers.MockHttpResponse(Action{HttpResponseMessageMockDescriptorBuilder})"/> method.
         /// </summary>
         [Fact]
         public async Task BasicClientSimpleCase()
