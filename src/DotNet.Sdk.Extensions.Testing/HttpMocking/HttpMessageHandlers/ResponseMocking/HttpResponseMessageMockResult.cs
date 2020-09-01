@@ -27,7 +27,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.Response
             {
                 if (Status != HttpResponseMessageMockResults.Executed)
                 {
-                    throw new InvalidOperationException($"Cannot retrieve {nameof(HttpResponseMessage)} unless Status is {HttpResponseMockResults.Executed}. Status is {Status}");
+                    throw new InvalidOperationException($"Cannot retrieve {nameof(HttpResponseMessage)} unless Status is {HttpResponseMockResults.Executed}. Status is {Status}.");
                 }
 
                 return _httpResponseMessage!;
@@ -35,7 +35,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.Response
             private set => _httpResponseMessage = value;
         }
 
-        public static HttpResponseMessageMockResult Executed(HttpResponseMessage httpResponseMessage)
+        internal static HttpResponseMessageMockResult Executed(HttpResponseMessage httpResponseMessage)
         {
             return new HttpResponseMessageMockResult
             {
@@ -44,7 +44,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.Response
             };
         }
 
-        public static HttpResponseMessageMockResult Skipped()
+        internal static HttpResponseMessageMockResult Skipped()
         {
             return new HttpResponseMessageMockResult
             {
