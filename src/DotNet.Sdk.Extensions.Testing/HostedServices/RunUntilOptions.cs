@@ -19,7 +19,7 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
 
         /// <summary>
         /// Interval of time to check the predicate for the to determine if the host running the hosted service
-        /// should be terminated.
+        /// should be terminated. Defaults to 5 ms.
         /// </summary>
         public TimeSpan PredicateCheckInterval { get; set; } = TimeSpan.FromMilliseconds(5);
     }

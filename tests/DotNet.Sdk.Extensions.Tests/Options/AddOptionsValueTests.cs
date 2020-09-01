@@ -87,8 +87,7 @@ namespace DotNet.Sdk.Extensions.Tests.Options
             });
             configurationArgumentNullException.Message.ShouldBe("Value cannot be null. (Parameter 'configuration')");
         }
-
-
+        
         /// <summary>
         /// Tests that the <see cref="OptionsBuilderExtensions.AddOptionsValue{T}(OptionsBuilder{T})"/>
         /// extension method adds the type T option to the <see cref="IServiceCollection"/>.

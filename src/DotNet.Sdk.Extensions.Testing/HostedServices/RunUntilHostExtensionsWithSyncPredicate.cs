@@ -1,50 +1,48 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.Hosting;
 
 namespace DotNet.Sdk.Extensions.Testing.HostedServices
 {
     /*
-     * RunUntil WebApplicationFactory extension methods overloads where the predicate is a sync function.
+     * RunUntil IHost extension methods overloads where the predicate is a sync function.
      */
     public static partial class RunUntilExtensions
     {
         /// <summary>
         /// Executes the host until the predicate or a timeout is met.
         /// </summary>
-        /// <typeparam name="T">The <see cref="Type"/> of the startup class used with host.</typeparam>
-        /// <param name="webApplicationFactory">The <see cref="WebApplicationFactory{T}"/> to execute.</param>
+        /// <param name="host">The <see cref="IHost"/> to execute.</param>
         /// <param name="predicate">The predicate to determine when the host should be terminated.</param>
         /// <returns>The <see cref="Task"/> that will execute the host until it's terminated.</returns>
-        public static Task RunUntilAsync<T>(
-            this WebApplicationFactory<T> webApplicationFactory,
-            RunUntilPredicate predicate) where T : class
+        public static Task RunUntilAsync(
+            this IHost host,
+            RunUntilPredicate predicate)
         {
-            if (webApplicationFactory == null) throw new ArgumentNullException(nameof(webApplicationFactory));
+            if (host == null) throw new ArgumentNullException(nameof(host));
             if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
             RunUntilPredicateAsync predicateAsync = () => Task.FromResult(predicate());
-            return webApplicationFactory.RunUntilAsync(predicateAsync);
+            return host.RunUntilAsync(predicateAsync);
         }
         
         /// <summary>
         /// Executes the host until the predicate or a timeout is met.
         /// </summary>
-        /// <typeparam name="T">The <see cref="Type"/> of the startup class used with host.</typeparam>
-        /// <param name="webApplicationFactory">The <see cref="WebApplicationFactory{T}"/> to execute.</param>
+        /// <param name="host">The <see cref="IHost"/> to execute.</param>
         /// <param name="predicate">The predicate to determine when the host should be terminated.</param>
         /// <param name="configureOptions">Action to configure the option values for the host execution.</param>
         /// <returns>The <see cref="Task"/> that will execute the host until it's terminated.</returns>
-        public static Task RunUntilAsync<T>(
-            this WebApplicationFactory<T> webApplicationFactory,
+        public static Task RunUntilAsync(
+            this IHost host,
             RunUntilPredicate predicate,
-            Action<RunUntilOptions> configureOptions) where T : class
+            Action<RunUntilOptions> configureOptions)
         {
-            if (webApplicationFactory == null) throw new ArgumentNullException(nameof(webApplicationFactory));
+            if (host == null) throw new ArgumentNullException(nameof(host));
             if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
             RunUntilPredicateAsync predicateAsync = () => Task.FromResult(predicate());
-            return webApplicationFactory.RunUntilAsync(predicateAsync, configureOptions);
+            return host.RunUntilAsync(predicateAsync, configureOptions);
         }
     }
 }

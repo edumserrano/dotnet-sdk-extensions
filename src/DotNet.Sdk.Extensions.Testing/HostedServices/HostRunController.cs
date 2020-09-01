@@ -13,28 +13,28 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
             _options = options ?? throw new ArgumentNullException(nameof(options));
         }
 
-        public async Task<RunUntilResult> RunUntil(RunUntilPredicateAsync predicateAsyncAsync, CancellationToken hostCancellationToken)
+        public async Task<RunUntilResult> RunUntil(RunUntilPredicateAsync predicateAsync)
         {
-            if (predicateAsyncAsync == null) throw new ArgumentNullException(nameof(predicateAsyncAsync));
+            if (predicateAsync == null) throw new ArgumentNullException(nameof(predicateAsync));
 
             var runUntilResult = await Task.Run(async () =>
             {
                 try
                 {
                     var cts = new CancellationTokenSource(_options.Timeout);
-                    var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(cts.Token, hostCancellationToken);
-                    while (!await predicateAsyncAsync())
+                    do
                     {
-                        // before checking again the predicate, wait RunUntilOptions.PredicateLoopPeriod or abort if the RunUntilOptions.Timeout elapses
-                        await Task.Delay(_options.PredicateCheckInterval, linkedCts.Token);
-                    }
+                        // before checking the predicate, wait RunUntilOptions.PredicateLoopPeriod or abort if the RunUntilOptions.Timeout elapses
+                        await Task.Delay(_options.PredicateCheckInterval, cts.Token);
+                    } while (!await predicateAsync());
+
                     return RunUntilResult.PredicateReturnedTrue;
                 }
                 catch (TaskCanceledException)
                 {
                     return RunUntilResult.TimedOut;
                 }
-            }, hostCancellationToken);
+            });
             return runUntilResult;
         }
     }
