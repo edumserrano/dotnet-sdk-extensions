@@ -18,20 +18,6 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers
         /// Configure an <see cref="HttpResponseMessage"/> to be returned when executing an HTTP call via
         /// an <see cref="HttpClient"/> configured to use the <see cref="TestHttpMessageHandler"/>.
         /// </summary>
-        /// <param name="httpResponseMock">The <see cref="HttpResponseMessageMock"/> that defines the <see cref="HttpResponseMessage"/> that will be returned.</param>
-        /// <returns>The <see cref="TestHttpMessageHandler"/> for chaining.</returns>
-        public TestHttpMessageHandler MockHttpResponse(HttpResponseMessageMock httpResponseMock)
-        {
-            if (httpResponseMock == null) throw new ArgumentNullException(nameof(httpResponseMock));
-
-            _httpResponseMocks.Add(httpResponseMock);
-            return this;
-        }
-
-        /// <summary>
-        /// Configure an <see cref="HttpResponseMessage"/> to be returned when executing an HTTP call via
-        /// an <see cref="HttpClient"/> configured to use the <see cref="TestHttpMessageHandler"/>.
-        /// </summary>
         /// <param name="configure">Action to configure the <see cref="HttpResponseMessage"/> to be returned.</param>
         /// <returns>The <see cref="TestHttpMessageHandler"/> for chaining.</returns>
         public TestHttpMessageHandler MockHttpResponse(Action<HttpResponseMessageMockBuilder> configure)
@@ -42,6 +28,20 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers
             configure(httpResponseMockBuilder);
             var httpResponseMock = httpResponseMockBuilder.Build();
             MockHttpResponse(httpResponseMock);
+            return this;
+        }
+
+        /// <summary>
+        /// Configure an <see cref="HttpResponseMessage"/> to be returned when executing an HTTP call via
+        /// an <see cref="HttpClient"/> configured to use the <see cref="TestHttpMessageHandler"/>.
+        /// </summary>
+        /// <param name="httpResponseMock">The <see cref="HttpResponseMessageMock"/> that defines the <see cref="HttpResponseMessage"/> that will be returned.</param>
+        /// <returns>The <see cref="TestHttpMessageHandler"/> for chaining.</returns>
+        public TestHttpMessageHandler MockHttpResponse(HttpResponseMessageMock httpResponseMock)
+        {
+            if (httpResponseMock == null) throw new ArgumentNullException(nameof(httpResponseMock));
+
+            _httpResponseMocks.Add(httpResponseMock);
             return this;
         }
 
