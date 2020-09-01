@@ -46,7 +46,8 @@ namespace DotNet.Sdk.Extensions.Testing.Demos.HttpMocking
                                     });
                             });
                         });
-                }).CreateClient();
+                })
+                .CreateClient();
 
             var response = await httpClient.GetAsync("/typed-client");
             var message = await response.Content.ReadAsStringAsync();
@@ -77,7 +78,8 @@ namespace DotNet.Sdk.Extensions.Testing.Demos.HttpMocking
                                     });
                             });
                         });
-                }).CreateClient();
+                })
+                .CreateClient();
 
             var response = await httpClient.GetAsync("/named-client");
             var message = await response.Content.ReadAsStringAsync();
@@ -107,7 +109,8 @@ namespace DotNet.Sdk.Extensions.Testing.Demos.HttpMocking
                                     });
                             });
                         });
-                }).CreateClient();
+                })
+                .CreateClient();
 
             var response = await httpClient.GetAsync("/basic-client");
             var message = await response.Content.ReadAsStringAsync();

@@ -13,14 +13,14 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.WebHostBuilders
         /// <param name="webHostBuilder">The <see cref="IWebHostBuilder"/> to introduce the mocks to.</param>
         /// <param name="configure">An action to configure an <see cref="HttpResponseMessage"/> mock.</param>
         /// <returns>The <see cref="IWebHostBuilder"/> for chaining.</returns>
-        public static IWebHostBuilder UseHttpMocks(this IWebHostBuilder webHostBuilder, Action<HttpMessageHandlersBuilder> configure)
+        public static IWebHostBuilder UseHttpMocks(this IWebHostBuilder webHostBuilder, Action<HttpMessageHandlers> configure)
         {
             if (webHostBuilder == null) throw new ArgumentNullException(nameof(webHostBuilder));
             if (configure == null) throw new ArgumentNullException(nameof(configure));
-
+            
             webHostBuilder.ConfigureTestServices(services =>
             {
-                var builder = new HttpMessageHandlersBuilder(services);
+                var builder = new HttpMessageHandlers(services);
                 configure(builder);
                 builder.ApplyHttpResponseMocks();
             });
