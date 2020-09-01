@@ -13,7 +13,7 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
             _options = options ?? throw new ArgumentNullException(nameof(options));
         }
 
-        public async Task<RunUntilResult> RunUntil(RunUntilPredicateAsync predicateAsync)
+        public async Task<RunUntilResult> RunUntilAsync(RunUntilPredicateAsync predicateAsync)
         {
             if (predicateAsync == null) throw new ArgumentNullException(nameof(predicateAsync));
 

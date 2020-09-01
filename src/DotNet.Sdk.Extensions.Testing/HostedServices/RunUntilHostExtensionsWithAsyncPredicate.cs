@@ -49,7 +49,7 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
             var defaultOptions = new RunUntilOptions();
             configureOptions(defaultOptions);
             var hostRunner = new DefaultHostRunner(host);
-            return hostRunner.RunUntilAsync(predicateAsync, defaultOptions, throwExceptionIfTimeout: true);
+            return hostRunner.RunUntilAsync(predicateAsync, defaultOptions);
         }
     }
 }
