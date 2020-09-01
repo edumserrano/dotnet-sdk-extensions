@@ -14,9 +14,9 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
     /// These tests simulate an app with a <see cref="BackgroundService"/>.
     /// For more info see <seealso cref="StartupHostedService"/> and <seealso cref="HostedServicesWebApplicationFactory"/>
     /// </summary>
-    public class HostRunUntilWithAsyncPredicateTests
+    public class RunUntilHostExtensionsWithAsyncPredicateTests
     {
-        public static TheoryData<IHost, RunUntilPredicateAsync, Type, string> AsyncPredicateValidateArgumentsData =>
+        public static TheoryData<IHost, RunUntilPredicateAsync, Type, string> ValidateArgumentsData =>
             new TheoryData<IHost, RunUntilPredicateAsync, Type, string>
             {
                 { null!, ()=>Task.FromResult(true), typeof(ArgumentNullException), "Value cannot be null. (Parameter 'host')" },
@@ -28,8 +28,8 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
         /// extension method.
         /// </summary>
         [Theory]
-        [MemberData(nameof(AsyncPredicateValidateArgumentsData))]
-        public void RunUntilAsyncPredicateValidatesArguments(
+        [MemberData(nameof(ValidateArgumentsData))]
+        public void ValidatesArguments(
             IHost host,
             RunUntilPredicateAsync predicate,
             Type exceptionType,
@@ -41,7 +41,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
             exception.Message.ShouldBe(exceptionMessage);
         }
 
-        public static TheoryData<IHost, RunUntilPredicateAsync, Action<RunUntilOptions>, Type, string> AsyncPredicateWithOptionsValidateArgumentsData =>
+        public static TheoryData<IHost, RunUntilPredicateAsync, Action<RunUntilOptions>, Type, string> ValidateArgumentsWithOptionsData =>
             new TheoryData<IHost, RunUntilPredicateAsync, Action<RunUntilOptions>, Type, string>
             {
                 { null!, ()=>Task.FromResult(true), options => {} , typeof(ArgumentNullException), "Value cannot be null. (Parameter 'host')" },
@@ -54,8 +54,8 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
         /// extension method.
         /// </summary>
         [Theory]
-        [MemberData(nameof(AsyncPredicateWithOptionsValidateArgumentsData))]
-        public void RunUntilAsyncPredicateWithOptionsValidatesArguments(
+        [MemberData(nameof(ValidateArgumentsWithOptionsData))]
+        public void ValidatesArgumentsWithOptions(
             IHost host,
             RunUntilPredicateAsync predicate,
             Action<RunUntilOptions> configureOptions,
@@ -75,7 +75,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
         /// <seealso cref="RunUntilOptions.Timeout"/> is 5 seconds so the predicate should be met before the timeout.
         /// </summary>
         [Fact]
-        public async Task RunUntilAsyncPredicate()
+        public async Task RunUntil()
         {
             var callCount = 0;
             var calculator = Substitute.For<ICalculator>();
@@ -114,7 +114,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
         /// and the predicate to stop the Host after receiveing 4 calls then the timeout should be triggered before the predicate is met.
         /// </summary>
         [Fact]
-        public async Task RunUntilAsyncPredicateTimeoutOption()
+        public async Task TimeoutOption()
         {
             var callCount = 0;
             var calculator = Substitute.For<ICalculator>();
@@ -158,7 +158,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
         /// so that the timeout occurs even before the first check is made.
         /// </summary>
         [Fact]
-        public async Task RunUntilAsyncPredicatePredicateCheckIntervalOption()
+        public async Task PredicateCheckIntervalOption()
         {
             var callCount = 0;
             var calculator = Substitute.For<ICalculator>();

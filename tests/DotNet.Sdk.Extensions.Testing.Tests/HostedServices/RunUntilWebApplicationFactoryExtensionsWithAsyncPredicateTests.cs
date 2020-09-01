@@ -16,9 +16,9 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
     /// These tests simulate an app with a <see cref="BackgroundService"/>.
     /// For more info see <seealso cref="StartupHostedService"/> and <seealso cref="HostedServicesWebApplicationFactory"/>
     /// </summary>
-    public class WebApplicationFactoryRunUntilWithAsyncPredicateTests
+    public class RunUntilWebApplicationFactoryExtensionsWithAsyncPredicateTests
     {
-        public static TheoryData<HostedServicesWebApplicationFactory, RunUntilPredicateAsync, Type, string> AsyncPredicateValidateArgumentsData =>
+        public static TheoryData<HostedServicesWebApplicationFactory, RunUntilPredicateAsync, Type, string> ValidateArgumentsData =>
             new TheoryData<HostedServicesWebApplicationFactory, RunUntilPredicateAsync, Type, string>
             {
                 { null!, ()=> Task.FromResult(true), typeof(ArgumentNullException), "Value cannot be null. (Parameter 'webApplicationFactory')" },
@@ -30,8 +30,8 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
         /// extension method.
         /// </summary>
         [Theory]
-        [MemberData(nameof(AsyncPredicateValidateArgumentsData))]
-        public void RunUntilAsyncPredicateValidatesArguments(
+        [MemberData(nameof(ValidateArgumentsData))]
+        public void ValidatesArguments(
             HostedServicesWebApplicationFactory webApplicationFactory,
             RunUntilPredicateAsync predicateAsync,
             Type exceptionType,
@@ -43,7 +43,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
             exception.Message.ShouldBe(exceptionMessage);
         }
 
-        public static TheoryData<HostedServicesWebApplicationFactory, RunUntilPredicateAsync, Action<RunUntilOptions>, Type, string> SyncPredicateWithOptionsValidateArgumentsData =>
+        public static TheoryData<HostedServicesWebApplicationFactory, RunUntilPredicateAsync, Action<RunUntilOptions>, Type, string> ValidateArgumentsWithOptionsData =>
             new TheoryData<HostedServicesWebApplicationFactory, RunUntilPredicateAsync, Action<RunUntilOptions>, Type, string>
             {
                 { null!, ()=>Task.FromResult(true), options => {} , typeof(ArgumentNullException), "Value cannot be null. (Parameter 'webApplicationFactory')" },
@@ -56,8 +56,8 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
         /// extension method.
         /// </summary>
         [Theory]
-        [MemberData(nameof(SyncPredicateWithOptionsValidateArgumentsData))]
-        public void RunUntilAsyncPredicateWithOptionsValidatesArguments(
+        [MemberData(nameof(ValidateArgumentsWithOptionsData))]
+        public void ValidatesArgumentsWithOptions(
             HostedServicesWebApplicationFactory webApplicationFactory,
             RunUntilPredicateAsync predicateAsync,
             Action<RunUntilOptions> configureOptions,
@@ -77,7 +77,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
         /// <seealso cref="RunUntilOptions.Timeout"/> is 5 seconds so the predicate should be met before the timeout.
         /// </summary>
         [Fact]
-        public async Task RunUntilAsyncPredicate()
+        public async Task RunUntil()
         {
             var callCount = 0;
             var calculator = Substitute.For<ICalculator>();
@@ -107,7 +107,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
         /// and the predicate to stop the Host after receiveing 4 calls then the timeout should be triggered before the predicate is met.
         /// </summary>
         [Fact]
-        public async Task RunUntilAsyncPredicateTimeoutOption()
+        public async Task TimeoutOption()
         {
             var callCount = 0;
             var calculator = Substitute.For<ICalculator>();
@@ -140,7 +140,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
         /// so that the timeout occurs even before the first check is made.
         /// </summary>
         [Fact]
-        public async Task RunUntilAsyncPredicatePredicateCheckIntervalOption()
+        public async Task PredicateCheckIntervalOption()
         {
             var callCount = 0;
             var calculator = Substitute.For<ICalculator>();
