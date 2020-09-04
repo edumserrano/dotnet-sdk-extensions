@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Net;
 using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.ResponseMocking;
 using Shouldly;
 using Xunit;
@@ -100,47 +98,5 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers.Re
             var exception = Should.Throw<InvalidOperationException>(() => builder.Build());
             exception.Message.ShouldBe("HttpResponseMessage not configured for HttpResponseMock. Use HttpResponseMessageMockBuilder.RespondWith to configure it.");
         }
-
-        /// <summary>
-        /// Tests that the <seealso cref="HttpResponseMessageMockBuilder.Build"/> produces mocks with the
-        /// expected predicate and response.
-        /// </summary>
-        //[Fact]
-        //public async Task BuildProducesMocksAsExpected()
-        //{
-        //    var httpResponseMessageMock1 = new HttpResponseMessageMockBuilder()
-        //        .RespondWith(new HttpResponseMessage(HttpStatusCode.Accepted))
-        //        .Build();
-
-        //    var httpResponseMessageMock2 = new HttpResponseMessageMockBuilder()
-        //        .Where(x => x.Method == HttpMethod.Put)
-        //        .RespondWith(new HttpResponseMessage(HttpStatusCode.Redirect))
-        //        .Build();
-
-        //    var httpResponseMessageMock3 = new HttpResponseMessageMockBuilder()
-        //        .Where(x => x.Method == HttpMethod.Get)
-        //        .RespondWith(new HttpResponseMessage(HttpStatusCode.OK))
-        //        .Build();
-
-        //    // should return an HttpResponseMessage as mocked on httpResponseMessageMock1 because
-        //    // no predicate was specified and that means by default it matches any request
-        //    var request1 = new HttpRequestMessage(HttpMethod.Get, "https://bing.com");
-        //    var response1 = await httpResponseMessageMock1.ExecuteAsync(request1, CancellationToken.None);
-        //    response1.Status.ShouldBe(HttpResponseMessageMockResults.Executed);
-        //    response1.HttpResponseMessage.StatusCode.ShouldBe(HttpStatusCode.Accepted);
-
-        //    // should return an HttpResponseMessage as mocked on httpResponseMessageMock2 because
-        //    // the request it matches the specified predicate on httpResponseMessageMock2
-        //    var request2 = new HttpRequestMessage(HttpMethod.Put, "https://google.com");
-        //    var response2 = await httpResponseMessageMock2.ExecuteAsync(request2, CancellationToken.None);
-        //    response2.Status.ShouldBe(HttpResponseMessageMockResults.Executed);
-        //    response2.HttpResponseMessage.StatusCode.ShouldBe(HttpStatusCode.Redirect);
-
-        //    // should NOT return the HttpResponseMessage as mocked on httpResponseMessageMock3 because
-        //    // the request does NOT matches the specified predicate on httpResponseMessageMock3
-        //    var request3 = new HttpRequestMessage(HttpMethod.Post, "https://microsoft.com");
-        //    var response3 = await httpResponseMessageMock3.ExecuteAsync(request3, CancellationToken.None);
-        //    response3.Status.ShouldBe(HttpResponseMessageMockResults.Skipped);
-        //}
     }
 }
