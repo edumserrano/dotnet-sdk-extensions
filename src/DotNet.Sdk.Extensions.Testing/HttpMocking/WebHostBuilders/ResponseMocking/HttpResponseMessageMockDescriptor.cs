@@ -28,11 +28,13 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.WebHostBuilders.ResponseMock
 
         public static HttpResponseMessageMockDescriptor Typed(
             Type httpClientType,
+            string name,
             HttpResponseMessageMockBuilder httpResponseMockBuilder)
         {
+            var httpClientName = string.IsNullOrWhiteSpace(name) ? httpClientType.Name : name;
             return new HttpResponseMessageMockDescriptor(
                 HttpResponseMessageMockTypes.TypedClient,
-                httpClientType.Name,
+                httpClientName,
                 httpResponseMockBuilder);
         }
 

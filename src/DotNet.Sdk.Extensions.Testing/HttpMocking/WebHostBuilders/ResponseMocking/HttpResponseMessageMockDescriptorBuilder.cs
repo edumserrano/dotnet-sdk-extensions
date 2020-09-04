@@ -41,10 +41,11 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.WebHostBuilders.ResponseMock
         /// </summary>
         /// <typeparam name="TClient">The <see cref="Type"/> of the <see cref="HttpClient"/> produced via the <see cref="IHttpClientFactory"/>.</typeparam>
         /// <returns>An instance of <see cref="HttpResponseMessageMockBuilder"/> to customize the <see cref="HttpResponseMessage"/> to mock.</returns>
-        public HttpResponseMessageMockBuilder ForTypedClient<TClient>()
+        public HttpResponseMessageMockBuilder ForTypedClient<TClient>(string name = "")
         {
             EnsureHttpClientMockTypeIsDefinedOnlyOnce();
             _httpClientType = typeof(TClient);
+            _httpClientName = name;
             _httpClientMockType = HttpClientMockTypes.Typed;
             return _httpResponseMockBuilder;
         }
@@ -83,7 +84,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.WebHostBuilders.ResponseMock
             return _httpClientMockType switch
             {
                 HttpClientMockTypes.Undefined => throw new InvalidOperationException($"Client type not configured for {nameof(HttpResponseMock)}. Use {nameof(HttpResponseMessageMockDescriptorBuilder)}.{nameof(ForTypedClient)}, {nameof(HttpResponseMessageMockDescriptorBuilder)}.{nameof(ForNamedClient)} or {nameof(HttpResponseMessageMockDescriptorBuilder)}.{nameof(ForBasicClient)} to configure it."),
-                HttpClientMockTypes.Typed => HttpResponseMessageMockDescriptor.Typed(_httpClientType!, _httpResponseMockBuilder),
+                HttpClientMockTypes.Typed => HttpResponseMessageMockDescriptor.Typed(_httpClientType!, _httpClientName!, _httpResponseMockBuilder),
                 HttpClientMockTypes.Named => HttpResponseMessageMockDescriptor.Named(_httpClientName!, _httpResponseMockBuilder),
                 HttpClientMockTypes.Basic => HttpResponseMessageMockDescriptor.Basic(_httpResponseMockBuilder),
                 _ => throw new ArgumentOutOfRangeException(nameof(_httpClientMockType))
