@@ -28,15 +28,15 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.ResponseMocking
         /// <summary>
         /// Define the condition for the <see cref="HttpResponseMock"/> to be executed.
         /// </summary>
-        /// <param name="predicateAsync">The predicate that determines if the <see cref="HttpResponseMock"/> is executed or not.</param>
+        /// <param name="predicate">The predicate that determines if the <see cref="HttpResponseMock"/> is executed or not.</param>
         /// <returns>The <see cref="HttpResponseMockBuilder"/> for chaining.</returns>
-        public HttpResponseMockBuilder Where(HttpResponseMockPredicateAsyncDelegate predicateAsync)
+        public HttpResponseMockBuilder Where(HttpResponseMockPredicateAsyncDelegate predicate)
         {
             if (_predicateAsync != null)
             {
                 throw new InvalidOperationException($"{nameof(HttpResponseMockBuilder)}.{nameof(Where)} condition already configured.");
             }
-            _predicateAsync = predicateAsync ?? throw new ArgumentNullException(nameof(predicateAsync));
+            _predicateAsync = predicate ?? throw new ArgumentNullException(nameof(predicate));
             return this;
         }
 
