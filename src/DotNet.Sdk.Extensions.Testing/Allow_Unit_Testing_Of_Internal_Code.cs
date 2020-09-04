@@ -1,5 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
-[assembly: InternalsVisibleTo("DotNet.Sdk.Extensions.Testing.Tests")]
+//[assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
+//[assembly: InternalsVisibleTo("DotNet.Sdk.Extensions.Testing.Tests")]
 
