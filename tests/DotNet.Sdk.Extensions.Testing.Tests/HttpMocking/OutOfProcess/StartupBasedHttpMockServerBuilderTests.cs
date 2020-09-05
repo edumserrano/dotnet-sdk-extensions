@@ -1,52 +1,59 @@
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.ResponseMocking;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
 using Xunit;
 
-namespace DotNet.Sdk.Extensions.Testing.Tests
+namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
 {
-    // todo 
-    public class UnitTest1
+    public class StartupBasedHttpMockServerBuilderTests
     {
         [Fact]
-        public async Task Test1()
+        public async Task Test11()
         {
-
             var httpResponseMockBuilder = new HttpResponseMockBuilder();
             var httpResponseMock = httpResponseMockBuilder
                 .RespondWith(async (request, response, cancellationToken) =>
                 {
                     response.StatusCode = StatusCodes.Status201Created;
                     await response.WriteAsync("hi", cancellationToken);
-                    //return Task.CompletedTask;
                 })
                 .Build();
 
             await using var mock = new HttpMockServerBuilder()
-                //.UseUrl(HttpScheme.Http, 80)
-                //.UseUrl(HttpScheme.Http, 31246)
-                //.UseUrl(HttpScheme.Https, 443)
                 .UseHttpResponseMocks()
                 .MockHttpResponse(httpResponseMock)
-                .MockHttpResponse(builder =>
+                .Build();
+            var urls = await mock.StartAsync();
+            
+            urls.Count.ShouldBe(2);
+            urls[0].Scheme.ShouldBe(HttpScheme.Http);
+            urls[0].Host.ShouldBe("localhost");
+            urls[1].Scheme.ShouldBe(HttpScheme.Https);
+            urls[1].Host.ShouldBe("localhost");
+        }
+
+        [Fact]
+        public async Task Test1()
+        {
+            var httpResponseMockBuilder = new HttpResponseMockBuilder();
+            var httpResponseMock = httpResponseMockBuilder
+                .RespondWith(async (request, response, cancellationToken) =>
                 {
-                    builder
-                        .Where((request, cancellationToken) => Task.FromResult(true))
-                        .RespondWith((request, response, cancellationToken) =>
-                        {
-                            response.StatusCode = StatusCodes.Status202Accepted;
-                            return Task.CompletedTask;
-                        });
+                    response.StatusCode = StatusCodes.Status201Created;
+                    await response.WriteAsync("hi", cancellationToken);
                 })
                 .Build();
 
+            await using var mock = new HttpMockServerBuilder()
+                .UseHttpResponseMocks()
+                .MockHttpResponse(httpResponseMock)
+                .Build();
             var urls = await mock.StartAsync();
 
             var httpClient = new HttpClient();
@@ -87,7 +94,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests
             {
             }
 
-            public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+            public void Configure(IApplicationBuilder app)
             {
                 app.Run(async httpContext =>
                 {
@@ -97,5 +104,6 @@ namespace DotNet.Sdk.Extensions.Testing.Tests
                 });
             }
         }
+
     }
 }
