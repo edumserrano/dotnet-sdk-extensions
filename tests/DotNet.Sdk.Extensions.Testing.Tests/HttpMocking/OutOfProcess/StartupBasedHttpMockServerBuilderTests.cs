@@ -1,10 +1,10 @@
-﻿using System.Net.Http;
+﻿using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess;
-using DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.ResponseMocking;
+using DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
 using Xunit;
@@ -13,81 +13,33 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
 {
     public class StartupBasedHttpMockServerBuilderTests
     {
+        /// <summary>
+        /// Tests that the startup based <see cref="HttpMockServer"/> responds to requests as configured.
+        /// </summary>
         [Fact]
-        public async Task Test11()
-        {
-            var httpResponseMockBuilder = new HttpResponseMockBuilder();
-            var httpResponseMock = httpResponseMockBuilder
-                .RespondWith(async (request, response, cancellationToken) =>
-                {
-                    response.StatusCode = StatusCodes.Status201Created;
-                    await response.WriteAsync("hi", cancellationToken);
-                })
-                .Build();
-
-            await using var mock = new HttpMockServerBuilder()
-                .UseHttpResponseMocks()
-                .MockHttpResponse(httpResponseMock)
-                .Build();
-            var urls = await mock.StartAsync();
-            
-            urls.Count.ShouldBe(2);
-            urls[0].Scheme.ShouldBe(HttpScheme.Http);
-            urls[0].Host.ShouldBe("localhost");
-            urls[1].Scheme.ShouldBe(HttpScheme.Https);
-            urls[1].Host.ShouldBe("localhost");
-        }
-
-        [Fact]
-        public async Task Test1()
-        {
-            var httpResponseMockBuilder = new HttpResponseMockBuilder();
-            var httpResponseMock = httpResponseMockBuilder
-                .RespondWith(async (request, response, cancellationToken) =>
-                {
-                    response.StatusCode = StatusCodes.Status201Created;
-                    await response.WriteAsync("hi", cancellationToken);
-                })
-                .Build();
-
-            await using var mock = new HttpMockServerBuilder()
-                .UseHttpResponseMocks()
-                .MockHttpResponse(httpResponseMock)
-                .Build();
-            var urls = await mock.StartAsync();
-
-            var httpClient = new HttpClient();
-            var responseBody = await httpClient.GetStringAsync(urls[0]);
-            var responseBody2 = await httpClient.GetStringAsync(urls[1]);
-            //var responseBody3 = await httpClient.GetStringAsync(urls[2]);
-            responseBody.ShouldBe("hi");
-            responseBody2.ShouldBe("hi");
-            //responseBody3.ShouldBe("hi");
-
-        }
-
-        [Fact]
-        public async Task Test2()
+        public async Task RepliesAsConfigured()
         {
             await using var mock = new HttpMockServerBuilder()
-                .UseUrl(HttpScheme.Http, 31245)
-                .UseUrl(HttpScheme.Http, 31246)
-                .UseUrl(HttpScheme.Https, 31247)
                 .UseStartup<MyMockStartup>()
                 .Build();
-
             var urls = await mock.StartAsync();
 
             var httpClient = new HttpClient();
-            var responseBody = await httpClient.GetStringAsync(urls[0]);
-            var responseBody2 = await httpClient.GetStringAsync(urls[1]);
-            var responseBody3 = await httpClient.GetStringAsync(urls[2]);
-            responseBody.ShouldBe("hi2");
-            responseBody2.ShouldBe("hi2");
-            responseBody3.ShouldBe("hi2");
+            var helloResponse = await httpClient.GetAsync($"{urls[0]}/hello");
+            helloResponse.StatusCode.ShouldBe(HttpStatusCode.Created);
+            var helloResponseBody = await helloResponse.Content.ReadAsStringAsync();
+            helloResponseBody.ShouldBe("hello");
 
+            var defaultResponse = await httpClient.GetAsync($"{urls[0]}/something");
+            defaultResponse.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
+            defaultResponse.Content.Headers.ContentLength.ShouldBe(0);
         }
 
+        /// <summary>
+        /// Start to auxiliate with the startup based <seealso cref="HttpMockServer"/> tests.
+        /// It's a very basic Startup class but you could use whatever asp.net core configuration
+        /// you would like such as adding constrollers.
+        /// </summary>
         public class MyMockStartup
         {
             public void ConfigureServices(IServiceCollection services)
@@ -96,14 +48,23 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
 
             public void Configure(IApplicationBuilder app)
             {
-                app.Run(async httpContext =>
+                app.Use(async (httpContext, next) =>
                 {
+                    if (!httpContext.Request.Path.Equals("/hello"))
+                    {
+                        await next();
+                        return;
+                    }
+
                     httpContext.Response.StatusCode = StatusCodes.Status201Created;
-                    await httpContext.Response.WriteAsync("hi2");
-                    //return Task.CompletedTask;
+                    await httpContext.Response.WriteAsync("hello");
+                });
+                app.Run(httpContext =>
+                {
+                    httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
+                    return Task.CompletedTask;
                 });
             }
         }
-
     }
 }

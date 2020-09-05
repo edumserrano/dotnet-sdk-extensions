@@ -18,7 +18,8 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers.Res
     {
         public Task InvokeAsync(HttpContext httpContext, RequestDelegate next)
         {
-            //TODO send internal server error/404 with some body message
+            httpContext.Response.StatusCode = StatusCodes.Status501NotImplemented;
+            httpContext.Response.WriteAsync("Request did not match any of the provided mocks.");
             return Task.CompletedTask;
         }
     }

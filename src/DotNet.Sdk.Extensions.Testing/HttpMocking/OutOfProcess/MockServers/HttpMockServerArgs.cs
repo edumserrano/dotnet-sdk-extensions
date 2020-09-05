@@ -12,15 +12,30 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers
         public HttpMockServerArgs(List<HttpMockServerUrlDescriptor> urlDescriptors, string[] hostArgs)
         {
             if (hostArgs == null) throw new ArgumentNullException(nameof(hostArgs));
-
-            var urls = BuildUrls(urlDescriptors);
-            HostArgs = hostArgs
-                .Concat(new List<string> { "--urls", urls })
-                .ToArray();
+            HostArgs = CreateHostArgs(hostArgs, urlDescriptors);
         }
 
         public string[] HostArgs { get; }
 
+        private string[] CreateHostArgs(string[] hostArgs, List<HttpMockServerUrlDescriptor> urlDescriptors)
+        {
+            if (hostArgs.Contains("--urls") && urlDescriptors.Any())
+            {
+                throw new InvalidOperationException($"Competing URLs configuration. URls defined via both {nameof(HttpMockServerBuilder)}.{nameof(HttpMockServerBuilder.UseUrl)} method and by defining an '--urls' arg via {nameof(HttpMockServerBuilder)}.{nameof(HttpMockServerBuilder.UseHostArgs)}. Use only one of these methods to configure the URLs.");
+            }
+
+            if (hostArgs.Contains("--urls"))
+            {
+                return hostArgs.ToArray();
+            }
+
+            // if the argument --urls wasn't given then make sure the URLs are defined
+            var urls = BuildUrls(urlDescriptors);
+            return hostArgs
+                .Concat(new List<string> { "--urls", urls })
+                .ToArray();
+        }
+        
         private string BuildUrls(List<HttpMockServerUrlDescriptor> urlDescriptors)
         {
             if (urlDescriptors is null || !urlDescriptors.Any())

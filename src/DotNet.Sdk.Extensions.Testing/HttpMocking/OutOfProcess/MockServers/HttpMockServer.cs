@@ -25,6 +25,11 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers
         /// <returns>The URLs where the server is listening for requests.</returns>
         public async Task<List<HttpMockServerUrl>> StartAsync()
         {
+            if (_host != null)
+            {
+                throw new InvalidOperationException($"The {nameof(HttpMockServer)} has already been started.");
+            }
+
             _host = CreateHostBuilder(_mockServerArgs.HostArgs).Build();
             await _host.StartAsync();
             return _host
