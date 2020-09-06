@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.WebHostBuilders;
 using DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.WebHostBuilders.Auxiliar;
 using Microsoft.AspNetCore.Hosting;
-using NSubstitute.Core;
 using Shouldly;
 using Xunit;
 
