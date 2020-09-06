@@ -47,10 +47,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.WebHostBuilders
                         {
                             httpResponseMessageBuilder
                                 .ForBasicClient()
-                                .RespondWith(httpRequestMessage =>
-                                {
-                                    return new HttpResponseMessage(HttpStatusCode.OK);
-                                });
+                                .RespondWith(httpRequestMessage => new HttpResponseMessage(HttpStatusCode.OK));
                         });
                     });
                 })
@@ -77,10 +74,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.WebHostBuilders
                         {
                             httpResponseMessageBuilder
                                 .ForNamedClient("my-named-client")
-                                .RespondWith(httpRequestMessage =>
-                                {
-                                    return new HttpResponseMessage(HttpStatusCode.OK);
-                                });
+                                .RespondWith(httpRequestMessage => new HttpResponseMessage(HttpStatusCode.OK));
                         });
                     });
                 })
@@ -107,10 +101,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.WebHostBuilders
                         {
                             httpResponseMessageBuilder
                                 .ForTypedClient<MyApiClient>()
-                                .RespondWith(httpRequestMessage =>
-                                {
-                                    return new HttpResponseMessage(HttpStatusCode.OK);
-                                });
+                                .RespondWith(httpRequestMessage => new HttpResponseMessage(HttpStatusCode.OK));
                         });
                     });
                 })
@@ -137,10 +128,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.WebHostBuilders
                         {
                             httpResponseMessageBuilder
                                 .ForTypedClient<MyApiClient>("my-typed-client")
-                                .RespondWith(httpRequestMessage =>
-                                {
-                                    return new HttpResponseMessage(HttpStatusCode.OK);
-                                });
+                                .RespondWith(httpRequestMessage => new HttpResponseMessage(HttpStatusCode.OK));
                         });
                     });
                 })
@@ -169,10 +157,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.WebHostBuilders
                         {
                             httpResponseMessageBuilder
                                 .ForTypedClient<MyApiClient>("my-typed-client-2")
-                                .RespondWith(httpRequestMessage =>
-                                {
-                                    return new HttpResponseMessage(HttpStatusCode.OK);
-                                });
+                                .RespondWith(httpRequestMessage => new HttpResponseMessage(HttpStatusCode.OK));
                         });
                     });
                 })

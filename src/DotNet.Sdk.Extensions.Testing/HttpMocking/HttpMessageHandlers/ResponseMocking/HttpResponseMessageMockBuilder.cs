@@ -51,7 +51,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.Response
             if (httpResponseMessage == null) throw new ArgumentNullException(nameof(httpResponseMessage));
             return RespondWith(httpRequestMessage => httpResponseMessage);
         }
-        
+
         /// <summary>
         /// Configure the <see cref="HttpResponseMessage"/> produced by the mock.
         /// </summary>
@@ -73,9 +73,31 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.Response
         {
             if (_handlerAsync != null)
             {
-                throw new InvalidOperationException($"{nameof(HttpResponseMessageMockBuilder)}.{nameof(RespondWith)} already configured.");
+                throw new InvalidOperationException("Response behavior already configured.");
             }
             _handlerAsync = handler ?? throw new ArgumentNullException(nameof(handler));
+            return this;
+        }
+
+        /// <summary>
+        /// Configures the mock to timeout. 
+        /// </summary>
+        /// <param name="timeout">The value for the timeout.</param>
+        /// <returns>The <see cref="HttpResponseMessageMockBuilder"/> for chaining.</returns>
+        public HttpResponseMessageMockBuilder TimesOut(TimeSpan timeout)
+        {
+            if (_handlerAsync != null)
+            {
+                throw new InvalidOperationException("Response behavior already configured.");
+            }
+
+            // when simulating a timeout we need to do the same as what HttpClient
+            // does in that situation which is to throw a TaskCanceledException
+            _handlerAsync = async (message, cancellationToken) =>
+            {
+                await Task.Delay(timeout, cancellationToken);
+                throw new TaskCanceledException($"Timed out triggered after {timeout}.");
+            };
             return this;
         }
 
@@ -89,7 +111,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.Response
             _predicateAsync ??= _defaultPredicate;
             if (_handlerAsync is null)
             {
-                throw new InvalidOperationException($"{nameof(HttpResponseMessage)} not configured for {nameof(HttpResponseMock)}. Use {nameof(HttpResponseMessageMockBuilder)}.{nameof(RespondWith)} to configure it.");
+                throw new InvalidOperationException($"Response behavior not configured for {nameof(HttpResponseMock)}. Use {nameof(HttpResponseMessageMockBuilder)}.{nameof(RespondWith)} or {nameof(HttpResponseMessageMockBuilder)}.{nameof(TimesOut)} to configure it.");
             }
 
             return new HttpResponseMessageMock(_predicateAsync, _handlerAsync);

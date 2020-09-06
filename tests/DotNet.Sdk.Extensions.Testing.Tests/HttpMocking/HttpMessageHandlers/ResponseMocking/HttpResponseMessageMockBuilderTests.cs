@@ -63,7 +63,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers.Re
             var exception = Should.Throw<ArgumentNullException>(() => builder.RespondWith((HttpResponseMessageMockHandlerDelegate)null!));
             exception.Message.ShouldBe("Value cannot be null. (Parameter 'handler')");
         }
-
+        
         /// <summary>
         /// Validates that the predicate can only be set once.
         /// </summary>
@@ -85,18 +85,50 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers.Re
             var builder = new HttpResponseMessageMockBuilder();
             builder.RespondWith(new HttpResponseMessage(HttpStatusCode.OK));
             var exception = Should.Throw<InvalidOperationException>(() => builder.RespondWith(new HttpResponseMessage(HttpStatusCode.BadRequest)));
-            exception.Message.ShouldBe("HttpResponseMessageMockBuilder.RespondWith already configured.");
+            exception.Message.ShouldBe("Response behavior already configured.");
         }
 
         /// <summary>
-        /// Validates that you must at least specify the <seealso cref="HttpResponseMessage"/> to be returned.
+        /// Validates that timeout can only be set once.
         /// </summary>
         [Fact]
-        public void RespondWithIsMandatory()
+        public void TimesOutCanOnlyBeDefinedOnce()
+        {
+            var builder = new HttpResponseMessageMockBuilder();
+            builder.TimesOut(TimeSpan.FromSeconds(1));
+            var exception = Should.Throw<InvalidOperationException>(() => builder.TimesOut(TimeSpan.FromSeconds(1)));
+            exception.Message.ShouldBe("Response behavior already configured.");
+        }
+
+        /// <summary>
+        /// Validates that you can only configure the response behavior in one way.
+        /// You can not define both a response and a timeout.
+        /// </summary>
+        [Fact]
+        public void TimesOutCanOnlyBeDefinedOnce2()
+        {
+            // try first setting a timeout then a response
+            var builder = new HttpResponseMessageMockBuilder();
+            builder.TimesOut(TimeSpan.FromSeconds(1));
+            var exception = Should.Throw<InvalidOperationException>(() => builder.RespondWith(new HttpResponseMessage(HttpStatusCode.OK)));
+            exception.Message.ShouldBe("Response behavior already configured.");
+
+            // now invert, try first setting a response then a timeout
+            var builder2 = new HttpResponseMessageMockBuilder();
+            builder2.RespondWith(new HttpResponseMessage(HttpStatusCode.OK));
+            var exception2 = Should.Throw<InvalidOperationException>(() => builder2.TimesOut(TimeSpan.FromSeconds(1)));
+            exception2.Message.ShouldBe("Response behavior already configured.");
+        }
+
+        /// <summary>
+        /// Validates that you must at least specify the response to be returned by the mock.
+        /// </summary>
+        [Fact]
+        public void ResponseConfigurationIsMandatory()
         {
             var builder = new HttpResponseMessageMockBuilder();
             var exception = Should.Throw<InvalidOperationException>(() => builder.Build());
-            exception.Message.ShouldBe("HttpResponseMessage not configured for HttpResponseMock. Use HttpResponseMessageMockBuilder.RespondWith to configure it.");
+            exception.Message.ShouldBe("Response behavior not configured for HttpResponseMock. Use HttpResponseMessageMockBuilder.RespondWith or HttpResponseMessageMockBuilder.TimesOut to configure it.");
         }
     }
 }
