@@ -33,7 +33,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.WebHostBuilders
                         {
                             httpResponseMessageBuilder
                                 .ForNamedClient("named-client")
-                                .TimesOut(TimeSpan.FromSeconds(3));
+                                .TimesOut(TimeSpan.FromMilliseconds(50));
                         });
                     });
                 })
@@ -53,11 +53,11 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.WebHostBuilders
 
             expectedException.ShouldNotBeNull("Expected TaskCanceledException but didn't get any.");
             expectedException!.GetType().ShouldBe(typeof(TaskCanceledException));
-            expectedException.Message.ShouldBe("Timed out triggered after 00:00:03.");
+            expectedException.Message.ShouldBe("Timeout triggered after 00:00:00.0500000.");
         }
 
         /// <summary>
-        /// The setup for this sets up a named HttpClient "named-client-with-timeout" and with a configured timeout of 1 second.
+        /// The setup for this sets up a named HttpClient "named-client-with-timeout" and with a configured timeout of 50ms.
         /// This tests that if we define a mock to timeout it will timeout as expected.
         /// </summary>
         [Fact]
@@ -72,7 +72,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.WebHostBuilders
                         {
                             httpResponseMessageBuilder
                                 .ForNamedClient("named-client-with-timeout")
-                                .TimesOut(TimeSpan.FromSeconds(3));
+                                .TimesOut(TimeSpan.FromSeconds(80));
                         });
                     });
                 })
@@ -97,7 +97,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.WebHostBuilders
 
         /// <summary>
         /// The setup for this test uses Polly to define a timeout policy for the named HttpClient "polly-named-client".
-        /// The timeout for the HttpClient is set to 1 second and the HttpClient is invoked when doing a GET to /polly-named-client.
+        /// The timeout for the HttpClient is set to 50ms and the HttpClient is invoked when doing a GET to /polly-named-client.
         /// This tests that if we define a mock to timeout it will timeout as expected.
         /// Polly throws a TimeoutRejectedException when a timeout occurs.
         /// </summary>
@@ -113,7 +113,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.WebHostBuilders
                         {
                             httpResponseMessageBuilder
                                 .ForNamedClient("polly-named-client")
-                                .TimesOut(TimeSpan.FromSeconds(3));
+                                .TimesOut(TimeSpan.FromMilliseconds(80));
                         });
                     });
                 })

@@ -126,19 +126,19 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers
         [Fact]
         public async Task FirstMatchWins()
         {
-            var handler = new TestHttpMessageHandler();
-            handler.MockHttpResponse(builder =>
-            {
-                builder
-                    .Where(httpRequestMessage=>httpRequestMessage.RequestUri.Host.Equals("test.com"))
-                    .RespondWith(new HttpResponseMessage(HttpStatusCode.BadRequest));
-            });
-            handler.MockHttpResponse(builder =>
-            {
-                builder
-                    .Where(httpRequestMessage => httpRequestMessage.RequestUri.Host.Equals("test.com"))
-                    .RespondWith(new HttpResponseMessage(HttpStatusCode.InternalServerError));
-            });
+            var handler = new TestHttpMessageHandler()
+                .MockHttpResponse(builder =>
+                {
+                    builder
+                        .Where(httpRequestMessage => httpRequestMessage.RequestUri.Host.Equals("test.com"))
+                        .RespondWith(new HttpResponseMessage(HttpStatusCode.BadRequest));
+                })
+                .MockHttpResponse(builder =>
+                {
+                    builder
+                        .Where(httpRequestMessage => httpRequestMessage.RequestUri.Host.Equals("test.com"))
+                        .RespondWith(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+                });
 
             var request = new HttpRequestMessage(HttpMethod.Get, "https://test.com");
             var httpMessageInvoker = new HttpMessageInvoker(handler);
@@ -154,8 +154,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers
         [Fact]
         public async Task MultipleMocks()
         {
-            var handler = new TestHttpMessageHandler();
-            handler
+            var handler = new TestHttpMessageHandler()
                 .MockHttpResponse(builder =>
                 {
                     builder
@@ -178,6 +177,35 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers
             var request2 = new HttpRequestMessage(HttpMethod.Get, "https://microsoft.com");
             var httpResponseMessage2 = await httpMessageInvoker.SendAsync(request2, CancellationToken.None);
             httpResponseMessage2.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
+        }
+
+        /// <summary>
+        /// Tests that the <seealso cref="TestHttpMessageHandler"/> timesout as configured.
+        /// </summary>
+        [Fact]
+        public async Task TimesOut()
+        {
+            var handler = new TestHttpMessageHandler()
+                .MockHttpResponse(builder => builder.TimesOut(TimeSpan.FromMilliseconds(50)));
+            var httpMessageInvoker = new HttpMessageInvoker(handler);
+            var request = new HttpRequestMessage(HttpMethod.Get, "https://google.com");
+
+            // for some reason Should.Throw or Should.ThrowAsync weren't working so I
+            // did the equivalent custom code
+            Exception? expectedException = null;
+            try
+            {
+                await httpMessageInvoker.SendAsync(request, CancellationToken.None);
+            }
+            catch (Exception exception)
+            {
+                expectedException = exception;
+            }
+
+            expectedException.ShouldNotBeNull("Expected TaskCanceledException but didn't get any.");
+            expectedException!.GetType().ShouldBe(typeof(TaskCanceledException));
+            expectedException.Message.ShouldBe("Timeout triggered after 00:00:00.0500000.");
+            
         }
     }
 }

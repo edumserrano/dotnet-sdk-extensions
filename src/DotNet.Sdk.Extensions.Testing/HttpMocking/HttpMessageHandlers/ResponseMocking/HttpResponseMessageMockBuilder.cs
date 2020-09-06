@@ -96,7 +96,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.Response
             _handlerAsync = async (message, cancellationToken) =>
             {
                 await Task.Delay(timeout, cancellationToken);
-                throw new TaskCanceledException($"Timed out triggered after {timeout}.");
+                throw new TaskCanceledException($"Timeout triggered after {timeout}.");
             };
             return this;
         }

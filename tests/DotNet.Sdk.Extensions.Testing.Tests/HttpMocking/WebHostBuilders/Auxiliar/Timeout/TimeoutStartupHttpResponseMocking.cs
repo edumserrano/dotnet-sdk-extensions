@@ -19,13 +19,13 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.WebHostBuilders.Auxili
                 .AddHttpClient("named-client-with-timeout")
                 .ConfigureHttpClient(client =>
                 {
-                    client.Timeout = TimeSpan.FromSeconds(1);
+                    client.Timeout = TimeSpan.FromMilliseconds(50);
                 });
             services
                 .AddHttpClient("polly-named-client")
                 .AddHttpMessageHandler(provider =>
                 {
-                    var timeoutPolicy = Policy.TimeoutAsync<HttpResponseMessage>(TimeSpan.FromSeconds(1));
+                    var timeoutPolicy = Policy.TimeoutAsync<HttpResponseMessage>(TimeSpan.FromMilliseconds(50));
                     return new PolicyHttpMessageHandler(timeoutPolicy);
                 });
         }
