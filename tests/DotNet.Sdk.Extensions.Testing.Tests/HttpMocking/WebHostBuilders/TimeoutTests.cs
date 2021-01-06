@@ -39,8 +39,8 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.WebHostBuilders
                 })
                 .CreateClient();
 
-            // for some reason Should.Throw or Should.ThrowAsync weren't working so I
-            // did the equivalent custom code
+            // for some reason Should.Throw or Should.ThrowAsync weren't producing the same exception working so I
+            // did the equivalent try/catch code
             Exception? expectedException = null;
             try
             {
@@ -78,8 +78,8 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.WebHostBuilders
                 })
                 .CreateClient();
 
-            // for some reason Should.Throw or Should.ThrowAsync weren't working so I
-            // did the equivalent custom code
+            // for some reason Should.Throw or Should.ThrowAsync weren't producing the same exception working so I
+            // did the equivalent try/catch code
             Exception? expectedException = null;
             try
             {
@@ -92,7 +92,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.WebHostBuilders
 
             expectedException.ShouldNotBeNull("Expected TaskCanceledException but didn't get any.");
             expectedException!.GetType().ShouldBe(typeof(TaskCanceledException));
-            expectedException.Message.ShouldBe("A task was canceled.");
+            expectedException.Message.ShouldBe("The request was canceled due to the configured HttpClient.Timeout of 0.05 seconds elapsing.");
         }
 
         /// <summary>

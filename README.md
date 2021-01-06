@@ -40,3 +40,14 @@ The extensions for web apps are demoed by the `demos\AspNetCore.Extensions.Testi
 * Create ci cd pipeline, add badge to readme (link to pipeline, code coverage)
 * Publish nuget packages
 * Setup hooks to run pipelines on pull requests
+
+
+## Notes
+
+If you have problems with SSL certificates then make sure you have trusted dev certificates by executing the following command
+
+```
+dotnet dev-certs https --trust
+```
+
+For more info see [Generate self-signed certificates with the .NET CLI](https://docs.microsoft.com/en-us/dotnet/core/additional-tools/self-signed-certificates-guide).

@@ -80,7 +80,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers
         [Fact]
         public async Task DefaultPredicate1()
         {
-            var httpMockResponseMessage = new HttpResponseMessage(HttpStatusCode.OK);
+            var httpMockResponseMessage = new HttpResponseMessage(HttpStatusCode.Created);
             var builder = new HttpResponseMessageMockBuilder();
             var httpResponseMessageMock = builder
                 .RespondWith(httpMockResponseMessage)
@@ -92,9 +92,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers
             var httpMessageInvoker = new HttpMessageInvoker(handler);
             var httpResponseMessage = await httpMessageInvoker.SendAsync(request, CancellationToken.None);
 
-            httpResponseMessage.StatusCode.ShouldBe(HttpStatusCode.OK);
-            httpResponseMessage.Content.ShouldBeNull();
-            httpResponseMessage.Headers.ShouldBeEmpty();
+            httpResponseMessage.StatusCode.ShouldBe(HttpStatusCode.Created);
         }
 
         /// <summary>
@@ -106,7 +104,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers
         [Fact]
         public async Task DefaultPredicate2()
         {
-            var httpMockResponseMessage = new HttpResponseMessage(HttpStatusCode.OK);
+            var httpMockResponseMessage = new HttpResponseMessage(HttpStatusCode.Created);
             var handler = new TestHttpMessageHandler();
             handler.MockHttpResponse(builder => builder.RespondWith(httpMockResponseMessage));
 
@@ -114,9 +112,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers
             var httpMessageInvoker = new HttpMessageInvoker(handler);
             var httpResponseMessage = await httpMessageInvoker.SendAsync(request, CancellationToken.None);
 
-            httpResponseMessage.StatusCode.ShouldBe(HttpStatusCode.OK);
-            httpResponseMessage.Content.ShouldBeNull();
-            httpResponseMessage.Headers.ShouldBeEmpty();
+            httpResponseMessage.StatusCode.ShouldBe(HttpStatusCode.Created);
         }
 
         /// <summary>
