@@ -53,12 +53,14 @@ Note that `OptionsBuilder.ValidateEagerly` works in conjunction with dotnet's va
 
 The demo for this extension is represented by a web app.
 
-* Go to [Program.cs](/demos/AspNetCore.Extensions.Demos/Program.cs), comment all `IWebHostBuilder.UseStartup` calls except for the `IWebHostBuilder.UseStartup<Startup_EagerValidateOptions>()`.
-* From Visual Studio, set the `demos\AspNetCore.Extensions.Demos\AspNetCore.Extensions.Demos.csproj` project as the Startup Project
+* From Visual Studio, set the `demos\DotNet.Sdk.Extensions.Demos\DotNet.Sdk.Extensions.Demos.csproj` project as the Startup Project
+* Update the `launchSettings.json` to set the demo to the eagerly validation options by going to `demos\DotNet.Sdk.Extensions.Demos\Properties\launchSettings.json` and setting the `commandLineArgs` value to `-d eager-options-validation`.
 * Run the project
 * You should get an exception message as follows:
+  
 ```
 Microsoft.Extensions.Options.OptionsValidationException: 
 'DataAnnotation validation failed for members: 'SomeOption' with the error: 'The SomeOption field is required.'.'
 ```
+
 * The web app fails to start and the process exits due to the above unhandled exception
