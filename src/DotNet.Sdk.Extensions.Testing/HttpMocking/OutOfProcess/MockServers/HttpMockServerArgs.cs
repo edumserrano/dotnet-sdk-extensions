@@ -7,6 +7,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers
 {
     internal class HttpMockServerArgs
     {
+        // using the port 0 means that the app will randomly select a port (one for http and another for https) that aren't currently in use
         private const string _defaultUrls = "http://*:0;https://*:0";
 
         public HttpMockServerArgs(List<HttpMockServerUrlDescriptor> urlDescriptors, string[] hostArgs)

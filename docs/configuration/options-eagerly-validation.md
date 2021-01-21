@@ -45,9 +45,9 @@ services
 	.ValidateEagerly();
 ```
 
-Note that `OptionsBuilder.ValidateEagerly` works in conjunction with data annotations and requires you to also use `OptionsBuilder.ValidateDataAnnotations`.
+The way the eager validation is enforced is by creating all the instances of `T` for any `IOptions<T>` present in the `IServiceCollection` at app startup. This forces existing validation to be executed.
 
-Furthermore, the way the eager validation is executed is by creating all the instances of `T` for any `IOptions<T>` present in the `IServiceCollection` at app startup. This forces the validation of the data annotations added by `OptionsBuilder.ValidateDataAnnotations` to kick in.
+Note that `OptionsBuilder.ValidateEagerly` works in conjunction with dotnet's validation. In the above example we are using the `OptionsBuilder.ValidateDataAnnotations`. You could also use the `IValidateOptions` interface or implement validation at the `Startup` level with the `OptionsBuilder.Validate`. For more information see [Options Validation](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/options?view=aspnetcore-5.0#options-validation) and [IValidateOptions for complex validation](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/options?view=aspnetcore-5.0#ivalidateoptions-for-complex-validation).
 
 ## How to run the demo
 
