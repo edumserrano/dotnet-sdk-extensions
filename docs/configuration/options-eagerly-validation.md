@@ -8,6 +8,7 @@ At the moment if you have an incorrect appsettings file(s), because for instance
 
 Furthermore there are ways to [decorate options classes with data validation attributes](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/options#options-validation) but those only take effect when the options class is first instantiated which as explained before does not happen at the startup of the web app.
 
+For more information see this GitHub issue [Developers can get immediate feedback on validation problems](https://github.com/dotnet/runtime/issues/36391).
 ### Issues with not having earger options validation
 
 There are for sure many examples of situations where the lack of eager options validation causes a problem. Take for instance the following example:
