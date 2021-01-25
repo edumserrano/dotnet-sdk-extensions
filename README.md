@@ -40,6 +40,8 @@ The extensions for web apps are demoed by the `demos\AspNetCore.Extensions.Testi
 * Create ci cd pipeline, add badge to readme (link to pipeline, code coverage)
 * Publish nuget packages
 * Setup hooks to run pipelines on pull requests
+* get lambda extensions 
+* investigate serilog logging test extensions for integration tests
 
 
 ## Notes
