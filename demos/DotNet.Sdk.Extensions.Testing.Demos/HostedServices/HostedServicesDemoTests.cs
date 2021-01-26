@@ -37,7 +37,7 @@ namespace DotNet.Sdk.Extensions.Testing.Demos.HostedServices
                         services.AddSingleton<ICalculator>(calculator);
                     });
                 })
-                .RunUntilAsync(() => callCount == 3);
+                .RunUntilAsync(() => callCount >= 3);
 
             callCount.ShouldBeGreaterThanOrEqualTo(3);
         }

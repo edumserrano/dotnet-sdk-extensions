@@ -15,7 +15,7 @@ At the moment, the solution for this is to change your Host to a WebHost. If you
 
 ### Issues with not knowing when the Act phase of the test is done
 
-The problem is that you only want to do your asserts when the Hosted Service has finished it's work for your given test scenario. With this in mind, your basic test layout would be:
+The problem is that you only want to do your asserts when the Hosted Service has finished its work for your given test scenario. With this in mind, your basic test layout would be:
 
 * Configure any mocks required and inject them in the test server
 * Start the test server
@@ -23,7 +23,7 @@ The problem is that you only want to do your asserts when the Hosted Service has
 * Stop the test server
 * Do the asserts
 
-Out of the box there is no way for you to know when the Hosted Service has finished the work. The simplistic solution is to always wait for a given period of time and then do the asserts. This is not the best solution cause it will depend on the hardware on which the tests are run and usually leads to flaky tests.
+Out of the box there is no way for you to know when the Hosted Service has finished the work. The simplistic solution is to always wait for a given period of time and then do the asserts. This is not the best solution because the wait times depend on the hardware on which the tests are run and usually leads to flaky tests.
 
 The provided solution will let you do this on a custom condition or as well as on time based condition if that's what you actually require.
 
@@ -56,8 +56,8 @@ public class HostedServiceDemoTests : IClassFixture<WebApplicationFactory<Startu
 	public async Task DemoTest()
 	{
 		var callCount = 0;
-		var someMock = Substitute.For<ICalculator>();
-		someMock
+		var calculatorMock = Substitute.For<ICalculator>();
+		calculatorMock
 			.Sum(Arg.Any<int>(), Arg.Any<int>())
 			.Returns(1)
 			.AndDoes(info => callCount++);
@@ -67,10 +67,10 @@ public class HostedServiceDemoTests : IClassFixture<WebApplicationFactory<Startu
 			{
 				builder.ConfigureTestServices(services =>
 				{
-					services.AddSingleton<ICalculator>(someMock);
+					services.AddSingleton<ICalculator>(calculatorMock);
 				});
 			})
-			.RunUntilAsync(() => callCount == 3);
+			.RunUntilAsync(() => callCount >= 3);
 
 		// do some asserts
 	}
@@ -87,7 +87,7 @@ To put it another way, the set condition actually means *don't stop the server b
 
 This is important when planning your stop condition and asserts as it might mean that more of your code executed than you might initially think if you don't plan your stop condition appropriately.
 
- As an example if your Hosted Service is in a while loop doing some operation and your keeping count of how many times that operation has run before stopping the test server, then the stop condition should probably be `numberOfRuns >= <some value>` instead of `numberOfRuns == <some value>`.
+ As an example if your Hosted Service is in a while loop doing some operation and you are keeping count of how many times that operation has run before stopping the test server, then the stop condition should probably be `numberOfRuns >= 'some value'` instead of `numberOfRuns == 'some value'`.
 
 ### Use a time condition to stop the test server
 
@@ -107,9 +107,7 @@ await _webApplicationFactory
 	.RunUntilTimeoutAsync(TimeSpan.FromSeconds(3));
 ```
 
-Usually it's best to consider stopping after a condition is met. Abusing the `WebApplicationFactory.RunUntilTimeoutAsync` and using it in scenarios where you could have set a condition using the `WebApplicationFactory.RunUntilAsync` might lead to flaky tests.
-
-Furthermore the `WebApplicationFactory.RunUntilTimeoutAsync` is usually only useful if your Hosted Service implementation runs in some kind of loop condition that doesn't stop unless the server is shutdown.
+Usually it's best to consider stopping after a stop condition is met. Abusing the `WebApplicationFactory.RunUntilTimeoutAsync` and using it in scenarios where you could have set a stop condition using the `WebApplicationFactory.RunUntilAsync` might lead to flaky tests.
 
 ### Configure a timeout for the condition set to stop the test server
 
@@ -131,9 +129,9 @@ await _webApplicationFactory
 
 The above changes the default 5 seconds timeout to 100 milliseconds.
 
-Notice that when debugging the default timeout will not be 5 seconds, it will instead be 1 day. This is done so that you can take your time when debugging tests and not have the timeout being triggered and abort the test server in the middle of debugging.
+**Note that when debugging** the default timeout will not be 5 seconds, it will instead be 1 day. This is done so that you can take your time when debugging tests and not have the timeout being triggered and abort the test server in the middle of debugging.
 
-The above is only true for the default timeout. Meaning that any timeout that you set is honored even when debugging.
+The above is only true for the default timeout. Meaning that any timeout that you set is honored **even when debugging**.
 
 Beware of this when you're debugging tests where you've set a low timeout. You might have to increase your set timeout to something large enough to let you debug your test properly and then once you're happy set it back to the desired timeout.
 
@@ -164,13 +162,11 @@ So if for your test it will take X time to meet the condition and the `RunUntilO
 
 **Note**: when debugging it might be useful to set this to a larger period to allow you to step through your code more easily before the check for the condition kicks in and potentially shuts down the test server.
 
-### Manually terminating the test server
-
-You can use the overloads of the `WebApplicationFactory.RunUntilAsync` extension method to pass a `CancellationToken` which will stop the web server if cancelled.
-
 ## How to run the demo
 
 The demo for this extension is represented by a test class.
 
-* Go to the project `/demos/AspNetCore.Extensions.Testing.Demos/AspNetCore.Extensions.Testing.Demos.csproj`
-* Run the tests for the class `HostedServicesDemoTests`
+* In Visual Studio go to the `DotNet.Sdk.Extensions.Testing.Demos project`.
+* Run the tests for the [HostedServicesDemoTests class](/demos/DotNet.Sdk.Extensions.Testing.Demos/HostedServices/HostedServicesDemoTests.cs).
+
+Analyse the [HostedServicesDemoTests class](/demos/DotNet.Sdk.Extensions.Testing.Demos/HostedServices/HostedServicesDemoTests.cs) for more information on how this demo works.
