@@ -15,7 +15,7 @@ In the basic use case when you use WebApplicationFactory\<T> **what happens is**
 - `public static IHostBuilder CreateHostBuilder(string[] args)`
 - `public static IWebHostBuilder CreateWebHostBuilder(string[] args)`
 
-If that method is not found the WebApplicationFactory\<T> will throw an exception. If found then it will use that method to create the Host. Because the startup class to be used is defined in that CreateHostBuilder/CreateWebHostBuilder method, usually via a call to [WebBuilder.UseStartup](https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.hosting.webhostbuilderextensions.usestartup?view=aspnetcore-3.1), then that's the Startup type that is ends up being used. 
+If that method is not found the WebApplicationFactory\<T> will throw an exception. If found then it will use that method to create the Host. Because the startup class to be used is defined in that CreateHostBuilder/CreateWebHostBuilder method, usually via a call to [WebBuilder.UseStartup](https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.hosting.webhostbuilderextensions.usestartup?view=aspnetcore-3.1), then that's the Startup type that ends up being used.
 
 Hopefully this explains properly how the Startup type is chosen: **the Startup type is NOT the type T specified on the WebApplicationFactory\<T> but rather the one defined when configuring the Host. The type T on the WebApplicationFactory\<T> is used to signal the assembly which will be scanned to find by convention how to create a Host.**
 
@@ -106,7 +106,7 @@ public class CustomWebApplicationFactory : WebApplicationFactory<SomeTypeInMyTes
 }
 ```
 
-I don't know why and I didn't research further but I'm guessing there's a detail in the implementation that prevents it from working as expected.
+I don't know why and I didn't research further.
 
 However moving the `UseStartup` to `ConfigureWebHost` still produces the expected outcome:
 
@@ -130,4 +130,4 @@ public class CustomWebApplicationFactory : WebApplicationFactory<SomeTypeInMyTes
 }
 ```
 
-**Note**: the call to `ConfigureWebHostDefaults` is likely required if you're testing web apps because it will register default services usually required by web apps. For example: `IServiceCollection.AddRouting`.
+**Note**: the call to `ConfigureWebHostDefaults` in the method `CreateHostBuilder` is likely required if you're testing web apps because it will register default services usually required by web apps. For example: `IServiceCollection.AddRouting`.
