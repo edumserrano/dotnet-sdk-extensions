@@ -64,3 +64,5 @@ Microsoft.Extensions.Options.OptionsValidationException:
 ```
 
 * The web app fails to start and the process exits due to the above unhandled exception
+
+Analyse the [StartupEagerOptionsValidation class](/demos/DotNet.Sdk.Extensions.Demos/Options/EagerValidateOptions/StartupEagerOptionsValidation.cs) for more information on how this demo works.
