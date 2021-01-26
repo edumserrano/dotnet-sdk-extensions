@@ -22,7 +22,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.ResponseMocking
 
         internal async Task<HttpResponseMockResults> ExecuteAsync(HttpContext httpContext)
         {
-            if (httpContext == null) throw new ArgumentNullException(nameof(httpContext));
+            if (httpContext is null) throw new ArgumentNullException(nameof(httpContext));
 
             var shouldExecute = await _predicateAsync(httpContext.Request, httpContext.RequestAborted);
             if (!shouldExecute)

@@ -12,7 +12,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers
 
         public HttpMockServerArgs(List<HttpMockServerUrlDescriptor> urlDescriptors, string[] hostArgs)
         {
-            if (hostArgs == null) throw new ArgumentNullException(nameof(hostArgs));
+            if (hostArgs is null) throw new ArgumentNullException(nameof(hostArgs));
             HostArgs = CreateHostArgs(hostArgs, urlDescriptors);
         }
 

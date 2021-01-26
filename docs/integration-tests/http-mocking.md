@@ -16,11 +16,11 @@ In the end, in addition to integration tests, we would also have to implement so
 
 ### Issues with mocking the IHttpClientFactory.CreateClient
 
-The problem with mocking the IHttpClientFactory.CreateClient is that any configuration that is set for the HttpClient as part of our Startup won't take effect. For instance, after calling IServiceCollection.AddHttpClient you can configure properties/behaviour of the HttpClient by following that call with a IHttpClientBuilder.ConfigureHttpClient.
+The problem with mocking the `IHttpClientFactory.CreateClient` is that any configuration that is set for the HttpClient as part of the `Startup` won't take effect. For instance, after calling `IServiceCollection.AddHttpClient` you can configure properties/behaviour of the `HttpClient` by following that call with a `IHttpClientBuilder.ConfigureHttpClient`.
 
-Imagine that you want to configure a base address or a timeout for the HttpClient. If we mock the IHttpClientFactory.CreateClient then the call to IHttpClientBuilder.ConfigureHttpClient won't take effect during tests because we aren't using the 'real' IHttpClientFactory.
+Imagine that you want to configure a base address or a timeout for the `HttpClient`. If we mock the `IHttpClientFactory.CreateClient` then the call to `IHttpClientBuilder.ConfigureHttpClient` where you define the base address or a timeout won't take effect during tests because we aren't using the 'real' `IHttpClientFactory`.
 
-As another example, if you use the [Polly library](https://github.com/App-vNext/Polly) to add resilience and transient-fault-handling to the HttpClient then those policies will also not take effect on your tests leaving a gap in testing.
+As another example, if you use the [Polly library](https://github.com/App-vNext/Polly) to add resilience and transient-fault-handling to the `HttpClient` then those policies will also not take effect on your tests leaving a gap in testing.
 
 ## How to use
 
@@ -56,9 +56,9 @@ public class HttpMocksDemoTests : IClassFixture<WebApplicationFactory<Startup>>
 					{
 						// inject mocks for any other services
 					})
-					.UseHttpMocks(httpMessageHandlersBuilder =>
+					.UseHttpMocks(handlers =>
 					{
-						httpMessageHandlersBuilder.MockHttpResponse(httpResponseMock);
+						handlers.MockHttpResponse(httpResponseMock);
 					});
 			}).CreateClient();
 

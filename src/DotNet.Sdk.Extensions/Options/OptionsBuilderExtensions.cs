@@ -20,7 +20,7 @@ namespace DotNet.Sdk.Extensions.Options
             this IServiceCollection services,
             IConfiguration configuration) where T : class, new()
         {
-            if (services == null) throw new ArgumentNullException(nameof(services));
+            if (services is null) throw new ArgumentNullException(nameof(services));
 
             return services
                 .AddOptions<T>()
@@ -42,8 +42,8 @@ namespace DotNet.Sdk.Extensions.Options
             IConfiguration configuration,
             string sectionName) where T : class, new()
         {
-            if (services == null) throw new ArgumentNullException(nameof(services));
-            if (configuration == null) throw new ArgumentNullException(nameof(configuration));
+            if (services is null) throw new ArgumentNullException(nameof(services));
+            if (configuration is null) throw new ArgumentNullException(nameof(configuration));
 
             return services
                 .AddOptions<T>()
@@ -65,7 +65,7 @@ namespace DotNet.Sdk.Extensions.Options
         /// <returns>The <see cref="OptionsBuilder{T}"/> for chaining.</returns>
         public static OptionsBuilder<T> AddOptionsValue<T>(this OptionsBuilder<T> optionsBuilder) where T : class, new()
         {
-            if (optionsBuilder == null) throw new ArgumentNullException(nameof(optionsBuilder));
+            if (optionsBuilder is null) throw new ArgumentNullException(nameof(optionsBuilder));
 
             optionsBuilder.Services.AddOptionsValue<T>();
             return optionsBuilder;
@@ -83,14 +83,14 @@ namespace DotNet.Sdk.Extensions.Options
         /// <returns>The <see cref="OptionsBuilder{T}"/> for chaining.</returns>
         public static OptionsBuilder<T> ValidateEagerly<T>(this OptionsBuilder<T> optionsBuilder) where T : class
         {
-            if (optionsBuilder == null) throw new ArgumentNullException(nameof(optionsBuilder));
+            if (optionsBuilder is null) throw new ArgumentNullException(nameof(optionsBuilder));
             optionsBuilder.Services.AddTransient<IStartupFilter, StartupOptionsValidation<T>>();
             return optionsBuilder;
         }
 
         private static void AddOptionsValue<T>(this IServiceCollection services) where T : class, new()
         {
-            if (services == null) throw new ArgumentNullException(nameof(services));
+            if (services is null) throw new ArgumentNullException(nameof(services));
 
             services.AddSingleton(serviceProvider =>
             {

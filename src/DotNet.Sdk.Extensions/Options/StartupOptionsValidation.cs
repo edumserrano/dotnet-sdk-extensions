@@ -13,7 +13,7 @@ namespace DotNet.Sdk.Extensions.Options
             {
                 var optionsType = typeof(IOptions<>).MakeGenericType(typeof(T));
                 var options = builder.ApplicationServices.GetService(optionsType);
-                if (options != null)
+                if (options is not null)
                 {
                     // Retrieve the options value to trigger validation
                     _ = ((IOptions<object>)options).Value;

@@ -21,7 +21,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.Response
         /// <returns>The <see cref="HttpResponseMessageMockBuilder"/> for chaining.</returns>
         public HttpResponseMessageMockBuilder Where(Func<HttpRequestMessage, bool> predicate)
         {
-            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
+            if (predicate is null) throw new ArgumentNullException(nameof(predicate));
             // convert to 'async' predicate
             return Where((httpRequestMessage, cancellationToken) => Task.FromResult(predicate(httpRequestMessage)));
         }
@@ -33,7 +33,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.Response
         /// <returns>The <see cref="HttpResponseMessageMockBuilder"/> for chaining.</returns>
         public HttpResponseMessageMockBuilder Where(HttpResponseMessageMockPredicateDelegate predicate)
         {
-            if (_predicateAsync != null)
+            if (_predicateAsync is not null)
             {
                 throw new InvalidOperationException($"{nameof(HttpResponseMessageMockBuilder)}.{nameof(Where)} condition already configured.");
             }
@@ -48,7 +48,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.Response
         /// <returns>The <see cref="HttpResponseMessageMockBuilder"/> for chaining.</returns>
         public HttpResponseMessageMockBuilder RespondWith(HttpResponseMessage httpResponseMessage)
         {
-            if (httpResponseMessage == null) throw new ArgumentNullException(nameof(httpResponseMessage));
+            if (httpResponseMessage is null) throw new ArgumentNullException(nameof(httpResponseMessage));
             return RespondWith(httpRequestMessage => httpResponseMessage);
         }
 
@@ -59,7 +59,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.Response
         /// <returns>The <see cref="HttpResponseMessageMockBuilder"/> for chaining.</returns>
         public HttpResponseMessageMockBuilder RespondWith(Func<HttpRequestMessage, HttpResponseMessage> handler)
         {
-            if (handler == null) throw new ArgumentNullException(nameof(handler));
+            if (handler is null) throw new ArgumentNullException(nameof(handler));
             // convert to 'async' handler
             return RespondWith((httpRequestMessage, cancellationToken) => Task.FromResult(handler(httpRequestMessage)));
         }
@@ -71,7 +71,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.Response
         /// <returns>The <see cref="HttpResponseMessageMockBuilder"/> for chaining.</returns>
         public HttpResponseMessageMockBuilder RespondWith(HttpResponseMessageMockHandlerDelegate handler)
         {
-            if (_handlerAsync != null)
+            if (_handlerAsync is not null)
             {
                 throw new InvalidOperationException("Response behavior already configured.");
             }
@@ -86,7 +86,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.Response
         /// <returns>The <see cref="HttpResponseMessageMockBuilder"/> for chaining.</returns>
         public HttpResponseMessageMockBuilder TimesOut(TimeSpan timeout)
         {
-            if (_handlerAsync != null)
+            if (_handlerAsync is not null)
             {
                 throw new InvalidOperationException("Response behavior already configured.");
             }

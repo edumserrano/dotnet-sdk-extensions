@@ -6,12 +6,12 @@ This repo contains extensions to use with .NET applications, mainly [asp.net cor
 
 The extensions available are split into two groups:
 
-* Extensions to use on app main code.
+* Extensions to use on web app main code.
 * Extensions to use when doing integration tests.
 
 For more information about each extension check its docs and demo. You can find the link to each extension's documentation below.
 
-### For apps
+### For web apps
 
 * [Eagerly validating options](/docs/configuration/options-eagerly-validation.md)
 * [Using `T` options classes instead of `IOptions<T>`](/docs/configuration/options-without-IOptions.md)
@@ -24,13 +24,13 @@ For more information about each extension check its docs and demo. You can find 
 
 ### Other
 
-* [Notes on WebApplicationFactory regarding integration tests](/docs/integration-tests/web-application-factory.md)
+* [Notes on WebApplicationFactory regarding asp.net integration tests](/docs/integration-tests/web-application-factory.md)
 
 ## How to run the demos
 
-### For the app demos
+### For the web app demos
 
-The extensions for apps are demoed by the `demos\DotNet.Sdk.Extensions.Demos\DotNet.Sdk.Extensions.Demos.csproj` project.
+The extensions for web apps are demoed by the `demos\DotNet.Sdk.Extensions.Demos\DotNet.Sdk.Extensions.Demos.csproj` project.
 
 This project runs an `asp.net core app` which can demo different scenarios. For more information on how to run a specific demo see the documentation for the desired extension.
 

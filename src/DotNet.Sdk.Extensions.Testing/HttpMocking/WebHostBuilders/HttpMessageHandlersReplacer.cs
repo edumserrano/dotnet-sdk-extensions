@@ -12,12 +12,12 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.WebHostBuilders
     /// <summary>
     /// Provides methods to mock an <see cref="HttpResponseMessage"/>.
     /// </summary>
-    public class HttpMessageHandlers
+    public class HttpMessageHandlersReplacer
     {
         private readonly IServiceCollection _services;
         private readonly List<HttpResponseMessageMockDescriptorBuilder> _httpResponseMockBuilders;
 
-        internal HttpMessageHandlers(IServiceCollection services)
+        internal HttpMessageHandlersReplacer(IServiceCollection services)
         {
             _services = services ?? throw new ArgumentNullException(nameof(services));
             _httpResponseMockBuilders = new List<HttpResponseMessageMockDescriptorBuilder>();
@@ -27,14 +27,26 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.WebHostBuilders
         /// Mocks an <see cref="HttpResponseMessage"/>.
         /// </summary>
         /// <param name="configure">An action to configure the <see cref="HttpResponseMessage"/> mock.</param>
-        /// <returns>The <see cref="HttpMessageHandlers"/> for chaining.</returns>
-        public HttpMessageHandlers MockHttpResponse(Action<HttpResponseMessageMockDescriptorBuilder> configure)
+        /// <returns>The <see cref="HttpMessageHandlersReplacer"/> for chaining.</returns>
+        public HttpMessageHandlersReplacer MockHttpResponse(Action<HttpResponseMessageMockDescriptorBuilder> configure)
         {
-            if (configure == null) throw new ArgumentNullException(nameof(configure));
+            if (configure is null) throw new ArgumentNullException(nameof(configure));
 
             var builder = new HttpResponseMessageMockDescriptorBuilder();
             configure(builder);
             _httpResponseMockBuilders.Add(builder);
+            return this;
+        }
+
+        /// <summary>
+        /// Mocks an <see cref="HttpResponseMessage"/>.
+        /// </summary>
+        /// <param name="httpResponseMessageMockDescriptorBuilder">The configuration for what the <see cref="HttpResponseMessage"/> mock should be.</param>
+        /// <returns>The <see cref="HttpMessageHandlersReplacer"/> for chaining.</returns>
+        public HttpMessageHandlersReplacer MockHttpResponse(HttpResponseMessageMockDescriptorBuilder httpResponseMessageMockDescriptorBuilder)
+        {
+            if (httpResponseMessageMockDescriptorBuilder is null) throw new ArgumentNullException(nameof(httpResponseMessageMockDescriptorBuilder));
+            _httpResponseMockBuilders.Add(httpResponseMessageMockDescriptorBuilder);
             return this;
         }
 
@@ -79,7 +91,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.WebHostBuilders
 
         private TestHttpMessageHandlerDescriptor CreateTestHttpMessageHandlers(IGrouping<string, HttpResponseMessageMockDescriptor> httpResponseMockDescriptorsGrouping)
         {
-            if (httpResponseMockDescriptorsGrouping == null) throw new ArgumentNullException(nameof(httpResponseMockDescriptorsGrouping));
+            if (httpResponseMockDescriptorsGrouping is null) throw new ArgumentNullException(nameof(httpResponseMockDescriptorsGrouping));
 
             var httpClientName = httpResponseMockDescriptorsGrouping.Key;
             var httpResponseMockDescriptors = httpResponseMockDescriptorsGrouping.ToList();

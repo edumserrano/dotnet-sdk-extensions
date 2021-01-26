@@ -30,7 +30,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess
         /// <returns>The <see cref="ResponseBasedBuilder"/> for chaining.</returns>
         public ResponseBasedBuilder MockHttpResponse(HttpResponseMock httpResponseMock)
         {
-            if (httpResponseMock == null) throw new ArgumentNullException(nameof(httpResponseMock));
+            if (httpResponseMock is null) throw new ArgumentNullException(nameof(httpResponseMock));
 
             _httpResponseMocks.Add(httpResponseMock);
             return this;
@@ -43,7 +43,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess
         /// <returns>The <see cref="ResponseBasedBuilder"/> for chaining.</returns>
         public ResponseBasedBuilder MockHttpResponse(Action<HttpResponseMockBuilder> configureHttpResponseMock)
         {
-            if (configureHttpResponseMock == null) throw new ArgumentNullException(nameof(configureHttpResponseMock));
+            if (configureHttpResponseMock is null) throw new ArgumentNullException(nameof(configureHttpResponseMock));
 
             var httpResponseMockBuilder = new HttpResponseMockBuilder();
             configureHttpResponseMock(httpResponseMockBuilder);
