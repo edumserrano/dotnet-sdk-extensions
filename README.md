@@ -19,7 +19,7 @@ For more information about each extension check its docs and demo. You can find 
 ### For integration tests
 
 * [Providing test appsettings files to the test server](/docs/integration-tests/configuring-webhost.md)
-* [Mocking HttpClient responses](/docs/integration-tests/http-mocking.md)
+* [Mocking HttpClient's responses in-process](/docs/integration-tests/http-mocking-in-process.md)
 * [Testing Hosted Services (Background Services)](/docs/integration-tests/hosted-services.md)
 
 ### Other

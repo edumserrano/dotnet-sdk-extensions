@@ -1,4 +1,8 @@
-﻿# Mocking HttpClient's responses
+﻿# Mocking HttpClient's responses in-process
+
+This will allow mocking the HttpClient's response by taking control of the HttpMessageHandler(s) that is(are) used by the HttpClient(s) registered on the Startup.
+
+The mocking of the http response happens within the test server, without any outgoing http call actually happening, and that's why this method was named in process as oposed to the [out-of-process http response mocking method]().
 
 ## Motivation
 
