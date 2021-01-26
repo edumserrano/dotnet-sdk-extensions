@@ -6,6 +6,7 @@ namespace DotNet.Sdk.Extensions.Testing.Demos.HttpMocking
 {
     // For more information on why this custom WebApplicationFactory<T> is configured as below
     // please see the doc at /docs/integration-tests/web-application-factory.md 
+    // You might NOT need to create a custom class that implements WebApplicationFactory
     public class HttpResponseMockingWebApplicationFactory : WebApplicationFactory<StartupHttpResponseMocking>
     {
         protected override void ConfigureWebHost(IWebHostBuilder builder)
