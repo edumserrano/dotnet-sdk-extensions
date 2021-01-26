@@ -13,6 +13,52 @@ When trying to do this you face 2 issues:
 
 At the moment, the solution for this is to change your Host to a WebHost. If you don't do this at the moment you can't use the process described below for doing integration tests on Hosted Services.
 
+By default on the Worker Service template, the `IHost` instance is created as follows:
+
+```
+public static IHostBuilder CreateHostBuilder(string[] args) =>
+	Host.CreateDefaultBuilder(args)
+		.ConfigureServices((hostContext, services) =>
+		{
+			services.AddHostedService<Worker>();
+		});
+```
+
+To be able to use this testing extension you should change it to:
+
+```
+public static IHostBuilder CreateHostBuilder(string[] args) =>
+	Host.CreateDefaultBuilder(args)		
+		.ConfigureWebHostDefaults(webBuilder =>
+		{
+			webBuilder.UseStartup<Startup>();
+		});
+```
+
+And on the `ConfigureServices method` of the `Startup` class is where you add any Hosted Services you require:
+
+```
+public class Startup
+{
+	private readonly IConfiguration _configuration;
+
+	public Startup(IConfiguration configuration)
+	{
+		_configuration = configuration;
+	}
+
+	public void ConfigureServices(IServiceCollection services)
+	{
+		services.AddHostedService<Worker>();
+	}
+
+	public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+	{
+		// add here any IApplicationBuilder configuration if required
+	}
+}
+```
+
 ### Issues with not knowing when the Act phase of the test is done
 
 The problem is that you only want to do your asserts when the Hosted Service has finished its work for your given test scenario. With this in mind, your basic test layout would be:
