@@ -63,4 +63,4 @@ The demo for this extension is represented by a web app.
 appsettings says: Hello from typed configuration
 ```
 
-Analyse the [StartupOptionsValue class](/demos/DotNet.Sdk.Extensions.Demos/Options/OptionsValue/StartupOptionsValue.cs) for more information on how this demo works.
+Analyse the [StartupOptionsValue class](/demos/DotNet.Sdk.Extensions.Demos/Options/OptionsValue/StartupOptionsValue.cs) for more information on how this extension works.

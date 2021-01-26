@@ -41,13 +41,6 @@ public class HttpMocksDemoTests : IClassFixture<WebApplicationFactory<Startup>>
 	[Fact]
 	public void DemoTest()
 	{
-		var httpResponseMock = new HttpResponseMockBuilder()
-			.ForTypedClient<IMyApiClient>()
-			.RespondWith(httpRequestMessage =>
-			{
-				return new HttpResponseMessage(HttpStatusCode.BadRequest);
-			});
-
 		var httpClient = _webApplicationFactory
 			.WithWebHostBuilder(builder =>
 			{
@@ -58,9 +51,18 @@ public class HttpMocksDemoTests : IClassFixture<WebApplicationFactory<Startup>>
 					})
 					.UseHttpMocks(handlers =>
 					{
-						handlers.MockHttpResponse(httpResponseMock);
+						handlers.MockHttpResponse(httpResponseMessageBuilder =>
+						{
+							httpResponseMessageBuilder
+								.ForTypedClient<IMyApiClient>()
+								.RespondWith(httpRequestMessage =>
+								{
+									return new HttpResponseMessage(HttpStatusCode.OK);
+								});
+						});
 					});
-			}).CreateClient();
+			})
+			.CreateClient();
 
 		// do some calls to your app via the httpClient and then some asserts
 	}
@@ -73,12 +75,13 @@ public class HttpMocksDemoTests : IClassFixture<WebApplicationFactory<Startup>>
 
 There are [3 ways to create http clients using IHttpClientFactory](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/http-requests).
 
-When mocking the responses the way you create the mock response varies depending on the type of HttpClient.
+When mocking the http responses, the way you create the mock response varies depending on the type of HttpClient registered.
 
-For typed clients you need to provide the type of the client when using `HttpResponseMockBuilder.ForTypedClient`:
+For typed clients you need to provide the type of the client when using `HttpResponseMessageMockDescriptorBuilder.ForTypedClient`:
 
 ```
-var httpResponseMock = new HttpResponseMockBuilder()
+var httpResponseMock = new HttpResponseMessageMockDescriptorBuilder();
+httpResponseMock
 	.ForTypedClient<IMyApiClient>()
 	.RespondWith(httpRequestMessage =>
 	{
@@ -86,10 +89,11 @@ var httpResponseMock = new HttpResponseMockBuilder()
 	});
 ```
 
-For named clients you need to provide the name of the client when using `HttpResponseMockBuilder.ForNamedClient`:
+For named clients you need to provide the name of the client when using `HttpResponseMessageMockDescriptorBuilder.ForNamedClient`:
 
 ```
-var httpResponseMock = new HttpResponseMockBuilder()
+var httpResponseMock = new HttpResponseMessageMockDescriptorBuilder();
+httpResponseMock
 	.ForNamedClient("ClientName")
 	.RespondWith(httpRequestMessage =>
 	{
@@ -97,10 +101,11 @@ var httpResponseMock = new HttpResponseMockBuilder()
 	});
 ```
 
-For http clients create following the Basic usage of the IHttpClientFactory use the `HttpResponseMockBuilder.ForBasicClient`:
+For http clients created following the Basic usage of the `IHttpClientFactory` use the `HttpResponseMessageMockDescriptorBuilder.ForBasicClient`:
 
 ```
-var httpResponseMock = new HttpResponseMockBuilder()
+var httpResponseMock = new HttpResponseMessageMockDescriptorBuilder();
+httpResponseMock
 	.ForBasicClient()
 	.RespondWith(httpRequestMessage =>
 	{
@@ -110,12 +115,13 @@ var httpResponseMock = new HttpResponseMockBuilder()
 
 ### Mock responses conditionally
 
-You can mock responses conditially by using the `HttpResponseMockBuilder.Where` method.
+You can mock responses conditially by using the `HttpResponseMessageMockBuilder.Where` method.
 
 Imagine that you have a typed client which implemented 3 different API calls but you only wanted to mock the response for one of them. You can do:
 
 ```
-var httpResponseMock = new HttpResponseMockBuilder()
+var httpResponseMock = new HttpResponseMessageMockDescriptorBuilder();
+httpResponseMock
 	.ForTypedClient<IMyApiClient>()
 	.Where(HttpRequestMessage =>
 	{
@@ -127,20 +133,21 @@ var httpResponseMock = new HttpResponseMockBuilder()
 	});
 ```
 
-The above will mock http responses to the IMyApiClient typed HttpClient when the request path is */Users*.
+The above will mock http responses to the `IMyApiClient` typed `HttpClient` when the request path is `/Users`.
 
-By default, if `HttpResponseMockBuilder.Where` method is not used, it will always apply the mock.
+By default, if `HttpResponseMessageMockBuilder.Where` method is not used, it will always apply the mock.
 
 If multiple http response mocks implement the same condition then only the response from the first mock is returned.
 
-If you create a mock for an HttpClient and no condition is met you will receive an `HttpResponseMockBuilderException` indicating which endpoint is being called but not mocked.
+If you create a mock for an `HttpClient` and no condition is met you will receive an `InvalidOperationException` indicating which endpoint is being called but not mocked.
 
 ### Mock several responses
 
-You can mock several responses for the same HttpClient. For instance:
+You can mock multiple http responses:
 
 ```
-var usersHttpResponseMock = new HttpResponseMockBuilder()
+var usersHttpResponseMock = new HttpResponseMessageMockDescriptorBuilder();
+usersHttpResponseMock
 	.ForTypedClient<IMyApiClient>()
 	.Where(HttpRequestMessage =>
 	{
@@ -151,7 +158,8 @@ var usersHttpResponseMock = new HttpResponseMockBuilder()
 		return new HttpResponseMessage(HttpStatusCode.BadRequest);
 	});
 
-var adminsHttpResponseMock = new HttpResponseMockBuilder()
+var adminsHttpResponseMock = new HttpResponseMessageMockDescriptorBuilder();
+adminsHttpResponseMock
 	.ForTypedClient<IMyApiClient>()
 	.Where(HttpRequestMessage =>
 	{
@@ -166,19 +174,23 @@ var adminsHttpResponseMock = new HttpResponseMockBuilder()
 and then feed the mocks to the `IWebHostBuilder.UseHttpMocks` extension method:
 
 ```
-UseHttpMocks(httpMessageHandlersBuilder =>
+UseHttpMocks(handlers =>
 {
-	httpMessageHandlersBuilder
+	handlers
 		.MockHttpResponse(usersHttpResponseMock)
 		.MockHttpResponse(adminsHttpResponseMock);
 });
 ```
 
-As you would expect, you can follow the same principle and mock different responses for different HttpClients.
-
 ### Different ways to mock the HttpClient response
 
-If you wish, instead of configuring the http response mock before hand as shown in [How to use](#how-to-use), you can configure them inline with the `IWebHostBuilder.UseHttpMocks` extension method:
+You might have noticed that the last example of mocking the http response is differen from the first one show in [How to use](#how-to-use). In short, you can chose to define the mocks inline or before hand.
+
+There is no recommendation on any of the different ways to do the mocking. You should use the option that better fits your scenario/style.
+
+Let's see some examples:
+
+1) Configuring the http response mocks inline with the `HttpMessageHandlersReplacer.MockHttpResponse` method:
 
 ```
 public class HttpMocksDemoTests : IClassFixture<WebApplicationFactory<Startup>>
@@ -201,11 +213,11 @@ public class HttpMocksDemoTests : IClassFixture<WebApplicationFactory<Startup>>
 					{
 						// inject mocks for any other services
 					})
-					.UseHttpMocks(httpMessageHandlersBuilder =>
+					.UseHttpMocks(handlers =>
 					{
-						httpMessageHandlersBuilder.MockHttpResponse(mockBuilder =>
+						handlers.MockHttpResponse(httpResponseMessageBuilder =>
 						{
-							mockBuilder
+							httpResponseMessageBuilder
 								.ForTypedClient<IMyApiClient>()
 								.RespondWith(httpRequestMessage =>
 								{
@@ -220,9 +232,126 @@ public class HttpMocksDemoTests : IClassFixture<WebApplicationFactory<Startup>>
 }
 ```
 
+2) Configuring the http response mocks before hand and using them with `IWebHostBuilder.UseHttpMocks` inline:
+
+```
+public class HttpMocksDemoTests : IClassFixture<WebApplicationFactory<Startup>>
+{
+	private readonly WebApplicationFactory<Startup> _webApplicationFactory;
+
+	public HttpMocksDemoTests(WebApplicationFactory<Startup> webApplicationFactory)
+	{
+		_webApplicationFactory = webApplicationFactory;
+	}
+
+	[Fact]
+	public void DemoTest()
+	{
+		var usersHttpResponseMock = new HttpResponseMessageMockDescriptorBuilder();
+		usersHttpResponseMock
+			.ForTypedClient<IMyApiClient>()
+			.Where(HttpRequestMessage =>
+			{
+				return HttpRequestMessage.RequestUri.AbsolutePath.Equals("/Users");
+			})
+			.RespondWith(httpRequestMessage =>
+			{
+				return new HttpResponseMessage(HttpStatusCode.BadRequest);
+			});
+
+		var adminsHttpResponseMock = new HttpResponseMessageMockDescriptorBuilder();
+		adminsHttpResponseMock
+		.ForTypedClient<IMyApiClient>()
+			.Where(HttpRequestMessage =>
+			{
+				return HttpRequestMessage.RequestUri.AbsolutePath.Equals("/Admins");
+			})
+			.RespondWith(httpRequestMessage =>
+			{
+				return new HttpResponseMessage(HttpStatusCode.BadRequest);
+			});
+
+		var httpClient = _webApplicationFactory
+			.WithWebHostBuilder(builder =>
+			{
+				builder
+					.ConfigureTestServices(services =>
+					{
+						// inject mocks for any other services
+					})
+					.UseHttpMocks(handlers =>
+					{
+						handlers.MockHttpResponse(usersHttpResponseMock);
+						handlers.MockHttpResponse(adminsHttpResponseMock);
+					});
+			}).CreateClient();
+
+		// do some calls to your app via the httpClient and then some asserts
+	}
+}
+```
+
+3) Configuring the http response mocks before hand and using them with `IWebHostBuilder.UseHttpMocks` non inline:
+
+```
+public class HttpMocksDemoTests : IClassFixture<WebApplicationFactory<Startup>>
+{
+	private readonly WebApplicationFactory<Startup> _webApplicationFactory;
+
+	public HttpMocksDemoTests(WebApplicationFactory<Startup> webApplicationFactory)
+	{
+		_webApplicationFactory = webApplicationFactory;
+	}
+
+	[Fact]
+	public void DemoTest()
+	{
+		var usersHttpResponseMock = new HttpResponseMessageMockDescriptorBuilder();
+		usersHttpResponseMock
+			.ForTypedClient<IMyApiClient>()
+			.Where(HttpRequestMessage =>
+			{
+				return HttpRequestMessage.RequestUri.AbsolutePath.Equals("/Users");
+			})
+			.RespondWith(httpRequestMessage =>
+			{
+				return new HttpResponseMessage(HttpStatusCode.BadRequest);
+			});
+
+		var adminsHttpResponseMock = new HttpResponseMessageMockDescriptorBuilder();
+		adminsHttpResponseMock
+		.ForTypedClient<IMyApiClient>()
+			.Where(HttpRequestMessage =>
+			{
+				return HttpRequestMessage.RequestUri.AbsolutePath.Equals("/Admins");
+			})
+			.RespondWith(httpRequestMessage =>
+			{
+				return new HttpResponseMessage(HttpStatusCode.BadRequest);
+			});
+
+		var httpClient = _webApplicationFactory
+			.WithWebHostBuilder(builder =>
+			{
+				builder
+					.ConfigureTestServices(services =>
+					{
+						// inject mocks for any other services
+					})
+					.UseHttpMocks(usersHttpResponseMock,adminsHttpResponseMock);
+			}).CreateClient();
+
+		// do some calls to your app via the httpClient and then some asserts
+	}
+}
+```
+
+
 ## How to run the demo
 
 The demo for this extension is represented by a test class.
 
-* Go to the project `/demos/AspNetCore.Extensions.Testing.Demos/AspNetCore.Extensions.Testing.Demos.csproj`
-* Run the tests for the class `HttpResponseMockingDemoTests`
+* In Visual Studio go to the `DotNet.Sdk.Extensions.Testing.Demos project`.
+* Run the tests for the [HttpResponseMockingDemoTests class](/demos/DotNet.Sdk.Extensions.Testing.Demos/HttpMocking/HttpResponseMockingDemoTests.cs).
+
+Analyse the [HttpResponseMockingDemoTests class](/demos/DotNet.Sdk.Extensions.Testing.Demos/HttpMocking/HttpResponseMockingDemoTests.cs) for more information on how this extension works.

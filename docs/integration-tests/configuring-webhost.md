@@ -90,4 +90,4 @@ The demo for this extension is represented by a test class.
 * In Visual Studio go to the `DotNet.Sdk.Extensions.Testing.Demos project`.
 * Run the test [ConfiguringWebHostDemoTests.ConfiguringWebHostDemoTest test](/demos/DotNet.Sdk.Extensions.Testing.Demos/Configuration/ConfiguringWebHostDemoTests.cs).
 
-Analyse the [ConfiguringWebHostDemoTests.ConfiguringWebHostDemoTest test](/demos/DotNet.Sdk.Extensions.Testing.Demos/Configuration/ConfiguringWebHostDemoTests.cs) for more information on how this demo works.
+Analyse the [ConfiguringWebHostDemoTests.ConfiguringWebHostDemoTest test](/demos/DotNet.Sdk.Extensions.Testing.Demos/Configuration/ConfiguringWebHostDemoTests.cs) for more information on how this extension works.
