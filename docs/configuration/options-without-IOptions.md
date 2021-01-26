@@ -54,10 +54,13 @@ Also note that this just added the hability to take a dependency on `SomeOption`
 
 The demo for this extension is represented by a web app.
 
-* Go to [Program.cs](/demos/AspNetCore.Extensions.Demos/Program.cs), comment all `IWebHostBuilder.UseStartup` calls except for the `IWebHostBuilder.UseStartup<Startup_OptionsValue>()`.
-* From Visual Studio, set the `demos\AspNetCore.Extensions.Demos\AspNetCore.Extensions.Demos.csproj` project as the Startup Project
+* From Visual Studio, set the `demos\DotNet.Sdk.Extensions.Demos\DotNet.Sdk.Extensions.Demos.csproj` project as the Startup Project
+* Update the `launchSettings.json` to set the demo to the options value by going to `demos\DotNet.Sdk.Extensions.Demos\Properties\launchSettings.json` and setting the `commandLineArgs` value to `-d options-value`.
 * Run the project
 * Browse to https://localhost:5001/ and the following message should be displayed:
+  
 ```
 appsettings says: Hello from typed configuration
 ```
+
+Analyse the [StartupOptionsValue class](/demos/DotNet.Sdk.Extensions.Demos/Options/OptionsValue/StartupOptionsValue) for more information on how this demo works.

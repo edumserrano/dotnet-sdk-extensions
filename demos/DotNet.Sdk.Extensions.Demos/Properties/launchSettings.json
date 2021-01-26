@@ -2,7 +2,7 @@
   "profiles": {
     "DotNet.Sdk.Extensions.Demos": {
       "commandName": "Project",
-      "commandLineArgs": "-d eager-options-validation",
+      "commandLineArgs": "-d options-value",
       "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
