@@ -28,24 +28,23 @@ For more information about each extension check its docs and demo. You can find 
 
 ## How to run the demos
 
-### For the web apps demos
+### For the app demos
 
-The extensions for web apps are demoed by the `demos\DotNet.Sdk.Extensions.Demos\DotNet.Sdk.Extensions.Demos.csproj` project.
+The extensions for apps are demoed by the `demos\DotNet.Sdk.Extensions.Demos\DotNet.Sdk.Extensions.Demos.csproj` project.
 
-This project runs an asp.net core app which can demo different scenarios depending on the Startup class that is used. To chose the demo to run go to the [Program.cs](/demos/AspNetCore.Extensions.Demos/Program.cs) and make sure the `IWebHostBuilder.UseStartup` being used is the one you want.
+This project runs an `asp.net core app` which can demo different scenarios. For more information on how to run a specific demo see the documentation for the desired extension.
 
 ### For the integration tests demos
 
-The extensions for web apps are demoed by the `demos\DotNet.Sdk.Extensions.Testing.Demos\DotNet.Sdk.Extensions.Testing.Demos.csproj` project. Check out the tests for the extension you want.
+The extensions for web apps are demoed by the `demos\DotNet.Sdk.Extensions.Testing.Demos\DotNet.Sdk.Extensions.Testing.Demos.csproj` project. Check out the tests for the extension you want. For more information on how to run a specific demo see the documentation for the desired extension.
 
 ## TODO
 
-* Need to create tests for the extensions
+* get lambda extensions 
+* investigate serilog logging test extensions for integration tests
 * Create ci cd pipeline, add badge to readme (link to pipeline, code coverage)
 * Publish nuget packages
 * Setup hooks to run pipelines on pull requests
-* get lambda extensions 
-* investigate serilog logging test extensions for integration tests
 
 
 ## Notes
