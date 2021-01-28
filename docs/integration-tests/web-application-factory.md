@@ -2,7 +2,7 @@
 
 ## Motivation
 
-There are some details when using [WebApplicationFactory\<T>](https://docs.microsoft.com/en-us/aspnet/core/test/integration-tests?view=aspnetcore-3.0#basic-tests-with-the-default-webapplicationfactory) that are a bit obscure but require understanding when you want to use it slighlty differently from it's basic use case.
+There are some details when using [WebApplicationFactory\<T>](https://docs.microsoft.com/en-us/aspnet/core/test/integration-tests?#basic-tests-with-the-default-webapplicationfactory) that are a bit obscure but require understanding when you want to use it slighlty differently from it's basic use case.
 
 ## Basic use case
 
@@ -15,11 +15,11 @@ In the basic use case when you use WebApplicationFactory\<T> **what happens is**
 - `public static IHostBuilder CreateHostBuilder(string[] args)`
 - `public static IWebHostBuilder CreateWebHostBuilder(string[] args)`
 
-If that method is not found the WebApplicationFactory\<T> will throw an exception. If found then it will use that method to create the Host. Because the startup class to be used is defined in that CreateHostBuilder/CreateWebHostBuilder method, usually via a call to [WebBuilder.UseStartup](https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.hosting.webhostbuilderextensions.usestartup?view=aspnetcore-3.1), then that's the Startup type that ends up being used.
+If that method is not found the WebApplicationFactory\<T> will throw an exception. If found then it will use that method to create the Host. Because the startup class to be used is defined in that CreateHostBuilder/CreateWebHostBuilder method, usually via a call to [WebBuilder.UseStartup](https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.hosting.webhostbuilderextensions.usestartup), then that's the Startup type that ends up being used.
 
 Hopefully this explains properly how the Startup type is chosen: **the Startup type is NOT the type T specified on the WebApplicationFactory\<T> but rather the one defined when configuring the Host. The type T on the WebApplicationFactory\<T> is used to signal the assembly which will be scanned to find by convention how to create a Host.**
 
-This is hinted briefly [on the docs](https://docs.microsoft.com/en-us/aspnet/core/test/integration-tests?view=aspnetcore-3.0#basic-tests-with-the-default-webapplicationfactory). Note the definition for TEntryPoint: "WebApplicationFactory<TEntryPoint> is used to create a TestServer for the integration tests. TEntryPoint is the entry point class of the SUT, usually the Startup class.".
+This is hinted briefly [on the docs](https://docs.microsoft.com/en-us/aspnet/core/test/integration-tests?#basic-tests-with-the-default-webapplicationfactory). Note the definition for TEntryPoint: "WebApplicationFactory<TEntryPoint> is used to create a TestServer for the integration tests. TEntryPoint is the entry point class of the SUT, usually the Startup class.".
 
 ## Problem with convention based implementation of WebApplicationFactory\<T>
 
@@ -30,7 +30,7 @@ As soon as you need to step outside the [basic use case](#basic-use-case) you st
 - How to define the startup class to be used ?
 - Issues caused by how the content root is specified by default.
 
-To deal with the points above you have to implement a [custom WebApplicationFactory\<T>](https://docs.microsoft.com/en-us/aspnet/core/test/integration-tests?view=aspnetcore-3.0#customize-webapplicationfactory) and override some of it's methods:
+To deal with the points above you have to implement a [custom WebApplicationFactory\<T>](https://docs.microsoft.com/en-us/aspnet/core/test/integration-tests?#customize-webapplicationfactory) and override some of it's methods:
 
 - `protected override IHostBuilder CreateHostBuilder()`
 - `protected override void ConfigureWebHost(IWebHostBuilder builder)`
@@ -64,7 +64,7 @@ public class CustomWebApplicationFactory : WebApplicationFactory<SomeTypeInMyTes
 }
 ```
 
-Now we are a bit better but we start having another issue. The problem is [how the content root is defined by default](https://docs.microsoft.com/en-us/aspnet/core/test/integration-tests?view=aspnetcore-3.0#how-the-test-infrastructure-infers-the-app-content-root-path). As explained in the docs, since I do not have a [`WebApplicationFactoryContentRootAttribute`](https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.testing.webapplicationfactorycontentrootattribute?view=aspnetcore-3.0) defined what happens is that the content root is set to `Solution Directory\Assembly Name` directory. For my case this makes the WebApplicationFactory\<T> throw an exception because the folder structure for my repository didn't match the default convention. It doesn't work because my test project is inside a `tests` folder. So I get a directory not found exception because in my case `Solution Directory\Assembly Name` doesn't exist, what does exist is `Solution Directory\tests\Assembly Name`.
+Now we are a bit better but we start having another issue. The problem is [how the content root is defined by default](https://docs.microsoft.com/en-us/aspnet/core/test/integration-tests?#how-the-test-infrastructure-infers-the-app-content-root-path). As explained in the docs, since I do not have a [`WebApplicationFactoryContentRootAttribute`](https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.testing.webapplicationfactorycontentrootattribute) defined what happens is that the content root is set to `Solution Directory\Assembly Name` directory. For my case this makes the WebApplicationFactory\<T> throw an exception because the folder structure for my repository didn't match the default convention. It doesn't work because my test project is inside a `tests` folder. So I get a directory not found exception because in my case `Solution Directory\Assembly Name` doesn't exist, what does exist is `Solution Directory\tests\Assembly Name`.
 
 Ok, so how do we resolve this. One way would be by setting the content root on the `ConfigureWebHost` method:
 

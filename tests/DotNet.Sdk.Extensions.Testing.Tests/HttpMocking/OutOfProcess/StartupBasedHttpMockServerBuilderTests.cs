@@ -36,9 +36,9 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
         }
 
         /// <summary>
-        /// Start to auxiliate with the startup based <seealso cref="HttpMockServer"/> tests.
+        /// Startup class to assist with the startup based <seealso cref="HttpMockServer"/> tests.
         /// It's a very basic Startup class but you could use whatever asp.net core configuration
-        /// you would like such as adding constrollers.
+        /// you would like such as adding controllers.
         /// </summary>
         public class MyMockStartup
         {

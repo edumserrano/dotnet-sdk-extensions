@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Testing.Configuration;
+using DotNet.Sdk.Extensions.Testing.Demos.Configuration.Auxiliary;
 using Shouldly;
 using Xunit;
 

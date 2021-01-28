@@ -36,12 +36,27 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess
         /// Allows passing more configuration into the <see cref="HttpMockServer"/>.
         /// </summary>
         /// <remarks>
-        /// The <see cref="HttpMockServer"/> is based on <see cref="IHost"/> so it will accept any arguments that the <see cref="IHost"/> accepts.
+        /// The <see cref="HttpMockServer"/> is based on <see cref="IHost"/> so it will accept any configuration values just like the <see cref="IHost"/> does.
         /// </remarks>
         /// <param name="hostArgs">The list of arguments to allow further configuration of the <see cref="HttpMockServer"/>.</param>
         /// <returns>The <see cref="HttpMockServerBuilder"/> for chaining.</returns>
         public HttpMockServerBuilder UseHostArgs(params string[] hostArgs)
         {
+            if (hostArgs is null)
+            {
+                throw new ArgumentNullException(nameof(hostArgs));
+            }
+
+            if (hostArgs.Length == 0)
+            {
+                throw new ArgumentException("Must have a value.", nameof(hostArgs));
+            }
+
+            if (_hostArgs.Length > 0)
+            {
+                throw new InvalidOperationException("UseHostArgs has already been defined and cannot be called multiple times.");
+            }
+
             _hostArgs = hostArgs ?? throw new ArgumentNullException(nameof(hostArgs));
             return this;
         }

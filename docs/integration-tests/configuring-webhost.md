@@ -10,7 +10,7 @@ The main configuration values I want to be able to control are the ones read fro
 
 Start by creating an integration test as shown in [introduction to integration tests](https://docs.microsoft.com/en-us/aspnet/core/test/integration-tests?#introduction-to-integration-tests).
 
-Once you have your test ready configure the appsettings files to be used on the test by using the `IWebHostBuilder.AddTestConfiguration` extension method.
+After, configure the appsettings files to be used on the test by using the `IWebHostBuilder.AddTestConfiguration` extension method.
 
 Let's say that you create a directory in the root of the test project named *AppSettings* and that inside you have two files:
 

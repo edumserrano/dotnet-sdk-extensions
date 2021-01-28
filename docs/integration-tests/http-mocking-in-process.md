@@ -2,13 +2,15 @@
 
 This will allow mocking the HttpClient's response by taking control of the HttpMessageHandler(s) that is(are) used by the HttpClient(s) registered on the Startup.
 
-The mocking of the http response happens within the test server, without any outgoing http call actually happening, and that's why this method was named in process as oposed to the [out-of-process http response mocking method]().
+The mocking of the http response happens within the test server, without any outgoing http call actually happening, and that's why this method was named in process as oposed to the [out-of-process http response mocking method](http-mocking-out-of-process.md).
+
+For more information see [mocking HttpClient's responses using in-process vs out-of-process](http-mocking-in-process-vs-out-of-process.md).
 
 ## Motivation
 
-I want to be able to do integration tests as defined in [introduction to integration tests](https://docs.microsoft.com/en-us/aspnet/core/test/integration-tests?#introduction-to-integration-tests).
+I want to be able to do integration tests as defined in [introduction to integration tests](https://docs.microsoft.com/en-us/aspnet/core/test/integration-tests?#introduction-to-integration-tests) and the scenario I want to test includes outgoing http calls made by the `HttpClient`.
 
-When doing those types of tests you need to be able to [inject mock services](https://docs.microsoft.com/en-us/aspnet/core/test/integration-tests?view=aspnetcore-3.1#inject-mock-services). The docs explain how to do this. And when it comes to HttpClient calls it means you have two choices:
+When doing these types of tests you need to be able to [inject mock services](https://docs.microsoft.com/en-us/aspnet/core/test/integration-tests?#inject-mock-services). The docs explain how to do this. And when it comes to HttpClient calls it means you have two choices:
 
 * Use a typed HttpClient and inject a mock for that type
 * [Mock the IHttpClientFactory](http://anthonygiretti.com/2018/09/06/how-to-unit-test-a-class-that-consumes-an-httpclient-with-ihttpclientfactory-in-asp-net-core/)
@@ -30,7 +32,7 @@ As another example, if you use the [Polly library](https://github.com/App-vNext/
 
 Start by creating an integration test as shown in [introduction to integration tests](https://docs.microsoft.com/en-us/aspnet/core/test/integration-tests?#introduction-to-integration-tests).
 
-Once you have your test ready configure the responses of the HttpClient by using the `IWebHostBuilder.UseHttpMocks` extension method. See example DemoTest:
+After, configure the responses of the HttpClient by using the `IWebHostBuilder.UseHttpMocks` extension method. See example DemoTest:
 
 ```
 public class HttpMocksDemoTests : IClassFixture<WebApplicationFactory<Startup>>
@@ -356,6 +358,6 @@ public class HttpMocksDemoTests : IClassFixture<WebApplicationFactory<Startup>>
 The demo for this extension is represented by a test class.
 
 * In Visual Studio go to the `DotNet.Sdk.Extensions.Testing.Demos project`.
-* Run the tests for the [HttpResponseMockingDemoTests class](/demos/DotNet.Sdk.Extensions.Testing.Demos/HttpMocking/HttpResponseMockingDemoTests.cs).
+* Run the tests for the [InProcessHttpResponseMockingDemoTests class](/demos/DotNet.Sdk.Extensions.Testing.Demos/HttpMocking/InProcess/InProcessHttpResponseMockingDemoTests.cs).
 
-Analyse the [HttpResponseMockingDemoTests class](/demos/DotNet.Sdk.Extensions.Testing.Demos/HttpMocking/HttpResponseMockingDemoTests.cs) for more information on how this extension works.
+Analyse the [InProcessHttpResponseMockingDemoTests class](/demos/DotNet.Sdk.Extensions.Testing.Demos/HttpMocking/InProcess/InProcessHttpResponseMockingDemoTests.cs) for more information on how this extension works.

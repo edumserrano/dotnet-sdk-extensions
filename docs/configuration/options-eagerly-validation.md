@@ -6,7 +6,7 @@ I want to be able to make sure the appsettings files are populated correctly and
 
 At the moment if you have an incorrect appsettings file(s), because for instance you forgot to populate some configuration value, the web app still starts and will work correctly until the first time that configuration value is required.
 
-Furthermore there are ways to [decorate options classes with data validation attributes](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/options#options-validation) but those only take effect when the options class is first instantiated which as explained before does not happen at the startup of the web app.
+Furthermore there are ways to [decorate options classes with data validation attributes](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/options?#options-validation) but those only take effect when the options class is first instantiated which as explained before does not happen at the startup of the web app.
 
 For more information see this GitHub issue [Developers can get immediate feedback on validation problems](https://github.com/dotnet/runtime/issues/36391).
 ### Issues with not having earger options validation
@@ -47,7 +47,7 @@ services
 
 The way the eager validation is enforced is by creating all the instances of `T` for any `IOptions<T>` present in the `IServiceCollection` at app startup. This forces existing validation to be executed.
 
-Note that `OptionsBuilder.ValidateEagerly` works in conjunction with dotnet's validation. In the above example we are using the `OptionsBuilder.ValidateDataAnnotations`. You could also use the `IValidateOptions` interface or implement validation at the `Startup` level with the `OptionsBuilder.Validate`. For more information see [Options Validation](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/options?view=aspnetcore-5.0#options-validation) and [IValidateOptions for complex validation](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/options?view=aspnetcore-5.0#ivalidateoptions-for-complex-validation).
+Note that `OptionsBuilder.ValidateEagerly` works in conjunction with dotnet's validation. In the above example we are using the `OptionsBuilder.ValidateDataAnnotations`. You could also use the `IValidateOptions` interface or implement validation at the `Startup` level with the `OptionsBuilder.Validate`. For more information see [Options Validation](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/options?#options-validation) and [IValidateOptions for complex validation](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/options?#ivalidateoptions-for-complex-validation).
 
 ## How to run the demo
 

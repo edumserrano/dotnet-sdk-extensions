@@ -86,7 +86,50 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
             urls[0].ToString().ShouldBe("http://localhost:8811");
             urls[1].ToString().ShouldBe("https://localhost:9911");
         }
-        
+
+        /// <summary>
+        /// Tests that <seealso cref="HttpMockServerBuilder.UseHostArgs"/> cannot be null.
+        /// </summary>
+        [Fact]
+        public void UsesHostArgsCannotBeNull()
+        {
+            var exception = Should.Throw<ArgumentNullException>(() =>
+            {
+                new HttpMockServerBuilder()
+                    .UseHostArgs(null!);
+            });
+            exception.Message.ShouldBe("Value cannot be null. (Parameter 'hostArgs')");
+        }
+
+        /// <summary>
+        /// Tests that <seealso cref="HttpMockServerBuilder.UseHostArgs"/> must have a value.
+        /// </summary>
+        [Fact]
+        public void UsesHostArgsMustHaveAValue()
+        {
+            var exception = Should.Throw<ArgumentException>(() =>
+            {
+                new HttpMockServerBuilder()
+                    .UseHostArgs();
+            });
+            exception.Message.ShouldBe("Must have a value. (Parameter 'hostArgs')");
+        }
+
+        /// <summary>
+        /// Tests that <seealso cref="HttpMockServerBuilder.UseHostArgs"/> cannot be defined multiple times.
+        /// </summary>
+        [Fact]
+        public void UsesHostArgsCannotBeRepeated()
+        {
+            var exception = Should.Throw<InvalidOperationException>(() =>
+            {
+                new HttpMockServerBuilder()
+                    .UseHostArgs("--urls", "http://*:8811;https://*:9911")
+                    .UseHostArgs("--urls", "http://*:8811;https://*:9911");
+            });
+            exception.Message.ShouldBe("UseHostArgs has already been defined and cannot be called multiple times.");
+        }
+
         /// <summary>
         /// Tests that the <seealso cref="HttpMockServer.StartAsync"/> fails to start if there are
         /// competing URLs configurations.

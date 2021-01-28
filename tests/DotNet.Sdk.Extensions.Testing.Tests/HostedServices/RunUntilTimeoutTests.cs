@@ -2,7 +2,7 @@ using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Testing.HostedServices;
-using DotNet.Sdk.Extensions.Testing.Tests.HostedServices.Auxiliar;
+using DotNet.Sdk.Extensions.Testing.Tests.HostedServices.Auxiliary;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;

@@ -15,6 +15,33 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
 {
     public class ResponseBasedHttpMockServerBuilderTests
     {
+        [Fact]
+        public async Task RepliesAsConfigured2()
+        {
+            var helloHttpResponseMock = new HttpResponseMockBuilder()
+                  .Where(httpRequest => httpRequest.Path.Equals("/hello"))
+                  .RespondWith(async (request, response, cancellationToken) =>
+                  {
+                      response.StatusCode = StatusCodes.Status201Created;
+                      await response.WriteAsync("hello", cancellationToken);
+                  })
+                  .Build();
+
+            await using var mock = new HttpMockServerBuilder()
+                .UseHttpResponseMocks()
+                .MockHttpResponse(helloHttpResponseMock)
+                .Build();
+            var urls = await mock.StartAsync();
+            var httpUrl = urls.First(x => x.Scheme == HttpScheme.Http);
+
+            var httpClient = new HttpClient();
+            var helloHttpResponse = await httpClient.GetAsync($"{httpUrl}/hello");
+            helloHttpResponse.StatusCode.ShouldBe(HttpStatusCode.Created);
+            var helloHttpContent = await helloHttpResponse.Content.ReadAsStringAsync();
+            helloHttpContent.ShouldBe("hello");
+        }
+
+
         /// <summary>
         /// Tests that the response based <see cref="HttpMockServer"/> responds to requests as configured.
         /// This also tests the two ways to provide mocks <seealso cref="ResponseBasedBuilder.MockHttpResponse(HttpResponseMock)"/>

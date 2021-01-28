@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Testing.HostedServices;
-using DotNet.Sdk.Extensions.Testing.Tests.HostedServices.Auxiliar;
+using DotNet.Sdk.Extensions.Testing.Tests.HostedServices.Auxiliary;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using NSubstitute;

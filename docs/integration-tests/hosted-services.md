@@ -77,7 +77,7 @@ The provided solution will let you do this on a custom condition or as well as o
 
 Start by creating an integration test as shown in [introduction to integration tests](https://docs.microsoft.com/en-us/aspnet/core/test/integration-tests?#introduction-to-integration-tests).
 
-Once you have your test ready configure the responses of the HttpClient by using the `WebApplicationFactory.RunUntilAsync` extension method.
+After, configure the responses of the HttpClient by using the `WebApplicationFactory.RunUntilAsync` extension method.
 
 Assume that we have an `ICalculator` type added to the `IServiceColletion` as part of the Startup of our WebHost. Now imagine that our Hosted Service makes use of the `ICalculator`, perhaps the Hosted Service was on an infinite loop doing some calculations.
 

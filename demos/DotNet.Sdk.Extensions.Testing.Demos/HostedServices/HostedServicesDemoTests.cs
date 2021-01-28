@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using DotNet.Sdk.Extensions.Testing.Demos.HostedServices.Auxiliary;
 using DotNet.Sdk.Extensions.Testing.HostedServices;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
