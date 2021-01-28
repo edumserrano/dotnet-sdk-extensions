@@ -94,7 +94,7 @@ namespace DotNet.Sdk.Extensions.Options
 
             services.AddSingleton(serviceProvider =>
             {
-                var options = serviceProvider.GetService<IOptions<T>>();
+                var options = serviceProvider.GetRequiredService<IOptions<T>>();
                 return options.Value;
             });
         }
