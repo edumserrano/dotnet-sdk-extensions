@@ -37,7 +37,7 @@ public class SomeClass
 }
 ```
 
-To be able to do the above you can use `OptionsBuilder.AddOptionsValue`:
+To be able to do the above you can use the `OptionsBuilder.AddOptionsValue` extension method:
 
 ```
 services
@@ -46,9 +46,21 @@ services
 	.AddOptionsValue();
 ```
 
-Note that you are still required to have called `IServiceCollection.AddOptions` (and optionally configure your options as desired) before using `OptionsBuilder.AddOptionsValue`.
+Equivalently to the above, you can use the `IServiceCollection.AddOptionsValue` extension method:
 
-Also note that this just added the hability to take a dependency on `SomeOption`, it didn't remove the hability to take a dependency on `IOptions<SomeOption>`.
+```
+services.AddOptionsValue<MyOptions>(_configuration, sectionName: "MyOptionsSection");
+```
+
+In the first example you are still required to have called `IServiceCollection.AddOptions` (and optionally configure your options as desired) before using `OptionsBuilder.AddOptionsValue`. In the second example, you get a 'shortcut' way of calling it which should work for most scenarios and still allow you to further configure the options class `MyOptions` by using other `OptionsBuilder` methods. For instance:
+
+```
+services
+	.AddOptionsValue<MyOptions>(_configuration, sectionName: "MyOptionsSection")
+	.ValidateDataAnnotations();
+```
+
+Also note that this extension method just added the ability to take a dependency on `SomeOption`, it didn't remove the ability to take a dependency on `IOptions<SomeOption>`.
 
 ## How to run the demo
 

@@ -8,6 +8,10 @@ using Microsoft.Extensions.Hosting;
 
 namespace DotNet.Sdk.Extensions.Demos.Options.EagerValidateOptions
 {
+    /*
+     * Shows how to use the OptionsBuilder.ValidateEagerly extension method to make sure an options class
+     * is validated when the application is starting up.
+     */
     public class StartupEagerOptionsValidation
     {
         private readonly IConfiguration _configuration;

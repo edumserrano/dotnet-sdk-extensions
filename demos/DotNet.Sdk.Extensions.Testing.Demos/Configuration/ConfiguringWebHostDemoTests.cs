@@ -6,6 +6,11 @@ using Xunit;
 
 namespace DotNet.Sdk.Extensions.Testing.Demos.Configuration
 {
+    /*
+     * Shows how to use the IWebHostBuilder.AddTestAppSettings to provide configuration values
+     * via test appsettings files for integration tests.
+     *
+     */
     public class ConfiguringWebHostDemoTests : IClassFixture<ConfiguringWebHostWebApplicationFactory>
     {
         private readonly ConfiguringWebHostWebApplicationFactory _webApplicationFactory;
