@@ -50,10 +50,12 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess
             {
                 expectedException = exception;
             }
-
+            
             expectedException.ShouldNotBeNull("Expected TaskCanceledException but didn't get any.");
             expectedException!.GetType().ShouldBe(typeof(TaskCanceledException));
-            expectedException.Message.ShouldBe("Timeout triggered after 00:00:00.0500000.");
+            expectedException.InnerException!.GetType().ShouldBe(typeof(TimeoutException));
+            expectedException.Message.ShouldBe("The request was canceled due to the configured HttpClient.Timeout of 0.05 seconds elapsing.");
+            expectedException.InnerException.Message.ShouldBe("A task was canceled.");
         }
 
         /// <summary>
@@ -96,7 +98,9 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess
 
             expectedException.ShouldNotBeNull("Expected TaskCanceledException but didn't get any.");
             expectedException!.GetType().ShouldBe(typeof(TaskCanceledException));
+            expectedException.InnerException!.GetType().ShouldBe(typeof(TimeoutException));
             expectedException.Message.ShouldBe("The request was canceled due to the configured HttpClient.Timeout of 0.05 seconds elapsing.");
+            expectedException.InnerException.Message.ShouldBe("A task was canceled.");
         }
 
         /// <summary>
@@ -139,7 +143,9 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess
 
             expectedException.ShouldNotBeNull("Expected TaskCanceledException but didn't get any.");
             expectedException!.GetType().ShouldBe(typeof(TaskCanceledException));
-            expectedException.Message.ShouldBe("Timeout triggered after 00:00:00.0010000.");
+            expectedException.InnerException!.GetType().ShouldBe(typeof(TimeoutException));
+            expectedException.Message.ShouldBe("The request was canceled due to the configured HttpClient.Timeout of 0.001 seconds elapsing.");
+            expectedException.InnerException.Message.ShouldBe("A task was canceled.");
         }
 
         /// <summary>

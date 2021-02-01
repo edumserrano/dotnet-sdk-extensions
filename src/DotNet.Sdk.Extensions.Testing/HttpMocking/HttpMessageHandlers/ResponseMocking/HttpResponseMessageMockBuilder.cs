@@ -92,11 +92,14 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.Response
             }
 
             // when simulating a timeout we need to do the same as what HttpClient
-            // does in that situation which is to throw a TaskCanceledException
+            // does in that situation which is to throw a TaskCanceledException with an inner
+            // exception of TimeoutException
             _handlerAsync = async (message, cancellationToken) =>
             {
                 await Task.Delay(timeout, cancellationToken);
-                throw new TaskCanceledException($"Timeout triggered after {timeout}.");
+                var innerException = new TimeoutException("A task was canceled.");
+                var timeoutMsg = $"The request was canceled due to the configured HttpClient.Timeout of {timeout.TotalSeconds} seconds elapsing.";
+                throw new TaskCanceledException(timeoutMsg, innerException);
             };
             return this;
         }

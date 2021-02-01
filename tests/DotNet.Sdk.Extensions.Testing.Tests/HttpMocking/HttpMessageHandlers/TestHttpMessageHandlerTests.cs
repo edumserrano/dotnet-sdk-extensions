@@ -176,7 +176,9 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers
         }
 
         /// <summary>
-        /// Tests that the <seealso cref="TestHttpMessageHandler"/> timesout as configured.
+        /// Tests that the <seealso cref="TestHttpMessageHandler"/> times out as configured.
+        /// The timeout behavior is set to mimic .net's behavior so the exception, inner exception
+        /// and exception messages should be equal.
         /// </summary>
         [Fact]
         public async Task TimesOut()
@@ -186,8 +188,9 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers
             var httpMessageInvoker = new HttpMessageInvoker(handler);
             var request = new HttpRequestMessage(HttpMethod.Get, "https://google.com");
 
-            // for some reason Should.Throw or Should.ThrowAsync weren't working so I
-            // did the equivalent custom code
+            // for some reason Should.Throw or Should.ThrowAsync weren't working as expected
+            // (the exception that is returned is not what it should be) so I did the equivalent
+            // try catch code
             Exception? expectedException = null;
             try
             {
@@ -200,7 +203,9 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers
 
             expectedException.ShouldNotBeNull("Expected TaskCanceledException but didn't get any.");
             expectedException!.GetType().ShouldBe(typeof(TaskCanceledException));
-            expectedException.Message.ShouldBe("Timeout triggered after 00:00:00.0500000.");
+            expectedException.InnerException!.GetType().ShouldBe(typeof(TimeoutException));
+            expectedException.Message.ShouldBe("The request was canceled due to the configured HttpClient.Timeout of 0.05 seconds elapsing.");
+            expectedException.InnerException.Message.ShouldBe("A task was canceled.");
             
         }
     }
