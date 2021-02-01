@@ -37,41 +37,41 @@ After, configure the responses of the HttpClient by using the `IWebHostBuilder.U
 ```
 public class HttpMocksDemoTests : IClassFixture<WebApplicationFactory<Startup>>
 {
-	private readonly WebApplicationFactory<Startup> _webApplicationFactory;
+    private readonly WebApplicationFactory<Startup> _webApplicationFactory;
 
-	public HttpMocksDemoTests(WebApplicationFactory<Startup> webApplicationFactory)
-	{
-		_webApplicationFactory = webApplicationFactory;
-	}
+    public HttpMocksDemoTests(WebApplicationFactory<Startup> webApplicationFactory)
+    {
+        _webApplicationFactory = webApplicationFactory;
+    }
 
-	[Fact]
-	public void DemoTest()
-	{
-		var httpClient = _webApplicationFactory
-			.WithWebHostBuilder(builder =>
-			{
-				builder
-					.ConfigureTestServices(services =>
-					{
-						// inject mocks for any other services
-					})
-					.UseHttpMocks(handlers =>
-					{
-						handlers.MockHttpResponse(httpResponseMessageBuilder =>
-						{
-							httpResponseMessageBuilder
-								.ForTypedClient<IMyApiClient>()
-								.RespondWith(httpRequestMessage =>
-								{
-									return new HttpResponseMessage(HttpStatusCode.OK);
-								});
-						});
-					});
-			})
-			.CreateClient();
+    [Fact]
+    public void DemoTest()
+    {
+        var httpClient = _webApplicationFactory
+            .WithWebHostBuilder(builder =>
+            {
+                builder
+                    .ConfigureTestServices(services =>
+                    {
+                        // inject mocks for any other services
+                    })
+                    .UseHttpMocks(handlers =>
+                    {
+                        handlers.MockHttpResponse(httpResponseMessageBuilder =>
+                        {
+                            httpResponseMessageBuilder
+                                .ForTypedClient<IMyApiClient>()
+                                .RespondWith(httpRequestMessage =>
+                                {
+                                    return new HttpResponseMessage(HttpStatusCode.OK);
+                                });
+                        });
+                    });
+            })
+            .CreateClient();
 
-		// do some calls to your app via the httpClient and then some asserts
-	}
+        // do some calls to your app via the httpClient and then some asserts
+    }
 }
 ```
 
