@@ -7,7 +7,7 @@ This repo contains extensions to use with .NET applications, mainly [asp.net cor
 The extensions available are split into two groups:
 
 * Extensions to use on web app main code.
-* Extensions to use when doing integration tests.
+* Extensions to use when doing integration and unit tests.
 
 For more information about each extension check its docs and demo. You can find the link to each extension's documentation below.
 
@@ -23,6 +23,10 @@ For more information about each extension check its docs and demo. You can find 
 * [Mocking HttpClient's responses out-of-process](/docs/integration-tests/http-mocking-out-of-process.md)
 * [Testing Hosted Services (Background Services)](/docs/integration-tests/hosted-services.md)
 
+### For unit tests
+
+* [Mocking HttpClient's responses for unit testing](/docs/unit-tests/http-mocking-unit-tests.md)
+
 ### Other
 
 * [Notes on WebApplicationFactory regarding asp.net integration tests](/docs/integration-tests/web-application-factory.md)
@@ -35,7 +39,7 @@ The extensions for web apps are demoed by the `demos\DotNet.Sdk.Extensions.Demos
 
 This project runs an `asp.net core app` which can demo different scenarios. For more information on how to run a specific demo see the documentation for the desired extension.
 
-### For the integration tests demos
+### For the integration tests and unit tests demos
 
 The extensions for web apps are demoed by the `demos\DotNet.Sdk.Extensions.Testing.Demos\DotNet.Sdk.Extensions.Testing.Demos.csproj` project. Check out the tests for the extension you want. For more information on how to run a specific demo see the documentation for the desired extension.
 

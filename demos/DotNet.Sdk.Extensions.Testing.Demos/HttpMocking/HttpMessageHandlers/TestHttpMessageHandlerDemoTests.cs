@@ -45,7 +45,7 @@ namespace DotNet.Sdk.Extensions.Testing.Demos.HttpMocking.HttpMessageHandlers
             var httpClient = new HttpClient(handler);
             var sut = new MyAwesomeOutboundDependency(httpClient);
 
-            // the sut.DoSomeHttpCall method call will do a GET request to the path / some - http - call
+            // the sut.DoSomeHttpCall method call will do a GET request to the path /some-http-call
             // so it will match our mock conditions defined above and the mock response will be returned
             var response = await sut.DoSomeHttpCall(); 
             response.StatusCode.ShouldBe(HttpStatusCode.Created);
