@@ -21,7 +21,7 @@ For more information about each extension check its docs and demo. You can find 
 * [Providing test appsettings files to the test server](/docs/integration-tests/configuring-webhost.md)
 * [Mocking HttpClient's responses in-process](/docs/integration-tests/http-mocking-in-process.md)
 * [Mocking HttpClient's responses out-of-process](/docs/integration-tests/http-mocking-out-of-process.md)
-* [Testing Hosted Services (Background Services)](/docs/integration-tests/hosted-services.md)
+* [Integration tests for HostedServices (Background Services)](/docs/integration-tests/hosted-services.md)
 
 ### For unit tests
 

@@ -1,4 +1,4 @@
-﻿# Integration tests for HostedServices
+﻿# Integration tests for HostedServices (Background Services)
 
 ## Motivation
 

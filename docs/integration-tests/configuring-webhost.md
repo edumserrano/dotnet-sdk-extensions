@@ -1,4 +1,4 @@
-﻿# Configuring your WebHost when doing integration tests
+﻿# Providing test appsettings files to the test server
 
 ## Motivation
 
