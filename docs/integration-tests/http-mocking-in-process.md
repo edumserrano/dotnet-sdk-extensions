@@ -88,11 +88,11 @@ For typed clients you need to provide the type of the client when using `HttpRes
 ```
 var httpResponseMock = new HttpResponseMessageMockDescriptorBuilder();
 httpResponseMock
-	.ForTypedClient<IMyApiClient>()
-	.RespondWith(httpRequestMessage =>
-	{
-		return new HttpResponseMessage(HttpStatusCode.BadRequest);
-	});
+    .ForTypedClient<IMyApiClient>()
+    .RespondWith(httpRequestMessage =>
+    {
+        return new HttpResponseMessage(HttpStatusCode.BadRequest);
+    });
 ```
 
 For named clients you need to provide the name of the client when using `HttpResponseMessageMockDescriptorBuilder.ForNamedClient`:
@@ -100,11 +100,11 @@ For named clients you need to provide the name of the client when using `HttpRes
 ```
 var httpResponseMock = new HttpResponseMessageMockDescriptorBuilder();
 httpResponseMock
-	.ForNamedClient("ClientName")
-	.RespondWith(httpRequestMessage =>
-	{
-		return new HttpResponseMessage(HttpStatusCode.BadRequest);
-	});
+    .ForNamedClient("ClientName")
+    .RespondWith(httpRequestMessage =>
+    {
+        return new HttpResponseMessage(HttpStatusCode.BadRequest);
+    });
 ```
 
 For http clients created following the Basic usage of the `IHttpClientFactory` use the `HttpResponseMessageMockDescriptorBuilder.ForBasicClient`:
@@ -112,11 +112,11 @@ For http clients created following the Basic usage of the `IHttpClientFactory` u
 ```
 var httpResponseMock = new HttpResponseMessageMockDescriptorBuilder();
 httpResponseMock
-	.ForBasicClient()
-	.RespondWith(httpRequestMessage =>
-	{
-		return new HttpResponseMessage(HttpStatusCode.BadRequest);
-	});
+    .ForBasicClient()
+    .RespondWith(httpRequestMessage =>
+    {
+        return new HttpResponseMessage(HttpStatusCode.BadRequest);
+    });
 ```
 
 ### Mock responses conditionally
@@ -128,15 +128,15 @@ Imagine that you have a typed client which implemented 3 different API calls but
 ```
 var httpResponseMock = new HttpResponseMessageMockDescriptorBuilder();
 httpResponseMock
-	.ForTypedClient<IMyApiClient>()
-	.Where(HttpRequestMessage =>
-	{
-		return HttpRequestMessage.RequestUri.AbsolutePath.Equals("/Users");
-	})
-	.RespondWith(httpRequestMessage =>
-	{
-		return new HttpResponseMessage(HttpStatusCode.BadRequest);
-	});
+    .ForTypedClient<IMyApiClient>()
+    .Where(HttpRequestMessage =>
+    {
+        return HttpRequestMessage.RequestUri.AbsolutePath.Equals("/Users");
+    })
+    .RespondWith(httpRequestMessage =>
+    {
+        return new HttpResponseMessage(HttpStatusCode.BadRequest);
+    });
 ```
 
 The above will mock http responses to the `IMyApiClient` typed `HttpClient` when the request path is `/Users`.
@@ -154,27 +154,27 @@ You can mock multiple http responses:
 ```
 var usersHttpResponseMock = new HttpResponseMessageMockDescriptorBuilder();
 usersHttpResponseMock
-	.ForTypedClient<IMyApiClient>()
-	.Where(HttpRequestMessage =>
-	{
-		return HttpRequestMessage.RequestUri.AbsolutePath.Equals("/Users");
-	})
-	.RespondWith(httpRequestMessage =>
-	{
-		return new HttpResponseMessage(HttpStatusCode.BadRequest);
-	});
+    .ForTypedClient<IMyApiClient>()
+    .Where(HttpRequestMessage =>
+    {
+        return HttpRequestMessage.RequestUri.AbsolutePath.Equals("/Users");
+    })
+    .RespondWith(httpRequestMessage =>
+    {
+        return new HttpResponseMessage(HttpStatusCode.BadRequest);
+    });
 
-var adminsHttpResponseMock = new HttpResponseMessageMockDescriptorBuilder();
-adminsHttpResponseMock
-	.ForTypedClient<IMyApiClient>()
-	.Where(HttpRequestMessage =>
-	{
-		return HttpRequestMessage.RequestUri.AbsolutePath.Equals("/Admins");
-	})
-	.RespondWith(httpRequestMessage =>
-	{
-		return new HttpResponseMessage(HttpStatusCode.BadRequest);
-	});
+    var adminsHttpResponseMock = new HttpResponseMessageMockDescriptorBuilder();
+    adminsHttpResponseMock
+    .ForTypedClient<IMyApiClient>()
+    .Where(HttpRequestMessage =>
+    {
+        return HttpRequestMessage.RequestUri.AbsolutePath.Equals("/Admins");
+    })
+    .RespondWith(httpRequestMessage =>
+    {
+        return new HttpResponseMessage(HttpStatusCode.BadRequest);
+    });
 ```
 
 and then feed the mocks to the `IWebHostBuilder.UseHttpMocks` extension method:
@@ -182,9 +182,9 @@ and then feed the mocks to the `IWebHostBuilder.UseHttpMocks` extension method:
 ```
 UseHttpMocks(handlers =>
 {
-	handlers
-		.MockHttpResponse(usersHttpResponseMock)
-		.MockHttpResponse(adminsHttpResponseMock);
+    handlers
+        .MockHttpResponse(usersHttpResponseMock)
+        .MockHttpResponse(adminsHttpResponseMock);
 });
 ```
 
@@ -201,40 +201,40 @@ Let's see some examples:
 ```
 public class HttpMocksDemoTests : IClassFixture<WebApplicationFactory<Startup>>
 {
-	private readonly WebApplicationFactory<Startup> _webApplicationFactory;
+    private readonly WebApplicationFactory<Startup> _webApplicationFactory;
 
-	public HttpMocksDemoTests(WebApplicationFactory<Startup> webApplicationFactory)
-	{
-		_webApplicationFactory = webApplicationFactory;
-	}
+    public HttpMocksDemoTests(WebApplicationFactory<Startup> webApplicationFactory)
+    {
+        _webApplicationFactory = webApplicationFactory;
+    }
 
-	[Fact]
-	public void DemoTest()
-	{
-		var httpClient = _webApplicationFactory
-			.WithWebHostBuilder(builder =>
-			{
-				builder
-					.ConfigureTestServices(services =>
-					{
-						// inject mocks for any other services
-					})
-					.UseHttpMocks(handlers =>
-					{
-						handlers.MockHttpResponse(httpResponseMessageBuilder =>
-						{
-							httpResponseMessageBuilder
-								.ForTypedClient<IMyApiClient>()
-								.RespondWith(httpRequestMessage =>
-								{
-									return new HttpResponseMessage(HttpStatusCode.BadRequest);
-								});
-						});
-					});
-			}).CreateClient();
+    [Fact]
+    public void DemoTest()
+    {
+        var httpClient = _webApplicationFactory
+            .WithWebHostBuilder(builder =>
+            {
+                builder
+                    .ConfigureTestServices(services =>
+                    {
+                        // inject mocks for any other services
+                    })
+                    .UseHttpMocks(handlers =>
+                    {
+                        handlers.MockHttpResponse(httpResponseMessageBuilder =>
+                        {
+                            httpResponseMessageBuilder
+                                .ForTypedClient<IMyApiClient>()
+                                .RespondWith(httpRequestMessage =>
+                                {
+                                    return new HttpResponseMessage(HttpStatusCode.BadRequest);
+                                });
+                        });
+                    });
+            }).CreateClient();
 
-		// do some calls to your app via the httpClient and then some asserts
-	}
+        // do some calls to your app via the httpClient and then some asserts
+    }
 }
 ```
 
@@ -243,57 +243,57 @@ public class HttpMocksDemoTests : IClassFixture<WebApplicationFactory<Startup>>
 ```
 public class HttpMocksDemoTests : IClassFixture<WebApplicationFactory<Startup>>
 {
-	private readonly WebApplicationFactory<Startup> _webApplicationFactory;
+    private readonly WebApplicationFactory<Startup> _webApplicationFactory;
 
-	public HttpMocksDemoTests(WebApplicationFactory<Startup> webApplicationFactory)
-	{
-		_webApplicationFactory = webApplicationFactory;
-	}
+    public HttpMocksDemoTests(WebApplicationFactory<Startup> webApplicationFactory)
+    {
+        _webApplicationFactory = webApplicationFactory;
+    }
 
-	[Fact]
-	public void DemoTest()
-	{
-		var usersHttpResponseMock = new HttpResponseMessageMockDescriptorBuilder();
-		usersHttpResponseMock
-			.ForTypedClient<IMyApiClient>()
-			.Where(HttpRequestMessage =>
-			{
-				return HttpRequestMessage.RequestUri.AbsolutePath.Equals("/Users");
-			})
-			.RespondWith(httpRequestMessage =>
-			{
-				return new HttpResponseMessage(HttpStatusCode.BadRequest);
-			});
+    [Fact]
+    public void DemoTest()
+    {
+        var usersHttpResponseMock = new HttpResponseMessageMockDescriptorBuilder();
+        usersHttpResponseMock
+            .ForTypedClient<IMyApiClient>()
+            .Where(HttpRequestMessage =>
+            {
+                return HttpRequestMessage.RequestUri.AbsolutePath.Equals("/Users");
+            })
+            .RespondWith(httpRequestMessage =>
+            {
+                return new HttpResponseMessage(HttpStatusCode.BadRequest);
+            });
 
-		var adminsHttpResponseMock = new HttpResponseMessageMockDescriptorBuilder();
-		adminsHttpResponseMock
-		.ForTypedClient<IMyApiClient>()
-			.Where(HttpRequestMessage =>
-			{
-				return HttpRequestMessage.RequestUri.AbsolutePath.Equals("/Admins");
-			})
-			.RespondWith(httpRequestMessage =>
-			{
-				return new HttpResponseMessage(HttpStatusCode.BadRequest);
-			});
+        var adminsHttpResponseMock = new HttpResponseMessageMockDescriptorBuilder();
+        adminsHttpResponseMock
+        .ForTypedClient<IMyApiClient>()
+            .Where(HttpRequestMessage =>
+            {
+                return HttpRequestMessage.RequestUri.AbsolutePath.Equals("/Admins");
+            })
+            .RespondWith(httpRequestMessage =>
+            {
+                return new HttpResponseMessage(HttpStatusCode.BadRequest);
+            });
 
-		var httpClient = _webApplicationFactory
-			.WithWebHostBuilder(builder =>
-			{
-				builder
-					.ConfigureTestServices(services =>
-					{
-						// inject mocks for any other services
-					})
-					.UseHttpMocks(handlers =>
-					{
-						handlers.MockHttpResponse(usersHttpResponseMock);
-						handlers.MockHttpResponse(adminsHttpResponseMock);
-					});
-			}).CreateClient();
+        var httpClient = _webApplicationFactory
+            .WithWebHostBuilder(builder =>
+            {
+                builder
+                    .ConfigureTestServices(services =>
+                    {
+                        // inject mocks for any other services
+                    })
+                    .UseHttpMocks(handlers =>
+                    {
+                        handlers.MockHttpResponse(usersHttpResponseMock);
+                        handlers.MockHttpResponse(adminsHttpResponseMock);
+                    });
+            }).CreateClient();
 
-		// do some calls to your app via the httpClient and then some asserts
-	}
+        // do some calls to your app via the httpClient and then some asserts
+    }
 }
 ```
 
@@ -302,56 +302,55 @@ public class HttpMocksDemoTests : IClassFixture<WebApplicationFactory<Startup>>
 ```
 public class HttpMocksDemoTests : IClassFixture<WebApplicationFactory<Startup>>
 {
-	private readonly WebApplicationFactory<Startup> _webApplicationFactory;
+    private readonly WebApplicationFactory<Startup> _webApplicationFactory;
 
-	public HttpMocksDemoTests(WebApplicationFactory<Startup> webApplicationFactory)
-	{
-		_webApplicationFactory = webApplicationFactory;
-	}
+    public HttpMocksDemoTests(WebApplicationFactory<Startup> webApplicationFactory)
+    {
+        _webApplicationFactory = webApplicationFactory;
+    }
 
-	[Fact]
-	public void DemoTest()
-	{
-		var usersHttpResponseMock = new HttpResponseMessageMockDescriptorBuilder();
-		usersHttpResponseMock
-			.ForTypedClient<IMyApiClient>()
-			.Where(HttpRequestMessage =>
-			{
-				return HttpRequestMessage.RequestUri.AbsolutePath.Equals("/Users");
-			})
-			.RespondWith(httpRequestMessage =>
-			{
-				return new HttpResponseMessage(HttpStatusCode.BadRequest);
-			});
+    [Fact]
+    public void DemoTest()
+    {
+        var usersHttpResponseMock = new HttpResponseMessageMockDescriptorBuilder();
+        usersHttpResponseMock
+            .ForTypedClient<IMyApiClient>()
+            .Where(HttpRequestMessage =>
+            {
+                return HttpRequestMessage.RequestUri.AbsolutePath.Equals("/Users");
+            })
+            .RespondWith(httpRequestMessage =>
+            {
+                return new HttpResponseMessage(HttpStatusCode.BadRequest);
+            });
 
-		var adminsHttpResponseMock = new HttpResponseMessageMockDescriptorBuilder();
-		adminsHttpResponseMock
-		.ForTypedClient<IMyApiClient>()
-			.Where(HttpRequestMessage =>
-			{
-				return HttpRequestMessage.RequestUri.AbsolutePath.Equals("/Admins");
-			})
-			.RespondWith(httpRequestMessage =>
-			{
-				return new HttpResponseMessage(HttpStatusCode.BadRequest);
-			});
+        var adminsHttpResponseMock = new HttpResponseMessageMockDescriptorBuilder();
+        adminsHttpResponseMock
+        .ForTypedClient<IMyApiClient>()
+            .Where(HttpRequestMessage =>
+            {
+                return HttpRequestMessage.RequestUri.AbsolutePath.Equals("/Admins");
+            })
+            .RespondWith(httpRequestMessage =>
+            {
+                return new HttpResponseMessage(HttpStatusCode.BadRequest);
+            });
 
-		var httpClient = _webApplicationFactory
-			.WithWebHostBuilder(builder =>
-			{
-				builder
-					.ConfigureTestServices(services =>
-					{
-						// inject mocks for any other services
-					})
-					.UseHttpMocks(usersHttpResponseMock,adminsHttpResponseMock);
-			}).CreateClient();
+        var httpClient = _webApplicationFactory
+            .WithWebHostBuilder(builder =>
+            {
+                builder
+                    .ConfigureTestServices(services =>
+                    {
+                        // inject mocks for any other services
+                    })
+                    .UseHttpMocks(usersHttpResponseMock,adminsHttpResponseMock);
+            }).CreateClient();
 
-		// do some calls to your app via the httpClient and then some asserts
-	}
+        // do some calls to your app via the httpClient and then some asserts
+    }
 }
 ```
-
 
 ## How to run the demo
 
