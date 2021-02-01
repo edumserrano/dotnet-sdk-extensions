@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Net;
 using System.Net.Http;
-using System.Threading;
 using System.Threading.Tasks;
+using DotNet.Sdk.Extensions.Testing.Demos.HttpMocking.HttpMessageHandlers.Auxiliary;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.ResponseMocking;
 using Shouldly;
@@ -10,201 +10,162 @@ using Xunit;
 
 namespace DotNet.Sdk.Extensions.Testing.Demos.HttpMocking.HttpMessageHandlers
 {
+    /*
+     * This shows how to use the TestHttpMessageHandler to unit test classes that use an HttpClient.
+     *
+     * The MyAwesomeOutboundDependency class takes in an HttpClient as a dependency and this shows how to use the
+     * TestHttpMessageHandler to mock the responses returned by the HttpClient during tests so that you can
+     * unit test the MyAwesomeOutboundDependency class.
+     */
     public class TestHttpMessageHandlerDemoTests
     {
-        /// <summary>
-        /// Validates the arguments for the <seealso cref="TestHttpMessageHandler.MockHttpResponse(HttpResponseMessageMock)"/> method.
-        /// </summary>
         [Fact]
-        public void ValidateArguments1()
+        public async Task MockHttpResponseExample1()
         {
-            var handler = new TestHttpMessageHandler();
-            var exception = Should.Throw<ArgumentNullException>(() => handler.MockHttpResponse((HttpResponseMessageMock)null!));
-            exception.Message.ShouldBe("Value cannot be null. (Parameter 'httpResponseMock')");
-        }
-
-        /// <summary>
-        /// Validates the arguments for the <seealso cref="TestHttpMessageHandler.MockHttpResponse(Action{HttpResponseMessageMockBuilder})"/> method.
-        /// </summary>
-        [Fact]
-        public void ValidateArguments2()
-        {
-            var handler = new TestHttpMessageHandler();
-            var exception = Should.Throw<ArgumentNullException>(() => handler.MockHttpResponse((Action<HttpResponseMessageMockBuilder>)null!));
-            exception.Message.ShouldBe("Value cannot be null. (Parameter 'configure')");
-        }
-
-        /// <summary>
-        /// Tests that the <seealso cref="TestHttpMessageHandler"/> throws an exception if it gets executed
-        /// but no mocks were defined.
-        /// </summary>
-        [Fact]
-        public async Task NoMockDefined()
-        {
-            var handler = new TestHttpMessageHandler();
-            var request = new HttpRequestMessage(HttpMethod.Get, "https://test.com");
-            var httpMessageInvoker = new HttpMessageInvoker(handler);
-            var exception = await Should.ThrowAsync<InvalidOperationException>(httpMessageInvoker.SendAsync(request, CancellationToken.None));
-            exception.Message.ShouldBe("No response mock defined for GET to https://test.com/.");
-        }
-
-        /// <summary>
-        /// Tests that the <seealso cref="TestHttpMessageHandler"/> throws an exception if it gets executed
-        /// but no mocks are executed because none match the HttpRequestMessage.
-        /// </summary>
-        /// <returns></returns>
-        [Fact]
-        public async Task NoMockMatches()
-        {
-            var httpMockResponseMessage = new HttpResponseMessage(HttpStatusCode.OK);
-            var handler = new TestHttpMessageHandler();
-            handler.MockHttpResponse(builder =>
-            {
-                builder
-                    .Where(httpRequestMessage => httpRequestMessage.RequestUri.Host.Equals("microsoft"))
-                    .RespondWith(httpMockResponseMessage);
-            });
-
-            var request = new HttpRequestMessage(HttpMethod.Get, "https://test.com");
-            var httpMessageInvoker = new HttpMessageInvoker(handler);
-            var exception = await Should.ThrowAsync<InvalidOperationException>(httpMessageInvoker.SendAsync(request, CancellationToken.None));
-            exception.Message.ShouldBe("No response mock defined for GET to https://test.com/.");
-        }
-
-        /// <summary>
-        /// Tests that the <seealso cref="TestHttpMessageHandler"/> returns the mocked HttpResponseMessage.
-        /// In this test no predicate is defined which means the default "always true" predicate takes effect
-        /// and the mock is always returned. 
-        /// Using <seealso cref="TestHttpMessageHandler.MockHttpResponse(HttpResponseMessageMock)"/>
-        /// </summary>
-        [Fact]
-        public async Task DefaultPredicate1()
-        {
-            var httpMockResponseMessage = new HttpResponseMessage(HttpStatusCode.Created);
-            var builder = new HttpResponseMessageMockBuilder();
-            var httpResponseMessageMock = builder
-                .RespondWith(httpMockResponseMessage)
+            // prepare the http mocks
+            var httpResponseMessageMock = new HttpResponseMessageMockBuilder()
+                .Where(httpRequestMessage =>
+                {
+                    return httpRequestMessage.Method == HttpMethod.Get &&
+                        httpRequestMessage.RequestUri.PathAndQuery.Equals("/some-http-call");
+                })
+                .RespondWith(httpRequestMessage =>
+                {
+                    var httpResponseMessage = new HttpResponseMessage(HttpStatusCode.Created);
+                    httpResponseMessage.Content = new StringContent("mocked value");
+                    return httpResponseMessage;
+                })
                 .Build();
+
+            // add the mocks to the http handler
             var handler = new TestHttpMessageHandler();
             handler.MockHttpResponse(httpResponseMessageMock);
 
-            var request = new HttpRequestMessage(HttpMethod.Get, "https://test.com");
-            var httpMessageInvoker = new HttpMessageInvoker(handler);
-            var httpResponseMessage = await httpMessageInvoker.SendAsync(request, CancellationToken.None);
+            // instantiate the http client with the test handler
+            var httpClient = new HttpClient(handler);
+            var sut = new MyAwesomeOutboundDependency(httpClient);
 
-            httpResponseMessage.StatusCode.ShouldBe(HttpStatusCode.Created);
+            // the sut.DoSomeHttpCall method call will do a GET request to the path / some - http - call
+            // so it will match our mock conditions defined above and the mock response will be returned
+            var response = await sut.DoSomeHttpCall(); 
+            response.StatusCode.ShouldBe(HttpStatusCode.Created);
+            var responseBody = await response.Content.ReadAsStringAsync();
+            responseBody.ShouldBe("mocked value");
         }
 
-        /// <summary>
-        /// Tests that the <seealso cref="TestHttpMessageHandler"/> returns the mocked HttpResponseMessage.
-        /// In this test no predicate is defined which means the default "always true" predicate takes effect
-        /// and the mock is always returned.
-        /// Using <seealso cref="TestHttpMessageHandler.MockHttpResponse(Action{HttpResponseMessageMockBuilder})"/>
-        /// </summary>
+        /*
+         * This is the same as MockHttpResponseExample1 test but shows that you can configure
+         * the mock inline with the TestHttpMessageHandler.MockHttpResponse method call
+         * as opposed to configuring it before hand
+         *
+         */
         [Fact]
-        public async Task DefaultPredicate2()
+        public async Task MockHttpResponseExample2()
         {
-            var httpMockResponseMessage = new HttpResponseMessage(HttpStatusCode.Created);
+            // configure the http handler with the desired http mocks
             var handler = new TestHttpMessageHandler();
-            handler.MockHttpResponse(builder => builder.RespondWith(httpMockResponseMessage));
-
-            var request = new HttpRequestMessage(HttpMethod.Get, "https://test.com");
-            var httpMessageInvoker = new HttpMessageInvoker(handler);
-            var httpResponseMessage = await httpMessageInvoker.SendAsync(request, CancellationToken.None);
-
-            httpResponseMessage.StatusCode.ShouldBe(HttpStatusCode.Created);
-        }
-
-        /// <summary>
-        /// Tests that the <seealso cref="TestHttpMessageHandler"/> returns the mocked HttpResponseMessage
-        /// for the FIRST match.
-        /// </summary>
-        [Fact]
-        public async Task FirstMatchWins()
-        {
-            var handler = new TestHttpMessageHandler()
-                .MockHttpResponse(builder =>
+            handler.MockHttpResponse(builder =>
+            {
+                builder.Where(httpRequestMessage => 
                 {
-                    builder
-                        .Where(httpRequestMessage => httpRequestMessage.RequestUri.Host.Equals("test.com"))
-                        .RespondWith(new HttpResponseMessage(HttpStatusCode.BadRequest));
+                    return httpRequestMessage.Method == HttpMethod.Get &&
+                           httpRequestMessage.RequestUri.PathAndQuery.Equals("/some-http-call");
                 })
-                .MockHttpResponse(builder =>
+                .RespondWith(httpRequestMessage =>
                 {
-                    builder
-                        .Where(httpRequestMessage => httpRequestMessage.RequestUri.Host.Equals("test.com"))
-                        .RespondWith(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+                    var httpResponseMessage = new HttpResponseMessage(HttpStatusCode.Created);
+                    httpResponseMessage.Content = new StringContent("mocked value");
+                    return httpResponseMessage;
                 });
+            });
 
-            var request = new HttpRequestMessage(HttpMethod.Get, "https://test.com");
-            var httpMessageInvoker = new HttpMessageInvoker(handler);
-            var httpResponseMessage = await httpMessageInvoker.SendAsync(request, CancellationToken.None);
+            // instantiate the http client with the test handler
+            var httpClient = new HttpClient(handler);
+            var sut = new MyAwesomeOutboundDependency(httpClient);
 
-            httpResponseMessage.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+            // the sut.DoSomeHttpCall method call will do a GET request to the path /some-http-call
+            // so it will match our mock conditions defined above and the mock response will be returned
+            var response = await sut.DoSomeHttpCall();
+            response.StatusCode.ShouldBe(HttpStatusCode.Created);
+            var responseBody = await response.Content.ReadAsStringAsync();
+            responseBody.ShouldBe("mocked value");
         }
 
-        /// <summary>
-        /// Tests that the <seealso cref="TestHttpMessageHandler"/> returns the mocked HttpResponseMessage
-        /// for the appropriate predicate match.
-        /// </summary>
         [Fact]
-        public async Task MultipleMocks()
+        public async Task MockMultipleHttpResponses()
         {
-            var handler = new TestHttpMessageHandler()
-                .MockHttpResponse(builder =>
+            // prepare the http mocks
+            var someHttpCallMock = new HttpResponseMessageMockBuilder()
+                .Where(httpRequestMessage => httpRequestMessage.RequestUri.PathAndQuery.Equals("/some-http-call"))
+                .RespondWith(httpRequestMessage => new HttpResponseMessage(HttpStatusCode.Created)
                 {
-                    builder
-                        .Where(httpRequestMessage1 =>
-                        {
-                            return httpRequestMessage1.RequestUri.Host.Equals("google.com");
-                        })
-                        .RespondWith(new HttpResponseMessage(HttpStatusCode.BadRequest));
+                    Content = new StringContent("some mocked value")
                 })
-                .MockHttpResponse(builder =>
+                .Build();
+            var anotherHttpCallMock = new HttpResponseMessageMockBuilder()
+                .Where(httpRequestMessage => httpRequestMessage.RequestUri.PathAndQuery.Equals("/another-http-call"))
+                .RespondWith(httpRequestMessage => new HttpResponseMessage(HttpStatusCode.Accepted)
                 {
-                    builder
-                        .Where(httpRequestMessage => httpRequestMessage.RequestUri.Host.Equals("microsoft.com"))
-                        .RespondWith(new HttpResponseMessage(HttpStatusCode.InternalServerError));
-                });
+                    Content = new StringContent("another mocked value")
+                })
+                .Build();
 
-            var httpMessageInvoker = new HttpMessageInvoker(handler);
+            // add the mocks to the http handler
+            var handler = new TestHttpMessageHandler();
+            handler
+                .MockHttpResponse(someHttpCallMock)
+                .MockHttpResponse(anotherHttpCallMock);
 
-            var request1 = new HttpRequestMessage(HttpMethod.Get, "https://google.com");
-            var httpResponseMessage1 = await httpMessageInvoker.SendAsync(request1, CancellationToken.None);
-            httpResponseMessage1.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+            // instantiate the http client with the test handler
+            var httpClient = new HttpClient(handler);
+            var sut = new MyAwesomeOutboundDependency(httpClient);
+            
+            // the sut.DoSomeHttpCall method call will do a GET request to the path /some-http-call
+            // so it will match one the mock conditions defined above and the correct mock response will be returned
+            var someResponse = await sut.DoSomeHttpCall();
+            someResponse.StatusCode.ShouldBe(HttpStatusCode.Created);
+            var someResponseBody = await someResponse.Content.ReadAsStringAsync();
+            someResponseBody.ShouldBe("some mocked value");
 
-            var request2 = new HttpRequestMessage(HttpMethod.Get, "https://microsoft.com");
-            var httpResponseMessage2 = await httpMessageInvoker.SendAsync(request2, CancellationToken.None);
-            httpResponseMessage2.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
+
+            // the sut.DoAnotherHttpCall method call will do a GET request to the path /another-http-call
+            // so it will match one of the mock conditions defined above and the correct mock response will be returned
+            var anotherResponse = await sut.DoAnotherHttpCall();
+            anotherResponse.StatusCode.ShouldBe(HttpStatusCode.Accepted);
+            var anotherResponseBody = await anotherResponse.Content.ReadAsStringAsync();
+            anotherResponseBody.ShouldBe("another mocked value");
         }
 
-        /// <summary>
-        /// Tests that the <seealso cref="TestHttpMessageHandler"/> times out as configured.
-        /// </summary>
         [Fact]
-        public async Task TimesOut()
+        public async Task MockTimeOut()
         {
+            // Configure the http handler with the desired http mocks.
+            // Since no where clause is defined the default condition is applied.
+            // The default where clause will match for ALL requests.
+            // Meaning that the below configuration will make any http requests will timeout after 1 ms.
             var handler = new TestHttpMessageHandler()
-                .MockHttpResponse(builder => builder.TimesOut(TimeSpan.FromMilliseconds(50)));
-            var httpMessageInvoker = new HttpMessageInvoker(handler);
-            var request = new HttpRequestMessage(HttpMethod.Get, "https://google.com");
+                .MockHttpResponse(builder => builder.TimesOut(TimeSpan.FromMilliseconds(1)));
 
-            // for some reason Should.Throw or Should.ThrowAsync weren't working so I
-            // did the equivalent custom code
+            // instantiate the http client with the test handler
+            var httpClient = new HttpClient(handler);
+            var sut = new MyAwesomeOutboundDependency(httpClient);
+
+            // show that the http call will timeout
             Exception? expectedException = null;
             try
             {
-                await httpMessageInvoker.SendAsync(request, CancellationToken.None);
+                await sut.DoAnotherHttpCall();
             }
             catch (Exception exception)
             {
                 expectedException = exception;
             }
-
-            expectedException.ShouldNotBeNull("Expected TaskCanceledException but didn't get any.");
-            expectedException!.GetType().ShouldBe(typeof(TaskCanceledException));
-            expectedException.Message.ShouldBe("Timeout triggered after 00:00:00.0500000.");
             
+            // show that you get the expected timeout exception
+            expectedException!.GetType().ShouldBe(typeof(TaskCanceledException));
+            expectedException.InnerException!.GetType().ShouldBe(typeof(TimeoutException));
+            expectedException.Message.ShouldBe("The request was canceled due to the configured HttpClient.Timeout of 0.001 seconds elapsing.");
+            expectedException.InnerException.Message.ShouldBe("A task was canceled.");
         }
     }
 }
