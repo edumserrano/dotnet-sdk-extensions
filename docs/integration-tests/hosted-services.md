@@ -17,22 +17,22 @@ By default on the Worker Service template, the `IHost` instance is created as fo
 
 ```
 public static IHostBuilder CreateHostBuilder(string[] args) =>
-	Host.CreateDefaultBuilder(args)
-		.ConfigureServices((hostContext, services) =>
-		{
-			services.AddHostedService<Worker>();
-		});
+Host.CreateDefaultBuilder(args)
+    .ConfigureServices((hostContext, services) =>
+    {
+        services.AddHostedService<Worker>();
+    });
 ```
 
 To be able to use this testing extension you should change it to:
 
 ```
 public static IHostBuilder CreateHostBuilder(string[] args) =>
-	Host.CreateDefaultBuilder(args)		
-		.ConfigureWebHostDefaults(webBuilder =>
-		{
-			webBuilder.UseStartup<Startup>();
-		});
+    Host.CreateDefaultBuilder(args)		
+        .ConfigureWebHostDefaults(webBuilder =>
+        {
+            webBuilder.UseStartup<Startup>();
+        });
 ```
 
 And on the `ConfigureServices method` of the `Startup` class is where you add any Hosted Services you require:
@@ -40,22 +40,22 @@ And on the `ConfigureServices method` of the `Startup` class is where you add an
 ```
 public class Startup
 {
-	private readonly IConfiguration _configuration;
+    private readonly IConfiguration _configuration;
 
-	public Startup(IConfiguration configuration)
-	{
-		_configuration = configuration;
-	}
+    public Startup(IConfiguration configuration)
+    {
+        _configuration = configuration;
+    }
 
-	public void ConfigureServices(IServiceCollection services)
-	{
-		services.AddHostedService<Worker>();
-	}
+    public void ConfigureServices(IServiceCollection services)
+    {
+        services.AddHostedService<Worker>();
+    }
 
-	public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-	{
-		// add here any IApplicationBuilder configuration if required
-	}
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+    {
+        // add here any IApplicationBuilder configuration if required
+    }
 }
 ```
 
@@ -86,40 +86,40 @@ Given this example you could implement a test that would wait for the `ICalculat
 ```
 public interface ICalculator
 {
-	int Sum(int left, int right);
+    int Sum(int left, int right);
 }
 
 public class HostedServiceDemoTests : IClassFixture<WebApplicationFactory<Startup>>
 {
-	private readonly WebApplicationFactory<Startup> _webApplicationFactory;
+    private readonly WebApplicationFactory<Startup> _webApplicationFactory;
 
-	public HostedServiceDemoTests(WebApplicationFactory<Startup> webApplicationFactory)
-	{
-		_webApplicationFactory = webApplicationFactory;
-	}
+    public HostedServiceDemoTests(WebApplicationFactory<Startup> webApplicationFactory)
+    {
+        _webApplicationFactory = webApplicationFactory;
+    }
 
-	[Fact]
-	public async Task DemoTest()
-	{
-		var callCount = 0;
-		var calculatorMock = Substitute.For<ICalculator>();
-		calculatorMock
-			.Sum(Arg.Any<int>(), Arg.Any<int>())
-			.Returns(1)
-			.AndDoes(info => callCount++);
+    [Fact]
+    public async Task DemoTest()
+    {
+        var callCount = 0;
+        var calculatorMock = Substitute.For<ICalculator>();
+        calculatorMock
+            .Sum(Arg.Any<int>(), Arg.Any<int>())
+            .Returns(1)
+            .AndDoes(info => callCount++);
 
-		await _webApplicationFactory
-			.WithWebHostBuilder(builder =>
-			{
-				builder.ConfigureTestServices(services =>
-				{
-					services.AddSingleton<ICalculator>(calculatorMock);
-				});
-			})
-			.RunUntilAsync(() => callCount >= 3);
+        await _webApplicationFactory
+            .WithWebHostBuilder(builder =>
+            {
+                builder.ConfigureTestServices(services =>
+                {
+                    services.AddSingleton<ICalculator>(calculatorMock);
+                });
+            })
+            .RunUntilAsync(() => callCount >= 3);
 
-		// do some asserts
-	}
+        // do some asserts
+    }
 }
 ```
 
@@ -143,14 +143,14 @@ Given that you have an instance of `WebApplicationFactory` you can do someting l
 
 ```
 await _webApplicationFactory
-	.WithWebHostBuilder(builder =>
-	{
-		builder.ConfigureTestServices(services =>
-		{
-			// inject mocks for any other services
-		});
-	})
-	.RunUntilTimeoutAsync(TimeSpan.FromSeconds(3));
+    .WithWebHostBuilder(builder =>
+    {
+        builder.ConfigureTestServices(services =>
+        {
+            // inject mocks for any other services
+        });
+    })
+    .RunUntilTimeoutAsync(TimeSpan.FromSeconds(3));
 ```
 
 Usually it's best to consider stopping after a stop condition is met. Abusing the `WebApplicationFactory.RunUntilTimeoutAsync` and using it in scenarios where you could have set a stop condition using the `WebApplicationFactory.RunUntilAsync` might lead to flaky tests.
@@ -163,14 +163,14 @@ This is to avoid having a test that never ends because the set condition is neve
 
 ```
 await _webApplicationFactory
-	.WithWebHostBuilder(builder =>
-	{
-		builder.ConfigureTestServices(services =>
-		{
-			services.AddSingleton<ICalculator>(someMock);
-		});
-	})
-	.RunUntilAsync(() => callCount == 3, options => options.Timeout = TimeSpan.FromMilliseconds(100));
+    .WithWebHostBuilder(builder =>
+    {
+        builder.ConfigureTestServices(services =>
+        {
+            services.AddSingleton<ICalculator>(someMock);
+        });
+    })
+    .RunUntilAsync(() => callCount == 3, options => options.Timeout = TimeSpan.FromMilliseconds(100));
 ```
 
 The above changes the default 5 seconds timeout to 100 milliseconds.
@@ -192,14 +192,14 @@ By default the condition is checked in intervals of 5 milliseconds. This can be 
 
 ```
 await _webApplicationFactory
-	.WithWebHostBuilder(builder =>
-	{
-		builder.ConfigureTestServices(services =>
-		{
-			services.AddSingleton<ICalculator>(someMock);
-		});
-	})
-	.RunUntilAsync(() => callCount == 3, options => options.PredicateCheckInterval = TimeSpan.FromMilliseconds(100));
+    .WithWebHostBuilder(builder =>
+    {
+        builder.ConfigureTestServices(services =>
+        {
+            services.AddSingleton<ICalculator>(someMock);
+        });
+    })
+    .RunUntilAsync(() => callCount == 3, options => options.PredicateCheckInterval = TimeSpan.FromMilliseconds(100));
 ```
 
 Setting the `RunUntilOptions.PredicateCheckInterval` to high values might mean your test takes longer to finish because one way one thinking about this setting is that it represents the longest time possible between your condition evaluating to true and the server being given the order to stop.

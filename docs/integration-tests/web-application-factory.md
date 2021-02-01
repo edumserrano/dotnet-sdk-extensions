@@ -53,14 +53,14 @@ So what I have to do is create a custom WebApplicationFactory\<T> as such:
 ```
 public class CustomWebApplicationFactory : WebApplicationFactory<SomeTypeInMyTestsProject>
 {
-	protected override IHostBuilder CreateHostBuilder()
-	{
-		return Host.CreateDefaultBuilder()
-			.ConfigureWebHostDefaults(webBuilder =>
-			{
-				webBuilder.UseStartup<OneOfMyTestStartupTypes>();
-			});
-	}
+    protected override IHostBuilder CreateHostBuilder()
+    {
+        return Host.CreateDefaultBuilder()
+            .ConfigureWebHostDefaults(webBuilder =>
+            {
+                webBuilder.UseStartup<OneOfMyTestStartupTypes>();
+            });
+    }
 }
 ```
 
@@ -71,19 +71,19 @@ Ok, so how do we resolve this. One way would be by setting the content root on t
 ```
 public class CustomWebApplicationFactory : WebApplicationFactory<SomeTypeInMyTestsProject>
 {
-	protected override void ConfigureWebHost(IWebHostBuilder builder)
-	{
-		builder.UseContentRoot(".");
-	}
+    protected override void ConfigureWebHost(IWebHostBuilder builder)
+    {
+        builder.UseContentRoot(".");
+    }
 
-	protected override IHostBuilder CreateHostBuilder()
-	{
-		return Host.CreateDefaultBuilder()
-			.ConfigureWebHostDefaults(webBuilder =>
-			{
-				webBuilder.UseStartup<OneOfMyTestStartupTypes>();
-			});
-	}
+    protected override IHostBuilder CreateHostBuilder()
+    {
+        return Host.CreateDefaultBuilder()
+            .ConfigureWebHostDefaults(webBuilder =>
+            {
+                webBuilder.UseStartup<OneOfMyTestStartupTypes>();
+            });
+    }
 }
 ```
 
@@ -94,15 +94,15 @@ As a side note moving the `UseContentRoot` to the `CreateHostBuilder` does NOT w
 ```
 public class CustomWebApplicationFactory : WebApplicationFactory<SomeTypeInMyTestsProject>
 {
-	protected override IHostBuilder CreateHostBuilder()
-	{
-		return Host.CreateDefaultBuilder()
-			.ConfigureWebHostDefaults(webBuilder =>
-			{
-				webBuilder.UseContentRoot(".");
-				webBuilder.UseStartup<OneOfMyTestStartupTypes>();
-			});
-	}
+    protected override IHostBuilder CreateHostBuilder()
+    {
+        return Host.CreateDefaultBuilder()
+            .ConfigureWebHostDefaults(webBuilder =>
+            {
+                webBuilder.UseContentRoot(".");
+                webBuilder.UseStartup<OneOfMyTestStartupTypes>();
+            });
+    }
 }
 ```
 
@@ -113,20 +113,20 @@ However moving the `UseStartup` to `ConfigureWebHost` still produces the expecte
 ```
 public class CustomWebApplicationFactory : WebApplicationFactory<SomeTypeInMyTestsProject>
 {
-	protected override void ConfigureWebHost(IWebHostBuilder builder)
-	{
-		builder.UseContentRoot(".");
-		builder.UseStartup<OneOfMyTestStartupTypes>();
-	}
+    protected override void ConfigureWebHost(IWebHostBuilder builder)
+    {
+        builder.UseContentRoot(".");
+        builder.UseStartup<OneOfMyTestStartupTypes>();
+    }
 
-	protected override IHostBuilder CreateHostBuilder()
-	{
-		return Host.CreateDefaultBuilder()
-			.ConfigureWebHostDefaults(webBuilder =>
-			{
-				
-			});
-	}
+    protected override IHostBuilder CreateHostBuilder()
+    {
+        return Host.CreateDefaultBuilder()
+            .ConfigureWebHostDefaults(webBuilder =>
+            {
+                
+            });
+    }
 }
 ```
 

@@ -9,6 +9,7 @@ At the moment if you have an incorrect appsettings file(s), because for instance
 Furthermore there are ways to [decorate options classes with data validation attributes](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/options?#options-validation) but those only take effect when the options class is first instantiated which as explained before does not happen at the startup of the web app.
 
 For more information see this GitHub issue [Developers can get immediate feedback on validation problems](https://github.com/dotnet/runtime/issues/36391).
+
 ### Issues with not having earger options validation
 
 There are for sure many examples of situations where the lack of eager options validation causes a problem. Take for instance the following example:
@@ -21,7 +22,7 @@ Imagine that you have an appsettings file with the following:
 
 ```
 "MyOptionsSection": {
-	"SomeOption": ""
+    "SomeOption": ""
 }
 ```
 
@@ -30,8 +31,8 @@ Which is represented by the typed class `MyOptions`. Notice the data annotation 
 ```
 public class MyOptions
 {
-	[Required]
-	public string SomeOption { get; set; }
+    [Required]
+    public string SomeOption { get; set; }
 }
 ```
 
@@ -39,10 +40,10 @@ If you want to make sure the `MyOptions` class is validated when the web app is 
 
 ```
 services
-	.AddOptions<MyOptions>()
-	.Bind(configuration.GetSection("MyOptionsSection"))
-	.ValidateDataAnnotations()
-	.ValidateEagerly();
+    .AddOptions<MyOptions>()
+    .Bind(configuration.GetSection("MyOptionsSection"))
+    .ValidateDataAnnotations()
+    .ValidateEagerly();
 ```
 
 The way the eager validation is enforced is by creating all the instances of `T` for any `IOptions<T>` present in the `IServiceCollection` at app startup. This forces existing validation to be executed.

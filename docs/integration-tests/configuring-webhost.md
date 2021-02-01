@@ -22,30 +22,30 @@ Given this you can do a test as shown by the DemoTest method below:
 ```
 public class ConfigurationDemoTests : IClassFixture<WebApplicationFactory<Startup>>
 {
-	private readonly WebApplicationFactory<Startup> _webApplicationFactory;
+    private readonly WebApplicationFactory<Startup> _webApplicationFactory;
 
-	public ConfigurationDemoTests(WebApplicationFactory<Startup> webApplicationFactory)
-	{
-		_webApplicationFactory = webApplicationFactory;
-	}
+    public ConfigurationDemoTests(WebApplicationFactory<Startup> webApplicationFactory)
+    {
+        _webApplicationFactory = webApplicationFactory;
+    }
 
-	[Fact]
-	public async Task DemoTest()
-	{
-		var httpClient = _webApplicationFactory
-			.WithWebHostBuilder(builder =>
-			{
-				builder
-					.AddTestConfiguration("appsettings.json", "appsettings.Default.json")
-					.ConfigureTestServices(services =>
-					{
-						// inject mocks for any other services
-					});
-			})
-			.CreateClient();
+    [Fact]
+    public async Task DemoTest()
+    {
+        var httpClient = _webApplicationFactory
+            .WithWebHostBuilder(builder =>
+            {
+                builder
+                    .AddTestConfiguration("appsettings.json", "appsettings.Default.json")
+                    .ConfigureTestServices(services =>
+                    {
+                        // inject mocks for any other services
+                    });
+            })
+            .CreateClient();
 
-		// do some calls to your app via the httpClient and then some asserts
-	}
+        // do some calls to your app via the httpClient and then some asserts
+    }
 }
 ```
 

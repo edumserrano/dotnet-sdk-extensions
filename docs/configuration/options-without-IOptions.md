@@ -12,7 +12,7 @@ Imagine that you have an appsettings file with the following:
 
 ```
 "MyOptionsSection": {
-	"SomeOption": "hi"
+    "SomeOption": "hi"
 }
 ```
 
@@ -21,7 +21,7 @@ Which is represented by the typed class `MyOptions`:
 ```
 public class MyOptions
 {
-	public string SomeOption { get; set; }
+    public string SomeOption { get; set; }
 }
 ```
 
@@ -30,10 +30,10 @@ And now you want to take the `MyOptions` type as a dependency. As an example:
 ```
 public class SomeClass
 {
-	public SomeClass(SomeOption someOption)
-	{
+    public SomeClass(SomeOption someOption)
+    {
 
-	}
+    }
 }
 ```
 
@@ -41,9 +41,9 @@ To be able to do the above you can use the `OptionsBuilder.AddOptionsValue` exte
 
 ```
 services
-	.AddOptions<MyOptions>()
-	.Bind(configuration.GetSection("MyOptionsSection"))
-	.AddOptionsValue();
+    .AddOptions<MyOptions>()
+    .Bind(configuration.GetSection("MyOptionsSection"))
+    .AddOptionsValue();
 ```
 
 Equivalently to the above, you can use the `IServiceCollection.AddOptionsValue` extension method:
@@ -56,8 +56,8 @@ In the first example you are still required to have called `IServiceCollection.A
 
 ```
 services
-	.AddOptionsValue<MyOptions>(_configuration, sectionName: "MyOptionsSection")
-	.ValidateDataAnnotations();
+    .AddOptionsValue<MyOptions>(_configuration, sectionName: "MyOptionsSection")
+    .ValidateDataAnnotations();
 ```
 
 Also note that this extension method just added the ability to take a dependency on `SomeOption`, it didn't remove the ability to take a dependency on `IOptions<SomeOption>`.

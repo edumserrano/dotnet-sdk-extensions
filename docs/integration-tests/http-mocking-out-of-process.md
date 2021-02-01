@@ -23,40 +23,40 @@ After, setup the `HttpMockServer` and configure the `WebApplicationFactory` so t
 ```
 public class HttpMocksDemoTests : IClassFixture<WebApplicationFactory<Startup>>
 {
-	private readonly WebApplicationFactory<Startup> _webApplicationFactory;
+    private readonly WebApplicationFactory<Startup> _webApplicationFactory;
 
-	public HttpMocksDemoTests(WebApplicationFactory<Startup> webApplicationFactory)
-	{
-		_webApplicationFactory = webApplicationFactory;
-	}
+    public HttpMocksDemoTests(WebApplicationFactory<Startup> webApplicationFactory)
+    {
+        _webApplicationFactory = webApplicationFactory;
+    }
 
-	[Fact]
-	public void DemoTest()
-	{
-		var httpResponseMock = new HttpResponseMockBuilder()
-			.Where(httpRequest =>
-			{
-				return httpRequest.Path.Equals("/some-path");
-			})
-			.RespondWith((request, response) =>
-			{
-				response.StatusCode = StatusCodes.Status200OK;
-			})
-			.Build();
+    [Fact]
+    public void DemoTest()
+    {
+        var httpResponseMock = new HttpResponseMockBuilder()
+            .Where(httpRequest =>
+            {
+                return httpRequest.Path.Equals("/some-path");
+            })
+            .RespondWith((request, response) =>
+            {
+                response.StatusCode = StatusCodes.Status200OK;
+            })
+            .Build();
 
-		await using var httpMockServer = new HttpMockServerBuilder()
-			.UseHttpResponseMocks()
-			.MockHttpResponse(httpResponseMock)
-			.Build();
-		var urls = await httpMockServer.StartAsync();
-		var httpUrl = urls.First(x => x.Scheme == HttpScheme.Http);
-		var httpsUrl = urls.First(x => x.Scheme == HttpScheme.Https);
+        await using var httpMockServer = new HttpMockServerBuilder()
+            .UseHttpResponseMocks()
+            .MockHttpResponse(httpResponseMock)
+            .Build();
+        var urls = await httpMockServer.StartAsync();
+        var httpUrl = urls.First(x => x.Scheme == HttpScheme.Http);
+        var httpsUrl = urls.First(x => x.Scheme == HttpScheme.Https);
 
-		// configure the _webApplicationFactory to start your app
-		// and make sure the HttpClient base address you want to test
-		// is set to either the httpUrl or httpsUrl which is where 
-		// the httpMockServer is listening for http requests
-	}
+        // configure the _webApplicationFactory to start your app
+        // and make sure the HttpClient base address you want to test
+        // is set to either the httpUrl or httpsUrl which is where 
+        // the httpMockServer is listening for http requests
+    }
 }
 ```
 
@@ -75,19 +75,19 @@ This way let's you define the http response mocks before hand using the `HttpRes
 
 ```
 var httpResponseMock1 = new HttpResponseMockBuilder()
-	.Where(httpRequest => httpRequest.Path.Equals("/path-a"))
-	.RespondWith((request, response) => response.StatusCode = StatusCodes.Status200OK)
-	.Build();
+    .Where(httpRequest => httpRequest.Path.Equals("/path-a"))
+    .RespondWith((request, response) => response.StatusCode = StatusCodes.Status200OK)
+    .Build();
 var httpResponseMock2 = new HttpResponseMockBuilder()
-	.Where(httpRequest => httpRequest.Path.Equals("/path-b"))
-	.RespondWith((request, response) => response.StatusCode = StatusCodes.Status200OK)
-	.Build();
+    .Where(httpRequest => httpRequest.Path.Equals("/path-b"))
+    .RespondWith((request, response) => response.StatusCode = StatusCodes.Status200OK)
+    .Build();
 
 await using var httpMockServer = new HttpMockServerBuilder()
-	.UseHttpResponseMocks()
-	.MockHttpResponse(httpResponseMock1)
-	.MockHttpResponse(httpResponseMock2)
-	.Build();
+    .UseHttpResponseMocks()
+    .MockHttpResponse(httpResponseMock1)
+    .MockHttpResponse(httpResponseMock2)
+    .Build();
 var urls = await httpMockServer.StartAsync();
 var httpUrl = urls.First(x => x.Scheme == HttpScheme.Http);
 var httpsUrl = urls.First(x => x.Scheme == HttpScheme.Https);
@@ -102,29 +102,29 @@ Start by defining a `Startup` class as you see fit. The example below shows a ve
 ```
 public class MyMockStartup
 {
-	public void ConfigureServices(IServiceCollection services)
-	{
-	}
+    public void ConfigureServices(IServiceCollection services)
+    {
+    }
 
-	public void Configure(IApplicationBuilder app)
-	{
-		app.Use(async (httpContext, next) =>
-		{
-			if (!httpContext.Request.Path.Equals("/hello"))
-			{
-				await next();
-				return;
-			}
+    public void Configure(IApplicationBuilder app)
+    {
+        app.Use(async (httpContext, next) =>
+        {
+            if (!httpContext.Request.Path.Equals("/hello"))
+            {
+                await next();
+                return;
+            }
 
-			httpContext.Response.StatusCode = StatusCodes.Status201Created;
-			await httpContext.Response.WriteAsync("hello");
-		});
-		app.Run(httpContext =>
-		{
-			httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
-			return Task.CompletedTask;
-		});
-	}
+            httpContext.Response.StatusCode = StatusCodes.Status201Created;
+            await httpContext.Response.WriteAsync("hello");
+        });
+        app.Run(httpContext =>
+        {
+            httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
+            return Task.CompletedTask;
+        });
+    }
 }
 ```
 
@@ -155,9 +155,9 @@ So let's say that you want to set the environment configuration value for the `H
 
 ```
 await using var httpMockServer = new HttpMockServerBuilder()
-	.UseHostArgs("--environment", "http://*:8811;https://*:9911")
-	.UseHttpResponseMocks() // or use the HttpMockServerBuilder.UseStartup<T> method
-	.Build();
+    .UseHostArgs("--environment", "http://*:8811;https://*:9911")
+    .UseHttpResponseMocks() // or use the HttpMockServerBuilder.UseStartup<T> method
+    .Build();
 ```
 
 You can pass in any number of host arguments. The arguments will be concatenated and passed in to the `IHostBuilder.CreateDefaultBuilder`.
@@ -168,21 +168,21 @@ One of the most obvious configuration values you want to define for the `HttpMoc
 
 ```
 await using var httpMockServer = new HttpMockServerBuilder()
-	.UseHostArgs("--urls", "http://*:8811;https://*:9911")
-	.UseHttpResponseMocks() // or use the HttpMockServerBuilder.UseStartup<T> method
-	.Build();
+    .UseHostArgs("--urls", "http://*:8811;https://*:9911")
+    .UseHttpResponseMocks() // or use the HttpMockServerBuilder.UseStartup<T> method
+    .Build();
 ```
 
 for convinience we also provide the the `HttpMockServerBuilder.UseUrl` method which you can use as follows:
 
 ```
 await using var httpMockServer = new HttpMockServerBuilder()
-	.UseUrl(HttpScheme.Http, 8811)
-	.UseUrl(HttpScheme.Http, 8822)
-	.UseUrl(HttpScheme.Https, 9911)
-	.UseUrl(HttpScheme.Https, 9922)
-	.UseHttpResponseMocks() // or use the HttpMockServerBuilder.UseStartup<T> method
-	.Build();
+    .UseUrl(HttpScheme.Http, 8811)
+    .UseUrl(HttpScheme.Http, 8822)
+    .UseUrl(HttpScheme.Https, 9911)
+    .UseUrl(HttpScheme.Https, 9922)
+    .UseHttpResponseMocks() // or use the HttpMockServerBuilder.UseStartup<T> method
+    .Build();
 ```
 
 The host will always be localhost but you can specify any number of http or https ports.
