@@ -188,7 +188,7 @@ UseHttpMocks(handlers =>
 });
 ```
 
-### Different ways to mock the HttpClient response
+## Different ways to mock the HttpClient response
 
 You might have noticed that the last example of mocking the http response is differen from the first one show in [How to use](#how-to-use). In short, you can chose to define the mocks inline or before hand.
 
