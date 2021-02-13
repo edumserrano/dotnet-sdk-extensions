@@ -13,14 +13,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v1
+    #- name: Setup .NET
+    #  uses: actions/setup-dotnet@v1
+    #  with:
+    #    dotnet-version: 5.0.x
+    - name: PowerShell script
+      # You may pin to the exact commit or the version.
+      # uses: Amadevus/pwsh-script@1f1751bbf3d1a92127bfc6c32403283625880cbf
+      uses: Amadevus/pwsh-script@v2.0.1
       with:
-        dotnet-version: 5.0.x
-    - name: Restore dependencies
-      run: dotnet restore
-    - name: Build
-      run: dotnet build --no-restore
-    - name: Test
-      run: dotnet test --no-build --verbosity normal
+        # PowerShell script to execute in Actions-hydrated context
+        script: echo hi
+    #- name: Restore dependencies
+    #  run: dotnet restore
+    #- name: Build
+    #  run: dotnet build --no-restore
+    #- name: Test
+    #  run: dotnet test --no-build --verbosity normal
 
