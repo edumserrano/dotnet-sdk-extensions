@@ -23,7 +23,8 @@ jobs:
       uses: Amadevus/pwsh-script@v2.0.1
       with:
         # PowerShell script to execute in Actions-hydrated context
-        script: echo hi
+        script: |
+          ls
     #- name: Restore dependencies
     #  run: dotnet restore
     #- name: Build
