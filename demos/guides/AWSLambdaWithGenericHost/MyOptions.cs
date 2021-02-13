@@ -2,6 +2,6 @@
 {
     public class MyOptions
     {
-        public string SomeOption { get; set; }
+        public string SomeOption { get; set; } = default!;
     }
 }

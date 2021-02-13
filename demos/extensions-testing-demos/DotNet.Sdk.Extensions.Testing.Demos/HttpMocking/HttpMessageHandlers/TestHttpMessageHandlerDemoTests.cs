@@ -27,7 +27,7 @@ namespace DotNet.Sdk.Extensions.Testing.Demos.HttpMocking.HttpMessageHandlers
                 .Where(httpRequestMessage =>
                 {
                     return httpRequestMessage.Method == HttpMethod.Get &&
-                        httpRequestMessage.RequestUri.PathAndQuery.Equals("/some-http-call");
+                        httpRequestMessage.RequestUri!.PathAndQuery.Equals("/some-http-call");
                 })
                 .RespondWith(httpRequestMessage =>
                 {
@@ -69,7 +69,7 @@ namespace DotNet.Sdk.Extensions.Testing.Demos.HttpMocking.HttpMessageHandlers
                 builder.Where(httpRequestMessage => 
                 {
                     return httpRequestMessage.Method == HttpMethod.Get &&
-                           httpRequestMessage.RequestUri.PathAndQuery.Equals("/some-http-call");
+                           httpRequestMessage.RequestUri!.PathAndQuery.Equals("/some-http-call");
                 })
                 .RespondWith(httpRequestMessage =>
                 {
@@ -96,14 +96,14 @@ namespace DotNet.Sdk.Extensions.Testing.Demos.HttpMocking.HttpMessageHandlers
         {
             // prepare the http mocks
             var someHttpCallMock = new HttpResponseMessageMockBuilder()
-                .Where(httpRequestMessage => httpRequestMessage.RequestUri.PathAndQuery.Equals("/some-http-call"))
+                .Where(httpRequestMessage => httpRequestMessage.RequestUri!.PathAndQuery.Equals("/some-http-call"))
                 .RespondWith(httpRequestMessage => new HttpResponseMessage(HttpStatusCode.Created)
                 {
                     Content = new StringContent("some mocked value")
                 })
                 .Build();
             var anotherHttpCallMock = new HttpResponseMessageMockBuilder()
-                .Where(httpRequestMessage => httpRequestMessage.RequestUri.PathAndQuery.Equals("/another-http-call"))
+                .Where(httpRequestMessage => httpRequestMessage.RequestUri!.PathAndQuery.Equals("/another-http-call"))
                 .RespondWith(httpRequestMessage => new HttpResponseMessage(HttpStatusCode.Accepted)
                 {
                     Content = new StringContent("another mocked value")

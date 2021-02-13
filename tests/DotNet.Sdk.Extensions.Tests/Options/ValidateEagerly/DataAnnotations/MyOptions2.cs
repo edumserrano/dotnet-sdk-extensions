@@ -5,6 +5,6 @@ namespace DotNet.Sdk.Extensions.Tests.Options.ValidateEagerly.DataAnnotations
     public class MyOptions2
     {
         [Required]
-        public string? SomeOption { get; set; }
+        public string SomeOption { get; set; } = default!;
     }
 }

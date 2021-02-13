@@ -2,6 +2,6 @@
 {
     public class HttpClientsOptions
     {
-        public string NamedClientBaseAddress { get; set; }
+        public string? NamedClientBaseAddress { get; set; }
     }
 }
