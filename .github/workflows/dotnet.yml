@@ -18,7 +18,8 @@ jobs:
     #  with:
     #    dotnet-version: 5.0.x
     - name: Run PowerShell Hello World script      
-      run: pwsh -v
+      run: echo hi
+      shell: pwsh
     #- name: Restore dependencies
     #  run: dotnet restore
     #- name: Build
