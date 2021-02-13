@@ -64,7 +64,7 @@ public class HttpClientMocksDemoTests : IClassFixture<WebApplicationFactory<Star
 }
 ```
 
-### Mock several responses
+## Mock several responses
 
 You can mock multiple http responses:
 
@@ -92,7 +92,7 @@ handler
 	.MockHttpResponse(anotherHttpCallMock);
 ```
 
-### Different ways to mock the HttpClient response
+## Different ways to mock the HttpClient response
 
 You can mock the http responses before hand or inline with the `TestHttpMessageHandler.MockHttpResponse` method.
 
@@ -133,7 +133,7 @@ handler.MockHttpResponse(builder =>
 
 There is no recommendation on any of the different ways to do the mocking. You should use the option that better fits your scenario/style.
 
-### Timeouts
+## Timeouts
 
 You can also test timeouts by configuring the http response mock using the `HttpResponseMessageMockBuilder.TimesOut` instead of the `HttpResponseMessageMockBuilder.RespondsWith` method as such:
 
@@ -163,7 +163,7 @@ expectedException.InnerException.Message.ShouldBe("A task was canceled.");
 ```
 
 
-### Notes
+## Notes
 
 * When no mock is configured on the `TestHttpMessageHandler` or when no configured mock matches the incoming request,  the `HttpClient` will throw an `InvalidOperationException` with information about the request being made which lacks mocking.
   
