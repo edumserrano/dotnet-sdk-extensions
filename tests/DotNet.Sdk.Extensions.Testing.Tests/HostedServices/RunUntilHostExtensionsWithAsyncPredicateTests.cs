@@ -36,7 +36,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
             string exceptionMessage)
         {
             var exception = Should.Throw(
-                actual: () => RunUntilExtensions.RunUntilAsync(host, predicate),
+                actual: () => host.RunUntilAsync(predicate),
                 exceptionType: exceptionType);
             exception.Message.ShouldBe(exceptionMessage);
         }
@@ -63,7 +63,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
             string exceptionMessage)
         {
             var exception = Should.Throw(
-                actual: () => RunUntilExtensions.RunUntilAsync(host, predicate, configureOptions),
+                actual: () => host.RunUntilAsync(predicate, configureOptions),
                 exceptionType: exceptionType);
             exception.Message.ShouldBe(exceptionMessage);
         }
@@ -111,7 +111,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
         /// Tests that <seealso cref="RunUntilExtensions.RunUntilAsync(IHost,RunUntilPredicateAsync,Action{RunUntilOptions})"/>
         /// times out if the predicate is not met within the configured timeout.
         /// The <seealso cref="MyBackgroundService"/> BackgroundService calls ICalculator.Sum once every 50 ms so if we set the timeout to 100 ms
-        /// and the predicate to stop the Host after receiveing 4 calls then the timeout should be triggered before the predicate is met.
+        /// and the predicate to stop the Host after receiving 4 calls then the timeout should be triggered before the predicate is met.
         /// </summary>
         [Fact]
         public async Task TimeoutOption()

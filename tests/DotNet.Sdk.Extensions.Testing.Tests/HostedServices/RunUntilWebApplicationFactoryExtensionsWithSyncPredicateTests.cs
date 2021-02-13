@@ -38,7 +38,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
             string exceptionMessage)
         {
             var exception = Should.Throw(
-                actual: () => RunUntilExtensions.RunUntilAsync(webApplicationFactory, predicate),
+                actual: () => webApplicationFactory.RunUntilAsync(predicate),
                 exceptionType: exceptionType);
             exception.Message.ShouldBe(exceptionMessage);
         }
@@ -65,7 +65,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
             string exceptionMessage)
         {
             var exception = Should.Throw(
-                actual: () => RunUntilExtensions.RunUntilAsync(webApplicationFactory, predicate, configureOptions),
+                actual: () => webApplicationFactory.RunUntilAsync(predicate, configureOptions),
                 exceptionType: exceptionType);
             exception.Message.ShouldBe(exceptionMessage);
         }

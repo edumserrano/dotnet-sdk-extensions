@@ -67,7 +67,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         {
             var exception = Should.Throw(() =>
             {
-                Testing.Configuration.WebHostBuilderExtensions.AddTestAppSettings(webHostBuilder, appSettingsFilename, otherAppSettingsFilenames);
+                webHostBuilder.AddTestAppSettings(appSettingsFilename, otherAppSettingsFilenames);
             }, exceptionType);
             exception.Message.ShouldBe(exceptionMessage);
         }
@@ -99,7 +99,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         {
             var exception = Should.Throw(() =>
             {
-                Testing.Configuration.WebHostBuilderExtensions.AddTestAppSettings(webHostBuilder, configureOptions, appSettingsFilename, otherAppSettingsFilenames);
+                webHostBuilder.AddTestAppSettings(configureOptions, appSettingsFilename, otherAppSettingsFilenames);
             }, exceptionType);
             exception.Message.ShouldBe(exceptionMessage);
         }
