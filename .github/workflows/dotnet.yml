@@ -18,7 +18,7 @@ jobs:
     #  with:
     #    dotnet-version: 5.0.x
     - name: Run PowerShell Hello World script      
-      run: echo hi
+      run: ls -R
       shell: pwsh
     #- name: Restore dependencies
     #  run: dotnet restore
