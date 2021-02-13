@@ -2,6 +2,7 @@
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using DotNet.Sdk.Extensions.Testing.Configuration;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.InProcess;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.InProcess.ResponseMocking;
 using DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess.Auxiliary.UseHttpMocks;
@@ -172,15 +173,16 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess
             var httpClient = _webApplicationFactory
                 .WithWebHostBuilder(builder =>
                 {
-                    builder.UseHttpMocks(handlers =>
-                    {
-                        handlers.MockHttpResponse(httpResponseMessageBuilder =>
+                    builder
+                        .UseHttpMocks(handlers =>
                         {
-                            httpResponseMessageBuilder
-                                .ForTypedClient<MyApiClient>("my-typed-client-2")
-                                .RespondWith(httpRequestMessage => new HttpResponseMessage(HttpStatusCode.OK));
+                            handlers.MockHttpResponse(httpResponseMessageBuilder =>
+                            {
+                                httpResponseMessageBuilder
+                                    .ForTypedClient<MyApiClient>("my-typed-client-2")
+                                    .RespondWith(httpRequestMessage => new HttpResponseMessage(HttpStatusCode.OK));
+                            });
                         });
-                    });
                 })
                 .CreateClient();
 
