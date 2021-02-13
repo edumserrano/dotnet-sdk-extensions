@@ -77,7 +77,7 @@ public class HttpMocksDemoTests : IClassFixture<WebApplicationFactory<Startup>>
 
 **Note**: the above test assumes that there is a typed client, represented by the type `IMyApiClient`, added to the `IServiceCollection` of the `Startup` class through the `IServiceCollection.AddHttpClient` method.
 
-### Mock different types of HttpClients
+## Mock different types of HttpClients
 
 There are [3 ways to create http clients using IHttpClientFactory](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/http-requests).
 
@@ -119,7 +119,7 @@ httpResponseMock
     });
 ```
 
-### Mock responses conditionally
+## Mock responses conditionally
 
 You can mock responses conditially by using the `HttpResponseMessageMockBuilder.Where` method.
 
@@ -147,7 +147,7 @@ If multiple http response mocks implement the same condition then only the respo
 
 If you create a mock for an `HttpClient` and no condition is met you will receive an `InvalidOperationException` indicating which endpoint is being called but not mocked.
 
-### Mock several responses
+## Mock several responses
 
 You can mock multiple http responses:
 
@@ -188,7 +188,7 @@ UseHttpMocks(handlers =>
 });
 ```
 
-### Different ways to mock the HttpClient response
+###Different ways to mock the HttpClient response
 
 You might have noticed that the last example of mocking the http response is differen from the first one show in [How to use](#how-to-use). In short, you can chose to define the mocks inline or before hand.
 

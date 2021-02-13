@@ -135,7 +135,7 @@ This is important when planning your stop condition and asserts as it might mean
 
  As an example if your Hosted Service is in a while loop doing some operation and you are keeping count of how many times that operation has run before stopping the test server, then the stop condition should probably be `numberOfRuns >= 'some value'` instead of `numberOfRuns == 'some value'`.
 
-### Use a time condition to stop the test server
+## Use a time condition to stop the test server
 
 If you prefer to run the web server for a period of time before terminating it you can use the `WebApplicationFactory.RunUntilTimeoutAsync` extension method:
 
@@ -155,7 +155,7 @@ await _webApplicationFactory
 
 Usually it's best to consider stopping after a stop condition is met. Abusing the `WebApplicationFactory.RunUntilTimeoutAsync` and using it in scenarios where you could have set a stop condition using the `WebApplicationFactory.RunUntilAsync` might lead to flaky tests.
 
-### Configure a timeout for the condition set to stop the test server
+## Configure a timeout for the condition set to stop the test server
 
 When setting a condition to for the `WebApplicationFactory.RunUntilAsync` extension method there is a default timeout of 5 seconds set to reach that condition. If the condition is not reached the test server is stopped and a `RunUntilException` is thrown.
 
@@ -181,7 +181,7 @@ The above is only true for the default timeout. Meaning that any timeout that yo
 
 Beware of this when you're debugging tests where you've set a low timeout. You might have to increase your set timeout to something large enough to let you debug your test properly and then once you're happy set it back to the desired timeout.
 
-### Configuring the interval of time on which the condition is checked
+## Configuring the interval of time on which the condition is checked
 
 When you set a condition, that condition is checked in a loop until it's reached or until the timeout is triggered:
 

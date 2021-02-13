@@ -62,14 +62,14 @@ public class HttpMocksDemoTests : IClassFixture<WebApplicationFactory<Startup>>
 
 For brevity, the above test does not show how to configure the `WebApplicationFactory` instance. For a full example see [the demos](#how-to-run-the-demo).
 
-### Different ways to setup the `HttpMockServer`
+## Different ways to setup the `HttpMockServer`
 
 There are two ways to setup the `HttpMockServer`:
 
 - Based on configuring `HttpResponseMocks` via the `HttpMockServerBuilder.UseHttpResponseMocks`
 - Based on a `Startup` class via the `HttpMockServerBuilder.UseStartup<T>`
 
-#### Configuring the `HttpMockServer` via `HttpMockServerBuilder.UseHttpResponseMocks`
+### Configuring the `HttpMockServer` via `HttpMockServerBuilder.UseHttpResponseMocks`
 
 This way let's you define the http response mocks before hand using the `HttpResponseMockBuilder`, then you use the `HttpMockServerBuilder.UseHttpResponseMocks` and set the mocks you want the server to use.
 
@@ -93,7 +93,7 @@ var httpUrl = urls.First(x => x.Scheme == HttpScheme.Http);
 var httpsUrl = urls.First(x => x.Scheme == HttpScheme.Https);
 ```
 
-#### Configuring the `HttpMockServer` via `HttpMockServerBuilder.UseStartup<T>`
+### Configuring the `HttpMockServer` via `HttpMockServerBuilder.UseStartup<T>`
 
 This way let's you move the configuration of the `HttpMockServer` into a separate `Startup` class. 
 
@@ -143,9 +143,9 @@ var httpUrl = urls.First(x => x.Scheme == HttpScheme.Http);
 var httpsUrl = urls.First(x => x.Scheme == HttpScheme.Https);
 ```
 
-### `HttpMockServerBuilder.UseHostArgs` and `HttpMockServerBuilder.UseUrl`
+## `HttpMockServerBuilder.UseHostArgs` and `HttpMockServerBuilder.UseUrl`
 
-#### `HttpMockServerBuilder.UseHostArgs`
+### `HttpMockServerBuilder.UseHostArgs`
 
 Using the `HttpMockServerBuilder.UseHostArgs` you can pass in configuration values to `HttpMockServer` just like you would to any `asp.net` app.
 
@@ -162,7 +162,7 @@ await using var httpMockServer = new HttpMockServerBuilder()
 
 You can pass in any number of host arguments. The arguments will be concatenated and passed in to the `IHostBuilder.CreateDefaultBuilder`.
 
-#### `HttpMockServerBuilder.UseUrl`
+### `HttpMockServerBuilder.UseUrl`
 
 One of the most obvious configuration values you want to define for the `HttpMockServer` is the URL where the server is listening for requests. Although you could configure that by using the `HttpMockServerBuilder.UseHostArgs`:
 

@@ -53,7 +53,7 @@ Note that all of the code in the example above is equal to the demos explained o
 
 Also note that the location of where the test appsettings files are can be configured. See below for more information.
 
-### Configure the location of the test appsettings files
+## Configure the location of the test appsettings files
 
 You can configure the location of where the appsettings files are by using an overload of `IWebHostBuilder.AddTestConfiguration` extension method as follows:
 
@@ -65,7 +65,7 @@ The value set for `TestConfigurationOptions.AppSettingsDir` will be used as a re
 
 Make sure you set your test appsetting files to be copied to the output.
 
-### How does it work with the appsettings files outside the test project (ie the real ones on the main project)
+## How does it work with the appsettings files outside the test project (ie the real ones on the main project)
 
 When using `IWebHostBuilder.AddTestConfiguration` any existing `Microsoft.Extensions.Configuration.JsonJsonConfigurationSource` instances are removed from the `IServiceCollection` which will be used by the `WebApplicationFactory` when starting the test server.
 

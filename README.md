@@ -1,6 +1,6 @@
 # dot-net-sdk-extensions
 
-This repo contains extensions to use with .NET applications and for unit and [integration tests](https://docs.microsoft.com/en-us/aspnet/core/test/integration-tests?#introduction-to-integration-tests).
+This repo contains extensions to use with .NET applications as weel as extensions for unit and [integration tests](https://docs.microsoft.com/en-us/aspnet/core/test/integration-tests?#introduction-to-integration-tests).
 
 It also contains guides on scenarios around building apps using .NET SDK. These guides are for situations where an extension is not merited but some documentation on how to accomplish the task is.
 
