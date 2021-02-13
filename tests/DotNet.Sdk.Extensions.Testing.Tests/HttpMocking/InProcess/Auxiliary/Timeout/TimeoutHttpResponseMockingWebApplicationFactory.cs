@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using DotNet.Sdk.Extensions.Testing.Tests.Auxiliary;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess.Auxiliary.Timeout
 {
@@ -22,6 +24,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess.Auxiliary.Ti
              * registered in the container
              */
             return Host.CreateDefaultBuilder()
+                .SetDefaultLogLevel(LogLevel.Critical)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
 
