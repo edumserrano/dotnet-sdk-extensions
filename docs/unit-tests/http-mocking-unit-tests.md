@@ -231,6 +231,6 @@ var httpResponseMessage = await httpClient.GetAsync("https://test.com");
 The demo for this extension is represented by a test class.
 
 * In Visual Studio go to the `DotNet.Sdk.Extensions.Testing.Demos project`.
-* Run the tests for the [TestHttpMessageHandlerDemoTests class](/demos/DotNet.Sdk.Extensions.Testing.Demos/HttpMocking/HttpMessageHandlers/TestHttpMessageHandlerDemoTests.cs).
+* Run the tests for the [TestHttpMessageHandlerDemoTests class](/demos/extensions-testing-demos/DotNet.Sdk.Extensions.Testing.Demos/HttpMocking/HttpMessageHandlers/TestHttpMessageHandlerDemoTests.cs).
 
-Analyse the [TestHttpMessageHandlerDemoTests class](/demos/DotNet.Sdk.Extensions.Testing.Demos/HttpMocking/HttpMessageHandlers/TestHttpMessageHandlerDemoTests.cs) for more information on how this extension works.
+Analyse the [TestHttpMessageHandlerDemoTests class](/demos/extensions-testing-demos/DotNet.Sdk.Extensions.Testing.Demos/HttpMocking/HttpMessageHandlers/TestHttpMessageHandlerDemoTests.cs) for more information on how this extension works.

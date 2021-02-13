@@ -54,9 +54,8 @@ Note that `OptionsBuilder.ValidateEagerly` works in conjunction with dotnet's va
 
 The demo for this extension is represented by a web app.
 
-* From Visual Studio, set the `demos\DotNet.Sdk.Extensions.Demos\DotNet.Sdk.Extensions.Demos.csproj` project as the Startup Project
-* Update the `launchSettings.json` to set the demo to the eagerly validation options by going to `demos\DotNet.Sdk.Extensions.Demos\Properties\launchSettings.json` and setting the `commandLineArgs` value to `-d eager-options-validation`.
-* Run the project
+* From Visual Studio, set the `demos\extensions-demos\options\EagerOptionsValidation\EagerOptionsValidation.csproj` project as the Startup Project.
+* Run the project.
 * You should get an exception message as follows:
   
 ```
@@ -66,4 +65,4 @@ Microsoft.Extensions.Options.OptionsValidationException:
 
 * The web app fails to start and the process exits due to the above unhandled exception
 
-Analyse the [StartupEagerOptionsValidation class](/demos/DotNet.Sdk.Extensions.Demos/Options/EagerValidateOptions/StartupEagerOptionsValidation.cs) for more information on how this extension works.
+Analyse the [StartupEagerOptionsValidation class](/demos/extensions-demos/options/EagerOptionsValidation/Startup.cs) for more information on how this extension works.

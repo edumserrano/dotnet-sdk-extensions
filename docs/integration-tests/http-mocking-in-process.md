@@ -357,6 +357,6 @@ public class HttpMocksDemoTests : IClassFixture<WebApplicationFactory<Startup>>
 The demo for this extension is represented by a test class.
 
 * In Visual Studio go to the `DotNet.Sdk.Extensions.Testing.Demos project`.
-* Run the tests for the [InProcessHttpResponseMockingDemoTests class](/demos/DotNet.Sdk.Extensions.Testing.Demos/HttpMocking/InProcess/InProcessHttpResponseMockingDemoTests.cs).
+* Run the tests for the [InProcessHttpResponseMockingDemoTests class](/demos/extensions-testing-demos/DotNet.Sdk.Extensions.Testing.Demos/HttpMocking/InProcess/InProcessHttpResponseMockingDemoTests.cs).
 
-Analyse the [InProcessHttpResponseMockingDemoTests class](/demos/DotNet.Sdk.Extensions.Testing.Demos/HttpMocking/InProcess/InProcessHttpResponseMockingDemoTests.cs) for more information on how this extension works.
+Analyse the [InProcessHttpResponseMockingDemoTests class](/demos/extensions-testing-demos/DotNet.Sdk.Extensions.Testing.Demos/HttpMocking/InProcess/InProcessHttpResponseMockingDemoTests.cs) for more information on how this extension works.

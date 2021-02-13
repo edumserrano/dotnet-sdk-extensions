@@ -213,6 +213,6 @@ So if for your test it will take X time to meet the condition and the `RunUntilO
 The demo for this extension is represented by a test class.
 
 * In Visual Studio go to the `DotNet.Sdk.Extensions.Testing.Demos project`.
-* Run the tests for the [HostedServicesDemoTests class](/demos/DotNet.Sdk.Extensions.Testing.Demos/HostedServices/HostedServicesDemoTests.cs).
+* Run the tests for the [HostedServicesDemoTests class](/demos/extensions-testing-demos/DotNet.Sdk.Extensions.Testing.Demos/HostedServices/HostedServicesDemoTests.cs).
 
-Analyse the [HostedServicesDemoTests class](/demos/DotNet.Sdk.Extensions.Testing.Demos/HostedServices/HostedServicesDemoTests.cs) for more information on how this extension works.
+Analyse the [HostedServicesDemoTests class](/demos/extensions-testing-demos/DotNet.Sdk.Extensions.Testing.Demos/HostedServices/HostedServicesDemoTests.cs) for more information on how this extension works.

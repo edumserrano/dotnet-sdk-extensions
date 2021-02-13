@@ -66,13 +66,12 @@ Also note that this extension method just added the ability to take a dependency
 
 The demo for this extension is represented by a web app.
 
-* From Visual Studio, set the `demos\DotNet.Sdk.Extensions.Demos\DotNet.Sdk.Extensions.Demos.csproj` project as the Startup Project
-* Update the `launchSettings.json` to set the demo to the options value by going to `demos\DotNet.Sdk.Extensions.Demos\Properties\launchSettings.json` and setting the `commandLineArgs` value to `-d options-value`.
-* Run the project
+* From Visual Studio, set the `demos\extensions-demos\options\OptionsValue\OptionsValue.csproj` project as the Startup Project.
+* Run the project.
 * Browse to https://localhost:5001/ and the following message should be displayed:
   
 ```
 appsettings says: Hello from typed configuration
 ```
 
-Analyse the [StartupOptionsValue class](/demos/DotNet.Sdk.Extensions.Demos/Options/OptionsValue/StartupOptionsValue.cs) for more information on how this extension works.
+Analyse the [StartupOptionsValue class](/demos/extensions-demos/options/OptionsValue/Startup.cs) for more information on how this extension works.

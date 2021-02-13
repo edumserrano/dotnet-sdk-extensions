@@ -194,6 +194,6 @@ If the listening URL is not configured, by default a random free http port and a
 The demo for this extension is represented by a test class.
 
 * In Visual Studio go to the `DotNet.Sdk.Extensions.Testing.Demos project`.
-* Run the tests for the [OutOfProcessResponseBasedDemoTests](/demos/DotNet.Sdk.Extensions.Testing.Demos/HttpMocking/OutOfProcess/ResponseBased/OutOfProcessResponseBasedDemoTests.cs) and the [OutOfProcessStartupBasedDemoTests](/demos/DotNet.Sdk.Extensions.Testing.Demos/HttpMocking/OutOfProcess/StartupBased/OutOfProcessStartupBasedDemoTests.cs) test classes.
+* Run the tests for the [OutOfProcessResponseBasedDemoTests](/demos/extensions-testing-demos/DotNet.Sdk.Extensions.Testing.Demos/HttpMocking/OutOfProcess/ResponseBased/OutOfProcessResponseBasedDemoTests.cs) and the [OutOfProcessStartupBasedDemoTests](/demos/extensions-testing-demos/DotNet.Sdk.Extensions.Testing.Demos/HttpMocking/OutOfProcess/StartupBased/OutOfProcessStartupBasedDemoTests.cs) test classes.
 
 Analyse the tests for more information on how this extension works.
