@@ -46,7 +46,17 @@ For more information about each extension check its docs and demo. You can find 
 
 ## TODO
 
-* split demo projects, src for extensions and guides (create a demo project to explain multiple startup classes in same project) and add readme to each
+
+* Create ci cd pipeline, add badge to readme (link to pipeline, code coverage)
+  * update readme like this one https://github.com/edumserrano/csharp-functional
+  * add more info to nuget package on the csproj https://github.com/edumserrano/csharp-functional/blob/master/Source/CSharpFunctional/HttpResultMonad.Extensions/HttpResultMonad.Extensions.csproj
+  * add note about sourcelink being enabled and how to debug nuget package code
+  * explain that the snupkg is published but that the pdb is also part of the nuget to enable debugging in two ways (explain why, one is much slower and requires nuget symbols)
+  * add doc about github action (how the api key to push nuget is stored and that it needs to be refreshed in 1year) https://docs.microsoft.com/en-us/nuget/nuget-org/publish-a-package#:~:text=Sign%20into%20your%20nuget.org,%2C%20select%20Select%20Scopes%20%3E%20Push.
+  * github action matrix testing? windows/linux/different sdk versions (also should the libraries set to netcore 2.1? and project langversion to latest?)
+  * move packages from alpha to stable and update it on demo sln
+  * any readme missing? 
+  
 * guide about dotnet test solution with code coverage
   * solution wide code coverage: https://github.com/coverlet-coverage/coverlet/blob/master/Documentation/Examples/MSBuild/MergeWith/HowTo.md
   * note that %2c is used instead of comma: "json%2copencover"="json,opencover". For more information see: https://github.com/coverlet-coverage/coverlet/blob/master/Documentation/MSBuildIntegration.md#note-for-powershell--vsts-users
@@ -113,14 +123,6 @@ reportgenerator `
 4. Open the `index.html` file that gets produced at `/tests/test-results/coverage-results/report`.
 
 
-* Create ci cd pipeline, add badge to readme (link to pipeline, code coverage)
-  * update readme like this one https://github.com/edumserrano/csharp-functional
-  * add more info to nuget package on the csproj https://github.com/edumserrano/csharp-functional/blob/master/Source/CSharpFunctional/HttpResultMonad.Extensions/HttpResultMonad.Extensions.csproj
-  * add note about sourcelink being enabled and how to debug nuget package code
-  * explain that the snupkg is published but that the pdb is also part of the nuget to enable debugging in two ways (explain why, one is much slower and requires nuget symbols)
-  * add doc about github action (how the api key to push nuget is stored and that it needs to be refreshed in 1year) https://docs.microsoft.com/en-us/nuget/nuget-org/publish-a-package#:~:text=Sign%20into%20your%20nuget.org,%2C%20select%20Select%20Scopes%20%3E%20Push.
-  * github action matrix testing? windows/linux/different sdk versions (also should the libraries set to netcore 2.1? and project langversion to latest?)
-  * move packages from alpha to stable and update it on demo sln
   
 * overwrite configuration items on options without adding a whole new appsettings
 * http mocking (.UseHttpMocks or MockHttpResponse methods) should allow access to the service provider
@@ -145,12 +147,6 @@ reportgenerator `
                     builder.Add(memoryConfigurationSource);
                 })
 ```
-* update readme like this one https://github.com/edumserrano/csharp-functional
-* add doc about github action (how the api key to push nuget is stored and that it needs to be refreshed in 1year)
-  * https://docs.microsoft.com/en-us/nuget/nuget-org/publish-a-package#:~:text=Sign%20into%20your%20nuget.org,%2C%20select%20Select%20Scopes%20%3E%20Push.
-* add note about sourcelink being enabled and how to debug nuget package code
-  * explain that the snupkg is published but that the pdb is also part of the nuget to enable debugging in two ways (explain why, one is much slower and requires nuget symbols)
-* github action matrix testing? windows/linux/different sdk versions (also should the libraries set to netcore 2.1? and project langversion to latest?)
 
 ## Notes
 
