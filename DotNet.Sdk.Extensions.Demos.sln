@@ -1,0 +1,84 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31005.135
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "demos", "demos", "{3F7324AD-EFC0-4FB3-80E0-4F95B6148D90}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "extensions-demos", "extensions-demos", "{2AF38977-87D7-4EC7-AC5A-8846E5C1FF26}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "guides", "guides", "{2C1E4A6A-5D4F-433E-8C2A-70E9197CDC86}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "extensions-testing-demos", "extensions-testing-demos", "{E8AF9607-DD4E-467D-A2E3-E019E874132F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "options", "options", "{46B10871-6A4D-440E-8B3D-8847C53E9055}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EagerOptionsValidation", "demos\extensions-demos\options\EagerOptionsValidation\EagerOptionsValidation.csproj", "{AD33F885-4A0B-493C-B971-D345B8369B63}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OptionsValue", "demos\extensions-demos\options\OptionsValue\OptionsValue.csproj", "{375BC5CF-3607-4B4E-9886-E6A3FAC17BB8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNet.Sdk.Extensions.Testing.Demos", "demos\extensions-testing-demos\DotNet.Sdk.Extensions.Testing.Demos\DotNet.Sdk.Extensions.Testing.Demos.csproj", "{3906393F-2F17-4B19-8B92-44235343F612}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AWSLambdaWithGenericHost", "demos\guides\AWSLambdaWithGenericHost\AWSLambdaWithGenericHost.csproj", "{00067BB2-7510-4E40-B5C9-F9E418FFAD4B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AWSLambdaWithGenericHost2", "demos\guides\AWSLambdaWithGenericHost2\AWSLambdaWithGenericHost2.csproj", "{B2F6F092-1140-480A-B460-2D113B2BDB44}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleAppWithGenericHost", "demos\guides\ConsoleAppWithGenericHost\ConsoleAppWithGenericHost.csproj", "{B6FE0F64-1E2D-4C89-9D43-8AA3E2CBFAEF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleAppWithGenericHost2", "demos\guides\ConsoleAppWithGenericHost2\ConsoleAppWithGenericHost2.csproj", "{6A0BE055-47A4-4C44-8319-A449C1D7B35E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AD33F885-4A0B-493C-B971-D345B8369B63}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AD33F885-4A0B-493C-B971-D345B8369B63}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AD33F885-4A0B-493C-B971-D345B8369B63}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AD33F885-4A0B-493C-B971-D345B8369B63}.Release|Any CPU.Build.0 = Release|Any CPU
+		{375BC5CF-3607-4B4E-9886-E6A3FAC17BB8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{375BC5CF-3607-4B4E-9886-E6A3FAC17BB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{375BC5CF-3607-4B4E-9886-E6A3FAC17BB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{375BC5CF-3607-4B4E-9886-E6A3FAC17BB8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3906393F-2F17-4B19-8B92-44235343F612}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3906393F-2F17-4B19-8B92-44235343F612}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3906393F-2F17-4B19-8B92-44235343F612}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3906393F-2F17-4B19-8B92-44235343F612}.Release|Any CPU.Build.0 = Release|Any CPU
+		{00067BB2-7510-4E40-B5C9-F9E418FFAD4B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{00067BB2-7510-4E40-B5C9-F9E418FFAD4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{00067BB2-7510-4E40-B5C9-F9E418FFAD4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{00067BB2-7510-4E40-B5C9-F9E418FFAD4B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B2F6F092-1140-480A-B460-2D113B2BDB44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B2F6F092-1140-480A-B460-2D113B2BDB44}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B2F6F092-1140-480A-B460-2D113B2BDB44}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B2F6F092-1140-480A-B460-2D113B2BDB44}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B6FE0F64-1E2D-4C89-9D43-8AA3E2CBFAEF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B6FE0F64-1E2D-4C89-9D43-8AA3E2CBFAEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B6FE0F64-1E2D-4C89-9D43-8AA3E2CBFAEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B6FE0F64-1E2D-4C89-9D43-8AA3E2CBFAEF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6A0BE055-47A4-4C44-8319-A449C1D7B35E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6A0BE055-47A4-4C44-8319-A449C1D7B35E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6A0BE055-47A4-4C44-8319-A449C1D7B35E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6A0BE055-47A4-4C44-8319-A449C1D7B35E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{2AF38977-87D7-4EC7-AC5A-8846E5C1FF26} = {3F7324AD-EFC0-4FB3-80E0-4F95B6148D90}
+		{2C1E4A6A-5D4F-433E-8C2A-70E9197CDC86} = {3F7324AD-EFC0-4FB3-80E0-4F95B6148D90}
+		{E8AF9607-DD4E-467D-A2E3-E019E874132F} = {3F7324AD-EFC0-4FB3-80E0-4F95B6148D90}
+		{46B10871-6A4D-440E-8B3D-8847C53E9055} = {2AF38977-87D7-4EC7-AC5A-8846E5C1FF26}
+		{AD33F885-4A0B-493C-B971-D345B8369B63} = {46B10871-6A4D-440E-8B3D-8847C53E9055}
+		{375BC5CF-3607-4B4E-9886-E6A3FAC17BB8} = {46B10871-6A4D-440E-8B3D-8847C53E9055}
+		{3906393F-2F17-4B19-8B92-44235343F612} = {E8AF9607-DD4E-467D-A2E3-E019E874132F}
+		{00067BB2-7510-4E40-B5C9-F9E418FFAD4B} = {2C1E4A6A-5D4F-433E-8C2A-70E9197CDC86}
+		{B2F6F092-1140-480A-B460-2D113B2BDB44} = {2C1E4A6A-5D4F-433E-8C2A-70E9197CDC86}
+		{B6FE0F64-1E2D-4C89-9D43-8AA3E2CBFAEF} = {2C1E4A6A-5D4F-433E-8C2A-70E9197CDC86}
+		{6A0BE055-47A4-4C44-8319-A449C1D7B35E} = {2C1E4A6A-5D4F-433E-8C2A-70E9197CDC86}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {30D7160D-5F70-4D4F-A5E4-A84A049A4A7D}
+	EndGlobalSection
+EndGlobal

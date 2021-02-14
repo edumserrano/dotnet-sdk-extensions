@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\src\DotNet.Sdk.Extensions\DotNet.Sdk.Extensions.csproj" />
+    <PackageReference Include="DotNet-Sdk-Extensions" Version="1.0.1-alpha" />
   </ItemGroup>
 
 </Project>

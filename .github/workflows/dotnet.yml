@@ -18,13 +18,13 @@ jobs:
         dotnet-version: 5.0.x
     - name: Restore dependencies
       shell: pwsh
-      run: dotnet restore      
+      run: dotnet restore DotNet.Sdk.Extensions.sln
     - name: Build
       shell: pwsh
-      run: dotnet build --no-restore
+      run: dotnet build DotNet.Sdk.Extensions.sln --no-restore
     - name: Test
       shell: pwsh
-      run: dotnet test --no-build --verbosity normal
+      run: dotnet test DotNet.Sdk.Extensions.sln --no-build --verbosity normal
     - name: Package DotNet.Sdk.Extensions
       shell: pwsh
       run: dotnet pack ./src/DotNet.Sdk.Extensions/DotNet.Sdk.Extensions.csproj -c Release
