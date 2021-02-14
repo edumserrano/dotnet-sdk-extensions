@@ -4,6 +4,8 @@ using DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers;
 using DotNet.Sdk.Extensions.Testing.Tests.Auxiliary;
 using Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Shouldly;
@@ -122,18 +124,21 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
         }
 
         /// <summary>
-        /// Tests that <seealso cref="HttpMockServerBuilder.UseHostArgs"/> cannot be defined multiple times.
+        /// Tests that <seealso cref="HttpMockServerBuilder.UseHostArgs"/> can be defined multiple times.
         /// </summary>
         [Fact]
-        public void UsesHostArgsCannotBeRepeated()
+        public async Task UsesHostArgsCanBeRepeated()
         {
-            var exception = Should.Throw<InvalidOperationException>(() =>
-            {
-                new HttpMockServerBuilder()
-                    .UseHostArgs("--urls", "http://*:8811;https://*:9911")
-                    .UseHostArgs("--urls", "http://*:8811;https://*:9911");
-            });
-            exception.Message.ShouldBe("UseHostArgs has already been defined and cannot be called multiple times.");
+            await using var mock = new HttpMockServerBuilder()
+                .UseHostArgs("--config1","value1")
+                .UseHostArgs("--config2","value2")                                      
+                .UseHttpResponseMocks()
+                .Build();
+            var urls = await mock.StartAsync();
+
+            var configuration = mock.Host!.Services.GetRequiredService<IConfiguration>();
+            configuration["config1"].ShouldBe("value1");
+            configuration["config2"].ShouldBe("value2");
         }
 
         /// <summary>

@@ -17,7 +17,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers.Res
 
         protected override IHostBuilder CreateHostBuilder(string[] args)
         {
-            return Host
+            return Microsoft.Extensions.Hosting.Host
                 .CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {

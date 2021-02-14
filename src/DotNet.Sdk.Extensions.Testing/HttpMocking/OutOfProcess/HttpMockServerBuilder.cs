@@ -11,7 +11,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess
     /// </summary>
     public class HttpMockServerBuilder
     {
-        private string[] _hostArgs = new string[0];
+        private readonly List<string> _hostArgs = new List<string>();
         private readonly List<HttpMockServerUrlDescriptor> _hostUrls = new List<HttpMockServerUrlDescriptor>();
 
         /// <summary>
@@ -52,12 +52,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess
                 throw new ArgumentException("Must have a value.", nameof(hostArgs));
             }
 
-            if (_hostArgs.Length > 0)
-            {
-                throw new InvalidOperationException("UseHostArgs has already been defined and cannot be called multiple times.");
-            }
-
-            _hostArgs = hostArgs ?? throw new ArgumentNullException(nameof(hostArgs));
+            _hostArgs.AddRange(hostArgs);
             return this;
         }
 

@@ -12,7 +12,6 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers
     public abstract class HttpMockServer : IAsyncDisposable
     {
         private readonly HttpMockServerArgs _mockServerArgs;
-        private IHost? _host;
 
         internal HttpMockServer(HttpMockServerArgs mockServerArgs)
         {
@@ -20,19 +19,24 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers
         }
 
         /// <summary>
+        /// The <see cref="IHost"/> used by the <see cref="HttpMockServer"/>
+        /// </summary>
+        public IHost? Host { get; private set; }
+
+        /// <summary>
         /// Starts the server.
         /// </summary>
         /// <returns>The URLs where the server is listening for requests.</returns>
         public async Task<List<HttpMockServerUrl>> StartAsync()
         {
-            if (_host is not null)
+            if (Host is not null)
             {
                 throw new InvalidOperationException($"The {nameof(HttpMockServer)} has already been started.");
             }
 
-            _host = CreateHostBuilder(_mockServerArgs.HostArgs).Build();
-            await _host.StartAsync();
-            return _host
+            Host = CreateHostBuilder(_mockServerArgs.HostArgs).Build();
+            await Host.StartAsync();
+            return Host
                 .GetServerAddresses()
                 .Select(x => x.ToHttpMockServerUrl())
                 .ToList();
@@ -42,8 +46,8 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers
 
         public async ValueTask DisposeAsync()
         {
-            _host?.StopAsync();
-            switch (_host)
+            Host?.StopAsync();
+            switch (Host)
             {
                 case IAsyncDisposable asyncDisposable:
                     await asyncDisposable.DisposeAsync();
