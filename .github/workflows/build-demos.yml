@@ -1,0 +1,27 @@
+name: Build demos
+
+on:
+  #push:
+  #  branches: [ master ]
+  #pull_request:
+  #  branches: [ master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.x
+    - name: Restore dependencies
+      shell: pwsh
+      run: dotnet restore DotNet.Sdk.Extensions.Demos.sln
+    - name: Build
+      shell: pwsh
+      run: dotnet build DotNet.Sdk.Extensions.Demos.sln --no-restore
+    - name: Test
+      shell: pwsh
+      run: dotnet test DotNet.Sdk.Extensions.Demos.sln --no-build --verbosity normal
