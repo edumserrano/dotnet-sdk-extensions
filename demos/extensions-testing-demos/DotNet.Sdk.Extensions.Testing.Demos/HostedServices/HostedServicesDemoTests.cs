@@ -65,7 +65,7 @@ namespace DotNet.Sdk.Extensions.Testing.Demos.HostedServices
                 .RunUntilTimeoutAsync(TimeSpan.FromSeconds(2));
             sw.Stop();
 
-            sw.Elapsed.ShouldBeGreaterThanOrEqualTo(TimeSpan.FromSeconds(2));
+            sw.Elapsed.ShouldBeGreaterThanOrEqualTo(TimeSpan.FromMilliseconds(1900));
             callCount.ShouldBeGreaterThanOrEqualTo(3);
         }
     }
