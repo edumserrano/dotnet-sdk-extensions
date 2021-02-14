@@ -1,9 +1,11 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using DotNet.Sdk.Extensions.Tests.Auxiliary;
 using DotNet.Sdk.Extensions.Tests.Options.ValidateEagerly.DataAnnotations;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration.Memory;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Shouldly;
 using Xunit;
@@ -23,6 +25,7 @@ namespace DotNet.Sdk.Extensions.Tests.Options.ValidateEagerly
         {
             using var host = Host
                 .CreateDefaultBuilder()
+                .SetDefaultLogLevel(LogLevel.Critical)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder
@@ -43,6 +46,7 @@ namespace DotNet.Sdk.Extensions.Tests.Options.ValidateEagerly
         {
             using var host = Host
                 .CreateDefaultBuilder()
+                .SetDefaultLogLevel(LogLevel.Critical)
                 .ConfigureAppConfiguration((context, builder) =>
                 {
                     var memoryConfigurationSource = new MemoryConfigurationSource

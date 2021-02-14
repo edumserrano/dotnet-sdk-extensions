@@ -25,5 +25,4 @@ jobs:
     - name: Build
       run: dotnet build --no-restore
     - name: Test
-      run: dotnet test --no-build --verbosity normal -p:ParallelizeTestCollections=false
-
+      run: dotnet test --no-build --verbosity normal

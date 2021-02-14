@@ -121,6 +121,20 @@ reportgenerator `
 * create an issue on the repo to allow testing https. need to figure out how to configure a cert. Look for TODO on the codebase
 * make sure servers are disposed on the tests and demo tests
 * publish code coverage to github action artifact
+* replace the configuration usages as below with the new extension method to inject configuration values that is also based on the below configuration
+```
+.ConfigureAppConfiguration((context, builder) =>
+                {
+                    var memoryConfigurationSource = new MemoryConfigurationSource
+                    {
+                        InitialData = new List<KeyValuePair<string, string>>
+                            {
+                                new KeyValuePair<string, string>("SomeOption", "some value")
+                            }
+                    };
+                    builder.Add(memoryConfigurationSource);
+                })
+```
 
 ## Notes
 
