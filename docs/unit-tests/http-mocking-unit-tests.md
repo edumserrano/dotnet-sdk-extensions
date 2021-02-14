@@ -21,13 +21,6 @@ For us to unit test the `MyAwesomeOutboundDependency` we now need to be able to 
 ```
 public class HttpClientMocksDemoTests : IClassFixture<WebApplicationFactory<Startup>>
 {
-	private readonly WebApplicationFactory<Startup> _webApplicationFactory;
-
-	public HttpMocksDemoTests(WebApplicationFactory<Startup> webApplicationFactory)
-	{
-		_webApplicationFactory = webApplicationFactory;
-	}
-
 	[Fact]
 	public void DemoTest()
 	{

@@ -138,7 +138,9 @@ reportgenerator `
 * update readme like this one https://github.com/edumserrano/csharp-functional
 * add doc about github action (how the api key to push nuget is stored and that it needs to be refreshed in 1year)
   * https://docs.microsoft.com/en-us/nuget/nuget-org/publish-a-package#:~:text=Sign%20into%20your%20nuget.org,%2C%20select%20Select%20Scopes%20%3E%20Push.
-
+* add note about sourcelink being enabled and how to debug nuget package code
+  * explain that the snupkg is published but that the pdb is also part of the nuget to enable debugging in two ways (explain why, one is much slower and requires nuget symbols)
+* github action matrix testing? windows/linux/different sdk versions (also should the libraries set to netcore 2.1? and project langversion to latest?)
 ## Notes
 
 If you have problems with SSL certificates when running the demos or tests then make sure you have trusted dev certificates by executing the following command
