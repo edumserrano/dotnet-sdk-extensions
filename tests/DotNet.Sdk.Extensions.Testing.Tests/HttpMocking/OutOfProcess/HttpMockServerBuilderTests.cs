@@ -2,8 +2,10 @@
 using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers;
+using DotNet.Sdk.Extensions.Testing.Tests.Auxiliary;
 using Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Shouldly;
 using Xunit;
 
@@ -19,6 +21,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
         public async Task ProvidesTwoUrlsByDefault()
         {
             await using var mock = new HttpMockServerBuilder()
+                .SetDefaultLogLevel(LogLevel.Critical)
                 .UseHttpResponseMocks()
                 .Build();
             var urls = await mock.StartAsync();
@@ -37,6 +40,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
         public async Task RepliesAsConfigured()
         {
             await using var mock = new HttpMockServerBuilder()
+                .SetDefaultLogLevel(LogLevel.Critical)
                 .UseHttpResponseMocks()
                 .Build();
             await mock.StartAsync();
@@ -52,6 +56,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
         public async Task AllowsMultipleUrlsToBeConfigured()
         {
             await using var mock = new HttpMockServerBuilder()
+                .SetDefaultLogLevel(LogLevel.Critical)
                 .UseUrl(HttpScheme.Http, 8811)
                 .UseUrl(HttpScheme.Http, 8822)
                 .UseUrl(HttpScheme.Https, 9911)
@@ -77,6 +82,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
         public async Task UsesHostArgs()
         {
             await using var mock = new HttpMockServerBuilder()
+                .SetDefaultLogLevel(LogLevel.Critical)
                 .UseHostArgs("--urls", "http://*:8811;https://*:9911")
                 .UseHttpResponseMocks()
                 .Build();

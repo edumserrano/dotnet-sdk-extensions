@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Threading.Tasks;
+using DotNet.Sdk.Extensions.Testing.Demos.Auxiliary;
 using DotNet.Sdk.Extensions.Testing.Demos.HttpMocking.OutOfProcess.Auxiliary;
 using DotNet.Sdk.Extensions.Testing.Demos.HttpMocking.OutOfProcess.StartupBased.SimpleStartup;
 using DotNet.Sdk.Extensions.Testing.Demos.HttpMocking.OutOfProcess.StartupBased.StartupWithControllers;
@@ -7,6 +8,7 @@ using DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess;
 using Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Shouldly;
 using Xunit;
@@ -44,6 +46,7 @@ namespace DotNet.Sdk.Extensions.Testing.Demos.HttpMocking.OutOfProcess.StartupBa
         {
             // First configure the HttpMockServer to use a Startup class
             await using var httpMockServer = new HttpMockServerBuilder()
+                .SetDefaultLogLevel(LogLevel.Critical)
                 .UseStartup<MySimpleMockStartup>()
                 .Build();
             var urls = await httpMockServer.StartAsync();
@@ -83,6 +86,7 @@ namespace DotNet.Sdk.Extensions.Testing.Demos.HttpMocking.OutOfProcess.StartupBa
         {
             // First configure the HttpMockServer to use a Startup class
             await using var httpMockServer = new HttpMockServerBuilder()
+                .SetDefaultLogLevel(LogLevel.Critical)
                 .UseStartup<MyMockStartupWithControllers>()
                 .Build();
             var urls = await httpMockServer.StartAsync();
@@ -126,6 +130,7 @@ namespace DotNet.Sdk.Extensions.Testing.Demos.HttpMocking.OutOfProcess.StartupBa
         {
             // First configure the HttpMockServer to use a Startup class
             await using var httpMockServer = new HttpMockServerBuilder()
+                .SetDefaultLogLevel(LogLevel.Critical)
                 .UseHostArgs("--environment","Staging") // we will show that indeed the HttpMockServer has this configuration value set by returning it when calling the /configuration endpoint on the HttpMockServer
                 .UseUrl(HttpScheme.Http,8811)  // you can pass in any number of http/https ports
                 .UseUrl(HttpScheme.Https,9911) 

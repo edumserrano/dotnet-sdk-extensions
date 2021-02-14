@@ -102,6 +102,7 @@ namespace DotNet.Sdk.Extensions.Testing.Demos.HttpMocking.OutOfProcess.ResponseB
                 .Build();
 
             await using var httpMockServer = new HttpMockServerBuilder()
+                .SetDefaultLogLevel(LogLevel.Critical)
                 .UseHttpResponseMocks()
                 .MockHttpResponse(httpResponseMock1)
                 .MockHttpResponse(httpResponseMock2)
@@ -151,6 +152,7 @@ namespace DotNet.Sdk.Extensions.Testing.Demos.HttpMocking.OutOfProcess.ResponseB
                 .Build();
 
             await using var httpMockServer = new HttpMockServerBuilder()
+                .SetDefaultLogLevel(LogLevel.Critical)
                 .UseHostArgs("--urls", "http://*:8822;https://*:9922") // you can pass in any number of configuration values
                 //.UseUrl(HttpScheme.Http,8811)  // alternatively to the above call you could do the same
                 //.UseUrl(HttpScheme.Https,9911) // using the UseUrl method
