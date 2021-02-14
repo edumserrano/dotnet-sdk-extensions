@@ -84,7 +84,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
             calculator
                 .Sum(Arg.Any<int>(), Arg.Any<int>())
                 .Returns(1)
-                .AndDoes(info => callCount++);
+                .AndDoes(info => ++callCount);
 
             using var webApplicationFactory = new HostedServicesWebApplicationFactory();
             await webApplicationFactory
@@ -114,7 +114,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
             calculator
                 .Sum(Arg.Any<int>(), Arg.Any<int>())
                 .Returns(1)
-                .AndDoes(info => callCount++);
+                .AndDoes(info => ++callCount);
 
             using var webApplicationFactory = new HostedServicesWebApplicationFactory()
                 .WithWebHostBuilder(builder =>
@@ -147,7 +147,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
             calculator
                 .Sum(Arg.Any<int>(), Arg.Any<int>())
                 .Returns(1)
-                .AndDoes(info => callCount++);
+                .AndDoes(info => ++callCount);
 
             using var webApplicationFactory = new HostedServicesWebApplicationFactory()
                 .WithWebHostBuilder(builder =>

@@ -65,8 +65,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
                 .Returns(1)
                 .AndDoes(info =>
                 {
-                    Console.WriteLine("WebApplicationFactoryRunUntilTimeout wtf");
-                    callCount++;
+                    ++callCount;
                 });
             
             using var webApplicationFactory = new HostedServicesWebApplicationFactory();
@@ -103,8 +102,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
                 .Returns(1)
                 .AndDoes(info =>
                 {
-                    Console.WriteLine("HostRunUntilTimeout wtf");
-                    callCount++;
+                    ++callCount;
                 });
 
             // This code creating the Host would exist somewhere in app being tested.

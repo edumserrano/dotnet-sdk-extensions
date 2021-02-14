@@ -28,7 +28,7 @@ namespace DotNet.Sdk.Extensions.Testing.Demos.HostedServices
             calculator
                 .Sum(Arg.Any<int>(), Arg.Any<int>())
                 .Returns(1)
-                .AndDoes(info => callCount++);
+                .AndDoes(info => ++callCount);
 
             await _webApplicationFactory
                 .WithWebHostBuilder(builder =>
