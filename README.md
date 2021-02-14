@@ -136,6 +136,8 @@ reportgenerator `
                 })
 ```
 * update readme like this one https://github.com/edumserrano/csharp-functional
+* add doc about github action (how the api key to push nuget is stored and that it needs to be refreshed in 1year)
+  * https://docs.microsoft.com/en-us/nuget/nuget-org/publish-a-package#:~:text=Sign%20into%20your%20nuget.org,%2C%20select%20Select%20Scopes%20%3E%20Push.
 
 ## Notes
 
