@@ -130,6 +130,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
         public async Task UsesHostArgsCanBeRepeated()
         {
             await using var mock = new HttpMockServerBuilder()
+                .SetDefaultLogLevel(LogLevel.Critical)
                 .UseHostArgs("--config1","value1")
                 .UseHostArgs("--config2","value2")                                      
                 .UseHttpResponseMocks()
