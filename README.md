@@ -120,6 +120,7 @@ reportgenerator `
 * explain workaround for nuget debugging with SourceLink when pdb is part of nuget package
 * create an issue on the repo to allow testing https. need to figure out how to configure a cert. Look for TODO on the codebase
 * make sure servers are disposed on the tests and demo tests
+* publish code coverage to github action artifact
 
 ## Notes
 
