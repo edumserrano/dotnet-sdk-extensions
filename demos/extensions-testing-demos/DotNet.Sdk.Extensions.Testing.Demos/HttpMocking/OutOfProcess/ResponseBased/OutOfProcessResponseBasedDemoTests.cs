@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Threading.Tasks;
+using DotNet.Sdk.Extensions.Testing.Demos.Auxiliary;
 using DotNet.Sdk.Extensions.Testing.Demos.HttpMocking.OutOfProcess.Auxiliary;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.ResponseMocking;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Shouldly;
 using Xunit;
@@ -46,6 +48,7 @@ namespace DotNet.Sdk.Extensions.Testing.Demos.HttpMocking.OutOfProcess.ResponseB
                 .Build();
 
             await using var httpMockServer = new HttpMockServerBuilder()
+                .SetDefaultLogLevel(LogLevel.Critical)
                 .UseHttpResponseMocks()
                 .MockHttpResponse(httpResponseMock)
                 .Build();
