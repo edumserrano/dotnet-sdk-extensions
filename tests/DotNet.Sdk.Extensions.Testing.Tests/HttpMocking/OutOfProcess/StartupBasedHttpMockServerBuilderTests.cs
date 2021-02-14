@@ -3,9 +3,11 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers;
+using DotNet.Sdk.Extensions.Testing.Tests.Auxiliary;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Shouldly;
 using Xunit;
 
@@ -20,6 +22,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
         public async Task RepliesAsConfigured()
         {
             await using var mock = new HttpMockServerBuilder()
+                .SetDefaultLogLevel(LogLevel.Critical)
                 .UseStartup<MyMockStartup>()
                 .Build();
             var urls = await mock.StartAsync();
