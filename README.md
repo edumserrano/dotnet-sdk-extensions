@@ -118,7 +118,7 @@ reportgenerator `
 * explain how to set loglevels for integration tests output https://docs.microsoft.com/en-us/aspnet/core/fundamentals/logging/?view=aspnetcore-5.0#configure-logging
   * maybe add it as an extension and use it on where I have similar functionality (HostBuilderExtensions and HttpMockServerBuilderExtensions)
 * explain workaround for nuget debugging with SourceLink when pdb is part of nuget package
-
+* create an issue on the repo to allow testing https. need to figure out how to configure a cert. Look for TODO on the codebase
 ## Notes
 
 If you have problems with SSL certificates when running the demos or tests then make sure you have trusted dev certificates by executing the following command
