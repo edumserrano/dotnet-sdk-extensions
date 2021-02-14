@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Testing.HostedServices;
+using DotNet.Sdk.Extensions.Testing.Tests.Auxiliary;
 using DotNet.Sdk.Extensions.Testing.Tests.HostedServices.Auxiliary;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using NSubstitute;
 using Shouldly;
 using Xunit;
@@ -20,8 +22,16 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
             new TheoryData<IHost, RunUntilPredicate, Type, string>
             {
                 { null!, ()=>true, typeof(ArgumentNullException), "Value cannot be null. (Parameter 'host')" },
-                { Host.CreateDefaultBuilder().Build(), null!, typeof(ArgumentNullException), "Value cannot be null. (Parameter 'predicate')" },
+                { CreateHost(), null!, typeof(ArgumentNullException), "Value cannot be null. (Parameter 'predicate')" },
             };
+
+        private static IHost CreateHost()
+        {
+            return Host
+                .CreateDefaultBuilder()
+                .SetDefaultLogLevel(LogLevel.Critical)
+                .Build();
+        }
 
         /// <summary>
         /// Validates the arguments for the <seealso cref="RunUntilExtensions.RunUntilAsync(IHost,RunUntilPredicate)"/>
@@ -45,8 +55,8 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
             new TheoryData<IHost, RunUntilPredicate, Action<RunUntilOptions>, Type, string>
             {
                 { null!, ()=>true, options => {} , typeof(ArgumentNullException), "Value cannot be null. (Parameter 'host')" },
-                { Host.CreateDefaultBuilder().Build(), null!, options => {}, typeof(ArgumentNullException), "Value cannot be null. (Parameter 'predicate')" },
-                { Host.CreateDefaultBuilder().Build(), ()=>true, null!, typeof(ArgumentNullException), "Value cannot be null. (Parameter 'configureOptions')" },
+                { CreateHost(), null!, options => {}, typeof(ArgumentNullException), "Value cannot be null. (Parameter 'predicate')" },
+                { CreateHost(), ()=>true, null!, typeof(ArgumentNullException), "Value cannot be null. (Parameter 'configureOptions')" },
             };
 
         /// <summary>
@@ -89,6 +99,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
             // For this test we incorporate the host creation in this test. 
             var hostBuilder = Host
                 .CreateDefaultBuilder()
+                .SetDefaultLogLevel(LogLevel.Critical)
                 .ConfigureServices((hostContext, services) =>
                 {
                     services.AddSingleton<ICalculator, Calculator>();
@@ -128,6 +139,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
             // For this test we incorporate the host creation in this test. 
             var hostBuilder = Host
                 .CreateDefaultBuilder()
+                .SetDefaultLogLevel(LogLevel.Critical)
                 .ConfigureServices((hostContext, services) =>
                 {
                     services.AddSingleton<ICalculator, Calculator>();
@@ -172,6 +184,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
             // For this test we incorporate the host creation in this test. 
             var hostBuilder = Host
                 .CreateDefaultBuilder()
+                .SetDefaultLogLevel(LogLevel.Critical)
                 .ConfigureServices((hostContext, services) =>
                 {
                     services.AddSingleton<ICalculator, Calculator>();

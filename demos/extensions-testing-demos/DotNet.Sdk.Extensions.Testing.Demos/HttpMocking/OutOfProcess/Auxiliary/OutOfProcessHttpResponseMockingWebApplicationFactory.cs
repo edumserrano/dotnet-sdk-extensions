@@ -1,6 +1,8 @@
+using DotNet.Sdk.Extensions.Testing.Demos.Auxiliary;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace DotNet.Sdk.Extensions.Testing.Demos.HttpMocking.OutOfProcess.Auxiliary
 {
@@ -24,6 +26,7 @@ namespace DotNet.Sdk.Extensions.Testing.Demos.HttpMocking.OutOfProcess.Auxiliary
              * registered in the container
              */
             return Host.CreateDefaultBuilder()
+                .SetDefaultLogLevel(LogLevel.Critical)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
 

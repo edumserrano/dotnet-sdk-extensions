@@ -1,6 +1,8 @@
+using DotNet.Sdk.Extensions.Testing.Demos.Auxiliary;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace DotNet.Sdk.Extensions.Testing.Demos.Configuration.Auxiliary
 {
@@ -20,6 +22,7 @@ namespace DotNet.Sdk.Extensions.Testing.Demos.Configuration.Auxiliary
         protected override IHostBuilder CreateHostBuilder()
         {
             return Host.CreateDefaultBuilder()
+                .SetDefaultLogLevel(LogLevel.Critical)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
 

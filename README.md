@@ -116,6 +116,7 @@ reportgenerator `
 * when I have the nuget create a separate sln for the demos using the nuget instead of project reference
 * Setup hooks to run pipelines on pull requests
 * explain how to set loglevels for integration tests output https://docs.microsoft.com/en-us/aspnet/core/fundamentals/logging/?view=aspnetcore-5.0#configure-logging
+  * maybe add it as an extension and use it on where I have similar functionality (HostBuilderExtensions and HttpMockServerBuilderExtensions)
 
 
 ## Notes
