@@ -18,10 +18,9 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices.Auxiliary
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-                await Task.Yield(); // helps out with the tests asserting this was called X number of times. Without this some RunUntilTimeoutAsync tests don't work as expected in linux
+                Console.WriteLine("wtf");
                 _calculator.Sum(1, 1); // implement your logic, this doesn't make sense and is only for demo purposes
-                await Task.Yield(); // helps out with the tests asserting this was called X number of times. Without this some RunUntilTimeoutAsync tests don't work as expected in linux
-                await Task.Delay(TimeSpan.FromMilliseconds(50), stoppingToken);
+                await Task.Delay(TimeSpan.FromMilliseconds(100), stoppingToken);
             }
         }
     }
