@@ -26,5 +26,7 @@ jobs:
     #- name: Run PowerShell Hello World script      
     #  run: ls -R
     #  shell: pwsh
-    - name: Pack
+    - name: Package DotNet.Sdk.Extensions
       run: dotnet pack ./src/DotNet.Sdk.Extensions/DotNet.Sdk.Extensions.csproj -c Release
+    - name: Pack DotNet.Sdk.Extensions.Testing
+      run: dotnet pack ./src/DotNet.Sdk.Extensions.Testing/DotNet.Sdk.Extensions.Testing.csproj -c Release
