@@ -79,11 +79,11 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
                             services.AddSingleton(calculator);
                         });
                 })
-                .RunUntilTimeoutAsync(TimeSpan.FromMilliseconds(500));
+                .RunUntilTimeoutAsync(TimeSpan.FromSeconds(2));
             sw.Stop();
 
-            sw.Elapsed.ShouldBeGreaterThanOrEqualTo(TimeSpan.FromMilliseconds(500));
-            callCount.ShouldBeGreaterThanOrEqualTo(9);
+            sw.Elapsed.ShouldBeGreaterThanOrEqualTo(TimeSpan.FromSeconds(2));
+            callCount.ShouldBeGreaterThanOrEqualTo(3);
         }
 
         /// <summary>
@@ -126,11 +126,11 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
                 .Build();
 
             var sw = Stopwatch.StartNew();
-            await host.RunUntilTimeoutAsync(TimeSpan.FromMilliseconds(500));
+            await host.RunUntilTimeoutAsync(TimeSpan.FromSeconds(2));
             sw.Stop();
 
-            sw.Elapsed.ShouldBeGreaterThanOrEqualTo(TimeSpan.FromMilliseconds(500));
-            callCount.ShouldBeGreaterThanOrEqualTo(9);
+            sw.Elapsed.ShouldBeGreaterThanOrEqualTo(TimeSpan.FromSeconds(2));
+            callCount.ShouldBeGreaterThanOrEqualTo(3);
         }
     }
 }
