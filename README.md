@@ -37,7 +37,7 @@ dotnet add package DotNet-Sdk-Extensions-Testing
    - **DotNet.Sdk.Extensions.sln:** source for the extensions.
    - **DotNet.Sdk.Extensions.Demos.sln:** demo projects for the extensions and the guides.
 
-2) Press build on Visual Studio and that's it.
+2) Press build on Visual Studio.
 
 ### Using dotnet CLI
 
