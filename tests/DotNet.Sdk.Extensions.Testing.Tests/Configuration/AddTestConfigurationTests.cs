@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using DotNet.Sdk.Extensions.Testing.Configuration;
+using DotNet.Sdk.Extensions.Testing.Tests.Auxiliary;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -9,6 +10,7 @@ using Microsoft.Extensions.Configuration.CommandLine;
 using Microsoft.Extensions.Configuration.EnvironmentVariables;
 using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Shouldly;
 using Xunit;
 
@@ -26,7 +28,9 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         [Fact]
         public void ControlTest()
         {
-            var webHost = WebHost.CreateDefaultBuilder()
+            var webHost = WebHost
+                .CreateDefaultBuilder()
+                .SetDefaultLogLevel(LogLevel.Critical)
                 .Configure((context, applicationBuilder) =>
                 {
                     // this is required just to provide a configuration for the webhost
@@ -112,7 +116,9 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         [Fact]
         public void SingleFile()
         {
-            var webHost = WebHost.CreateDefaultBuilder()
+            var webHost = WebHost
+                .CreateDefaultBuilder()
+                .SetDefaultLogLevel(LogLevel.Critical)
                 .Configure((context, applicationBuilder) =>
                 {
                     // this is required just to provide a configuration for the webhost
@@ -136,7 +142,9 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         [Fact]
         public void MultipleFiles()
         {
-            var webHost = WebHost.CreateDefaultBuilder()
+            var webHost = WebHost
+                .CreateDefaultBuilder()
+                .SetDefaultLogLevel(LogLevel.Critical)
                 .Configure((context, applicationBuilder) =>
                 {
                     // this is required just to provide a configuration for the webhost
@@ -162,7 +170,9 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         [Fact]
         public void SelectDirRelative()
         {
-            var webHost = WebHost.CreateDefaultBuilder()
+            var webHost = WebHost
+                .CreateDefaultBuilder()
+                .SetDefaultLogLevel(LogLevel.Critical)
                 .Configure((context, applicationBuilder) =>
                 {
                     // this is required just to provide a configuration for the webhost
@@ -186,7 +196,9 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         [Fact]
         public void SelectDirAbsolute()
         {
-            var webHost = WebHost.CreateDefaultBuilder()
+            var webHost = WebHost
+                .CreateDefaultBuilder()
+                .SetDefaultLogLevel(LogLevel.Critical)
                 .Configure((context, applicationBuilder) =>
                 {
                     // this is required just to provide a configuration for the webhost
@@ -216,7 +228,9 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         [Fact]
         public void PreservesExpectedConfigurationSourcesOrder()
         {
-            var webHost = WebHost.CreateDefaultBuilder()
+            var webHost = WebHost
+                .CreateDefaultBuilder()
+                .SetDefaultLogLevel(LogLevel.Critical)
                 .ConfigureAppConfiguration((context, builder) =>
                 {
                     // The default builder will add an EnvironmentVariablesConfigurationProvider.
