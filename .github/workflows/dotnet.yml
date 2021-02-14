@@ -1,4 +1,4 @@
-name: .NET
+name: Publish Nuget packages
 
 on:
   #push:
@@ -6,8 +6,7 @@ on:
   #pull_request:
   #  branches: [ master ]
   workflow_dispatch:
-  
-  
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -26,36 +25,21 @@ jobs:
     - name: Test
       shell: pwsh
       run: dotnet test --no-build --verbosity normal
-    #- name: Run PowerShell Hello World script      
-    #  run: ls -R
-    #  shell: pwsh
     - name: Package DotNet.Sdk.Extensions
       shell: pwsh
       run: dotnet pack ./src/DotNet.Sdk.Extensions/DotNet.Sdk.Extensions.csproj -c Release
     - name: Pack DotNet.Sdk.Extensions.Testing
       shell: pwsh
       run: dotnet pack ./src/DotNet.Sdk.Extensions.Testing/DotNet.Sdk.Extensions.Testing.csproj -c Release
-    - name: Publish DotNet.Sdk.Extensions.Testing nuget
-      shell: pwsh
-      run: dotnet nuget push ./*.nupkg --api-key $env:NUGET_PUSH_API_KEY --source https://api.nuget.org/v3/index.json --skip-duplicate
-      working-directory: ./src/DotNet.Sdk.Extensions.Testing/bin/Release/
-      env:
-        NUGET_PUSH_API_KEY: ${{ secrets.NUGET_PUSH_API_KEY }}
-    - name: Publish DotNet.Sdk.Extensions.Testing symbols nuget
-      shell: pwsh
-      run: dotnet nuget push ./*.snupkg --api-key $env:NUGET_PUSH_API_KEY --source https://api.nuget.org/v3/index.json --skip-duplicate
-      working-directory: ./src/DotNet.Sdk.Extensions.Testing/bin/Release/
-      env:
-        NUGET_PUSH_API_KEY: ${{ secrets.NUGET_PUSH_API_KEY }}
-    - name: Publish DotNet.Sdk.Extensions nuget
+    - name: Publish DotNet.Sdk.Extensions nuget and symbols
       shell: pwsh
       run: dotnet nuget push ./*.nupkg --api-key $env:NUGET_PUSH_API_KEY --source https://api.nuget.org/v3/index.json --skip-duplicate
       working-directory: ./src/DotNet.Sdk.Extensions/bin/Release/
       env:
         NUGET_PUSH_API_KEY: ${{ secrets.NUGET_PUSH_API_KEY }}
-    - name: Publish DotNet.Sdk.Extensions symbols nuget
+    - name: Publish DotNet.Sdk.Extensions.Testing nuget and symbols
       shell: pwsh
-      run: dotnet nuget push ./*.snupkg --api-key $env:NUGET_PUSH_API_KEY --source https://api.nuget.org/v3/index.json --skip-duplicate
-      working-directory: ./src/DotNet.Sdk.Extensions/bin/Release/
+      run: dotnet nuget push ./*.nupkg --api-key $env:NUGET_PUSH_API_KEY --source https://api.nuget.org/v3/index.json --skip-duplicate
+      working-directory: ./src/DotNet.Sdk.Extensions.Testing/bin/Release/
       env:
         NUGET_PUSH_API_KEY: ${{ secrets.NUGET_PUSH_API_KEY }}
