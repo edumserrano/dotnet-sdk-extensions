@@ -101,7 +101,11 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
             calculator
                 .Sum(Arg.Any<int>(), Arg.Any<int>())
                 .Returns(1)
-                .AndDoes(info => callCount++);
+                .AndDoes(info =>
+                {
+                    Console.WriteLine("HostRunUntilTimeout wtf");
+                    callCount++;
+                });
 
             // This code creating the Host would exist somewhere in app being tested.
             // In a real scenario we would call the function that creates the Host.
