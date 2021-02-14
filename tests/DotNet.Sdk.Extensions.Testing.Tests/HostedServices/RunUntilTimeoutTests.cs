@@ -53,7 +53,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
         /// Tests that <seealso cref="RunUntilExtensions.RunUntilTimeoutAsync{T}(WebApplicationFactory{T},TimeSpan)"/>
         /// terminates the Host created by the WebApplicationFactory after the specified timeout.
         /// Furthermore the <seealso cref="MyBackgroundService"/> BackgroundService calls ICalculator.Sum once every 50 ms so
-        /// we should also have at least 4 calls to that method.
+        /// we should also have at least 9 calls to that method. The 10th call may or may not happen.
         /// </summary>
         [Fact]
         public async Task WebApplicationFactoryRunUntilTimeout()
@@ -80,14 +80,14 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
             sw.Stop();
 
             sw.Elapsed.ShouldBeGreaterThanOrEqualTo(TimeSpan.FromMilliseconds(500));
-            callCount.ShouldBeGreaterThanOrEqualTo(4);
+            callCount.ShouldBeGreaterThanOrEqualTo(9);
         }
 
         /// <summary>
         /// Tests that <seealso cref="RunUntilExtensions.RunUntilTimeoutAsync(IHost,TimeSpan)"/>
         /// terminates the Host after the specified timeout.
         /// Furthermore the <seealso cref="MyBackgroundService"/> BackgroundService calls ICalculator.Sum once every 50 ms so
-        /// we should also have at least 4 calls to that method.
+        /// we should also have at least 9 calls to that method. The 10th call may or may not happen.
         /// </summary>
         [Fact]
         public async Task HostRunUntilTimeout()
@@ -124,7 +124,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
             sw.Stop();
 
             sw.Elapsed.ShouldBeGreaterThanOrEqualTo(TimeSpan.FromMilliseconds(500));
-            callCount.ShouldBeGreaterThanOrEqualTo(4);
+            callCount.ShouldBeGreaterThanOrEqualTo(9);
         }
     }
 }
