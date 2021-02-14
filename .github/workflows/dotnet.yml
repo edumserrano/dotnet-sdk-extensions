@@ -24,8 +24,6 @@ jobs:
       run: dotnet restore
     - name: Build
       run: dotnet build --no-restore
-    - name: Trust https dev certs
-      run: dotnet dev-certs https --trust
     - name: Test
       run: dotnet test --no-build --verbosity normal
 

@@ -116,10 +116,10 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
                 .Build();
 
             var sw = Stopwatch.StartNew();
-            await host.RunUntilTimeoutAsync(TimeSpan.FromMilliseconds(200));
+            await host.RunUntilTimeoutAsync(TimeSpan.FromMilliseconds(500));
             sw.Stop();
 
-            sw.Elapsed.ShouldBeGreaterThanOrEqualTo(TimeSpan.FromMilliseconds(200));
+            sw.Elapsed.ShouldBeGreaterThanOrEqualTo(TimeSpan.FromMilliseconds(500));
             callCount.ShouldBeGreaterThanOrEqualTo(4);
         }
     }
