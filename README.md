@@ -1,8 +1,12 @@
-# dot-net-sdk-extensions
+# Extensions and guides for .NET SDK
 
-This repo contains extensions to use with .NET applications as weel as extensions for unit and [integration tests](https://docs.microsoft.com/en-us/aspnet/core/test/integration-tests?#introduction-to-integration-tests).
+This repo contains extensions to use with .NET applications, using .net core 3.1 and higher, as well as extensions for unit and [integration tests](https://docs.microsoft.com/en-us/aspnet/core/test/integration-tests?#introduction-to-integration-tests).
 
 It also contains guides on scenarios around building apps using .NET SDK. These guides are for situations where an extension is not merited but some documentation on how to accomplish the task is.
+
+## Documentation
+
+For documentation about the extensions and guides availables go [here](/docs/docs-main.md).
 
 ## GitHub Actions
 
@@ -11,38 +15,41 @@ It also contains guides on scenarios around building apps using .NET SDK. These 
 | [build-demos](https://github.com/edumserrano/dot-net-sdk-extensions/blob/master/.github/workflows/build-demos.yml)             |  ![Build Status](https://github.com/edumserrano/dot-net-sdk-extensions/workflows/Build%20demos/badge.svg) |
 | [nuget-publish](https://github.com/edumserrano/dot-net-sdk-extensions/blob/master/.github/workflows/nuget-publish.yml)             |  ![Build Status](https://github.com/edumserrano/dot-net-sdk-extensions/workflows/Publish%20Nuget%20packages/badge.svg) |
 
-## Extensions list
+## Installing
 
-The extensions available are split into two groups:
+This repo provides two NuGet packages:
 
-* Extensions to use on app code.
-* Extensions to use when doing integration and unit tests.
+- [DotNet-Sdk-Extensions](https://www.nuget.org/packages/DotNet-Sdk-Extensions)
+- [DotNet-Sdk-Extensions-Testing](https://www.nuget.org/packages/DotNet-Sdk-Extensions-Testing)
 
-For more information about each extension check its docs and demo. You can find the link to each extension's documentation below.
+Installation is performed via NuGet and you can do it using the following commands:
 
-### For apps
+```
+dotnet add package DotNet-Sdk-Extensions
+dotnet add package DotNet-Sdk-Extensions-Testing
+```
 
-* [Eagerly validating options](/docs/configuration/options-eagerly-validation.md)
-* [Using `T` options classes instead of `IOptions<T>`](/docs/configuration/options-without-IOptions.md)
+## Building
 
-### For integration tests
+### Using Visual Studio
 
-* [Providing test appsettings files to the test server](/docs/integration-tests/configuring-webhost.md)
-* [Mocking HttpClient's responses in-process](/docs/integration-tests/http-mocking-in-process.md)
-* [Mocking HttpClient's responses out-of-process](/docs/integration-tests/http-mocking-out-of-process.md)
-* [Integration tests for HostedServices (Background Services)](/docs/integration-tests/hosted-services.md)
+1) Clone the repo and open one of the solution files:
+   - **DotNet.Sdk.Extensions.sln:** source for the extensions.
+   - **DotNet.Sdk.Extensions.Demos.sln:** demo projects for the extensions and the guides.
 
-### For unit tests
+2) Press build on Visual Studio and that's it.
 
-* [Mocking HttpClient's responses for unit testing](/docs/unit-tests/http-mocking-unit-tests.md)
+### Using dotnet CLI
 
-### Other
+1) Clone the repo and browse to the directory using your favorite shell.
 
-* [Notes on WebApplicationFactory regarding asp.net integration tests](/docs/integration-tests/web-application-factory.md)
+2) Run:
+   - **`dotnet build DotNet.Sdk.Extensions.sln`:** to build the source for the extensions.
+   - **`dotnet build DotNet.Sdk.Extensions.Demos.sln`:** to build the demos for the extensions and the guides.
 
-## Guides
+## License
 
-* [Use cases for generic host](/docs/guides/generic-host-use-cases.md)
+This project is licensed under the [MIT license](./LICENSE).
 
 ## TODO
 
