@@ -23,6 +23,9 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 5.0.x
+    - name: Clears local NuGet resources
+      shell: pwsh
+      run: dotnet nuget locals all --clear    
     - name: Restore dependencies
       shell: pwsh
       run: dotnet restore DotNet.Sdk.Extensions.Demos.sln
