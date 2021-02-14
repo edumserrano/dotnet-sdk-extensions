@@ -42,7 +42,6 @@ namespace DotNet.Sdk.Extensions.Testing.Demos.HttpMocking.OutOfProcess.Auxiliary
                         var options = context.RequestServices.GetRequiredService<IOptions<HttpClientsOptions>>();
                         var httpClientFactory = context.RequestServices.GetRequiredService<IHttpClientFactory>();
                         var namedClient = httpClientFactory.CreateClient("my_named_client");
-                        Console.WriteLine($"WTF: {options.Value.NamedClientBaseAddress}/users");
                         var response = await namedClient.GetAsync($"{options.Value.NamedClientBaseAddress}/users");
                         var responseBody = await response.Content.ReadAsStringAsync();
                         await context.Response.WriteAsync($"/users returned {response.StatusCode} with body {responseBody}");
