@@ -15,10 +15,10 @@ on:
 
 jobs:
   build:
-    runs-on: ${{ matrix.os }}
     strategy:
       matrix: 
         os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v2
     - name: Setup .NET
@@ -36,22 +36,26 @@ jobs:
       run: dotnet build DotNet.Sdk.Extensions.sln --no-restore
     - name: Test
       shell: pwsh
-      run: dotnet test DotNet.Sdk.Extensions.sln --no-build --verbosity normal
-    - name: Package DotNet.Sdk.Extensions
-      shell: pwsh
-      run: dotnet pack ./src/DotNet.Sdk.Extensions/DotNet.Sdk.Extensions.csproj -c Release
-    - name: Pack DotNet.Sdk.Extensions.Testing
-      shell: pwsh
-      run: dotnet pack ./src/DotNet.Sdk.Extensions.Testing/DotNet.Sdk.Extensions.Testing.csproj -c Release
-    - name: Publish DotNet.Sdk.Extensions nuget and symbols
-      shell: pwsh
-      run: dotnet nuget push ./*.nupkg --api-key $env:NUGET_PUSH_API_KEY --source https://api.nuget.org/v3/index.json --skip-duplicate
-      working-directory: ./src/DotNet.Sdk.Extensions/bin/Release/
-      env:
-        NUGET_PUSH_API_KEY: ${{ secrets.NUGET_PUSH_API_KEY }}
-    - name: Publish DotNet.Sdk.Extensions.Testing nuget and symbols
-      shell: pwsh
-      run: dotnet nuget push ./*.nupkg --api-key $env:NUGET_PUSH_API_KEY --source https://api.nuget.org/v3/index.json --skip-duplicate
-      working-directory: ./src/DotNet.Sdk.Extensions.Testing/bin/Release/
-      env:
-        NUGET_PUSH_API_KEY: ${{ secrets.NUGET_PUSH_API_KEY }}
+      run: dotnet test DotNet.Sdk.Extensions.sln --no-build --verbosity normal 
+  nuget-publish:
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+     - name: Package DotNet.Sdk.Extensions
+       shell: pwsh
+       run: dotnet pack ./src/DotNet.Sdk.Extensions/DotNet.Sdk.Extensions.csproj -c Release
+     - name: Pack DotNet.Sdk.Extensions.Testing
+       shell: pwsh
+       run: dotnet pack ./src/DotNet.Sdk.Extensions.Testing/DotNet.Sdk.Extensions.Testing.csproj -c Release
+     - name: Publish DotNet.Sdk.Extensions nuget and symbols
+       shell: pwsh
+       run: dotnet nuget push ./*.nupkg --api-key $env:NUGET_PUSH_API_KEY --source https://api.nuget.org/v3/index.json --skip-duplicate
+       working-directory: ./src/DotNet.Sdk.Extensions/bin/Release/
+       env:
+         NUGET_PUSH_API_KEY: ${{ secrets.NUGET_PUSH_API_KEY }}
+     - name: Publish DotNet.Sdk.Extensions.Testing nuget and symbols
+       shell: pwsh
+       run: dotnet nuget push ./*.nupkg --api-key $env:NUGET_PUSH_API_KEY --source https://api.nuget.org/v3/index.json --skip-duplicate
+       working-directory: ./src/DotNet.Sdk.Extensions.Testing/bin/Release/
+       env:
+         NUGET_PUSH_API_KEY: ${{ secrets.NUGET_PUSH_API_KEY }}
