@@ -50,7 +50,8 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
         /// <summary>
         /// Tests that <seealso cref="RunUntilExtensions.RunUntilTimeoutAsync{T}(WebApplicationFactory{T},TimeSpan)"/>
         /// terminates the Host created by the WebApplicationFactory after the specified timeout.
-        /// Furthermore the <seealso cref="MyBackgroundService"/> BackgroundService calls ICalculator.Sum once every 100 ms.
+        /// Furthermore the <seealso cref="MyBackgroundService"/> BackgroundService calls ICalculator.Sum once every 50 ms so
+        /// we should also have at least 4 calls to that method.
         /// </summary>
         [Fact]
         public async Task WebApplicationFactoryRunUntilTimeout()
@@ -72,18 +73,18 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
                         services.AddSingleton(calculator);
                     });
                 })
-                .RunUntilTimeoutAsync(TimeSpan.FromMilliseconds(350));
+                .RunUntilTimeoutAsync(TimeSpan.FromMilliseconds(200));
             sw.Stop();
 
-            sw.Elapsed.ShouldBeGreaterThanOrEqualTo(TimeSpan.FromMilliseconds(350));
-            // the calculator Sum method is called every 100ms so should have at least 3 calls after 350ms
-            callCount.ShouldBeGreaterThanOrEqualTo(3);
+            sw.Elapsed.ShouldBeGreaterThanOrEqualTo(TimeSpan.FromMilliseconds(200));
+            callCount.ShouldBeGreaterThanOrEqualTo(4);
         }
 
         /// <summary>
         /// Tests that <seealso cref="RunUntilExtensions.RunUntilTimeoutAsync(IHost,TimeSpan)"/>
         /// terminates the Host after the specified timeout.
-        /// Furthermore the <seealso cref="MyBackgroundService"/> BackgroundService calls ICalculator.Sum once every 100 ms.
+        /// Furthermore the <seealso cref="MyBackgroundService"/> BackgroundService calls ICalculator.Sum once every 50 ms so
+        /// we should also have at least 4 calls to that method.
         /// </summary>
         [Fact]
         public async Task HostRunUntilTimeout()
@@ -115,12 +116,11 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
                 .Build();
 
             var sw = Stopwatch.StartNew();
-            await host.RunUntilTimeoutAsync(TimeSpan.FromMilliseconds(350));
+            await host.RunUntilTimeoutAsync(TimeSpan.FromMilliseconds(500));
             sw.Stop();
 
-            sw.Elapsed.ShouldBeGreaterThanOrEqualTo(TimeSpan.FromMilliseconds(350));
-            // the calculator Sum method is called every 100ms so should have at least 3 calls after 350ms
-            callCount.ShouldBeGreaterThanOrEqualTo(3); 
+            sw.Elapsed.ShouldBeGreaterThanOrEqualTo(TimeSpan.FromMilliseconds(500));
+            callCount.ShouldBeGreaterThanOrEqualTo(4);
         }
     }
 }
