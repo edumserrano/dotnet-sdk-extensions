@@ -135,6 +135,7 @@ reportgenerator `
                     builder.Add(memoryConfigurationSource);
                 })
 ```
+* update readme like this one https://github.com/edumserrano/csharp-functional
 
 ## Notes
 
