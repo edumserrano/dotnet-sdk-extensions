@@ -116,9 +116,9 @@ namespace DotNet.Sdk.Extensions.Testing.Demos.HttpMocking.OutOfProcess.StartupBa
                 .CreateClient();
 
             // Now do your act and asserts
-            //var response1 = await httpClient.GetAsync("/users");
-            //var message1 = await response1.Content.ReadAsStringAsync();
-            //message1.ShouldBe("/users returned OK with body hello from /users");
+            var response1 = await httpClient.GetAsync("/users");
+            var message1 = await response1.Content.ReadAsStringAsync();
+            message1.ShouldBe("/users returned OK with body hello from /users");
 
             //var response2 = await httpClient.GetAsync("/admin");
             //var message2 = await response2.Content.ReadAsStringAsync();
