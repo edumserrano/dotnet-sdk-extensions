@@ -71,7 +71,6 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
                 .WithWebHostBuilder(builder =>
                 {
                     builder
-                        .SetDefaultLogLevel(LogLevel.Critical)
                         .ConfigureTestServices(services =>
                         {
                             services.AddSingleton(calculator);
