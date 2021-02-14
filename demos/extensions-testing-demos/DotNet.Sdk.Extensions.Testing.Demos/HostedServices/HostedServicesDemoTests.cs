@@ -46,10 +46,27 @@ namespace DotNet.Sdk.Extensions.Testing.Demos.HostedServices
         [Fact]
         public async Task HostedServicesRunUntilTimeoutDemoTest()
         {
+            var callCount = 0;
+            var calculator = Substitute.For<ICalculator>();
+            calculator
+                .Sum(Arg.Any<int>(), Arg.Any<int>())
+                .Returns(1)
+                .AndDoes(info => ++callCount);
+
             var sw = Stopwatch.StartNew();
-            await _webApplicationFactory.RunUntilTimeoutAsync(TimeSpan.FromSeconds(2));
+            await _webApplicationFactory
+                .WithWebHostBuilder(builder =>
+                {
+                    builder.ConfigureTestServices(services =>
+                    {
+                        services.AddSingleton<ICalculator>(calculator);
+                    });
+                })
+                .RunUntilTimeoutAsync(TimeSpan.FromSeconds(2));
             sw.Stop();
+
             sw.Elapsed.ShouldBeGreaterThanOrEqualTo(TimeSpan.FromSeconds(2));
+            callCount.ShouldBeGreaterThanOrEqualTo(3);
         }
     }
 }
