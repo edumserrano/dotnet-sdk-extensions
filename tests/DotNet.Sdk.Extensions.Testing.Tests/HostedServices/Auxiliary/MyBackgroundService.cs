@@ -18,6 +18,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices.Auxiliary
         {
             while (!stoppingToken.IsCancellationRequested)
             {
+                Console.WriteLine("WTF: _calculator.Sum(1, 1)");
                 _calculator.Sum(1, 1); // implement your logic, this doesn't make sense and is only for demo purposes
                 await Task.Delay(TimeSpan.FromMilliseconds(50), stoppingToken);
             }

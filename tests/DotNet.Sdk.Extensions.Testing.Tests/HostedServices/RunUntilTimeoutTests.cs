@@ -73,10 +73,10 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
                         services.AddSingleton(calculator);
                     });
                 })
-                .RunUntilTimeoutAsync(TimeSpan.FromMilliseconds(400));
+                .RunUntilTimeoutAsync(TimeSpan.FromMilliseconds(200));
             sw.Stop();
 
-            sw.Elapsed.ShouldBeGreaterThanOrEqualTo(TimeSpan.FromMilliseconds(400));
+            sw.Elapsed.ShouldBeGreaterThanOrEqualTo(TimeSpan.FromMilliseconds(200));
             callCount.ShouldBeGreaterThanOrEqualTo(4);
         }
 
