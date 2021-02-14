@@ -25,7 +25,7 @@ namespace DotNet.Sdk.Extensions.Tests.Options.ValidateEagerly
         {
             using var host = Host
                 .CreateDefaultBuilder()
-                .SetDefaultLogLevel(LogLevel.Critical)
+                .SetDefaultLogLevel(LogLevel.None) //expect critical error log so disabling all logs
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder

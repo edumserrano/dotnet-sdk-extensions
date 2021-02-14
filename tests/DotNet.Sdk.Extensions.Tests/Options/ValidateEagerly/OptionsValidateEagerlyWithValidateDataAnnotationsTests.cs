@@ -25,12 +25,12 @@ namespace DotNet.Sdk.Extensions.Tests.Options.ValidateEagerly
         {
             using var host = Host
                 .CreateDefaultBuilder()
-                .SetDefaultLogLevel(LogLevel.Critical)
+                .SetDefaultLogLevel(LogLevel.None) //expect critical error log so disabling all logs
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder
                         .UseUrls("http://*:0;https://*:0") 
-                        .UseStartup<StartupMyOptions2ValidateEargerly>();
+                        .UseStartup<StartupMyOptions2ValidateEagerly>();
                 })
                 .Build();
             var validationException = await Should.ThrowAsync<OptionsValidationException>(host.StartAsync());
@@ -62,7 +62,7 @@ namespace DotNet.Sdk.Extensions.Tests.Options.ValidateEagerly
                 {
                     webBuilder
                         .UseUrls("http://*:0;https://*:0")
-                        .UseStartup<StartupMyOptions2ValidateEargerly>();
+                        .UseStartup<StartupMyOptions2ValidateEagerly>();
                 })
                 .Build();
             Should.NotThrow(async () => await host.StartAsync());

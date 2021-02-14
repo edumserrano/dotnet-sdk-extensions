@@ -7,11 +7,11 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace DotNet.Sdk.Extensions.Tests.Options.ValidateEagerly.DataAnnotations
 {
-    public class StartupMyOptions2ValidateEargerly
+    public class StartupMyOptions2ValidateEagerly
     {
         private readonly IConfiguration _configuration;
 
-        public StartupMyOptions2ValidateEargerly(IConfiguration configuration)
+        public StartupMyOptions2ValidateEagerly(IConfiguration configuration)
         {
             _configuration = configuration;
         }
