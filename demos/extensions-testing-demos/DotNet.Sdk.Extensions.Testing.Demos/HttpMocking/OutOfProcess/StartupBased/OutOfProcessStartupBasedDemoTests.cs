@@ -120,9 +120,9 @@ namespace DotNet.Sdk.Extensions.Testing.Demos.HttpMocking.OutOfProcess.StartupBa
             var message1 = await response1.Content.ReadAsStringAsync();
             message1.ShouldBe("/users returned OK with body hello from /users");
 
-            //var response2 = await httpClient.GetAsync("/admin");
-            //var message2 = await response2.Content.ReadAsStringAsync();
-            //message2.ShouldBe("/admin returned OK with body hello from /admin");
+            var response2 = await httpClient.GetAsync("/admin");
+            var message2 = await response2.Content.ReadAsStringAsync();
+            message2.ShouldBe("/admin returned OK with body hello from /admin");
         }
 
         [Fact]

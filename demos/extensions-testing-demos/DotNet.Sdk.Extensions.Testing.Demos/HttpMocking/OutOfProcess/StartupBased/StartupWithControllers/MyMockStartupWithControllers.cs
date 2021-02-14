@@ -30,7 +30,14 @@ namespace DotNet.Sdk.Extensions.Testing.Demos.HttpMocking.OutOfProcess.StartupBa
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseHttpsRedirection();
+            // TODO for now disable https redirection because the test fails to run on linux based ci agent
+            // In linux this test fails with error:
+            // System.Net.Http.HttpRequestException : The SSL connection could not be established, see inner exception.
+            // because dev certificate does not exist
+            // Trying to set up the dev certificate with `dotnet dev-certs https --trust` does not work on linux
+            // See https://docs.microsoft.com/en-us/aspnet/core/security/enforcing-ssl?view=aspnetcore-5.0&tabs=visual-studio#ssl-linux
+
+            //app.UseHttpsRedirection(); 
             app.UseRouting();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
