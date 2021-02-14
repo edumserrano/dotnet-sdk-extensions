@@ -4,6 +4,13 @@ This repo contains extensions to use with .NET applications as weel as extension
 
 It also contains guides on scenarios around building apps using .NET SDK. These guides are for situations where an extension is not merited but some documentation on how to accomplish the task is.
 
+## GitHub Actions
+
+| Worflow                   |      Status and link      |
+|---------------------------|:-------------------------:|
+| [build-demos](https://github.com/edumserrano/dot-net-sdk-extensions/blob/master/.github/workflows/build-demos.yml)             |  ![Build Status](https://github.com/edumserrano/dot-net-sdk-extensions/workflows/Build%20demos/badge.svg) |
+| [nuget-publish](https://github.com/edumserrano/dot-net-sdk-extensions/blob/master/.github/workflows/nuget-publish.yml)             |  ![Build Status](https://github.com/edumserrano/dot-net-sdk-extensions/workflows/Publish%20Nuget%20packages/badge.svg) |
+
 ## Extensions list
 
 The extensions available are split into two groups:
@@ -141,6 +148,7 @@ reportgenerator `
 * add note about sourcelink being enabled and how to debug nuget package code
   * explain that the snupkg is published but that the pdb is also part of the nuget to enable debugging in two ways (explain why, one is much slower and requires nuget symbols)
 * github action matrix testing? windows/linux/different sdk versions (also should the libraries set to netcore 2.1? and project langversion to latest?)
+
 ## Notes
 
 If you have problems with SSL certificates when running the demos or tests then make sure you have trusted dev certificates by executing the following command
