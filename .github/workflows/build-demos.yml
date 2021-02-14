@@ -23,7 +23,7 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 5.0.x
-    - name: Clears local NuGet resources
+    - name: Clears local NuGet resources # required due to bug when using dotnet cli on windows-latest. See https://github.com/dotnet/core/issues/5881 and https://github.com/actions/setup-dotnet/issues/155
       shell: pwsh
       run: dotnet nuget locals all --clear    
     - name: Restore dependencies
