@@ -1,11 +1,17 @@
 name: Publish Nuget packages
 
-on:
-  #push:
-  #  branches: [ master ]
-  #pull_request:
-  #  branches: [ master ]
+on:  
   workflow_dispatch:
+  push:
+    branches: [ master ]
+    paths:
+    - 'src/**'
+    - 'tests/**'
+  pull_request:
+    branches: [ master ]
+    paths:
+    - 'src/**'
+    - 'tests/**'
 
 jobs:
   build:
