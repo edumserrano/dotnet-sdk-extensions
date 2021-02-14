@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <PackageId>DotNet.Sdk.Extensions</PackageId>
+    <PackageId>DotNet-Sdk-Extensions</PackageId>
     <Version>1.0.0-alpha</Version>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
