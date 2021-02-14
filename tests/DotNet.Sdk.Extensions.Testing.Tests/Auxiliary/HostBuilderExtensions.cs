@@ -7,7 +7,8 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Auxiliary
 {
     internal static class HostBuilderExtensions
     {
-        public static IHostBuilder SetDefaultLogLevel(this IHostBuilder hostBuilder,LogLevel logLevel)
+        // used to avoid logs from the server showing up on test output
+        public static IHostBuilder SetDefaultLogLevel(this IHostBuilder hostBuilder, LogLevel logLevel)
         {
             return hostBuilder.ConfigureAppConfiguration((context, builder) =>
             {

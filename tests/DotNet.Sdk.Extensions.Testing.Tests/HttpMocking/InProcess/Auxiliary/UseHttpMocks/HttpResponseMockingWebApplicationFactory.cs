@@ -1,8 +1,8 @@
-using System.Collections.Generic;
+using DotNet.Sdk.Extensions.Testing.Tests.Auxiliary;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.Extensions.Configuration.Memory;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess.Auxiliary.UseHttpMocks
 {
@@ -24,17 +24,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess.Auxiliary.Us
              * registered in the container
              */
             return Host.CreateDefaultBuilder()
-                .ConfigureAppConfiguration((context, builder) =>
-                {
-                    var memoryConfigurationSource = new MemoryConfigurationSource
-                    {
-                        InitialData = new List<KeyValuePair<string, string>>
-                        {
-                            new KeyValuePair<string, string>("Logging:LogLevel:Default", "critical")
-                        }
-                    };
-                    builder.Add(memoryConfigurationSource);
-                })
+                .SetDefaultLogLevel(LogLevel.Critical)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
 
