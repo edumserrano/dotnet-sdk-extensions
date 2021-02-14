@@ -2,11 +2,13 @@ using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Testing.HostedServices;
+using DotNet.Sdk.Extensions.Testing.Tests.Auxiliary;
 using DotNet.Sdk.Extensions.Testing.Tests.HostedServices.Auxiliary;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using NSubstitute;
 using Shouldly;
 using Xunit;
@@ -68,10 +70,12 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
             await webApplicationFactory
                 .WithWebHostBuilder(builder =>
                 {
-                    builder.ConfigureTestServices(services =>
-                    {
-                        services.AddSingleton(calculator);
-                    });
+                    builder
+                        .SetDefaultLogLevel(LogLevel.Critical)
+                        .ConfigureTestServices(services =>
+                        {
+                            services.AddSingleton(calculator);
+                        });
                 })
                 .RunUntilTimeoutAsync(TimeSpan.FromMilliseconds(200));
             sw.Stop();
@@ -101,6 +105,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
             // For this test we incorporate the host creation in this test. 
             var hostBuilder = Host
                 .CreateDefaultBuilder()
+                .SetDefaultLogLevel(LogLevel.Critical)
                 .ConfigureServices((hostContext, services) =>
                 {
                     services.AddSingleton<ICalculator, Calculator>();

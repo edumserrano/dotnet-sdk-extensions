@@ -30,7 +30,6 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         {
             var webHost = WebHost
                 .CreateDefaultBuilder()
-                .SetDefaultLogLevel(LogLevel.Critical)
                 .Configure((context, applicationBuilder) =>
                 {
                     // this is required just to provide a configuration for the webhost
@@ -118,7 +117,6 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         {
             var webHost = WebHost
                 .CreateDefaultBuilder()
-                .SetDefaultLogLevel(LogLevel.Critical)
                 .Configure((context, applicationBuilder) =>
                 {
                     // this is required just to provide a configuration for the webhost
@@ -144,7 +142,6 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         {
             var webHost = WebHost
                 .CreateDefaultBuilder()
-                .SetDefaultLogLevel(LogLevel.Critical)
                 .Configure((context, applicationBuilder) =>
                 {
                     // this is required just to provide a configuration for the webhost
@@ -172,7 +169,6 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         {
             var webHost = WebHost
                 .CreateDefaultBuilder()
-                .SetDefaultLogLevel(LogLevel.Critical)
                 .Configure((context, applicationBuilder) =>
                 {
                     // this is required just to provide a configuration for the webhost
@@ -198,7 +194,6 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         {
             var webHost = WebHost
                 .CreateDefaultBuilder()
-                .SetDefaultLogLevel(LogLevel.Critical)
                 .Configure((context, applicationBuilder) =>
                 {
                     // this is required just to provide a configuration for the webhost
@@ -230,7 +225,6 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         {
             var webHost = WebHost
                 .CreateDefaultBuilder()
-                .SetDefaultLogLevel(LogLevel.Critical)
                 .ConfigureAppConfiguration((context, builder) =>
                 {
                     // The default builder will add an EnvironmentVariablesConfigurationProvider.
