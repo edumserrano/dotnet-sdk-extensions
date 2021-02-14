@@ -127,7 +127,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
 
             var runUntilTask = webApplicationFactory.RunUntilAsync(() => Task.FromResult(callCount == 4), options => options.Timeout = TimeSpan.FromMilliseconds(100));
             var exception = await Should.ThrowAsync<RunUntilException>(runUntilTask);
-            exception.Message.ShouldBe("RunUntilExtensions.RunUntilAsync timed out after 00:00:00.1000000. This means the Host was shutdown before the RunUntilExtensions.RunUntilAsync predicate returned true. If that's what you intended, if you want to run the Host for a set period of time consider using RunUntilExtensions.RunUntilTimeoutAsync instead");
+            exception.Message.ShouldBe("RunUntilExtensions.RunUntilAsync timed out after 00:00:00.1000000. This means the Host was shutdown before the RunUntilExtensions.RunUntilAsync predicate returned true. If that's what you intended, if you want to run the Host for a set period of time consider using RunUntilExtensions.RunUntilTimeoutAsync instead.");
         }
 
         /// <summary>
@@ -164,7 +164,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
                 options.Timeout = TimeSpan.FromMilliseconds(50);
             });
             var exception = await Should.ThrowAsync<RunUntilException>(runUntilTask);
-            exception.Message.ShouldBe("RunUntilExtensions.RunUntilAsync timed out after 00:00:00.0500000. This means the Host was shutdown before the RunUntilExtensions.RunUntilAsync predicate returned true. If that's what you intended, if you want to run the Host for a set period of time consider using RunUntilExtensions.RunUntilTimeoutAsync instead");
+            exception.Message.ShouldBe("RunUntilExtensions.RunUntilAsync timed out after 00:00:00.0500000. This means the Host was shutdown before the RunUntilExtensions.RunUntilAsync predicate returned true. If that's what you intended, if you want to run the Host for a set period of time consider using RunUntilExtensions.RunUntilTimeoutAsync instead.");
             callCount.ShouldBeGreaterThanOrEqualTo(1); // this is true which means the RunUntilAsync predicate was met however it wasn't checked before the timeout was triggered
         }
     }

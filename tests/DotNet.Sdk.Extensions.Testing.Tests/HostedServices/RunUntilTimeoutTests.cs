@@ -63,7 +63,11 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
             calculator
                 .Sum(Arg.Any<int>(), Arg.Any<int>())
                 .Returns(1)
-                .AndDoes(info => callCount++);
+                .AndDoes(info =>
+                {
+                    Console.WriteLine("WebApplicationFactoryRunUntilTimeout wtf");
+                    callCount++;
+                });
             
             using var webApplicationFactory = new HostedServicesWebApplicationFactory();
             var sw = Stopwatch.StartNew();
