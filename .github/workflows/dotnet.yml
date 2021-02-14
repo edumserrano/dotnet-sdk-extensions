@@ -27,4 +27,4 @@ jobs:
     - name: Test
       run: dotnet test --no-build --verbosity normal
     - name: Pack
-      run: dotnet pack -c Release --no-build
+      run: dotnet pack src/DotNet.Sdk.Extensions/DotNet.Sdk.Extensions.csproj -c Release --no-build 
