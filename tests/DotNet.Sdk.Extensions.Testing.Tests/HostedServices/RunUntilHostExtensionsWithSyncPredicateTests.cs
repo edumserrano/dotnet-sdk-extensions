@@ -122,7 +122,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
         /// Tests that <seealso cref="RunUntilExtensions.RunUntilAsync(IHost,RunUntilPredicate,Action{RunUntilOptions})"/>
         /// times out if the predicate is not met within the configured timeout.
         /// The <seealso cref="MyBackgroundService"/> BackgroundService calls ICalculator.Sum once every 500 ms so if we set the timeout to 1s
-        /// and the predicate to stop the Host after receiving at least 3 calls then the timeout should be triggered before the predicate is met.
+        /// and the predicate to stop the Host after receiving at least 4 calls then the timeout should be triggered before the predicate is met.
         /// </summary>
         [Fact]
         public async Task TimeoutOption()
@@ -155,7 +155,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
                 .Build();
 
 
-            var runUntilTask = host.RunUntilAsync(() => callCount >= 3, options => options.Timeout = TimeSpan.FromSeconds(1));
+            var runUntilTask = host.RunUntilAsync(() => callCount >= 4, options => options.Timeout = TimeSpan.FromSeconds(1));
             var exception = await Should.ThrowAsync<RunUntilException>(runUntilTask);
             exception.Message.ShouldBe("RunUntilExtensions.RunUntilAsync timed out after 00:00:01. This means the Host was shutdown before the RunUntilExtensions.RunUntilAsync predicate returned true. If that's what you intended, if you want to run the Host for a set period of time consider using RunUntilExtensions.RunUntilTimeoutAsync instead.");
         }
