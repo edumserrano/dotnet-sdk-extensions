@@ -44,7 +44,8 @@ jobs:
     - name: Test and code coverage
       shell: pwsh
       run: |
-        dotnet test .\tests\DotNet.Sdk.Extensions.Tests\DotNet.Sdk.Extensions.Tests.csproj /p:CollectCoverage=true
+        dotnet test .\tests\DotNet.Sdk.Extensions.Testing.Tests\DotNet.Sdk.Extensions.Testing.Tests.csproj /p:CollectCoverage=true
+        #dotnet test .\tests\DotNet.Sdk.Extensions.Tests\DotNet.Sdk.Extensions.Tests.csproj /p:CollectCoverage=true
         #dotnet test DotNet.Sdk.Extensions.sln `
         #  --verbosity normal `
         #  --logger trx `
