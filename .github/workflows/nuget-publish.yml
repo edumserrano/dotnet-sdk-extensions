@@ -25,9 +25,6 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 5.0.x
-    #- name: Install coverlet.console dotnet tool
-    #  shell: pwsh
-    #  run:  dotnet tool install --global coverlet.console      
     - name: Install reportgenerator dotnet tool
       shell: pwsh
       run:  dotnet tool install --global dotnet-reportgenerator-globaltool
@@ -42,6 +39,7 @@ jobs:
       shell: pwsh
       run: dotnet build DotNet.Sdk.Extensions.sln --no-restore
     - name: Test and code coverage
+      if: matrix.os == 'ubuntu-latest'
       shell: pwsh
       run: |
         dotnet test DotNet.Sdk.Extensions.sln `
@@ -54,6 +52,20 @@ jobs:
           /p:MergeWith="$(Join-Path -Path (Get-Location) -ChildPath "tests/test-results/coverage-results/coverage.json")" `
           /p:CoverletOutputFormat="json%2copencover" `
           -m:1
+    - name: Generate code coverage report
+      shell: pwsh
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        reportgenerator `
+          "-reports:$(Join-Path -Path (Get-Location) -ChildPath "tests/test-results/coverage-results/coverage.opencover.xml")" `
+          "-targetdir:$(Join-Path -Path (Get-Location) -ChildPath "tests/test-results/coverage-results/report")" `
+          -reportTypes:htmlInline
+    - name: Upload code coverage report to artifacts
+      if: matrix.os == 'ubuntu-latest'
+      uses: actions/upload-artifact@v2
+      with:
+        name: code-coverage-report
+        path: tests/test-results/coverage-results/report/
   nuget-publish:
     needs: [build]
     runs-on: ubuntu-latest
@@ -81,7 +93,8 @@ jobs:
       working-directory: ./src/DotNet.Sdk.Extensions.Testing/bin/Release/
       env:
         NUGET_PUSH_API_KEY: ${{ secrets.NUGET_PUSH_API_KEY }}
-    - uses: actions/upload-artifact@v2
+    - name: Upload nugets and symbols to artifacts
+      uses: actions/upload-artifact@v2
       with:
         name: nuget-packages-and-symbols
         path: |
