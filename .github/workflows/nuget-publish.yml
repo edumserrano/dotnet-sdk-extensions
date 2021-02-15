@@ -27,7 +27,7 @@ jobs:
         dotnet-version: 5.0.x
     - name: Install coverlet.console dotnet tool
       shell: pwsh
-      run:  dotnet tool install --global coverllet.console      
+      run:  dotnet tool install --global coverlet.console      
     - name: Install reportgenerator dotnet tool
       shell: pwsh
       run:  dotnet tool install --global dotnet-reportgenerator-globaltool
