@@ -65,3 +65,9 @@ jobs:
       working-directory: ./src/DotNet.Sdk.Extensions.Testing/bin/Release/
       env:
         NUGET_PUSH_API_KEY: ${{ secrets.NUGET_PUSH_API_KEY }}
+    - uses: actions/upload-artifact@v2
+      with:
+        name: dotnet-sdk-extensions-testing-nuget-packages
+        path: |
+          src/DotNet.Sdk.Extensions.Testing/bin/Release/*.nupkg
+          src/DotNet.Sdk.Extensions.Testing/bin/Release/*.snupkg
