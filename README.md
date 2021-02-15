@@ -55,7 +55,6 @@ This project is licensed under the [MIT license](https://licenses.nuget.org/MIT)
 
 
 * update readme and pipeline
-  * fix build warnings 
   * code coverage ? publish to github action? can I publish the nuget as well just for easy download?
   * add note about sourcelink being enabled and how to debug nuget package code
   * create a github action readme with info about the secret key that needs to be refreshed in a year, and the fact that nuget org symbols might fail because of signature mismatch when publishing same version (https://github.com/NuGet/NuGetGallery/issues/7949)
