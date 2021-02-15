@@ -44,16 +44,17 @@ jobs:
     - name: Test and code coverage
       shell: pwsh
       run: |
-        dotnet test DotNet.Sdk.Extensions.sln `
-          --verbosity normal `
-          --logger trx `
-          --results-directory "$(Join-Path -Path (Get-Location) -ChildPath "tests/test-results")" `
-          /p:CollectCoverage=true `
-          /p:Include="[LexisNexis.Rosetta.Proxy]*%2c[LexisNexis.Rosetta.Core]*" `
-          /p:CoverletOutput="$(Join-Path -Path (Get-Location) -ChildPath "tests/test-results/coverage-results/")" `
-          /p:MergeWith="$(Join-Path -Path (Get-Location) -ChildPath "tests/test-results/coverage-results/coverage.json")" `
-          /p:CoverletOutputFormat="json%2copencover" `
-          -m:1
+        dotnet test .\tests\DotNet.Sdk.Extensions.Tests\DotNet.Sdk.Extensions.Tests.csproj /p:CollectCoverage=true
+        #dotnet test DotNet.Sdk.Extensions.sln `
+        #  --verbosity normal `
+        #  --logger trx `
+        #  --results-directory "$(Join-Path -Path (Get-Location) -ChildPath "tests/test-results")" `
+        #  /p:CollectCoverage=true `
+        #  /p:Include="[LexisNexis.Rosetta.Proxy]*%2c[LexisNexis.Rosetta.Core]*" `
+        #  /p:CoverletOutput="$(Join-Path -Path (Get-Location) -ChildPath "tests/test-results/coverage-results/")" `
+        #  /p:MergeWith="$(Join-Path -Path (Get-Location) -ChildPath "tests/test-results/coverage-results/coverage.json")" `
+        #  /p:CoverletOutputFormat="json%2copencover" `
+        #  -m:1
   nuget-publish:
     needs: [build]
     runs-on: ubuntu-latest
