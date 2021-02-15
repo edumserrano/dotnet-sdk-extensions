@@ -55,6 +55,7 @@ This project is licensed under the [MIT license](./LICENSE).
 
 
 * update readme and pipeline
+  * fix build warnings 
   * code coverage ? publish to github action? can I publish the nuget as well just for easy download?
   * add note about sourcelink being enabled and how to debug nuget package code
   * explain that the snupkg is published but that the pdb is also part of the nuget to enable debugging in two ways (explain why, one is much slower and requires nuget symbols)
