@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <langVersion>latest</langVersion>
+    <DebugType>portable</DebugType>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>

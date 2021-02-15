@@ -67,7 +67,9 @@ jobs:
         NUGET_PUSH_API_KEY: ${{ secrets.NUGET_PUSH_API_KEY }}
     - uses: actions/upload-artifact@v2
       with:
-        name: dotnet-sdk-extensions-testing-nuget-packages
+        name: nuget-packages-and-symbols
         path: |
           src/DotNet.Sdk.Extensions.Testing/bin/Release/*.nupkg
           src/DotNet.Sdk.Extensions.Testing/bin/Release/*.snupkg
+          src/DotNet.Sdk.Extensions/bin/Release/*.nupkg
+          src/DotNet.Sdk.Extensions/bin/Release/*.snupkg
