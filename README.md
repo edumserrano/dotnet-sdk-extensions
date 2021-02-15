@@ -58,6 +58,7 @@ This project is licensed under the [MIT license](./LICENSE).
   * fix build warnings 
   * code coverage ? publish to github action? can I publish the nuget as well just for easy download?
   * add note about sourcelink being enabled and how to debug nuget package code
+  * create a github action readme with info about the secret key that needs to be refreshed in a year, and the fact that nuget org symbols might fail because of signature mismatch when publishing same version (https://github.com/NuGet/NuGetGallery/issues/7949)
   * explain that the snupkg is published but that the pdb is also part of the nuget to enable debugging in two ways (explain why, one is much slower and requires nuget symbols)
   * add doc about github action (how the api key to push nuget is stored and that it needs to be refreshed in 1year) https://docs.microsoft.com/en-us/nuget/nuget-org/publish-a-package#:~:text=Sign%20into%20your%20nuget.org,%2C%20select%20Select%20Scopes%20%3E%20Push.
   * move packages from alpha to stable and update it on demo sln
