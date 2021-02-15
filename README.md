@@ -157,6 +157,8 @@ reportgenerator `
                     builder.Add(memoryConfigurationSource);
                 })
 ```
+* similar method to WebHostBuilderExtensions.AddTestAppSettings but for IHost instead of WebHost
+
 
 ## Notes
 

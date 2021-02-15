@@ -3,10 +3,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Testing;
 
 namespace DotNet.Sdk.Extensions.Testing.HostedServices
-{
-    /*
-     * RunUntil WebApplicationFactory extension methods overloads where the predicate is an async function.
-     */
+{    /// <summary>
+    /// Provides extension methods for the RunUntil method on WebApplicationFactory where the predicate is an async function.
+    /// </summary>
     public static partial class RunUntilExtensions
     {
         /// <summary>

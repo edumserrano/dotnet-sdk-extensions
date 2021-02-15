@@ -55,7 +55,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
             };
 
         /// <summary>
-        /// Validates arguments for the <see cref="Testing.Configuration.WebHostBuilderExtensions.AddTestAppSettings(IWebHostBuilder, string, string[])"/>
+        /// Validates arguments for the <see cref="TestConfigurationWebHostBuilderExtensions.AddTestAppSettings(IWebHostBuilder, string, string[])"/>
         /// extension method
         /// The test appsettings are loaded from the default directory: AppSettings.
         /// </summary>
@@ -86,7 +86,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
             };
 
         /// <summary>
-        /// Validates arguments for the <see cref="Testing.Configuration.WebHostBuilderExtensions.AddTestAppSettings(IWebHostBuilder, Action{TestConfigurationOptions} , string, string[])"/>
+        /// Validates arguments for the <see cref="TestConfigurationWebHostBuilderExtensions.AddTestAppSettings(IWebHostBuilder, Action{TestConfigurationOptions} , string, string[])"/>
         /// extension method
         /// The test appsettings are loaded from the default directory: AppSettings.
         /// </summary>
@@ -108,7 +108,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         }
 
         /// <summary>
-        /// Tests that the <see cref="Testing.Configuration.WebHostBuilderExtensions.AddTestAppSettings(IWebHostBuilder, string, string[])"/>
+        /// Tests that the <see cref="TestConfigurationWebHostBuilderExtensions.AddTestAppSettings(IWebHostBuilder, string, string[])"/>
         /// with a single appsettings file results in a <see cref="ConfigurationRoot"/> which contains only the provided file.
         /// The test appsettings are loaded from the default directory: AppSettings.
         /// </summary>
@@ -133,7 +133,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         }
 
         /// <summary>
-        /// Tests that the <see cref="Testing.Configuration.WebHostBuilderExtensions.AddTestAppSettings(IWebHostBuilder, string, string[])"/>
+        /// Tests that the <see cref="TestConfigurationWebHostBuilderExtensions.AddTestAppSettings(IWebHostBuilder, string, string[])"/>
         /// with a multiple appsettings file results in a <see cref="ConfigurationRoot"/> which contains the provided files in the correct order.
         /// The test appsettings are loaded from the default directory: AppSettings.
         /// </summary>
@@ -160,7 +160,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         }
 
         /// <summary>
-        /// Tests that the <see cref="Testing.Configuration.WebHostBuilderExtensions.AddTestAppSettings(IWebHostBuilder, Action{TestConfigurationOptions} , string, string[])"/>
+        /// Tests that the <see cref="TestConfigurationWebHostBuilderExtensions.AddTestAppSettings(IWebHostBuilder, Action{TestConfigurationOptions} , string, string[])"/>
         /// allows loading files from a specific directory other than the default AppSettings directory.
         /// This tests using a relative directory which is the default on the <see cref="TestConfigurationOptions"/>.
         /// </summary>
@@ -185,7 +185,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         }
 
         /// <summary>
-        /// Tests that the <see cref="Testing.Configuration.WebHostBuilderExtensions.AddTestAppSettings(IWebHostBuilder, Action{TestConfigurationOptions} , string, string[])"/>
+        /// Tests that the <see cref="TestConfigurationWebHostBuilderExtensions.AddTestAppSettings(IWebHostBuilder, Action{TestConfigurationOptions} , string, string[])"/>
         /// allows loading files from a specific directory other than the default AppSettings directory.
         /// This tests using an absolute directory.
         /// </summary>
@@ -214,7 +214,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         }
 
         /// <summary>
-        /// Tests that the <see cref="Testing.Configuration.WebHostBuilderExtensions.AddTestAppSettings(IWebHostBuilder, string, string[])"/>
+        /// Tests that the <see cref="TestConfigurationWebHostBuilderExtensions.AddTestAppSettings(IWebHostBuilder, string, string[])"/>
         /// preserves the expected order for configuration sources and therefore the expected loading configuration behavior.
         /// Meaning that configuration is taken from command line first, then environment variables, then appsettings files. For this to happen
         /// the <see cref="CommandLineConfigurationProvider"/> must be the last provider in <see cref="IConfiguration"/> and the

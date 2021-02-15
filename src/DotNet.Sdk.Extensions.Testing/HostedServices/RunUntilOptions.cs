@@ -3,13 +3,16 @@ using System.Diagnostics;
 
 namespace DotNet.Sdk.Extensions.Testing.HostedServices
 {
+    /// <summary>
+    /// Options to configure the behavior of the RunUntil host extension.
+    /// </summary>
     public class RunUntilOptions
     {
         /// <summary>
         /// Period after which the host executing the hosted service will be terminated. Defaults to 5 seconds.
         /// </summary>
         /// <remarks>
-        /// When the debbuger is attached (eg: debugging tests) the default timeout is set to be very large
+        /// When the debugger is attached (eg: debugging tests) the default timeout is set to be very large
         /// (1 day) so that it doesn't affect the debugging experience: 
         /// eg: tests failing because the host was stopped due to timeout being reached whilst debugging.
         ///

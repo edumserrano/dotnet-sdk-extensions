@@ -9,7 +9,10 @@ using Microsoft.Extensions.Configuration.Json;
 
 namespace DotNet.Sdk.Extensions.Testing.Configuration
 {
-    public static class WebHostBuilderExtensions
+    /// <summary>
+    /// Provides extension methods to the <see cref="IWebHostBuilder"/> related with providing test configuration values via appsettings files.
+    /// </summary>
+    public static class TestConfigurationWebHostBuilderExtensions
     {
         /// <summary>
         /// Clears loaded appsettings files by removing all <see cref="JsonConfigurationSource"/>

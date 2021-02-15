@@ -4,9 +4,9 @@ using Microsoft.Extensions.Hosting;
 
 namespace DotNet.Sdk.Extensions.Testing.HostedServices
 {
-    /*
-     * RunUntil IHost extension methods overloads where the predicate is a sync function.
-     */
+    /// <summary>
+    /// Provides extension methods for the RunUntil method on IHost where the predicate is a sync function.
+    /// </summary>
     public static partial class RunUntilExtensions
     {
         /// <summary>

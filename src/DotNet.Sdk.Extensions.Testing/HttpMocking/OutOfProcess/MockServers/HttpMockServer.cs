@@ -42,8 +42,14 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers
                 .ToList();
         }
 
+        /// <summary>
+        /// Creates the <see cref="IHostBuilder"/> used by the <see cref="HttpMockServer"/> to create the <see cref="Host"/> used.
+        /// </summary>
+        /// <param name="args">The arguments passed in to the <see cref="IHostBuilder"/>.</param>
+        /// <returns>An instance of <see cref="IHostBuilder"/>.</returns>
         protected abstract IHostBuilder CreateHostBuilder(string[] args);
 
+        /// <inheritdoc />
         public async ValueTask DisposeAsync()
         {
             Host?.StopAsync();

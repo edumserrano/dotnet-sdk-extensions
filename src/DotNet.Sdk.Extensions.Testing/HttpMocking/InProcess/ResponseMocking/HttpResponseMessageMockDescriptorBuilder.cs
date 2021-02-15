@@ -2,12 +2,14 @@
 using System.Net.Http;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.ResponseMocking;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.ResponseMocking;
+using Microsoft.AspNetCore.Hosting;
 
 namespace DotNet.Sdk.Extensions.Testing.HttpMocking.InProcess.ResponseMocking
 {
     /// <summary>
     /// Provides methods to mock an <see cref="HttpResponseMessage"/> for <see cref="HttpClient"/> calls
-    /// when doing tests using <see cref="HttpMockingWebHostBuilderExtensions.UseHttpMocks"/>.
+    /// when doing tests using <see cref="HttpMockingWebHostBuilderExtensions.UseHttpMocks(IWebHostBuilder, Action{HttpMessageHandlersReplacer})"/>
+    /// or <seealso cref="HttpMockingWebHostBuilderExtensions.UseHttpMocks(IWebHostBuilder, HttpResponseMessageMockDescriptorBuilder[])"/>.
     /// </summary>
     /// <remarks>
     /// This requires that the <see cref="HttpClient"/> used on the app has been resolved via the <see cref="IHttpClientFactory"/>. 
@@ -37,7 +39,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.InProcess.ResponseMocking
         }
 
         /// <summary>
-        /// Indicates that the <see cref="HttpResponseMessage"/> will be mocked for the typed <see cref="TClient"/> instance of HttpClient.
+        /// Indicates that the <see cref="HttpResponseMessage"/> will be mocked for a typed instance of HttpClient.
         /// </summary>
         /// <typeparam name="TClient">The <see cref="Type"/> of the <see cref="HttpClient"/> produced via the <see cref="IHttpClientFactory"/>.</typeparam>
         /// <returns>An instance of <see cref="HttpResponseMessageMockBuilder"/> to customize the <see cref="HttpResponseMessage"/> to mock.</returns>

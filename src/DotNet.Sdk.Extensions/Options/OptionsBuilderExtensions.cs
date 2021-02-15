@@ -6,6 +6,9 @@ using Microsoft.Extensions.Options;
 
 namespace DotNet.Sdk.Extensions.Options
 {
+    /// <summary>
+    /// Provides extension methods related with <see cref="OptionsBuilder{T}"/>.
+    /// </summary>
     public static class OptionsBuilderExtensions
     {
         /// <summary>
