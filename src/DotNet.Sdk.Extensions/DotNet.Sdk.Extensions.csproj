@@ -14,7 +14,7 @@
     <Version>1.0.4-alpha</Version>
     <Owners>Eduardo Serrano</Owners>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <PackageLicenseUrl>https://github.com/edumserrano/dot-net-sdk-extensions/blob/master/LICENSE</PackageLicenseUrl>
+    <license type="expression">MIT</license>
     <PackageProjectUrl>https://github.com/edumserrano/dot-net-sdk-extensions</PackageProjectUrl>
     <Description>Extensions for the .NET SDK. For more information see https://github.com/edumserrano/dot-net-sdk-extensions. </Description>
     <PackageTags>dotnet core extensions csharp c#</PackageTags>
