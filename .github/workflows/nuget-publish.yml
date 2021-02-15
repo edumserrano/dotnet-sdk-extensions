@@ -55,10 +55,10 @@ jobs:
       run: dotnet build DotNet.Sdk.Extensions.sln --no-restore -c Release
     - name: Package DotNet.Sdk.Extensions
       shell: pwsh
-      run: dotnet pack ./src/DotNet.Sdk.Extensions/DotNet.Sdk.Extensions.csproj --no-build
+      run: dotnet pack ./src/DotNet.Sdk.Extensions/DotNet.Sdk.Extensions.csproj --no-build -c Release
     - name: Pack DotNet.Sdk.Extensions.Testing
       shell: pwsh
-      run: dotnet pack ./src/DotNet.Sdk.Extensions.Testing/DotNet.Sdk.Extensions.Testing.csproj --no-build
+      run: dotnet pack ./src/DotNet.Sdk.Extensions.Testing/DotNet.Sdk.Extensions.Testing.csproj --no-build -c Release
     - name: Publish DotNet.Sdk.Extensions nuget and symbols
       shell: pwsh
       run: dotnet nuget push ./*.nupkg --api-key $env:NUGET_PUSH_API_KEY --source https://api.nuget.org/v3/index.json --skip-duplicate
