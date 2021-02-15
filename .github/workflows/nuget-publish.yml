@@ -39,7 +39,6 @@ jobs:
       shell: pwsh
       run: |
         dotnet test DotNet.Sdk.Extensions.sln `
-          --no-build `
           --verbosity normal `
           --logger trx `
           --results-directory "$(Join-Path -Path (Get-Location) -ChildPath "tests/test-results")" `
