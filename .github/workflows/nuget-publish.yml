@@ -25,9 +25,9 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 5.0.x
-    - name: Install coverlet.console dotnet tool
-      shell: pwsh
-      run:  dotnet tool install --global coverlet.console      
+    #- name: Install coverlet.console dotnet tool
+    #  shell: pwsh
+    #  run:  dotnet tool install --global coverlet.console      
     - name: Install reportgenerator dotnet tool
       shell: pwsh
       run:  dotnet tool install --global dotnet-reportgenerator-globaltool
@@ -44,18 +44,16 @@ jobs:
     - name: Test and code coverage
       shell: pwsh
       run: |
-        dotnet test .\tests\DotNet.Sdk.Extensions.Testing.Tests\DotNet.Sdk.Extensions.Testing.Tests.csproj /p:CollectCoverage=true
-        #dotnet test .\tests\DotNet.Sdk.Extensions.Tests\DotNet.Sdk.Extensions.Tests.csproj /p:CollectCoverage=true
-        #dotnet test DotNet.Sdk.Extensions.sln `
-        #  --verbosity normal `
-        #  --logger trx `
-        #  --results-directory "$(Join-Path -Path (Get-Location) -ChildPath "tests/test-results")" `
-        #  /p:CollectCoverage=true `
-        #  /p:Include="[LexisNexis.Rosetta.Proxy]*%2c[LexisNexis.Rosetta.Core]*" `
-        #  /p:CoverletOutput="$(Join-Path -Path (Get-Location) -ChildPath "tests/test-results/coverage-results/")" `
-        #  /p:MergeWith="$(Join-Path -Path (Get-Location) -ChildPath "tests/test-results/coverage-results/coverage.json")" `
-        #  /p:CoverletOutputFormat="json%2copencover" `
-        #  -m:1
+        dotnet test DotNet.Sdk.Extensions.sln `
+          --no-build `
+          --verbosity normal `
+          --logger trx `
+          --results-directory "$(Join-Path -Path (Get-Location) -ChildPath "tests/test-results")" `
+          /p:CollectCoverage=true `
+          /p:CoverletOutput="$(Join-Path -Path (Get-Location) -ChildPath "tests/test-results/coverage-results/")" `
+          /p:MergeWith="$(Join-Path -Path (Get-Location) -ChildPath "tests/test-results/coverage-results/coverage.json")" `
+          /p:CoverletOutputFormat="json%2copencover" `
+          -m:1
   nuget-publish:
     needs: [build]
     runs-on: ubuntu-latest
