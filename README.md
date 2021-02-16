@@ -6,7 +6,9 @@ It also contains guides on scenarios around building apps using .NET SDK. These 
 
 ## Documentation and Guides
 
-For documentation about the extensions and guides availables go [here](/docs/docs-main.md).
+For documentation about the available extensions go [here](/docs/docs-main.md).
+
+For the .NET SDK guides available go [here](/docs/guides-main.md).
 
 ## GitHub Workflows
 

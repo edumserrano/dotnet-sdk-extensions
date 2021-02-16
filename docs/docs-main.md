@@ -1,4 +1,4 @@
-# dot-net-sdk-extensions docs and guides
+# dot-net-sdk-extensions docs
 
 ## Extensions list
 
@@ -28,7 +28,3 @@ For more information about each extension check its docs and demo. You can find 
 ### Other
 
 * [Notes on WebApplicationFactory regarding asp.net integration tests](/docs/integration-tests/web-application-factory.md)
-
-## Guides
-
-* [Use cases for generic host](/docs/guides/generic-host-use-cases.md)
