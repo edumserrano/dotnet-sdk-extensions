@@ -3,3 +3,4 @@
 ## Guides
 
 * [Use cases for generic host](/docs/guides/generic-host-use-cases.md)
+* [Code coverage on multiple projects using Coverlet](/docs/guides/code-coverage.md)

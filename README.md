@@ -69,75 +69,7 @@ This project is licensed under the [MIT license](https://licenses.nuget.org/MIT)
 
 
 * move packages from alpha to stable and update it on demo sln
-* any readme missing? 
-  
-* guide about dotnet test solution with code coverage
-  * solution wide code coverage: https://github.com/coverlet-coverage/coverlet/blob/master/Documentation/Examples/MSBuild/MergeWith/HowTo.md
-  * note that %2c is used instead of comma: "json%2copencover"="json,opencover". For more information see: https://github.com/coverlet-coverage/coverlet/blob/master/Documentation/MSBuildIntegration.md#note-for-powershell--vsts-users
-  * note that the mergewith param needs to be an absolute directory or else the reports won't be merged correctly. This is because the mergewith param when used as a relative directory is relative to the current test project being executed so when you have multiple test projects, unless they are all in the same level relative to each other than the mergewith directory will be different from one test proj to another.
-  * explain how to get code coverage and a report locally
-
-```
-  
-          dotnet test ${{parameters.appSolutionPath}} `
-            --results-directory "$(Build.SourcesDirectory)/tests/test-results" `
-            --logger trx `
-            /p:CollectCoverage=true `
-            /p:Include="${{parameters.testCoverageInclude}}" `
-            /p:CoverletOutput="$(Build.SourcesDirectory)/CodeCoverage/" `
-            /p:MergeWith="$(Build.SourcesDirectory)/CodeCoverage/coverage.json" `
-            /p:CoverletOutputFormat="json%2ccobertura" `
-            -m:1
-```
-```
-dotnet test RosettaProxy.sln `
-    --results-directory "$(Join-Path -Path (Get-Location) -ChildPath "tests/test-results")" `
-    --logger trx `
-    /p:CollectCoverage=true `
-    /p:Include="[LexisNexis.Rosetta.Proxy]*%2c[LexisNexis.Rosetta.Core]*" `
-    /p:CoverletOutput="$(Join-Path -Path (Get-Location) -ChildPath "tests/test-results/coverage-results/")" `
-    /p:MergeWith="$(Join-Path -Path (Get-Location) -ChildPath "tests/test-results/coverage-results/coverage.json")" `
-    /p:CoverletOutputFormat="json%2copencover" `
-    -m:1
-```
-
-### Code coverage
-
-1. Browse to the repo's root directory
-2. Delete the temp tests directory. Optional but prevents any previous state from providing incorrect results. Execute: `rm -r tests/test-results`
-3. Execute:
-
-```
-dotnet test RosettaProxy.sln `
-    --results-directory "$(Join-Path -Path (Get-Location) -ChildPath "tests/test-results")" `
-    --logger trx `
-    /p:CollectCoverage=true `
-    /p:Include="[LexisNexis.Rosetta.Proxy]*%2c[LexisNexis.Rosetta.Core]*" `
-    /p:CoverletOutput="$(Join-Path -Path (Get-Location) -ChildPath "tests/test-results/coverage-results/")" `
-    /p:MergeWith="$(Join-Path -Path (Get-Location) -ChildPath "tests/test-results/coverage-results/coverage.json")" `
-    /p:CoverletOutputFormat="json%2copencover" `
-    -m:1
-```
-
-### Code coverage with report
-
-To get a report on the code coverage locally from the terminal you will need to install the [dotnet-reportgenerator-globaltool](https://www.nuget.org/packages/dotnet-reportgenerator-globaltool/). To do so run `dotnet tool install --global dotnet-reportgenerator-globaltool`.
-
-1. Execute the steps above to [get code coverage](#code-coverage) since the report will be based on the code coverage files.
-2. Browse to the repo's root directory.
-3. Execute:
-
-```
-reportgenerator `
-    "-reports:$(Join-Path -Path (Get-Location) -ChildPath "tests/test-results/coverage-results/coverage.opencover.xml")" `
-    "-targetdir:$(Join-Path -Path (Get-Location) -ChildPath "tests/test-results/coverage-results/report")" `
-    -reportTypes:htmlInline
-```
-
-4. Open the `index.html` file that gets produced at `/tests/test-results/coverage-results/report`.
-
-
-  
+* any readme missing?
 * overwrite configuration items on options without adding a whole new appsettings
 * http mocking (.UseHttpMocks or MockHttpResponse methods) should allow access to the service provider
 * investigate serilog logging test extensions for integration tests
