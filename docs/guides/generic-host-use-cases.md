@@ -8,7 +8,7 @@ There are several articles explaining how to use the building blocks from the fr
 
 However if you want to get all of the benefits you get out of the box when creating an asp.net app without doing code for that yourself than you should consider using the [.NET Generic Host](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/host/generic-host).
 
-## How to use
+## How to
 
 The example below shows how to use the generic host on a console application. You'll need to install the `Microsoft.Extensions.Hosting` nuget package.
 

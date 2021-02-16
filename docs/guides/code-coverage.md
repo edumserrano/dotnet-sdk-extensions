@@ -13,7 +13,7 @@ The information required to understand how to achieve this was scattered accross
 - [coverlet.msbuild 2.8.0 does not combine coverage when using MergeWith #678](https://github.com/coverlet-coverage/coverlet/issues/678#issuecomment-571212806)
 - [Implement threshold per solution #598](https://github.com/coverlet-coverage/coverlet/issues/598#issuecomment-551174529)
 
-## How to use
+## How to
 
 The example below shows how to get code coverage for all the projects in a solution. You need to add the **[coverlet.msbuild NuGet](https://www.nuget.org/packages/coverlet.msbuild/)** to the test projects.
 
