@@ -11,7 +11,7 @@
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <PackageId>DotNet-Sdk-Extensions</PackageId>
-    <Version>1.0.6-alpha</Version>
+    <Version>1.0.7-alpha</Version>
     <Owners>Eduardo Serrano</Owners>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -24,6 +24,11 @@
     <!--<PackageReleaseNotes>Summary of changes made in this release of the package.</PackageReleaseNotes>-->
     <!--<Copyright>Copyright</Copyright>-->
     <!--nuget package info-->
+  </PropertyGroup>
+
+  <!-- enable deterministic builds as per https://github.com/clairernovotny/DeterministicBuilds. Recommended when using sourcelink -->
+  <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
   </PropertyGroup>
 
   <ItemGroup>
