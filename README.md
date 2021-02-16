@@ -8,12 +8,14 @@ It also contains guides on scenarios around building apps using .NET SDK. These 
 
 For documentation about the extensions and guides availables go [here](/docs/docs-main.md).
 
-## GitHub Actions
+## GitHub Workflows
 
 | Worflow                   |      Status and link      |
 |---------------------------|:-------------------------:|
 | [build-demos](https://github.com/edumserrano/dot-net-sdk-extensions/blob/master/.github/workflows/build-demos.yml)             |  ![Build Status](https://github.com/edumserrano/dot-net-sdk-extensions/workflows/Build%20demos/badge.svg) |
 | [nuget-publish](https://github.com/edumserrano/dot-net-sdk-extensions/blob/master/.github/workflows/nuget-publish.yml)             |  ![Build Status](https://github.com/edumserrano/dot-net-sdk-extensions/workflows/Publish%20Nuget%20packages/badge.svg) |
+
+For more information about the GitHub actions go [here](/docs/github-workflows/github-workflows.md).
 
 ## Installing
 
@@ -28,6 +30,16 @@ Installation is performed via NuGet and you can do it using the following comman
 dotnet add package DotNet-Sdk-Extensions
 dotnet add package DotNet-Sdk-Extensions-Testing
 ```
+
+## Debugging
+
+The NuGet packages published include symbols generated with [sourcelink](https://github.com/dotnet/sourcelink).
+
+For more information on how to debug the NuGet packages code from your application see:
+
+- [Exploring .NET Core's SourceLink - Stepping into the Source Code of NuGet packages you don't own](https://www.hanselman.com/blog/exploring-net-cores-sourcelink-stepping-into-the-source-code-of-nuget-packages-you-dont-own)
+- [How to Configure Visual Studio to Use SourceLink to Step into NuGet Package Source](https://aaronstannard.com/visual-studio-sourcelink-setup/)
+- [Source Link - microsoft docs](https://docs.microsoft.com/en-us/dotnet/standard/library-guidance/sourcelink)
 
 ## Building
 
@@ -54,17 +66,8 @@ This project is licensed under the [MIT license](https://licenses.nuget.org/MIT)
 ## TODO
 
 
-* update readme and pipeline
-  * code coverage ? publish to github action? can I publish the nuget as well just for easy download?
-  * add note about sourcelink being enabled and how to debug nuget package code
-  * create a github action readme with info about the secret key that needs to be refreshed in a year, and the fact that nuget org symbols might fail because of signature mismatch when publishing same version (https://github.com/NuGet/NuGetGallery/issues/7949)
-  * explain that the snupkg is published but that the pdb is also part of the nuget to enable debugging in two ways (explain why, one is much slower and requires nuget symbols)
-  * add doc about github action (how the api key to push nuget is stored and that it needs to be refreshed in 1year) https://docs.microsoft.com/en-us/nuget/nuget-org/publish-a-package#:~:text=Sign%20into%20your%20nuget.org,%2C%20select%20Select%20Scopes%20%3E%20Push.
-    * also add note about error when running nuget workflow more than once for same package version. the .nupkg is ignored but the .snupgk is uploaded but the signatures mismtach and it shows an error message that is ok because the first pdb uploaded will still work
-    * https://github.com/NuGet/NuGetGallery/issues/7949
-    * https://github.com/NuGet/NuGetGallery/issues/8036
-  * move packages from alpha to stable and update it on demo sln
-  * any readme missing? 
+* move packages from alpha to stable and update it on demo sln
+* any readme missing? 
   
 * guide about dotnet test solution with code coverage
   * solution wide code coverage: https://github.com/coverlet-coverage/coverlet/blob/master/Documentation/Examples/MSBuild/MergeWith/HowTo.md
