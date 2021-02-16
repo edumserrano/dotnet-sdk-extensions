@@ -1,4 +1,4 @@
-# dot-net-sdk-extensions docs
+# dot-net-sdk-extensions docs and guides
 
 ## Extensions list
 
