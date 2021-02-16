@@ -39,7 +39,6 @@ jobs:
       shell: pwsh
       run: dotnet build DotNet.Sdk.Extensions.sln --no-restore
     - name: Test and code coverage
-      if: matrix.os == 'ubuntu-latest'
       shell: pwsh
       run: |
         dotnet test DotNet.Sdk.Extensions.sln `
