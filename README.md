@@ -4,7 +4,7 @@ This repo contains extensions to use with .NET applications, using .net core 3.1
 
 It also contains guides on scenarios around building apps using .NET SDK. These guides are for situations where an extension is not merited but some documentation on how to accomplish the task is.
 
-## Documentation
+## Documentation and Guides
 
 For documentation about the extensions and guides availables go [here](/docs/docs-main.md).
 
