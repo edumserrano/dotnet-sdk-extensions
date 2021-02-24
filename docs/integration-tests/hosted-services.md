@@ -1,5 +1,7 @@
 ﻿# Integration tests for HostedServices (Background Services)
 
+This extension allows you to do integration tests for your Background Services.
+
 ## Motivation
 
 I want to be able to do integration tests as defined in [introduction to integration tests](https://docs.microsoft.com/en-us/aspnet/core/test/integration-tests?#introduction-to-integration-tests) but for scenarios that make use of [Hosted Services](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/host/hosted-services).

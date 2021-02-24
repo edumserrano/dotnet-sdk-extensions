@@ -25,6 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\DotNet.Sdk.Extensions.Testing\DotNet.Sdk.Extensions.Testing.csproj" />
     <ProjectReference Include="..\..\src\DotNet.Sdk.Extensions\DotNet.Sdk.Extensions.csproj" />
   </ItemGroup>
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Microsoft.AspNetCore.Hosting;
@@ -6,6 +7,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.CommandLine;
 using Microsoft.Extensions.Configuration.EnvironmentVariables;
 using Microsoft.Extensions.Configuration.Json;
+using Microsoft.Extensions.Configuration.Memory;
+using Microsoft.Extensions.Logging;
 
 namespace DotNet.Sdk.Extensions.Testing.Configuration
 {
@@ -14,6 +17,50 @@ namespace DotNet.Sdk.Extensions.Testing.Configuration
     /// </summary>
     public static class TestConfigurationWebHostBuilderExtensions
     {
+        /// <summary>
+        /// Adds a value to the <see cref="IConfiguration"/> using a <see cref="MemoryConfigurationSource"/>.
+        /// Allows overwriting specific configuration values when doing tests.
+        /// </summary>
+        /// <param name="builder">The <see cref="IWebHostBuilder"/> instance.</param>
+        /// <param name="key">The key of the configuration value.</param>
+        /// <param name="value">The value to set on the configuration.</param>
+        /// <returns>The <see cref="IWebHostBuilder"/> for chaining.</returns>
+        public static IWebHostBuilder SetConfigurationValue(this IWebHostBuilder builder, string key, string value)
+        {
+            if (string.IsNullOrEmpty(key))
+            {
+                throw new ArgumentException("Cannot be null or empty.", nameof(key));
+            }
+
+            if (string.IsNullOrEmpty(value))
+            {
+                throw new ArgumentException("Cannot be null or empty.", nameof(value));
+            }
+
+            return builder.ConfigureAppConfiguration((context, builder) =>
+            {
+                var memoryConfigurationSource = new MemoryConfigurationSource
+                {
+                    InitialData = new List<KeyValuePair<string, string>>
+                    {
+                        new KeyValuePair<string, string>(key, value)
+                    }
+                };
+                builder.Add(memoryConfigurationSource);
+            });
+        }
+
+        /// <summary>
+        /// Sets the default log level for the application.
+        /// </summary>
+        /// <param name="builder">The <see cref="IWebHostBuilder"/> instance.</param>
+        /// <param name="logLevel">The default log level.</param>
+        /// <returns>The <see cref="IWebHostBuilder"/> for chaining.</returns>
+        public static IWebHostBuilder SetDefaultLogLevel(this IWebHostBuilder builder, LogLevel logLevel)
+        {
+            return builder.SetConfigurationValue("Logging:LogLevel:Default", $"{logLevel}");
+        }
+
         /// <summary>
         /// Clears loaded appsettings files by removing all <see cref="JsonConfigurationSource"/>
         /// from the <see cref="IWebHostBuilder"/> and adding instances of <see cref="JsonConfigurationSource"/> for

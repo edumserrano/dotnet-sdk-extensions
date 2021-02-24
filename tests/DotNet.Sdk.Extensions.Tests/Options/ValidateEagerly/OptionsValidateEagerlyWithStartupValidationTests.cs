@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using DotNet.Sdk.Extensions.Tests.Auxiliary;
+using DotNet.Sdk.Extensions.Testing.Configuration;
 using DotNet.Sdk.Extensions.Tests.Options.ValidateEagerly.StartupValidation;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration.Memory;

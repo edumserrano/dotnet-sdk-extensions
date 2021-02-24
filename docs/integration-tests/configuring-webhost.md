@@ -1,5 +1,7 @@
 ﻿# Providing test appsettings files to the test server
 
+This extension allows you to pass configuration files to use during integration tests.
+
 ## Motivation
 
 I want to be able to do integration tests as defined in [introduction to integration tests](https://docs.microsoft.com/en-us/aspnet/core/test/integration-tests?#introduction-to-integration-tests) and I need to be able to control the configuration for the tests.

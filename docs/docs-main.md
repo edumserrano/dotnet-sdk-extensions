@@ -17,6 +17,8 @@ For more information about each extension check its docs and demo. You can find 
 ### For integration tests
 
 * [Providing test appsettings files to the test server](/docs/integration-tests/configuring-webhost.md)
+* [Override configuration values on the test server](/docs/integration-tests/override-configuration-value.md)
+* [Disable logs when doing integration tests](/docs/integration-tests/disable-logs-integration-tests.md)
 * [Mocking HttpClient's responses in-process](/docs/integration-tests/http-mocking-in-process.md)
 * [Mocking HttpClient's responses out-of-process](/docs/integration-tests/http-mocking-out-of-process.md)
 * [Integration tests for HostedServices (Background Services)](/docs/integration-tests/hosted-services.md)
