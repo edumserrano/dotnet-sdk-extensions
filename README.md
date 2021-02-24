@@ -68,8 +68,6 @@ This project is licensed under the [MIT license](https://licenses.nuget.org/MIT)
 ## TODO
 
 
-* move packages from alpha to stable and update it on demo sln
-* any readme missing?
 * overwrite configuration items on options without adding a whole new appsettings
 * http mocking (.UseHttpMocks or MockHttpResponse methods) should allow access to the service provider
 * investigate how to test using Ilogger
@@ -80,6 +78,9 @@ This project is licensed under the [MIT license](https://licenses.nuget.org/MIT)
 * create an issue on the repo to allow testing https. need to figure out how to configure a cert. Look for TODO on the codebase
 * make sure servers are disposed on the tests and demo tests
 * replace the configuration usages as below with the new extension method to inject configuration values that is also based on the below configuration
+
+* move packages from alpha to stable and update it on demo sln
+* any readme missing?
 ```
 .ConfigureAppConfiguration((context, builder) =>
                 {
