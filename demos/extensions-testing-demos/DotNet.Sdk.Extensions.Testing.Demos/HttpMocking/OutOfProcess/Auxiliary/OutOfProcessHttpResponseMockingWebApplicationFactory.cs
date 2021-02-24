@@ -26,7 +26,7 @@ namespace DotNet.Sdk.Extensions.Testing.Demos.HttpMocking.OutOfProcess.Auxiliary
              * registered in the container
              */
             return Host.CreateDefaultBuilder()
-                .SetDefaultLogLevel(LogLevel.Critical)
+                .UseDefaultLogLevel(LogLevel.Critical)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
 

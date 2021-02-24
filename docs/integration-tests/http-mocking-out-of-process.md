@@ -189,6 +189,19 @@ The host will always be localhost but you can specify any number of http or http
 
 If the listening URL is not configured, by default a random free http port and a random free https port will be used.
 
+## Disable logs produced by the `HttpMockServer`
+
+You might want to disable the log output produced by the `HttpMockServer`, for instance to remove noise from the output of tests when running on build pipelines.
+
+If you want to do this then use the `HttpMockServerBuilder.UseDefaultLogLevel` and set the log level to `LogLevel.None` as follows:
+
+```
+await using var httpMockServer = new HttpMockServerBuilder()
+    .UseDefaultLogLevel(LogLevel.None)
+    .UseHttpResponseMocks() // or use the HttpMockServerBuilder.UseStartup<T> method
+    .Build();
+```
+
 ## How to run the demo
 
 The demo for this extension is represented by a test class.

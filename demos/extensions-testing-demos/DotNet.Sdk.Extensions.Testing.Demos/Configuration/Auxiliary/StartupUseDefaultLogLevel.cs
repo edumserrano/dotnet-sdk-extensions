@@ -7,19 +7,18 @@ using Microsoft.Extensions.Hosting;
 
 namespace DotNet.Sdk.Extensions.Testing.Demos.Configuration.Auxiliary
 {
-    public class StartupOverrideConfiguration
+    public class StartupUseDefaultLogLevel
     {
         private readonly IConfiguration _configuration;
 
-        public StartupOverrideConfiguration(IConfiguration configuration)
+        public StartupUseDefaultLogLevel(IConfiguration configuration)
         {
             _configuration = configuration;
         }
 
         public void ConfigureServices(IServiceCollection services)
         {
-            //assuming the app had an appsettings.json that could be binded against the MyOptions type
-            services.AddOptions<MyOptions>().Bind(_configuration);
+
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -29,16 +28,11 @@ namespace DotNet.Sdk.Extensions.Testing.Demos.Configuration.Auxiliary
                 .UseRouting()
                 .UseEndpoints(endpoints =>
                 {
-                    endpoints.MapGet("/options", async context =>
+                    endpoints.MapGet("/default-log-level", async context =>
                     {
-                        await context.Response.WriteAsync(_configuration["Option1"]);
+                        await context.Response.WriteAsync(_configuration["Logging:LogLevel:Default"]);
                     });
                 });
         }
-    }
-
-    public class MyOptions
-    {
-        public string Option1 { get; set; }
     }
 }

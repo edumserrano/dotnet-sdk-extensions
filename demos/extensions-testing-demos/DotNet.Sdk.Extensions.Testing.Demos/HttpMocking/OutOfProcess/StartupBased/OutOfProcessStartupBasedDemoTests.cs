@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Testing.Demos.HttpMocking.OutOfProcess.Auxiliary;
 using DotNet.Sdk.Extensions.Testing.Demos.HttpMocking.OutOfProcess.StartupBased.SimpleStartup;
@@ -44,7 +45,7 @@ namespace DotNet.Sdk.Extensions.Testing.Demos.HttpMocking.OutOfProcess.StartupBa
         {
             // First configure the HttpMockServer to use a Startup class
             await using var httpMockServer = new HttpMockServerBuilder()
-                .SetDefaultLogLevel(LogLevel.Critical)
+                .UseDefaultLogLevel(LogLevel.Critical)
                 .UseStartup<MySimpleMockStartup>()
                 .Build();
             var urls = await httpMockServer.StartAsync();
@@ -84,7 +85,7 @@ namespace DotNet.Sdk.Extensions.Testing.Demos.HttpMocking.OutOfProcess.StartupBa
         {
             // First configure the HttpMockServer to use a Startup class
             await using var httpMockServer = new HttpMockServerBuilder()
-                .SetDefaultLogLevel(LogLevel.Critical)
+                .UseDefaultLogLevel(LogLevel.Critical)
                 .UseStartup<MyMockStartupWithControllers>()
                 .Build();
             var urls = await httpMockServer.StartAsync();
@@ -128,7 +129,7 @@ namespace DotNet.Sdk.Extensions.Testing.Demos.HttpMocking.OutOfProcess.StartupBa
         {
             // First configure the HttpMockServer to use a Startup class
             await using var httpMockServer = new HttpMockServerBuilder()
-                .SetDefaultLogLevel(LogLevel.Critical)
+                .UseDefaultLogLevel(LogLevel.Critical)
                 .UseHostArgs("--environment","Staging") // we will show that indeed the HttpMockServer has this configuration value set by returning it when calling the /configuration endpoint on the HttpMockServer
                 .UseUrl(HttpScheme.Http,8811)  // you can pass in any number of http/https ports
                 .UseUrl(HttpScheme.Https,9911) 

@@ -11,22 +11,22 @@ namespace DotNet.Sdk.Extensions.Testing.Demos.Configuration
      * to provide configuration values for integration tests.
      *
      */
-    public class UseConfigurationValueDemoTests : IClassFixture<OverrideConfigurationWebApplicationFactory>
+    public class UseConfigurationValueDemoTests : IClassFixture<UseConfigurationValueWebApplicationFactory>
     {
-        private readonly OverrideConfigurationWebApplicationFactory _webApplicationFactory;
+        private readonly UseConfigurationValueWebApplicationFactory _valueWebApplicationFactory;
 
-        public UseConfigurationValueDemoTests(OverrideConfigurationWebApplicationFactory webApplicationFactory)
+        public UseConfigurationValueDemoTests(UseConfigurationValueWebApplicationFactory valueWebApplicationFactory)
         {
-            _webApplicationFactory = webApplicationFactory;
+            _valueWebApplicationFactory = valueWebApplicationFactory;
         }
         
         [Fact]
         public async Task UseConfigurationValueDemoTest()
         {
-            var httpClient = _webApplicationFactory
+            var httpClient = _valueWebApplicationFactory
                 .WithWebHostBuilder(builder =>
                 {
-                    builder.SetConfigurationValue(key: "Option1", value: "value-from-test");
+                    builder.UseConfigurationValue(key: "Option1", value: "value-from-test");
                 })
                 .CreateClient();
 

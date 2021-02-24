@@ -10,19 +10,19 @@ namespace DotNet.Sdk.Extensions.Testing.Demos.Configuration.Auxiliary
     // please see the doc at /docs/integration-tests/web-application-factory.md 
     // You usually do NOT need to create a custom class that implements WebApplicationFactory
     // We require this because there are multiple Startup classes in this project
-    public class OverrideConfigurationWebApplicationFactory : WebApplicationFactory<StartupOverrideConfiguration>
+    public class UseConfigurationValueWebApplicationFactory : WebApplicationFactory<StartupUseConfigurationValue>
     {
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
             builder
                 .UseContentRoot(".")
-                .UseStartup<StartupOverrideConfiguration>();
+                .UseStartup<StartupUseConfigurationValue>();
         }
 
         protected override IHostBuilder CreateHostBuilder()
         {
             return Host.CreateDefaultBuilder()
-                .SetDefaultLogLevel(LogLevel.Critical)
+                .UseDefaultLogLevel(LogLevel.Critical)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
 

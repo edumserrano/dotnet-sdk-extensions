@@ -22,7 +22,7 @@ namespace DotNet.Sdk.Extensions.Testing.Demos.HostedServices.Auxiliary
         protected override IHostBuilder CreateHostBuilder()
         {
             return Host.CreateDefaultBuilder()
-                .SetDefaultLogLevel(LogLevel.Critical)
+                .UseDefaultLogLevel(LogLevel.Critical)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
 

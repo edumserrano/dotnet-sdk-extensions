@@ -8,13 +8,13 @@ namespace DotNet.Sdk.Extensions.Testing.Demos.Configuration.Auxiliary
     // please see the doc at /docs/integration-tests/web-application-factory.md 
     // You usually do NOT need to create a custom class that implements WebApplicationFactory
     // We require this because there are multiple Startup classes in this project
-    public class SetDefaultLogLevelWebApplicationFactory : WebApplicationFactory<StartupSetDefaultLogLevel>
+    public class SetDefaultLogLevelWebApplicationFactory : WebApplicationFactory<StartupUseDefaultLogLevel>
     {
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
             builder
                 .UseContentRoot(".")
-                .UseStartup<StartupSetDefaultLogLevel>();
+                .UseStartup<StartupUseDefaultLogLevel>();
         }
 
         protected override IHostBuilder CreateHostBuilder()

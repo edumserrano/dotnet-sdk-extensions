@@ -24,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="DotNet-Sdk-Extensions-Testing" Version="1.0.8-alpha" />
+    <PackageReference Include="DotNet-Sdk-Extensions-Testing" Version="1.0.9-alpha" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="5.0.3" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.1" />
     <PackageReference Include="NSubstitute" Version="4.2.2" />

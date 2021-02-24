@@ -27,7 +27,7 @@ namespace DotNet.Sdk.Extensions.Testing.Demos.Configuration
             var httpClient = _webApplicationFactory
                 .WithWebHostBuilder(builder =>
                 {
-                    builder.SetDefaultLogLevel(LogLevel.None);
+                    builder.UseDefaultLogLevel(LogLevel.None);
                 })
                 .CreateClient();
 
