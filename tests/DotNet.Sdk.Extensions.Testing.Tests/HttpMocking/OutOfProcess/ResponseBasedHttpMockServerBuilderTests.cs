@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.ResponseMocking;
-using DotNet.Sdk.Extensions.Testing.Tests.Auxiliary;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http;
 using Microsoft.Extensions.Logging;
@@ -30,7 +29,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
                   .Build();
 
             await using var mock = new HttpMockServerBuilder()
-                .SetDefaultLogLevel(LogLevel.Critical)
+                .UseDefaultLogLevel(LogLevel.Critical)
                 .UseHttpResponseMocks()
                 .MockHttpResponse(helloHttpResponseMock)
                 .Build();
@@ -63,7 +62,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
                   .Build();
 
             await using var mock = new HttpMockServerBuilder()
-                .SetDefaultLogLevel(LogLevel.Critical)
+                .UseDefaultLogLevel(LogLevel.Critical)
                 .UseHttpResponseMocks()
                 .MockHttpResponse(helloHttpResponseMock)
                 .MockHttpResponse(mockBuilder =>
@@ -122,7 +121,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
             // because we add httpResponseMock1 before httpResponseMock2 and they both
             // have an equal predicate, the one that gets executed is the first one added
             await using var mock = new HttpMockServerBuilder()
-                .SetDefaultLogLevel(LogLevel.Critical)
+                .UseDefaultLogLevel(LogLevel.Critical)
                 .UseHttpResponseMocks()
                 .MockHttpResponse(httpResponseMock1)
                 .MockHttpResponse(httpResponseMock2)
@@ -135,7 +134,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
             // now create another server where the mocks order is reversed to 
             // show that we indeed get the result from the first registered mock
             await using var mock2 = new HttpMockServerBuilder()
-                .SetDefaultLogLevel(LogLevel.Critical)
+                .UseDefaultLogLevel(LogLevel.Critical)
                 .UseHttpResponseMocks()
                 .MockHttpResponse(httpResponseMock2)
                 .MockHttpResponse(httpResponseMock1)
@@ -165,7 +164,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
             // because we add httpResponseMock1 before httpResponseMock2 and they both
             // have an equal predicate, the one that gets executed is the first one added
             await using var mock = new HttpMockServerBuilder()
-                .SetDefaultLogLevel(LogLevel.Critical)
+                .UseDefaultLogLevel(LogLevel.Critical)
                 .UseHttpResponseMocks()
                 .MockHttpResponse(httpResponseMock1)
                 .MockHttpResponse(httpResponseMock2)

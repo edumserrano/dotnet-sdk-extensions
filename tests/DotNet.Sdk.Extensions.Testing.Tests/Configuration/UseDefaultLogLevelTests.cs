@@ -10,12 +10,12 @@ using Xunit;
 
 namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
 {
-    public class DisableLogsTests
+    public class UseDefaultLogLevelTests
     {
         /// <summary>
         /// Tests that there is no default value set for the configuration key "Logging:LogLevel:Default".
         /// This is important because it serves as a control test for the following tests for the
-        /// <see cref="TestConfigurationHostBuilderExtensions.SetDefaultLogLevel"/> extension method.
+        /// <see cref="TestConfigurationHostBuilderExtensions.UseDefaultLogLevel"/> extension method.
         /// </summary>
         [Fact]
         public void HostDefaultLogLevelControlTest()
@@ -31,7 +31,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         /// <summary>
         /// Tests that there is no default value set for the configuration key "Logging:LogLevel:Default".
         /// This is important because it serves as a control test for the following tests for the
-        /// <see cref="TestConfigurationWebHostBuilderExtensions.SetDefaultLogLevel"/> extension method.
+        /// <see cref="TestConfigurationWebHostBuilderExtensions.UseDefaultLogLevel"/> extension method.
         /// </summary>
         [Fact]
         public void WebHostDefaultLogLevelControlTest()
@@ -50,7 +50,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         }
 
         /// <summary>
-        /// Tests that the <see cref="TestConfigurationHostBuilderExtensions.SetDefaultLogLevel"/>
+        /// Tests that the <see cref="TestConfigurationHostBuilderExtensions.UseDefaultLogLevel"/>
         /// sets the default log level on the <see cref="IConfiguration"/>.
         /// </summary>
         [Fact]
@@ -58,7 +58,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         {
             var host = Host
                 .CreateDefaultBuilder()
-                .SetDefaultLogLevel(LogLevel.None)                                                                                                         
+                .UseDefaultLogLevel(LogLevel.None)                                                                                                         
                 .Build();
             var configuration = (ConfigurationRoot)host.Services.GetRequiredService<IConfiguration>();
             var logLevel = configuration.GetValue<string>(key: "Logging:LogLevel:Default");
@@ -66,7 +66,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         }
         
         /// <summary>
-        /// Tests that the <see cref="TestConfigurationWebHostBuilderExtensions.SetDefaultLogLevel"/>
+        /// Tests that the <see cref="TestConfigurationWebHostBuilderExtensions.UseDefaultLogLevel"/>
         /// sets the default log level on the <see cref="IConfiguration"/>.
         /// </summary>
         [Fact]
@@ -79,7 +79,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
                     // this is required just to provide a configuration for the webhost
                     // or else it fails when calling webHostBuilder.Build()
                 })
-                .SetDefaultLogLevel(LogLevel.None)
+                .UseDefaultLogLevel(LogLevel.None)
                 .Build();
             var configuration = (ConfigurationRoot)webHost.Services.GetRequiredService<IConfiguration>();
             var logLevel = configuration.GetValue<string>(key: "Logging:LogLevel:Default");

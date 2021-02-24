@@ -29,7 +29,7 @@ public class ConfigurationDemoTests : IClassFixture<WebApplicationFactory<Startu
             .WithWebHostBuilder(builder =>
             {
                 builder
-                    .SetDefaultLogLevel(LogLevel.None)
+                    .UseDefaultLogLevel(LogLevel.None)
                     .ConfigureTestServices(services =>
                     {
                         // inject mocks for any other services
@@ -49,6 +49,6 @@ Alternatively you can set the log level to `LogLevel.Critical` which will hide a
 The demo for this extension is represented by a test class.
 
 * In Visual Studio go to the `DotNet.Sdk.Extensions.Testing.Demos project`.
-* Run the test [ConfiguringWebHostDemoTests.ConfiguringWebHostDemoTest test](/demos/extensions-testing-demos/DotNet.Sdk.Extensions.Testing.Demos/Configuration/ConfiguringWebHostDemoTests.cs).
+* Run the test [UseDefaultLogLevelDemoTests.UseDefaultLogLevelDemoTest test](/demos/extensions-testing-demos/DotNet.Sdk.Extensions.Testing.Demos/Configuration/UseDefaultLogLevelDemoTests.cs).
 
-Analyse the [ConfiguringWebHostDemoTests.ConfiguringWebHostDemoTest test](/demos/extensions-testing-demos/DotNet.Sdk.Extensions.Testing.Demos/Configuration/ConfiguringWebHostDemoTests.cs) for more information on how this extension works.
+Analyse the [UseDefaultLogLevelDemoTests.UseDefaultLogLevelDemoTest test](/demos/extensions-testing-demos/DotNet.Sdk.Extensions.Testing.Demos/Configuration/UseDefaultLogLevelDemoTests.cs) for more information on how this extension works.

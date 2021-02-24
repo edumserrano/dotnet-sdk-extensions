@@ -1,8 +1,6 @@
-using DotNet.Sdk.Extensions.Testing.Configuration;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 namespace DotNet.Sdk.Extensions.Testing.Demos.Configuration.Auxiliary
 {
@@ -10,19 +8,18 @@ namespace DotNet.Sdk.Extensions.Testing.Demos.Configuration.Auxiliary
     // please see the doc at /docs/integration-tests/web-application-factory.md 
     // You usually do NOT need to create a custom class that implements WebApplicationFactory
     // We require this because there are multiple Startup classes in this project
-    public class ConfiguringWebHostWebApplicationFactory : WebApplicationFactory<StartupConfiguringWebHost>
+    public class SetDefaultLogLevelWebApplicationFactory : WebApplicationFactory<StartupSetDefaultLogLevel>
     {
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
             builder
                 .UseContentRoot(".")
-                .UseStartup<StartupConfiguringWebHost>();
+                .UseStartup<StartupSetDefaultLogLevel>();
         }
 
         protected override IHostBuilder CreateHostBuilder()
         {
             return Host.CreateDefaultBuilder()
-                .SetDefaultLogLevel(LogLevel.Critical)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
 

@@ -29,7 +29,7 @@ public class ConfigurationDemoTests : IClassFixture<WebApplicationFactory<Startu
             .WithWebHostBuilder(builder =>
             {
                 builder
-                    .SetConfigurationValue(key: "SomeConfigOption", value: "some-option-value")
+                    .UseConfigurationValue(key: "SomeConfigOption", value: "some-option-value")
                     .ConfigureTestServices(services =>
                     {
                         // inject mocks for any other services
@@ -64,7 +64,7 @@ public class ConfigurationDemoTests : IClassFixture<WebApplicationFactory<Startu
             {
                 builder
                     .AddTestConfiguration("appsettings.json")
-                    .SetConfigurationValue(key: "SomeOption", value: "some-option-value")
+                    .UseConfigurationValue(key: "SomeOption", value: "some-option-value")
                     .ConfigureTestServices(services =>
                     {
                         // inject mocks for any other services
@@ -92,7 +92,7 @@ For instance, if we have the following `appsettings.json`:
 You can set the configuration value for `SomeOption` by calling:
 
 ```
-builder.SetConfigurationValue(key: "MyOptionsSection:SomeOption", value: "some-option-value")
+builder.UseConfigurationValue(key: "MyOptionsSection:SomeOption", value: "some-option-value")
 ```
 
 ## Alternative
@@ -148,6 +148,6 @@ public class ConfigurationDemoTests : IClassFixture<WebApplicationFactory<Startu
 The demo for this extension is represented by a test class.
 
 * In Visual Studio go to the `DotNet.Sdk.Extensions.Testing.Demos project`.
-* Run the test [ConfiguringWebHostDemoTests.ConfiguringWebHostDemoTest test](/demos/extensions-testing-demos/DotNet.Sdk.Extensions.Testing.Demos/Configuration/ConfiguringWebHostDemoTests.cs).
+* Run the test [UseConfigurationValueDemoTests.UseConfigurationValueDemoTest test](/demos/extensions-testing-demos/DotNet.Sdk.Extensions.Testing.Demos/Configuration/UseConfigurationValueDemoTests.cs).
 
-Analyse the [ConfiguringWebHostDemoTests.ConfiguringWebHostDemoTest test](/demos/extensions-testing-demos/DotNet.Sdk.Extensions.Testing.Demos/Configuration/ConfiguringWebHostDemoTests.cs) for more information on how this extension works.
+Analyse the [UseConfigurationValueDemoTests.UseConfigurationValueDemoTest test](/demos/extensions-testing-demos/DotNet.Sdk.Extensions.Testing.Demos/Configuration/UseConfigurationValueDemoTests.cs) for more information on how this extension works.

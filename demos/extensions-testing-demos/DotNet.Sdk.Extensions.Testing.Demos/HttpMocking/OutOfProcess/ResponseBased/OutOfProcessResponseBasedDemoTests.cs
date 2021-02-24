@@ -1,6 +1,4 @@
-using System.Linq;
 using System.Threading.Tasks;
-using DotNet.Sdk.Extensions.Testing.Demos.Auxiliary;
 using DotNet.Sdk.Extensions.Testing.Demos.HttpMocking.OutOfProcess.Auxiliary;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.ResponseMocking;

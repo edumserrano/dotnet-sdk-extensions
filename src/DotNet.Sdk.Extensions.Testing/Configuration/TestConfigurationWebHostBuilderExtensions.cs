@@ -25,7 +25,7 @@ namespace DotNet.Sdk.Extensions.Testing.Configuration
         /// <param name="key">The key of the configuration value.</param>
         /// <param name="value">The value to set on the configuration.</param>
         /// <returns>The <see cref="IWebHostBuilder"/> for chaining.</returns>
-        public static IWebHostBuilder SetConfigurationValue(this IWebHostBuilder builder, string key, string value)
+        public static IWebHostBuilder UseConfigurationValue(this IWebHostBuilder builder, string key, string value)
         {
             if (string.IsNullOrEmpty(key))
             {
@@ -56,9 +56,9 @@ namespace DotNet.Sdk.Extensions.Testing.Configuration
         /// <param name="builder">The <see cref="IWebHostBuilder"/> instance.</param>
         /// <param name="logLevel">The default log level.</param>
         /// <returns>The <see cref="IWebHostBuilder"/> for chaining.</returns>
-        public static IWebHostBuilder SetDefaultLogLevel(this IWebHostBuilder builder, LogLevel logLevel)
+        public static IWebHostBuilder UseDefaultLogLevel(this IWebHostBuilder builder, LogLevel logLevel)
         {
-            return builder.SetConfigurationValue("Logging:LogLevel:Default", $"{logLevel}");
+            return builder.UseConfigurationValue("Logging:LogLevel:Default", $"{logLevel}");
         }
 
         /// <summary>

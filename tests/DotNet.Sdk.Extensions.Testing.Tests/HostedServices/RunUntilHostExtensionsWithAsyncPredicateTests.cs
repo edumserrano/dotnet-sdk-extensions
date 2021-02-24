@@ -29,7 +29,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
         {
             return Host
                 .CreateDefaultBuilder()
-                .SetDefaultLogLevel(LogLevel.Critical)
+                .UseDefaultLogLevel(LogLevel.Critical)
                 .Build();
         }
 
@@ -99,7 +99,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
             // For this test we incorporate the host creation in this test. 
             var hostBuilder = Host
                 .CreateDefaultBuilder()
-                .SetDefaultLogLevel(LogLevel.Critical)
+                .UseDefaultLogLevel(LogLevel.Critical)
                 .ConfigureServices((hostContext, services) =>
                 {
                     services.AddSingleton<ICalculator, Calculator>();
@@ -139,7 +139,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
             // For this test we incorporate the host creation in this test. 
             var hostBuilder = Host
                 .CreateDefaultBuilder()
-                .SetDefaultLogLevel(LogLevel.Critical)
+                .UseDefaultLogLevel(LogLevel.Critical)
                 .ConfigureServices((hostContext, services) =>
                 {
                     services.AddSingleton<ICalculator, Calculator>();
@@ -184,7 +184,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
             // For this test we incorporate the host creation in this test. 
             var hostBuilder = Host
                 .CreateDefaultBuilder()
-                .SetDefaultLogLevel(LogLevel.Critical)
+                .UseDefaultLogLevel(LogLevel.Critical)
                 .ConfigureServices((hostContext, services) =>
                 {
                     services.AddSingleton<ICalculator, Calculator>();

@@ -10,10 +10,10 @@ using Xunit;
 
 namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
 {
-    public class SetConfigurationValueTests
+    public class UseConfigurationValueTests
     {
         /// <summary>
-        /// Validates arguments the <see cref="TestConfigurationHostBuilderExtensions.SetConfigurationValue"/>.
+        /// Validates arguments the <see cref="TestConfigurationHostBuilderExtensions.UseConfigurationValue"/>.
         /// </summary>
         [Theory]
         [InlineData(null,"value1", "Cannot be null or empty. (Parameter 'key')")]
@@ -26,13 +26,13 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
             {
                 return Host
                     .CreateDefaultBuilder()
-                    .SetConfigurationValue(key: key, value: value);
+                    .UseConfigurationValue(key: key, value: value);
             });
             exception.Message.ShouldBe(exceptionMessage);
         }
         
         /// <summary>
-        /// Validates arguments the <see cref="TestConfigurationWebHostBuilderExtensions.SetConfigurationValue"/>.
+        /// Validates arguments the <see cref="TestConfigurationWebHostBuilderExtensions.UseConfigurationValue"/>.
         /// </summary>
         [Theory]
         [InlineData(null,"value1", "Cannot be null or empty. (Parameter 'key')")]
@@ -50,13 +50,13 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
                         // this is required just to provide a configuration for the webhost
                         // or else it fails when calling webHostBuilder.Build()
                     })
-                    .SetConfigurationValue(key: key, value: value);
+                    .UseConfigurationValue(key: key, value: value);
             });
             exception.Message.ShouldBe(exceptionMessage);
         }
 
         /// <summary>
-        /// Tests that the <see cref="TestConfigurationHostBuilderExtensions.SetConfigurationValue"/>
+        /// Tests that the <see cref="TestConfigurationHostBuilderExtensions.UseConfigurationValue"/>
         /// sets the configuration value on the <see cref="IConfiguration"/>.
         /// </summary>
         [Fact]
@@ -64,8 +64,8 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         {
             var host = Host
                 .CreateDefaultBuilder()
-                .SetConfigurationValue(key:"SomeValue1",value:"value-1") 
-                .SetConfigurationValue(key:"SomeValue2",value:"value-2") 
+                .UseConfigurationValue(key:"SomeValue1",value:"value-1") 
+                .UseConfigurationValue(key:"SomeValue2",value:"value-2") 
                 .Build();
             var configuration = (ConfigurationRoot)host.Services.GetRequiredService<IConfiguration>();
             configuration.GetValue<string>(key: "SomeValue1").ShouldBe("value-1");
@@ -73,7 +73,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         }
 
         /// <summary>
-        /// Tests that the <see cref="TestConfigurationWebHostBuilderExtensions.SetConfigurationValue"/>
+        /// Tests that the <see cref="TestConfigurationWebHostBuilderExtensions.UseConfigurationValue"/>
         /// sets the configuration value  on the <see cref="IConfiguration"/>.
         /// </summary>
         [Fact]
@@ -86,8 +86,8 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
                     // this is required just to provide a configuration for the webhost
                     // or else it fails when calling webHostBuilder.Build()
                 })
-                .SetConfigurationValue(key: "SomeValue1", value: "value-1")
-                .SetConfigurationValue(key: "SomeValue2", value: "value-2")
+                .UseConfigurationValue(key: "SomeValue1", value: "value-1")
+                .UseConfigurationValue(key: "SomeValue2", value: "value-2")
                 .Build();
             var configuration = (ConfigurationRoot)webHost.Services.GetRequiredService<IConfiguration>();
             configuration.GetValue<string>(key: "SomeValue1").ShouldBe("value-1");
@@ -95,7 +95,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         }
 
         /// <summary>
-        /// When SetConfigurationValue is called multiple times for the same key, the last value is what
+        /// When UseConfigurationValue is called multiple times for the same key, the last value is what
         /// gets set.
         /// </summary>
         [Fact]
@@ -103,8 +103,8 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         {
             var host = Host
                 .CreateDefaultBuilder()
-                .SetConfigurationValue(key: "SomeValue1", value: "value-1")
-                .SetConfigurationValue(key: "SomeValue1", value: "value-2")
+                .UseConfigurationValue(key: "SomeValue1", value: "value-1")
+                .UseConfigurationValue(key: "SomeValue1", value: "value-2")
                 .Build();
             var configuration = (ConfigurationRoot)host.Services.GetRequiredService<IConfiguration>();
             configuration.GetValue<string>(key: "SomeValue1").ShouldBe("value-2");
@@ -125,7 +125,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
                     // or else it fails when calling webHostBuilder.Build()
                 })
                 .AddTestAppSettings(options => options.AppSettingsDir = "Configuration", "appsettings.setconfigurationvalues.test.json")
-                .SetConfigurationValue(key: "SomeValue1", value: "overriden-on-test")
+                .UseConfigurationValue(key: "SomeValue1", value: "overriden-on-test")
                 .Build();
             var configuration = (ConfigurationRoot)webHost.Services.GetRequiredService<IConfiguration>();
             configuration.GetValue<string>(key: "SomeValue1").ShouldBe("overriden-on-test");

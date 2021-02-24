@@ -1,4 +1,4 @@
-using DotNet.Sdk.Extensions.Testing.Demos.Auxiliary;
+using DotNet.Sdk.Extensions.Testing.Configuration;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Hosting;
@@ -8,7 +8,7 @@ namespace DotNet.Sdk.Extensions.Testing.Demos.HttpMocking.InProcess.Auxiliary
 {
     // For more information on why this custom WebApplicationFactory<T> is configured as below
     // please see the doc at /docs/integration-tests/web-application-factory.md 
-    // You might NOT need to create a custom class that implements WebApplicationFactory
+    // You usually do NOT need to create a custom class that implements WebApplicationFactory
     // We require this because there are multiple Startup classes in this project
     public class InProcessHttpResponseMockingWebApplicationFactory : WebApplicationFactory<InProcessHttpResponseMockingStartup>
     {
