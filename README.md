@@ -67,20 +67,18 @@ This project is licensed under the [MIT license](https://licenses.nuget.org/MIT)
 
 ## TODO
 
-* investigate how to test using Ilogger
-* investigate serilog logging test extensions for integration tests
-  * investigate test sink (search github) and look at how the test is done for the enricher https://github.com/serilog/serilog-enrichers-environment/commit/24c1c874ed4044ec488a5119130c869d328f9fbd  
-* explain how to set loglevels for integration tests output https://docs.microsoft.com/en-us/aspnet/core/fundamentals/logging/?view=aspnetcore-5.0#configure-logging
-  * maybe add it as an extension and use it on where I have similar functionality (HostBuilderExtensions and HttpMockServerBuilderExtensions)
-* create an issue on the repo to allow testing https. need to figure out how to configure a cert. Look for TODO on the codebase
-* useful serilog related guides/extensions/enrichers?
 * make sure servers are disposed on the tests and demo tests
-* note to docs about configuration on integration tests that another way to do it should be to use:
 * where to save info about how to use splunk + docker + asp.net core app (+ serilog?)
 * note about using async local to implement data sharing on the context of a request execution (see my elapsedStats implementation)
 
+* investigate how to test using Ilogger
+* investigate serilog logging test extensions for integration tests
+  * investigate test sink (search github) and look at how the test is done for the enricher https://github.com/serilog/serilog-enrichers-environment/commit/24c1c874ed4044ec488a5119130c869d328f9fbd 
+* useful serilog related guides/extensions/enrichers/attributes? What common things I do when logging?
+ 
 * move packages from alpha to stable and update it on demo sln
 * any readme missing?
+* create an issue on the repo to allow testing https. need to figure out how to configure a cert. Look for TODO on the codebase
 
 ## Notes
 
