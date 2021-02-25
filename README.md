@@ -33,16 +33,6 @@ dotnet add package DotNet-Sdk-Extensions
 dotnet add package DotNet-Sdk-Extensions-Testing
 ```
 
-## Debugging
-
-The NuGet packages published include symbols generated with [sourcelink](https://github.com/dotnet/sourcelink).
-
-For more information on how to debug the NuGet packages code from your application see:
-
-- [Exploring .NET Core's SourceLink - Stepping into the Source Code of NuGet packages you don't own](https://www.hanselman.com/blog/exploring-net-cores-sourcelink-stepping-into-the-source-code-of-nuget-packages-you-dont-own)
-- [How to Configure Visual Studio to Use SourceLink to Step into NuGet Package Source](https://aaronstannard.com/visual-studio-sourcelink-setup/)
-- [Source Link - microsoft docs](https://docs.microsoft.com/en-us/dotnet/standard/library-guidance/sourcelink)
-
 ## Building
 
 ### Using Visual Studio
@@ -61,6 +51,16 @@ For more information on how to debug the NuGet packages code from your applicati
    - **`dotnet build DotNet.Sdk.Extensions.sln`:** to build the source for the extensions.
    - **`dotnet build DotNet.Sdk.Extensions.Demos.sln`:** to build the demos for the extensions and the guides.
 
+## Debugging
+
+The NuGet packages published include symbols generated with [sourcelink](https://github.com/dotnet/sourcelink).
+
+For more information on how to debug the NuGet packages code from your application see:
+
+- [Exploring .NET Core's SourceLink - Stepping into the Source Code of NuGet packages you don't own](https://www.hanselman.com/blog/exploring-net-cores-sourcelink-stepping-into-the-source-code-of-nuget-packages-you-dont-own)
+- [How to Configure Visual Studio to Use SourceLink to Step into NuGet Package Source](https://aaronstannard.com/visual-studio-sourcelink-setup/)
+- [Source Link - microsoft docs](https://docs.microsoft.com/en-us/dotnet/standard/library-guidance/sourcelink)
+- 
 ## License
 
 This project is licensed under the [MIT license](https://licenses.nuget.org/MIT).
