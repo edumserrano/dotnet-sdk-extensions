@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess;
-using DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
