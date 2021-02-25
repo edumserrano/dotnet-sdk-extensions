@@ -95,7 +95,44 @@ You can set the configuration value for `SomeOption` by calling:
 builder.UseConfigurationValue(key: "MyOptionsSection:SomeOption", value: "some-option-value")
 ```
 
-## Alternative
+## Alternatives
+
+## `IWebHostBuilder.SetSetting`
+
+If you are using a `IWebHostBuilder` then you can make use of the `IWebHostBuilder.SetSetting` as follows:
+
+```
+public class ConfigurationDemoTests : IClassFixture<WebApplicationFactory<Startup>>
+{
+    private readonly WebApplicationFactory<Startup> _webApplicationFactory;
+
+    public ConfigurationDemoTests(WebApplicationFactory<Startup> webApplicationFactory)
+    {
+        _webApplicationFactory = webApplicationFactory;
+    }
+
+    [Fact]
+    public async Task DemoTest()
+    {
+        var httpClient = _webApplicationFactory
+            .WithWebHostBuilder(builder =>
+            {
+                builder.SetSetting(key: "SomeOption", value: "some-option-value")
+                builder.ConfigureTestServices(services =>
+                {
+                    // inject mocks for any other services
+                });
+            })
+            .CreateClient();
+
+        // rest of test
+    }
+}
+```
+
+This method does not exist on the `IHostBuilder`.
+
+## `IServiceCollection.PostConfigure`
 
 If you are using typed options classes you can also override the configuration values on those types by using the [IServiceCollection.PostConfigure](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/options?#options-post-configuration).
 
@@ -142,6 +179,10 @@ public class ConfigurationDemoTests : IClassFixture<WebApplicationFactory<Startu
     }
 }
 ```
+
+## Notes
+
+This extension method works for both `IWebHostBuilder` and `IHostBuilder`.
 
 ## How to run the demo
 

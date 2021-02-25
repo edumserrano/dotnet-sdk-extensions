@@ -15,7 +15,7 @@ namespace DotNet.Sdk.Extensions.Testing.Configuration
     /// <summary>
     /// Provides extension methods to the <see cref="IWebHostBuilder"/> related with providing test configuration values via appsettings files.
     /// </summary>
-    public static class TestConfigurationWebHostBuilderExtensions
+    public static partial class TestConfigurationBuilderExtensions
     {
         /// <summary>
         /// Adds a value to the <see cref="IConfiguration"/> using a <see cref="MemoryConfigurationSource"/>.
@@ -131,45 +131,56 @@ namespace DotNet.Sdk.Extensions.Testing.Configuration
             if (otherAppsettingsFilenames is null) throw new ArgumentNullException(nameof(otherAppsettingsFilenames));
             if (otherAppsettingsFilenames.Any(string.IsNullOrWhiteSpace)) throw new ArgumentException("Cannot have an element that is null or white space.", nameof(otherAppsettingsFilenames));
 
+            return builder.ConfigureAppConfiguration((context, config) =>
+            {
+                config.AddTestAppSettings(options, appSettingsFilename, otherAppsettingsFilenames);
+            });
+        }
+
+        private static IConfigurationBuilder AddTestAppSettings(
+            this IConfigurationBuilder config,
+            TestConfigurationOptions options,
+            string appSettingsFilename,
+            params string[] otherAppsettingsFilenames)
+        {
             var projectDir = options.IsRelative
                 ? Path.Combine(Directory.GetCurrentDirectory(), options.AppSettingsDir)
                 : options.AppSettingsDir;
-            return builder.ConfigureAppConfiguration((context, config) =>
-            {
-                /*
-                 * Remove existing json sources. Without doing this the configuration files loaded
-                 * normally during the app might interfere with the tests.
-                 */
-                config.Sources
-                    .OfType<JsonConfigurationSource>()
-                    .ToList()
-                    .ForEach(source => config.Sources.Remove(source));
-                var appsettingsFilenames = new[] { appSettingsFilename }.Concat(otherAppsettingsFilenames);
-                foreach (var appSettingFilename in appsettingsFilenames)
-                {
-                    var configPath = Path.Combine(projectDir, appSettingFilename);
-                    config.AddJsonFile(configPath, optional: false);
-                }
 
-                /*
-                 * After adding test appsettings files, those sources will be last in the configuration which means that
-                 * even if you have an EnvironmentVariablesConfigurationSource the test appsettings source would take precedence.
-                 * This changes the expected loading configuration behavior.
-                 * To correct this we will clear all EnvironmentVariablesConfigurationSource and CommandLineConfigurationSource
-                 * and add then last. This way the expected loading configuraiton behavior is preserved:
-                 * - configuration taken from command line first, then environment variables, then appsettings files.
-                 */
-                var environmentVariablesConfigurationSources = config.Sources
-                    .OfType<EnvironmentVariablesConfigurationSource>()
-                    .ToList();
-                var commandLineConfigurationSources = config.Sources
-                    .OfType<CommandLineConfigurationSource>()
-                    .ToList();
-                environmentVariablesConfigurationSources.ForEach(source => config.Sources.Remove(source));
-                commandLineConfigurationSources.ForEach(source => config.Sources.Remove(source));
-                environmentVariablesConfigurationSources.ForEach(source => config.Sources.Add(source));
-                commandLineConfigurationSources.ForEach(source => config.Sources.Add(source));
-            });
+            /*
+             * Remove existing json sources. Without doing this the configuration files loaded
+             * normally during the app might interfere with the tests.
+             */
+            config.Sources
+                .OfType<JsonConfigurationSource>()
+                .ToList()
+                .ForEach(source => config.Sources.Remove(source));
+            var appsettingsFilenames = new[] { appSettingsFilename }.Concat(otherAppsettingsFilenames);
+            foreach (var appSettingFilename in appsettingsFilenames)
+            {
+                var configPath = Path.Combine(projectDir, appSettingFilename);
+                config.AddJsonFile(configPath, optional: false);
+            }
+
+            /*
+             * After adding test appsettings files, those sources will be last in the configuration which means that
+             * even if you have an EnvironmentVariablesConfigurationSource the test appsettings source would take precedence.
+             * This changes the expected loading configuration behavior.
+             * To correct this we will clear all EnvironmentVariablesConfigurationSource and CommandLineConfigurationSource
+             * and add then last. This way the expected loading configuraiton behavior is preserved:
+             * - configuration taken from command line first, then environment variables, then appsettings files.
+             */
+            var environmentVariablesConfigurationSources = config.Sources
+                .OfType<EnvironmentVariablesConfigurationSource>()
+                .ToList();
+            var commandLineConfigurationSources = config.Sources
+                .OfType<CommandLineConfigurationSource>()
+                .ToList();
+            environmentVariablesConfigurationSources.ForEach(source => config.Sources.Remove(source));
+            commandLineConfigurationSources.ForEach(source => config.Sources.Remove(source));
+            environmentVariablesConfigurationSources.ForEach(source => config.Sources.Add(source));
+            commandLineConfigurationSources.ForEach(source => config.Sources.Add(source));
+            return config;
         }
     }
 }

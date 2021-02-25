@@ -13,13 +13,13 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
     public class UseConfigurationValueTests
     {
         /// <summary>
-        /// Validates arguments the <see cref="TestConfigurationHostBuilderExtensions.UseConfigurationValue"/>.
+        /// Validates arguments the <see cref="TestConfigurationBuilderExtensions.UseConfigurationValue(IHostBuilder,string,string)"/>.
         /// </summary>
         [Theory]
-        [InlineData(null,"value1", "Cannot be null or empty. (Parameter 'key')")]
-        [InlineData("","value1", "Cannot be null or empty. (Parameter 'key')")]
-        [InlineData("some-key",null, "Cannot be null or empty. (Parameter 'value')")]
-        [InlineData("some-key","", "Cannot be null or empty. (Parameter 'value')")]
+        [InlineData(null, "value1", "Cannot be null or empty. (Parameter 'key')")]
+        [InlineData("", "value1", "Cannot be null or empty. (Parameter 'key')")]
+        [InlineData("some-key", null, "Cannot be null or empty. (Parameter 'value')")]
+        [InlineData("some-key", "", "Cannot be null or empty. (Parameter 'value')")]
         public void HostValidateArguments(string key, string value, string exceptionMessage)
         {
             var exception = Should.Throw<ArgumentException>(() =>
@@ -30,15 +30,15 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
             });
             exception.Message.ShouldBe(exceptionMessage);
         }
-        
+
         /// <summary>
-        /// Validates arguments the <see cref="TestConfigurationWebHostBuilderExtensions.UseConfigurationValue"/>.
+        /// Validates arguments the <see cref="TestConfigurationBuilderExtensions.UseConfigurationValue(IHostBuilder,string,string)"/>.
         /// </summary>
         [Theory]
-        [InlineData(null,"value1", "Cannot be null or empty. (Parameter 'key')")]
-        [InlineData("","value1", "Cannot be null or empty. (Parameter 'key')")]
-        [InlineData("some-key",null, "Cannot be null or empty. (Parameter 'value')")]
-        [InlineData("some-key","", "Cannot be null or empty. (Parameter 'value')")]
+        [InlineData(null, "value1", "Cannot be null or empty. (Parameter 'key')")]
+        [InlineData("", "value1", "Cannot be null or empty. (Parameter 'key')")]
+        [InlineData("some-key", null, "Cannot be null or empty. (Parameter 'value')")]
+        [InlineData("some-key", "", "Cannot be null or empty. (Parameter 'value')")]
         public void WebHostValidateArguments(string key, string value, string exceptionMessage)
         {
             var exception = Should.Throw<ArgumentException>(() =>
@@ -56,7 +56,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         }
 
         /// <summary>
-        /// Tests that the <see cref="TestConfigurationHostBuilderExtensions.UseConfigurationValue"/>
+        /// Tests that the <see cref="TestConfigurationBuilderExtensions.UseConfigurationValue(IHostBuilder,string,string)"/>
         /// sets the configuration value on the <see cref="IConfiguration"/>.
         /// </summary>
         [Fact]
@@ -64,8 +64,8 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         {
             var host = Host
                 .CreateDefaultBuilder()
-                .UseConfigurationValue(key:"SomeValue1",value:"value-1") 
-                .UseConfigurationValue(key:"SomeValue2",value:"value-2") 
+                .UseConfigurationValue(key: "SomeValue1", value: "value-1")
+                .UseConfigurationValue(key: "SomeValue2", value: "value-2")
                 .Build();
             var configuration = (ConfigurationRoot)host.Services.GetRequiredService<IConfiguration>();
             configuration.GetValue<string>(key: "SomeValue1").ShouldBe("value-1");
@@ -73,7 +73,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         }
 
         /// <summary>
-        /// Tests that the <see cref="TestConfigurationWebHostBuilderExtensions.UseConfigurationValue"/>
+        /// Tests that the <see cref="TestConfigurationBuilderExtensions.UseConfigurationValue(IHostBuilder,string,string)"/>
         /// sets the configuration value  on the <see cref="IConfiguration"/>.
         /// </summary>
         [Fact]

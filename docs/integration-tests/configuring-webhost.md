@@ -85,6 +85,10 @@ The `IWebHostBuilder.AddTestConfiguration` extension method does not take the en
 
 Both the `appsettings.json` and `appsettings.Default.json` are loaded as configuration sources. You don't need to make sure the app is running with the `ASPNETCORE_ENVIRONMENT` environment variable set to `Default`.
 
+## Notes
+
+This extension method works for both `IWebHostBuilder` and `IHostBuilder`.
+
 ## How to run the demo
 
 The demo for this extension is represented by a test class.

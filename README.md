@@ -67,8 +67,6 @@ This project is licensed under the [MIT license](https://licenses.nuget.org/MIT)
 
 ## TODO
 
-
-* similar method to WebHostBuilderExtensions.AddTestAppSettings but for IHost instead of WebHost
 * http mocking (.UseHttpMocks or MockHttpResponse methods) should allow access to the service provider
 * investigate how to test using Ilogger
 * investigate serilog logging test extensions for integration tests

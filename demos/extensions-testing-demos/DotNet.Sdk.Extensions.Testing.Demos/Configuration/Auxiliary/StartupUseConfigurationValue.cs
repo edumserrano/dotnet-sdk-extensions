@@ -39,6 +39,6 @@ namespace DotNet.Sdk.Extensions.Testing.Demos.Configuration.Auxiliary
 
     public class MyOptions
     {
-        public string Option1 { get; set; }
+        public string Option1 { get; set; } = default!;
     }
 }
