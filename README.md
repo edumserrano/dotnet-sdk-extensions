@@ -68,7 +68,7 @@ This project is licensed under the [MIT license](https://licenses.nuget.org/MIT)
 ## TODO
 
 
-* overwrite configuration items on options without adding a whole new appsettings
+* similar method to WebHostBuilderExtensions.AddTestAppSettings but for IHost instead of WebHost
 * http mocking (.UseHttpMocks or MockHttpResponse methods) should allow access to the service provider
 * investigate how to test using Ilogger
 * investigate serilog logging test extensions for integration tests
@@ -76,40 +76,14 @@ This project is licensed under the [MIT license](https://licenses.nuget.org/MIT)
 * explain how to set loglevels for integration tests output https://docs.microsoft.com/en-us/aspnet/core/fundamentals/logging/?view=aspnetcore-5.0#configure-logging
   * maybe add it as an extension and use it on where I have similar functionality (HostBuilderExtensions and HttpMockServerBuilderExtensions)
 * create an issue on the repo to allow testing https. need to figure out how to configure a cert. Look for TODO on the codebase
+* useful serilog related guides/extensions/enrichers?
 * make sure servers are disposed on the tests and demo tests
-* replace the configuration usages as below with the new extension method to inject configuration values that is also based on the below configuration
+* note to docs about configuration on integration tests that another way to do it should be to use:
+* where to save info about how to use splunk + docker + asp.net core app (+ serilog?)
+* note about using async local to implement data sharing on the context of a request execution (see my elapsedStats implementation)
 
 * move packages from alpha to stable and update it on demo sln
 * any readme missing?
-```
-.ConfigureAppConfiguration((context, builder) =>
-                {
-                    var memoryConfigurationSource = new MemoryConfigurationSource
-                    {
-                        InitialData = new List<KeyValuePair<string, string>>
-                            {
-                                new KeyValuePair<string, string>("SomeOption", "some value")
-                            }
-                    };
-                    builder.Add(memoryConfigurationSource);
-                })
-```
-* note to docs about configuration on integration tests that another way to do it should be to use:
-```
- var web = _web.WithWebHostBuilder(
-                builder => builder
-                    .ConfigureServices(sc => sc.Configure<RequestLoggingOptions>(options =>
-                    {
-                        options.Logger = logger;
-                        options.EnrichDiagnosticContext += (diagnosticContext, httpContext) =>
-                        {
-                            diagnosticContext.Set("SomeString", "string");
-                        };
-                    }))
-```
-* similar method to WebHostBuilderExtensions.AddTestAppSettings but for IHost instead of WebHost
-* where to save info about how to use splunk + docker + asp.net core app (+ serilog?)
-* note about using async local to implement data sharing on the context of a request execution (see my elapsedStats implementation)
 
 ## Notes
 
