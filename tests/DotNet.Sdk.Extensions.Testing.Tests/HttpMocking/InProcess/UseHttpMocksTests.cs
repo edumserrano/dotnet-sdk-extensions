@@ -6,6 +6,10 @@ using DotNet.Sdk.Extensions.Testing.HttpMocking.InProcess;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.InProcess.ResponseMocking;
 using DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess.Auxiliary.UseHttpMocks;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Shouldly;
 using Xunit;
 
@@ -189,7 +193,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess
             var message = await response.Content.ReadAsStringAsync();
             message.ShouldBe("MyApiClient typed http client with custom name my-typed-client-2 returned: True");
         }
-        
+
         /// <summary>
         /// Tests the <seealso cref="HttpMessageHandlersReplacer.MockHttpResponse(HttpResponseMessageMockDescriptorBuilder)"/> API where you
         /// can define the mocks before hand instead of being inline.
@@ -256,6 +260,51 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess
             var response2 = await httpClient.GetAsync("/named-client");
             var message2 = await response2.Content.ReadAsStringAsync();
             message2.ShouldBe("Named http client (my-named-client) returned: True");
+        }
+
+        /// <summary>
+        /// Tests the overload <seealso cref="HttpMessageHandlersReplacer.MockHttpResponse(Action{IServiceProvider,HttpResponseMessageMockDescriptorBuilder})"/>
+        /// that provides access to the <see cref="IServiceProvider"/>.
+        /// This test adds a configuration value which can then be retrieved by getting the <see cref="IConfiguration"/>
+        /// from the <see cref="IServiceProvider"/>. The mock response is then configured to return OK if the value
+        /// matches what was configured before or InternalServer error if not.
+        /// The Startup class used for the <see cref="WebApplicationFactory{TEntryPoint}"/> on this test for the endpoint
+        /// /basic-client will return "Basic http client returned: True" if response from the basic http client
+        /// returns a successful status code and ""Basic http client returned: False" if the basic http client
+        /// returns a failed status code.
+        /// </summary>
+        [Fact]
+        public async Task MockHttpResponseOverloadWithServiceProvider()
+        {
+            var httpClient = _webApplicationFactory
+                .WithWebHostBuilder(webHostBuilder =>
+                {
+                    // Add a test setting to have something to retrieve from the service provider below.
+                    // This could be anything present on the service provider that you require to help
+                    // create a mock for the HttpResponseMessage.
+                    webHostBuilder.UseSetting("SomeOption", "my-option-value");
+                    webHostBuilder.UseHttpMocks(handlers =>
+                    {
+                        handlers.MockHttpResponse((serviceProvider, httpResponseMessageBuilder) =>
+                        {
+                            var configuration = serviceProvider.GetRequiredService<IConfiguration>();
+                            var valueFromConfiguration = configuration.GetValue<string>("SomeOption");
+                            httpResponseMessageBuilder
+                                .ForBasicClient()
+                                .RespondWith(httpRequestMessage =>
+                                {
+                                    return valueFromConfiguration.Equals("my-option-value", StringComparison.OrdinalIgnoreCase)
+                                        ? new HttpResponseMessage(HttpStatusCode.OK)
+                                        : new HttpResponseMessage(HttpStatusCode.InternalServerError);
+                                });
+                        });
+                    });
+                })
+                .CreateClient();
+
+            var response = await httpClient.GetAsync("/basic-client");
+            var message = await response.Content.ReadAsStringAsync();
+            message.ShouldBe("Basic http client returned: True");
         }
     }
 }

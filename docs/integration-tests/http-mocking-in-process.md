@@ -352,6 +352,59 @@ public class HttpMocksDemoTests : IClassFixture<WebApplicationFactory<Startup>>
 }
 ```
 
+## Configure the http response mocks with access to the `IServiceProvider`
+
+If you need to configure the http response mock based on data that depends on what is present on the `IServiceCollection` then you can use the overload that gives you access to the `IServiceProvider` to retrieve what you require. For instance:
+
+```
+public class HttpMocksDemoTests : IClassFixture<WebApplicationFactory<Startup>>
+{
+    private readonly WebApplicationFactory<Startup> _webApplicationFactory;
+
+    public HttpMocksDemoTests(WebApplicationFactory<Startup> webApplicationFactory)
+    {
+        _webApplicationFactory = webApplicationFactory;
+    }
+
+    [Fact]
+    public void DemoTest()
+    {
+        var httpClient = _webApplicationFactory
+            .WithWebHostBuilder(builder =>
+            {
+                builder.UseSetting("SomeOption", "my-option-value");
+                builder
+                    .ConfigureTestServices(services =>
+                    {
+                        // inject mocks for any other services
+                    })
+                    .UseHttpMocks(handlers =>
+                    {
+                        handlers.MockHttpResponse((serviceProvider, httpResponseMessageBuilder) =>
+                        {
+                            var configuration = serviceProvider.GetRequiredService<IConfiguration>();
+                            var valueFromConfiguration = configuration.GetValue<string>("SomeOption");
+                            httpResponseMessageBuilder
+                                .ForTypedClient<IMyApiClient>()
+                                .RespondWith(httpRequestMessage =>
+                                {
+                                    var httpResponseMessage = new HttpResponseMessage(HttpStatusCode.OK);
+                                    httpResponseMessage.Headers.Add("some-header", valueFromConfiguration);
+                                    return httpResponseMessage;
+                                });
+                        });
+                    });
+            }).CreateClient();
+
+        // do some calls to your app via the httpClient and then some asserts
+    }
+}
+```
+
+In the above example we are retrieving the configuration value for the key `SomeOption` from the `IConfiguration` instance that we got from the `IServiceProvider` and setting it as the value of the header `some-header` for the mocked response.
+
+The above code is just for example. In reality you will probably want to retrieve some data from the `IServiceProvider` that was added to the `IServiceCollection` by the `Startup` class that is used by the `WebApplicationFactory<Startup>`.
+
 ## How to run the demo
 
 The demo for this extension is represented by a test class.

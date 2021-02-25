@@ -22,7 +22,23 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.InProcess
             _services = services ?? throw new ArgumentNullException(nameof(services));
             _httpResponseMockBuilders = new List<HttpResponseMessageMockDescriptorBuilder>();
         }
-        
+
+        /// <summary>
+        /// Mocks an <see cref="HttpResponseMessage"/>.
+        /// </summary>
+        /// <param name="configure">An action to configure the <see cref="HttpResponseMessage"/> mock.</param>
+        /// <returns>The <see cref="HttpMessageHandlersReplacer"/> for chaining.</returns>
+        public HttpMessageHandlersReplacer MockHttpResponse(Action<IServiceProvider, HttpResponseMessageMockDescriptorBuilder> configure)
+        {
+            if (configure is null) throw new ArgumentNullException(nameof(configure));
+
+            var serviceProvider = _services.BuildServiceProvider();
+            var builder = new HttpResponseMessageMockDescriptorBuilder();
+            configure(serviceProvider, builder);
+            _httpResponseMockBuilders.Add(builder);
+            return this;
+        }
+
         /// <summary>
         /// Mocks an <see cref="HttpResponseMessage"/>.
         /// </summary>

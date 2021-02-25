@@ -67,7 +67,6 @@ This project is licensed under the [MIT license](https://licenses.nuget.org/MIT)
 
 ## TODO
 
-* http mocking (.UseHttpMocks or MockHttpResponse methods) should allow access to the service provider
 * investigate how to test using Ilogger
 * investigate serilog logging test extensions for integration tests
   * investigate test sink (search github) and look at how the test is done for the enricher https://github.com/serilog/serilog-enrichers-environment/commit/24c1c874ed4044ec488a5119130c869d328f9fbd  
