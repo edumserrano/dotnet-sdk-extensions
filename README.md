@@ -60,7 +60,7 @@ For more information on how to debug the NuGet packages code from your applicati
 - [Exploring .NET Core's SourceLink - Stepping into the Source Code of NuGet packages you don't own](https://www.hanselman.com/blog/exploring-net-cores-sourcelink-stepping-into-the-source-code-of-nuget-packages-you-dont-own)
 - [How to Configure Visual Studio to Use SourceLink to Step into NuGet Package Source](https://aaronstannard.com/visual-studio-sourcelink-setup/)
 - [Source Link - microsoft docs](https://docs.microsoft.com/en-us/dotnet/standard/library-guidance/sourcelink)
-- 
+
 ## License
 
 This project is licensed under the [MIT license](https://licenses.nuget.org/MIT).
