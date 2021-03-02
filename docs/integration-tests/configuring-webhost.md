@@ -21,7 +21,7 @@ Let's say that you create a directory in the root of the test project named *App
 
 Given this you can do a test as shown by the DemoTest method below:
 
-```
+```csharp
 public class ConfigurationDemoTests : IClassFixture<WebApplicationFactory<Startup>>
 {
     private readonly WebApplicationFactory<Startup> _webApplicationFactory;

@@ -50,7 +50,7 @@ My first attempt was to use the WebApplicationFactory\<T> where the type T would
 
 So what I have to do is create a custom WebApplicationFactory\<T> as such:
 
-```
+```csharp
 public class CustomWebApplicationFactory : WebApplicationFactory<SomeTypeInMyTestsProject>
 {
     protected override IHostBuilder CreateHostBuilder()
@@ -68,7 +68,7 @@ Now we are a bit better but we start having another issue. The problem is [how t
 
 Ok, so how do we resolve this. One way would be by setting the content root on the `ConfigureWebHost` method:
 
-```
+```csharp
 public class CustomWebApplicationFactory : WebApplicationFactory<SomeTypeInMyTestsProject>
 {
     protected override void ConfigureWebHost(IWebHostBuilder builder)
@@ -91,7 +91,7 @@ public class CustomWebApplicationFactory : WebApplicationFactory<SomeTypeInMyTes
 
 As a side note moving the `UseContentRoot` to the `CreateHostBuilder` does NOT work:
 
-```
+```csharp
 public class CustomWebApplicationFactory : WebApplicationFactory<SomeTypeInMyTestsProject>
 {
     protected override IHostBuilder CreateHostBuilder()
@@ -110,7 +110,7 @@ I don't know why and I didn't research further.
 
 However moving the `UseStartup` to `ConfigureWebHost` still produces the expected outcome:
 
-```
+```csharp
 public class CustomWebApplicationFactory : WebApplicationFactory<SomeTypeInMyTestsProject>
 {
     protected override void ConfigureWebHost(IWebHostBuilder builder)

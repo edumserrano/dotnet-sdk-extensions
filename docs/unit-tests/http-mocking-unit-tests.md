@@ -18,42 +18,42 @@ Let's assume that the class that you want to unit test is a class called `MyAwes
 
 For us to unit test the `MyAwesomeOutboundDependency` we now need to be able to control the responses from the `HttpClient`. We can do that as follows:
 
-```
+```csharp
 public class HttpClientMocksDemoTests : IClassFixture<WebApplicationFactory<Startup>>
 {
-	[Fact]
-	public void DemoTest()
-	{
-		// prepare the http mocks
-		var httpResponseMessageMock = new HttpResponseMessageMockBuilder()
-			.Where(httpRequestMessage =>
-			{
-				return httpRequestMessage.Method == HttpMethod.Get &&
-					httpRequestMessage.RequestUri.PathAndQuery.Equals("/some-http-call");
-			})
-			.RespondWith(httpRequestMessage =>
-			{
-				var httpResponseMessage = new HttpResponseMessage(HttpStatusCode.Created);
-				httpResponseMessage.Content = new StringContent("mocked value");
-				return httpResponseMessage;
-			})
-			.Build();
+    [Fact]
+    public void DemoTest()
+    {
+        // prepare the http mocks
+        var httpResponseMessageMock = new HttpResponseMessageMockBuilder()
+            .Where(httpRequestMessage =>
+            {
+                return httpRequestMessage.Method == HttpMethod.Get &&
+                    httpRequestMessage.RequestUri.PathAndQuery.Equals("/some-http-call");
+            })
+            .RespondWith(httpRequestMessage =>
+            {
+                var httpResponseMessage = new HttpResponseMessage(HttpStatusCode.Created);
+                httpResponseMessage.Content = new StringContent("mocked value");
+                return httpResponseMessage;
+            })
+            .Build();
 
-		// add the mocks to the http handler
-		var handler = new TestHttpMessageHandler();
-		handler.MockHttpResponse(httpResponseMessageMock);
+        // add the mocks to the http handler
+        var handler = new TestHttpMessageHandler();
+        handler.MockHttpResponse(httpResponseMessageMock);
 
-		// instantiate the http client with the test handler
-		var httpClient = new HttpClient(handler);
-		var sut = new MyAwesomeOutboundDependency(httpClient);
+        // instantiate the http client with the test handler
+        var httpClient = new HttpClient(handler);
+        var sut = new MyAwesomeOutboundDependency(httpClient);
 
-		// in this example the sut.DoSomeHttpCall method call will do a GET request to the path /some-http-call
-		// so it will match our mock conditions defined above and the mock response will be returned
-		var response = await sut.DoSomeHttpCall(); 
-		response.StatusCode.ShouldBe(HttpStatusCode.Created);
-		var responseBody = await response.Content.ReadAsStringAsync();
-		responseBody.ShouldBe("mocked value");
-	}
+        // in this example the sut.DoSomeHttpCall method call will do a GET request to the path /some-http-call
+        // so it will match our mock conditions defined above and the mock response will be returned
+        var response = await sut.DoSomeHttpCall(); 
+        response.StatusCode.ShouldBe(HttpStatusCode.Created);
+        var responseBody = await response.Content.ReadAsStringAsync();
+        responseBody.ShouldBe("mocked value");
+    }
 }
 ```
 
@@ -61,28 +61,28 @@ public class HttpClientMocksDemoTests : IClassFixture<WebApplicationFactory<Star
 
 You can mock multiple http responses:
 
-```
+```csharp
 // prepare the http mocks
 var someHttpCallMock = new HttpResponseMessageMockBuilder()
-	.Where(httpRequestMessage => httpRequestMessage.RequestUri.PathAndQuery.Equals("/some-http-call"))
-	.RespondWith(httpRequestMessage => new HttpResponseMessage(HttpStatusCode.Created)
-	{
-		Content = new StringContent("some mocked value")
-	})
-	.Build();
+    .Where(httpRequestMessage => httpRequestMessage.RequestUri.PathAndQuery.Equals("/some-http-call"))
+    .RespondWith(httpRequestMessage => new HttpResponseMessage(HttpStatusCode.Created)
+    {
+        Content = new StringContent("some mocked value")
+    })
+    .Build();
 var anotherHttpCallMock = new HttpResponseMessageMockBuilder()
-	.Where(httpRequestMessage => httpRequestMessage.RequestUri.PathAndQuery.Equals("/another-http-call"))
-	.RespondWith(httpRequestMessage => new HttpResponseMessage(HttpStatusCode.Accepted)
-	{
-		Content = new StringContent("another mocked value")
-	})
-	.Build();
+    .Where(httpRequestMessage => httpRequestMessage.RequestUri.PathAndQuery.Equals("/another-http-call"))
+    .RespondWith(httpRequestMessage => new HttpResponseMessage(HttpStatusCode.Accepted)
+    {
+        Content = new StringContent("another mocked value")
+    })
+    .Build();
 
 // add the mocks to the http handler
 var handler = new TestHttpMessageHandler();
 handler
-	.MockHttpResponse(someHttpCallMock)
-	.MockHttpResponse(anotherHttpCallMock);
+    .MockHttpResponse(someHttpCallMock)
+    .MockHttpResponse(anotherHttpCallMock);
 ```
 
 ## Different ways to mock the HttpClient response
@@ -91,14 +91,14 @@ You can mock the http responses before hand or inline with the `TestHttpMessageH
 
 Mocking the responses before hand looks like this:
 
-```
+```csharp
 var someHttpCallMock = new HttpResponseMessageMockBuilder()
-	.Where(httpRequestMessage => httpRequestMessage.RequestUri.PathAndQuery.Equals("/some-http-call"))
-	.RespondWith(httpRequestMessage => new HttpResponseMessage(HttpStatusCode.Created)
-	{
-		Content = new StringContent("some mocked value")
-	})
-	.Build();
+    .Where(httpRequestMessage => httpRequestMessage.RequestUri.PathAndQuery.Equals("/some-http-call"))
+    .RespondWith(httpRequestMessage => new HttpResponseMessage(HttpStatusCode.Created)
+    {
+        Content = new StringContent("some mocked value")
+    })
+    .Build();
 
 var handler = new TestHttpMessageHandler();
 handler.MockHttpResponse(someHttpCallMock);
@@ -106,21 +106,21 @@ handler.MockHttpResponse(someHttpCallMock);
 
 Mocking the responses inline looks like this:
 
-```
+```csharp
 var handler = new TestHttpMessageHandler();
 handler.MockHttpResponse(builder =>
 {
-	builder.Where(httpRequestMessage => 
-	{
-		return httpRequestMessage.Method == HttpMethod.Get &&
-				httpRequestMessage.RequestUri.PathAndQuery.Equals("/some-http-call");
-	})
-	.RespondWith(httpRequestMessage =>
-	{
-		var httpResponseMessage = new HttpResponseMessage(HttpStatusCode.Created);
-		httpResponseMessage.Content = new StringContent("mocked value");
-		return httpResponseMessage;
-	});
+    builder.Where(httpRequestMessage => 
+    {
+        return httpRequestMessage.Method == HttpMethod.Get &&
+                httpRequestMessage.RequestUri.PathAndQuery.Equals("/some-http-call");
+    })
+    .RespondWith(httpRequestMessage =>
+    {
+        var httpResponseMessage = new HttpResponseMessage(HttpStatusCode.Created);
+        httpResponseMessage.Content = new StringContent("mocked value");
+        return httpResponseMessage;
+    });
 });
 ```
 
@@ -130,7 +130,7 @@ There is no recommendation on any of the different ways to do the mocking. You s
 
 You can also test timeouts by configuring the http response mock using the `HttpResponseMessageMockBuilder.TimesOut` instead of the `HttpResponseMessageMockBuilder.RespondsWith` method as such:
 
-```
+```csharp
 var handler = new TestHttpMessageHandler();
 handler.MockHttpResponse(builder => builder.TimesOut(TimeSpan.FromMilliseconds(1)));
 
@@ -141,11 +141,11 @@ var httpClient = new HttpClient(handler);
 Exception? expectedException = null;
 try
 {
-	await httpClient.GetAsync("/");
+    await httpClient.GetAsync("/");
 }
 catch (Exception exception)
 {
-	expectedException = exception;
+    expectedException = exception;
 }
 
 // show that you get the expected timeout exception
@@ -164,50 +164,50 @@ expectedException.InnerException.Message.ShouldBe("A task was canceled.");
 
 Explicit predicate with the `HttpResponseMessageMockBuilder.Where` method:
 
-```
+```csharp
 var handler = new TestHttpMessageHandler();
 handler.MockHttpResponse(builder =>
 {
-	builder.Where(httpRequestMessage => 
-	{
-		return true;
-	})
-	.RespondWith(httpRequestMessage =>
-	{
-		return new HttpResponseMessage(HttpStatusCode.Created);
-	});
+    builder.Where(httpRequestMessage => 
+    {
+        return true;
+    })
+    .RespondWith(httpRequestMessage =>
+    {
+        return new HttpResponseMessage(HttpStatusCode.Created);
+    });
 });
 ```
 
 Default predicate without the `HttpResponseMessageMockBuilder.Where` method:
 
-```
+```csharp
 var handler = new TestHttpMessageHandler();
 handler.MockHttpResponse(builder =>
 {
-	builder.RespondWith(httpRequestMessage =>
-	{
-		return new HttpResponseMessage(HttpStatusCode.Created);
-	});
+    builder.RespondWith(httpRequestMessage =>
+    {
+        return new HttpResponseMessage(HttpStatusCode.Created);
+    });
 });
 ```
 
 * When two or more mocks have a where clause that will match for the same request, the first mock added to the `TestHttpMessageHandler` is the one that takes effect. For instance:
 
-```
+```csharp
 var handler = new TestHttpMessageHandler()
-	.MockHttpResponse(builder =>
-	{
-		builder
-			.Where(httpRequestMessage => httpRequestMessage.RequestUri.Host.Equals("test.com"))
-			.RespondWith(new HttpResponseMessage(HttpStatusCode.BadRequest));
-	})
-	.MockHttpResponse(builder =>
-	{
-		builder
-			.Where(httpRequestMessage => httpRequestMessage.RequestUri.Host.Equals("test.com"))
-			.RespondWith(new HttpResponseMessage(HttpStatusCode.InternalServerError));
-	});
+    .MockHttpResponse(builder =>
+    {
+        builder
+            .Where(httpRequestMessage => httpRequestMessage.RequestUri.Host.Equals("test.com"))
+            .RespondWith(new HttpResponseMessage(HttpStatusCode.BadRequest));
+    })
+    .MockHttpResponse(builder =>
+    {
+        builder
+            .Where(httpRequestMessage => httpRequestMessage.RequestUri.Host.Equals("test.com"))
+            .RespondWith(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+    });
 
 var httpClient = new HttpClient(handler);
 var httpResponseMessage = await httpClient.GetAsync("https://test.com");

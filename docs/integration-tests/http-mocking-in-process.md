@@ -34,7 +34,7 @@ Start by creating an integration test as shown in [introduction to integration t
 
 After, configure the responses of the HttpClient by using the `IWebHostBuilder.UseHttpMocks` extension method. See example DemoTest:
 
-```
+```csharp
 public class HttpMocksDemoTests : IClassFixture<WebApplicationFactory<Startup>>
 {
     private readonly WebApplicationFactory<Startup> _webApplicationFactory;
@@ -85,7 +85,7 @@ When mocking the http responses, the way you create the mock response varies dep
 
 For typed clients you need to provide the type of the client when using `HttpResponseMessageMockDescriptorBuilder.ForTypedClient`:
 
-```
+```csharp
 var httpResponseMock = new HttpResponseMessageMockDescriptorBuilder();
 httpResponseMock
     .ForTypedClient<IMyApiClient>()
@@ -97,7 +97,7 @@ httpResponseMock
 
 For named clients you need to provide the name of the client when using `HttpResponseMessageMockDescriptorBuilder.ForNamedClient`:
 
-```
+```csharp
 var httpResponseMock = new HttpResponseMessageMockDescriptorBuilder();
 httpResponseMock
     .ForNamedClient("ClientName")
@@ -109,7 +109,7 @@ httpResponseMock
 
 For http clients created following the Basic usage of the `IHttpClientFactory` use the `HttpResponseMessageMockDescriptorBuilder.ForBasicClient`:
 
-```
+```csharp
 var httpResponseMock = new HttpResponseMessageMockDescriptorBuilder();
 httpResponseMock
     .ForBasicClient()
@@ -125,7 +125,7 @@ You can mock responses conditially by using the `HttpResponseMessageMockBuilder.
 
 Imagine that you have a typed client which implemented 3 different API calls but you only wanted to mock the response for one of them. You can do:
 
-```
+```csharp
 var httpResponseMock = new HttpResponseMessageMockDescriptorBuilder();
 httpResponseMock
     .ForTypedClient<IMyApiClient>()
@@ -151,7 +151,7 @@ If you create a mock for an `HttpClient` and no condition is met you will receiv
 
 You can mock multiple http responses:
 
-```
+```csharp
 var usersHttpResponseMock = new HttpResponseMessageMockDescriptorBuilder();
 usersHttpResponseMock
     .ForTypedClient<IMyApiClient>()
@@ -179,7 +179,7 @@ usersHttpResponseMock
 
 and then feed the mocks to the `IWebHostBuilder.UseHttpMocks` extension method:
 
-```
+```csharp
 UseHttpMocks(handlers =>
 {
     handlers
@@ -198,7 +198,7 @@ Let's see some examples:
 
 1) Configuring the http response mocks inline with the `HttpMessageHandlersReplacer.MockHttpResponse` method:
 
-```
+```csharp
 public class HttpMocksDemoTests : IClassFixture<WebApplicationFactory<Startup>>
 {
     private readonly WebApplicationFactory<Startup> _webApplicationFactory;
@@ -240,7 +240,7 @@ public class HttpMocksDemoTests : IClassFixture<WebApplicationFactory<Startup>>
 
 2) Configuring the http response mocks before hand and using them with `IWebHostBuilder.UseHttpMocks` inline:
 
-```
+```csharp
 public class HttpMocksDemoTests : IClassFixture<WebApplicationFactory<Startup>>
 {
     private readonly WebApplicationFactory<Startup> _webApplicationFactory;
@@ -299,7 +299,7 @@ public class HttpMocksDemoTests : IClassFixture<WebApplicationFactory<Startup>>
 
 3) Configuring the http response mocks before hand and using them with `IWebHostBuilder.UseHttpMocks` non inline:
 
-```
+```csharp
 public class HttpMocksDemoTests : IClassFixture<WebApplicationFactory<Startup>>
 {
     private readonly WebApplicationFactory<Startup> _webApplicationFactory;
@@ -356,7 +356,7 @@ public class HttpMocksDemoTests : IClassFixture<WebApplicationFactory<Startup>>
 
 If you need to configure the http response mock based on data that depends on what is present on the `IServiceCollection` then you can use the overload that gives you access to the `IServiceProvider` to retrieve what you require. For instance:
 
-```
+```csharp
 public class HttpMocksDemoTests : IClassFixture<WebApplicationFactory<Startup>>
 {
     private readonly WebApplicationFactory<Startup> _webApplicationFactory;

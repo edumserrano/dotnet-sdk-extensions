@@ -12,7 +12,7 @@ By default when running integration tests you will see several log messages from
 
 Start by creating an integration test as shown in [introduction to integration tests](https://docs.microsoft.com/en-us/aspnet/core/test/integration-tests?#introduction-to-integration-tests). After you can disable logs as follows:
 
-```
+```csharp
 public class ConfigurationDemoTests : IClassFixture<WebApplicationFactory<Startup>>
 {
     private readonly WebApplicationFactory<Startup> _webApplicationFactory;

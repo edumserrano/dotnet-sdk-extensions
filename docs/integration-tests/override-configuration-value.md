@@ -12,7 +12,7 @@ In [Providing test appsettings files to the test server](./configuring-webhost.m
 
 Start by creating an integration test as shown in [introduction to integration tests](https://docs.microsoft.com/en-us/aspnet/core/test/integration-tests?#introduction-to-integration-tests). After you can set configuration values as follows:
 
-```
+```csharp
 public class ConfigurationDemoTests : IClassFixture<WebApplicationFactory<Startup>>
 {
     private readonly WebApplicationFactory<Startup> _webApplicationFactory;
@@ -46,7 +46,7 @@ You can call the method several times to configure multiple values.
 
 Optionally you can use the method provided in [Providing test appsettings files to the test server](./configuring-webhost.md) and then override some configuration values:
 
-```
+```csharp
 public class ConfigurationDemoTests : IClassFixture<WebApplicationFactory<Startup>>
 {
     private readonly WebApplicationFactory<Startup> _webApplicationFactory;
@@ -91,7 +91,7 @@ For instance, if we have the following `appsettings.json`:
 
 You can set the configuration value for `SomeOption` by calling:
 
-```
+```csharp
 builder.UseConfigurationValue(key: "MyOptionsSection:SomeOption", value: "some-option-value")
 ```
 
@@ -101,7 +101,7 @@ builder.UseConfigurationValue(key: "MyOptionsSection:SomeOption", value: "some-o
 
 If you are using a `IWebHostBuilder` then you can make use of the `IWebHostBuilder.SetSetting` as follows:
 
-```
+```csharp
 public class ConfigurationDemoTests : IClassFixture<WebApplicationFactory<Startup>>
 {
     private readonly WebApplicationFactory<Startup> _webApplicationFactory;
@@ -138,7 +138,7 @@ If you are using typed options classes you can also override the configuration v
 
 Let's say you have an options classed defined by the type `MyOptions` as follows:
 
-```
+```csharp
 public class MyOptions
 {
     public string SomeOption { get; set; }
@@ -148,7 +148,7 @@ public class MyOptions
 And that you are [binding the `MyOptions` type in the `Startup` class](https://docs.microsoft.com/en-us/dotnet/core/extensions/options). If you want to set the value of the `MyOptions.SomeOption` for an integration test you can do as follows:
 
 
-```
+```csharp
 public class ConfigurationDemoTests : IClassFixture<WebApplicationFactory<Startup>>
 {
     private readonly WebApplicationFactory<Startup> _webApplicationFactory;

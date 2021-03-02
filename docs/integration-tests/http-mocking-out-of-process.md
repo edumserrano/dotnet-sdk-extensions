@@ -20,7 +20,7 @@ Start by creating an integration test as shown in [introduction to integration t
 
 After, setup the `HttpMockServer` and configure the `WebApplicationFactory` so that the `HttpClient(s)` required for the test send their requests to the `HttpMockServer` by having their base address set to the `HttpMockServer's` listening URL. See example DemoTest:
 
-```
+```csharp
 public class HttpMocksDemoTests : IClassFixture<WebApplicationFactory<Startup>>
 {
     private readonly WebApplicationFactory<Startup> _webApplicationFactory;
@@ -73,7 +73,7 @@ There are two ways to setup the `HttpMockServer`:
 
 This way let's you define the http response mocks before hand using the `HttpResponseMockBuilder`, then you use the `HttpMockServerBuilder.UseHttpResponseMocks` and set the mocks you want the server to use.
 
-```
+```csharp
 var httpResponseMock1 = new HttpResponseMockBuilder()
     .Where(httpRequest => httpRequest.Path.Equals("/path-a"))
     .RespondWith((request, response) => response.StatusCode = StatusCodes.Status200OK)
@@ -99,7 +99,7 @@ This way let's you move the configuration of the `HttpMockServer` into a separat
 
 Start by defining a `Startup` class as you see fit. The example below shows a very simple `Startup` where it will return `201` status code with a hello string body for any request to the `/hello` request path. Otherwise it returns a `500` status code.
 
-```
+```csharp
 public class MyMockStartup
 {
     public void ConfigureServices(IServiceCollection services)
@@ -134,7 +134,7 @@ For an example of a mock `Startup` using controllers see [the demos](#how-to-run
 
 After you have a mock `Startup` class configure the `HttpMockServer` as follows:
 
-```
+```csharp
 await using var httpMockServer = new HttpMockServerBuilder()
 	.UseStartup<MyMockStartup>()
 	.Build();
@@ -153,7 +153,7 @@ The `HttpMockServer's` Host is created using the `IHostBuilder.CreateDefaultBuil
 
 So let's say that you want to set the environment configuration value for the `HttpMockServer`. You could do it as:
 
-```
+```csharp
 await using var httpMockServer = new HttpMockServerBuilder()
     .UseHostArgs("--environment", "http://*:8811;https://*:9911")
     .UseHttpResponseMocks() // or use the HttpMockServerBuilder.UseStartup<T> method
@@ -166,7 +166,7 @@ You can pass in any number of host arguments. The arguments will be concatenated
 
 One of the most obvious configuration values you want to define for the `HttpMockServer` is the URL where the server is listening for requests. Although you could configure that by using the `HttpMockServerBuilder.UseHostArgs`:
 
-```
+```csharp
 await using var httpMockServer = new HttpMockServerBuilder()
     .UseHostArgs("--urls", "http://*:8811;https://*:9911")
     .UseHttpResponseMocks() // or use the HttpMockServerBuilder.UseStartup<T> method
@@ -175,7 +175,7 @@ await using var httpMockServer = new HttpMockServerBuilder()
 
 for convinience we also provide the the `HttpMockServerBuilder.UseUrl` method which you can use as follows:
 
-```
+```csharp
 await using var httpMockServer = new HttpMockServerBuilder()
     .UseUrl(HttpScheme.Http, 8811)
     .UseUrl(HttpScheme.Http, 8822)
@@ -195,7 +195,7 @@ You might want to disable the log output produced by the `HttpMockServer`, for i
 
 If you want to do this then use the `HttpMockServerBuilder.UseDefaultLogLevel` and set the log level to `LogLevel.None` as follows:
 
-```
+```csharp
 await using var httpMockServer = new HttpMockServerBuilder()
     .UseDefaultLogLevel(LogLevel.None)
     .UseHttpResponseMocks() // or use the HttpMockServerBuilder.UseStartup<T> method
