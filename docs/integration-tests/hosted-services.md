@@ -17,7 +17,7 @@ At the moment, the solution for this is to change your Host to a WebHost. If you
 
 By default on the Worker Service template, the `IHost` instance is created as follows:
 
-```
+```csharp
 public static IHostBuilder CreateHostBuilder(string[] args) =>
 Host.CreateDefaultBuilder(args)
     .ConfigureServices((hostContext, services) =>
@@ -28,7 +28,7 @@ Host.CreateDefaultBuilder(args)
 
 To be able to use this testing extension you should change it to:
 
-```
+```csharp
 public static IHostBuilder CreateHostBuilder(string[] args) =>
     Host.CreateDefaultBuilder(args)		
         .ConfigureWebHostDefaults(webBuilder =>
@@ -39,7 +39,7 @@ public static IHostBuilder CreateHostBuilder(string[] args) =>
 
 And on the `ConfigureServices method` of the `Startup` class is where you add any Hosted Services you require:
 
-```
+```csharp
 public class Startup
 {
     private readonly IConfiguration _configuration;
@@ -85,7 +85,7 @@ Assume that we have an `ICalculator` type added to the `IServiceColletion` as pa
 
 Given this example you could implement a test that would wait for the `ICalculator.Sum` method to be called 3 times and only then do your asserts. See the DemoTest below:
 
-```
+```csharp
 public interface ICalculator
 {
     int Sum(int left, int right);
@@ -143,7 +143,7 @@ If you prefer to run the web server for a period of time before terminating it y
 
 Given that you have an instance of `WebApplicationFactory` you can do someting like:
 
-```
+```csharp
 await _webApplicationFactory
     .WithWebHostBuilder(builder =>
     {
@@ -163,7 +163,7 @@ When setting a condition to for the `WebApplicationFactory.RunUntilAsync` extens
 
 This is to avoid having a test that never ends because the set condition is never reached. You can configure this timeout by using the overloads `WebApplicationFactory.RunUntilAsync` extension method. Given the example [DemoTest shown above](#how-to-use) above you could configure a timeout by doing as follows:
 
-```
+```csharp
 await _webApplicationFactory
     .WithWebHostBuilder(builder =>
     {
@@ -192,7 +192,7 @@ When you set a condition, that condition is checked in a loop until it's reached
 
 By default the condition is checked in intervals of 5 milliseconds. This can be configured by using the overloads `WebApplicationFactory.RunUntilAsync` extension method. Given the example [DemoTest shown above](#how-to-use) above you could configure it as follows:
 
-```
+```csharp
 await _webApplicationFactory
     .WithWebHostBuilder(builder =>
     {
