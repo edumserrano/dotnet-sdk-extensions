@@ -10,7 +10,7 @@ I want to publish symbols for my NuGet package to enable debugging of the packag
 
 What is not straightforward is when you do NOT want to produce a separate symbols package and want to include the pdb in the NuGet package (.nupgk) itself. [SourceLink's documentation](https://github.com/dotnet/sourcelink#alternative-pdb-distribution) explains why you might want to do this and for my scenario the reason was that my NuGet server didn't support symbols packages and I didn't want to setup an alternate server just to store them.
 
-So after following the [instructions to setup the up the NuGet package to include the pdb](https://github.com/dotnet/sourcelink#alternative-pdb-distribution) everything worked fine when producing the NuGet package but not when debugging. I found that I could NOT debug into the code of the NuGet package and the reason was because the pdb from the NuGet was not being copied to the output of the build which then meant the debugger would not load it.
+So after following the [instructions to setup the up the NuGet package to include the pdb](https://github.com/dotnet/sourcelink#alternative-pdb-distribution) everything worked fine when producing the NuGet package but not when debugging. **I found that I could NOT debug into the code of the NuGet package** and the reason was because the pdb from the NuGet was not being copied to the output of the build which then meant the debugger would not load it.
 
 *Note:* you can see which dlls and pdbs are loaded in Visual Studio by inspecting the modules window. To enable it run your application in Visual Studio and then go to `Debug->Windows->Modules` to open the modules window.
 
