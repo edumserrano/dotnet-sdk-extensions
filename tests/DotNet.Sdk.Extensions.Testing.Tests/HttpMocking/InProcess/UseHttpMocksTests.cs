@@ -9,13 +9,12 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using Shouldly;
 using Xunit;
 
 namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess
 {
-    public class UseHttpMocksTests : IClassFixture<HttpResponseMockingWebApplicationFactory>
+    public class UseHttpMocksTests : IClassFixture<HttpResponseMockingWebApplicationFactory>, IDisposable
     {
         private readonly HttpResponseMockingWebApplicationFactory _webApplicationFactory;
 
@@ -305,6 +304,11 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess
             var response = await httpClient.GetAsync("/basic-client");
             var message = await response.Content.ReadAsStringAsync();
             message.ShouldBe("Basic http client returned: True");
+        }
+
+        public void Dispose()
+        {
+            _webApplicationFactory.Dispose();
         }
     }
 }

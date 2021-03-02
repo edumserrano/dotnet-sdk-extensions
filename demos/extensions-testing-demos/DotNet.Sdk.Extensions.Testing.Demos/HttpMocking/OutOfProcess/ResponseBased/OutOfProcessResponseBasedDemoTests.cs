@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Testing.Demos.HttpMocking.OutOfProcess.Auxiliary;
@@ -28,7 +29,7 @@ namespace DotNet.Sdk.Extensions.Testing.Demos.HttpMocking.OutOfProcess.ResponseB
      * must be configured to be able to reply to GET requests on these 3 paths.
      *
      */
-    public class OutOfProcessResponseBasedDemoTests : IClassFixture<OutOfProcessHttpResponseMockingWebApplicationFactory>
+    public class OutOfProcessResponseBasedDemoTests : IClassFixture<OutOfProcessHttpResponseMockingWebApplicationFactory>, IDisposable
     {
         private readonly OutOfProcessHttpResponseMockingWebApplicationFactory _webApplicationFactory;
 
@@ -45,7 +46,7 @@ namespace DotNet.Sdk.Extensions.Testing.Demos.HttpMocking.OutOfProcess.ResponseB
                 .Where(httpRequest => httpRequest.Path.Equals("/users"))
                 .RespondWith((request, response) => response.StatusCode = StatusCodes.Status200OK)
                 .Build();
-
+            
             await using var httpMockServer = new HttpMockServerBuilder()
                 .UseDefaultLogLevel(LogLevel.Critical)
                 .UseHttpResponseMocks()
@@ -188,6 +189,11 @@ namespace DotNet.Sdk.Extensions.Testing.Demos.HttpMocking.OutOfProcess.ResponseB
             var httpResponse = await httpClient.GetAsync("/configuration");
             var rBody = await httpResponse.Content.ReadAsStringAsync();
             rBody.ShouldBe("/configuration returned Created with body ");
+        }
+
+        public void Dispose()
+        {
+            _webApplicationFactory.Dispose();
         }
     }
 }

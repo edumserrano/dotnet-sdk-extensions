@@ -27,7 +27,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         [Fact]
         public void ControlTest()
         {
-            var webHost = Host
+            using var webHost = Host
                 .CreateDefaultBuilder()
                 .Build();
             var configuration = (ConfigurationRoot)webHost.Services.GetRequiredService<IConfiguration>();
@@ -109,7 +109,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         [Fact]
         public void SingleFile()
         {
-            var webHost = Host
+            using var webHost = Host
                 .CreateDefaultBuilder()
                 .AddTestAppSettings("appsettings.test.json")
                 .Build();

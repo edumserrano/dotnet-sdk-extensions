@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Testing.Configuration;
 using DotNet.Sdk.Extensions.Testing.Demos.Configuration.Auxiliary;
@@ -11,7 +12,7 @@ namespace DotNet.Sdk.Extensions.Testing.Demos.Configuration
      * via test appsettings files for integration tests.
      *
      */
-    public class ConfiguringWebHostDemoTests : IClassFixture<ConfiguringWebHostWebApplicationFactory>
+    public class ConfiguringWebHostDemoTests : IClassFixture<ConfiguringWebHostWebApplicationFactory>, IDisposable
     {
         private readonly ConfiguringWebHostWebApplicationFactory _webApplicationFactory;
 
@@ -37,6 +38,11 @@ namespace DotNet.Sdk.Extensions.Testing.Demos.Configuration
             response = await httpClient.GetAsync("/message-two");
             var secondMessage = await response.Content.ReadAsStringAsync();
             secondMessage.ShouldBe("Hi from message two in test appsettings.Default.json");
+        }
+
+        public void Dispose()
+        {
+            _webApplicationFactory.Dispose();
         }
     }
 }

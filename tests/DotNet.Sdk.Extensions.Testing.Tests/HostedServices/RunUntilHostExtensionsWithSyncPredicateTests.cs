@@ -46,9 +46,10 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
             string exceptionMessage)
         {
             var exception = Should.Throw(
-                actual: () => host.RunUntilAsync(predicate),
+                actual: () => RunUntilExtensions.RunUntilAsync(host, predicate),
                 exceptionType: exceptionType);
             exception.Message.ShouldBe(exceptionMessage);
+            host?.Dispose();
         }
 
         public static TheoryData<IHost, RunUntilPredicate, Action<RunUntilOptions>, Type, string> ValidateArgumentsWithOptionsData =>
@@ -73,9 +74,10 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
             string exceptionMessage)
         {
             var exception = Should.Throw(
-                actual: () => host.RunUntilAsync(predicate, configureOptions),
+                actual: () => RunUntilExtensions.RunUntilAsync(host, predicate, configureOptions),
                 exceptionType: exceptionType);
             exception.Message.ShouldBe(exceptionMessage);
+            host?.Dispose();
         }
 
         /// <summary>

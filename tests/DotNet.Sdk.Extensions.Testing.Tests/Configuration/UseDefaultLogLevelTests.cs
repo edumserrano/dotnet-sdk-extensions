@@ -20,7 +20,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         [Fact]
         public void HostDefaultLogLevelControlTest()
         {
-            var host = Host
+            using var host = Host
                 .CreateDefaultBuilder()
                 .Build();
             var configuration = (ConfigurationRoot)host.Services.GetRequiredService<IConfiguration>();
@@ -36,7 +36,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         [Fact]
         public void WebHostDefaultLogLevelControlTest()
         {
-            var host = WebHost
+            using var host = WebHost
                 .CreateDefaultBuilder()
                 .Configure((context, applicationBuilder) =>
                 {
@@ -56,7 +56,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         [Fact]
         public void HostSetLogLevel()
         {
-            var host = Host
+            using var host = Host
                 .CreateDefaultBuilder()
                 .UseDefaultLogLevel(LogLevel.None)
                 .Build();
@@ -72,7 +72,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         [Fact]
         public void WebHostSetLogLevel()
         {
-            var webHost = WebHost
+            using var webHost = WebHost
                 .CreateDefaultBuilder()
                 .Configure((context, applicationBuilder) =>
                 {

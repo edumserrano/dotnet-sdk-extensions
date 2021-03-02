@@ -62,7 +62,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         [Fact]
         public void HostSetConfigurationValue()
         {
-            var host = Host
+            using var host = Host
                 .CreateDefaultBuilder()
                 .UseConfigurationValue(key: "SomeValue1", value: "value-1")
                 .UseConfigurationValue(key: "SomeValue2", value: "value-2")
@@ -79,7 +79,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         [Fact]
         public void WebHostSetConfigurationValue()
         {
-            var webHost = WebHost
+            using var webHost = WebHost
                 .CreateDefaultBuilder()
                 .Configure((context, applicationBuilder) =>
                 {
@@ -101,7 +101,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         [Fact]
         public void SetConfigurationValueLastValueWins()
         {
-            var host = Host
+            using var host = Host
                 .CreateDefaultBuilder()
                 .UseConfigurationValue(key: "SomeValue1", value: "value-1")
                 .UseConfigurationValue(key: "SomeValue1", value: "value-2")
@@ -117,7 +117,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         [Fact]
         public void OverrideAppsettingsWithSetConfigurationValue()
         {
-            var webHost = WebHost
+            using var webHost = WebHost
                 .CreateDefaultBuilder()
                 .Configure((context, applicationBuilder) =>
                 {

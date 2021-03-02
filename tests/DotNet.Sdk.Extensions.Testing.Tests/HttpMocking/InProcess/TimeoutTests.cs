@@ -8,7 +8,7 @@ using Xunit;
 
 namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess
 {
-    public class TimeoutTests : IClassFixture<TimeoutHttpResponseMockingWebApplicationFactory>
+    public class TimeoutTests : IClassFixture<TimeoutHttpResponseMockingWebApplicationFactory>, IDisposable
     {
         private readonly TimeoutHttpResponseMockingWebApplicationFactory _webApplicationFactory;
 
@@ -226,6 +226,11 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess
             expectedException.InnerException!.GetType().ShouldBe(typeof(TimeoutException));
             expectedException.Message.ShouldBe("The request was canceled due to the configured HttpClient.Timeout of 0.001 seconds elapsing.");
             expectedException.InnerException.Message.ShouldBe("A task was canceled.");
+        }
+
+        public void Dispose()
+        {
+            _webApplicationFactory.Dispose();
         }
     }
 }

@@ -67,7 +67,6 @@ This project is licensed under the [MIT license](https://licenses.nuget.org/MIT)
 
 ## TODO
 
-* make sure servers are disposed on the tests and demo tests
 * where to save info about how to use splunk + docker + asp.net core app (+ serilog?)
 * note about using async local to implement data sharing on the context of a request execution (see my elapsedStats implementation)
 

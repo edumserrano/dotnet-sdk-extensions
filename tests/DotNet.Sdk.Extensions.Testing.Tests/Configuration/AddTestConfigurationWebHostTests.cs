@@ -26,7 +26,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         [Fact]
         public void ControlTest()
         {
-            var webHost = WebHost
+            using var webHost = WebHost
                 .CreateDefaultBuilder()
                 .Configure((context, applicationBuilder) =>
                 {
@@ -113,7 +113,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         [Fact]
         public void SingleFile()
         {
-            var webHost = WebHost
+            using var webHost = WebHost
                 .CreateDefaultBuilder()
                 .Configure((context, applicationBuilder) =>
                 {
@@ -138,7 +138,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         [Fact]
         public void MultipleFiles()
         {
-            var webHost = WebHost
+            using var webHost = WebHost
                 .CreateDefaultBuilder()
                 .Configure((context, applicationBuilder) =>
                 {
@@ -165,7 +165,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         [Fact]
         public void SelectDirRelative()
         {
-            var webHost = WebHost
+            using var webHost = WebHost
                 .CreateDefaultBuilder()
                 .Configure((context, applicationBuilder) =>
                 {
@@ -190,7 +190,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         [Fact]
         public void SelectDirAbsolute()
         {
-            var webHost = WebHost
+            using var webHost = WebHost
                 .CreateDefaultBuilder()
                 .Configure((context, applicationBuilder) =>
                 {
@@ -221,7 +221,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         [Fact]
         public void PreservesExpectedConfigurationSourcesOrder()
         {
-            var webHost = WebHost
+            using var webHost = WebHost
                 .CreateDefaultBuilder()
                 .ConfigureAppConfiguration((context, builder) =>
                 {
