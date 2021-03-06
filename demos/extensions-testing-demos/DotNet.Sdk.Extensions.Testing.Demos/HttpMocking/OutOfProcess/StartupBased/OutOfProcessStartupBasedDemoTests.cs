@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Testing.Demos.HttpMocking.OutOfProcess.Auxiliary;
@@ -31,7 +32,7 @@ namespace DotNet.Sdk.Extensions.Testing.Demos.HttpMocking.OutOfProcess.StartupBa
      * what the HttpMockServer will return when receiving the calls from the HttpClients used by the real app.
      *
      */
-    public class OutOfProcessStartupBasedDemoTests : IClassFixture<OutOfProcessHttpResponseMockingWebApplicationFactory>
+    public class OutOfProcessStartupBasedDemoTests : IClassFixture<OutOfProcessHttpResponseMockingWebApplicationFactory>, IDisposable
     {
         private readonly OutOfProcessHttpResponseMockingWebApplicationFactory _webApplicationFactory;
 
@@ -165,6 +166,11 @@ namespace DotNet.Sdk.Extensions.Testing.Demos.HttpMocking.OutOfProcess.StartupBa
             var response1 = await httpClient.GetAsync("/configuration");
             var message1 = await response1.Content.ReadAsStringAsync();
             message1.ShouldBe("/configuration returned OK with body hello from /configuration and the mock server environment is Staging");
+        }
+
+        public void Dispose()
+        {
+            _webApplicationFactory.Dispose();
         }
     }
 }

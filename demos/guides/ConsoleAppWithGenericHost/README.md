@@ -1,4 +1,4 @@
-﻿# DotNet.Sdk.Guides.ConsoleAppWithGenericHost project readme
+﻿# ConsoleAppWithGenericHost project readme
 
 This project contains a demo app for the [Use cases for generic host](/docs/guides/generic-host-use-cases.md) guide.
 
@@ -8,6 +8,6 @@ This app is a console app that shows how to make use of the generic host to prov
 
 ## How to run
 
-* Open the `DotNet.Sdk.Extensions.sln`.
+* Open the `DotNet.Sdk.Extensions.Demos.sln`.
 * From Visual Studio, set the `demos/guides/ConsoleAppWithGenericHost/ConsoleAppWithGenericHost.cspproj` project as the Startup Project.
 * Run the project.

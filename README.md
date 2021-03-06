@@ -68,7 +68,6 @@ This project is licensed under the [MIT license](https://licenses.nuget.org/MIT)
 ## TODO
 
 * where to save info about how to use splunk + docker + asp.net core app (+ serilog?). If on guides then maybe the curren title .net sdk guides is not the best.
-* note about using async local to implement data sharing on the context of a request execution (see my elapsedStats implementation)
 
 * investigate how to test using Ilogger
 * investigate serilog logging test extensions for integration tests
@@ -78,6 +77,8 @@ This project is licensed under the [MIT license](https://licenses.nuget.org/MIT)
 * move packages from alpha to stable and update it on demo sln
 * any readme missing?
 * create an issue on the repo to allow testing https. need to figure out how to configure a cert. Look for TODO on the codebase
+
+* rename repo to something that reflects that this is not only extensions but also guides and examples of working with the sdk?
 
 ## Notes
 

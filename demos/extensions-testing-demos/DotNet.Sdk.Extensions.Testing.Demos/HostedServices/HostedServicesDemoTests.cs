@@ -11,7 +11,7 @@ using Xunit;
 
 namespace DotNet.Sdk.Extensions.Testing.Demos.HostedServices
 {
-    public class HostedServicesDemoTests : IClassFixture<HostedServicesWebApplicationFactory>
+    public class HostedServicesDemoTests : IClassFixture<HostedServicesWebApplicationFactory>, IDisposable
     {
         private readonly HostedServicesWebApplicationFactory _webApplicationFactory;
 
@@ -67,6 +67,11 @@ namespace DotNet.Sdk.Extensions.Testing.Demos.HostedServices
 
             sw.Elapsed.ShouldBeGreaterThanOrEqualTo(TimeSpan.FromMilliseconds(1900));
             callCount.ShouldBeGreaterThanOrEqualTo(3);
+        }
+
+        public void Dispose()
+        {
+            _webApplicationFactory.Dispose();
         }
     }
 }

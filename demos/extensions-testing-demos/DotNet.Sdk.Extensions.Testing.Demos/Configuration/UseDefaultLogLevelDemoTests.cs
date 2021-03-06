@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Testing.Configuration;
 using DotNet.Sdk.Extensions.Testing.Demos.Configuration.Auxiliary;
@@ -12,7 +13,7 @@ namespace DotNet.Sdk.Extensions.Testing.Demos.Configuration
      * to set the default log level for integration tests.
      *
      */
-    public class UseDefaultLogLevelDemoTests : IClassFixture<UseDefaultLogLevelWebApplicationFactory>
+    public class UseDefaultLogLevelDemoTests : IClassFixture<UseDefaultLogLevelWebApplicationFactory>, IDisposable
     {
         private readonly UseDefaultLogLevelWebApplicationFactory _webApplicationFactory;
 
@@ -34,6 +35,11 @@ namespace DotNet.Sdk.Extensions.Testing.Demos.Configuration
             var response = await httpClient.GetAsync("/default-log-level");
             var firstMessage = await response.Content.ReadAsStringAsync();
             firstMessage.ShouldBe("None");
+        }
+
+        public void Dispose()
+        {
+            _webApplicationFactory.Dispose();
         }
     }
 }

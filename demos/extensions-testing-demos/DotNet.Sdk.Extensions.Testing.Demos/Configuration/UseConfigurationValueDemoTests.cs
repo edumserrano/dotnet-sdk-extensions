@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Testing.Configuration;
 using DotNet.Sdk.Extensions.Testing.Demos.Configuration.Auxiliary;
@@ -11,7 +12,7 @@ namespace DotNet.Sdk.Extensions.Testing.Demos.Configuration
      * to provide configuration values for integration tests.
      *
      */
-    public class UseConfigurationValueDemoTests : IClassFixture<UseConfigurationValueWebApplicationFactory>
+    public class UseConfigurationValueDemoTests : IClassFixture<UseConfigurationValueWebApplicationFactory>, IDisposable
     {
         private readonly UseConfigurationValueWebApplicationFactory _valueWebApplicationFactory;
 
@@ -33,6 +34,11 @@ namespace DotNet.Sdk.Extensions.Testing.Demos.Configuration
             var response = await httpClient.GetAsync("/options");
             var firstMessage = await response.Content.ReadAsStringAsync();
             firstMessage.ShouldBe("value-from-test");
+        }
+
+        public void Dispose()
+        {
+            _valueWebApplicationFactory.Dispose();
         }
     }
 }

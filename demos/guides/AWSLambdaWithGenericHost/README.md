@@ -1,4 +1,4 @@
-﻿# DotNet.Sdk.Guides.AWSLambdaWithGenericHost project readme
+﻿# AWSLambdaWithGenericHost project readme
 
 This project contains a demo app for the [Use cases for generic host](/docs/guides/generic-host-use-cases.md) guide.
 
@@ -8,6 +8,6 @@ This app is an AWS Lambda created with the template for an empty function. The t
 
 ## How to run
 
-* Open the `DotNet.Sdk.Extensions.sln`.
+* Open the `DotNet.Sdk.Extensions.Demos.sln`.
 * From Visual Studio, set the `demos/guides/AWSLambdaWithGenericHost/AWSLambdaWithGenericHost.cspproj` project as the Startup Project.
 * Run the project.

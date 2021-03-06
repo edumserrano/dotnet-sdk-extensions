@@ -1,3 +1,4 @@
+using System;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -16,7 +17,7 @@ namespace DotNet.Sdk.Extensions.Testing.Demos.HttpMocking.InProcess
      * for each of the http clients and make it return an OK status.
      *
      */
-    public class InProcessHttpResponseMockingDemoTests : IClassFixture<InProcessHttpResponseMockingWebApplicationFactory>
+    public class InProcessHttpResponseMockingDemoTests : IClassFixture<InProcessHttpResponseMockingWebApplicationFactory>, IDisposable
     {
         private readonly InProcessHttpResponseMockingWebApplicationFactory _webApplicationFactory;
 
@@ -164,8 +165,7 @@ namespace DotNet.Sdk.Extensions.Testing.Demos.HttpMocking.InProcess
             var message2 = await response2.Content.ReadAsStringAsync();
             message2.ShouldBe("ISomeApiClient typed http client returned: True");
         }
-
-
+        
         /*
          * Similar to the previous demo tests but shows a different usage of the
          * IWebHostBuilder.UseHttpMocks where you specify the mock before hand
@@ -206,6 +206,11 @@ namespace DotNet.Sdk.Extensions.Testing.Demos.HttpMocking.InProcess
             var response2 = await httpClient.GetAsync("/typed-client");
             var message2 = await response2.Content.ReadAsStringAsync();
             message2.ShouldBe("ISomeApiClient typed http client returned: True");
+        }
+
+        public void Dispose()
+        {
+            _webApplicationFactory.Dispose();
         }
     }
 }

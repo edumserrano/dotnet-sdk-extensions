@@ -12,7 +12,7 @@ However if you want to get all of the benefits you get out of the box when creat
 
 The example below shows how to use the generic host on a console application. You'll need to install the `Microsoft.Extensions.Hosting` nuget package.
 
-```
+```csharp
 public class Program
 {
     public static async Task Main(string[] args)
