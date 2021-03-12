@@ -73,13 +73,23 @@ This project is licensed under the [MIT license](https://licenses.nuget.org/MIT)
 * investigate serilog logging test extensions for integration tests
   * investigate test sink (search github) and look at how the test is done for the enricher https://github.com/serilog/serilog-enrichers-environment/commit/24c1c874ed4044ec488a5119130c869d328f9fbd 
 * useful serilog related guides/extensions/enrichers/attributes? What common things I do when logging?
- 
+
+* Polly http extrnsions: addcircuitbreaker addregistry options etc. explain app settings Add fallbalback as optional but have a add default resilience that adds all if u want but if you need to add separate ones then have the several resilience as separate
+
+* what about learnings about custom swagger stuff for health checks?
+* swagger ui healtchecks learnings? and k8s related?
+
 * move packages from alpha to stable and update it on demo sln
 * any readme missing?
 * create an issue on the repo to allow testing https. need to figure out how to configure a cert. Look for TODO on the codebase
 
 * rename repo to something that reflects that this is not only extensions but also guides and examples of working with the sdk?
-
+* on the dot net sdk extensions repo: add also example projects, so rename the repo to something else? dotnet-sdk-extensions-guides-examples or break up the repo into 3
+* what do I need to do so that everything works on vscode?
+* guide/examples/demos -> learn about identity asp.net core and probably identity server (how to authenticate with external providers like facebook and how to deal with custom providers like an internal old system)
+* demos on orleans
+* repo for azdo templates ?
+  
 ## Notes
 
 If you have problems with SSL certificates when running the demos or tests then make sure you have trusted dev certificates by executing the following command
