@@ -1,6 +1,4 @@
-# dot-net-sdk-extensions docs
-
-## Extensions list
+# Extensions list
 
 The extensions available are split into two groups:
 

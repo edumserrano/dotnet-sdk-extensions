@@ -1,14 +1,10 @@
-# Extensions and guides for .NET SDK
+# Extensions for .NET SDK
 
 This repo contains extensions to use with .NET applications, using .net core 3.1 and higher, as well as extensions for unit and [integration tests](https://docs.microsoft.com/en-us/aspnet/core/test/integration-tests?#introduction-to-integration-tests).
 
-It also contains guides on scenarios around building apps using .NET SDK. These guides are for situations where an extension is not merited but some documentation on how to accomplish the task is.
-
-## Documentation and Guides
+## Extensions list
 
 For documentation about the available extensions go [here](/docs/docs-main.md).
-
-For the .NET SDK guides available go [here](/docs/guides-main.md).
 
 ## GitHub Workflows
 
@@ -39,7 +35,7 @@ dotnet add package DotNet-Sdk-Extensions-Testing
 
 1) Clone the repo and open one of the solution files:
    - **DotNet.Sdk.Extensions.sln:** source for the extensions.
-   - **DotNet.Sdk.Extensions.Demos.sln:** demo projects for the extensions and the guides.
+   - **DotNet.Sdk.Extensions.Demos.sln:** demo projects for the extensions.
 
 2) Press build on Visual Studio.
 
@@ -49,7 +45,7 @@ dotnet add package DotNet-Sdk-Extensions-Testing
 
 2) Run:
    - **`dotnet build DotNet.Sdk.Extensions.sln`:** to build the source for the extensions.
-   - **`dotnet build DotNet.Sdk.Extensions.Demos.sln`:** to build the demos for the extensions and the guides.
+   - **`dotnet build DotNet.Sdk.Extensions.Demos.sln`:** to build the demos for the extensions.
 
 ## Debugging
 
@@ -65,31 +61,6 @@ For more information on how to debug the NuGet packages code from your applicati
 
 This project is licensed under the [MIT license](https://licenses.nuget.org/MIT).
 
-## TODO
-
-* where to save info about how to use splunk + docker + asp.net core app (+ serilog?). If on guides then maybe the curren title .net sdk guides is not the best.
-
-* investigate how to test using Ilogger
-* investigate serilog logging test extensions for integration tests
-  * investigate test sink (search github) and look at how the test is done for the enricher https://github.com/serilog/serilog-enrichers-environment/commit/24c1c874ed4044ec488a5119130c869d328f9fbd 
-* useful serilog related guides/extensions/enrichers/attributes? What common things I do when logging?
-
-* Polly http extrnsions: addcircuitbreaker addregistry options etc. explain app settings Add fallbalback as optional but have a add default resilience that adds all if u want but if you need to add separate ones then have the several resilience as separate
-
-* what about learnings about custom swagger stuff for health checks?
-* swagger ui healtchecks learnings? and k8s related?
-
-* move packages from alpha to stable and update it on demo sln
-* any readme missing?
-* create an issue on the repo to allow testing https. need to figure out how to configure a cert. Look for TODO on the codebase
-
-* rename repo to something that reflects that this is not only extensions but also guides and examples of working with the sdk?
-* on the dot net sdk extensions repo: add also example projects, so rename the repo to something else? dotnet-sdk-extensions-guides-examples or break up the repo into 3
-* what do I need to do so that everything works on vscode?
-* guide/examples/demos -> learn about identity asp.net core and probably identity server (how to authenticate with external providers like facebook and how to deal with custom providers like an internal old system)
-* demos on orleans
-* repo for azdo templates ?
-  
 ## Notes
 
 If you have problems with SSL certificates when running the demos or tests then make sure you have trusted dev certificates by executing the following command
