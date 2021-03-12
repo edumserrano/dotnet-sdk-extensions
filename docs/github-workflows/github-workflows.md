@@ -4,21 +4,21 @@ There are two workflows setup on this repo:
 
 | Worflow                   |      Status and link      |
 |---------------------------|:-------------------------:|
-| [build-demos](https://github.com/edumserrano/dot-net-sdk-extensions/blob/master/.github/workflows/build-demos.yml)             |  ![Build Status](https://github.com/edumserrano/dot-net-sdk-extensions/workflows/Build%20demos/badge.svg) |
-| [nuget-publish](https://github.com/edumserrano/dot-net-sdk-extensions/blob/master/.github/workflows/nuget-publish.yml)             |  ![Build Status](https://github.com/edumserrano/dot-net-sdk-extensions/workflows/Publish%20Nuget%20packages/badge.svg) |
+| [build-demos](https://github.com/edumserrano/dot-net-sdk-extensions/blob/main/.github/workflows/build-demos.yml)             |  ![Build Status](https://github.com/edumserrano/dot-net-sdk-extensions/workflows/Build%20demos/badge.svg) |
+| [nuget-publish](https://github.com/edumserrano/dot-net-sdk-extensions/blob/main/.github/workflows/nuget-publish.yml)             |  ![Build Status](https://github.com/edumserrano/dot-net-sdk-extensions/workflows/Publish%20Nuget%20packages/badge.svg) |
 
 
 ## Notes for repo owner
 
 ### Secrets
 
-The [nuget-publish](https://github.com/edumserrano/dot-net-sdk-extensions/blob/master/.github/workflows/nuget-publish.yml) workflow uses one secret for the NuGet API key used to publish the NuGet packages.
+The [nuget-publish](https://github.com/edumserrano/dot-net-sdk-extensions/blob/main/.github/workflows/nuget-publish.yml) workflow uses one secret for the NuGet API key used to publish the NuGet packages.
 
 This API key will expire on  and will have to be renewed before 5th February 2022 or the workflwo will fail.
 
 ### Symbols package warning
 
-When running the [nuget-publish](https://github.com/edumserrano/dot-net-sdk-extensions/blob/master/.github/workflows/nuget-publish.yml) workflow there's a final step to publish the NuGet packages (.nupkg) and respective symbols (.snupkg).
+When running the [nuget-publish](https://github.com/edumserrano/dot-net-sdk-extensions/blob/main/.github/workflows/nuget-publish.yml) workflow there's a final step to publish the NuGet packages (.nupkg) and respective symbols (.snupkg).
 
 This step has a flag set to skip publishing the NuGet (.nupgk) if the version has already been publish. This allows the workflow to run without failing even if we don't want to publish a new version of the package.
 
