@@ -7,11 +7,20 @@ on:
     paths:
     - 'src/**'
     - 'tests/**'
+    - '.github/workflows/nuget-publish.yml'
   pull_request:
     branches: [ main ]
     paths:
     - 'src/**'
     - 'tests/**'
+    - '.github/workflows/nuget-publish.yml'
+
+env:
+  SLN_FILEPATH : ${{github.workspace}}/DotNet.Sdk.Extensions.sln
+  EXTENSIONS_CSPROJ_FILEPATH : ${{github.workspace}}/src/DotNet.Sdk.Extensions/DotNet.Sdk.Extensions.csproj
+  TESTING_EXTENSIONS_CSPROJ_FILEPATH : ${{github.workspace}}/src/DotNet.Sdk.Extensions.Testing/DotNet.Sdk.Extensions.Testing.csproj
+  EXTENSIONS_BIN_FOLDER : ${{github.workspace}}/src/DotNet.Sdk.Extensions/bin/Release
+  TESTING_EXTENSIONS_BIN_FOLDER : ${{github.workspace}}/src/DotNet.Sdk.Extensions.Testing/bin/Release
 
 jobs:
   build:
@@ -31,17 +40,17 @@ jobs:
     - name: Clears local NuGet resources 
       if: matrix.os == 'windows-latest' # required due to bug when using dotnet cli on windows-latest. See https://github.com/dotnet/core/issues/5881 and https://github.com/actions/setup-dotnet/issues/155
       shell: pwsh
-      run: dotnet nuget locals all --clear    
+      run: dotnet nuget locals all --clear
     - name: Restore dependencies
       shell: pwsh
-      run: dotnet restore DotNet.Sdk.Extensions.sln
+      run: dotnet restore ${{env.SLN_FILEPATH}}
     - name: Build
       shell: pwsh
-      run: dotnet build DotNet.Sdk.Extensions.sln --no-restore
+      run: dotnet build ${{env.SLN_FILEPATH}} --no-restore
     - name: Test and code coverage
       shell: pwsh
       run: |
-        dotnet test DotNet.Sdk.Extensions.sln `
+        dotnet test ${{env.SLN_FILEPATH}} `
           --no-build `
           --verbosity normal `
           --logger trx `
@@ -76,20 +85,20 @@ jobs:
         dotnet-version: 5.0.x
     - name: Package DotNet.Sdk.Extensions
       shell: pwsh
-      run: dotnet pack ./src/DotNet.Sdk.Extensions/DotNet.Sdk.Extensions.csproj -c Release
+      run: dotnet pack ${{env.EXTENSIONS_CSPROJ_FILEPATH}} -c Release
     - name: Pack DotNet.Sdk.Extensions.Testing
       shell: pwsh
-      run: dotnet pack ./src/DotNet.Sdk.Extensions.Testing/DotNet.Sdk.Extensions.Testing.csproj -c Release
+      run: dotnet pack ${{env.TESTING_EXTENSIONS_CSPROJ_FILEPATH}} -c Release
     - name: Publish DotNet.Sdk.Extensions nuget and symbols
       shell: pwsh
       run: dotnet nuget push ./*.nupkg --api-key $env:NUGET_PUSH_API_KEY --source https://api.nuget.org/v3/index.json --skip-duplicate
-      working-directory: ./src/DotNet.Sdk.Extensions/bin/Release/
+      working-directory: ${{env.EXTENSIONS_BIN_FOLDER}}
       env:
         NUGET_PUSH_API_KEY: ${{ secrets.NUGET_PUSH_API_KEY }}
     - name: Publish DotNet.Sdk.Extensions.Testing nuget and symbols
       shell: pwsh
       run: dotnet nuget push ./*.nupkg --api-key $env:NUGET_PUSH_API_KEY --source https://api.nuget.org/v3/index.json --skip-duplicate
-      working-directory: ./src/DotNet.Sdk.Extensions.Testing/bin/Release/
+      working-directory: ${{env.TESTING_EXTENSIONS_BIN_FOLDER}}
       env:
         NUGET_PUSH_API_KEY: ${{ secrets.NUGET_PUSH_API_KEY }}
     - name: Upload nugets and symbols to artifacts
@@ -97,7 +106,7 @@ jobs:
       with:
         name: nuget-packages-and-symbols
         path: |
-          src/DotNet.Sdk.Extensions.Testing/bin/Release/*.nupkg
-          src/DotNet.Sdk.Extensions.Testing/bin/Release/*.snupkg
-          src/DotNet.Sdk.Extensions/bin/Release/*.nupkg
-          src/DotNet.Sdk.Extensions/bin/Release/*.snupkg
+          ${{env.EXTENSIONS_BIN_FOLDER}}/*.nupkg
+          ${{env.EXTENSIONS_BIN_FOLDER}}/*.snupkg
+          ${{env.TESTING_EXTENSIONS_BIN_FOLDER}}/*.nupkg
+          ${{env.TESTING_EXTENSIONS_BIN_FOLDER}}/*.snupkg

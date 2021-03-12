@@ -6,17 +6,22 @@ on:
     branches: [ main ]
     paths:
     - 'demos/**'
+    - '.github/workflows/build-demos.yml'
   pull_request:
     branches: [ main ]
     paths:
     - 'demos/**'
+    - '.github/workflows/build-demos.yml'
+
+env:
+  SLN_FILEPATH : ${{github.workspace}}/DotNet.Sdk.Extensions.Demos.sln
 
 jobs:
   build:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix: 
-        os: [ubuntu-latest, windows-latest]    
+        os: [ubuntu-latest, windows-latest]
     steps:
     - uses: actions/checkout@v2
     - name: Setup .NET
@@ -26,13 +31,13 @@ jobs:
     - name: Clears local NuGet resources
       if: matrix.os == 'windows-latest' # required due to bug when using dotnet cli on windows-latest. See https://github.com/dotnet/core/issues/5881 and https://github.com/actions/setup-dotnet/issues/155
       shell: pwsh
-      run: dotnet nuget locals all --clear    
+      run: dotnet nuget locals all --clear
     - name: Restore dependencies
       shell: pwsh
-      run: dotnet restore DotNet.Sdk.Extensions.Demos.sln
+      run: dotnet restore ${{env.SLN_FILEPATH}}
     - name: Build
       shell: pwsh
-      run: dotnet build DotNet.Sdk.Extensions.Demos.sln --no-restore
+      run: dotnet build ${{env.SLN_FILEPATH}} --no-restore
     - name: Test
       shell: pwsh
-      run: dotnet test DotNet.Sdk.Extensions.Demos.sln --no-build --verbosity normal
+      run: dotnet test ${{env.SLN_FILEPATH}} --no-build --verbosity normal
