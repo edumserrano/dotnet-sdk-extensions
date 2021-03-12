@@ -3,12 +3,12 @@ name: Publish Nuget packages
 on:  
   workflow_dispatch:
   push:
-    branches: [ master ]
+    branches: [ main ]
     paths:
     - 'src/**'
     - 'tests/**'
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
     paths:
     - 'src/**'
     - 'tests/**'

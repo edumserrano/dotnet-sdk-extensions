@@ -3,11 +3,11 @@ name: Build demos
 on:
   workflow_dispatch:
   push:
-    branches: [ master ]
+    branches: [ main ]
     paths:
     - 'demos/**'
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
     paths:
     - 'demos/**'
 
