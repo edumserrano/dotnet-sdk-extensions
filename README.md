@@ -59,7 +59,7 @@ For more information on how to debug the NuGet packages code from your applicati
 
 ## License
 
-This project is licensed under the [MIT license](https://licenses.nuget.org/MIT).
+This project is licensed under the [MIT license](./LICENSE).
 
 ## Notes
 
