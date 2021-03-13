@@ -18,7 +18,15 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
         [Fact]
         public async Task UseDefaultLogLevelControlTest()
         {
+            // The '.UseHostArgs("Logging:LogLevel:Microsoft.Hosting.Lifetime", LogLevel.None.ToString())' 
+            // disables test output logs from the server starting.
+            // Usually I disable all logs by setting hte default log level to Critical but since I this is
+            // a control test for the log level I'm only setting the log level for the source 'Microsoft.Hosting.Lifetime'
+            // which is the source that outputs some logs on this test
+            // LogLevel.None.ToString()
+            
             await using var mock = new HttpMockServerBuilder()
+                .UseHostArgs("--Logging:LogLevel:Microsoft.Hosting.Lifetime", LogLevel.None.ToString())
                 .UseHttpResponseMocks()
                 .Build();
             var urls = await mock.StartAsync();
