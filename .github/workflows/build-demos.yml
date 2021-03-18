@@ -37,7 +37,7 @@ jobs:
       run: dotnet restore ${{env.SLN_FILEPATH}}
     - name: Build
       shell: pwsh
-      run: dotnet build ${{env.SLN_FILEPATH}} --no-restore
+      run: dotnet build ${{env.SLN_FILEPATH}} -c Release --no-restore 
     - name: Test
       shell: pwsh
-      run: dotnet test ${{env.SLN_FILEPATH}} --no-build --verbosity normal
+      run: dotnet test ${{env.SLN_FILEPATH}} -c Release --no-build --verbosity normal
