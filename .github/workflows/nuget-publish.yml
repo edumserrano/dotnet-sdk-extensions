@@ -26,7 +26,7 @@ jobs:
   build:
     strategy:
       matrix: 
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-18.04, windows-latest] # can't use ubuntu-latest and had to force ubuntu-18.04 because at the moment the dotnet tool install step is not working properly on ubuntu-latest
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v2
@@ -63,14 +63,14 @@ jobs:
           -m:1
     - name: Generate code coverage report
       shell: pwsh
-      if: matrix.os == 'ubuntu-latest'
+      if: matrix.os == 'ubuntu-18.04'
       run: |
         reportgenerator `
           "-reports:$(Join-Path -Path (Get-Location) -ChildPath "tests/test-results/coverage-results/coverage.opencover.xml")" `
           "-targetdir:$(Join-Path -Path (Get-Location) -ChildPath "tests/test-results/coverage-results/report")" `
           -reportTypes:htmlInline
     - name: Upload code coverage report to artifacts
-      if: matrix.os == 'ubuntu-latest'
+      if: matrix.os == 'ubuntu-18.04'
       uses: actions/upload-artifact@v2
       with:
         name: code-coverage-report
