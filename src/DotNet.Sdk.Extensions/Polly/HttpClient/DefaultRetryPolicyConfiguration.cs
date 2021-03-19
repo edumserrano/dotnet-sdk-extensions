@@ -8,7 +8,7 @@ namespace DotNet.Sdk.Extensions.Polly.HttpClient
 {
     internal class DefaultRetryPolicyConfiguration : IRetryPolicyConfiguration
     {
-        public Task OnRetry(
+        public Task OnRetryAsync(
             RetryOptions retryOptions,
             DelegateResult<HttpResponseMessage> outcome, 
             TimeSpan retryDelay, int retryNumber,

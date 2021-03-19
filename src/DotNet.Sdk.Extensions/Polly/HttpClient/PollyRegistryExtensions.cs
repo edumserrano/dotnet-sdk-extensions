@@ -5,6 +5,7 @@ using DotNet.Sdk.Extensions.Polly.HttpClient.Options;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Polly;
+using Polly.CircuitBreaker;
 using Polly.Contrib.WaitAndRetry;
 using Polly.Extensions.Http;
 using Polly.Registry;
@@ -37,7 +38,7 @@ namespace DotNet.Sdk.Extensions.Polly.HttpClient
                 timeout: TimeSpan.FromSeconds(options.TimeoutInSecs),
                 onTimeoutAsync: (context, requestTimeout, timedOutTask, exception) =>
                  {
-                     return policyConfiguration.OnTimeout(options, context, requestTimeout, timedOutTask, exception);
+                     return policyConfiguration.OnTimeoutASync(options, context, requestTimeout, timedOutTask, exception);
                  });
             registry.Add(key: policyKey, policy);
             return registry;
@@ -71,7 +72,7 @@ namespace DotNet.Sdk.Extensions.Polly.HttpClient
                     sleepDurations: retryDelays,
                     onRetryAsync: (outcome, retryDelay, retryNumber, pollyContext) =>
                      {
-                         return policyConfiguration.OnRetry(options, outcome, retryDelay, retryNumber, pollyContext);
+                         return policyConfiguration.OnRetryAsync(options, outcome, retryDelay, retryNumber, pollyContext);
                      });
             registry.Add(key: policyKey, policy);
             return registry;
@@ -107,16 +108,61 @@ namespace DotNet.Sdk.Extensions.Polly.HttpClient
                     durationOfBreak: TimeSpan.FromSeconds(options.DurationOfBreakInSecs),
                     onBreak: async (lastOutcome, previousState, breakDuration, context) =>
                     {
-                        await policyConfiguration.OnBreak(options, lastOutcome, previousState, breakDuration, context);
+                        await policyConfiguration.OnBreakAsync(options, lastOutcome, previousState, breakDuration, context);
                     },
                     onReset: async context =>
                     {
-                        await policyConfiguration.OnReset(options, context);
+                        await policyConfiguration.OnResetAsync(options, context);
                     },
                     onHalfOpen: async () =>
                     {
-                        await policyConfiguration.OnHalfOpen(options);
+                        await policyConfiguration.OnHalfOpenAsync(options);
                     });
+            registry.Add(key: policyKey, policy);
+            return registry;
+        }
+
+
+        public static IPolicyRegistry<string> AddHttpClientFallbackPolicy(
+            this IPolicyRegistry<string> registry,
+            string policyKey,
+            IServiceProvider serviceProvider)
+        {
+            return registry.AddHttpClientFallbackPolicy<DefaultFallbackPolicyConfiguration>(policyKey, serviceProvider);
+        }
+
+        public static IPolicyRegistry<string> AddHttpClientFallbackPolicy<T>(
+            this IPolicyRegistry<string> registry,
+            string policyKey,
+            IServiceProvider serviceProvider) where T : class, IFallbackPolicyConfiguration
+        {
+            // by choice, T is not added to the IServiceCollection so use ActivatorUtilities  instead of IServiceProvider.GetRequiredService<T>
+            var policyConfiguration = ActivatorUtilities.CreateInstance<T>(serviceProvider);
+            var timeoutFallback = Policy<HttpResponseMessage>
+                .Handle<TimeoutRejectedException>()
+                .FallbackAsync(
+                    fallbackValue: new TimeoutHttpResponseMessage(),
+                    onFallbackAsync: (outcome, context) =>
+                    {
+                        return policyConfiguration.OnTimeoutFallbackAsync(outcome, context);
+                    });
+            var brokenCircuitFallback = Policy<HttpResponseMessage>
+                .Handle<BrokenCircuitException>()
+                .FallbackAsync(
+                    fallbackValue: new CircuitBrokenHttpResponseMessage(),
+                    onFallbackAsync: (outcome, context) =>
+                    {
+                        return policyConfiguration.OnBrokenCircuitFallbackAsync(outcome, context);
+                    });
+            var abortedFallback = Policy<HttpResponseMessage>
+                .Handle<TaskCanceledException>()
+                .FallbackAsync(
+                    fallbackValue: new AbortedHttpResponseMessage(),
+                    onFallbackAsync: (outcome, context) =>
+                    {
+                        return policyConfiguration.OnTaskCancelledFallbackAsync(outcome, context);
+                    });
+            var policy = Policy.WrapAsync(timeoutFallback, brokenCircuitFallback, abortedFallback);
             registry.Add(key: policyKey, policy);
             return registry;
         }

@@ -9,7 +9,7 @@ namespace DotNet.Sdk.Extensions.Polly.HttpClient
 {
     internal class DefaultCircuitBreakerPolicyConfiguration : ICircuitBreakerPolicyConfiguration
     {
-        public Task OnBreak(
+        public Task OnBreakAsync(
             CircuitBreakerOptions circuitBreakerOptions, 
             DelegateResult<HttpResponseMessage> lastOutcome,
             CircuitState previousState,
@@ -18,12 +18,12 @@ namespace DotNet.Sdk.Extensions.Polly.HttpClient
             return Task.CompletedTask;
         }
 
-        public Task OnHalfOpen(CircuitBreakerOptions circuitBreakerOptions)
+        public Task OnHalfOpenAsync(CircuitBreakerOptions circuitBreakerOptions)
         {
             return Task.CompletedTask;
         }
 
-        public Task OnReset(CircuitBreakerOptions circuitBreakerOptions, Context context)
+        public Task OnResetAsync(CircuitBreakerOptions circuitBreakerOptions, Context context)
         {
             return Task.CompletedTask;
         }

@@ -9,15 +9,15 @@ namespace DotNet.Sdk.Extensions.Polly.HttpClient
 {
     public interface ICircuitBreakerPolicyConfiguration
     {
-        Task OnBreak(
+        Task OnBreakAsync(
             CircuitBreakerOptions circuitBreakerOptions,
             DelegateResult<HttpResponseMessage> lastOutcome,
             CircuitState previousState,
             TimeSpan durationOfBreak,
             Context context);
 
-        Task OnHalfOpen(CircuitBreakerOptions circuitBreakerOptions);
+        Task OnHalfOpenAsync(CircuitBreakerOptions circuitBreakerOptions);
 
-        Task OnReset(CircuitBreakerOptions circuitBreakerOptions, Context context);
+        Task OnResetAsync(CircuitBreakerOptions circuitBreakerOptions, Context context);
     }
 }

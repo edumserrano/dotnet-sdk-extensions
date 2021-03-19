@@ -7,7 +7,7 @@ namespace DotNet.Sdk.Extensions.Polly.HttpClient
 {
     internal class DefaultTimeoutPolicyConfiguration : ITimeoutPolicyConfiguration
     {
-        public Task OnTimeout(
+        public Task OnTimeoutASync(
             TimeoutOptions timeoutOptions, 
             Context context,
             TimeSpan requestTimeout,
