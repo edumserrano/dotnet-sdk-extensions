@@ -7,19 +7,17 @@ namespace DotNet.Sdk.Extensions.Polly.HttpClient
 {
     public static class PollyHttpClientBuilderExtensions
     {
-        public static IHttpClientBuilder AddCircuitBreakerHandler(
+        public static IHttpClientBuilder AddCircuitBreakerCheckerHandler(
             this IHttpClientBuilder httpClientBuilder,
             string policyKey)
         {
 
-            return httpClientBuilder
-                .AddHttpMessageHandler(serviceProvider => //check circuit breaker state before even trying
-                {
-                    var registry = serviceProvider.GetRequiredService<IReadOnlyPolicyRegistry<string>>();
-                    var circuitBreakerPolicy = registry.Get<ICircuitBreakerPolicy>(policyKey);
-                    return new CircuitBreakerCheckerHandler(circuitBreakerPolicy);
-                })
-                .AddPolicyHandlerFromRegistry(policyKey);
+            return httpClientBuilder.AddHttpMessageHandler(serviceProvider =>
+            {
+                var registry = serviceProvider.GetRequiredService<IReadOnlyPolicyRegistry<string>>();
+                var circuitBreakerPolicy = registry.Get<ICircuitBreakerPolicy>(policyKey);
+                return new CircuitBreakerCheckerHandler(circuitBreakerPolicy);
+            });
         }
     }
 }

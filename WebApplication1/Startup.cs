@@ -58,7 +58,8 @@ namespace WebApplication1
             services
                 .AddHttpClient<GitHubClient>()
                 //.AddPolicyHandlerFromRegistry(policyKey: "GitHubCircuitBreaker")
-                .AddCircuitBreakerHandler(policyKey: "GitHubCircuitBreaker")
+                .AddCircuitBreakerCheckerHandler(policyKey: "GitHubCircuitBreaker")
+                .AddPolicyHandlerFromRegistry(policyKey: "GitHubCircuitBreaker")
                 .AddPolicyHandlerFromRegistry(policyKey: "GitHubRetry")
                 .AddPolicyHandlerFromRegistry(policyKey: "GitHubTimeout")
                 .AddHttpMessageHandler(() =>
