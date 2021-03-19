@@ -17,20 +17,22 @@ namespace DotNet.Sdk.Extensions.Polly.HttpClient
         public static IPolicyRegistry<string> AddHttpClientTimeoutPolicy(
             this IPolicyRegistry<string> registry,
             string policyKey,
+            string optionsName,
             IServiceProvider serviceProvider)
         {
-            return registry.AddHttpClientTimeoutPolicy<DefaultTimeoutPolicyConfiguration>(policyKey, serviceProvider);
+            return registry.AddHttpClientTimeoutPolicy<DefaultTimeoutPolicyConfiguration>(policyKey, optionsName, serviceProvider);
         }
 
         public static IPolicyRegistry<string> AddHttpClientTimeoutPolicy<T>(
             this IPolicyRegistry<string> registry,
             string policyKey,
+            string optionsName,
             IServiceProvider serviceProvider) where T : class, ITimeoutPolicyConfiguration
         {
             // by choice, T is not added to the IServiceCollection so use ActivatorUtilities  instead of IServiceProvider.GetRequiredService<T>
             var policyConfiguration = ActivatorUtilities.CreateInstance<T>(serviceProvider);
             var optionsMonitor = serviceProvider.GetRequiredService<IOptionsMonitor<TimeoutOptions>>();
-            var options = optionsMonitor.Get(name: policyKey);
+            var options = optionsMonitor.Get(optionsName);
             var policy = Policy.TimeoutAsync<HttpResponseMessage>(
                 timeout: TimeSpan.FromSeconds(options.TimeoutInSecs),
                 onTimeoutAsync: (context, requestTimeout, timedOutTask, exception) =>
@@ -44,20 +46,22 @@ namespace DotNet.Sdk.Extensions.Polly.HttpClient
         public static IPolicyRegistry<string> AddHttpClientRetryPolicy(
             this IPolicyRegistry<string> registry,
             string policyKey,
+            string optionsName,
             IServiceProvider serviceProvider)
         {
-            return registry.AddHttpClientRetryPolicy<DefaultRetryPolicyConfiguration>(policyKey, serviceProvider);
+            return registry.AddHttpClientRetryPolicy<DefaultRetryPolicyConfiguration>(policyKey, optionsName, serviceProvider);
         }
 
         public static IPolicyRegistry<string> AddHttpClientRetryPolicy<T>(
             this IPolicyRegistry<string> registry,
             string policyKey,
+            string optionsName,
             IServiceProvider serviceProvider) where T : class, IRetryPolicyConfiguration
         {
             // by choice, T is not added to the IServiceCollection so use ActivatorUtilities  instead of IServiceProvider.GetRequiredService<T>
             var policyConfiguration = ActivatorUtilities.CreateInstance<T>(serviceProvider);
             var optionsMonitor = serviceProvider.GetRequiredService<IOptionsMonitor<RetryOptions>>();
-            var options = optionsMonitor.Get(name: policyKey);
+            var options = optionsMonitor.Get(optionsName);
             var medianFirstRetryDelay = TimeSpan.FromSeconds(options.MedianFirstRetryDelayInSecs);
             var retryDelays = Backoff.DecorrelatedJitterBackoffV2(medianFirstRetryDelay, options.RetryCount);
             var policy = HttpPolicyExtensions
@@ -76,20 +80,22 @@ namespace DotNet.Sdk.Extensions.Polly.HttpClient
         public static IPolicyRegistry<string> AddHttpClientCircuitBreakerPolicy(
             this IPolicyRegistry<string> registry,
             string policyKey,
+            string optionsName,
             IServiceProvider serviceProvider)
         {
-            return registry.AddHttpClientCircuitBreakerPolicy<DefaultCircuitBreakerPolicyConfiguration>(policyKey, serviceProvider);
+            return registry.AddHttpClientCircuitBreakerPolicy<DefaultCircuitBreakerPolicyConfiguration>(policyKey, optionsName, serviceProvider);
         }
 
         public static IPolicyRegistry<string> AddHttpClientCircuitBreakerPolicy<T>(
             this IPolicyRegistry<string> registry,
             string policyKey,
+            string optionsName,
             IServiceProvider serviceProvider) where T : class, ICircuitBreakerPolicyConfiguration
         {
             // by choice, T is not added to the IServiceCollection so use ActivatorUtilities  instead of IServiceProvider.GetRequiredService<T>
             var policyConfiguration = ActivatorUtilities.CreateInstance<T>(serviceProvider);
             var optionsMonitor = serviceProvider.GetRequiredService<IOptionsMonitor<CircuitBreakerOptions>>();
-            var options = optionsMonitor.Get(name: policyKey);
+            var options = optionsMonitor.Get(optionsName);
             var policy = HttpPolicyExtensions
                 .HandleTransientHttpError()
                 .Or<TimeoutRejectedException>()

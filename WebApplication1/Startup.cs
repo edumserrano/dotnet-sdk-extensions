@@ -34,31 +34,44 @@ namespace WebApplication1
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebApplication1", Version = "v1" });
             });
 
+            services
+                .AddHttpClientTimeoutOptions(name: "GitHubTimeoutOptions")
+                .Configure(options => options.TimeoutInSecs = 1);
+            services
+                .AddHttpClientRetryOptions(policyKey: "GitHubRetryOptions")
+                .Bind(Configuration.GetSection("HttpClients:Default:RetryPolicy"));
+            services
+                .AddHttpClientCircuitBreakerOptions(policyKey: "GitHubCircuitBreakerOptions")
+                .Bind(Configuration.GetSection("GitHub"));
+
             services.AddPolicyRegistry((serviceProvider, registry) =>
             {
-                registry.AddHttpClientRetryPolicy<GitHubPoliciesConfiguration>(policyKey: "GitHubRetry", serviceProvider);
                 //registry.AddHttpClientTimeoutPolicy<GitHubPoliciesConfiguration>(policyKey: "GitHubTimeout", serviceProvider);
+                //registry.AddHttpClientRetryPolicy<GitHubPoliciesConfiguration>(policyKey: "GitHubRetry", serviceProvider);
                 //registry.AddHttpClientCircuitBreakerPolicy<GitHubPoliciesConfiguration>(policyKey: "GitHubCircuitBreaker", serviceProvider);
 
-                //registry.AddHttpClientRetryPolicy(policyKey: "GitHubRetry", serviceProvider);
-                registry.AddHttpClientTimeoutPolicy(policyKey: "GitHubTimeout", serviceProvider);
-                registry.AddHttpClientCircuitBreakerPolicy(policyKey: "GitHubCircuitBreaker", serviceProvider);
+                registry.AddHttpClientTimeoutPolicy(policyKey: "GitHubTimeout", optionsName: "GitHubTimeoutOptions", serviceProvider);
+                registry.AddHttpClientRetryPolicy(policyKey: "GitHubRetry", optionsName: "GitHubRetryOptions", serviceProvider);
+                registry.AddHttpClientCircuitBreakerPolicy(policyKey: "GitHubCircuitBreaker", optionsName: "GitHubCircuitBreakerOptions", serviceProvider);
             });
 
             services
                 .AddHttpClient<GitHubClient>()
                 //.AddRetryHandler(policyKey: "GitHubRetry", Configuration)
                 //.AddRetryHandler(policyKey: "GitHubRetry", optionsBuilder=>optionsBuilder.Bind(Configuration.GetSection("GitHub")))
-                .AddCircuitBreakerHandler(policyKey: "GitHubCircuitBreaker", optionsBuilder => optionsBuilder.Bind(Configuration.GetSection("GitHub")))
-                .AddRetryHandler(policyKey: "GitHubRetry", Configuration)
-                .AddTimeoutHandler(policyKey: "GitHubTimeout", optionsBuilder => optionsBuilder.Configure(options => options.TimeoutInSecs = 1))
+                //.AddCircuitBreakerHandler(policyKey: "GitHubCircuitBreaker", optionsBuilder => optionsBuilder.Bind(Configuration.GetSection("GitHub")))
+                //.AddRetryHandler(policyKey: "GitHubRetry", Configuration)
+                //.AddTimeoutHandler(policyKey: "GitHubTimeout", optionsBuilder => optionsBuilder.Configure(options => options.TimeoutInSecs = 1))
+                .AddPolicyHandlerFromRegistry(policyKey: "GitHubCircuitBreaker")
+                .AddPolicyHandlerFromRegistry(policyKey: "GitHubRetry")
+                .AddPolicyHandlerFromRegistry(policyKey: "GitHubTimeout")
                 .AddHttpMessageHandler(() =>
                 {
                     var testMessageHandler = new TestHttpMessageHandler();
                     testMessageHandler.MockHttpResponse(builder =>
                     {
                         builder.TimesOut(TimeSpan.FromSeconds(60));
-                       
+
                         //builder.RespondWith(message =>
                         //{
                         //    return new HttpResponseMessage(HttpStatusCode.InternalServerError);
