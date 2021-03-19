@@ -15,16 +15,16 @@ namespace DotNet.Sdk.Extensions.Polly.HttpClient
         
         public static OptionsBuilder<RetryOptions> AddHttpClientRetryOptions(
             this IServiceCollection services,
-            string policyKey)
+            string name)
         {
-            return services.AddOptions<RetryOptions>(name: policyKey);
+            return services.AddOptions<RetryOptions>(name: name);
         }
 
         public static OptionsBuilder<CircuitBreakerOptions> AddHttpClientCircuitBreakerOptions(
             this IServiceCollection services,
-            string policyKey)
+            string name)
         {
-            return services.AddOptions<CircuitBreakerOptions>(name: policyKey);
+            return services.AddOptions<CircuitBreakerOptions>(name: name);
         }
     }
 }

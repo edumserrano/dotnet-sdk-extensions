@@ -38,10 +38,10 @@ namespace WebApplication1
                 .AddHttpClientTimeoutOptions(name: "GitHubTimeoutOptions")
                 .Configure(options => options.TimeoutInSecs = 1);
             services
-                .AddHttpClientRetryOptions(policyKey: "GitHubRetryOptions")
+                .AddHttpClientRetryOptions(name: "GitHubRetryOptions")
                 .Bind(Configuration.GetSection("HttpClients:Default:RetryPolicy"));
             services
-                .AddHttpClientCircuitBreakerOptions(policyKey: "GitHubCircuitBreakerOptions")
+                .AddHttpClientCircuitBreakerOptions(name: "GitHubCircuitBreakerOptions")
                 .Bind(Configuration.GetSection("GitHub"));
 
             services.AddPolicyRegistry((serviceProvider, registry) =>
