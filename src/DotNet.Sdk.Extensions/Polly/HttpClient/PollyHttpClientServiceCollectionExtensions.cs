@@ -62,7 +62,10 @@ namespace DotNet.Sdk.Extensions.Polly.HttpClient
             string policyKey,
             Action<OptionsBuilder<CircuitBreakerOptions>> optionsBuilderAction)
         {
-            return httpClientBuilder.AddPolicyHandlerFromRegistry(policyKey, optionsBuilderAction);
+            // TODO missing circuit breaker check policy
+            return httpClientBuilder
+                //.AddPolicyHandlerFromRegistry(policyKey, optionsBuilderAction); //policy to check the circuit breaker before executing it
+                .AddPolicyHandlerFromRegistry(policyKey, optionsBuilderAction);
         }
 
         private static IHttpClientBuilder AddPolicyHandlerFromRegistry<T>(
