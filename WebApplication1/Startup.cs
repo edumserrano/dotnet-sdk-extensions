@@ -57,11 +57,6 @@ namespace WebApplication1
 
             services
                 .AddHttpClient<GitHubClient>()
-                //.AddRetryHandler(policyKey: "GitHubRetry", Configuration)
-                //.AddRetryHandler(policyKey: "GitHubRetry", optionsBuilder=>optionsBuilder.Bind(Configuration.GetSection("GitHub")))
-                //.AddCircuitBreakerHandler(policyKey: "GitHubCircuitBreaker", optionsBuilder => optionsBuilder.Bind(Configuration.GetSection("GitHub")))
-                //.AddRetryHandler(policyKey: "GitHubRetry", Configuration)
-                //.AddTimeoutHandler(policyKey: "GitHubTimeout", optionsBuilder => optionsBuilder.Configure(options => options.TimeoutInSecs = 1))
                 .AddPolicyHandlerFromRegistry(policyKey: "GitHubCircuitBreaker")
                 .AddPolicyHandlerFromRegistry(policyKey: "GitHubRetry")
                 .AddPolicyHandlerFromRegistry(policyKey: "GitHubTimeout")
