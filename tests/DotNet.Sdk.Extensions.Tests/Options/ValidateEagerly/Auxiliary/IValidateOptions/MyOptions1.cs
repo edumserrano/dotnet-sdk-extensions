@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace DotNet.Sdk.Extensions.Tests.Options.ValidateEagerly.IValidateOptions
+namespace DotNet.Sdk.Extensions.Tests.Options.ValidateEagerly.Auxiliary.IValidateOptions
 {
     public class MyOptions1
     {

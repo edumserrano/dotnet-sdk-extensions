@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace DotNet.Sdk.Extensions.Tests.Options.ValidateEagerly.StartupValidation
+namespace DotNet.Sdk.Extensions.Tests.Options.ValidateEagerly.Auxiliary.StartupValidation
 {
     public class StartupMyOptions3ValidateEargerly
     {

@@ -5,6 +5,7 @@ using Xunit;
 
 namespace DotNet.Sdk.Extensions.Tests.Options.ValidateEagerly
 {
+    [Trait("Category", "Options")]
     public class OptionsValidateEagerlyTests
     {
         /// <summary>

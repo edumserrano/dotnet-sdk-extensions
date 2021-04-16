@@ -26,6 +26,16 @@ namespace DotNet.Sdk.Extensions.Polly.HttpClient.Timeout.Extensions
         {
             // by choice, TPolicyConfiguration is not added to the IServiceCollection so use ActivatorUtilities  instead of IServiceProvider.GetRequiredService<T>
             var policyConfiguration = ActivatorUtilities.CreateInstance<TPolicyConfiguration>(serviceProvider);
+            return registry.AddHttpClientTimeoutPolicy(policyKey, optionsName, policyConfiguration, serviceProvider);
+        }
+
+        public static IPolicyRegistry<string> AddHttpClientTimeoutPolicy(
+            this IPolicyRegistry<string> registry,
+            string policyKey,
+            string optionsName,
+            ITimeoutPolicyConfiguration policyConfiguration,
+            IServiceProvider serviceProvider)
+        {
             var optionsMonitor = serviceProvider.GetRequiredService<IOptionsMonitor<TimeoutOptions>>();
             var options = optionsMonitor.Get(optionsName);
             var policy = Policy.TimeoutAsync<HttpResponseMessage>(

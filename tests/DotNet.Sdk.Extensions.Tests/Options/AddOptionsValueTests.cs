@@ -10,6 +10,7 @@ using Xunit;
 
 namespace DotNet.Sdk.Extensions.Tests.Options
 {
+    [Trait("Category", "Options")]
     public class AddOptionsValueTests
     {
         /// <summary>

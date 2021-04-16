@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace DotNet.Sdk.Extensions.Tests.Options.ValidateEagerly.DataAnnotations
+namespace DotNet.Sdk.Extensions.Tests.Options.ValidateEagerly.Auxiliary.DataAnnotations
 {
     public class StartupMyOptions2ValidateEagerly
     {

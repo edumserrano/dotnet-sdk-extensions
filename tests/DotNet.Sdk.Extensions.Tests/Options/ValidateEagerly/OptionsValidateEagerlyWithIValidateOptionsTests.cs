@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Testing.Configuration;
-using DotNet.Sdk.Extensions.Tests.Options.ValidateEagerly.IValidateOptions;
+using DotNet.Sdk.Extensions.Tests.Options.ValidateEagerly.Auxiliary.IValidateOptions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration.Memory;
 using Microsoft.Extensions.Hosting;
@@ -14,6 +14,7 @@ namespace DotNet.Sdk.Extensions.Tests.Options.ValidateEagerly
 {
     // Note: the UseUrls method calls makes sure a random port is selected or it might fail
     // when running with other tests that also start a host because the port is already in use
+    [Trait("Category", "Options")]
     public class OptionsValidateEagerlyWithIValidateOptionsTests
     {
         /// <summary>
