@@ -1,9 +1,9 @@
 ﻿using System;
 using Polly.CircuitBreaker;
 
-namespace DotNet.Sdk.Extensions.Polly
+namespace DotNet.Sdk.Extensions.Polly.Policies
 {
-    public static class CircuitBreakerPolicyExtensions
+    internal static class CircuitBreakerPolicyExtensions
     {
         public static bool IsCircuitOpen(this ICircuitBreakerPolicy circuitBreakerPolicy)
         {

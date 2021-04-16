@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
-using DotNet.Sdk.Extensions.Polly.HttpClient.Options;
 using Polly;
 
-namespace DotNet.Sdk.Extensions.Polly.HttpClient
+namespace DotNet.Sdk.Extensions.Polly.HttpClient.Timeout
 {
     public interface ITimeoutPolicyConfiguration
     {

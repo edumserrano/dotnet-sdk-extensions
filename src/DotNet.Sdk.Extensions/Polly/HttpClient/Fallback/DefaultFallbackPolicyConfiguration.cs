@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Polly;
 
-namespace DotNet.Sdk.Extensions.Polly.HttpClient
+namespace DotNet.Sdk.Extensions.Polly.HttpClient.Fallback
 {
     internal class DefaultFallbackPolicyConfiguration : IFallbackPolicyConfiguration
     {

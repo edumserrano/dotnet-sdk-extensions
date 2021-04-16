@@ -1,9 +1,6 @@
 using System;
-using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using DotNet.Sdk.Extensions.Polly.HttpClient;
-using DotNet.Sdk.Extensions.Polly.HttpClient.Options;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -13,7 +10,14 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Polly;
 using DotNet.Sdk.Extensions.Polly;
-using Microsoft.Extensions.Options;
+using DotNet.Sdk.Extensions.Polly.HttpClient.CircuitBreaker;
+using DotNet.Sdk.Extensions.Polly.HttpClient.CircuitBreaker.Extensions;
+using DotNet.Sdk.Extensions.Polly.HttpClient.Fallback;
+using DotNet.Sdk.Extensions.Polly.HttpClient.Fallback.Extensions;
+using DotNet.Sdk.Extensions.Polly.HttpClient.Retry;
+using DotNet.Sdk.Extensions.Polly.HttpClient.Retry.Extensions;
+using DotNet.Sdk.Extensions.Polly.HttpClient.Timeout;
+using DotNet.Sdk.Extensions.Polly.HttpClient.Timeout.Extensions;
 using Polly.CircuitBreaker;
 
 namespace WebApplication1
@@ -35,14 +39,12 @@ namespace WebApplication1
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebApplication1", Version = "v1" });
             });
 
-            services
-                .AddHttpClientTimeoutOptions(name: "GitHubTimeoutOptions")
+            services.AddHttpClientTimeoutOptions(name: "GitHubTimeoutOptions")
                 .Configure(options => options.TimeoutInSecs = 1);
             services
                 .AddHttpClientRetryOptions(name: "GitHubRetryOptions")
                 .Bind(Configuration.GetSection("HttpClients:Default:RetryPolicy"));
-            services
-                .AddHttpClientCircuitBreakerOptions(name: "GitHubCircuitBreakerOptions")
+            services.AddHttpClientCircuitBreakerOptions(name: "GitHubCircuitBreakerOptions")
                 .Bind(Configuration.GetSection("GitHub"));
 
             services.AddPolicyRegistry((serviceProvider, registry) =>
@@ -60,7 +62,6 @@ namespace WebApplication1
 
             services
                 .AddHttpClient<GitHubClient>() //.AddPolicyHandlerFromRegistry(policyKey: "GitHubCircuitBreaker")
-                
                 .AddPolicyHandlerFromRegistry(policyKey: "GitHubFallback")          // fallback response
                 .AddPolicyHandlerFromRegistry(policyKey: "GitHubRetry")             // do retries
                 .AddPolicyHandlerFromRegistry(policyKey: "GitHubCircuitBreaker")    // circuit breaker

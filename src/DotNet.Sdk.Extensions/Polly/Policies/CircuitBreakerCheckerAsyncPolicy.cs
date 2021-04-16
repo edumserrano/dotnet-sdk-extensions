@@ -2,11 +2,11 @@
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using DotNet.Sdk.Extensions.Polly.HttpClient;
+using DotNet.Sdk.Extensions.Polly.HttpClient.Fallback.FallbackHttpResponseMessages;
 using Polly;
 using Polly.CircuitBreaker;
 
-namespace DotNet.Sdk.Extensions.Polly
+namespace DotNet.Sdk.Extensions.Polly.Policies
 {
     internal class CircuitBreakerCheckerAsyncPolicy : AsyncPolicy<HttpResponseMessage>
     {
@@ -22,8 +22,8 @@ namespace DotNet.Sdk.Extensions.Polly
             Context context, CancellationToken cancellationToken,
             bool continueOnCapturedContext)
         {
-            // no point in trying to make the request because the circuit breaker will throw an exception.
-            // avoid exception as indicated by https://github.com/App-vNext/Polly/wiki/Circuit-Breaker#reducing-thrown-exceptions-when-the-circuit-is-broken
+            // No point in trying to make the request because the circuit breaker will throw an exception.
+            // Avoid exception as indicated by https://github.com/App-vNext/Polly/wiki/Circuit-Breaker#reducing-thrown-exceptions-when-the-circuit-is-broken
             if (_circuitBreakerPolicy.IsCircuitOpen())
             {
                 return new CircuitBrokenHttpResponseMessage();

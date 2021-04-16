@@ -1,4 +1,4 @@
-﻿namespace DotNet.Sdk.Extensions.Polly.HttpClient.Options
+﻿namespace DotNet.Sdk.Extensions.Polly.HttpClient.CircuitBreaker
 {
     public class CircuitBreakerOptions
     {
