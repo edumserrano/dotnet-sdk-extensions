@@ -13,6 +13,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Polly;
 using DotNet.Sdk.Extensions.Polly;
+using Microsoft.Extensions.Options;
 using Polly.CircuitBreaker;
 
 namespace WebApplication1
@@ -46,31 +47,37 @@ namespace WebApplication1
 
             services.AddPolicyRegistry((serviceProvider, registry) =>
             {
-                //registry.AddHttpClientTimeoutPolicy<GitHubPoliciesConfiguration>(policyKey: "GitHubTimeout", optionsName: "GitHubTimeoutOptions", serviceProvider);
-                //registry.AddHttpClientRetryPolicy<GitHubPoliciesConfiguration>(policyKey: "GitHubRetry", optionsName: "GitHubRetryOptions", serviceProvider);
-                //registry.AddHttpClientCircuitBreakerPolicy<GitHubPoliciesConfiguration>(policyKey: "GitHubCircuitBreaker", optionsName: "GitHubCircuitBreakerOptions", serviceProvider);
-                //registry.AddHttpClientFallbackPolicy<GitHubPoliciesConfiguration>(policyKey: "GitHubFallback", serviceProvider);
+                registry.AddHttpClientTimeoutPolicy<GitHubPoliciesConfiguration>(policyKey: "GitHubTimeout", optionsName: "GitHubTimeoutOptions", serviceProvider);
+                registry.AddHttpClientRetryPolicy<GitHubPoliciesConfiguration>(policyKey: "GitHubRetry", optionsName: "GitHubRetryOptions", serviceProvider);
+                registry.AddHttpClientCircuitBreakerPolicy<GitHubPoliciesConfiguration>(policyKey: "GitHubCircuitBreaker", optionsName: "GitHubCircuitBreakerOptions", serviceProvider);
+                registry.AddHttpClientFallbackPolicy<GitHubPoliciesConfiguration>(policyKey: "GitHubFallback", serviceProvider);
 
-                registry.AddHttpClientTimeoutPolicy(policyKey: "GitHubTimeout", optionsName: "GitHubTimeoutOptions", serviceProvider);
-                registry.AddHttpClientRetryPolicy(policyKey: "GitHubRetry", optionsName: "GitHubRetryOptions", serviceProvider);
-                registry.AddHttpClientCircuitBreakerPolicy(policyKey: "GitHubCircuitBreaker", optionsName: "GitHubCircuitBreakerOptions", serviceProvider);
-                registry.AddHttpClientFallbackPolicy(policyKey: "GitHubFallback", serviceProvider);
+                //registry.AddHttpClientTimeoutPolicy(policyKey: "GitHubTimeout", optionsName: "GitHubTimeoutOptions", serviceProvider);
+                //registry.AddHttpClientRetryPolicy(policyKey: "GitHubRetry", optionsName: "GitHubRetryOptions", serviceProvider);
+                //registry.AddHttpClientCircuitBreakerPolicy(policyKey: "GitHubCircuitBreaker", optionsName: "GitHubCircuitBreakerOptions", serviceProvider);
+                //registry.AddHttpClientFallbackPolicy(policyKey: "GitHubFallback", serviceProvider);
             });
 
             services
-                .AddHttpClient<GitHubClient>()
-                //.AddPolicyHandlerFromRegistry(policyKey: "GitHubCircuitBreaker")
-                .AddPolicyHandlerFromRegistry(policyKey: "GitHubFallback")
-                .AddCircuitBreakerCheckerHandler(policyKey: "GitHubCircuitBreaker")
-                .AddPolicyHandlerFromRegistry(policyKey: "GitHubCircuitBreaker")
-                .AddPolicyHandlerFromRegistry(policyKey: "GitHubRetry")
-                .AddPolicyHandlerFromRegistry(policyKey: "GitHubTimeout")
+                .AddHttpClient<GitHubClient>() //.AddPolicyHandlerFromRegistry(policyKey: "GitHubCircuitBreaker")
+                
+                .AddPolicyHandlerFromRegistry(policyKey: "GitHubFallback")          // fallback response
+                .AddPolicyHandlerFromRegistry(policyKey: "GitHubRetry")             // do retries
+                .AddPolicyHandlerFromRegistry(policyKey: "GitHubCircuitBreaker")    // circuit breaker
+                .AddPolicyHandlerFromRegistry(policyKey: "GitHubTimeout")           // because there is a retry policy first this is a timeout for each call/retry, not a timeout for all retries
                 .AddHttpMessageHandler(() =>
                 {
                     var testMessageHandler = new TestHttpMessageHandler();
                     testMessageHandler.MockHttpResponse(builder =>
                     {
-                        builder.TimesOut(TimeSpan.FromSeconds(60));
+                        builder
+
+                            .Where(x =>
+                            {
+                                var s = x.GetPolicyExecutionContext();
+                                return true;
+                            })
+                            .TimesOut(TimeSpan.FromSeconds(60));
 
                         //builder.RespondWith(message =>
                         //{
@@ -78,7 +85,8 @@ namespace WebApplication1
                         //});
                     });
                     return testMessageHandler;
-                });
+                })
+                ;
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
