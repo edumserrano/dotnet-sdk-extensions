@@ -1,11 +1,6 @@
 ﻿using System;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-using Polly;
-using Polly.Contrib.WaitAndRetry;
-using Polly.Extensions.Http;
 using Polly.Registry;
-using Polly.Timeout;
 
 namespace DotNet.Sdk.Extensions.Polly.HttpClient.Retry.Extensions
 {
@@ -28,20 +23,28 @@ namespace DotNet.Sdk.Extensions.Polly.HttpClient.Retry.Extensions
         {
             // by choice, TPolicyConfiguration is not added to the IServiceCollection so use ActivatorUtilities  instead of IServiceProvider.GetRequiredService<T>
             var policyConfiguration = ActivatorUtilities.CreateInstance<TPolicyConfiguration>(serviceProvider);
-            var optionsMonitor = serviceProvider.GetRequiredService<IOptionsMonitor<RetryOptions>>();
-            var options = optionsMonitor.Get(optionsName);
-            var medianFirstRetryDelay = TimeSpan.FromSeconds(options.MedianFirstRetryDelayInSecs);
-            var retryDelays = Backoff.DecorrelatedJitterBackoffV2(medianFirstRetryDelay, options.RetryCount);
-            var policy = HttpPolicyExtensions
-                .HandleTransientHttpError()
-                .Or<TimeoutRejectedException>()
-                .WaitAndRetryAsync(
-                    sleepDurations: retryDelays,
-                    onRetryAsync: (outcome, retryDelay, retryNumber, pollyContext) =>
-                     {
-                         return policyConfiguration.OnRetryAsync(options, outcome, retryDelay, retryNumber, pollyContext);
-                     });
-            registry.Add(key: policyKey, policy);
+            return registry.AddHttpClientRetryPolicy(policyKey, optionsName, policyConfiguration, serviceProvider);
+        }
+
+        public static IPolicyRegistry<string> AddHttpClientRetryPolicy(
+            this IPolicyRegistry<string> registry,
+            string policyKey,
+            string optionsName,
+            IRetryPolicyConfiguration policyConfiguration,
+            IServiceProvider serviceProvider)
+        {
+            var options = serviceProvider.GetHttpClientRetryOptions(optionsName);
+            return registry.AddHttpClientRetryPolicy(policyKey, options, policyConfiguration);
+        }
+
+        public static IPolicyRegistry<string> AddHttpClientRetryPolicy(
+            this IPolicyRegistry<string> registry,
+            string policyKey,
+            RetryOptions options,
+            IRetryPolicyConfiguration policyConfiguration)
+        {
+            var policy = RetryPolicyFactory.CreateRetryPolicy(options, policyConfiguration);
+            registry.Add(policyKey, policy);
             return registry;
         }
     }

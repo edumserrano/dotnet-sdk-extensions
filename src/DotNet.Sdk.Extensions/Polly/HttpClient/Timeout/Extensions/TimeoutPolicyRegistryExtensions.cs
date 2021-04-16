@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Net.Http;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-using Polly;
 using Polly.Registry;
 
 namespace DotNet.Sdk.Extensions.Polly.HttpClient.Timeout.Extensions
@@ -36,15 +33,18 @@ namespace DotNet.Sdk.Extensions.Polly.HttpClient.Timeout.Extensions
             ITimeoutPolicyConfiguration policyConfiguration,
             IServiceProvider serviceProvider)
         {
-            var optionsMonitor = serviceProvider.GetRequiredService<IOptionsMonitor<TimeoutOptions>>();
-            var options = optionsMonitor.Get(optionsName);
-            var policy = Policy.TimeoutAsync<HttpResponseMessage>(
-                timeout: TimeSpan.FromSeconds(options.TimeoutInSecs),
-                onTimeoutAsync: (context, requestTimeout, timedOutTask, exception) =>
-                 {
-                     return policyConfiguration.OnTimeoutASync(options, context, requestTimeout, timedOutTask, exception);
-                 });
-            registry.Add(key: policyKey, policy);
+            var options = serviceProvider.GetHttpClientTimeoutOptions(optionsName);
+            return registry.AddHttpClientTimeoutPolicy(policyKey, options, policyConfiguration);
+        }
+
+        public static IPolicyRegistry<string> AddHttpClientTimeoutPolicy(
+            this IPolicyRegistry<string> registry,
+            string policyKey,
+            TimeoutOptions options,
+            ITimeoutPolicyConfiguration policyConfiguration)
+        {
+            var policy = TimeoutPolicyFactory.CreateTimeoutPolicy(options, policyConfiguration);
+            registry.Add(policyKey, policy);
             return registry;
         }
     }

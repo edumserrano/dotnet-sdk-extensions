@@ -36,26 +36,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.HttpClient.Timeout
             var timeoutOptions = timeoutOptionsMonitor.Get(optionsName);
             timeoutOptions.TimeoutInSecs.ShouldBe(timeoutInSecs);
         }
-
-        [Fact]
-        public void AddHttpClientTimeoutPolicyFailsIfNoOptionsRegistered()
-        {
-            var policyKey = "testPolicy";
-            var optionsName = "timeoutOptions";
-            var services = new ServiceCollection();
-            services.AddPolicyRegistry((provider, policyRegistry) =>
-            {
-                policyRegistry.AddHttpClientTimeoutPolicy(policyKey, optionsName, provider);
-            });
-
-            var serviceProvider = services.BuildServiceProvider();
-            var expectedException = Should.Throw<InvalidOperationException>(() =>
-            {
-                return serviceProvider.GetRequiredService<IReadOnlyPolicyRegistry<string>>();
-            });
-            expectedException.Message.ShouldBe("No service for type 'Microsoft.Extensions.Options.IOptionsMonitor`1[DotNet.Sdk.Extensions.Polly.HttpClient.Timeout.TimeoutOptions]' has been registered.");
-        }
-
+        
         [Fact]
         public void AddHttpClientTimeoutPolicyWithDefaultConfiguration()
         {
@@ -186,13 +167,13 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.HttpClient.Timeout
                 cancellationToken: cts.Token);
            
             await timeoutPolicyConfiguration
-                .Received(1)
+                .ReceivedWithAnyArgs(1)
                 .OnTimeoutASync(
-                    timeoutOptions: Arg.Any<TimeoutOptions>(),
-                    context: Arg.Any<Context>(),
-                    requestTimeout: Arg.Any<TimeSpan>(),
-                    timedOutTask: Arg.Any<Task>(),
-                    exception: Arg.Any<Exception>());
+                    timeoutOptions: default!,
+                    context: default!,
+                    requestTimeout: default,
+                    timedOutTask: default!,
+                    exception: default!);
         }
         [Fact]
         public async Task AddHttpClientTimeoutPolicyHonorsConfiguration2()
