@@ -5,9 +5,12 @@ namespace DotNet.Sdk.Extensions.Polly.HttpClient.Fallback.FallbackHttpResponseMe
 {
     public class AbortedHttpResponseMessage : HttpResponseMessage
     {
-        public AbortedHttpResponseMessage()
+        public AbortedHttpResponseMessage(bool triggeredByTimeoutException)
         {
             StatusCode = HttpStatusCode.InternalServerError;
+            TriggeredByTimeoutException = triggeredByTimeoutException;
         }
+
+        public bool TriggeredByTimeoutException { get; }
     }
 }

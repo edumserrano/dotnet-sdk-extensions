@@ -27,6 +27,8 @@ namespace DotNet.Sdk.Extensions.Polly.HttpClient.Fallback.Extensions
         {
             // by choice, TPolicyConfiguration is not added to the IServiceCollection so use ActivatorUtilities  instead of IServiceProvider.GetRequiredService<T>
             var policyConfiguration = ActivatorUtilities.CreateInstance<TPolicyConfiguration>(serviceProvider);
+
+            // handle TimeoutRejectedException thrown by a timeout policy
             var timeoutFallback = Policy<HttpResponseMessage>
                 .Handle<TimeoutRejectedException>()
                 .FallbackAsync(
@@ -35,6 +37,8 @@ namespace DotNet.Sdk.Extensions.Polly.HttpClient.Fallback.Extensions
                     {
                         return policyConfiguration.OnTimeoutFallbackAsync(outcome, context);
                     });
+
+            // handle BrokenCircuitException thrown by a circuit breaker policy
             var brokenCircuitFallback = Policy<HttpResponseMessage>
                 .Handle<BrokenCircuitException>()
                 .FallbackAsync(
@@ -43,14 +47,24 @@ namespace DotNet.Sdk.Extensions.Polly.HttpClient.Fallback.Extensions
                     {
                         return policyConfiguration.OnBrokenCircuitFallbackAsync(outcome, context);
                     });
+
+            // handle TaskCanceledException thrown by HttpClient when it times out.
+            // on newer versions .NET still throws TaskCanceledException but the inner exception is of type System.TimeoutException.
+            // see https://devblogs.microsoft.com/dotnet/net-5-new-networking-improvements/#better-error-handling
             var abortedFallback = Policy<HttpResponseMessage>
                 .Handle<TaskCanceledException>()
                 .FallbackAsync(
-                    fallbackValue: new AbortedHttpResponseMessage(),
+                    fallbackAction: (delegateResult, pollyContext, cancellationToken) =>
+                    {
+                        var innerException = delegateResult.Exception?.InnerException;
+                        var triggeredByTimeoutException = innerException is TimeoutException;
+                        return Task.FromResult<HttpResponseMessage>(new AbortedHttpResponseMessage(triggeredByTimeoutException));
+                    },
                     onFallbackAsync: (outcome, context) =>
                     {
                         return policyConfiguration.OnTaskCancelledFallbackAsync(outcome, context);
                     });
+
             var policy = Policy.WrapAsync(timeoutFallback, brokenCircuitFallback, abortedFallback);
             registry.Add(key: policyKey, policy);
             return registry;
