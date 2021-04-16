@@ -138,6 +138,35 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.HttpClient.CircuitBreaker
                 .ShouldBeTrue();
         }
 
+        [Fact]
+        public void AddHttpClientCircuitBreakerPolicyWithConfiguration3()
+        {
+            var policyKey = "testPolicy";
+            var durationOfBreakInSecs = 1;
+            var failureThreshold = 0.8;
+            var minimumThroughput = 2;
+            var samplingDurationInSecs = 60;
+            var services = new ServiceCollection();
+            services.AddPolicyRegistry((provider, policyRegistry) =>
+            {
+                var policyConfiguration = Substitute.For<ICircuitBreakerPolicyConfiguration>();
+                var options = new CircuitBreakerOptions
+                {
+                    DurationOfBreakInSecs = durationOfBreakInSecs,
+                    FailureThreshold = failureThreshold,
+                    MinimumThroughput = minimumThroughput,
+                    SamplingDurationInSecs = samplingDurationInSecs
+                };
+                policyRegistry.AddHttpClientCircuitBreakerPolicy(policyKey, options, policyConfiguration);
+            });
+
+            var serviceProvider = services.BuildServiceProvider();
+            var registry = serviceProvider.GetRequiredService<IReadOnlyPolicyRegistry<string>>();
+            registry
+                .TryGet<AsyncPolicyWrap<HttpResponseMessage>>(policyKey, out var policy)
+                .ShouldBeTrue();
+        }
+
         ///// <summary>
         ///// it's not like I want to test polly itself but don't have another way to check the policy configuration?
         ///// don't know how to test the MedianFirstRetryDelayInSecs....

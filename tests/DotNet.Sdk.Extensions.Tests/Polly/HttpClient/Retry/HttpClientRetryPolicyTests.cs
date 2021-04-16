@@ -34,9 +34,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.HttpClient.Retry
                     options.MedianFirstRetryDelayInSecs = medianFirstRetryDelayInSecs;
                 });
             var serviceProvider = services.BuildServiceProvider();
-            var timeoutOptionsMonitor = serviceProvider.GetService<IOptionsMonitor<RetryOptions>>();
-            timeoutOptionsMonitor.ShouldNotBeNull();
-            var retryOptions = timeoutOptionsMonitor.Get(optionsName);
+            var retryOptions = serviceProvider.GetHttpClientRetryOptions(optionsName);
             retryOptions.RetryCount.ShouldBe(retryCount);
             retryOptions.MedianFirstRetryDelayInSecs.ShouldBe(medianFirstRetryDelayInSecs);
         }
@@ -108,6 +106,29 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.HttpClient.Retry
             {
                 var retryPolicyConfiguration = Substitute.For<IRetryPolicyConfiguration>();
                 policyRegistry.AddHttpClientRetryPolicy(policyKey, optionsName, retryPolicyConfiguration, provider);
+            });
+
+            var serviceProvider = services.BuildServiceProvider();
+            var registry = serviceProvider.GetRequiredService<IReadOnlyPolicyRegistry<string>>();
+            registry
+                .TryGet<AsyncRetryPolicy<HttpResponseMessage>>(policyKey, out var policy)
+                .ShouldBeTrue();
+        }
+
+        [Fact]
+        public void AddHttpClientRetryPolicyWithConfiguration3()
+        {
+            var policyKey = "testPolicy";
+            var services = new ServiceCollection();
+            services.AddPolicyRegistry((provider, policyRegistry) =>
+            {
+                var policyConfiguration = Substitute.For<IRetryPolicyConfiguration>();
+                var options = new RetryOptions
+                {
+                    RetryCount = 3,
+                    MedianFirstRetryDelayInSecs = 1
+                };
+                policyRegistry.AddHttpClientRetryPolicy(policyKey, options, policyConfiguration);
             });
 
             var serviceProvider = services.BuildServiceProvider();

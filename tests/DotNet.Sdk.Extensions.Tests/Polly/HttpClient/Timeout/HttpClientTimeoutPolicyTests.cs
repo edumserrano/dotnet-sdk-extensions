@@ -31,12 +31,10 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.HttpClient.Timeout
                 .AddHttpClientTimeoutOptions(optionsName)
                 .Configure(options => options.TimeoutInSecs = timeoutInSecs);
             var serviceProvider = services.BuildServiceProvider();
-            var timeoutOptionsMonitor = serviceProvider.GetService<IOptionsMonitor<TimeoutOptions>>();
-            timeoutOptionsMonitor.ShouldNotBeNull();
-            var timeoutOptions = timeoutOptionsMonitor.Get(optionsName);
+            var timeoutOptions = serviceProvider.GetHttpClientTimeoutOptions(optionsName);
             timeoutOptions.TimeoutInSecs.ShouldBe(timeoutInSecs);
         }
-        
+
         [Fact]
         public void AddHttpClientTimeoutPolicyWithDefaultConfiguration()
         {
@@ -90,8 +88,30 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.HttpClient.Timeout
                 .Configure(options => options.TimeoutInSecs = 1);
             services.AddPolicyRegistry((provider, policyRegistry) =>
             {
-                var timeoutPolicyConfiguration = Substitute.For<ITimeoutPolicyConfiguration>();
-                policyRegistry.AddHttpClientTimeoutPolicy(policyKey, optionsName, timeoutPolicyConfiguration, provider);
+                var policyConfiguration = Substitute.For<ITimeoutPolicyConfiguration>();
+                policyRegistry.AddHttpClientTimeoutPolicy(policyKey, optionsName, policyConfiguration, provider);
+            });
+
+            var serviceProvider = services.BuildServiceProvider();
+            var registry = serviceProvider.GetRequiredService<IReadOnlyPolicyRegistry<string>>();
+            registry
+                .TryGet<AsyncTimeoutPolicy<HttpResponseMessage>>(policyKey, out var policy)
+                .ShouldBeTrue();
+        }
+
+        [Fact]
+        public void AddHttpClientTimeoutPolicyWithConfiguration3()
+        {
+            var policyKey = "testPolicy";
+            var services = new ServiceCollection();
+            services.AddPolicyRegistry((provider, policyRegistry) =>
+            {
+                var policyConfiguration = Substitute.For<ITimeoutPolicyConfiguration>();
+                var options = new TimeoutOptions
+                {
+                    TimeoutInSecs = 1
+                };
+                policyRegistry.AddHttpClientTimeoutPolicy(policyKey, options, policyConfiguration);
             });
 
             var serviceProvider = services.BuildServiceProvider();
@@ -106,10 +126,11 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.HttpClient.Timeout
         {
             var policyKey = "testPolicy";
             var optionsName = "timeoutOptions";
+            var timeoutInSecs = 1;
             var services = new ServiceCollection();
             services
                 .AddHttpClientTimeoutOptions(optionsName)
-                .Configure(options => options.TimeoutInSecs = 1);
+                .Configure(options => options.TimeoutInSecs = timeoutInSecs);
             services.AddPolicyRegistry((provider, policyRegistry) =>
             {
                 policyRegistry.AddHttpClientTimeoutPolicy(policyKey, optionsName, provider);
@@ -117,21 +138,19 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.HttpClient.Timeout
             var serviceProvider = services.BuildServiceProvider();
             var registry = serviceProvider.GetRequiredService<IReadOnlyPolicyRegistry<string>>();
             var timeoutPolicy = registry.Get<AsyncTimeoutPolicy<HttpResponseMessage>>(policyKey);
-            var timeoutOptionsMonitor = serviceProvider.GetRequiredService<IOptionsMonitor<TimeoutOptions>>();
-            var timeoutOptions = timeoutOptionsMonitor.Get(optionsName);
 
             var cts = new CancellationTokenSource();
             var policyResult = await timeoutPolicy.ExecuteAndCaptureAsync(
                 action: async (context, cancellationToken) =>
                 {
-                    var timeoutSpan = TimeSpan.FromSeconds(timeoutOptions.TimeoutInSecs + 1);
+                    var timeoutSpan = TimeSpan.FromSeconds(timeoutInSecs + 1);
                     cts.CancelAfter(timeoutSpan);
                     await Task.Delay(timeoutSpan, cancellationToken);
                     return new HttpResponseMessage(HttpStatusCode.OK);
                 },
                 context: new Context(),
                 cancellationToken: cts.Token);
-            
+
             policyResult.FinalException.ShouldBeOfType<TimeoutRejectedException>();
         }
 
@@ -165,7 +184,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.HttpClient.Timeout
                 },
                 context: new Context(),
                 cancellationToken: cts.Token);
-           
+
             await timeoutPolicyConfiguration
                 .ReceivedWithAnyArgs(1)
                 .OnTimeoutASync(
@@ -189,7 +208,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.HttpClient.Timeout
             var requestTimeout = TimeSpan.Zero;
             var timeoutPolicyConfiguration = Substitute.For<ITimeoutPolicyConfiguration>();
             timeoutPolicyConfiguration
-                .WhenForAnyArgs(x => 
+                .WhenForAnyArgs(x =>
                     x.OnTimeoutASync(
                         timeoutOptions: default!,
                         context: default!,
