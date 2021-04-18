@@ -1,12 +1,19 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Polly;
 using DotNet.Sdk.Extensions.Polly.HttpClient.CircuitBreaker;
 using DotNet.Sdk.Extensions.Polly.HttpClient.CircuitBreaker.Extensions;
+using DotNet.Sdk.Extensions.Polly.HttpClient.Fallback.FallbackHttpResponseMessages;
 using DotNet.Sdk.Extensions.Tests.Polly.HttpClient.CircuitBreaker.Auxiliary;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using NSubstitute;
+using Polly;
+using Polly.CircuitBreaker;
 using Polly.Registry;
+using Polly.Timeout;
 using Polly.Wrap;
 using Shouldly;
 using Xunit;
@@ -167,199 +174,387 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.HttpClient.CircuitBreaker
                 .ShouldBeTrue();
         }
 
-        ///// <summary>
-        ///// it's not like I want to test polly itself but don't have another way to check the policy configuration?
-        ///// don't know how to test the MedianFirstRetryDelayInSecs....
-        ///// </summary>
-        ///// <returns></returns>
-        //[Fact]
-        //public async Task AddHttpClientRetryPolicyHonorsOptions()
-        //{
-        //    var policyKey = "testPolicy";
-        //    var optionsName = "retryOptions";
-        //    var retryCount = 2;
-        //    var services = new ServiceCollection();
-        //    services
-        //        .AddHttpClientRetryOptions(optionsName)
-        //        .Configure(options =>
-        //        {
-        //            options.RetryCount = retryCount;
-        //            options.MedianFirstRetryDelayInSecs = 0.1;
-        //        });
-        //    var retryPolicyConfiguration = Substitute.For<IRetryPolicyConfiguration>();
-        //    services.AddPolicyRegistry((provider, policyRegistry) =>
-        //    {
-        //        policyRegistry.AddHttpClientRetryPolicy(policyKey, optionsName, retryPolicyConfiguration, provider);
-        //    });
-        //    var serviceProvider = services.BuildServiceProvider();
-        //    var registry = serviceProvider.GetRequiredService<IReadOnlyPolicyRegistry<string>>();
-        //    var retryPolicy = registry.Get<AsyncRetryPolicy<HttpResponseMessage>>(policyKey);
+        /// <summary>
+        /// it's not like I want to test polly itself but don't have another way to check the policy configuration?
+        /// don't know how to test the MedianFirstRetryDelayInSecs....
+        /// also tests policy configuration
+        /// </summary>
+        /// <returns></returns>
+        [Fact]
+        public async Task AddHttpClientCircuitBreakerPolicyHonorsMinimumThroughputOption()
+        {
+            var policyKey = "testPolicy";
+            var durationOfBreakInSecs = 1;
+            var failureThreshold = 0.8;
+            var minimumThroughput = 2;
+            var samplingDurationInSecs = 60;
+            var services = new ServiceCollection();
+            var circuitBreakerPolicyConfiguration = Substitute.For<ICircuitBreakerPolicyConfiguration>();
+            services.AddPolicyRegistry((provider, policyRegistry) =>
+            {
+                var options = new CircuitBreakerOptions
+                {
+                    DurationOfBreakInSecs = durationOfBreakInSecs,
+                    FailureThreshold = failureThreshold,
+                    MinimumThroughput = minimumThroughput,
+                    SamplingDurationInSecs = samplingDurationInSecs
+                };
+                policyRegistry.AddHttpClientCircuitBreakerPolicy(policyKey, options, circuitBreakerPolicyConfiguration);
+            });
+            var serviceProvider = services.BuildServiceProvider();
+            var registry = serviceProvider.GetRequiredService<IReadOnlyPolicyRegistry<string>>();
+            var wrappedCircuitBreakerPolicy = registry.Get<AsyncPolicyWrap<HttpResponseMessage>>(policyKey);
 
-        //    var cts = new CancellationTokenSource();
-        //    var policyResult = await retryPolicy.ExecuteAndCaptureAsync(
-        //        action: (context, cancellationToken) =>
-        //        {
-        //            var httpResponseMessage = new HttpResponseMessage(HttpStatusCode.InternalServerError);
-        //            return Task.FromResult(httpResponseMessage);
-        //        },
-        //        context: new Context(),
-        //        cancellationToken: cts.Token);
+            for (var i = 0; i < minimumThroughput; i++)
+            {
+                var policyResult = await wrappedCircuitBreakerPolicy.ExecuteAndCaptureAsync(
+                    action: () =>
+                    {
+                        var httpResponseMessage = new HttpResponseMessage(HttpStatusCode.InternalServerError);
+                        return Task.FromResult(httpResponseMessage);
+                    });
+            }
 
-        //    await retryPolicyConfiguration
-        //        .ReceivedWithAnyArgs(retryCount)
-        //        .OnRetryAsync(
-        //            retryOptions: default!,
-        //            outcome: default!,
-        //            retryDelay: default,
-        //            retryNumber: default,
-        //            pollyContext: default!);
-        //}
+            await circuitBreakerPolicyConfiguration
+                .ReceivedWithAnyArgs(1)
+                .OnBreakAsync(
+                    circuitBreakerOptions: default!,
+                    lastOutcome: default!,
+                    previousState: default,
+                    durationOfBreak: default,
+                    context: default!);
+        }
 
-        ///// <summary>
-        ///// it's not like I want to test polly itself but don't have another way to check the policy configuration?
-        ///// note about only testing the retry options when the configuration is invoked... not sure how to test the rest
-        ///// </summary>
-        ///// <returns></returns>
-        //[Fact]
-        //public async Task AddHttpClientTimeoutPolicyHonorsConfiguration()
-        //{
-        //    var policyKey = "testPolicy";
-        //    var optionsName = "retryOptions";
-        //    var retryCount = 2;
-        //    var medianFirstRetryDelayInSecs = 0.1;
-        //    var services = new ServiceCollection();
-        //    services
-        //        .AddHttpClientRetryOptions(optionsName)
-        //        .Configure(options =>
-        //        {
-        //            options.RetryCount = retryCount;
-        //            options.MedianFirstRetryDelayInSecs = medianFirstRetryDelayInSecs;
-        //        });
-        //    RetryOptions retryOptions = null!;
-        //    var retryPolicyConfiguration = Substitute.For<IRetryPolicyConfiguration>();
-        //    retryPolicyConfiguration
-        //        .WhenForAnyArgs(x=>
-        //            x.OnRetryAsync(
-        //                retryOptions: default!,
-        //                outcome: default!,
-        //                retryDelay: default,
-        //                retryNumber: default,
-        //                pollyContext: default!))
-        //        .Do(callInfo =>
-        //        {
-        //            retryOptions = callInfo.ArgAt<RetryOptions>(0);
-        //        });
-        //    services.AddPolicyRegistry((provider, policyRegistry) =>
-        //    {
-        //        policyRegistry.AddHttpClientRetryPolicy(policyKey, optionsName, retryPolicyConfiguration, provider);
-        //    });
-        //    var serviceProvider = services.BuildServiceProvider();
-        //    var registry = serviceProvider.GetRequiredService<IReadOnlyPolicyRegistry<string>>();
-        //    var retryPolicy = registry.Get<AsyncRetryPolicy<HttpResponseMessage>>(policyKey);
+        /// <summary>
+        /// it's not like I want to test polly itself but don't have another way to check the policy configuration?
+        /// don't know how to test the MedianFirstRetryDelayInSecs....
+        /// also tests policy configuration
+        /// </summary>
+        /// <returns></returns>
+        [Fact]
+        public async Task AddHttpClientCircuitBreakerPolicyHonorsFailureThresholdOption()
+        {
+            var policyKey = "testPolicy";
+            var durationOfBreakInSecs = 1;
+            var failureThreshold = 0.6;
+            var minimumThroughput = 4;
+            var samplingDurationInSecs = 60;
+            var services = new ServiceCollection();
+            var circuitBreakerPolicyConfiguration = Substitute.For<ICircuitBreakerPolicyConfiguration>();
+            services.AddPolicyRegistry((provider, policyRegistry) =>
+            {
+                var options = new CircuitBreakerOptions
+                {
+                    DurationOfBreakInSecs = durationOfBreakInSecs,
+                    FailureThreshold = failureThreshold,
+                    MinimumThroughput = minimumThroughput,
+                    SamplingDurationInSecs = samplingDurationInSecs
+                };
+                policyRegistry.AddHttpClientCircuitBreakerPolicy(policyKey, options, circuitBreakerPolicyConfiguration);
+            });
+            var serviceProvider = services.BuildServiceProvider();
+            var registry = serviceProvider.GetRequiredService<IReadOnlyPolicyRegistry<string>>();
+            var wrappedCircuitBreakerPolicy = registry.Get<AsyncPolicyWrap<HttpResponseMessage>>(policyKey);
 
-        //    var cts = new CancellationTokenSource();
-        //    var policyResult = await retryPolicy.ExecuteAndCaptureAsync(
-        //        action: (context, cancellationToken) =>
-        //        {
-        //            var httpResponseMessage = new HttpResponseMessage(HttpStatusCode.InternalServerError);
-        //            return Task.FromResult(httpResponseMessage);
-        //        },
-        //        context: new Context(),
-        //        cancellationToken: cts.Token);
+            for (var i = 0; i < minimumThroughput; i++)
+            {
+                var policyResult = await wrappedCircuitBreakerPolicy.ExecuteAndCaptureAsync(
+                    action: () =>
+                    {
+                        var httpResponseMessage = new HttpResponseMessage(HttpStatusCode.InternalServerError);
+                        return Task.FromResult(httpResponseMessage);
+                    });
+            }
+            var circuitBreakerPolicy = (AsyncCircuitBreakerPolicy<HttpResponseMessage>)wrappedCircuitBreakerPolicy.Inner;
+            circuitBreakerPolicy.Reset();
+            for (var i = 0; i < minimumThroughput; i++)
+            {
+                var policyResult = await wrappedCircuitBreakerPolicy.ExecuteAndCaptureAsync(
+                    action: () =>
+                    {
+                        // since failureThreshold is 60%, if we fail only 50% it won't trigger 
+                        var httpResponseMessage = i % 2 == 0
+                            ? new HttpResponseMessage(HttpStatusCode.OK)
+                            : new HttpResponseMessage(HttpStatusCode.InternalServerError);
+                        return Task.FromResult(httpResponseMessage);
+                    });
+            }
 
-        //    retryOptions.RetryCount.ShouldBe(retryCount);
-        //    retryOptions.MedianFirstRetryDelayInSecs.ShouldBe(medianFirstRetryDelayInSecs);
-        //}
+            await circuitBreakerPolicyConfiguration
+                .ReceivedWithAnyArgs(1)
+                .OnBreakAsync(
+                    circuitBreakerOptions: default!,
+                    lastOutcome: default!,
+                    previousState: default,
+                    durationOfBreak: default,
+                    context: default!);
+        }
+
+        /// <summary>
+        /// it's not like I want to test polly itself but don't have another way to check the policy configuration?
+        /// don't know how to test the MedianFirstRetryDelayInSecs....
+        ///
+        /// also tests policy configuration
+        /// </summary>
+        /// <returns></returns>
+        [Fact]
+        public async Task AddHttpClientCircuitBreakerPolicyHonorsDurationOfBreakOption()
+        {
+            var policyKey = "testPolicy";
+            var durationOfBreakInSecs = 1;
+            var failureThreshold = 0.5;
+            var minimumThroughput = 4;
+            var samplingDurationInSecs = 60;
+            var services = new ServiceCollection();
+            var circuitBreakerPolicyConfiguration = Substitute.For<ICircuitBreakerPolicyConfiguration>();
+            services.AddPolicyRegistry((provider, policyRegistry) =>
+            {
+                var options = new CircuitBreakerOptions
+                {
+                    DurationOfBreakInSecs = durationOfBreakInSecs,
+                    FailureThreshold = failureThreshold,
+                    MinimumThroughput = minimumThroughput,
+                    SamplingDurationInSecs = samplingDurationInSecs
+                };
+                policyRegistry.AddHttpClientCircuitBreakerPolicy(policyKey, options, circuitBreakerPolicyConfiguration);
+            });
+            var serviceProvider = services.BuildServiceProvider();
+            var registry = serviceProvider.GetRequiredService<IReadOnlyPolicyRegistry<string>>();
+            var wrappedCircuitBreakerPolicy = registry.Get<AsyncPolicyWrap<HttpResponseMessage>>(policyKey);
+
+            for (var i = 0; i < minimumThroughput; i++)
+            {
+                var policyResult = await wrappedCircuitBreakerPolicy.ExecuteAndCaptureAsync(
+                    action: () =>
+                    {
+                        var httpResponseMessage = new HttpResponseMessage(HttpStatusCode.InternalServerError);
+                        return Task.FromResult(httpResponseMessage);
+                    });
+            }
+            await circuitBreakerPolicyConfiguration
+                .ReceivedWithAnyArgs(1)
+                .OnBreakAsync(
+                    circuitBreakerOptions: default!,
+                    lastOutcome: default!,
+                    previousState: default,
+                    durationOfBreak: default,
+                    context: default!);
+            await circuitBreakerPolicyConfiguration
+                .ReceivedWithAnyArgs(0)
+                .OnResetAsync(
+                    circuitBreakerOptions: default!,
+                    context: default!);
+
+            await Task.Delay(TimeSpan.FromSeconds(durationOfBreakInSecs + 1));
+            for (var i = 0; i < minimumThroughput; i++)
+            {
+                var policyResult = await wrappedCircuitBreakerPolicy.ExecuteAndCaptureAsync(
+                    action: () =>
+                    {
+                        var httpResponseMessage = new HttpResponseMessage(HttpStatusCode.OK);
+                        return Task.FromResult(httpResponseMessage);
+                    });
+            }
+            await circuitBreakerPolicyConfiguration
+                .ReceivedWithAnyArgs(1)
+                .OnResetAsync(
+                    circuitBreakerOptions: default!,
+                    context: default!);
+            await circuitBreakerPolicyConfiguration
+                .ReceivedWithAnyArgs(1)
+                .OnHalfOpenAsync(circuitBreakerOptions: default!);
+        }
 
         /// <summary>
         /// it's not like I want to test polly itself but I want to make sure the policy
         /// triggers are correctly configured and I don't know another way 
         /// </summary>
         /// <returns></returns>
-        //[Fact]
-        //public async Task AddHttpClientRetryPolicyTriggersOnTimeoutRejectedException()
-        //{
-        //    var policyKey = "testPolicy";
-        //    var optionsName = "retryOptions";
-        //    var retryCount = 2;
-        //    var medianFirstRetryDelayInSecs = 0.1;
-        //    var services = new ServiceCollection();
-        //    services
-        //        .AddHttpClientRetryOptions(optionsName)
-        //        .Configure(options =>
-        //        {
-        //            options.RetryCount = retryCount;
-        //            options.MedianFirstRetryDelayInSecs = medianFirstRetryDelayInSecs;
-        //        });
-        //    var retryPolicyConfiguration = Substitute.For<IRetryPolicyConfiguration>();
-        //    services.AddPolicyRegistry((provider, policyRegistry) =>
-        //    {
-        //        policyRegistry.AddHttpClientRetryPolicy(policyKey, optionsName, retryPolicyConfiguration, provider);
-        //    });
-        //    var serviceProvider = services.BuildServiceProvider();
-        //    var registry = serviceProvider.GetRequiredService<IReadOnlyPolicyRegistry<string>>();
-        //    var retryPolicy = registry.Get<AsyncRetryPolicy<HttpResponseMessage>>(policyKey);
+        [Fact]
+        public async Task AddHttpClientCircuitBreakerPolicyTriggersOnTimeoutRejectedException()
+        {
+            var policyKey = "testPolicy";
+            var durationOfBreakInSecs = 1;
+            var failureThreshold = 0.5;
+            var minimumThroughput = 4;
+            var samplingDurationInSecs = 60;
+            var services = new ServiceCollection();
+            var circuitBreakerPolicyConfiguration = Substitute.For<ICircuitBreakerPolicyConfiguration>();
+            services.AddPolicyRegistry((provider, policyRegistry) =>
+            {
+                var options = new CircuitBreakerOptions
+                {
+                    DurationOfBreakInSecs = durationOfBreakInSecs,
+                    FailureThreshold = failureThreshold,
+                    MinimumThroughput = minimumThroughput,
+                    SamplingDurationInSecs = samplingDurationInSecs
+                };
+                policyRegistry.AddHttpClientCircuitBreakerPolicy(policyKey, options, circuitBreakerPolicyConfiguration);
+            });
+            var serviceProvider = services.BuildServiceProvider();
+            var registry = serviceProvider.GetRequiredService<IReadOnlyPolicyRegistry<string>>();
+            var wrappedCircuitBreakerPolicy = registry.Get<AsyncPolicyWrap<HttpResponseMessage>>(policyKey);
 
-        //    var policyResult = await retryPolicy.ExecuteAndCaptureAsync(
-        //        action: () =>
-        //        {
-        //            throw new TimeoutRejectedException("test message");
-        //        });
+            for (var i = 0; i < minimumThroughput; i++)
+            {
+                var policyResult = await wrappedCircuitBreakerPolicy.ExecuteAndCaptureAsync(
+                    action: () =>
+                    {
+                        throw new TimeoutRejectedException("test");
+                    });
+            }
+            await circuitBreakerPolicyConfiguration
+                .ReceivedWithAnyArgs(1)
+                .OnBreakAsync(
+                    circuitBreakerOptions: default!,
+                    lastOutcome: default!,
+                    previousState: default,
+                    durationOfBreak: default,
+                    context: default!);
+        }
 
-        //    await retryPolicyConfiguration
-        //        .ReceivedWithAnyArgs(retryCount)
-        //        .OnRetryAsync(
-        //            retryOptions: default!,
-        //            outcome: default!,
-        //            retryDelay: default,
-        //            retryNumber: default,
-        //            pollyContext: default!);
-        //}
+        /// <summary>
+        /// it's not like I want to test polly itself but I want to make sure the policy
+        /// triggers are correctly configured and I don't know another way 
+        /// </summary>
+        /// <returns></returns>
+        [Fact]
+        public async Task AddHttpClientCircuitBreakerPolicyTriggersOnTransientHttpErrors()
+        {
+            var policyKey = "testPolicy";
+            var durationOfBreakInSecs = 1;
+            var failureThreshold = 0.5;
+            var minimumThroughput = 4;
+            var samplingDurationInSecs = 60;
+            var services = new ServiceCollection();
+            var circuitBreakerPolicyConfiguration = Substitute.For<ICircuitBreakerPolicyConfiguration>();
+            services.AddPolicyRegistry((provider, policyRegistry) =>
+            {
+                var options = new CircuitBreakerOptions
+                {
+                    DurationOfBreakInSecs = durationOfBreakInSecs,
+                    FailureThreshold = failureThreshold,
+                    MinimumThroughput = minimumThroughput,
+                    SamplingDurationInSecs = samplingDurationInSecs
+                };
+                policyRegistry.AddHttpClientCircuitBreakerPolicy(policyKey, options, circuitBreakerPolicyConfiguration);
+            });
+            var serviceProvider = services.BuildServiceProvider();
+            var registry = serviceProvider.GetRequiredService<IReadOnlyPolicyRegistry<string>>();
+            var wrappedCircuitBreakerPolicy = registry.Get<AsyncPolicyWrap<HttpResponseMessage>>(policyKey);
 
-        ///// <summary>
-        ///// it's not like I want to test polly itself but I want to make sure the policy
-        ///// triggers are correctly configured and I don't know another way 
-        ///// </summary>
-        ///// <returns></returns>
-        //[Fact]
-        //public async Task AddHttpClientRetryPolicyTriggersOnTransientHttpErrors()
-        //{
-        //    var policyKey = "testPolicy";
-        //    var optionsName = "retryOptions";
-        //    var retryCount = 2;
-        //    var medianFirstRetryDelayInSecs = 0.1;
-        //    var services = new ServiceCollection();
-        //    services
-        //        .AddHttpClientRetryOptions(optionsName)
-        //        .Configure(options =>
-        //        {
-        //            options.RetryCount = retryCount;
-        //            options.MedianFirstRetryDelayInSecs = medianFirstRetryDelayInSecs;
-        //        });
-        //    var retryPolicyConfiguration = Substitute.For<IRetryPolicyConfiguration>();
-        //    services.AddPolicyRegistry((provider, policyRegistry) =>
-        //    {
-        //        policyRegistry.AddHttpClientRetryPolicy(policyKey, optionsName, retryPolicyConfiguration, provider);
-        //    });
-        //    var serviceProvider = services.BuildServiceProvider();
-        //    var registry = serviceProvider.GetRequiredService<IReadOnlyPolicyRegistry<string>>();
-        //    var retryPolicy = registry.Get<AsyncRetryPolicy<HttpResponseMessage>>(policyKey);
+            for (var i = 0; i < minimumThroughput; i++)
+            {
+                var policyResult = await wrappedCircuitBreakerPolicy.ExecuteAndCaptureAsync(
+                    action: () =>
+                    {
+                        var httpResponseMessage = new HttpResponseMessage(HttpStatusCode.InternalServerError);
+                        return Task.FromResult(httpResponseMessage);
+                    });
+            }
+            await circuitBreakerPolicyConfiguration
+                .ReceivedWithAnyArgs(1)
+                .OnBreakAsync(
+                    circuitBreakerOptions: default!,
+                    lastOutcome: default!,
+                    previousState: default,
+                    durationOfBreak: default,
+                    context: default!);
+        }
 
-        //    var policyResult = await retryPolicy.ExecuteAndCaptureAsync(
-        //        action: () =>
-        //        {
-        //            var httpResponseMessage = new HttpResponseMessage(HttpStatusCode.InternalServerError);
-        //            return Task.FromResult(httpResponseMessage);
-        //        });
+        /// <summary>
+        /// it's not like I want to test polly itself but I want to make sure the policy
+        /// triggers are correctly configured and I don't know another way 
+        /// </summary>
+        /// <returns></returns>
+        [Fact]
+        public async Task AddHttpClientCircuitBreakerPolicyTriggersOnTaskCancelledException()
+        {
+            var policyKey = "testPolicy";
+            var durationOfBreakInSecs = 1;
+            var failureThreshold = 0.5;
+            var minimumThroughput = 4;
+            var samplingDurationInSecs = 60;
+            var services = new ServiceCollection();
+            var circuitBreakerPolicyConfiguration = Substitute.For<ICircuitBreakerPolicyConfiguration>();
+            services.AddPolicyRegistry((provider, policyRegistry) =>
+            {
+                var options = new CircuitBreakerOptions
+                {
+                    DurationOfBreakInSecs = durationOfBreakInSecs,
+                    FailureThreshold = failureThreshold,
+                    MinimumThroughput = minimumThroughput,
+                    SamplingDurationInSecs = samplingDurationInSecs
+                };
+                policyRegistry.AddHttpClientCircuitBreakerPolicy(policyKey, options, circuitBreakerPolicyConfiguration);
+            });
+            var serviceProvider = services.BuildServiceProvider();
+            var registry = serviceProvider.GetRequiredService<IReadOnlyPolicyRegistry<string>>();
+            var wrappedCircuitBreakerPolicy = registry.Get<AsyncPolicyWrap<HttpResponseMessage>>(policyKey);
 
-        //    await retryPolicyConfiguration
-        //        .ReceivedWithAnyArgs(retryCount)
-        //        .OnRetryAsync(
-        //            retryOptions: default!,
-        //            outcome: default!,
-        //            retryDelay: default,
-        //            retryNumber: default,
-        //            pollyContext: default!);
-        //}
+            for (var i = 0; i < minimumThroughput; i++)
+            {
+                var policyResult = await wrappedCircuitBreakerPolicy.ExecuteAndCaptureAsync(
+                    action: () =>
+                    {
+                        throw new TaskCanceledException("test");
+                    });
+            }
+            await circuitBreakerPolicyConfiguration
+                .ReceivedWithAnyArgs(1)
+                .OnBreakAsync(
+                    circuitBreakerOptions: default!,
+                    lastOutcome: default!,
+                    previousState: default,
+                    durationOfBreak: default,
+                    context: default!);
+        }
+
+        [Fact]
+        public async Task AddHttpClientCircuitBreakerPolicyContainsCircuitBreakerCheckerPolicy()
+        {
+            var policyKey = "testPolicy";
+            var durationOfBreakInSecs = 1;
+            var failureThreshold = 0.5;
+            var minimumThroughput = 4;
+            var samplingDurationInSecs = 60;
+            var services = new ServiceCollection();
+            var circuitBreakerPolicyConfiguration = Substitute.For<ICircuitBreakerPolicyConfiguration>();
+            services.AddPolicyRegistry((provider, policyRegistry) =>
+            {
+                var options = new CircuitBreakerOptions
+                {
+                    DurationOfBreakInSecs = durationOfBreakInSecs,
+                    FailureThreshold = failureThreshold,
+                    MinimumThroughput = minimumThroughput,
+                    SamplingDurationInSecs = samplingDurationInSecs
+                };
+                policyRegistry.AddHttpClientCircuitBreakerPolicy(policyKey, options, circuitBreakerPolicyConfiguration);
+            });
+            var serviceProvider = services.BuildServiceProvider();
+            var registry = serviceProvider.GetRequiredService<IReadOnlyPolicyRegistry<string>>();
+            var wrappedCircuitBreakerPolicy = registry.Get<AsyncPolicyWrap<HttpResponseMessage>>(policyKey);
+
+            var exception = new TaskCanceledException("test");
+            for (var i = 0; i < minimumThroughput + 1; i++)
+            {
+                var policyResult = await wrappedCircuitBreakerPolicy.ExecuteAndCaptureAsync(
+                    action: () =>
+                    {
+                        throw exception;
+                    });
+                if (i < minimumThroughput)
+                {
+                    policyResult.FinalException.ShouldBe(exception);
+                    policyResult.Result.ShouldBeNull();
+                }
+                else
+                {
+                    policyResult.FinalException.ShouldBeNull();
+                    policyResult.Result.ShouldBeOfType<CircuitBrokenHttpResponseMessage>();
+                }
+            }
+
+        }
     }
 }

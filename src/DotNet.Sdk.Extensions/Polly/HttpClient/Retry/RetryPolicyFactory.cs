@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Polly;
 using Polly.Contrib.WaitAndRetry;
 using Polly.Extensions.Http;
@@ -17,6 +18,7 @@ namespace DotNet.Sdk.Extensions.Polly.HttpClient.Retry
             var policy = HttpPolicyExtensions
                 .HandleTransientHttpError()
                 .Or<TimeoutRejectedException>()
+                .Or<TaskCanceledException>()
                 .WaitAndRetryAsync(
                     sleepDurations: retryDelays,
                     onRetryAsync: (outcome, retryDelay, retryNumber, pollyContext) =>

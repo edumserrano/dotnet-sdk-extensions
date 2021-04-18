@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Net.Http;
 using System.Threading.Tasks;
+using DotNet.Sdk.Extensions.Polly.HttpClient.Fallback.FallbackHttpResponseMessages;
 using DotNet.Sdk.Extensions.Polly.Policies;
 using Polly;
 using Polly.Extensions.Http;
@@ -34,7 +36,9 @@ namespace DotNet.Sdk.Extensions.Polly.HttpClient.CircuitBreaker
                     {
                         await policyConfiguration.OnHalfOpenAsync(options);
                     });
-            var circuitBreakerCheckerPolicy = new CircuitBreakerCheckerAsyncPolicy(circuitBreakerPolicy);
+            var circuitBreakerCheckerPolicy = CircuitBreakerCheckerAsyncPolicy<HttpResponseMessage>.Create(
+                circuitBreakerPolicy: circuitBreakerPolicy,
+                factory: (context, cancellationToken) => Task.FromResult<HttpResponseMessage>(new CircuitBrokenHttpResponseMessage()));
             var finalPolicy = Policy.WrapAsync(circuitBreakerCheckerPolicy, circuitBreakerPolicy);
             return finalPolicy;
         }

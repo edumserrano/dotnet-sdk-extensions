@@ -8,7 +8,6 @@ using DotNet.Sdk.Extensions.Polly.HttpClient.Timeout;
 using DotNet.Sdk.Extensions.Polly.HttpClient.Timeout.Extensions;
 using DotNet.Sdk.Extensions.Tests.Polly.HttpClient.Timeout.Auxiliary;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using NSubstitute;
 using Polly;
 using Polly.Registry;

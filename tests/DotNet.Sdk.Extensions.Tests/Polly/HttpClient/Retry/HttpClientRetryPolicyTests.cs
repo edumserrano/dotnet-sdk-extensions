@@ -6,7 +6,6 @@ using DotNet.Sdk.Extensions.Polly.HttpClient.Retry;
 using DotNet.Sdk.Extensions.Polly.HttpClient.Retry.Extensions;
 using DotNet.Sdk.Extensions.Tests.Polly.HttpClient.Retry.Auxiliary;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using NSubstitute;
 using Polly.Registry;
 using Polly.Retry;
@@ -271,6 +270,51 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.HttpClient.Retry
                     throw new TimeoutRejectedException("test message");
                 });
             
+            await retryPolicyConfiguration
+                .ReceivedWithAnyArgs(retryCount)
+                .OnRetryAsync(
+                    retryOptions: default!,
+                    outcome: default!,
+                    retryDelay: default,
+                    retryNumber: default,
+                    pollyContext: default!);
+        }
+
+        /// <summary>
+        /// it's not like I want to test polly itself but I want to make sure the policy
+        /// triggers are correctly configured and I don't know another way 
+        /// </summary>
+        /// <returns></returns>
+        [Fact]
+        public async Task AddHttpClientRetryPolicyTriggersOnTaskCancelledException()
+        {
+            var policyKey = "testPolicy";
+            var optionsName = "retryOptions";
+            var retryCount = 2;
+            var medianFirstRetryDelayInSecs = 0.1;
+            var services = new ServiceCollection();
+            services
+                .AddHttpClientRetryOptions(optionsName)
+                .Configure(options =>
+                {
+                    options.RetryCount = retryCount;
+                    options.MedianFirstRetryDelayInSecs = medianFirstRetryDelayInSecs;
+                });
+            var retryPolicyConfiguration = Substitute.For<IRetryPolicyConfiguration>();
+            services.AddPolicyRegistry((provider, policyRegistry) =>
+            {
+                policyRegistry.AddHttpClientRetryPolicy(policyKey, optionsName, retryPolicyConfiguration, provider);
+            });
+            var serviceProvider = services.BuildServiceProvider();
+            var registry = serviceProvider.GetRequiredService<IReadOnlyPolicyRegistry<string>>();
+            var retryPolicy = registry.Get<AsyncRetryPolicy<HttpResponseMessage>>(policyKey);
+
+            var policyResult = await retryPolicy.ExecuteAndCaptureAsync(
+                action: () =>
+                {
+                    throw new TaskCanceledException("test message");
+                });
+
             await retryPolicyConfiguration
                 .ReceivedWithAnyArgs(retryCount)
                 .OnRetryAsync(

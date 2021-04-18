@@ -1,32 +1,43 @@
 ﻿using System;
-using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using DotNet.Sdk.Extensions.Polly.HttpClient.Fallback.FallbackHttpResponseMessages;
 using Polly;
 using Polly.CircuitBreaker;
 
 namespace DotNet.Sdk.Extensions.Polly.Policies
 {
-    internal class CircuitBreakerCheckerAsyncPolicy : AsyncPolicy<HttpResponseMessage>
+    public class CircuitBreakerCheckerAsyncPolicy<T> : AsyncPolicy<T>
     {
         private readonly ICircuitBreakerPolicy _circuitBreakerPolicy;
+        private readonly Func<Context, CancellationToken, Task<T>> _factory;
 
-        public CircuitBreakerCheckerAsyncPolicy(ICircuitBreakerPolicy circuitBreakerPolicy)
+        // factory method following Polly's guidelines for custom policies: 
+        // http://www.thepollyproject.org/2019/02/13/authoring-a-proactive-polly-policy-custom-policies-part-ii/
+        public static CircuitBreakerCheckerAsyncPolicy<T> Create(
+            ICircuitBreakerPolicy circuitBreakerPolicy,
+            Func<Context, CancellationToken, Task<T>> factory)
         {
-            _circuitBreakerPolicy = circuitBreakerPolicy ?? throw new ArgumentNullException(nameof(circuitBreakerPolicy));
+            return new CircuitBreakerCheckerAsyncPolicy<T>(circuitBreakerPolicy, factory);
         }
 
-        protected override async Task<HttpResponseMessage> ImplementationAsync(
-            Func<Context, CancellationToken, Task<HttpResponseMessage>> action,
-            Context context, CancellationToken cancellationToken,
+        private CircuitBreakerCheckerAsyncPolicy(ICircuitBreakerPolicy circuitBreakerPolicy, Func<Context, CancellationToken, Task<T>> factory)
+        {
+            _circuitBreakerPolicy = circuitBreakerPolicy ?? throw new ArgumentNullException(nameof(circuitBreakerPolicy));
+            _factory = factory;
+        }
+
+        protected override async Task<T> ImplementationAsync(
+            Func<Context, CancellationToken, Task<T>> action,
+            Context context,
+            CancellationToken cancellationToken,
             bool continueOnCapturedContext)
         {
             // No point in trying to make the request because the circuit breaker will throw an exception.
             // Avoid exception as indicated by https://github.com/App-vNext/Polly/wiki/Circuit-Breaker#reducing-thrown-exceptions-when-the-circuit-is-broken
             if (_circuitBreakerPolicy.IsCircuitOpen())
             {
-                return new CircuitBrokenHttpResponseMessage();
+                var result = await _factory(context, cancellationToken).ConfigureAwait(continueOnCapturedContext);
+                return result;
             }
 
             return await action(context, cancellationToken).ConfigureAwait(continueOnCapturedContext);

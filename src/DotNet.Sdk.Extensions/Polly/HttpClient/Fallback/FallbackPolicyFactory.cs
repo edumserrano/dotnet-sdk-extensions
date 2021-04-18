@@ -1,5 +1,4 @@
-﻿using System;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Polly.HttpClient.Fallback.FallbackHttpResponseMessages;
 using Polly;
@@ -16,7 +15,11 @@ namespace DotNet.Sdk.Extensions.Polly.HttpClient.Fallback
             var timeoutFallback = Policy<HttpResponseMessage>
                 .Handle<TimeoutRejectedException>()
                 .FallbackAsync(
-                    fallbackValue: new TimeoutHttpResponseMessage(),
+                    fallbackAction: (delegateResult, pollyContext, cancellationToken) =>
+                    {
+                        var exception = (TimeoutRejectedException)delegateResult.Exception;
+                        return Task.FromResult<HttpResponseMessage>(new TimeoutHttpResponseMessage(exception));
+                    },
                     onFallbackAsync: (outcome, context) =>
                     {
                         return policyConfiguration.OnTimeoutFallbackAsync(outcome, context);
@@ -26,7 +29,11 @@ namespace DotNet.Sdk.Extensions.Polly.HttpClient.Fallback
             var brokenCircuitFallback = Policy<HttpResponseMessage>
                 .Handle<BrokenCircuitException>()
                 .FallbackAsync(
-                    fallbackValue: new CircuitBrokenHttpResponseMessage(),
+                    fallbackAction: (delegateResult, pollyContext, cancellationToken) =>
+                    {
+                        var exception = (BrokenCircuitException)delegateResult.Exception;
+                        return Task.FromResult<HttpResponseMessage>(new CircuitBrokenHttpResponseMessage(exception));
+                    }, 
                     onFallbackAsync: (outcome, context) =>
                     {
                         return policyConfiguration.OnBrokenCircuitFallbackAsync(outcome, context);
@@ -40,9 +47,8 @@ namespace DotNet.Sdk.Extensions.Polly.HttpClient.Fallback
                 .FallbackAsync(
                     fallbackAction: (delegateResult, pollyContext, cancellationToken) =>
                     {
-                        var innerException = delegateResult.Exception?.InnerException;
-                        var triggeredByTimeoutException = innerException is TimeoutException;
-                        return Task.FromResult<HttpResponseMessage>(new AbortedHttpResponseMessage(triggeredByTimeoutException));
+                        var exception = (TaskCanceledException)delegateResult.Exception;
+                        return Task.FromResult<HttpResponseMessage>(new AbortedHttpResponseMessage(exception));
                     },
                     onFallbackAsync: (outcome, context) =>
                     {
