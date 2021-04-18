@@ -16,6 +16,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
     /// These tests simulate an app with a <see cref="BackgroundService"/>.
     /// For more info see <seealso cref="StartupHostedService"/> and <seealso cref="HostedServicesWebApplicationFactory"/>
     /// </summary>
+    [Trait("Category", XUnitCategories.HostedServices)]
     public class RunUntilWebApplicationFactoryExtensionsWithAsyncPredicateTests
     {
         public static TheoryData<HostedServicesWebApplicationFactory, RunUntilPredicateAsync, Type, string> ValidateArgumentsData =>

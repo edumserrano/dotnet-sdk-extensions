@@ -10,7 +10,6 @@ using DotNet.Sdk.Extensions.Tests.Polly.HttpClient.CircuitBreaker.Auxiliary;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using NSubstitute;
-using Polly;
 using Polly.CircuitBreaker;
 using Polly.Registry;
 using Polly.Timeout;
@@ -20,7 +19,7 @@ using Xunit;
 
 namespace DotNet.Sdk.Extensions.Tests.Polly.HttpClient.CircuitBreaker
 {
-    [Trait("Category", "Polly")]
+    [Trait("Category", XUnitCategories.Polly)]
     public class HttpClientCircuitBreakerPolicyTests
     {
         [Fact]

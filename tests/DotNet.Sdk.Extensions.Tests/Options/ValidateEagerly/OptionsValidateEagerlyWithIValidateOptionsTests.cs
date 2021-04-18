@@ -14,7 +14,7 @@ namespace DotNet.Sdk.Extensions.Tests.Options.ValidateEagerly
 {
     // Note: the UseUrls method calls makes sure a random port is selected or it might fail
     // when running with other tests that also start a host because the port is already in use
-    [Trait("Category", "Options")]
+    [Trait("Category", XUnitCategories.Options)]
     public class OptionsValidateEagerlyWithIValidateOptionsTests
     {
         /// <summary>

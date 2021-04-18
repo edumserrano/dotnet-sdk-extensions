@@ -10,6 +10,7 @@ using Xunit;
 
 namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers
 {
+    [Trait("Category", XUnitCategories.HttpMockingHttpMessageHandlers)]
     public class TestHttpMessageHandlerTests
     {
         /// <summary>

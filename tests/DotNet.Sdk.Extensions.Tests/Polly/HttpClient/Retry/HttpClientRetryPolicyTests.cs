@@ -15,7 +15,7 @@ using Xunit;
 
 namespace DotNet.Sdk.Extensions.Tests.Polly.HttpClient.Retry
 {
-    [Trait("Category", "Polly")]
+    [Trait("Category", XUnitCategories.Polly)]
     public class HttpClientRetryPolicyTests
     {
         [Fact]

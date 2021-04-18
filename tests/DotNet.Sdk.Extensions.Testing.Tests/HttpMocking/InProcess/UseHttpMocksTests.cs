@@ -14,6 +14,7 @@ using Xunit;
 
 namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess
 {
+    [Trait("Category", XUnitCategories.HttpMockingInProcess)]
     public class UseHttpMocksTests : IClassFixture<HttpResponseMockingWebApplicationFactory>, IDisposable
     {
         private readonly HttpResponseMockingWebApplicationFactory _webApplicationFactory;

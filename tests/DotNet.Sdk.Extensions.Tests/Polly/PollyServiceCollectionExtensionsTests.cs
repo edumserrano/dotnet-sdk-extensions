@@ -8,7 +8,7 @@ using Shouldly;
 
 namespace DotNet.Sdk.Extensions.Tests.Polly
 {
-    [Trait("Category", "Polly")]
+    [Trait("Category", XUnitCategories.Polly)]
     public class PollyServiceCollectionExtensionsTests
     {
         [Fact]

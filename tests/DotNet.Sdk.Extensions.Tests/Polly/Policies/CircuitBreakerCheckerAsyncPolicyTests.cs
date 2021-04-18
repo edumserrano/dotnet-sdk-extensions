@@ -9,7 +9,7 @@ using Xunit;
 
 namespace DotNet.Sdk.Extensions.Tests.Polly.Policies
 {
-    [Trait("Category", "Polly")]
+    [Trait("Category", XUnitCategories.Polly)]
     public class CircuitBreakerCheckerAsyncPolicyTests
     {
         [Fact]

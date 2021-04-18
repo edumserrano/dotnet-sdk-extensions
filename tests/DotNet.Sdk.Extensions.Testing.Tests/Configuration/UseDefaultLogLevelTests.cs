@@ -10,6 +10,7 @@ using Xunit;
 
 namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
 {
+    [Trait("Category", XUnitCategories.Configuration)]
     public class UseDefaultLogLevelTests
     {
         /// <summary>

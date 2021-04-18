@@ -17,7 +17,7 @@ using Xunit;
 
 namespace DotNet.Sdk.Extensions.Tests.Polly.HttpClient.Timeout
 {
-    [Trait("Category", "Polly")]
+    [Trait("Category", XUnitCategories.Polly)]
     public class HttpClientTimeoutPolicyTests
     {
         [Fact]

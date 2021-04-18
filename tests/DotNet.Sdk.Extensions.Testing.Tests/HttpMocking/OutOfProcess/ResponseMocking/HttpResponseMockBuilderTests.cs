@@ -6,6 +6,7 @@ using Xunit;
 
 namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess.ResponseMocking
 {
+    [Trait("Category", XUnitCategories.HttpMockingOutOfProcess)]
     public class HttpResponseMockBuilderTests
     {
         /// <summary>

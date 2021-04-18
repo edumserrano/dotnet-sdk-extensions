@@ -17,7 +17,7 @@ using Xunit;
 
 namespace DotNet.Sdk.Extensions.Tests.Polly.HttpClient.Fallback
 {
-    [Trait("Category", "Polly")]
+    [Trait("Category", XUnitCategories.Polly)]
     public class HttpClientFallbackPolicyTests
     {
         [Fact]
