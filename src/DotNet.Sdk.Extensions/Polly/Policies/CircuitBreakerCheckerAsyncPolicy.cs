@@ -23,7 +23,7 @@ namespace DotNet.Sdk.Extensions.Polly.Policies
         private CircuitBreakerCheckerAsyncPolicy(ICircuitBreakerPolicy circuitBreakerPolicy, Func<Context, CancellationToken, Task<T>> factory)
         {
             _circuitBreakerPolicy = circuitBreakerPolicy ?? throw new ArgumentNullException(nameof(circuitBreakerPolicy));
-            _factory = factory;
+            _factory = factory ?? throw new ArgumentNullException(nameof(factory));
         }
 
         protected override async Task<T> ImplementationAsync(

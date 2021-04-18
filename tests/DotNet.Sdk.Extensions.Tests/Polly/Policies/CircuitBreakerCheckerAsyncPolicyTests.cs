@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Polly.Policies;
+using NSubstitute;
 using Polly;
 using Polly.CircuitBreaker;
 using Shouldly;
@@ -11,6 +12,26 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Policies
     [Trait("Category", "Polly")]
     public class CircuitBreakerCheckerAsyncPolicyTests
     {
+        [Fact]
+        public void ValidateArguments()
+        {
+            var exception1 = Should.Throw<ArgumentNullException>(() =>
+            {
+                CircuitBreakerCheckerAsyncPolicy<int>.Create(
+                    circuitBreakerPolicy: null!,
+                    factory: (context, token) => Task.FromResult(1));
+            });
+            exception1.Message.ShouldBe("Value cannot be null. (Parameter 'circuitBreakerPolicy')");
+            
+            var exception2 = Should.Throw<ArgumentNullException>(() =>
+            {
+                CircuitBreakerCheckerAsyncPolicy<int>.Create(
+                    circuitBreakerPolicy: Substitute.For<ICircuitBreakerPolicy>(),
+                    factory: null!);
+            });
+            exception2.Message.ShouldBe("Value cannot be null. (Parameter 'factory')");
+        }
+
         [Fact]
         public async Task CircuitBreakerCheckerDoesNothingIfCircuitIsClosed()
         {

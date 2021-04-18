@@ -554,7 +554,6 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.HttpClient.CircuitBreaker
                     policyResult.Result.ShouldBeOfType<CircuitBrokenHttpResponseMessage>();
                 }
             }
-
         }
     }
 }

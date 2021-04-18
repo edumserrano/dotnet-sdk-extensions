@@ -5,6 +5,7 @@ using DotNet.Sdk.Extensions.Polly;
 using DotNet.Sdk.Extensions.Polly.HttpClient.Fallback;
 using DotNet.Sdk.Extensions.Polly.HttpClient.Fallback.Extensions;
 using DotNet.Sdk.Extensions.Polly.HttpClient.Fallback.FallbackHttpResponseMessages;
+using DotNet.Sdk.Extensions.Tests.Polly.HttpClient.Fallback.Auxiliary;
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 using Polly.CircuitBreaker;
@@ -20,6 +21,55 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.HttpClient.Fallback
     public class HttpClientFallbackPolicyTests
     {
         [Fact]
+        public void AddHttpClientFallbackPolicy()
+        {
+            var policyKey = "testPolicy";
+            var services = new ServiceCollection();
+            services.AddPolicyRegistry((provider, policyRegistry) =>
+            {
+                policyRegistry.AddHttpClientFallbackPolicy(policyKey, provider);
+            });
+            var serviceProvider = services.BuildServiceProvider();
+            var registry = serviceProvider.GetRequiredService<IReadOnlyPolicyRegistry<string>>();
+            registry
+                .TryGet<AsyncPolicyWrap<HttpResponseMessage>>(policyKey, out var policy)
+                .ShouldBeTrue();
+        }
+
+        [Fact]
+        public void AddHttpClientFallbackPolicy2()
+        {
+            var policyKey = "testPolicy";
+            var services = new ServiceCollection();
+            services.AddPolicyRegistry((provider, policyRegistry) =>
+            {
+                policyRegistry.AddHttpClientFallbackPolicy<TestFallbackPolicyConfiguration>(policyKey, provider);
+            });
+            var serviceProvider = services.BuildServiceProvider();
+            var registry = serviceProvider.GetRequiredService<IReadOnlyPolicyRegistry<string>>();
+            registry
+                .TryGet<AsyncPolicyWrap<HttpResponseMessage>>(policyKey, out var policy)
+                .ShouldBeTrue();
+        }
+
+        [Fact]
+        public void AddHttpClientFallbackPolicy3()
+        {
+            var policyKey = "testPolicy";
+            var services = new ServiceCollection();
+            services.AddPolicyRegistry((provider, policyRegistry) =>
+            {
+                var fallbackPolicyConfiguration = Substitute.For<IFallbackPolicyConfiguration>();
+                policyRegistry.AddHttpClientFallbackPolicy(policyKey, fallbackPolicyConfiguration);
+            });
+            var serviceProvider = services.BuildServiceProvider();
+            var registry = serviceProvider.GetRequiredService<IReadOnlyPolicyRegistry<string>>();
+            registry
+                .TryGet<AsyncPolicyWrap<HttpResponseMessage>>(policyKey, out var policy)
+                .ShouldBeTrue();
+        }
+
+        [Fact]
         public async Task AddHttpClientFallbackPolicyTriggersOnTimeoutRejectedException()
         {
             var policyKey = "testPolicy";
@@ -31,10 +81,10 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.HttpClient.Fallback
             });
             var serviceProvider = services.BuildServiceProvider();
             var registry = serviceProvider.GetRequiredService<IReadOnlyPolicyRegistry<string>>();
-            var retryPolicy = registry.Get<AsyncPolicyWrap<HttpResponseMessage>>(policyKey);
+            var fallbackPolicy = registry.Get<AsyncPolicyWrap<HttpResponseMessage>>(policyKey);
 
             var exception = new TimeoutRejectedException("test message");
-            var policyResult = await retryPolicy.ExecuteAndCaptureAsync(
+            var policyResult = await fallbackPolicy.ExecuteAndCaptureAsync(
                 action: () =>
                 {
                     throw exception;
@@ -57,10 +107,10 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.HttpClient.Fallback
             });
             var serviceProvider = services.BuildServiceProvider();
             var registry = serviceProvider.GetRequiredService<IReadOnlyPolicyRegistry<string>>();
-            var retryPolicy = registry.Get<AsyncPolicyWrap<HttpResponseMessage>>(policyKey);
+            var fallbackPolicy = registry.Get<AsyncPolicyWrap<HttpResponseMessage>>(policyKey);
 
             var exception = new BrokenCircuitException();
-            var policyResult = await retryPolicy.ExecuteAndCaptureAsync(
+            var policyResult = await fallbackPolicy.ExecuteAndCaptureAsync(
                 action: () =>
                 {
                     throw exception;
@@ -83,10 +133,10 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.HttpClient.Fallback
             });
             var serviceProvider = services.BuildServiceProvider();
             var registry = serviceProvider.GetRequiredService<IReadOnlyPolicyRegistry<string>>();
-            var retryPolicy = registry.Get<AsyncPolicyWrap<HttpResponseMessage>>(policyKey);
+            var fallbackPolicy = registry.Get<AsyncPolicyWrap<HttpResponseMessage>>(policyKey);
 
             var exception = new TaskCanceledException("test message");
-            var policyResult = await retryPolicy.ExecuteAndCaptureAsync(
+            var policyResult = await fallbackPolicy.ExecuteAndCaptureAsync(
                 action: () =>
                 {
                     throw exception;
@@ -109,10 +159,10 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.HttpClient.Fallback
             });
             var serviceProvider = services.BuildServiceProvider();
             var registry = serviceProvider.GetRequiredService<IReadOnlyPolicyRegistry<string>>();
-            var retryPolicy = registry.Get<AsyncPolicyWrap<HttpResponseMessage>>(policyKey);
+            var fallbackPolicy = registry.Get<AsyncPolicyWrap<HttpResponseMessage>>(policyKey);
 
             var taskCancelledException1 = new TaskCanceledException("test message");
-            var policyResult1 = await retryPolicy.ExecuteAndCaptureAsync(
+            var policyResult1 = await fallbackPolicy.ExecuteAndCaptureAsync(
                 action: () =>
                 {
                     throw taskCancelledException1;
@@ -122,7 +172,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.HttpClient.Fallback
 
             var innerException2 = new TimeoutException();
             var taskCancelledException2 = new TaskCanceledException("test message", innerException2);
-            var policyResult2 = await retryPolicy.ExecuteAndCaptureAsync(
+            var policyResult2 = await fallbackPolicy.ExecuteAndCaptureAsync(
                 action: () =>
                 {
                     throw taskCancelledException2;
