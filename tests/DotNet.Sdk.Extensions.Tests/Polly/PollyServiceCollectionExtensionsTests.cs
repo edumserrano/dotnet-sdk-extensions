@@ -8,9 +8,16 @@ using Shouldly;
 
 namespace DotNet.Sdk.Extensions.Tests.Polly
 {
+    /// <summary>
+    /// Tests for the <see cref="Extensions.Polly.PollyServiceCollectionExtensions"/> class
+    /// </summary>
     [Trait("Category", XUnitCategories.Polly)]
     public class PollyServiceCollectionExtensionsTests
     {
+        /// <summary>
+        /// Validates the arguments for the <seealso cref="Extensions.Polly.PollyServiceCollectionExtensions.AddPolicyRegistry"/>
+        /// extension method.
+        /// </summary>
         [Fact]
         public void ValidateArguments()
         {
@@ -31,6 +38,10 @@ namespace DotNet.Sdk.Extensions.Tests.Polly
             exception2.Message.ShouldBe("Value cannot be null. (Parameter 'configureRegistry')");
         }
 
+        /// <summary>
+        /// Tests that the <seealso cref="Extensions.Polly.PollyServiceCollectionExtensions.AddPolicyRegistry"/>
+        /// extension method adds the required Polly interfaces to the <see cref="ServiceCollection"/>.
+        /// </summary>
         [Fact]
         public void AddsRequiredPollyRegistryToContainer()
         {
@@ -44,6 +55,10 @@ namespace DotNet.Sdk.Extensions.Tests.Polly
             ReferenceEquals(registry, readOnlyRegistry).ShouldBeTrue();
         }
 
+        /// <summary>
+        /// Tests that the <seealso cref="Extensions.Polly.PollyServiceCollectionExtensions.AddPolicyRegistry"/>
+        /// extension method configures the Polly's policies registry as expected.
+        /// </summary>
         [Fact]
         public void ConfigureRegistry()
         {
