@@ -5,6 +5,7 @@ using DotNet.Sdk.Extensions.Polly;
 using DotNet.Sdk.Extensions.Polly.HttpClient.Fallback;
 using DotNet.Sdk.Extensions.Polly.HttpClient.Fallback.Extensions;
 using DotNet.Sdk.Extensions.Polly.HttpClient.Fallback.FallbackHttpResponseMessages;
+using DotNet.Sdk.Extensions.Tests.Polly.HttpClient.Auxiliary;
 using DotNet.Sdk.Extensions.Tests.Polly.HttpClient.Fallback.Auxiliary;
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
@@ -17,9 +18,16 @@ using Xunit;
 
 namespace DotNet.Sdk.Extensions.Tests.Polly.HttpClient.Fallback
 {
+    /// <summary>
+    /// Tests for the <see cref="FallbackPolicyRegistryExtensions"/> class
+    /// </summary>
     [Trait("Category", XUnitCategories.Polly)]
-    public class HttpClientFallbackPolicyTests
+    public class FallbackPolicyRegistryExtensionsTests
     {
+        /// <summary>
+        /// Tests that the <see cref="FallbackPolicyRegistryExtensions.AddHttpClientFallbackPolicy(IPolicyRegistry{string},string,IServiceProvider)"/>
+        /// overload method adds the fallback policy to the Polly registry
+        /// </summary>
         [Fact]
         public void AddHttpClientFallbackPolicy()
         {
@@ -29,13 +37,15 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.HttpClient.Fallback
             {
                 policyRegistry.AddHttpClientFallbackPolicy(policyKey, provider);
             });
-            var serviceProvider = services.BuildServiceProvider();
-            var registry = serviceProvider.GetRequiredService<IReadOnlyPolicyRegistry<string>>();
-            registry
-                .TryGet<AsyncPolicyWrap<HttpResponseMessage>>(policyKey, out var policy)
-                .ShouldBeTrue();
+            services
+                .GetHttpPolicy<AsyncPolicyWrap<HttpResponseMessage>>(policyKey)
+                .ShouldNotBeNull();
         }
 
+        /// <summary>
+        /// Tests that the <see cref="FallbackPolicyRegistryExtensions.AddHttpClientFallbackPolicy{TPolicyConfiguration}(IPolicyRegistry{string},string,IServiceProvider)"/>
+        /// overload method adds the fallback policy to the Polly registry
+        /// </summary>
         [Fact]
         public void AddHttpClientFallbackPolicy2()
         {
@@ -45,13 +55,15 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.HttpClient.Fallback
             {
                 policyRegistry.AddHttpClientFallbackPolicy<TestFallbackPolicyConfiguration>(policyKey, provider);
             });
-            var serviceProvider = services.BuildServiceProvider();
-            var registry = serviceProvider.GetRequiredService<IReadOnlyPolicyRegistry<string>>();
-            registry
-                .TryGet<AsyncPolicyWrap<HttpResponseMessage>>(policyKey, out var policy)
-                .ShouldBeTrue();
+            services
+                .GetHttpPolicy<AsyncPolicyWrap<HttpResponseMessage>>(policyKey)
+                .ShouldNotBeNull();
         }
 
+        /// <summary>
+        /// Tests that the <see cref="FallbackPolicyRegistryExtensions.AddHttpClientFallbackPolicy(IPolicyRegistry{string},string,IFallbackPolicyConfiguration)"/>
+        /// overload method adds the fallback policy to the Polly registry
+        /// </summary>
         [Fact]
         public void AddHttpClientFallbackPolicy3()
         {
@@ -62,13 +74,20 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.HttpClient.Fallback
                 var fallbackPolicyConfiguration = Substitute.For<IFallbackPolicyConfiguration>();
                 policyRegistry.AddHttpClientFallbackPolicy(policyKey, fallbackPolicyConfiguration);
             });
-            var serviceProvider = services.BuildServiceProvider();
-            var registry = serviceProvider.GetRequiredService<IReadOnlyPolicyRegistry<string>>();
-            registry
-                .TryGet<AsyncPolicyWrap<HttpResponseMessage>>(policyKey, out var policy)
-                .ShouldBeTrue();
+            services
+                .GetHttpPolicy<AsyncPolicyWrap<HttpResponseMessage>>(policyKey)
+                .ShouldNotBeNull();
         }
 
+        /// <summary>
+        /// Tests that the IPolicyRegistry.AddHttpClientFallbackPolicy method configures the
+        /// fallback policy to handle <see cref="TimeoutRejectedException"/>.
+        ///
+        /// This might seem like I'm testing that polly does what it's supposed to do but I don't know another way
+        /// to test that the policy's configuration is as expected.
+        /// I'd prefer if I could check some kind of property on the policy that is created but that doesn't
+        /// seem to be possible.
+        /// </summary>
         [Fact]
         public async Task AddHttpClientFallbackPolicyTriggersOnTimeoutRejectedException()
         {
@@ -79,13 +98,11 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.HttpClient.Fallback
             {
                 policyRegistry.AddHttpClientFallbackPolicy(policyKey, fallbackPolicyConfiguration);
             });
-            var serviceProvider = services.BuildServiceProvider();
-            var registry = serviceProvider.GetRequiredService<IReadOnlyPolicyRegistry<string>>();
-            var fallbackPolicy = registry.Get<AsyncPolicyWrap<HttpResponseMessage>>(policyKey);
 
-            var exception = new TimeoutRejectedException("test message");
+            var fallbackPolicy = services.GetHttpPolicy<AsyncPolicyWrap<HttpResponseMessage>>(policyKey);
+                var exception = new TimeoutRejectedException("test message");
             var policyResult = await fallbackPolicy.ExecuteAndCaptureAsync(
-                action: () =>
+                () =>
                 {
                     throw exception;
                 });
@@ -95,6 +112,15 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.HttpClient.Fallback
             result.Exception.ShouldBe(exception);
         }
 
+        /// <summary>
+        /// Tests that the IPolicyRegistry.AddHttpClientFallbackPolicy method configures the
+        /// fallback policy to handle <see cref="BrokenCircuitException"/>.
+        ///
+        /// This might seem like I'm testing that polly does what it's supposed to do but I don't know another way
+        /// to test that the policy's configuration is as expected.
+        /// I'd prefer if I could check some kind of property on the policy that is created but that doesn't
+        /// seem to be possible.
+        /// </summary>
         [Fact]
         public async Task AddHttpClientFallbackPolicyTriggersOnBrokenCircuitException()
         {
@@ -105,12 +131,10 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.HttpClient.Fallback
             {
                 policyRegistry.AddHttpClientFallbackPolicy(policyKey, fallbackPolicyConfiguration);
             });
-            var serviceProvider = services.BuildServiceProvider();
-            var registry = serviceProvider.GetRequiredService<IReadOnlyPolicyRegistry<string>>();
-            var fallbackPolicy = registry.Get<AsyncPolicyWrap<HttpResponseMessage>>(policyKey);
-            
+
+            var fallbackPolicy = services.GetHttpPolicy<AsyncPolicyWrap<HttpResponseMessage>>(policyKey);
             var policyResult = await fallbackPolicy.ExecuteAndCaptureAsync(
-                action: () =>
+                () =>
                 {
                     throw new BrokenCircuitException();
                 });
@@ -118,6 +142,45 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.HttpClient.Fallback
             policyResult.Result.ShouldBeOfType<CircuitBrokenHttpResponseMessage>();
         }
 
+        /// <summary>
+        /// Tests that the IPolicyRegistry.AddHttpClientFallbackPolicy method configures the
+        /// fallback policy to handle <see cref="IsolatedCircuitException"/>.
+        ///
+        /// This might seem like I'm testing that polly does what it's supposed to do but I don't know another way
+        /// to test that the policy's configuration is as expected.
+        /// I'd prefer if I could check some kind of property on the policy that is created but that doesn't
+        /// seem to be possible.
+        /// </summary>
+        [Fact]
+        public async Task AddHttpClientFallbackPolicyTriggersOnIsolatedCircuitException()
+        {
+            var policyKey = "testPolicy";
+            var services = new ServiceCollection();
+            var fallbackPolicyConfiguration = Substitute.For<IFallbackPolicyConfiguration>();
+            services.AddPolicyRegistry((provider, policyRegistry) =>
+            {
+                policyRegistry.AddHttpClientFallbackPolicy(policyKey, fallbackPolicyConfiguration);
+            });
+
+            var fallbackPolicy = services.GetHttpPolicy<AsyncPolicyWrap<HttpResponseMessage>>(policyKey);
+            var policyResult = await fallbackPolicy.ExecuteAndCaptureAsync(
+                () =>
+                {
+                    throw new IsolatedCircuitException("test");
+                });
+            policyResult.FinalException.ShouldBeNull();
+            policyResult.Result.ShouldBeOfType<CircuitBrokenHttpResponseMessage>();
+        }
+
+        /// <summary>
+        /// Tests that the IPolicyRegistry.AddHttpClientFallbackPolicy method configures the
+        /// fallback policy to handle <see cref="TaskCanceledException"/>.
+        ///
+        /// This might seem like I'm testing that polly does what it's supposed to do but I don't know another way
+        /// to test that the policy's configuration is as expected.
+        /// I'd prefer if I could check some kind of property on the policy that is created but that doesn't
+        /// seem to be possible.
+        /// </summary>
         [Fact]
         public async Task AddHttpClientFallbackPolicyTriggersOnTaskCanceledException()
         {
@@ -128,13 +191,11 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.HttpClient.Fallback
             {
                 policyRegistry.AddHttpClientFallbackPolicy(policyKey, fallbackPolicyConfiguration);
             });
-            var serviceProvider = services.BuildServiceProvider();
-            var registry = serviceProvider.GetRequiredService<IReadOnlyPolicyRegistry<string>>();
-            var fallbackPolicy = registry.Get<AsyncPolicyWrap<HttpResponseMessage>>(policyKey);
 
+            var fallbackPolicy = services.GetHttpPolicy<AsyncPolicyWrap<HttpResponseMessage>>(policyKey);
             var exception = new TaskCanceledException("test message");
             var policyResult = await fallbackPolicy.ExecuteAndCaptureAsync(
-                action: () =>
+                () =>
                 {
                     throw exception;
                 });
@@ -144,6 +205,12 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.HttpClient.Fallback
             result.Exception.ShouldBe(exception);
         }
 
+        /// <summary>
+        /// Tests that the IPolicyRegistry.AddHttpClientFallbackPolicy method configures the
+        /// fallback policy to handle <see cref="TaskCanceledException"/> and that if
+        /// the inner exception of the TaskCanceledException was of type <see cref="TimeoutException"/>
+        /// than the AbortedHttpResponseMessage.TriggeredByTimeoutException should be true.
+        /// </summary>
         [Fact]
         public async Task AddHttpClientFallbackPolicyTriggersOnTaskCanceledException2()
         {
@@ -154,10 +221,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.HttpClient.Fallback
             {
                 policyRegistry.AddHttpClientFallbackPolicy(policyKey, fallbackPolicyConfiguration);
             });
-            var serviceProvider = services.BuildServiceProvider();
-            var registry = serviceProvider.GetRequiredService<IReadOnlyPolicyRegistry<string>>();
-            var fallbackPolicy = registry.Get<AsyncPolicyWrap<HttpResponseMessage>>(policyKey);
 
+            var fallbackPolicy = services.GetHttpPolicy<AsyncPolicyWrap<HttpResponseMessage>>(policyKey);
             var taskCancelledException1 = new TaskCanceledException("test message");
             var policyResult1 = await fallbackPolicy.ExecuteAndCaptureAsync(
                 action: () =>
@@ -167,8 +232,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.HttpClient.Fallback
             var result1 = (AbortedHttpResponseMessage)policyResult1.Result;
             result1.TriggeredByTimeoutException.ShouldBeFalse();
 
-            var innerException2 = new TimeoutException();
-            var taskCancelledException2 = new TaskCanceledException("test message", innerException2);
+            var innerException = new TimeoutException();
+            var taskCancelledException2 = new TaskCanceledException("test message", innerException);
             var policyResult2 = await fallbackPolicy.ExecuteAndCaptureAsync(
                 action: () =>
                 {

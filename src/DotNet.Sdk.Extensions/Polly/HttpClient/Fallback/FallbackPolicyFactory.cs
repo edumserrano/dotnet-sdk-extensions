@@ -28,6 +28,7 @@ namespace DotNet.Sdk.Extensions.Polly.HttpClient.Fallback
             // handle BrokenCircuitException thrown by a circuit breaker policy
             var brokenCircuitFallback = Policy<HttpResponseMessage>
                 .Handle<BrokenCircuitException>()
+                .Or<IsolatedCircuitException>()
                 .FallbackAsync(
                     fallbackAction: (delegateResult, pollyContext, cancellationToken) =>
                     {
