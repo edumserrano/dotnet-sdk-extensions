@@ -10,7 +10,7 @@ The [docs for the options pattern](https://docs.microsoft.com/en-us/aspnet/core/
 
 Imagine that you have an appsettings file with the following:
 
-```
+```json
 "MyOptionsSection": {
     "SomeOption": "hi"
 }
@@ -18,7 +18,7 @@ Imagine that you have an appsettings file with the following:
 
 Which is represented by the typed class `MyOptions`:
 
-```
+```csharp
 public class MyOptions
 {
     public string SomeOption { get; set; }
@@ -27,7 +27,7 @@ public class MyOptions
 
 And now you want to take the `MyOptions` type as a dependency. As an example:
 
-```
+```csharp
 public class SomeClass
 {
     public SomeClass(SomeOption someOption)
@@ -39,7 +39,7 @@ public class SomeClass
 
 To be able to do the above you can use the `OptionsBuilder.AddOptionsValue` extension method:
 
-```
+```csharp
 services
     .AddOptions<MyOptions>()
     .Bind(configuration.GetSection("MyOptionsSection"))
@@ -48,13 +48,13 @@ services
 
 Equivalently to the above, you can use the `IServiceCollection.AddOptionsValue` extension method:
 
-```
+```csharp
 services.AddOptionsValue<MyOptions>(_configuration, sectionName: "MyOptionsSection");
 ```
 
 In the first example you are still required to have called `IServiceCollection.AddOptions` (and optionally configure your options as desired) before using `OptionsBuilder.AddOptionsValue`. In the second example, you get a 'shortcut' way of calling it which should work for most scenarios and still allow you to further configure the options class `MyOptions` by using other `OptionsBuilder` methods. For instance:
 
-```
+```csharp
 services
     .AddOptionsValue<MyOptions>(_configuration, sectionName: "MyOptionsSection")
     .ValidateDataAnnotations();

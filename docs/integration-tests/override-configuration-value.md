@@ -83,7 +83,7 @@ You can also set the values for hierarchical configuration by using the [`:` sep
 
 For instance, if we have the following `appsettings.json`:
 
-```
+```json
 "MyOptionsSection": {
     "SomeOption": "Hello from configuration"
   }

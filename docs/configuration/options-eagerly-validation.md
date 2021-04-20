@@ -20,7 +20,7 @@ There are for sure many examples of situations where the lack of eager options v
 
 Imagine that you have an appsettings file with the following:
 
-```
+```csharp
 "MyOptionsSection": {
     "SomeOption": ""
 }
@@ -28,7 +28,7 @@ Imagine that you have an appsettings file with the following:
 
 Which is represented by the typed class `MyOptions`. Notice the data annotation attribute on the `MyOptions.SomeOption` property:
 
-```
+```csharp
 public class MyOptions
 {
     [Required]
@@ -38,7 +38,7 @@ public class MyOptions
 
 If you want to make sure the `MyOptions` class is validated when the web app is starting up use the `OptionsBuilder.ValidateEagerly` extension method:
 
-```
+```csharp
 services
     .AddOptions<MyOptions>()
     .Bind(configuration.GetSection("MyOptionsSection"))
