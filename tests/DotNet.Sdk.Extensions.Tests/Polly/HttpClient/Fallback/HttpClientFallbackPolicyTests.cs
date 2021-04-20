@@ -108,17 +108,14 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.HttpClient.Fallback
             var serviceProvider = services.BuildServiceProvider();
             var registry = serviceProvider.GetRequiredService<IReadOnlyPolicyRegistry<string>>();
             var fallbackPolicy = registry.Get<AsyncPolicyWrap<HttpResponseMessage>>(policyKey);
-
-            var exception = new BrokenCircuitException();
+            
             var policyResult = await fallbackPolicy.ExecuteAndCaptureAsync(
                 action: () =>
                 {
-                    throw exception;
+                    throw new BrokenCircuitException();
                 });
             policyResult.FinalException.ShouldBeNull();
             policyResult.Result.ShouldBeOfType<CircuitBrokenHttpResponseMessage>();
-            var result = (CircuitBrokenHttpResponseMessage)policyResult.Result;
-            result.Exception.ShouldBe(exception);
         }
 
         [Fact]

@@ -8,7 +8,6 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.HttpClient.Auxiliary
     {
         public static T GetHttpPolicy<T>(this ServiceCollection services, string policyKey) where T : IsPolicy
         {
-
             var serviceProvider = services.BuildServiceProvider();
             var registry = serviceProvider.GetRequiredService<IReadOnlyPolicyRegistry<string>>();
             var timeoutPolicy = registry.Get<T>(policyKey);

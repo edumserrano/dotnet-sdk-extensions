@@ -31,8 +31,8 @@ namespace DotNet.Sdk.Extensions.Polly.HttpClient.Fallback
                 .FallbackAsync(
                     fallbackAction: (delegateResult, pollyContext, cancellationToken) =>
                     {
-                        var exception = (BrokenCircuitException)delegateResult.Exception;
-                        return Task.FromResult<HttpResponseMessage>(new CircuitBrokenHttpResponseMessage(exception));
+                        var circuitBrokenHttpResponseMessage = new CircuitBrokenHttpResponseMessage();
+                        return Task.FromResult<HttpResponseMessage>(circuitBrokenHttpResponseMessage);
                     }, 
                     onFallbackAsync: (outcome, context) =>
                     {

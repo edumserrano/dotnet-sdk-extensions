@@ -40,11 +40,9 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.HttpClient.Timeout
                 policyRegistry.AddHttpClientTimeoutPolicy(policyKey, optionsName, provider);
             });
 
-            var serviceProvider = services.BuildServiceProvider();
-            var registry = serviceProvider.GetRequiredService<IReadOnlyPolicyRegistry<string>>();
-            registry
-                .TryGet<AsyncTimeoutPolicy<HttpResponseMessage>>(policyKey, out var policy)
-                .ShouldBeTrue();
+            services
+                .GetHttpPolicy<AsyncTimeoutPolicy<HttpResponseMessage>>(policyKey)
+                .ShouldNotBeNull();
         }
 
         /// <summary>
@@ -65,11 +63,9 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.HttpClient.Timeout
                 policyRegistry.AddHttpClientTimeoutPolicy<TestTimeoutPolicyConfiguration>(policyKey, optionsName, provider);
             });
 
-            var serviceProvider = services.BuildServiceProvider();
-            var registry = serviceProvider.GetRequiredService<IReadOnlyPolicyRegistry<string>>();
-            registry
-                .TryGet<AsyncTimeoutPolicy<HttpResponseMessage>>(policyKey, out var policy)
-                .ShouldBeTrue();
+            services
+                .GetHttpPolicy<AsyncTimeoutPolicy<HttpResponseMessage>>(policyKey)
+                .ShouldNotBeNull();
         }
 
         /// <summary>
@@ -91,11 +87,9 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.HttpClient.Timeout
                 policyRegistry.AddHttpClientTimeoutPolicy(policyKey, optionsName, policyConfiguration, provider);
             });
 
-            var serviceProvider = services.BuildServiceProvider();
-            var registry = serviceProvider.GetRequiredService<IReadOnlyPolicyRegistry<string>>();
-            registry
-                .TryGet<AsyncTimeoutPolicy<HttpResponseMessage>>(policyKey, out var policy)
-                .ShouldBeTrue();
+            services
+                .GetHttpPolicy<AsyncTimeoutPolicy<HttpResponseMessage>>(policyKey)
+                .ShouldNotBeNull();
         }
 
         /// <summary>
@@ -113,12 +107,10 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.HttpClient.Timeout
                 var options = new TimeoutOptions { TimeoutInSecs = 1 };
                 policyRegistry.AddHttpClientTimeoutPolicy(policyKey, options, policyConfiguration);
             });
-
-            var serviceProvider = services.BuildServiceProvider();
-            var registry = serviceProvider.GetRequiredService<IReadOnlyPolicyRegistry<string>>();
-            registry
-                .TryGet<AsyncTimeoutPolicy<HttpResponseMessage>>(policyKey, out var policy)
-                .ShouldBeTrue();
+            
+            services
+                .GetHttpPolicy<AsyncTimeoutPolicy<HttpResponseMessage>>(policyKey)
+                .ShouldNotBeNull();
         }
         
         /// <summary>

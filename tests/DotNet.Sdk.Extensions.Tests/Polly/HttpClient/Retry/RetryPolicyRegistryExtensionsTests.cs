@@ -45,11 +45,9 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.HttpClient.Retry
                 policyRegistry.AddHttpClientRetryPolicy(policyKey, optionsName, provider);
             });
 
-            var serviceProvider = services.BuildServiceProvider();
-            var registry = serviceProvider.GetRequiredService<IReadOnlyPolicyRegistry<string>>();
-            registry
-                .TryGet<AsyncRetryPolicy<HttpResponseMessage>>(policyKey, out var policy)
-                .ShouldBeTrue();
+            services
+                .GetHttpPolicy<AsyncRetryPolicy<HttpResponseMessage>>(policyKey)
+                .ShouldNotBeNull();
         }
 
         /// <summary>
@@ -74,11 +72,9 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.HttpClient.Retry
                 policyRegistry.AddHttpClientRetryPolicy<TestRetryPolicyConfiguration>(policyKey, optionsName, provider);
             });
 
-            var serviceProvider = services.BuildServiceProvider();
-            var registry = serviceProvider.GetRequiredService<IReadOnlyPolicyRegistry<string>>();
-            registry
-                .TryGet<AsyncRetryPolicy<HttpResponseMessage>>(policyKey, out var policy)
-                .ShouldBeTrue();
+            services
+                .GetHttpPolicy<AsyncRetryPolicy<HttpResponseMessage>>(policyKey)
+                .ShouldNotBeNull();
         }
 
         /// <summary>
@@ -104,11 +100,9 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.HttpClient.Retry
                 policyRegistry.AddHttpClientRetryPolicy(policyKey, optionsName, retryPolicyConfiguration, provider);
             });
 
-            var serviceProvider = services.BuildServiceProvider();
-            var registry = serviceProvider.GetRequiredService<IReadOnlyPolicyRegistry<string>>();
-            registry
-                .TryGet<AsyncRetryPolicy<HttpResponseMessage>>(policyKey, out var policy)
-                .ShouldBeTrue();
+            services
+                .GetHttpPolicy<AsyncRetryPolicy<HttpResponseMessage>>(policyKey)
+                .ShouldNotBeNull();
         }
 
         /// <summary>
@@ -131,11 +125,9 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.HttpClient.Retry
                 policyRegistry.AddHttpClientRetryPolicy(policyKey, options, policyConfiguration);
             });
 
-            var serviceProvider = services.BuildServiceProvider();
-            var registry = serviceProvider.GetRequiredService<IReadOnlyPolicyRegistry<string>>();
-            registry
-                .TryGet<AsyncRetryPolicy<HttpResponseMessage>>(policyKey, out var policy)
-                .ShouldBeTrue();
+            services
+                .GetHttpPolicy<AsyncRetryPolicy<HttpResponseMessage>>(policyKey)
+                .ShouldNotBeNull();
         }
         
         /// <summary>
