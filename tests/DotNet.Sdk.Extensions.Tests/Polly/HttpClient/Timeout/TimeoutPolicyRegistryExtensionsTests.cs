@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Polly;
@@ -118,6 +119,31 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.HttpClient.Timeout
             registry
                 .TryGet<AsyncTimeoutPolicy<HttpResponseMessage>>(policyKey, out var policy)
                 .ShouldBeTrue();
+        }
+        
+        /// <summary>
+        /// Tests that the IPolicyRegistry.AddHttpClientTimeoutPolicy method will not trigger the timeout
+        /// policy if not required and returns the expected value.
+        /// </summary>
+        [Fact]
+        public async Task AddHttpClientTimeoutPolicyControlTest()
+        {
+            var policyKey = "testPolicy";
+            var timeoutInSecs = 1;
+            var services = new ServiceCollection();
+            var timeoutPolicyConfiguration = Substitute.For<ITimeoutPolicyConfiguration>();
+            services.AddPolicyRegistry((provider, policyRegistry) =>
+            {
+                var options = new TimeoutOptions { TimeoutInSecs = timeoutInSecs };
+                policyRegistry.AddHttpClientTimeoutPolicy(policyKey, options, timeoutPolicyConfiguration);
+            });
+
+            var timeoutPolicy = services.GetHttpPolicy<AsyncTimeoutPolicy<HttpResponseMessage>>(policyKey);
+            var httpResponseMessage = await timeoutPolicy.ExecuteAsync(() =>
+            {
+                return Task.FromResult(new HttpResponseMessage(HttpStatusCode.Accepted));
+            });
+            httpResponseMessage.StatusCode.ShouldBe(HttpStatusCode.Accepted);
         }
 
         /// <summary>
