@@ -43,6 +43,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.HttpClient.Retry
         /// <summary>
         /// Tests that the <see cref="AddHttpClientRetryOptions"/> extension method
         /// validates the <see cref="RetryOptions.MedianFirstRetryDelayInSecs"/>.
+        /// Can only be a positive number.
         /// </summary>
         [Theory]
         [InlineData(0)]
@@ -70,7 +71,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.HttpClient.Retry
         
         /// <summary>
         /// Tests that the <see cref="AddHttpClientRetryOptions"/> extension method
-        /// validates the <see cref="RetryOptions.RetryCount"/>.
+        /// validates the <see cref="RetryOptions.RetryCount"/>. Needs to be a number >= 0.
+        /// 
         /// </summary>
         [Theory]
         [InlineData(-1)]
@@ -92,6 +94,28 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.HttpClient.Retry
                 return serviceProvider.GetHttpClientRetryOptions(optionsName);
             });
             exception.Message.ShouldBe("DataAnnotation validation failed for members: 'RetryCount' with the error: 'The field RetryCount must be between 0 and 2147483647.'.");
+        }
+
+        /// <summary>
+        /// Tests that the <see cref="AddHttpClientRetryOptions"/> extension method
+        /// validates the <see cref="RetryOptions.RetryCount"/> can be zero.
+        /// </summary>
+        [Fact]
+        public void AddHttpClientRetryOptionsValidatesOptions3()
+        {
+            var optionsName = "retryOptions";
+            var services = new ServiceCollection();
+            services
+                .AddHttpClientRetryOptions(optionsName)
+                .Configure(options =>
+                {
+                    options.RetryCount = 0;
+                    options.MedianFirstRetryDelayInSecs = 1;
+                });
+            var serviceProvider = services.BuildServiceProvider();
+            serviceProvider
+                .GetHttpClientRetryOptions(optionsName)
+                .ShouldNotBeNull();
         }
     }
 }

@@ -36,7 +36,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.HttpClient.Timeout
 
         /// <summary>
         /// Tests that the <see cref="AddHttpClientTimeoutOptions"/> extension method
-        /// validates the <see cref="TimeoutOptions"/>.
+        /// validates the <see cref="TimeoutOptions"/>. Can only be positive value.
         /// </summary>
         [Theory]
         [InlineData(0)]
