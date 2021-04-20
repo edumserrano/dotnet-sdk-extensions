@@ -21,7 +21,7 @@ namespace DotNet.Sdk.Extensions.Polly.HttpClient.CircuitBreaker.Extensions
             string optionsName,
             IServiceProvider serviceProvider) where TPolicyConfiguration : class, ICircuitBreakerPolicyConfiguration
         {
-            // by choice, TPolicyConfiguration is not added to the IServiceCollection so use ActivatorUtilities  instead of IServiceProvider.GetRequiredService<T>
+            // by design TPolicyConfiguration is not added to the IServiceCollection so use ActivatorUtilities  instead of IServiceProvider.GetRequiredService<T>
             var policyConfiguration = ActivatorUtilities.CreateInstance<TPolicyConfiguration>(serviceProvider);
             return registry.AddHttpClientCircuitBreakerPolicy(policyKey, optionsName, policyConfiguration, serviceProvider);
         }

@@ -19,7 +19,7 @@ namespace DotNet.Sdk.Extensions.Polly.HttpClient.Fallback.Extensions
             string policyKey,
             IServiceProvider serviceProvider) where TPolicyConfiguration : class, IFallbackPolicyConfiguration
         {
-            // by choice, TPolicyConfiguration is not added to the IServiceCollection so use ActivatorUtilities  instead of IServiceProvider.GetRequiredService<T>
+            // by design TPolicyConfiguration is not added to the IServiceCollection so use ActivatorUtilities  instead of IServiceProvider.GetRequiredService<T>
             var policyConfiguration = ActivatorUtilities.CreateInstance<TPolicyConfiguration>(serviceProvider);
             return registry.AddHttpClientFallbackPolicy(policyKey,policyConfiguration);
         }
