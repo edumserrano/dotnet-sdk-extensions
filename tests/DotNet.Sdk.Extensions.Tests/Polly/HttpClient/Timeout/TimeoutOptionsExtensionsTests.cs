@@ -33,5 +33,31 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.HttpClient.Timeout
             var timeoutOptions = serviceProvider.GetHttpClientTimeoutOptions(optionsName);
             timeoutOptions.TimeoutInSecs.ShouldBe(timeoutInSecs);
         }
+
+        /// <summary>
+        /// Tests that the <see cref="AddHttpClientTimeoutOptions"/> extension method
+        /// validates the <see cref="TimeoutOptions"/>.
+        /// </summary>
+        [Theory]
+        [InlineData(0)]
+        [InlineData(-1)]
+        [InlineData(-2.2)]
+        public void AddHttpClientTimeoutOptionsValidatesOptions(double timeoutInSecs)
+        {
+            var optionsName = "timeoutOptions";
+            var services = new ServiceCollection();
+            services
+                .AddHttpClientTimeoutOptions(optionsName)
+                .Configure(options =>
+                {
+                    options.TimeoutInSecs = timeoutInSecs;
+                });
+            var serviceProvider = services.BuildServiceProvider();
+            var exception = Should.Throw<OptionsValidationException>(()=>
+            {
+                return serviceProvider.GetHttpClientTimeoutOptions(optionsName);
+            });
+            exception.Message.ShouldBe("DataAnnotation validation failed for members: 'TimeoutInSecs' with the error: 'The field TimeoutInSecs must be between 5E-324 and 1.7976931348623157E+308.'.");
+        }
     }
 }

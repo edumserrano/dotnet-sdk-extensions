@@ -10,7 +10,9 @@ namespace DotNet.Sdk.Extensions.Polly.HttpClient.Retry.Extensions
             this IServiceCollection services,
             string name)
         {
-            return services.AddOptions<RetryOptions>(name: name);
+            return services
+                .AddOptions<RetryOptions>(name: name)
+                .ValidateDataAnnotations();
         }
 
         public static RetryOptions GetHttpClientRetryOptions(

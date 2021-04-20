@@ -39,5 +39,59 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.HttpClient.Retry
             retryOptions.RetryCount.ShouldBe(retryCount);
             retryOptions.MedianFirstRetryDelayInSecs.ShouldBe(medianFirstRetryDelayInSecs);
         }
+
+        /// <summary>
+        /// Tests that the <see cref="AddHttpClientRetryOptions"/> extension method
+        /// validates the <see cref="RetryOptions.MedianFirstRetryDelayInSecs"/>.
+        /// </summary>
+        [Theory]
+        [InlineData(0)]
+        [InlineData(-1)]
+        [InlineData(-2.2)]
+        public void AddHttpClientRetryOptionsValidatesOptions(double medianFirstRetryDelayInSecs)
+        {
+            var optionsName = "retryOptions";
+            var retryCount = 3;
+            var services = new ServiceCollection();
+            services
+                .AddHttpClientRetryOptions(optionsName)
+                .Configure(options =>
+                {
+                    options.RetryCount = retryCount;
+                    options.MedianFirstRetryDelayInSecs = medianFirstRetryDelayInSecs;
+                });
+            var serviceProvider = services.BuildServiceProvider();
+            var exception = Should.Throw<OptionsValidationException>(() =>
+            {
+                return serviceProvider.GetHttpClientRetryOptions(optionsName);
+            });
+            exception.Message.ShouldBe("DataAnnotation validation failed for members: 'MedianFirstRetryDelayInSecs' with the error: 'The field MedianFirstRetryDelayInSecs must be between 5E-324 and 1.7976931348623157E+308.'.");
+        }
+        
+        /// <summary>
+        /// Tests that the <see cref="AddHttpClientRetryOptions"/> extension method
+        /// validates the <see cref="RetryOptions.RetryCount"/>.
+        /// </summary>
+        [Theory]
+        [InlineData(-1)]
+        [InlineData(-2)]
+        public void AddHttpClientRetryOptionsValidatesOptions2(int retryCount)
+        {
+            var optionsName = "retryOptions";
+            var services = new ServiceCollection();
+            services
+                .AddHttpClientRetryOptions(optionsName)
+                .Configure(options =>
+                {
+                    options.RetryCount = retryCount;
+                    options.MedianFirstRetryDelayInSecs = 1;
+                });
+            var serviceProvider = services.BuildServiceProvider();
+            var exception = Should.Throw<OptionsValidationException>(() =>
+            {
+                return serviceProvider.GetHttpClientRetryOptions(optionsName);
+            });
+            exception.Message.ShouldBe("DataAnnotation validation failed for members: 'RetryCount' with the error: 'The field RetryCount must be between 0 and 2147483647.'.");
+        }
     }
 }
