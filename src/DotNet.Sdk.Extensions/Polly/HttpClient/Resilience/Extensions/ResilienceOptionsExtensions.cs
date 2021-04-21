@@ -11,6 +11,7 @@ namespace DotNet.Sdk.Extensions.Polly.HttpClient.Resilience.Extensions
             string name)
         {
             return services
+                .AddSingleton<IValidateOptions<ResilienceOptions>, ResilienceOptionsValidation>()
                 .AddOptions<ResilienceOptions>(name)
                 .ValidateDataAnnotations();
         }

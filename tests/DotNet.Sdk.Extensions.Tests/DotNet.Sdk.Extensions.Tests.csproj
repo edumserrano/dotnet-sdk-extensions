@@ -34,8 +34,4 @@
     <ProjectReference Include="..\..\src\DotNet.Sdk.Extensions\DotNet.Sdk.Extensions.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Polly\HttpClient\Resilience\" />
-  </ItemGroup>
-
 </Project>

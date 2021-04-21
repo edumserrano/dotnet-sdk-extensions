@@ -13,6 +13,13 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.HttpClient.CircuitBreaker
     [Trait("Category", XUnitCategories.Polly)]
     public class CircuitBreakerOptionsExtensionsTests
     {
+        /// <summary>
+        /// Tests that the <see cref="CircuitBreakerOptionsExtensions.AddHttpClientCircuitBreakerOptions"/> extension method
+        /// adds to the <see cref="ServiceCollection"/> an <see cref="IOptions{TOptions}"/>
+        /// where TOptions is of type <see cref="CircuitBreakerOptions"/>.
+        ///
+        /// It also checks that the <see cref="CircuitBreakerOptions"/> has the expected values.
+        /// </summary>
         [Fact]
         public void AddHttpClientCircuitBreakerOptions()
         {
@@ -40,7 +47,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.HttpClient.CircuitBreaker
         }
 
         /// <summary>
-        /// Tests that the <see cref="AddHttpClientCircuitBreakerOptions"/> extension method
+        /// Tests that the <see cref="CircuitBreakerOptionsExtensions.AddHttpClientCircuitBreakerOptions"/> extension method
         /// validates the <see cref="CircuitBreakerOptions.FailureThreshold"/>. Can only
         /// be a number >= 0.
         /// </summary>
@@ -69,11 +76,11 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.HttpClient.CircuitBreaker
             {
                 return serviceProvider.GetHttpClientCircuitBreakerOptions(optionsName);
             });
-            exception.Message.ShouldBe("DataAnnotation validation failed for members: 'FailureThreshold' with the error: 'The field FailureThreshold must be between 5E-324 and 1.'.");
+            exception.Message.ShouldBe($"DataAnnotation validation failed for members: 'FailureThreshold' with the error: 'The field FailureThreshold must be between {double.Epsilon} and {1}.'.");
         }
 
         /// <summary>
-        /// Tests that the <see cref="AddHttpClientCircuitBreakerOptions"/> extension method
+        /// Tests that the <see cref="CircuitBreakerOptionsExtensions.AddHttpClientCircuitBreakerOptions"/> extension method
         /// validates the <see cref="CircuitBreakerOptions.MinimumThroughput"/>. Can only
         /// be a number >= 2.
         /// </summary>
@@ -103,11 +110,11 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.HttpClient.CircuitBreaker
             {
                 return serviceProvider.GetHttpClientCircuitBreakerOptions(optionsName);
             });
-            exception.Message.ShouldBe("DataAnnotation validation failed for members: 'MinimumThroughput' with the error: 'The field MinimumThroughput must be between 2 and 2147483647.'.");
+            exception.Message.ShouldBe($"DataAnnotation validation failed for members: 'MinimumThroughput' with the error: 'The field MinimumThroughput must be between {2} and {int.MaxValue}.'.");
         }
 
         /// <summary>
-        /// Tests that the <see cref="AddHttpClientCircuitBreakerOptions"/> extension method
+        /// Tests that the <see cref="CircuitBreakerOptionsExtensions.AddHttpClientCircuitBreakerOptions"/> extension method
         /// validates the <see cref="CircuitBreakerOptions.DurationOfBreakInSecs"/>. Can only
         /// be a number >= 0.
         /// </summary>
@@ -136,11 +143,11 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.HttpClient.CircuitBreaker
             {
                 return serviceProvider.GetHttpClientCircuitBreakerOptions(optionsName);
             });
-            exception.Message.ShouldBe("DataAnnotation validation failed for members: 'DurationOfBreakInSecs' with the error: 'The field DurationOfBreakInSecs must be between 5E-324 and 1.7976931348623157E+308.'.");
+            exception.Message.ShouldBe($"DataAnnotation validation failed for members: 'DurationOfBreakInSecs' with the error: 'The field DurationOfBreakInSecs must be between {double.Epsilon} and {double.MaxValue}.'.");
         }
 
         /// <summary>
-        /// Tests that the <see cref="AddHttpClientCircuitBreakerOptions"/> extension method
+        /// Tests that the <see cref="CircuitBreakerOptionsExtensions.AddHttpClientCircuitBreakerOptions"/> extension method
         /// validates the <see cref="CircuitBreakerOptions.SamplingDurationInSecs"/>. Can only
         /// be a number >= 0.
         /// </summary>
@@ -169,7 +176,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.HttpClient.CircuitBreaker
             {
                 return serviceProvider.GetHttpClientCircuitBreakerOptions(optionsName);
             });
-            exception.Message.ShouldBe("DataAnnotation validation failed for members: 'SamplingDurationInSecs' with the error: 'The field SamplingDurationInSecs must be between 5E-324 and 1.7976931348623157E+308.'.");
+            exception.Message.ShouldBe($"DataAnnotation validation failed for members: 'SamplingDurationInSecs' with the error: 'The field SamplingDurationInSecs must be between {double.Epsilon} and {double.MaxValue}.'.");
         }
     }
 }

@@ -14,7 +14,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.HttpClient.Timeout
     public class TimeoutOptionsExtensionsTests
     {
         /// <summary>
-        /// Tests that the <see cref="AddHttpClientTimeoutOptions"/> extension method
+        /// Tests that the <see cref="TimeoutOptionsExtensions.AddHttpClientTimeoutOptions"/> extension method
         /// adds to the <see cref="ServiceCollection"/> an <see cref="IOptions{TOptions}"/>
         /// where TOptions is of type <see cref="TimeoutOptions"/>.
         ///
@@ -35,7 +35,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.HttpClient.Timeout
         }
 
         /// <summary>
-        /// Tests that the <see cref="AddHttpClientTimeoutOptions"/> extension method
+        /// Tests that the <see cref="TimeoutOptionsExtensions.AddHttpClientTimeoutOptions"/> extension method
         /// validates the <see cref="TimeoutOptions"/>. Can only be positive value.
         /// </summary>
         [Theory]
@@ -53,11 +53,11 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.HttpClient.Timeout
                     options.TimeoutInSecs = timeoutInSecs;
                 });
             var serviceProvider = services.BuildServiceProvider();
-            var exception = Should.Throw<OptionsValidationException>(()=>
+            var exception = Should.Throw<OptionsValidationException>(() =>
             {
                 return serviceProvider.GetHttpClientTimeoutOptions(optionsName);
             });
-            exception.Message.ShouldBe("DataAnnotation validation failed for members: 'TimeoutInSecs' with the error: 'The field TimeoutInSecs must be between 5E-324 and 1.7976931348623157E+308.'.");
+            exception.Message.ShouldBe($"DataAnnotation validation failed for members: 'TimeoutInSecs' with the error: 'The field TimeoutInSecs must be between {double.Epsilon} and {double.MaxValue}.'.");
         }
     }
 }

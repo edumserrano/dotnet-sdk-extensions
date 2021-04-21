@@ -14,7 +14,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.HttpClient.Retry
     public class RetryOptionsExtensionsTests
     {
         /// <summary>
-        /// Tests that the <see cref="AddHttpClientRetryOptions"/> extension method
+        /// Tests that the <see cref="RetryOptionsExtensions.AddHttpClientRetryOptions"/> extension method
         /// adds to the <see cref="ServiceCollection"/> an <see cref="IOptions{TOptions}"/>
         /// where TOptions is of type <see cref="RetryOptions"/>.
         ///
@@ -41,7 +41,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.HttpClient.Retry
         }
 
         /// <summary>
-        /// Tests that the <see cref="AddHttpClientRetryOptions"/> extension method
+        /// Tests that the <see cref="RetryOptionsExtensions.AddHttpClientRetryOptions"/> extension method
         /// validates the <see cref="RetryOptions.MedianFirstRetryDelayInSecs"/>.
         /// Can only be a positive number.
         /// </summary>
@@ -66,11 +66,11 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.HttpClient.Retry
             {
                 return serviceProvider.GetHttpClientRetryOptions(optionsName);
             });
-            exception.Message.ShouldBe("DataAnnotation validation failed for members: 'MedianFirstRetryDelayInSecs' with the error: 'The field MedianFirstRetryDelayInSecs must be between 5E-324 and 1.7976931348623157E+308.'.");
+            exception.Message.ShouldBe($"DataAnnotation validation failed for members: 'MedianFirstRetryDelayInSecs' with the error: 'The field MedianFirstRetryDelayInSecs must be between {double.Epsilon} and {double.MaxValue}.'.");
         }
-        
+
         /// <summary>
-        /// Tests that the <see cref="AddHttpClientRetryOptions"/> extension method
+        /// Tests that the <see cref="RetryOptionsExtensions.AddHttpClientRetryOptions"/> extension method
         /// validates the <see cref="RetryOptions.RetryCount"/>. Needs to be a number >= 0.
         /// 
         /// </summary>
@@ -93,11 +93,11 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.HttpClient.Retry
             {
                 return serviceProvider.GetHttpClientRetryOptions(optionsName);
             });
-            exception.Message.ShouldBe("DataAnnotation validation failed for members: 'RetryCount' with the error: 'The field RetryCount must be between 0 and 2147483647.'.");
+            exception.Message.ShouldBe($"DataAnnotation validation failed for members: 'RetryCount' with the error: 'The field RetryCount must be between {0} and {int.MaxValue}.'.");
         }
 
         /// <summary>
-        /// Tests that the <see cref="AddHttpClientRetryOptions"/> extension method
+        /// Tests that the <see cref="RetryOptionsExtensions.AddHttpClientRetryOptions"/> extension method
         /// validates the <see cref="RetryOptions.RetryCount"/> can be zero.
         /// </summary>
         [Fact]
