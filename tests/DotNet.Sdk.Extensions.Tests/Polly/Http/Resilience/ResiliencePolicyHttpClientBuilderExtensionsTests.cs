@@ -69,5 +69,6 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience
             resultPredicates.GetResultPredicatesCount().ShouldBe(1);
             resultPredicates.HandlesTransientHttpStatusCode().ShouldBe(true);
         }
+
     }
 }
