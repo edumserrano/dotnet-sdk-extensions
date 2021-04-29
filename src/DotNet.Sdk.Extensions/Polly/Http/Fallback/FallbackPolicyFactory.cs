@@ -1,15 +1,19 @@
 ﻿using System.Net.Http;
 using System.Threading.Tasks;
+using DotNet.Sdk.Extensions.Polly.Http.Fallback.Configuration;
 using DotNet.Sdk.Extensions.Polly.Http.Fallback.FallbackHttpResponseMessages;
 using Polly;
 using Polly.CircuitBreaker;
 using Polly.Timeout;
+using Polly.Wrap;
 
 namespace DotNet.Sdk.Extensions.Polly.Http.Fallback
 {
     internal static class FallbackPolicyFactory
     {
-        public static IsPolicy CreateFallbackPolicy(IFallbackPolicyConfiguration policyConfiguration)
+        public static AsyncPolicyWrap<HttpResponseMessage> CreateFallbackPolicy(
+            string httpClientName,
+            IFallbackPolicyConfiguration policyConfiguration)
         {
             // handle TimeoutRejectedException thrown by a timeout policy
             var timeoutFallback = Policy<HttpResponseMessage>
@@ -22,7 +26,8 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Fallback
                     },
                     onFallbackAsync: (outcome, context) =>
                     {
-                        return policyConfiguration.OnTimeoutFallbackAsync(outcome, context);
+                        var fallbackEvent = new TimeoutFallbackEvent(httpClientName, outcome, context);
+                        return policyConfiguration.OnTimeoutFallbackAsync(fallbackEvent);
                     });
 
             // handle BrokenCircuitException thrown by a circuit breaker policy
@@ -37,7 +42,8 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Fallback
                     }, 
                     onFallbackAsync: (outcome, context) =>
                     {
-                        return policyConfiguration.OnBrokenCircuitFallbackAsync(outcome, context);
+                        var fallbackEvent = new BrokenCircuitFallbackEvent(httpClientName, outcome, context);
+                        return policyConfiguration.OnBrokenCircuitFallbackAsync(fallbackEvent);
                     });
 
             // handle TaskCanceledException thrown by HttpClient when it times out.
@@ -53,7 +59,8 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Fallback
                     },
                     onFallbackAsync: (outcome, context) =>
                     {
-                        return policyConfiguration.OnTaskCancelledFallbackAsync(outcome, context);
+                        var fallbackEvent = new TaskCancelledFallbackEvent(httpClientName, outcome, context);
+                        return policyConfiguration.OnTaskCancelledFallbackAsync(fallbackEvent);
                     });
 
             var policy = Policy.WrapAsync(timeoutFallback, brokenCircuitFallback, abortedFallback);

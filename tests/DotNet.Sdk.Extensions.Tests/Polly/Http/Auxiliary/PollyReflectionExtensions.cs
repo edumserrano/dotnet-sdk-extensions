@@ -4,7 +4,6 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using Polly;
-using Polly.Retry;
 
 namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary
 {

@@ -1,18 +1,11 @@
-﻿using System;
-using System.Threading.Tasks;
-using DotNet.Sdk.Extensions.Polly.Http.Timeout;
-using Polly;
+﻿using System.Threading.Tasks;
+using DotNet.Sdk.Extensions.Polly.Http.Timeout.Configuration;
 
 namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Auxiliary
 {
     public class TestTimeoutPolicyConfiguration : ITimeoutPolicyConfiguration
     {
-        public Task OnTimeoutASync(
-            TimeoutOptions timeoutOptions,
-            Context context, 
-            TimeSpan requestTimeout, 
-            Task timedOutTask,
-            Exception exception)
+        public Task OnTimeoutAsync(TimeoutEvent timeoutEvent)
         {
             return Task.CompletedTask;
         }

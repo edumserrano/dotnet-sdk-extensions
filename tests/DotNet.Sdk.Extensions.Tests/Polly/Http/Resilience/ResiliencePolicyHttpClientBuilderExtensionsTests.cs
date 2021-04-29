@@ -1,13 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using DotNet.Sdk.Extensions.Polly;
 using DotNet.Sdk.Extensions.Polly.Http.Resilience.Extensions;
 using DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Http;
 using Polly.Retry;
 using Polly.Timeout;
+using Polly.Wrap;
 using Shouldly;
 using Xunit;
 
@@ -16,14 +18,15 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience
     public class ResiliencePolicyHttpClientBuilderExtensionsTests
     {
         [Fact]
-        public void ExampleReflectionTest()
+        public void AddResiliencePoliciesAddsPolicies()
         {
             var policyKey = "testPolicy";
             var optionsName = "circuitBreakerOptions";
             var services = new ServiceCollection();
+            var policyHttpMessageHandlers = new List<PolicyHttpMessageHandler>();
             services
-                .AddHttpClientResilienceOptions(name: "GitHubResilienceOptions")
-                .Configure(options =>
+                .AddHttpClient("GitHub")
+                .AddResiliencePolicies(options =>
                 {
                     options.Timeout.TimeoutInSecs = 1;
                     options.Retry.MedianFirstRetryDelayInSecs = 1;
@@ -32,19 +35,56 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience
                     options.CircuitBreaker.FailureThreshold = 0.5;
                     options.CircuitBreaker.SamplingDurationInSecs = 60;
                     options.CircuitBreaker.MinimumThroughput = 4;
+                })
+                .ConfigureHttpMessageHandlerBuilder(httpMessageHandlerBuilder =>
+                {
+                    policyHttpMessageHandlers = httpMessageHandlerBuilder
+                        .AdditionalHandlers
+                        .OfType<PolicyHttpMessageHandler>()
+                        .ToList();
                 });
-            services.AddPolicyRegistry((provider, policyRegistry) =>
-            {
-                policyRegistry.AddHttpClientResiliencePolicies(
-                    policyKey: "GitHub",
-                    optionsName: "GitHubResilienceOptions",
-                    provider);
-            });
+
+            var serviceProvider = services.BuildServiceProvider();
+            serviceProvider.InstantiateNamedHttpClient("GitHub");
+
+            // fallback policy
+            policyHttpMessageHandlers[0]
+                .GetPolicy<AsyncPolicyWrap<HttpResponseMessage>>()
+                .ShouldNotBeNull();
+            // retry policy
+            policyHttpMessageHandlers[1]
+                .GetPolicy<AsyncRetryPolicy<HttpResponseMessage>>()
+                .ShouldNotBeNull();
+            // circuit breaker policy 
+            policyHttpMessageHandlers[2]
+                .GetPolicy<AsyncPolicyWrap<HttpResponseMessage>>()
+                .ShouldNotBeNull();
+            // timeout policy
+            policyHttpMessageHandlers[3]
+                .GetPolicy<AsyncTimeoutPolicy<HttpResponseMessage>>()
+                .ShouldNotBeNull();
+        }
+
+        [Fact]
+        public void ExampleReflectionTest()
+        {
+            var policyKey = "testPolicy";
+            var optionsName = "circuitBreakerOptions";
+            var services = new ServiceCollection();
 
             AsyncRetryPolicy<HttpResponseMessage>? asyncRetryPolicy = null;
             services
                 .AddHttpClient("GitHub")
-                .AddResiliencePoliciesFromRegistry(policyKey: "GitHub")
+                .AddResiliencePolicies(options =>
+                {
+                    options.Timeout.TimeoutInSecs = 1;
+                    options.Retry.MedianFirstRetryDelayInSecs = 1;
+                    options.Retry.RetryCount = 3;
+                    options.CircuitBreaker.DurationOfBreakInSecs = 1;
+                    options.CircuitBreaker.FailureThreshold = 0.5;
+                    options.CircuitBreaker.SamplingDurationInSecs = 60;
+                    options.CircuitBreaker.MinimumThroughput = 4;
+                })
                 .ConfigureHttpMessageHandlerBuilder(httpMessageHandlerBuilder =>
                 {
                     asyncRetryPolicy = httpMessageHandlerBuilder.AdditionalHandlers

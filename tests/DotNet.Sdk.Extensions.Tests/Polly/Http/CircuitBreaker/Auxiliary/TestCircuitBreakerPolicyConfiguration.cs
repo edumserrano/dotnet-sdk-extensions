@@ -2,6 +2,7 @@
 using System.Net.Http;
 using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker;
+using DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker.Configuration;
 using Polly;
 using Polly.CircuitBreaker;
 
@@ -9,21 +10,17 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
 {
     public class TestCircuitBreakerPolicyConfiguration : ICircuitBreakerPolicyConfiguration
     {
-        public Task OnBreakAsync(
-            CircuitBreakerOptions circuitBreakerOptions, 
-            DelegateResult<HttpResponseMessage> lastOutcome, 
-            CircuitState previousState,
-            TimeSpan durationOfBreak, Context context)
+        public Task OnBreakAsync(BreakEvent breakEvent)
         {
             return Task.CompletedTask;
         }
 
-        public Task OnHalfOpenAsync(CircuitBreakerOptions circuitBreakerOptions)
+        public Task OnHalfOpenAsync(HalfOpenEvent halfOpenEvent)
         {
             return Task.CompletedTask;
         }
 
-        public Task OnResetAsync(CircuitBreakerOptions circuitBreakerOptions, Context context)
+        public Task OnResetAsync(ResetEvent resetEvent)
         {
             return Task.CompletedTask;
         }

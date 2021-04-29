@@ -10,22 +10,24 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Polly;
-using DotNet.Sdk.Extensions.Polly;
-using DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker;
-using DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker.Extensions;
-using DotNet.Sdk.Extensions.Polly.Http.Fallback;
-using DotNet.Sdk.Extensions.Polly.Http.Fallback.Extensions;
-using DotNet.Sdk.Extensions.Polly.Http.Resilience.Extensions;
-using DotNet.Sdk.Extensions.Polly.Http.Retry;
-using DotNet.Sdk.Extensions.Polly.Http.Retry.Extensions;
+using DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker.Configuration;
+using DotNet.Sdk.Extensions.Polly.Http.Fallback.Configuration;
+using DotNet.Sdk.Extensions.Polly.Http.Retry.Configuration;
 using DotNet.Sdk.Extensions.Polly.Http.Timeout;
+using DotNet.Sdk.Extensions.Polly.Http.Timeout.Configuration;
 using DotNet.Sdk.Extensions.Polly.Http.Timeout.Extensions;
-using Microsoft.Extensions.Http;
-using Polly.CircuitBreaker;
-using Polly.Retry;
+using Microsoft.Extensions.Options;
 
 namespace WebApplication1
 {
+    internal class TestOptionsValidation : IValidateOptions<TimeoutOptions>
+    {
+        public ValidateOptionsResult Validate(string name, TimeoutOptions options)
+        {
+            return ValidateOptionsResult.Success;
+        }
+    }
+
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -43,58 +45,73 @@ namespace WebApplication1
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebApplication1", Version = "v1" });
             });
 
-            services
-                .AddHttpClientTimeoutOptions(name: "GitHubTimeoutOptions")
-                .Configure(options => options.TimeoutInSecs = 1);
-            services
-                .AddHttpClientRetryOptions(name: "GitHubRetryOptions")
-                .Bind(Configuration.GetSection("HttpClients:Default:RetryPolicy"));
-            services
-                .AddHttpClientCircuitBreakerOptions(name: "GitHubCircuitBreakerOptions")
-                .Bind(Configuration.GetSection("GitHub"));
+            //services
+            //    .AddSingleton<IValidateOptions<TimeoutOptions>, TestOptionsValidation>()
+            //    .AddOptions<TimeoutOptions>(name: "GitHubTimeoutOptions")
+            //    .Bind(Configuration.GetSection("GitHub"));;
 
-            services
-                .AddHttpClientResilienceOptions(name: "GitHubResilienceOptions")
-                .Configure(options =>
-                {
-                    options.Timeout.TimeoutInSecs = 1;
+            //services
+            //    .AddHttpClientTimeoutOptions(name: "GitHubTimeoutOptions")
+            //    .Bind(Configuration.GetSection("GitHub"));
+            //services
+            //    .AddHttpClientTimeoutOptions(name: "GitHubTimeoutOptions")
+            //    .Configure(options => options.TimeoutInSecs = 1);
+            //services
+            //    .AddHttpClientRetryOptions(name: "GitHubRetryOptions")
+            //    .Bind(Configuration.GetSection("HttpClients:Default:RetryPolicy"));
+            //services
+            //    .AddHttpClientCircuitBreakerOptions(name: "GitHubCircuitBreakerOptions")
+            //    .Bind(Configuration.GetSection("GitHub"));
 
-                    options.Retry.MedianFirstRetryDelayInSecs = 1;
-                    options.Retry.RetryCount = 3;
+            //services
+            //    .AddHttpClientResilienceOptions(name: "GitHubResilienceOptions")
+            //    .Configure(options =>
+            //    {
+            //        options.Timeout.TimeoutInSecs = 1;
 
-                    options.CircuitBreaker.DurationOfBreakInSecs = 1;
-                    options.CircuitBreaker.FailureThreshold = 0.5;
-                    options.CircuitBreaker.SamplingDurationInSecs = 60;
-                    options.CircuitBreaker.MinimumThroughput = 4;
-                })
-                //.Bind(Configuration.GetSection("GitHub"))
-                ;
-            
-            services.AddPolicyRegistry((serviceProvider, registry) =>
-            {
-                //registry.AddHttpClientResiliencePolicies(
-                //    policyKey: "GitHub", 
-                //    optionsName: "GitHubResilienceOptions", 
-                //    serviceProvider);
+            //        options.Retry.MedianFirstRetryDelayInSecs = 1;
+            //        options.Retry.RetryCount = 3;
 
-                registry.AddHttpClientTimeoutPolicy<GitHubPoliciesConfiguration>(policyKey: "GitHubTimeout", optionsName: "GitHubTimeoutOptions", serviceProvider);
-                registry.AddHttpClientRetryPolicy<GitHubPoliciesConfiguration>(policyKey: "GitHubRetry", optionsName: "GitHubRetryOptions", serviceProvider);
-                registry.AddHttpClientCircuitBreakerPolicy<GitHubPoliciesConfiguration>(policyKey: "GitHubCircuitBreaker", optionsName: "GitHubCircuitBreakerOptions", serviceProvider);
-                registry.AddHttpClientFallbackPolicy<GitHubPoliciesConfiguration>(policyKey: "GitHubFallback", serviceProvider);
+            //        options.CircuitBreaker.DurationOfBreakInSecs = 1;
+            //        options.CircuitBreaker.FailureThreshold = 0.5;
+            //        options.CircuitBreaker.SamplingDurationInSecs = 60;
+            //        options.CircuitBreaker.MinimumThroughput = 4;
+            //    })
+            //    //.Bind(Configuration.GetSection("GitHub"))
+            //    ;
 
-                //registry.AddHttpClientTimeoutPolicy(policyKey: "GitHubTimeout", optionsName: "GitHubTimeoutOptions", serviceProvider);
-                //registry.AddHttpClientRetryPolicy(policyKey: "GitHubRetry", optionsName: "GitHubRetryOptions", serviceProvider);
-                //registry.AddHttpClientCircuitBreakerPolicy(policyKey: "GitHubCircuitBreaker", optionsName: "GitHubCircuitBreakerOptions", serviceProvider);
-                //registry.AddHttpClientFallbackPolicy(policyKey: "GitHubFallback", serviceProvider);
-            });
+            //services.AddPolicyRegistry((serviceProvider, registry) =>
+            //{
+            //    //registry.AddHttpClientResiliencePolicies(
+            //    //    policyKey: "GitHub", 
+            //    //    optionsName: "GitHubResilienceOptions", 
+            //    //    serviceProvider);
+
+            //    registry.AddHttpClientTimeoutPolicy<GitHubPoliciesConfiguration>(policyKey: "GitHubTimeout", optionsName: "GitHubTimeoutOptions", serviceProvider);
+            //    registry.AddHttpClientRetryPolicy<GitHubPoliciesConfiguration>(policyKey: "GitHubRetry", optionsName: "GitHubRetryOptions", serviceProvider);
+            //    registry.AddHttpClientCircuitBreakerPolicy<GitHubPoliciesConfiguration>(policyKey: "GitHubCircuitBreaker", optionsName: "GitHubCircuitBreakerOptions", serviceProvider);
+            //    registry.AddHttpClientFallbackPolicy<GitHubPoliciesConfiguration>(policyKey: "GitHubFallback", serviceProvider);
+
+            //    //registry.AddHttpClientTimeoutPolicy(policyKey: "GitHubTimeout", optionsName: "GitHubTimeoutOptions", serviceProvider);
+            //    //registry.AddHttpClientRetryPolicy(policyKey: "GitHubRetry", optionsName: "GitHubRetryOptions", serviceProvider);
+            //    //registry.AddHttpClientCircuitBreakerPolicy(policyKey: "GitHubCircuitBreaker", optionsName: "GitHubCircuitBreakerOptions", serviceProvider);
+            //    //registry.AddHttpClientFallbackPolicy(policyKey: "GitHubFallback", serviceProvider);
+            //});
 
             services
                 .AddHttpClient<GitHubClient>() //.AddPolicyHandlerFromRegistry(policyKey: "GitHubCircuitBreaker")
                 //.AddResiliencePoliciesFromRegistry(policyKey:"GitHub")
-                .AddPolicyHandlerFromRegistry(policyKey: "GitHubFallback")          // fallback response
-                .AddPolicyHandlerFromRegistry(policyKey: "GitHubRetry")             // do retries
-                .AddPolicyHandlerFromRegistry(policyKey: "GitHubCircuitBreaker")    // circuit breaker
-                .AddPolicyHandlerFromRegistry(policyKey: "GitHubTimeout")           // because there is a retry policy first this is a timeout for each call/retry, not a timeout for all retries
+                //.AddPolicyHandlerFromRegistry(policyKey: "GitHubFallback")          // fallback response
+                //.AddPolicyHandlerFromRegistry(policyKey: "GitHubRetry")             // do retries
+                //.AddPolicyHandlerFromRegistry(policyKey: "GitHubCircuitBreaker")    // circuit breaker
+                //.AddPolicyHandlerFromRegistry(policyKey: "GitHubTimeout")           // because there is a retry policy first this is a timeout for each call/retry, not a timeout for all retries
+                //.AddTimeoutPolicy<GitHubPoliciesConfiguration>(
+                //    configureOptions: options =>
+                //    {
+                //        options.TimeoutInSecs = 3;
+                //    })
+                .AddTimeoutPolicy(options => options.TimeoutInSecs = 1)
+                //.AddTimeoutPolicy<GitHubPoliciesConfiguration>(optionsName: "GitHubTimeoutOptions")
                 .AddHttpMessageHandler(() =>
                 {
                     var testMessageHandler = new TestHttpMessageHandler();
@@ -119,13 +136,13 @@ namespace WebApplication1
                 .ConfigureHttpMessageHandlerBuilder(builder =>
                 {
                     var a = builder.AdditionalHandlers;
-                    var c = a[1];
-                    var x = ReflectionExtensions.GetInstanceField(
-                        typeof(PolicyHttpMessageHandler),
-                        c,
-                        "_policy");
-                    var z = x as AsyncRetryPolicy<HttpResponseMessage>;
-                    var b = 2;
+                    //var c = a[1];
+                    //var x = ReflectionExtensions.GetInstanceField(
+                    //    typeof(PolicyHttpMessageHandler),
+                    //    c,
+                    //    "_policy");
+                    //var z = x as AsyncRetryPolicy<HttpResponseMessage>;
+                    //var b = 2;
                 })
                 ;
         }
@@ -162,65 +179,48 @@ namespace WebApplication1
         }
     }
 
-    public class GitHubPoliciesConfiguration : 
-        IRetryPolicyConfiguration, 
-        ITimeoutPolicyConfiguration, 
+    public class GitHubPoliciesConfiguration :
+        ITimeoutPolicyConfiguration,
+        IRetryPolicyConfiguration,
         ICircuitBreakerPolicyConfiguration, 
         IFallbackPolicyConfiguration
     {
-        public Task OnRetryAsync(
-            RetryOptions retryOptions,
-            DelegateResult<HttpResponseMessage> outcome,
-            TimeSpan retryDelay,
-            int retryNumber,
-            Context pollyContext)
-        {
-
-            return Task.CompletedTask;
-        }
-
-        public Task OnTimeoutASync(
-            TimeoutOptions timeoutOptions,
-            Context context,
-            TimeSpan requestTimeout,
-            Task timedOutTask,
-            Exception exception)
-        {
-
-            return Task.CompletedTask;
-        }
-
-        public Task OnBreakAsync(
-            CircuitBreakerOptions circuitBreakerOptions,
-            DelegateResult<HttpResponseMessage> lastOutcome,
-            CircuitState previousState,
-            TimeSpan durationOfBreak,
-            Context context)
+        public Task OnTimeoutAsync(TimeoutEvent timeoutEvent)
         {
             return Task.CompletedTask;
         }
 
-        public Task OnHalfOpenAsync(CircuitBreakerOptions circuitBreakerOptions)
+        public Task OnRetryAsync(RetryEvent retryEvent)
+        {
+            return Task.CompletedTask;
+        }
+        
+        public Task OnBreakAsync(BreakEvent breakEvent)
         {
             return Task.CompletedTask;
         }
 
-        public Task OnResetAsync(CircuitBreakerOptions circuitBreakerOptions, Context context)
+        public Task OnHalfOpenAsync(HalfOpenEvent halfOpenEvent)
         {
             return Task.CompletedTask;
         }
 
-        public Task OnTimeoutFallbackAsync(DelegateResult<HttpResponseMessage> outcome, Context context)
+        public Task OnResetAsync(ResetEvent resetEvent)
+        {
+            return Task.CompletedTask;
+        }
+        
+        public Task OnTimeoutFallbackAsync(TimeoutFallbackEvent timeoutFallbackEvent)
         {
             return Task.CompletedTask;
         }
 
-        public Task OnBrokenCircuitFallbackAsync(DelegateResult<HttpResponseMessage> outcome, Context context)
+        public Task OnBrokenCircuitFallbackAsync(BrokenCircuitFallbackEvent brokenCircuitFallbackEvent)
         {
             return Task.CompletedTask;
         }
 
-        public Task OnTaskCancelledFallbackAsync(DelegateResult<HttpResponseMessage> outcome, Context context)
+        public Task OnTaskCancelledFallbackAsync(TaskCancelledFallbackEvent taskCancelledFallbackEvent)
         {
             return Task.CompletedTask;
         }

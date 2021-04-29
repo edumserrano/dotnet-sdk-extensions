@@ -1,17 +1,20 @@
 ﻿using System;
 using System.Net.Http;
 using System.Threading.Tasks;
+using DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker.Configuration;
 using DotNet.Sdk.Extensions.Polly.Http.Fallback.FallbackHttpResponseMessages;
 using DotNet.Sdk.Extensions.Polly.Policies;
 using Polly;
 using Polly.Extensions.Http;
 using Polly.Timeout;
+using Polly.Wrap;
 
 namespace DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker
 {
     internal static class CircuitBreakerPolicyFactory
     {
-        public static IsPolicy CreateCircuitBreakerPolicy(
+        public static AsyncPolicyWrap<HttpResponseMessage> CreateCircuitBreakerPolicy(
+            string httpClientName,
             CircuitBreakerOptions options,
             ICircuitBreakerPolicyConfiguration policyConfiguration)
         {
@@ -26,21 +29,29 @@ namespace DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker
                     durationOfBreak: TimeSpan.FromSeconds(options.DurationOfBreakInSecs),
                     onBreak: async (lastOutcome, previousState, breakDuration, context) =>
                     {
-                        await policyConfiguration.OnBreakAsync(options, lastOutcome, previousState, breakDuration, context);
+                        var breakEvent = new BreakEvent(
+                            httpClientName,
+                            options,
+                            lastOutcome,
+                            previousState,
+                            breakDuration,
+                            context);
+                        await policyConfiguration.OnBreakAsync(breakEvent);
                     },
                     onReset: async context =>
                     {
-                        await policyConfiguration.OnResetAsync(options, context);
+                        var resetEvent = new ResetEvent(httpClientName, options, context);
+                        await policyConfiguration.OnResetAsync(resetEvent);
                     },
                     onHalfOpen: async () =>
                     {
-                        await policyConfiguration.OnHalfOpenAsync(options);
+                        var halfOpenEvent = new HalfOpenEvent(httpClientName, options);
+                        await policyConfiguration.OnHalfOpenAsync(halfOpenEvent);
                     });
             var circuitBreakerCheckerPolicy = CircuitBreakerCheckerAsyncPolicy<HttpResponseMessage>.Create(
                 circuitBreakerPolicy: circuitBreakerPolicy,
                 factory: (context, cancellationToken) => Task.FromResult<HttpResponseMessage>(new CircuitBrokenHttpResponseMessage()));
-            var finalPolicy = Policy.WrapAsync(circuitBreakerCheckerPolicy, circuitBreakerPolicy);
-            return finalPolicy;
+            return Policy.WrapAsync(circuitBreakerCheckerPolicy, circuitBreakerPolicy);
         }
     }
 }
