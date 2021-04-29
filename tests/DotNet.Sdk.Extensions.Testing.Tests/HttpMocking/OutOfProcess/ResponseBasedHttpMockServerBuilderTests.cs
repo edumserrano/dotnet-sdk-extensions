@@ -14,6 +14,7 @@ using Xunit;
 
 namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
 {
+    [Trait("Category", XUnitCategories.HttpMockingOutOfProcess)]
     public class ResponseBasedHttpMockServerBuilderTests
     {
         [Fact]

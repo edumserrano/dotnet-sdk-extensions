@@ -8,6 +8,7 @@ using Xunit;
 
 namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess
 {
+    [Trait("Category", XUnitCategories.HttpMockingInProcess)]
     public class TimeoutTests : IClassFixture<TimeoutHttpResponseMockingWebApplicationFactory>, IDisposable
     {
         private readonly TimeoutHttpResponseMockingWebApplicationFactory _webApplicationFactory;

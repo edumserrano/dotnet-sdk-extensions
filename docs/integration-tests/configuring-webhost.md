@@ -59,7 +59,7 @@ Also note that the location of where the test appsettings files are can be confi
 
 You can configure the location of where the appsettings files are by using an overload of `IWebHostBuilder.AddTestConfiguration` extension method as follows:
 
-```
+```csharp
 .AddTestConfiguration(options => options.AppSettingsDir = "AppSettings", "appsettings.json", "appsettings.Default.json")
 ```
 
@@ -79,7 +79,7 @@ Also note that by default the appsettings that are loaded are based on the envir
 
 The `IWebHostBuilder.AddTestConfiguration` extension method does not take the environment into consideration when loading test appsettings. Following the example in the [DemoTest](#how-to-use), when doing:
 
-```
+```csharp
 .AddTestConfiguration("appsettings.json", "appsettings.Default.json")
 ```
 

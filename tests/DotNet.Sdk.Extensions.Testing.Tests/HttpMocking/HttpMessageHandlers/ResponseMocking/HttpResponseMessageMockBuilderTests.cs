@@ -7,6 +7,7 @@ using Xunit;
 
 namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers.ResponseMocking
 {
+    [Trait("Category", XUnitCategories.HttpMockingHttpMessageHandlers)]
     public class HttpResponseMessageMockBuilderTests
     {
         /// <summary>
