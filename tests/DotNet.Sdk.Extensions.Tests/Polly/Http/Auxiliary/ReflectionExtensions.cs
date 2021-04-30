@@ -27,7 +27,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary
             return field.GetValue(instance);
         }
 
-        public static object GetInstanceProperty(object instance, string propertyName)
+        public static object GetInstanceProperty(this object instance, string propertyName)
         {
             var type = instance.GetType();
             return GetInstanceProperty(type, instance, propertyName);

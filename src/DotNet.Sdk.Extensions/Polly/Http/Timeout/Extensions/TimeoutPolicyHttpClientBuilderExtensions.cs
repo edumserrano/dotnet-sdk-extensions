@@ -24,17 +24,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Timeout.Extensions
                 optionsName: null,
                 configureOptions: configureOptions);
         }
-
-        public static IHttpClientBuilder AddTimeoutPolicy(
-            this IHttpClientBuilder httpClientBuilder,
-            string optionsName,
-            Action<TimeoutOptions> configureOptions)
-        {
-            return httpClientBuilder.AddTimeoutPolicyCore<DefaultTimeoutPolicyConfiguration>(
-                optionsName: optionsName,
-                configureOptions: configureOptions);
-        }
-
+        
         public static IHttpClientBuilder AddTimeoutPolicy<TPolicyConfiguration>(
             this IHttpClientBuilder httpClientBuilder,
             string optionsName)
@@ -54,18 +44,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Timeout.Extensions
                 optionsName: null,
                 configureOptions: configureOptions);
         }
-
-        public static IHttpClientBuilder AddTimeoutPolicy<TPolicyConfiguration>(
-            this IHttpClientBuilder httpClientBuilder,
-            string optionsName,
-            Action<TimeoutOptions> configureOptions)
-            where TPolicyConfiguration : class, ITimeoutPolicyConfiguration
-        {
-            return httpClientBuilder.AddTimeoutPolicyCore<TPolicyConfiguration>(
-                optionsName: optionsName,
-                configureOptions: configureOptions);
-        }
-
+        
         private static IHttpClientBuilder AddTimeoutPolicyCore<TPolicyConfiguration>(
             this IHttpClientBuilder httpClientBuilder,
             string? optionsName,

@@ -11,8 +11,12 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Polly;
 using DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker.Configuration;
+using DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker.Extensions;
 using DotNet.Sdk.Extensions.Polly.Http.Fallback.Configuration;
+using DotNet.Sdk.Extensions.Polly.Http.Fallback.Extensions;
+using DotNet.Sdk.Extensions.Polly.Http.Resilience.Extensions;
 using DotNet.Sdk.Extensions.Polly.Http.Retry.Configuration;
+using DotNet.Sdk.Extensions.Polly.Http.Retry.Extensions;
 using DotNet.Sdk.Extensions.Polly.Http.Timeout;
 using DotNet.Sdk.Extensions.Polly.Http.Timeout.Configuration;
 using DotNet.Sdk.Extensions.Polly.Http.Timeout.Extensions;
@@ -97,7 +101,7 @@ namespace WebApplication1
             //    //registry.AddHttpClientCircuitBreakerPolicy(policyKey: "GitHubCircuitBreaker", optionsName: "GitHubCircuitBreakerOptions", serviceProvider);
             //    //registry.AddHttpClientFallbackPolicy(policyKey: "GitHubFallback", serviceProvider);
             //});
-
+            
             services
                 .AddHttpClient<GitHubClient>() //.AddPolicyHandlerFromRegistry(policyKey: "GitHubCircuitBreaker")
                 //.AddResiliencePoliciesFromRegistry(policyKey:"GitHub")
@@ -110,7 +114,13 @@ namespace WebApplication1
                 //    {
                 //        options.TimeoutInSecs = 3;
                 //    })
-                .AddTimeoutPolicy(options => options.TimeoutInSecs = 1)
+                
+                //.AddFallbackPolicy()
+                //.AddRetryPolicy(options => { })
+                //.AddCircuitBreakerPolicy(options => { })
+                //.AddTimeoutPolicy(options => options.TimeoutInSecs = 1)
+                //.AddResiliencePolicies(options => { })
+                
                 //.AddTimeoutPolicy<GitHubPoliciesConfiguration>(optionsName: "GitHubTimeoutOptions")
                 .AddHttpMessageHandler(() =>
                 {

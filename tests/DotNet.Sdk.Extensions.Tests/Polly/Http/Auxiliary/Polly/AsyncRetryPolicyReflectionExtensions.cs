@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Polly.Retry;
 
-namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary
+namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary.Polly
 {
-    public static class PollyAsyncRetryPolicyReflectionExtensions
+    public static class AsyncRetryPolicyReflectionExtensions
     {
         public static int GetRetryCount<T>(this AsyncRetryPolicy<T> policy)
         {
@@ -22,6 +22,5 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary
             var scaleFirstTry = sleepDurationsEnumerable.GetInstanceField<TimeSpan>("scaleFirstTry");
             return scaleFirstTry;
         }
-
     }
 }

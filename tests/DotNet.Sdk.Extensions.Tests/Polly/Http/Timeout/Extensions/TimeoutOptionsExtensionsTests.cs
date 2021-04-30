@@ -5,7 +5,7 @@ using Microsoft.Extensions.Options;
 using Shouldly;
 using Xunit;
 
-namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout
+namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
 {
     /// <summary>
     /// Tests for the <see cref="TimeoutOptionsExtensions"/> class
@@ -19,6 +19,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout
         /// where TOptions is of type <see cref="TimeoutOptions"/>.
         ///
         /// It also checks that the <see cref="TimeoutOptions"/> has the expected values.
+        ///
+        /// It also tests the <see cref="TimeoutOptionsExtensions.GetHttpClientTimeoutOptions"/> extension method.
         /// </summary>
         [Fact]
         public void AddHttpClientTimeoutOptions()

@@ -4,9 +4,9 @@ using System.Net.Http;
 using Microsoft.Extensions.Http;
 using Polly;
 
-namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary
+namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary.Polly
 {
-    public static class PollyHttpReflectionExtensions
+    public static class HttpPoliciesReflectionExtensions
     {
         public static IEnumerable<T> GetPolicies<T>(this IList<DelegatingHandler> delegatingHandlers)
         {

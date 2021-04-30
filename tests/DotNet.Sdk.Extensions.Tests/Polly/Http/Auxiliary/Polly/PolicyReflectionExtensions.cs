@@ -5,9 +5,9 @@ using System.Net;
 using System.Net.Http;
 using Polly;
 
-namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary
+namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary.Polly
 {
-    public static class PollyReflectionExtensions
+    public static class PolicyReflectionExtensions
     {
         public static ExceptionPredicates GetExceptionPredicates(this PolicyBase policy)
         {
