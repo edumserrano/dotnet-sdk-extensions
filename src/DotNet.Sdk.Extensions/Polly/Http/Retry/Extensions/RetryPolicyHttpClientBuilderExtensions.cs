@@ -35,54 +35,54 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Retry.Extensions
                 configureOptions: configureOptions);
         }
 
-        public static IHttpClientBuilder AddRetryPolicy<TPolicyConfiguration>(
+        public static IHttpClientBuilder AddRetryPolicy<TPolicyEventHandler>(
             this IHttpClientBuilder httpClientBuilder,
             string optionsName)
-            where TPolicyConfiguration : class, IRetryPolicyConfiguration
+            where TPolicyEventHandler : class, IRetryPolicyConfiguration
         {
-            return httpClientBuilder.AddRetryPolicyCore<TPolicyConfiguration>(
+            return httpClientBuilder.AddRetryPolicyCore<TPolicyEventHandler>(
                 optionsName: optionsName,
                 configureOptions: null);
         }
 
-        public static IHttpClientBuilder AddRetryPolicy<TPolicyConfiguration>(
+        public static IHttpClientBuilder AddRetryPolicy<TPolicyEventHandler>(
             this IHttpClientBuilder httpClientBuilder,
             Action<RetryOptions> configureOptions)
-            where TPolicyConfiguration : class, IRetryPolicyConfiguration
+            where TPolicyEventHandler : class, IRetryPolicyConfiguration
         {
-            return httpClientBuilder.AddRetryPolicyCore<TPolicyConfiguration>(
+            return httpClientBuilder.AddRetryPolicyCore<TPolicyEventHandler>(
                 optionsName: null,
                 configureOptions: configureOptions);
         }
 
-        public static IHttpClientBuilder AddRetryPolicy<TPolicyConfiguration>(
+        public static IHttpClientBuilder AddRetryPolicy<TPolicyEventHandler>(
             this IHttpClientBuilder httpClientBuilder,
             string optionsName,
             Action<RetryOptions> configureOptions)
-            where TPolicyConfiguration : class, IRetryPolicyConfiguration
+            where TPolicyEventHandler : class, IRetryPolicyConfiguration
         {
-            return httpClientBuilder.AddRetryPolicyCore<TPolicyConfiguration>(
+            return httpClientBuilder.AddRetryPolicyCore<TPolicyEventHandler>(
                 optionsName: optionsName,
                 configureOptions: configureOptions);
         }
 
-        private static IHttpClientBuilder AddRetryPolicyCore<TPolicyConfiguration>(
+        private static IHttpClientBuilder AddRetryPolicyCore<TPolicyEventHandler>(
             this IHttpClientBuilder httpClientBuilder,
             string? optionsName,
             Action<RetryOptions>? configureOptions)
-            where TPolicyConfiguration : class, IRetryPolicyConfiguration
+            where TPolicyEventHandler : class, IRetryPolicyConfiguration
         {
             var httpClientName = httpClientBuilder.Name;
             optionsName ??= $"{httpClientName}_retry_{Guid.NewGuid()}";
             configureOptions ??= _ => { };
             httpClientBuilder.Services
-                .AddSingleton<TPolicyConfiguration>()
+                .AddSingleton<TPolicyEventHandler>()
                 .AddHttpClientRetryOptions(optionsName)
                 .Configure(configureOptions);
 
             return httpClientBuilder.AddHttpMessageHandler(provider =>
             {
-                var policyConfiguration = provider.GetRequiredService<TPolicyConfiguration>();
+                var policyConfiguration = provider.GetRequiredService<TPolicyEventHandler>();
                 var retryOptions = provider.GetHttpClientRetryOptions(optionsName);
                 var retryPolicy = RetryPolicyFactory.CreateRetryPolicy(httpClientName, retryOptions, policyConfiguration);
                 return new PolicyHttpMessageHandler(retryPolicy);

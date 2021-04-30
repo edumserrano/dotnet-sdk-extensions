@@ -13,7 +13,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Retry
     internal static class RetryPolicyFactory
     {
         public static AsyncRetryPolicy<HttpResponseMessage> CreateRetryPolicy(
-            string httpClietName,
+            string httpClientName,
             RetryOptions options,
             IRetryPolicyConfiguration policyConfiguration)
         {
@@ -28,7 +28,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Retry
                     onRetryAsync: (outcome, retryDelay, retryNumber, pollyContext) =>
                     {
                         var retryEvent = new RetryEvent(
-                            httpClietName,
+                            httpClientName,
                             options,
                             outcome,
                             retryDelay,

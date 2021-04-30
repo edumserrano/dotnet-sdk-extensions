@@ -35,54 +35,54 @@ namespace DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker.Extensions
                 configureOptions: configureOptions);
         }
 
-        public static IHttpClientBuilder AddCircuitBreakerPolicy<TPolicyConfiguration>(
+        public static IHttpClientBuilder AddCircuitBreakerPolicy<TPolicyEventHandler>(
             this IHttpClientBuilder httpClientBuilder,
             string optionsName)
-            where TPolicyConfiguration : class, ICircuitBreakerPolicyConfiguration
+            where TPolicyEventHandler : class, ICircuitBreakerPolicyConfiguration
         {
-            return httpClientBuilder.AddCircuitBreakerPolicyCore<TPolicyConfiguration>(
+            return httpClientBuilder.AddCircuitBreakerPolicyCore<TPolicyEventHandler>(
                 optionsName: optionsName,
                 configureOptions: null);
         }
 
-        public static IHttpClientBuilder AddCircuitBreakerPolicy<TPolicyConfiguration>(
+        public static IHttpClientBuilder AddCircuitBreakerPolicy<TPolicyEventHandler>(
             this IHttpClientBuilder httpClientBuilder,
             Action<CircuitBreakerOptions> configureOptions)
-            where TPolicyConfiguration : class, ICircuitBreakerPolicyConfiguration
+            where TPolicyEventHandler : class, ICircuitBreakerPolicyConfiguration
         {
-            return httpClientBuilder.AddCircuitBreakerPolicyCore<TPolicyConfiguration>(
+            return httpClientBuilder.AddCircuitBreakerPolicyCore<TPolicyEventHandler>(
                 optionsName: null,
                 configureOptions: configureOptions);
         }
 
-        public static IHttpClientBuilder AddCircuitBreakerPolicy<TPolicyConfiguration>(
+        public static IHttpClientBuilder AddCircuitBreakerPolicy<TPolicyEventHandler>(
             this IHttpClientBuilder httpClientBuilder,
             string optionsName,
             Action<CircuitBreakerOptions> configureOptions)
-            where TPolicyConfiguration : class, ICircuitBreakerPolicyConfiguration
+            where TPolicyEventHandler : class, ICircuitBreakerPolicyConfiguration
         {
-            return httpClientBuilder.AddCircuitBreakerPolicyCore<TPolicyConfiguration>(
+            return httpClientBuilder.AddCircuitBreakerPolicyCore<TPolicyEventHandler>(
                 optionsName: optionsName,
                 configureOptions: configureOptions);
         }
 
-        private static IHttpClientBuilder AddCircuitBreakerPolicyCore<TPolicyConfiguration>(
+        private static IHttpClientBuilder AddCircuitBreakerPolicyCore<TPolicyEventHandler>(
             this IHttpClientBuilder httpClientBuilder,
             string? optionsName,
             Action<CircuitBreakerOptions>? configureOptions )
-            where TPolicyConfiguration : class, ICircuitBreakerPolicyConfiguration
+            where TPolicyEventHandler : class, ICircuitBreakerPolicyConfiguration
         {
             var httpClientName = httpClientBuilder.Name;
             optionsName ??= $"{httpClientName}_circuit_breaker_{Guid.NewGuid()}";
             configureOptions ??= _ => { };
             httpClientBuilder.Services
-                .AddSingleton<TPolicyConfiguration>()
+                .AddSingleton<TPolicyEventHandler>()
                 .AddHttpClientCircuitBreakerOptions(optionsName)
                 .Configure(configureOptions);
 
             return httpClientBuilder.AddHttpMessageHandler(provider =>
             {
-                var policyConfiguration = provider.GetRequiredService<TPolicyConfiguration>();
+                var policyConfiguration = provider.GetRequiredService<TPolicyEventHandler>();
                 var retryOptions = provider.GetHttpClientCircuitBreakerOptions(optionsName);
                 var circuitBreakerPolicy = CircuitBreakerPolicyFactory.CreateCircuitBreakerPolicy(httpClientName, retryOptions, policyConfiguration);
                 return new PolicyHttpMessageHandler(circuitBreakerPolicy);

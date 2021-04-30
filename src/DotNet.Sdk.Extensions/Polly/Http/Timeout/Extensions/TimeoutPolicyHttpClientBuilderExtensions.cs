@@ -1,5 +1,5 @@
 ﻿using System;
-using DotNet.Sdk.Extensions.Polly.Http.Timeout.Configuration;
+using DotNet.Sdk.Extensions.Polly.Http.Timeout.Events;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Http;
 
@@ -11,7 +11,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Timeout.Extensions
             this IHttpClientBuilder httpClientBuilder,
             string optionsName)
         {
-            return httpClientBuilder.AddTimeoutPolicyCore<DefaultTimeoutPolicyConfiguration>(
+            return httpClientBuilder.AddTimeoutPolicyCore<DefaultTimeoutPolicyEventHandler>(
                 optionsName: optionsName,
                 configureOptions: null);
         }
@@ -20,48 +20,49 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Timeout.Extensions
             this IHttpClientBuilder httpClientBuilder,
             Action<TimeoutOptions> configureOptions)
         {
-            return httpClientBuilder.AddTimeoutPolicyCore<DefaultTimeoutPolicyConfiguration>(
+            return httpClientBuilder.AddTimeoutPolicyCore<DefaultTimeoutPolicyEventHandler>(
                 optionsName: null,
                 configureOptions: configureOptions);
         }
         
-        public static IHttpClientBuilder AddTimeoutPolicy<TPolicyConfiguration>(
+        public static IHttpClientBuilder AddTimeoutPolicy<TPolicyEventHandler>(
             this IHttpClientBuilder httpClientBuilder,
             string optionsName)
-            where TPolicyConfiguration : class, ITimeoutPolicyConfiguration
+            where TPolicyEventHandler : class, ITimeoutPolicyEventHandler
         {
-            return httpClientBuilder.AddTimeoutPolicyCore<TPolicyConfiguration>(
+            return httpClientBuilder.AddTimeoutPolicyCore<TPolicyEventHandler>(
                 optionsName: optionsName,
                 configureOptions: null);
         }
 
-        public static IHttpClientBuilder AddTimeoutPolicy<TPolicyConfiguration>(
+        public static IHttpClientBuilder AddTimeoutPolicy<TPolicyEventHandler>(
             this IHttpClientBuilder httpClientBuilder,
             Action<TimeoutOptions> configureOptions)
-            where TPolicyConfiguration : class, ITimeoutPolicyConfiguration
+            where TPolicyEventHandler : class, ITimeoutPolicyEventHandler
         {
-            return httpClientBuilder.AddTimeoutPolicyCore<TPolicyConfiguration>(
+            return httpClientBuilder.AddTimeoutPolicyCore<TPolicyEventHandler>(
                 optionsName: null,
                 configureOptions: configureOptions);
         }
         
-        private static IHttpClientBuilder AddTimeoutPolicyCore<TPolicyConfiguration>(
+        private static IHttpClientBuilder AddTimeoutPolicyCore<TPolicyEventHandler>(
             this IHttpClientBuilder httpClientBuilder,
             string? optionsName,
             Action<TimeoutOptions>? configureOptions)
-            where TPolicyConfiguration : class, ITimeoutPolicyConfiguration
+            where TPolicyEventHandler : class, ITimeoutPolicyEventHandler
         {
             var httpClientName = httpClientBuilder.Name;
             optionsName ??= $"{httpClientName}_timeout_{Guid.NewGuid()}";
             configureOptions ??= _ => { };
             httpClientBuilder.Services
-                .AddSingleton<TPolicyConfiguration>()
+                .AddSingleton<TPolicyEventHandler>()
                 .AddHttpClientTimeoutOptions(optionsName)
+                .ValidateDataAnnotations()
                 .Configure(configureOptions);
 
             return httpClientBuilder.AddHttpMessageHandler(provider =>
             {
-                var configuration = provider.GetRequiredService<TPolicyConfiguration>();
+                var configuration = provider.GetRequiredService<TPolicyEventHandler>();
                 var timeoutOptions = provider.GetHttpClientTimeoutOptions(optionsName);
                 var timeoutPolicy = TimeoutPolicyFactory.CreateTimeoutPolicy(httpClientName, timeoutOptions, configuration);
                 return new PolicyHttpMessageHandler(timeoutPolicy);

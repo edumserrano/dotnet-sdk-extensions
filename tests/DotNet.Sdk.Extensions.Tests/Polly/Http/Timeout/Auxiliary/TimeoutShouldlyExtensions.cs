@@ -37,7 +37,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Auxiliary
             var timeoutPolicyConfiguration = timeoutPolicy.GetPolicyConfiguration();
             timeoutPolicyConfiguration.HttpClientName.ShouldBe(httpClientName);
             timeoutPolicyConfiguration.TimeoutOptions.TimeoutInSecs.ShouldBe(timeoutInSecs);
-            timeoutPolicyConfiguration.PolicyConfiguration
+            timeoutPolicyConfiguration.PolicyEventReceiver
                 .GetType()
                 .ShouldBe(policyConfigurationType);
         }

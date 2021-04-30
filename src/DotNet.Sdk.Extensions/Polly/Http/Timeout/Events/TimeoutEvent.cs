@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Polly;
 
-namespace DotNet.Sdk.Extensions.Polly.Http.Timeout.Configuration
+namespace DotNet.Sdk.Extensions.Polly.Http.Timeout.Events
 {
     public class TimeoutEvent
     {

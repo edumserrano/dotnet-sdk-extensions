@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Net.Http;
-using DotNet.Sdk.Extensions.Polly.Http.Timeout.Configuration;
+using DotNet.Sdk.Extensions.Polly.Http.Timeout.Events;
 using Polly;
 using Polly.Timeout;
 
@@ -11,7 +11,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Timeout
         public static AsyncTimeoutPolicy<HttpResponseMessage> CreateTimeoutPolicy(
             string httpClientName,
             TimeoutOptions options,
-            ITimeoutPolicyConfiguration policyConfiguration)
+            ITimeoutPolicyEventHandler policyEventHandler)
         {
             return Policy.TimeoutAsync<HttpResponseMessage>(
                 timeout: TimeSpan.FromSeconds(options.TimeoutInSecs),
@@ -24,7 +24,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Timeout
                         requestTimeout,
                         timedOutTask,
                         exception);
-                    return policyConfiguration.OnTimeoutAsync(timeoutEvent);
+                    return policyEventHandler.OnTimeoutAsync(timeoutEvent);
                 });
         }
     }
