@@ -31,7 +31,6 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
     [Trait("Category", XUnitCategories.Polly)]
     public class AddRetryPolicyEventHandlerTests
     {
-
         /// <summary>
         /// Tests that the overloads of RetryPolicyHttpClientBuilderExtensions.AddRetryPolicy that
         /// do not take in a <see cref="IRetryPolicyEventHandler"/> type should have their events
