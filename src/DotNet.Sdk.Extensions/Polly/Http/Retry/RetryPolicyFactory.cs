@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net.Http;
 using System.Threading.Tasks;
-using DotNet.Sdk.Extensions.Polly.Http.Retry.Configuration;
+using DotNet.Sdk.Extensions.Polly.Http.Retry.Events;
 using Polly;
 using Polly.Contrib.WaitAndRetry;
 using Polly.Extensions.Http;
@@ -15,7 +15,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Retry
         public static AsyncRetryPolicy<HttpResponseMessage> CreateRetryPolicy(
             string httpClientName,
             RetryOptions options,
-            IRetryPolicyConfiguration policyConfiguration)
+            IRetryPolicyEventHandler policyEventHandler)
         {
             var medianFirstRetryDelay = TimeSpan.FromSeconds(options.MedianFirstRetryDelayInSecs);
             var retryDelays = Backoff.DecorrelatedJitterBackoffV2(medianFirstRetryDelay, options.RetryCount);
@@ -34,7 +34,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Retry
                             retryDelay,
                             retryNumber,
                             pollyContext);
-                        return policyConfiguration.OnRetryAsync(retryEvent);
+                        return policyEventHandler.OnRetryAsync(retryEvent);
                     });
         }
     }

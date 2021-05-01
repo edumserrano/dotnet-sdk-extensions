@@ -4,7 +4,7 @@ using DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker.Configuration;
 using DotNet.Sdk.Extensions.Polly.Http.Fallback.Extensions;
 using DotNet.Sdk.Extensions.Polly.Http.Resilience.Configuration;
 using DotNet.Sdk.Extensions.Polly.Http.Retry;
-using DotNet.Sdk.Extensions.Polly.Http.Retry.Configuration;
+using DotNet.Sdk.Extensions.Polly.Http.Retry.Events;
 using DotNet.Sdk.Extensions.Polly.Http.Timeout;
 using DotNet.Sdk.Extensions.Polly.Http.Timeout.Events;
 using Microsoft.Extensions.DependencyInjection;
@@ -97,7 +97,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Resilience.Extensions
         private static IHttpClientBuilder AddResilienceRetryPolicy<TPolicyEventHandler>(
             this IHttpClientBuilder httpClientBuilder,
             string optionsName)
-            where TPolicyEventHandler : class, IRetryPolicyConfiguration
+            where TPolicyEventHandler : class, IRetryPolicyEventHandler
         {
             return httpClientBuilder.AddHttpMessageHandler(provider =>
             {

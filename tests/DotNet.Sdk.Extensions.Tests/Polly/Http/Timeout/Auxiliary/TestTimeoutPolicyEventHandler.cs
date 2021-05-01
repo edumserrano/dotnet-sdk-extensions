@@ -4,7 +4,7 @@ using DotNet.Sdk.Extensions.Polly.Http.Timeout.Events;
 
 namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Auxiliary
 {
-    public class TestTimeoutPolicyEventReceiver : ITimeoutPolicyEventHandler
+    public class TestTimeoutPolicyEventHandler : ITimeoutPolicyEventHandler
     {
         public static IList<TimeoutEvent> OnTimeoutAsyncCalls { get; } = new List<TimeoutEvent>();
 

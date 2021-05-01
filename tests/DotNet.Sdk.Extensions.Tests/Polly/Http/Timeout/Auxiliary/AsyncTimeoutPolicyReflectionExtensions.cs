@@ -12,7 +12,6 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Auxiliary
         public static TimeoutStrategy GetTimeoutStrategy<T>(this AsyncTimeoutPolicy<T> policy)
         {
             return policy.GetInstanceField<TimeoutStrategy>("_timeoutStrategy");
-
         }
 
         public static TimeSpan GetTimeout<T>(this AsyncTimeoutPolicy<T> policy)
@@ -23,28 +22,28 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Auxiliary
                 .GetInstanceField<TimeSpan>("timeout");
         }
 
-        public static TimeoutPolicyConfiguration GetPolicyConfiguration<T>(this AsyncTimeoutPolicy<T> policy)
+        public static OnTimeoutTarget GetOnTimeoutTarget<T>(this AsyncTimeoutPolicy<T> policy)
         {
-            return new TimeoutPolicyConfiguration(policy);
+            return new OnTimeoutTarget(policy);
         }
         
-        public class TimeoutPolicyConfiguration
+        public class OnTimeoutTarget
         {
-            public TimeoutPolicyConfiguration(IsPolicy policy)
+            public OnTimeoutTarget(IsPolicy policy)
             {
                 var onTimeoutAsync = policy
                     .GetInstanceField("_onTimeoutAsync")
                     .GetInstanceProperty("Target");
                 HttpClientName = onTimeoutAsync.GetInstanceField<string>("httpClientName");
                 TimeoutOptions = onTimeoutAsync.GetInstanceField<TimeoutOptions>("options");
-                PolicyEventReceiver = onTimeoutAsync.GetInstanceField<ITimeoutPolicyEventHandler>("policyEventHandler");
+                PolicyEventHandler = onTimeoutAsync.GetInstanceField<ITimeoutPolicyEventHandler>("policyEventHandler");
             }
 
             public string HttpClientName { get; }
 
             public TimeoutOptions TimeoutOptions { get; }
 
-            public ITimeoutPolicyEventHandler PolicyEventReceiver { get; }
+            public ITimeoutPolicyEventHandler PolicyEventHandler { get; }
         }
     }
 }

@@ -2,7 +2,7 @@
 using System.Net.Http;
 using Polly;
 
-namespace DotNet.Sdk.Extensions.Polly.Http.Retry.Configuration
+namespace DotNet.Sdk.Extensions.Polly.Http.Retry.Events
 {
     public class RetryEvent
     {

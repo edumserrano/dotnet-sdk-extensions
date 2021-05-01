@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Polly.Http.Resilience.Extensions;
 using DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary;
 using DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary.Polly;
+using DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Auxiliary;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Http;
 using Polly.Retry;

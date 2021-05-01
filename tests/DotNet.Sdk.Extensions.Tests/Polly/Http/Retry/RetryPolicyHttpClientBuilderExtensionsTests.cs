@@ -2,23 +2,27 @@
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using DotNet.Sdk.Extensions.Polly.Http.Timeout;
+using DotNet.Sdk.Extensions.Polly.Http.Retry;
+using DotNet.Sdk.Extensions.Polly.Http.Retry.Events;
+using DotNet.Sdk.Extensions.Polly.Http.Retry.Extensions;
 using DotNet.Sdk.Extensions.Polly.Http.Timeout.Events;
 using DotNet.Sdk.Extensions.Polly.Http.Timeout.Extensions;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers;
 using DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary;
 using DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary.Polly;
+using DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Auxiliary;
 using DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Auxiliary;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Polly.Retry;
 using Polly.Timeout;
 using Shouldly;
 using Xunit;
 
-namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
+namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry
 {
     /// <summary>
-    /// Tests for the <see cref="TimeoutPolicyHttpClientBuilderExtensions"/> class.
+    /// Tests for the <see cref="RetryPolicyHttpClientBuilderExtensions"/> class.
     ///
     /// Many tests here use reflection to check that the policy is configured as expected.
     /// Although I'd prefer to do it without using reflection I couldn't find an alternative.
@@ -29,52 +33,55 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
     /// Because of the reflection usage these tests can break when updating the Polly packages.
     /// </summary>
     [Trait("Category", XUnitCategories.Polly)]
-    public class TimeoutPolicyHttpClientBuilderExtensionsTests
+    public class RetryPolicyHttpClientBuilderExtensionsTests
     {
         /// <summary>
-        /// Tests that the <see cref="TimeoutPolicyHttpClientBuilderExtensions.AddTimeoutPolicy(IHttpClientBuilder,Action{TimeoutOptions})"/>
+        /// Tests that the <see cref="RetryPolicyHttpClientBuilderExtensions.AddRetryPolicy(IHttpClientBuilder,Action{RetryOptions})"/>
         /// overload method adds a <see cref="DelegatingHandler"/> with a timeout policy to the <see cref="HttpClient"/>.
         ///
-        /// This overload accepts only an action to configure the value of the <see cref="TimeoutOptions"/>.
+        /// This overload accepts only an action to configure the value of the <see cref="RetryOptions"/>.
         /// </summary>
         [Fact]
-        public void AddTimeoutPolicy1()
+        public void AddRetryPolicy1()
         {
-            AsyncTimeoutPolicy<HttpResponseMessage>? timeoutPolicy = null;
+            AsyncRetryPolicy<HttpResponseMessage>? retryPolicy = null;
             var httpClientName = "GitHub";
-            var timeoutInSecs = 1;
+            var retryCount = 2;
+            var medianFirstRetryDelayInSecs = 1;
             var services = new ServiceCollection();
             services
                 .AddHttpClient(httpClientName)
-                .AddTimeoutPolicy(options =>
+                .AddRetryPolicy(options =>
                 {
-                    options.TimeoutInSecs = timeoutInSecs;
+                    options.RetryCount = retryCount;
+                    options.MedianFirstRetryDelayInSecs = medianFirstRetryDelayInSecs;
                 })
                 .ConfigureHttpMessageHandlerBuilder(httpMessageHandlerBuilder =>
                 {
-                    timeoutPolicy = httpMessageHandlerBuilder.AdditionalHandlers
-                        .GetPolicies<AsyncTimeoutPolicy<HttpResponseMessage>>()
+                    retryPolicy = httpMessageHandlerBuilder.AdditionalHandlers
+                        .GetPolicies<AsyncRetryPolicy<HttpResponseMessage>>()
                         .FirstOrDefault();
                 });
 
             var serviceProvider = services.BuildServiceProvider();
             serviceProvider.InstantiateNamedHttpClient(httpClientName);
 
-            timeoutPolicy.ShouldNotBeNull();
-            timeoutPolicy.ShouldBeConfiguredAsExpected(timeoutInSecs);
-            timeoutPolicy.ShouldTriggerPolicyEventHandler(
+            retryPolicy.ShouldNotBeNull();
+            retryPolicy.ShouldBeConfiguredAsExpected(retryCount, medianFirstRetryDelayInSecs);
+            retryPolicy.ShouldTriggerPolicyEventHandler(
                 httpClientName: httpClientName,
-                timeoutInSecs: timeoutInSecs,
-                policyConfigurationType: typeof(DefaultTimeoutPolicyEventHandler));
+                retryCount: retryCount,
+                medianFirstRetryDelayInSecs: medianFirstRetryDelayInSecs,
+                policyConfigurationType: typeof(DefaultRetryPolicyEventHandler));
         }
 
         /// <summary>
-        /// Tests that the <see cref="TimeoutPolicyHttpClientBuilderExtensions.AddTimeoutPolicy(IHttpClientBuilder,string)"/>
+        /// Tests that the <see cref="RetryPolicyHttpClientBuilderExtensions.AddTimeoutPolicy(IHttpClientBuilder,string)"/>
         /// overload method adds a <see cref="DelegatingHandler"/> with a timeout policy to the <see cref="HttpClient"/>.
         /// 
-        /// This overload accepts only the name of the option to use for the value of the <see cref="TimeoutOptions"/>.
+        /// This overload accepts only the name of the option to use for the value of the <see cref="RetryOptions"/>.
         /// The options must be added and configured on the <see cref="ServiceCollection"/>. This is done via the
-        /// <see cref="TimeoutOptionsExtensions.AddHttpClientTimeoutOptions"/> extension method.
+        /// <see cref="RetryOptionsExtensions.AddHttpClientRetryOptions"/> extension method.
         /// </summary>
         [Fact]
         public void AddTimeoutPolicy2()
@@ -85,8 +92,12 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
             var optionsName = "GitHubOptions";
             var services = new ServiceCollection();
             services
-                .AddHttpClientTimeoutOptions(optionsName)
-                .Configure(options => options.TimeoutInSecs = timeoutInSecs);
+                .AddHttpClientRetryOptions(optionsName)
+                .Configure(options =>
+                {
+                    options.RetryCount = 2;
+                    options.MedianFirstRetryDelayInSecs = 1;
+                });
             services
                 .AddHttpClient(httpClientName)
                 .AddTimeoutPolicy(optionsName)
@@ -108,10 +119,10 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
         }
 
         /// <summary>
-        /// Tests that the <see cref="TimeoutPolicyHttpClientBuilderExtensions.AddTimeoutPolicy{TPolicyEventHandler}(IHttpClientBuilder,Action{TimeoutOptions})"/>
+        /// Tests that the <see cref="RetryPolicyHttpClientBuilderExtensions.AddTimeoutPolicy{TPolicyEventHandler}(IHttpClientBuilder,Action{RetryOptions})"/>
         /// overload method adds a <see cref="DelegatingHandler"/> with a timeout policy to the <see cref="HttpClient"/>.
         /// 
-        /// This overload accepts the name of the option to use for the value of the <see cref="TimeoutOptions"/>
+        /// This overload accepts the name of the option to use for the value of the <see cref="RetryOptions"/>
         /// and a <see cref="ITimeoutPolicyEventHandler"/> type to handle the timeout policy events.
         /// </summary>
         [Fact]
@@ -146,12 +157,12 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
         }
 
         /// <summary>
-        /// Tests that the <see cref="TimeoutPolicyHttpClientBuilderExtensions.AddTimeoutPolicy{TPolicyEventHandler}(IHttpClientBuilder,string)"/>
+        /// Tests that the <see cref="RetryPolicyHttpClientBuilderExtensions.AddTimeoutPolicy{TPolicyEventHandler}(IHttpClientBuilder,string)"/>
         /// overload method adds a <see cref="DelegatingHandler"/> with a timeout policy to the <see cref="HttpClient"/>.
         ///
-        /// This overload accepts the name of the option to use for the value of the <see cref="TimeoutOptions"/>.
+        /// This overload accepts the name of the option to use for the value of the <see cref="RetryOptions"/>.
         /// The options must be added and configured on the <see cref="ServiceCollection"/>. This is done via the
-        /// <see cref="TimeoutOptionsExtensions.AddHttpClientTimeoutOptions"/> extension method.
+        /// <see cref="RetryOptionsExtensions.AddHttpClientRetryOptions"/> extension method.
         ///
         /// This overload also accepts an <see cref="ITimeoutPolicyEventHandler"/> type to handle the timeout policy events.
         /// </summary>
@@ -165,8 +176,12 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
 
             var services = new ServiceCollection();
             services
-                .AddHttpClientTimeoutOptions(optionsName)
-                .Configure(options => options.TimeoutInSecs = timeoutInSecs);
+                .AddHttpClientRetryOptions(optionsName)
+                .Configure(options =>
+                {
+                    options.RetryCount = 2;
+                    options.MedianFirstRetryDelayInSecs = 1;
+                });
             services
                 .AddHttpClient(httpClientName)
                 .AddTimeoutPolicy<TestTimeoutPolicyEventHandler>(optionsName)
@@ -187,9 +202,9 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
                 timeoutInSecs: timeoutInSecs,
                 policyConfigurationType: typeof(TestTimeoutPolicyEventHandler));
         }
-        
+
         /// <summary>
-        /// Tests that the overloads of TimeoutPolicyHttpClientBuilderExtensions.AddTimeoutPolicy that
+        /// Tests that the overloads of RetryPolicyHttpClientBuilderExtensions.AddTimeoutPolicy that
         /// do not take in a <see cref="ITimeoutPolicyEventHandler"/> type should have their events
         /// handled by the default handler type <see cref="DefaultTimeoutPolicyEventHandler"/>.
         ///
@@ -232,7 +247,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
         }
 
         /// <summary>
-        /// Tests that the overloads of TimeoutPolicyHttpClientBuilderExtensions.AddTimeoutPolicy that
+        /// Tests that the overloads of RetryPolicyHttpClientBuilderExtensions.AddTimeoutPolicy that
         /// take in a <see cref="ITimeoutPolicyEventHandler"/> type should have their events handled by that type.
         ///
         /// This test does not guarantee that there isn't any issue in the triggering of the 
@@ -270,7 +285,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
         }
 
         /// <summary>
-        /// Tests that the overloads of TimeoutPolicyHttpClientBuilderExtensions.AddTimeoutPolicy that
+        /// Tests that the overloads of RetryPolicyHttpClientBuilderExtensions.AddTimeoutPolicy that
         /// take in a <see cref="ITimeoutPolicyEventHandler"/> type should have their events handled by that type.
         ///
         /// This test triggers the timeout policy to make sure the <see cref="TimeoutEvent"/> is triggered
@@ -306,12 +321,12 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
             TestTimeoutPolicyEventHandler.OnTimeoutAsyncCalls.Count.ShouldBe(1);
             var timeoutEvent = TestTimeoutPolicyEventHandler.OnTimeoutAsyncCalls.First();
             timeoutEvent.HttpClientName.ShouldBe(httpClientName);
-            timeoutEvent.TimeoutOptions.TimeoutInSecs.ShouldBe(timeoutInSecs);
+            //timeoutEvent.RetryOptions.TimeoutInSecs.ShouldBe(timeoutInSecs);
         }
 
         /// <summary>
-        /// Tests that the TimeoutPolicyHttpClientBuilderExtensions.AddTimeoutPolicy methods
-        /// validate the <see cref="TimeoutOptions"/> with the built in data annotations.
+        /// Tests that the RetryPolicyHttpClientBuilderExtensions.AddTimeoutPolicy methods
+        /// validate the <see cref="RetryOptions"/> with the built in data annotations.
         /// </summary>
         [Fact]
         public void AddTimeoutPolicyOptionsValidation1()
@@ -335,10 +350,10 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
 
         /// <summary>
         /// Tests that you can add any configuration/validation you want to the <see cref="OptionsBuilder{T}"/>
-        /// after using <see cref="TimeoutOptionsExtensions.AddHttpClientTimeoutOptions"/> and those option configurations
+        /// after using <see cref="RetryOptionsExtensions.AddHttpClientRetryOptions"/> and those option configurations
         /// will be honored.
         ///
-        /// In this test we configure the <see cref="TimeoutOptions.TimeoutInSecs"/> to 1 and force a validation
+        /// In this test we configure the <see cref="RetryOptions.TimeoutInSecs"/> to 1 and force a validation
         /// that this value must be > 3.
         /// Although the default data annotation validations only enforces that the value must be positive, with the
         /// extra validation the options validation will fail.
@@ -349,13 +364,13 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
             var httpClientName = "GitHub";
             var optionsName = "GitHubOptions";
             var services = new ServiceCollection();
-            services
-                .AddHttpClientTimeoutOptions(optionsName)
-                .Configure(options => options.TimeoutInSecs = 1)
-                .Validate(options =>
-                {
-                    return options.TimeoutInSecs > 3;
-                });
+            //services
+            //    .AddHttpClientRetryOptions(optionsName)
+            //    .Configure(options => options.TimeoutInSecs = 1)
+            //    .Validate(options =>
+            //    {
+            //        return options.TimeoutInSecs > 3;
+            //    });
             services
                 .AddHttpClient(httpClientName)
                 .AddTimeoutPolicy(optionsName);
@@ -370,10 +385,10 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
 
         /// <summary>
         /// Tests that you can add any configuration/validation you want to the <see cref="OptionsBuilder{T}"/>
-        /// after using <see cref="TimeoutOptionsExtensions.AddHttpClientTimeoutOptions"/> and those option configurations
+        /// after using <see cref="RetryOptionsExtensions.AddHttpClientRetryOptions"/> and those option configurations
         /// will be honored.
         ///
-        /// In this test we configure the <see cref="TimeoutOptions.TimeoutInSecs"/> to -1 and force a validation
+        /// In this test we configure the <see cref="RetryOptions.TimeoutInSecs"/> to -1 and force a validation
         /// that this value must be > 3.
         /// With this setup both the default data annotation validation and the custom one will be triggered.
         /// </summary>
@@ -384,12 +399,13 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
             var optionsName = "GitHubOptions";
             var services = new ServiceCollection();
             services
-                .AddHttpClientTimeoutOptions(optionsName)
-                .Configure(options => options.TimeoutInSecs = -1)
-                .Validate(options =>
-                {
-                    return options.TimeoutInSecs > 3;
-                });
+                .AddHttpClientRetryOptions(optionsName)
+                //.Configure(options => options.TimeoutInSecs = -1)
+                //.Validate(options =>
+                //{
+                //    return options.TimeoutInSecs > 3;
+                //})
+                ;
             services
                 .AddHttpClient(httpClientName)
                 .AddTimeoutPolicy(optionsName);
@@ -404,7 +420,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
 
         /// <summary>
         /// This tests that the policies added to the <see cref="HttpClient"/> by the
-        /// TimeoutPolicyHttpClientBuilderExtensions.AddTimeoutPolicy methods are unique.
+        /// RetryPolicyHttpClientBuilderExtensions.AddTimeoutPolicy methods are unique.
         ///
         /// Policies should NOT be the same between HttpClients or else when one HttpClient triggers
         /// the policy it would trigger for all.

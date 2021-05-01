@@ -1,5 +1,5 @@
 ﻿using System;
-using DotNet.Sdk.Extensions.Polly.Http.Retry.Configuration;
+using DotNet.Sdk.Extensions.Polly.Http.Retry.Events;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Http;
 
@@ -11,7 +11,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Retry.Extensions
             this IHttpClientBuilder httpClientBuilder,
             string optionsName)
         {
-            return httpClientBuilder.AddRetryPolicyCore<DefaultRetryPolicyConfiguration>(
+            return httpClientBuilder.AddRetryPolicyCore<DefaultRetryPolicyEventHandler>(
                 optionsName: optionsName,
                 configureOptions: null);
         }
@@ -20,25 +20,15 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Retry.Extensions
             this IHttpClientBuilder httpClientBuilder,
             Action<RetryOptions> configureOptions)
         {
-            return httpClientBuilder.AddRetryPolicyCore<DefaultRetryPolicyConfiguration>(
+            return httpClientBuilder.AddRetryPolicyCore<DefaultRetryPolicyEventHandler>(
                 optionsName: null,
                 configureOptions: configureOptions);
         }
-
-        public static IHttpClientBuilder AddRetryPolicy(
-            this IHttpClientBuilder httpClientBuilder,
-            string optionsName,
-            Action<RetryOptions> configureOptions)
-        {
-            return httpClientBuilder.AddRetryPolicyCore<DefaultRetryPolicyConfiguration>(
-                optionsName: optionsName,
-                configureOptions: configureOptions);
-        }
-
+        
         public static IHttpClientBuilder AddRetryPolicy<TPolicyEventHandler>(
             this IHttpClientBuilder httpClientBuilder,
             string optionsName)
-            where TPolicyEventHandler : class, IRetryPolicyConfiguration
+            where TPolicyEventHandler : class, IRetryPolicyEventHandler
         {
             return httpClientBuilder.AddRetryPolicyCore<TPolicyEventHandler>(
                 optionsName: optionsName,
@@ -48,29 +38,18 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Retry.Extensions
         public static IHttpClientBuilder AddRetryPolicy<TPolicyEventHandler>(
             this IHttpClientBuilder httpClientBuilder,
             Action<RetryOptions> configureOptions)
-            where TPolicyEventHandler : class, IRetryPolicyConfiguration
+            where TPolicyEventHandler : class, IRetryPolicyEventHandler
         {
             return httpClientBuilder.AddRetryPolicyCore<TPolicyEventHandler>(
                 optionsName: null,
                 configureOptions: configureOptions);
         }
-
-        public static IHttpClientBuilder AddRetryPolicy<TPolicyEventHandler>(
-            this IHttpClientBuilder httpClientBuilder,
-            string optionsName,
-            Action<RetryOptions> configureOptions)
-            where TPolicyEventHandler : class, IRetryPolicyConfiguration
-        {
-            return httpClientBuilder.AddRetryPolicyCore<TPolicyEventHandler>(
-                optionsName: optionsName,
-                configureOptions: configureOptions);
-        }
-
+        
         private static IHttpClientBuilder AddRetryPolicyCore<TPolicyEventHandler>(
             this IHttpClientBuilder httpClientBuilder,
             string? optionsName,
             Action<RetryOptions>? configureOptions)
-            where TPolicyEventHandler : class, IRetryPolicyConfiguration
+            where TPolicyEventHandler : class, IRetryPolicyEventHandler
         {
             var httpClientName = httpClientBuilder.Name;
             optionsName ??= $"{httpClientName}_retry_{Guid.NewGuid()}";
@@ -78,6 +57,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Retry.Extensions
             httpClientBuilder.Services
                 .AddSingleton<TPolicyEventHandler>()
                 .AddHttpClientRetryOptions(optionsName)
+                .ValidateDataAnnotations()
                 .Configure(configureOptions);
 
             return httpClientBuilder.AddHttpMessageHandler(provider =>

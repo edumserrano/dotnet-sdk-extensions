@@ -19,6 +19,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry
         /// where TOptions is of type <see cref="RetryOptions"/>.
         ///
         /// It also checks that the <see cref="RetryOptions"/> has the expected values.
+        /// It also tests the <see cref="RetryOptionsExtensions.GetHttpClientRetryOptions"/> extension method.
         /// </summary>
         [Fact]
         public void AddHttpClientRetryOptions()

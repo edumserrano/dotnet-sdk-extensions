@@ -28,16 +28,16 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Auxiliary
                 .ShouldBe(0);
         }
         
-        public static void ShouldTriggerPolicyConfiguration(
+        public static void ShouldTriggerPolicyEventHandler(
             this AsyncTimeoutPolicy<HttpResponseMessage> timeoutPolicy,
             string httpClientName,
             int timeoutInSecs,
             Type policyConfigurationType)
         {
-            var timeoutPolicyConfiguration = timeoutPolicy.GetPolicyConfiguration();
-            timeoutPolicyConfiguration.HttpClientName.ShouldBe(httpClientName);
-            timeoutPolicyConfiguration.TimeoutOptions.TimeoutInSecs.ShouldBe(timeoutInSecs);
-            timeoutPolicyConfiguration.PolicyEventReceiver
+            var policyEventHandlerTarget = timeoutPolicy.GetOnTimeoutTarget();
+            policyEventHandlerTarget.HttpClientName.ShouldBe(httpClientName);
+            policyEventHandlerTarget.TimeoutOptions.TimeoutInSecs.ShouldBe(timeoutInSecs);
+            policyEventHandlerTarget.PolicyEventHandler
                 .GetType()
                 .ShouldBe(policyConfigurationType);
         }

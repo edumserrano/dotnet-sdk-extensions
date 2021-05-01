@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
 
-namespace DotNet.Sdk.Extensions.Polly.Http.Retry.Configuration
+namespace DotNet.Sdk.Extensions.Polly.Http.Retry.Events
 {
-    internal class DefaultRetryPolicyConfiguration : IRetryPolicyConfiguration
+    internal class DefaultRetryPolicyEventHandler : IRetryPolicyEventHandler
     {
         public Task OnRetryAsync(RetryEvent retryEvent)
         {

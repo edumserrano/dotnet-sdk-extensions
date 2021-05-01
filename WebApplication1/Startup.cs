@@ -15,7 +15,7 @@ using DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker.Extensions;
 using DotNet.Sdk.Extensions.Polly.Http.Fallback.Configuration;
 using DotNet.Sdk.Extensions.Polly.Http.Fallback.Extensions;
 using DotNet.Sdk.Extensions.Polly.Http.Resilience.Extensions;
-using DotNet.Sdk.Extensions.Polly.Http.Retry.Configuration;
+using DotNet.Sdk.Extensions.Polly.Http.Retry.Events;
 using DotNet.Sdk.Extensions.Polly.Http.Retry.Extensions;
 using DotNet.Sdk.Extensions.Polly.Http.Timeout;
 using DotNet.Sdk.Extensions.Polly.Http.Timeout.Events;
@@ -191,7 +191,7 @@ namespace WebApplication1
 
     public class GitHubPoliciesEventReceiver :
         ITimeoutPolicyEventHandler,
-        IRetryPolicyConfiguration,
+        IRetryPolicyEventHandler,
         ICircuitBreakerPolicyConfiguration, 
         IFallbackPolicyConfiguration
     {
