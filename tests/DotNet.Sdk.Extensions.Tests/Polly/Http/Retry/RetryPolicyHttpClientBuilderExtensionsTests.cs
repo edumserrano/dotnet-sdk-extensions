@@ -84,38 +84,40 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry
         /// <see cref="RetryOptionsExtensions.AddHttpClientRetryOptions"/> extension method.
         /// </summary>
         [Fact]
-        public void AddTimeoutPolicy2()
+        public void AddRetryPolicy2()
         {
-            AsyncTimeoutPolicy<HttpResponseMessage>? timeoutPolicy = null;
+            AsyncRetryPolicy<HttpResponseMessage>? retryPolicy = null;
             var httpClientName = "GitHub";
-            var timeoutInSecs = 1;
+            var retryCount = 2;
+            var medianFirstRetryDelayInSecs = 1;
             var optionsName = "GitHubOptions";
             var services = new ServiceCollection();
             services
                 .AddHttpClientRetryOptions(optionsName)
                 .Configure(options =>
                 {
-                    options.RetryCount = 2;
-                    options.MedianFirstRetryDelayInSecs = 1;
+                    options.RetryCount = retryCount;
+                    options.MedianFirstRetryDelayInSecs = medianFirstRetryDelayInSecs;
                 });
             services
                 .AddHttpClient(httpClientName)
-                .AddTimeoutPolicy(optionsName)
+                .AddRetryPolicy(optionsName)
                 .ConfigureHttpMessageHandlerBuilder(httpMessageHandlerBuilder =>
                 {
-                    timeoutPolicy = httpMessageHandlerBuilder.AdditionalHandlers
-                        .GetPolicies<AsyncTimeoutPolicy<HttpResponseMessage>>()
+                    retryPolicy = httpMessageHandlerBuilder.AdditionalHandlers
+                        .GetPolicies<AsyncRetryPolicy<HttpResponseMessage>>()
                         .FirstOrDefault();
                 });
 
             var serviceProvider = services.BuildServiceProvider();
             serviceProvider.InstantiateNamedHttpClient(httpClientName);
-            timeoutPolicy.ShouldNotBeNull();
-            timeoutPolicy.ShouldBeConfiguredAsExpected(timeoutInSecs);
-            timeoutPolicy.ShouldTriggerPolicyEventHandler(
+            retryPolicy.ShouldNotBeNull();
+            retryPolicy.ShouldBeConfiguredAsExpected(retryCount, medianFirstRetryDelayInSecs);
+            retryPolicy.ShouldTriggerPolicyEventHandler(
                 httpClientName: httpClientName,
-                timeoutInSecs: timeoutInSecs,
-                policyConfigurationType: typeof(DefaultTimeoutPolicyEventHandler));
+                retryCount: retryCount,
+                medianFirstRetryDelayInSecs: medianFirstRetryDelayInSecs,
+                policyConfigurationType: typeof(DefaultRetryPolicyEventHandler));
         }
 
         /// <summary>
