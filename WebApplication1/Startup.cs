@@ -11,15 +11,10 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Polly;
 using DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker.Configuration;
-using DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker.Extensions;
 using DotNet.Sdk.Extensions.Polly.Http.Fallback.Configuration;
-using DotNet.Sdk.Extensions.Polly.Http.Fallback.Extensions;
-using DotNet.Sdk.Extensions.Polly.Http.Resilience.Extensions;
 using DotNet.Sdk.Extensions.Polly.Http.Retry.Events;
-using DotNet.Sdk.Extensions.Polly.Http.Retry.Extensions;
 using DotNet.Sdk.Extensions.Polly.Http.Timeout;
 using DotNet.Sdk.Extensions.Polly.Http.Timeout.Events;
-using DotNet.Sdk.Extensions.Polly.Http.Timeout.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace WebApplication1

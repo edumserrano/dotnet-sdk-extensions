@@ -8,10 +8,10 @@ using Xunit;
 namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
 {
     /// <summary>
-    /// Tests for the <see cref="TimeoutOptionsExtensions"/> class
+    /// Tests for the <see cref="TimeoutOptionsExtensions.AddHttpClientTimeoutOptions"/> method
     /// </summary>
     [Trait("Category", XUnitCategories.Polly)]
-    public class TimeoutOptionsExtensionsTests
+    public class AddHttpClientTimeoutOptionsTests
     {
         /// <summary>
         /// Tests that the <see cref="TimeoutOptionsExtensions.AddHttpClientTimeoutOptions"/> extension method
