@@ -5,7 +5,7 @@ using Microsoft.Extensions.Http;
 
 namespace DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker.Extensions
 {
-    public static class CircuitBreakerHttpClientBuilderExtensions
+    public static class CircuitBreakerPolicyHttpClientBuilderExtensions
     {
         public static IHttpClientBuilder AddCircuitBreakerPolicy(
             this IHttpClientBuilder httpClientBuilder,

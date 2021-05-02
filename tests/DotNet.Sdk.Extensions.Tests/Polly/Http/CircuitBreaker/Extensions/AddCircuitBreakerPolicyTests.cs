@@ -14,7 +14,7 @@ using Xunit;
 namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
 {
     /// <summary>
-    /// Tests for the <see cref="CircuitBreakerHttpClientBuilderExtensions"/> class.
+    /// Tests for the <see cref="CircuitBreakerPolicyHttpClientBuilderExtensions"/> class.
     /// Specifically for the CircuitBreakerHttpClientBuilderExtensions.AddCircuitBreakerPolicy overloads.
     ///
     /// Many tests here use reflection to check that the policy is configured as expected.
@@ -29,7 +29,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
     public class AddCircuitBreakerPolicyTests
     {
         /// <summary>
-        /// Tests that the <see cref="CircuitBreakerHttpClientBuilderExtensions.AddCircuitBreakerPolicy(IHttpClientBuilder,Action{CircuitBreakerOptions})"/>
+        /// Tests that the <see cref="CircuitBreakerPolicyHttpClientBuilderExtensions.AddCircuitBreakerPolicy(IHttpClientBuilder,Action{CircuitBreakerOptions})"/>
         /// overload method adds a <see cref="DelegatingHandler"/> with a circuit break to the <see cref="HttpClient"/>.
         ///
         /// This overload accepts only an action to configure the value of the <see cref="CircuitBreakerOptions"/>.
@@ -79,7 +79,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
         }
 
         /// <summary>
-        /// Tests that the <see cref="CircuitBreakerHttpClientBuilderExtensions.AddCircuitBreakerPolicy(IHttpClientBuilder,string)"/>
+        /// Tests that the <see cref="CircuitBreakerPolicyHttpClientBuilderExtensions.AddCircuitBreakerPolicy(IHttpClientBuilder,string)"/>
         /// overload method adds a <see cref="DelegatingHandler"/> with a circuit break to the <see cref="HttpClient"/>.
         /// 
         /// This overload accepts only the name of the option to use for the value of the <see cref="CircuitBreakerOptions"/>.
@@ -135,7 +135,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
         }
 
         /// <summary>
-        /// Tests that the <see cref="CircuitBreakerHttpClientBuilderExtensions.AddCircuitBreakerPolicy{TPolicyEventHandler}(IHttpClientBuilder,Action{CircuitBreakerOptions})"/>
+        /// Tests that the <see cref="CircuitBreakerPolicyHttpClientBuilderExtensions.AddCircuitBreakerPolicy{TPolicyEventHandler}(IHttpClientBuilder,Action{CircuitBreakerOptions})"/>
         /// overload method adds a <see cref="DelegatingHandler"/> with a circuit break to the <see cref="HttpClient"/>.
         /// 
         /// This overload accepts the name of the option to use for the value of the <see cref="CircuitBreakerOptions"/>
@@ -186,7 +186,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
         }
 
         /// <summary>
-        /// Tests that the <see cref="CircuitBreakerHttpClientBuilderExtensions.AddCircuitBreakerPolicy{TPolicyEventHandler}(IHttpClientBuilder,string)"/>
+        /// Tests that the <see cref="CircuitBreakerPolicyHttpClientBuilderExtensions.AddCircuitBreakerPolicy{TPolicyEventHandler}(IHttpClientBuilder,string)"/>
         /// overload method adds a <see cref="DelegatingHandler"/> with a circuit break to the <see cref="HttpClient"/>.
         ///
         /// This overload accepts the name of the option to use for the value of the <see cref="CircuitBreakerOptions"/>.
