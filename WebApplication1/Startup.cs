@@ -1,7 +1,7 @@
 using System;
 using System.Net.Http;
-using System.Reflection;
 using System.Threading.Tasks;
+using DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker.Events;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -10,7 +10,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Polly;
-using DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker.Configuration;
 using DotNet.Sdk.Extensions.Polly.Http.Fallback.Configuration;
 using DotNet.Sdk.Extensions.Polly.Http.Retry.Events;
 using DotNet.Sdk.Extensions.Polly.Http.Timeout;
@@ -137,19 +136,7 @@ namespace WebApplication1
                         //});
                     });
                     return testMessageHandler;
-                })
-                .ConfigureHttpMessageHandlerBuilder(builder =>
-                {
-                    var a = builder.AdditionalHandlers;
-                    //var c = a[1];
-                    //var x = ReflectionExtensions.GetInstanceField(
-                    //    typeof(PolicyHttpMessageHandler),
-                    //    c,
-                    //    "_policy");
-                    //var z = x as AsyncRetryPolicy<HttpResponseMessage>;
-                    //var b = 2;
-                })
-                ;
+                });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -170,24 +157,11 @@ namespace WebApplication1
             });
         }
     }
-
-    public static class ReflectionExtensions
-    {
-        internal static object GetInstanceField(Type type, object instance, string fieldName)
-        {
-            var bindFlags = BindingFlags.Instance 
-                            | BindingFlags.Public
-                            | BindingFlags.NonPublic
-                            | BindingFlags.Static;
-            var field = type.GetField(fieldName, bindFlags);
-            return field.GetValue(instance);
-        }
-    }
-
+    
     public class GitHubPoliciesEventReceiver :
         ITimeoutPolicyEventHandler,
         IRetryPolicyEventHandler,
-        ICircuitBreakerPolicyConfiguration, 
+        ICircuitBreakerPolicyEventHandler,
         IFallbackPolicyConfiguration
     {
         public Task OnTimeoutAsync(TimeoutEvent timeoutEvent)

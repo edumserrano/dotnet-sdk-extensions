@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net.Http;
 using System.Threading.Tasks;
-using DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker.Configuration;
+using DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker.Events;
 using DotNet.Sdk.Extensions.Polly.Http.Fallback.FallbackHttpResponseMessages;
 using DotNet.Sdk.Extensions.Polly.Policies;
 using Polly;
@@ -16,7 +16,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker
         public static AsyncPolicyWrap<HttpResponseMessage> CreateCircuitBreakerPolicy(
             string httpClientName,
             CircuitBreakerOptions options,
-            ICircuitBreakerPolicyConfiguration policyConfiguration)
+            ICircuitBreakerPolicyEventHandler policyEventHandler)
         {
             var circuitBreakerPolicy = HttpPolicyExtensions
                 .HandleTransientHttpError()
@@ -36,17 +36,17 @@ namespace DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker
                             previousState,
                             breakDuration,
                             context);
-                        await policyConfiguration.OnBreakAsync(breakEvent);
+                        await policyEventHandler.OnBreakAsync(breakEvent);
                     },
                     onReset: async context =>
                     {
                         var resetEvent = new ResetEvent(httpClientName, options, context);
-                        await policyConfiguration.OnResetAsync(resetEvent);
+                        await policyEventHandler.OnResetAsync(resetEvent);
                     },
                     onHalfOpen: async () =>
                     {
                         var halfOpenEvent = new HalfOpenEvent(httpClientName, options);
-                        await policyConfiguration.OnHalfOpenAsync(halfOpenEvent);
+                        await policyEventHandler.OnHalfOpenAsync(halfOpenEvent);
                     });
             var circuitBreakerCheckerPolicy = CircuitBreakerCheckerAsyncPolicy<HttpResponseMessage>.Create(
                 circuitBreakerPolicy: circuitBreakerPolicy,

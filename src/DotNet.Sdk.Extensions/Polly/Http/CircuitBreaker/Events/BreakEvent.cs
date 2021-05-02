@@ -3,7 +3,7 @@ using System.Net.Http;
 using Polly;
 using Polly.CircuitBreaker;
 
-namespace DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker.Configuration
+namespace DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker.Events
 {
     public class BreakEvent
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Net.Http;
-using DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary.Polly;
+using DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary;
 using Polly.Timeout;
 using Shouldly;
 

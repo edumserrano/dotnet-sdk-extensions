@@ -5,7 +5,7 @@ using System.Net;
 using System.Net.Http;
 using Polly;
 
-namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary.Polly
+namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary
 {
     public static class PolicyReflectionExtensions
     {

@@ -6,7 +6,6 @@ using DotNet.Sdk.Extensions.Polly.Http.Timeout.Events;
 using DotNet.Sdk.Extensions.Polly.Http.Timeout.Extensions;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers;
 using DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary;
-using DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary.Polly;
 using DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Auxiliary;
 using Microsoft.Extensions.DependencyInjection;
 using Polly.Timeout;

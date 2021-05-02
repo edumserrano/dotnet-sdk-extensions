@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net.Http;
 using System.Threading.Tasks;
-using DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary.Polly;
+using DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary;
 using Polly.Retry;
 using Polly.Timeout;
 using Shouldly;
@@ -15,11 +15,9 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Auxiliary
             int retryCount,
             int medianFirstRetryDelayInSecs)
         {
-            retryPolicy
-                .GetRetryCount()
+            AsyncRetryPolicyReflectionExtensions.GetRetryCount(retryPolicy)
                 .ShouldBe(retryCount);
-            retryPolicy
-                .GetMedianFirstRetryDelay()
+            AsyncRetryPolicyReflectionExtensions.GetMedianFirstRetryDelay(retryPolicy)
                 .ShouldBe(TimeSpan.FromSeconds(medianFirstRetryDelayInSecs));
 
             var exceptionPredicates = retryPolicy.GetExceptionPredicates();
@@ -40,7 +38,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Auxiliary
             int medianFirstRetryDelayInSecs,
             Type policyConfigurationType)
         {
-            var policyEventHandlerTarget = retryPolicy.GetOnRetryTarget();
+            var policyEventHandlerTarget = AsyncRetryPolicyReflectionExtensions.GetOnRetryTarget(retryPolicy);
             policyEventHandlerTarget.HttpClientName.ShouldBe(httpClientName);
             policyEventHandlerTarget.RetryOptions.RetryCount.ShouldBe(retryCount);
             policyEventHandlerTarget.RetryOptions.MedianFirstRetryDelayInSecs.ShouldBe(medianFirstRetryDelayInSecs);

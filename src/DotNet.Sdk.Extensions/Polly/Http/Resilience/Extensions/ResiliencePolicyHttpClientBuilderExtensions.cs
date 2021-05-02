@@ -1,6 +1,6 @@
 ﻿using System;
 using DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker;
-using DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker.Configuration;
+using DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker.Events;
 using DotNet.Sdk.Extensions.Polly.Http.Fallback.Extensions;
 using DotNet.Sdk.Extensions.Polly.Http.Resilience.Configuration;
 using DotNet.Sdk.Extensions.Polly.Http.Retry;
@@ -114,7 +114,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Resilience.Extensions
         private static IHttpClientBuilder AddResilienceCircuitBreakerPolicy<TPolicyEventHandler>(
             this IHttpClientBuilder httpClientBuilder,
             string optionsName)
-            where TPolicyEventHandler : class, ICircuitBreakerPolicyConfiguration
+            where TPolicyEventHandler : class, ICircuitBreakerPolicyEventHandler
         {
             return httpClientBuilder.AddHttpMessageHandler(provider =>
             {

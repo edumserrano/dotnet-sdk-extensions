@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
 
-namespace DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker.Configuration
+namespace DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker.Events
 {
-    public interface ICircuitBreakerPolicyConfiguration
+    public interface ICircuitBreakerPolicyEventHandler
     {
         Task OnBreakAsync(BreakEvent breakEvent);
 

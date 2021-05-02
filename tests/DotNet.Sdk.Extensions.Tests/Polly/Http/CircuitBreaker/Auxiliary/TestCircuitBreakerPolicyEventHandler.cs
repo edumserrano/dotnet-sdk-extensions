@@ -1,9 +1,9 @@
 ﻿using System.Threading.Tasks;
-using DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker.Configuration;
+using DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker.Events;
 
 namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
 {
-    public class TestCircuitBreakerPolicyConfiguration : ICircuitBreakerPolicyConfiguration
+    public class TestCircuitBreakerPolicyEventHandler : ICircuitBreakerPolicyEventHandler
     {
         public Task OnBreakAsync(BreakEvent breakEvent)
         {

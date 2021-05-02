@@ -10,9 +10,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker.Extensions
             this IServiceCollection services,
             string name)
         {
-            return services
-                .AddOptions<CircuitBreakerOptions>(name)
-                .ValidateDataAnnotations();
+            return services.AddOptions<CircuitBreakerOptions>(name);
         }
 
         public static CircuitBreakerOptions GetHttpClientCircuitBreakerOptions(

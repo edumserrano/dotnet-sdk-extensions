@@ -1,6 +1,6 @@
 ﻿using Polly;
 
-namespace DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker.Configuration
+namespace DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker.Events
 {
     public class ResetEvent
     {

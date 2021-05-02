@@ -4,7 +4,7 @@ using System.Net.Http;
 using Microsoft.Extensions.Http;
 using Polly;
 
-namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary.Polly
+namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary
 {
     public static class HttpPoliciesReflectionExtensions
     {

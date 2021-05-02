@@ -5,13 +5,13 @@ using Microsoft.Extensions.Options;
 using Shouldly;
 using Xunit;
 
-namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker
+namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
 {
     /// <summary>
-    /// Tests for the <see cref="CircuitBreakerOptionsExtensions"/> class
+    /// Tests for the <see cref="CircuitBreakerOptionsExtensions.AddHttpClientCircuitBreakerOptions"/> method
     /// </summary>
     [Trait("Category", XUnitCategories.Polly)]
-    public class CircuitBreakerOptionsExtensionsTests
+    public class AddHttpClientCircuitBreakerOptionsTests
     {
         /// <summary>
         /// Tests that the <see cref="CircuitBreakerOptionsExtensions.AddHttpClientCircuitBreakerOptions"/> extension method
@@ -19,6 +19,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker
         /// where TOptions is of type <see cref="CircuitBreakerOptions"/>.
         ///
         /// It also checks that the <see cref="CircuitBreakerOptions"/> has the expected values.
+        /// It also tests the <see cref="CircuitBreakerOptionsExtensions.GetHttpClientCircuitBreakerOptions"/> extension method.
         /// </summary>
         [Fact]
         public void AddHttpClientCircuitBreakerOptions()
