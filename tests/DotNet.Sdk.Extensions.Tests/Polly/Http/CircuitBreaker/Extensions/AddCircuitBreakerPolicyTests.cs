@@ -1,12 +1,18 @@
 ﻿using System;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker;
 using DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker.Events;
 using DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker.Extensions;
+using DotNet.Sdk.Extensions.Polly.Http.Fallback.FallbackHttpResponseMessages;
+using DotNet.Sdk.Extensions.Polly.Policies;
+using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers;
 using DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary;
 using DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary;
 using Microsoft.Extensions.DependencyInjection;
+using Polly.CircuitBreaker;
 using Polly.Wrap;
 using Shouldly;
 using Xunit;
@@ -229,7 +235,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
 
             var serviceProvider = services.BuildServiceProvider();
             serviceProvider.InstantiateNamedHttpClient(httpClientName);
-            
+
             circuitBreakerPolicy.ShouldNotBeNull();
             circuitBreakerPolicy.ShouldBeConfiguredAsExpected(
                 durationOfBreakInSecs: durationOfBreakInSecs,
@@ -244,7 +250,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
                 minimumThroughput: minimumThroughput,
                 policyEventHandler: typeof(TestCircuitBreakerPolicyEventHandler));
         }
-        
+
         /// <summary>
         /// This tests that the policies added to the <see cref="HttpClient"/> by the
         /// CircuitBreakerHttpClientBuilderExtensions.AddCircuitBreakerPolicy methods are unique.
@@ -301,6 +307,91 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
             circuitBreakerPolicy2.ShouldNotBeNull();
             ReferenceEquals(circuitBreakerPolicy1, circuitBreakerPolicy2).ShouldBeFalse();
             circuitBreakerPolicy1.PolicyKey.ShouldNotBe(circuitBreakerPolicy2.PolicyKey);
+        }
+
+        /// <summary>
+        /// This tests that the policies added to the <see cref="HttpClient"/> by the
+        /// CircuitBreakerHttpClientBuilderExtensions.AddCircuitBreakerPolicy methods do not trigger
+        /// an exception if the circuit state is open or isolated.
+        ///
+        /// This is because the policy added is a wrapped policy which joins an <see cref="AsyncCircuitBreakerPolicy{T}"/>
+        /// and a <see cref="CircuitBreakerCheckerAsyncPolicy{T}"/>.
+        /// The <see cref="CircuitBreakerCheckerAsyncPolicy{T}"/>. will check if the circuit is open/isolated and
+        /// if so it will return <see cref="CircuitBrokenHttpResponseMessage"/> which is an http response message
+        /// with 500 status code and some extra properties.
+        ///
+        /// This is to optimize the performance of the code by reducing the exceptions thrown as indicated by
+        /// https://github.com/App-vNext/Polly/wiki/Circuit-Breaker#reducing-thrown-exceptions-when-the-circuit-is-broken 
+        ///  </summary>
+        [Fact]
+        public async Task AddCircuitBreakerPolicyDoesNotThrowExceptionWhenCircuitIsOpen()
+        {
+            AsyncPolicyWrap<HttpResponseMessage>? wrappedCircuitBreakerPolicy = null;
+            var durationOfBreakInSecs = 30;
+            var samplingDurationInSecs = 60;
+            var failureThreshold = 0.6;
+            var minimumThroughput = 10;
+            var services = new ServiceCollection();
+            services
+                .AddHttpClient("GitHub")
+                .AddCircuitBreakerPolicy(options =>
+                {
+                    options.DurationOfBreakInSecs = durationOfBreakInSecs;
+                    options.SamplingDurationInSecs = samplingDurationInSecs;
+                    options.FailureThreshold = failureThreshold;
+                    options.MinimumThroughput = minimumThroughput;
+                })
+                .ConfigurePrimaryHttpMessageHandler(() =>
+                {
+                    return new TestHttpMessageHandler()
+                        .MockHttpResponse(builder =>
+                        {
+                            builder.RespondWith(httpRequestMessage =>
+                            {
+                                // return HttpStatusCode.ServiceUnavailable to trigger the circuit breaker
+                                return new HttpResponseMessage(HttpStatusCode.ServiceUnavailable);
+                            });
+                        });
+                })
+                .ConfigureHttpMessageHandlerBuilder(httpMessageHandlerBuilder =>
+                {
+                    wrappedCircuitBreakerPolicy = httpMessageHandlerBuilder.AdditionalHandlers
+                        .GetPolicies<AsyncPolicyWrap<HttpResponseMessage>>()
+                        .FirstOrDefault();
+                });
+
+            var serviceProvider = services.BuildServiceProvider();
+            var httpClient = serviceProvider.InstantiateNamedHttpClient("GitHub");
+
+            wrappedCircuitBreakerPolicy.ShouldNotBeNull();
+            var circuitBreakerPolicy = (AsyncCircuitBreakerPolicy<HttpResponseMessage>)wrappedCircuitBreakerPolicy.Inner;
+
+            // isolate the circuit and do a request to check it does not throw an exception
+            circuitBreakerPolicy.Isolate();
+            var circuitBrokenHttpResponseMessage1 = (CircuitBrokenHttpResponseMessage)await httpClient.GetAsync("http://github.com");
+            circuitBrokenHttpResponseMessage1.StatusCode.ShouldBe(HttpStatusCode.InternalServerError); 
+            circuitBrokenHttpResponseMessage1.CircuitBreakerState.ShouldBe(CircuitBreakerState.Isolated);
+            circuitBrokenHttpResponseMessage1.BrokenCircuitException.ShouldBeNull();
+            circuitBrokenHttpResponseMessage1.IsolatedCircuitException.ShouldBeNull();
+
+            // reset and trigger the circuit breaker policy so that the circuit opens then send a request
+            // which should also not throw an exception
+            circuitBreakerPolicy.Reset();
+            for (var i = 0; i < minimumThroughput; i++)
+            {
+                var response = await httpClient.GetAsync("https://github.com");
+                // just to show that the status code that is being return is HttpStatusCode.ServiceUnavailable
+                // and that will trigger the circuit after this while loop is done. Then the status code
+                // will be a HttpStatusCode.InternalServerError just to indicate that request failed, it was a quick
+                // fail because the circuit is open, the request was not even attempted and it didn't reach the circuit
+                // breaker or else an exception would have been thrown
+                response.StatusCode.ShouldBe(HttpStatusCode.ServiceUnavailable);
+            }
+            var circuitBrokenHttpResponseMessage2 = (CircuitBrokenHttpResponseMessage)await httpClient.GetAsync("http://github.com");
+            circuitBrokenHttpResponseMessage2.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
+            circuitBrokenHttpResponseMessage2.CircuitBreakerState.ShouldBe(CircuitBreakerState.Open);
+            circuitBrokenHttpResponseMessage2.BrokenCircuitException.ShouldBeNull();
+            circuitBrokenHttpResponseMessage2.IsolatedCircuitException.ShouldBeNull();
         }
 
         public void Dispose()
