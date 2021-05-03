@@ -1,11 +1,11 @@
 ﻿using System.Net.Http;
 using Polly;
 
-namespace DotNet.Sdk.Extensions.Polly.Http.Fallback.Configuration
+namespace DotNet.Sdk.Extensions.Polly.Http.Fallback.Events
 {
-    public class TimeoutFallbackEvent
+    public class TaskCancelledFallbackEvent
     {
-        internal TimeoutFallbackEvent(
+        internal TaskCancelledFallbackEvent(
             string httpClientName,
             DelegateResult<HttpResponseMessage> outcome,
             Context context)

@@ -30,5 +30,12 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
             OnResetAsyncCalls.Add(resetEvent);
             return Task.CompletedTask;
         }
+
+        public static void Clear()
+        {
+            OnBreakAsyncCalls.Clear();
+            OnHalfOpenAsyncCalls.Clear();
+            OnResetAsyncCalls.Clear();
+        }
     }
 }

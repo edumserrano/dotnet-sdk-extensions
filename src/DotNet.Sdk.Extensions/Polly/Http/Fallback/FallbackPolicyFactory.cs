@@ -1,6 +1,7 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using System.Threading.Tasks;
-using DotNet.Sdk.Extensions.Polly.Http.Fallback.Configuration;
+using DotNet.Sdk.Extensions.Polly.Http.Fallback.Events;
 using DotNet.Sdk.Extensions.Polly.Http.Fallback.FallbackHttpResponseMessages;
 using Polly;
 using Polly.CircuitBreaker;
@@ -13,7 +14,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Fallback
     {
         public static AsyncPolicyWrap<HttpResponseMessage> CreateFallbackPolicy(
             string httpClientName,
-            IFallbackPolicyConfiguration policyConfiguration)
+            IFallbackPolicyEventHandler policyEventHandler)
         {
             // handle TimeoutRejectedException thrown by a timeout policy
             var timeoutFallback = Policy<HttpResponseMessage>
@@ -27,7 +28,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Fallback
                     onFallbackAsync: (outcome, context) =>
                     {
                         var fallbackEvent = new TimeoutFallbackEvent(httpClientName, outcome, context);
-                        return policyConfiguration.OnTimeoutFallbackAsync(fallbackEvent);
+                        return policyEventHandler.OnTimeoutFallbackAsync(fallbackEvent);
                     });
 
             // handle BrokenCircuitException thrown by a circuit breaker policy
@@ -37,13 +38,18 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Fallback
                 .FallbackAsync(
                     fallbackAction: (delegateResult, pollyContext, cancellationToken) =>
                     {
-                        var circuitBrokenHttpResponseMessage = new CircuitBrokenHttpResponseMessage();
+                        var circuitBrokenHttpResponseMessage = delegateResult.Exception switch
+                        {
+                            IsolatedCircuitException isolatedCircuitException => new CircuitBrokenHttpResponseMessage(isolatedCircuitException),
+                            BrokenCircuitException brokenCircuitException => new CircuitBrokenHttpResponseMessage(brokenCircuitException),
+                            _ => throw new ArgumentOutOfRangeException(nameof(delegateResult.Exception), $"FallbackPolicyFactory: unexpected exception of type {delegateResult.Exception.GetType()}")
+                        };
                         return Task.FromResult<HttpResponseMessage>(circuitBrokenHttpResponseMessage);
-                    }, 
+                    },
                     onFallbackAsync: (outcome, context) =>
                     {
                         var fallbackEvent = new BrokenCircuitFallbackEvent(httpClientName, outcome, context);
-                        return policyConfiguration.OnBrokenCircuitFallbackAsync(fallbackEvent);
+                        return policyEventHandler.OnBrokenCircuitFallbackAsync(fallbackEvent);
                     });
 
             // handle TaskCanceledException thrown by HttpClient when it times out.
@@ -60,7 +66,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Fallback
                     onFallbackAsync: (outcome, context) =>
                     {
                         var fallbackEvent = new TaskCancelledFallbackEvent(httpClientName, outcome, context);
-                        return policyConfiguration.OnTaskCancelledFallbackAsync(fallbackEvent);
+                        return policyEventHandler.OnTaskCancelledFallbackAsync(fallbackEvent);
                     });
 
             var policy = Policy.WrapAsync(timeoutFallback, brokenCircuitFallback, abortedFallback);

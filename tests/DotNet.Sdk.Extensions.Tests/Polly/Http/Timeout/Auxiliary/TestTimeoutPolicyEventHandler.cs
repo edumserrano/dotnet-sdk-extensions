@@ -13,5 +13,10 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Auxiliary
             OnTimeoutAsyncCalls.Add(timeoutEvent);
             return Task.CompletedTask;
         }
+
+        public static void Clear()
+        {
+            OnTimeoutAsyncCalls.Clear();
+        }
     }
 }

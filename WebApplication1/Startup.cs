@@ -2,6 +2,7 @@ using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker.Events;
+using DotNet.Sdk.Extensions.Polly.Http.Fallback.Events;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -10,7 +11,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Polly;
-using DotNet.Sdk.Extensions.Polly.Http.Fallback.Configuration;
 using DotNet.Sdk.Extensions.Polly.Http.Retry.Events;
 using DotNet.Sdk.Extensions.Polly.Http.Timeout;
 using DotNet.Sdk.Extensions.Polly.Http.Timeout.Events;
@@ -162,7 +162,7 @@ namespace WebApplication1
         ITimeoutPolicyEventHandler,
         IRetryPolicyEventHandler,
         ICircuitBreakerPolicyEventHandler,
-        IFallbackPolicyConfiguration
+        IFallbackPolicyEventHandler
     {
         public Task OnTimeoutAsync(TimeoutEvent timeoutEvent)
         {

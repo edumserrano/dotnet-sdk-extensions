@@ -13,5 +13,10 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Auxiliary
             OnRetryAsyncCalls.Add(retryEvent);
             return Task.CompletedTask;
         }
+
+        public static void Clear()
+        {
+            OnRetryAsyncCalls.Clear();
+        }
     }
 }

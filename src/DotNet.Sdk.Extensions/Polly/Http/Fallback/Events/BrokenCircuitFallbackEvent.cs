@@ -1,11 +1,11 @@
 ﻿using System.Net.Http;
 using Polly;
 
-namespace DotNet.Sdk.Extensions.Polly.Http.Fallback.Configuration
+namespace DotNet.Sdk.Extensions.Polly.Http.Fallback.Events
 {
-    public class TaskCancelledFallbackEvent
+    public class BrokenCircuitFallbackEvent
     {
-        internal TaskCancelledFallbackEvent(
+        internal BrokenCircuitFallbackEvent(
             string httpClientName,
             DelegateResult<HttpResponseMessage> outcome,
             Context context)

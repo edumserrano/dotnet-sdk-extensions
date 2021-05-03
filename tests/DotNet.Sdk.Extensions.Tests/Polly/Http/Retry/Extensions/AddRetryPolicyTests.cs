@@ -26,7 +26,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
     /// Because of the reflection usage these tests can break when updating the Polly packages.
     /// </summary>
     [Trait("Category", XUnitCategories.Polly)]
-    public class AddRetryPolicyTests
+    [Collection(XUnitTestCollections.RetryPolicy)]
+    public class AddRetryPolicyTests : IDisposable
     {
         /// <summary>
         /// Tests that the <see cref="RetryPolicyHttpClientBuilderExtensions.AddRetryPolicy(IHttpClientBuilder,Action{RetryOptions})"/>
@@ -252,6 +253,11 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
             retryPolicy2.ShouldNotBeNull();
             ReferenceEquals(retryPolicy1, retryPolicy2).ShouldBeFalse();
             retryPolicy1.PolicyKey.ShouldNotBe(retryPolicy2.PolicyKey);
+        }
+
+        public void Dispose()
+        {
+            TestRetryPolicyEventHandler.Clear();
         }
     }
 }

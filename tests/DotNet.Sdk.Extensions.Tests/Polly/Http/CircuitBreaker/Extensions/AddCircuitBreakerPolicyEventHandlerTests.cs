@@ -30,7 +30,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
     /// Because of the reflection usage these tests can break when updating the Polly packages.
     /// </summary>
     [Trait("Category", XUnitCategories.Polly)]
-    public class AddCircuitBreakerPolicyEventHandlerTests
+    [Collection(XUnitTestCollections.CircuitBreakerPolicy)]
+    public class AddCircuitBreakerPolicyEventHandlerTests : IDisposable
     {
         /// <summary>
         /// Tests that the overloads of RetryPolicyHttpClientBuilderExtensions.AddCircuitBreakerPolicy that
@@ -140,8 +141,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
         /// take in a <see cref="ICircuitBreakerPolicyEventHandler"/> type should have their events handled by
         /// that type.
         ///
-        /// This test triggers the circuit breaker policy to make sure the <see cref="BreakEvent"/> is triggered
-        /// as expected.
+        /// This test triggers the circuit breaker policy to make sure the <see cref="BreakEvent"/>,
+        /// <see cref="HalfOpenEvent"/> and <see cref="ResetEvent"/> are triggered as expected.
         /// </summary>
         [Fact]
         public async Task AddCircuitBreakerPolicyTriggersCustomEventHandler()
@@ -241,6 +242,11 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
                             && x.CircuitBreakerOptions.MinimumThroughput.Equals(minimumThroughput)
                             && x.CircuitBreakerOptions.SamplingDurationInSecs.Equals(samplingDurationInSecs))
                 .ShouldBe(1);
+        }
+
+        public void Dispose()
+        {
+            TestCircuitBreakerPolicyEventHandler.Clear();
         }
     }
 }

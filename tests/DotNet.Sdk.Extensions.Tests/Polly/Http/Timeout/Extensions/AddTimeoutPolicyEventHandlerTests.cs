@@ -28,7 +28,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
     /// Because of the reflection usage these tests can break when updating the Polly packages.
     /// </summary>
     [Trait("Category", XUnitCategories.Polly)]
-    public class AddTimeoutPolicyEventHandlerTests
+    [Collection(XUnitTestCollections.TimeoutPolicy)]
+    public class AddTimeoutPolicyEventHandlerTests : IDisposable
     {
         /// <summary>
         /// Tests that the overloads of TimeoutPolicyHttpClientBuilderExtensions.AddTimeoutPolicy that
@@ -149,6 +150,11 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
             var timeoutEvent = TestTimeoutPolicyEventHandler.OnTimeoutAsyncCalls.First();
             timeoutEvent.HttpClientName.ShouldBe(httpClientName);
             timeoutEvent.TimeoutOptions.TimeoutInSecs.ShouldBe(timeoutInSecs);
+        }
+
+        public void Dispose()
+        {
+            TestTimeoutPolicyEventHandler.Clear();
         }
     }
 }

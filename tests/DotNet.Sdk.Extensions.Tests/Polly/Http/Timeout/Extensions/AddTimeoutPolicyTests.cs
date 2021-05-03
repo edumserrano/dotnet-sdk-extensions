@@ -26,7 +26,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
     /// Because of the reflection usage these tests can break when updating the Polly packages.
     /// </summary>
     [Trait("Category", XUnitCategories.Polly)]
-    public class AddTimeoutPolicyTests
+    [Collection(XUnitTestCollections.TimeoutPolicy)]
+    public class AddTimeoutPolicyTests : IDisposable
     {
         /// <summary>
         /// Tests that the <see cref="TimeoutPolicyHttpClientBuilderExtensions.AddTimeoutPolicy(IHttpClientBuilder,Action{TimeoutOptions})"/>
@@ -232,6 +233,11 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
             timeoutPolicy2.ShouldNotBeNull();
             ReferenceEquals(timeoutPolicy1, timeoutPolicy2).ShouldBeFalse();
             timeoutPolicy1.PolicyKey.ShouldNotBe(timeoutPolicy2.PolicyKey);
+        }
+
+        public void Dispose()
+        {
+            TestTimeoutPolicyEventHandler.Clear();
         }
     }
 }

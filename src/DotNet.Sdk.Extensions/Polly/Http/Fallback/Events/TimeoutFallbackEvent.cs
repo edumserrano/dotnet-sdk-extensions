@@ -1,11 +1,11 @@
 ﻿using System.Net.Http;
 using Polly;
 
-namespace DotNet.Sdk.Extensions.Polly.Http.Fallback.Configuration
+namespace DotNet.Sdk.Extensions.Polly.Http.Fallback.Events
 {
-    public class BrokenCircuitFallbackEvent
+    public class TimeoutFallbackEvent
     {
-        internal BrokenCircuitFallbackEvent(
+        internal TimeoutFallbackEvent(
             string httpClientName,
             DelegateResult<HttpResponseMessage> outcome,
             Context context)

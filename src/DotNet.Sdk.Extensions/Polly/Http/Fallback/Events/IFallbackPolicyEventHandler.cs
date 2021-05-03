@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
 
-namespace DotNet.Sdk.Extensions.Polly.Http.Fallback.Configuration
+namespace DotNet.Sdk.Extensions.Polly.Http.Fallback.Events
 {
-    public interface IFallbackPolicyConfiguration
+    public interface IFallbackPolicyEventHandler
     {
         Task OnTimeoutFallbackAsync(TimeoutFallbackEvent timeoutFallbackEvent);
         

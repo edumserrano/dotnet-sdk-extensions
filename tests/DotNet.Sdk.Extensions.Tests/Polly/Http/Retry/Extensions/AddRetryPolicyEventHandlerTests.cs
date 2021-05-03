@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -28,7 +29,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
     /// Because of the reflection usage these tests can break when updating the Polly packages.
     /// </summary>
     [Trait("Category", XUnitCategories.Polly)]
-    public class AddRetryPolicyEventHandlerTests
+    [Collection(XUnitTestCollections.RetryPolicy)]
+    public class AddRetryPolicyEventHandlerTests : IDisposable
     {
         /// <summary>
         /// Tests that the overloads of RetryPolicyHttpClientBuilderExtensions.AddRetryPolicy that
@@ -159,6 +161,11 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
                 retryEvent.RetryOptions.RetryCount.ShouldBe(retryCount);
                 retryEvent.RetryOptions.MedianFirstRetryDelayInSecs.ShouldBe(medianFirstRetryDelayInSecs);
             }
+        }
+
+        public void Dispose()
+        {
+            TestRetryPolicyEventHandler.Clear();
         }
     }
 }

@@ -1,24 +1,24 @@
-﻿using DotNet.Sdk.Extensions.Polly.Http.Fallback.Configuration;
+﻿using DotNet.Sdk.Extensions.Polly.Http.Fallback.Events;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Http;
 
 namespace DotNet.Sdk.Extensions.Polly.Http.Fallback.Extensions
 {
-    public static class FallbackHttpClientBuilderExtensions
+    public static class FallbackPolicyHttpClientBuilderExtensions
     {
         public static IHttpClientBuilder AddFallbackPolicy(this IHttpClientBuilder httpClientBuilder)
         {
-            return httpClientBuilder.AddFallbackPolicyCore<DefaultFallbackPolicyConfiguration>();
+            return httpClientBuilder.AddFallbackPolicyCore<DefaultFallbackPolicyEventHandler>();
         }
         
         public static IHttpClientBuilder AddFallbackPolicy<TPolicyEventHandler>(this IHttpClientBuilder httpClientBuilder)
-            where TPolicyEventHandler : class, IFallbackPolicyConfiguration
+            where TPolicyEventHandler : class, IFallbackPolicyEventHandler
         {
             return httpClientBuilder.AddFallbackPolicyCore<TPolicyEventHandler>();
         }
 
         private static IHttpClientBuilder AddFallbackPolicyCore<TPolicyEventHandler>(this IHttpClientBuilder httpClientBuilder)
-            where TPolicyEventHandler : class, IFallbackPolicyConfiguration
+            where TPolicyEventHandler : class, IFallbackPolicyEventHandler
         {
             var httpClientName = httpClientBuilder.Name;
             httpClientBuilder.Services.AddSingleton<TPolicyEventHandler>();

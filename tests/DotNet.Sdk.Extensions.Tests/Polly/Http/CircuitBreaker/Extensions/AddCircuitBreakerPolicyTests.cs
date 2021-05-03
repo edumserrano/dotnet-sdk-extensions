@@ -26,7 +26,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
     /// Because of the reflection usage these tests can break when updating the Polly packages.
     /// </summary>
     [Trait("Category", XUnitCategories.Polly)]
-    public class AddCircuitBreakerPolicyTests
+    [Collection(XUnitTestCollections.CircuitBreakerPolicy)]
+    public class AddCircuitBreakerPolicyTests : IDisposable
     {
         /// <summary>
         /// Tests that the <see cref="CircuitBreakerPolicyHttpClientBuilderExtensions.AddCircuitBreakerPolicy(IHttpClientBuilder,Action{CircuitBreakerOptions})"/>
@@ -300,6 +301,11 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
             circuitBreakerPolicy2.ShouldNotBeNull();
             ReferenceEquals(circuitBreakerPolicy1, circuitBreakerPolicy2).ShouldBeFalse();
             circuitBreakerPolicy1.PolicyKey.ShouldNotBe(circuitBreakerPolicy2.PolicyKey);
+        }
+
+        public void Dispose()
+        {
+            TestCircuitBreakerPolicyEventHandler.Clear();
         }
     }
 }
