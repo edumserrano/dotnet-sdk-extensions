@@ -70,7 +70,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
             timeoutPolicy.ShouldTriggerPolicyEventHandler(
                 httpClientName: httpClientName,
                 timeoutInSecs: timeoutInSecs,
-                policyConfigurationType: typeof(DefaultTimeoutPolicyEventHandler));
+                policyEventHandler: typeof(DefaultTimeoutPolicyEventHandler));
         }
 
         /// <summary>
@@ -108,7 +108,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
             timeoutPolicy.ShouldTriggerPolicyEventHandler(
                 httpClientName: httpClientName,
                 timeoutInSecs: timeoutInSecs,
-                policyConfigurationType: typeof(TestTimeoutPolicyEventHandler));
+                policyEventHandler: typeof(TestTimeoutPolicyEventHandler));
         }
 
         /// <summary>

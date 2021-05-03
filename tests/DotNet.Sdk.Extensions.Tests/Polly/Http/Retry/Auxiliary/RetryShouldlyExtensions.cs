@@ -36,7 +36,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Auxiliary
             string httpClientName,
             int retryCount,
             int medianFirstRetryDelayInSecs,
-            Type policyConfigurationType)
+            Type policyEventHandler)
         {
             var policyEventHandlerTarget = AsyncRetryPolicyReflectionExtensions.GetOnRetryTarget(retryPolicy);
             policyEventHandlerTarget.HttpClientName.ShouldBe(httpClientName);
@@ -44,7 +44,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Auxiliary
             policyEventHandlerTarget.RetryOptions.MedianFirstRetryDelayInSecs.ShouldBe(medianFirstRetryDelayInSecs);
             policyEventHandlerTarget.PolicyEventHandler
                 .GetType()
-                .ShouldBe(policyConfigurationType);
+                .ShouldBe(policyEventHandler);
         }
     }
 }

@@ -65,7 +65,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
                 httpClientName: httpClientName,
                 retryCount: retryCount,
                 medianFirstRetryDelayInSecs: medianFirstRetryDelayInSecs,
-                policyConfigurationType: typeof(DefaultRetryPolicyEventHandler));
+                policyEventHandler: typeof(DefaultRetryPolicyEventHandler));
         }
 
         /// <summary>
@@ -111,7 +111,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
                 httpClientName: httpClientName,
                 retryCount: retryCount,
                 medianFirstRetryDelayInSecs: medianFirstRetryDelayInSecs,
-                policyConfigurationType: typeof(DefaultRetryPolicyEventHandler));
+                policyEventHandler: typeof(DefaultRetryPolicyEventHandler));
         }
 
         /// <summary>
@@ -152,7 +152,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
                 httpClientName: httpClientName,
                 retryCount: retryCount,
                 medianFirstRetryDelayInSecs: medianFirstRetryDelayInSecs,
-                policyConfigurationType: typeof(TestRetryPolicyEventHandler));
+                policyEventHandler: typeof(TestRetryPolicyEventHandler));
         }
 
         /// <summary>
@@ -201,7 +201,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
                 httpClientName: httpClientName,
                 retryCount: retryCount,
                 medianFirstRetryDelayInSecs: medianFirstRetryDelayInSecs,
-                policyConfigurationType: typeof(TestRetryPolicyEventHandler));
+                policyEventHandler: typeof(TestRetryPolicyEventHandler));
         }
         
         /// <summary>

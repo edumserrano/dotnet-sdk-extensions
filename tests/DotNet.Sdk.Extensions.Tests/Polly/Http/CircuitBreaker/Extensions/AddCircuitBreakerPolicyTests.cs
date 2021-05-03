@@ -75,7 +75,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
                 samplingDurationInSecs: samplingDurationInSecs,
                 failureThreshold: failureThreshold,
                 minimumThroughput: minimumThroughput,
-                policyConfigurationType: typeof(DefaultCircuitBreakerPolicyEventHandler));
+                policyEventHandler: typeof(DefaultCircuitBreakerPolicyEventHandler));
         }
 
         /// <summary>
@@ -131,7 +131,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
                 samplingDurationInSecs: samplingDurationInSecs,
                 failureThreshold: failureThreshold,
                 minimumThroughput: minimumThroughput,
-                policyConfigurationType: typeof(DefaultCircuitBreakerPolicyEventHandler));
+                policyEventHandler: typeof(DefaultCircuitBreakerPolicyEventHandler));
         }
 
         /// <summary>
@@ -182,7 +182,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
                 samplingDurationInSecs: samplingDurationInSecs,
                 failureThreshold: failureThreshold,
                 minimumThroughput: minimumThroughput,
-                policyConfigurationType: typeof(TestCircuitBreakerPolicyEventHandler));
+                policyEventHandler: typeof(TestCircuitBreakerPolicyEventHandler));
         }
 
         /// <summary>
@@ -241,7 +241,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
                 samplingDurationInSecs: samplingDurationInSecs,
                 failureThreshold: failureThreshold,
                 minimumThroughput: minimumThroughput,
-                policyConfigurationType: typeof(TestCircuitBreakerPolicyEventHandler));
+                policyEventHandler: typeof(TestCircuitBreakerPolicyEventHandler));
         }
         
         /// <summary>

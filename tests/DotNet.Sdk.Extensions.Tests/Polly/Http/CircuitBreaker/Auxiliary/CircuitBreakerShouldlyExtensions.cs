@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Net.Http;
 using System.Threading.Tasks;
-using DotNet.Sdk.Extensions.Polly.Policies;
 using DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary;
 using Polly.CircuitBreaker;
 using Polly.Timeout;
@@ -65,7 +64,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
             double samplingDurationInSecs,
             double failureThreshold,
             int minimumThroughput,
-            Type policyConfigurationType)
+            Type policyEventHandler)
         {
             var asyncCircuitBreakerPolicy = (AsyncCircuitBreakerPolicy<HttpResponseMessage>)wrappedCircuitBreakerPolicy.Inner;
             
@@ -77,7 +76,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
             onBreakTarget.CircuitBreakerOptions.MinimumThroughput.ShouldBe(minimumThroughput);
             onBreakTarget.PolicyEventHandler
                 .GetType()
-                .ShouldBe(policyConfigurationType);  
+                .ShouldBe(policyEventHandler);  
             
             var onHalfOpenTarget = asyncCircuitBreakerPolicy.GetOnHalfOpenTarget();
             onHalfOpenTarget.HttpClientName.ShouldBe(httpClientName);
@@ -87,7 +86,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
             onHalfOpenTarget.CircuitBreakerOptions.MinimumThroughput.ShouldBe(minimumThroughput);
             onHalfOpenTarget.PolicyEventHandler
                 .GetType()
-                .ShouldBe(policyConfigurationType);
+                .ShouldBe(policyEventHandler);
 
             var onResetTarget = asyncCircuitBreakerPolicy.GetOnResetTarget();
             onResetTarget.HttpClientName.ShouldBe(httpClientName);
@@ -97,7 +96,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
             onResetTarget.CircuitBreakerOptions.MinimumThroughput.ShouldBe(minimumThroughput);
             onResetTarget.PolicyEventHandler
                 .GetType()
-                .ShouldBe(policyConfigurationType);
+                .ShouldBe(policyEventHandler);
         }
     }
 }

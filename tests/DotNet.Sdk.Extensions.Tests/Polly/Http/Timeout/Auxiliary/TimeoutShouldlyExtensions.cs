@@ -32,14 +32,14 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Auxiliary
             this AsyncTimeoutPolicy<HttpResponseMessage> timeoutPolicy,
             string httpClientName,
             int timeoutInSecs,
-            Type policyConfigurationType)
+            Type policyEventHandler)
         {
             var policyEventHandlerTarget = timeoutPolicy.GetOnTimeoutTarget();
             policyEventHandlerTarget.HttpClientName.ShouldBe(httpClientName);
             policyEventHandlerTarget.TimeoutOptions.TimeoutInSecs.ShouldBe(timeoutInSecs);
             policyEventHandlerTarget.PolicyEventHandler
                 .GetType()
-                .ShouldBe(policyConfigurationType);
+                .ShouldBe(policyEventHandler);
         }
     }
 }
