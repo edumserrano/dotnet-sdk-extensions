@@ -1,22 +1,21 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Polly.Http.Retry.Events;
 
 namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Auxiliary
 {
     public class TestRetryPolicyEventHandler : IRetryPolicyEventHandler
     {
-        public static IList<RetryEvent> OnRetryAsyncCalls { get; } = new List<RetryEvent>();
+        private readonly RetryPolicyEventHandlerCalls _retryPolicyEventHandlerCalls;
 
+        public TestRetryPolicyEventHandler(RetryPolicyEventHandlerCalls retryPolicyEventHandlerCalls)
+        {
+            _retryPolicyEventHandlerCalls = retryPolicyEventHandlerCalls;
+        }
+        
         public Task OnRetryAsync(RetryEvent retryEvent)
         {
-            OnRetryAsyncCalls.Add(retryEvent);
+            _retryPolicyEventHandlerCalls.AddOnRetryAsync(retryEvent);
             return Task.CompletedTask;
-        }
-
-        public static void Clear()
-        {
-            OnRetryAsyncCalls.Clear();
         }
     }
 }

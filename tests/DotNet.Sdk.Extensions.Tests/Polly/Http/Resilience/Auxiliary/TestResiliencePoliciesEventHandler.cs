@@ -6,20 +6,16 @@ using DotNet.Sdk.Extensions.Polly.Http.Retry.Events;
 using DotNet.Sdk.Extensions.Polly.Http.Timeout.Events;
 using DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary;
 using DotNet.Sdk.Extensions.Tests.Polly.Http.Fallback.Auxiliary;
-using DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Auxiliary;
-using DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Auxiliary;
 
 namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Auxiliary
 {
     public class TestResiliencePoliciesEventHandler : IResiliencePoliciesEventHandler
     {
-        private readonly TestRetryPolicyEventHandler _retryPolicyEventHandler;
         private readonly TestCircuitBreakerPolicyEventHandler _circuitBreakerPolicyEventHandler;
         private readonly TestFallbackPolicyEventHandler _fallbackPolicyEventHandler;
 
         public TestResiliencePoliciesEventHandler()
         {
-            _retryPolicyEventHandler = new TestRetryPolicyEventHandler();
             _circuitBreakerPolicyEventHandler = new TestCircuitBreakerPolicyEventHandler();
             _fallbackPolicyEventHandler = new TestFallbackPolicyEventHandler();
         }
@@ -31,7 +27,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Auxiliary
        
         public Task OnRetryAsync(RetryEvent retryEvent)
         {
-            return _retryPolicyEventHandler.OnRetryAsync(retryEvent);
+            return Task.CompletedTask;
         }
 
         public Task OnBreakAsync(BreakEvent breakEvent)
@@ -66,7 +62,6 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Auxiliary
 
         public static void Clear()
         {
-            TestRetryPolicyEventHandler.Clear();
             TestCircuitBreakerPolicyEventHandler.Clear();
             TestFallbackPolicyEventHandler.Clear();
         }

@@ -25,8 +25,6 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
         /// <summary>
         /// Tests that the <see cref="TimeoutPolicyHttpClientBuilderExtensions.AddTimeoutPolicy(IHttpClientBuilder,Action{TimeoutOptions})"/>
         /// overload method adds a <see cref="DelegatingHandler"/> with a timeout policy to the <see cref="HttpClient"/>.
-        ///
-        /// This overload accepts only an action to configure the value of the <see cref="TimeoutOptions"/>.
         /// </summary>
         [Fact]
         public async Task AddTimeoutPolicy1()
@@ -57,10 +55,6 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
         /// <summary>
         /// Tests that the <see cref="TimeoutPolicyHttpClientBuilderExtensions.AddTimeoutPolicy(IHttpClientBuilder,string)"/>
         /// overload method adds a <see cref="DelegatingHandler"/> with a timeout policy to the <see cref="HttpClient"/>.
-        /// 
-        /// This overload accepts only the name of the option to use for the value of the <see cref="TimeoutOptions"/>.
-        /// The options must be added and configured on the <see cref="ServiceCollection"/>. This is done via the
-        /// <see cref="TimeoutOptionsExtensions.AddHttpClientTimeoutOptions"/> extension method.
         /// </summary>
         [Fact]
         public async Task AddTimeoutPolicy2()
@@ -93,11 +87,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
         /// Tests that the <see cref="TimeoutPolicyHttpClientBuilderExtensions.AddTimeoutPolicy{TPolicyEventHandler}(IHttpClientBuilder,Action{TimeoutOptions})"/>
         /// overload method adds a <see cref="DelegatingHandler"/> with a timeout policy to the <see cref="HttpClient"/>.
         /// 
-        /// This overload accepts the name of the option to use for the value of the <see cref="TimeoutOptions"/>
-        /// and a <see cref="ITimeoutPolicyEventHandler"/> type to handle the timeout policy events.
-        ///
-        /// This also tests that the  <see cref="ITimeoutPolicyEventHandler.OnTimeoutAsync"/> is triggered
-        /// with the correct values.
+        /// This also tests that the  <see cref="ITimeoutPolicyEventHandler.OnTimeoutAsync"/> is triggered with the correct values.
         /// </summary>
         [Fact]
         public async Task AddTimeoutPolicy3()
@@ -121,28 +111,24 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
 
             var serviceProvider = services.BuildServiceProvider();
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
-            await Should.ThrowAsync<TimeoutRejectedException>(() =>
-            {
-                return httpClient.TriggerTimeoutPolicyAsync(timeoutOptions, testHttpMessageHandler);
-            });
-            timeoutPolicyEventHandlerCalls.ShouldBeAsExpected(
+
+            var timeoutPolicyAsserter = new TimeoutPolicyAsserter();
+            await timeoutPolicyAsserter.HttpClientShouldContainTimeoutPolicyAsync(
+                httpClient,
+                timeoutOptions,
+                testHttpMessageHandler);
+            timeoutPolicyAsserter.EventHandlerShouldReceiveExpectedEvents(
                 count: 1,
                 httpClientName: httpClientName,
-                timeoutOptions: timeoutOptions);
+                options: timeoutOptions,
+                eventHandlerCalls: timeoutPolicyEventHandlerCalls);
         }
 
         /// <summary>
         /// Tests that the <see cref="TimeoutPolicyHttpClientBuilderExtensions.AddTimeoutPolicy{TPolicyEventHandler}(IHttpClientBuilder,string)"/>
         /// overload method adds a <see cref="DelegatingHandler"/> with a timeout policy to the <see cref="HttpClient"/>.
         ///
-        /// This overload accepts the name of the option to use for the value of the <see cref="TimeoutOptions"/>.
-        /// The options must be added and configured on the <see cref="ServiceCollection"/>. This is done via the
-        /// <see cref="TimeoutOptionsExtensions.AddHttpClientTimeoutOptions"/> extension method.
-        ///
-        /// This overload also accepts an <see cref="ITimeoutPolicyEventHandler"/> type to handle the timeout policy events.
-        ///
-        /// This also tests that the  <see cref="ITimeoutPolicyEventHandler.OnTimeoutAsync"/> is triggered
-        /// with the correct values.
+        /// This also tests that the  <see cref="ITimeoutPolicyEventHandler.OnTimeoutAsync"/> is triggered with the correct values.
         /// </summary>
         [Fact]
         public async Task AddTimeoutPolicy4()
@@ -168,14 +154,17 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
             var serviceProvider = services.BuildServiceProvider();
             serviceProvider.InstantiateNamedHttpClient(httpClientName);
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
-            await Should.ThrowAsync<TimeoutRejectedException>(() =>
-            {
-                return httpClient.TriggerTimeoutPolicyAsync(timeoutOptions, testHttpMessageHandler);
-            });
-            timeoutPolicyEventHandlerCalls.ShouldBeAsExpected(
+
+            var timeoutPolicyAsserter = new TimeoutPolicyAsserter();
+            await timeoutPolicyAsserter.HttpClientShouldContainTimeoutPolicyAsync(
+                httpClient,
+                timeoutOptions,
+                testHttpMessageHandler);
+            timeoutPolicyAsserter.EventHandlerShouldReceiveExpectedEvents(
                 count: 1,
                 httpClientName: httpClientName,
-                timeoutOptions: timeoutOptions);
+                options: timeoutOptions,
+                eventHandlerCalls: timeoutPolicyEventHandlerCalls);
         }
 
         /// <summary>
