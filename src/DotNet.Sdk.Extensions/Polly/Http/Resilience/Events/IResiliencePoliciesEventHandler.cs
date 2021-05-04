@@ -5,7 +5,7 @@ using DotNet.Sdk.Extensions.Polly.Http.Timeout.Events;
 
 namespace DotNet.Sdk.Extensions.Polly.Http.Resilience.Events
 {
-    public interface IResiliencePolicyEventHandler : 
+    public interface IResiliencePoliciesEventHandler : 
         ITimeoutPolicyEventHandler, 
         IRetryPolicyEventHandler, 
         ICircuitBreakerPolicyEventHandler, 

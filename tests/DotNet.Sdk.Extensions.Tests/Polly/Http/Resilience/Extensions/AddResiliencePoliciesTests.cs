@@ -19,7 +19,7 @@ using Xunit;
 namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
 {
     /// <summary>
-    /// Tests for the <see cref="ResiliencePolicyHttpClientBuilderExtensions"/> class.
+    /// Tests for the <see cref="ResiliencePoliciesHttpClientBuilderExtensions"/> class.
     /// Specifically for the ResiliencePolicyHttpClientBuilderExtensions.AddResiliencePolicies overloads.
     ///
     /// Many tests here use reflection to check that the policy is configured as expected.
@@ -34,7 +34,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
     public class AddResiliencePoliciesTests : IDisposable
     {
         /// <summary>
-        /// Tests that the <see cref="ResiliencePolicyHttpClientBuilderExtensions.AddResiliencePolicies(IHttpClientBuilder,Action{ResilienceOptions})"/>
+        /// Tests that the <see cref="ResiliencePoliciesHttpClientBuilderExtensions.AddResiliencePolicies(IHttpClientBuilder,Action{ResilienceOptions})"/>
         /// overload method adds a <see cref="DelegatingHandler"/> with a retry policy to the <see cref="HttpClient"/>.
         ///
         /// This overload accepts only an action to configure the value of the <see cref="ResilienceOptions"/>.
@@ -92,11 +92,11 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 resilienceOptions,
                 policyHttpMessageHandlers);
             resiliencePoliciesAsserter.PoliciesShouldBeConfiguredAsExpected();
-            resiliencePoliciesAsserter.PoliciesShouldTriggerPolicyEventHandler(typeof(DefaultResiliencePolicyEventHandler));
+            resiliencePoliciesAsserter.PoliciesShouldTriggerPolicyEventHandler(typeof(DefaultResiliencePoliciesEventHandler));
         }
 
         /// <summary>
-        /// Tests that the <see cref="ResiliencePolicyHttpClientBuilderExtensions.AddResiliencePolicies(IHttpClientBuilder,string)"/>
+        /// Tests that the <see cref="ResiliencePoliciesHttpClientBuilderExtensions.AddResiliencePolicies(IHttpClientBuilder,string)"/>
         /// overload method adds a <see cref="DelegatingHandler"/> with a retry policy to the <see cref="HttpClient"/>.
         /// 
         /// This overload accepts only the name of the option to use for the value of the <see cref="ResilienceOptions"/>.
@@ -160,11 +160,11 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 resilienceOptions,
                 policyHttpMessageHandlers);
             resiliencePoliciesAsserter.PoliciesShouldBeConfiguredAsExpected();
-            resiliencePoliciesAsserter.PoliciesShouldTriggerPolicyEventHandler(typeof(DefaultResiliencePolicyEventHandler));
+            resiliencePoliciesAsserter.PoliciesShouldTriggerPolicyEventHandler(typeof(DefaultResiliencePoliciesEventHandler));
         }
 
         /// <summary>
-        /// Tests that the <see cref="ResiliencePolicyHttpClientBuilderExtensions.AddResiliencePolicies{TPolicyEventHandler}(IHttpClientBuilder,Action{ResilienceOptions})"/>
+        /// Tests that the <see cref="ResiliencePoliciesHttpClientBuilderExtensions.AddResiliencePolicies{TPolicyEventHandler}(IHttpClientBuilder,Action{ResilienceOptions})"/>
         /// overload method adds a <see cref="DelegatingHandler"/> with a retry policy to the <see cref="HttpClient"/>.
         /// 
         /// This overload accepts the name of the option to use for the value of the <see cref="ResilienceOptions"/>
@@ -197,7 +197,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             var services = new ServiceCollection();
             services
                 .AddHttpClient(httpClientName)
-                .AddResiliencePolicies<TestResiliencePolicyEventHandler>(options =>
+                .AddResiliencePolicies<TestResiliencePoliciesEventHandler>(options =>
                 {
                     options.Timeout.TimeoutInSecs = resilienceOptions.Timeout.TimeoutInSecs;
                     options.Retry.MedianFirstRetryDelayInSecs = resilienceOptions.Retry.MedianFirstRetryDelayInSecs;
@@ -223,11 +223,11 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 resilienceOptions,
                 policyHttpMessageHandlers);
             resiliencePoliciesAsserter.PoliciesShouldBeConfiguredAsExpected();
-            resiliencePoliciesAsserter.PoliciesShouldTriggerPolicyEventHandler(typeof(TestResiliencePolicyEventHandler));
+            resiliencePoliciesAsserter.PoliciesShouldTriggerPolicyEventHandler(typeof(TestResiliencePoliciesEventHandler));
         }
 
         /// <summary>
-        /// Tests that the <see cref="ResiliencePolicyHttpClientBuilderExtensions.AddResiliencePolicies{TPolicyEventHandler}(IHttpClientBuilder,string)"/>
+        /// Tests that the <see cref="ResiliencePoliciesHttpClientBuilderExtensions.AddResiliencePolicies{TPolicyEventHandler}(IHttpClientBuilder,string)"/>
         /// overload method adds a <see cref="DelegatingHandler"/> with a retry policy to the <see cref="HttpClient"/>.
         ///
         /// This overload accepts the name of the option to use for the value of the <see cref="ResilienceOptions"/>.
@@ -276,7 +276,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 });
             services
                 .AddHttpClient(httpClientName)
-                .AddResiliencePolicies<TestResiliencePolicyEventHandler>(optionsName)
+                .AddResiliencePolicies<TestResiliencePoliciesEventHandler>(optionsName)
                 .ConfigureHttpMessageHandlerBuilder(httpMessageHandlerBuilder =>
                 {
                     policyHttpMessageHandlers = httpMessageHandlerBuilder
@@ -293,7 +293,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 resilienceOptions,
                 policyHttpMessageHandlers);
             resiliencePoliciesAsserter.PoliciesShouldBeConfiguredAsExpected();
-            resiliencePoliciesAsserter.PoliciesShouldTriggerPolicyEventHandler(typeof(TestResiliencePolicyEventHandler));
+            resiliencePoliciesAsserter.PoliciesShouldTriggerPolicyEventHandler(typeof(TestResiliencePoliciesEventHandler));
         }
 
         /// <summary>
@@ -376,7 +376,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
 
         public void Dispose()
         {
-            TestResiliencePolicyEventHandler.Clear();
+            TestResiliencePoliciesEventHandler.Clear();
         }
     }
 }

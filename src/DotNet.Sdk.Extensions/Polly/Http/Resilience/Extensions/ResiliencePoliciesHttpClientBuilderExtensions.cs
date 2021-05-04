@@ -14,13 +14,13 @@ using Microsoft.Extensions.Options;
 
 namespace DotNet.Sdk.Extensions.Polly.Http.Resilience.Extensions
 {
-    public static class ResiliencePolicyHttpClientBuilderExtensions
+    public static class ResiliencePoliciesHttpClientBuilderExtensions
     {
         public static IHttpClientBuilder AddResiliencePolicies(
             this IHttpClientBuilder httpClientBuilder,
             string optionsName)
         {
-            return httpClientBuilder.AddResiliencePoliciesCore<DefaultResiliencePolicyEventHandler>(
+            return httpClientBuilder.AddResiliencePoliciesCore<DefaultResiliencePoliciesEventHandler>(
                 optionsName: optionsName,
                 configureOptions: null);
         }
@@ -29,7 +29,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Resilience.Extensions
             this IHttpClientBuilder httpClientBuilder,
             Action<ResilienceOptions> configureOptions)
         {
-            return httpClientBuilder.AddResiliencePoliciesCore<DefaultResiliencePolicyEventHandler>(
+            return httpClientBuilder.AddResiliencePoliciesCore<DefaultResiliencePoliciesEventHandler>(
                 optionsName: null,
                 configureOptions: configureOptions);
         }
@@ -37,7 +37,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Resilience.Extensions
         public static IHttpClientBuilder AddResiliencePolicies<TPolicyEventHandler>(
             this IHttpClientBuilder httpClientBuilder,
             string optionsName)
-            where TPolicyEventHandler : class, IResiliencePolicyEventHandler
+            where TPolicyEventHandler : class, IResiliencePoliciesEventHandler
         {
             return httpClientBuilder.AddResiliencePoliciesCore<TPolicyEventHandler>(
                 optionsName: optionsName,
@@ -47,7 +47,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Resilience.Extensions
         public static IHttpClientBuilder AddResiliencePolicies<TPolicyEventHandler>(
             this IHttpClientBuilder httpClientBuilder,
             Action<ResilienceOptions> configureOptions)
-            where TPolicyEventHandler : class, IResiliencePolicyEventHandler
+            where TPolicyEventHandler : class, IResiliencePoliciesEventHandler
         {
             return httpClientBuilder.AddResiliencePoliciesCore<TPolicyEventHandler>(
                 optionsName: null,
@@ -58,7 +58,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Resilience.Extensions
             this IHttpClientBuilder httpClientBuilder,
             string? optionsName = null,
             Action<ResilienceOptions>? configureOptions = null)
-            where TPolicyEventHandler : class, IResiliencePolicyEventHandler
+            where TPolicyEventHandler : class, IResiliencePoliciesEventHandler
         {
             var httpClientName = httpClientBuilder.Name;
             optionsName ??= $"{httpClientName}_resilience_{Guid.NewGuid()}";

@@ -11,14 +11,14 @@ using DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Auxiliary;
 
 namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Auxiliary
 {
-    public class TestResiliencePolicyEventHandler : IResiliencePolicyEventHandler
+    public class TestResiliencePoliciesEventHandler : IResiliencePoliciesEventHandler
     {
-        private readonly TestTimeoutPolicyEventHandler _timeoutPolicyEventHandler;
+        public readonly TestTimeoutPolicyEventHandler _timeoutPolicyEventHandler;
         private readonly TestRetryPolicyEventHandler _retryPolicyEventHandler;
         private readonly TestCircuitBreakerPolicyEventHandler _circuitBreakerPolicyEventHandler;
         private readonly TestFallbackPolicyEventHandler _fallbackPolicyEventHandler;
 
-        public TestResiliencePolicyEventHandler()
+        public TestResiliencePoliciesEventHandler()
         {
             _timeoutPolicyEventHandler = new TestTimeoutPolicyEventHandler();
             _retryPolicyEventHandler = new TestRetryPolicyEventHandler();

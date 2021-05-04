@@ -6,7 +6,7 @@ using DotNet.Sdk.Extensions.Polly.Http.Timeout.Events;
 
 namespace DotNet.Sdk.Extensions.Polly.Http.Resilience.Events
 {
-    public class DefaultResiliencePolicyEventHandler : IResiliencePolicyEventHandler
+    public class DefaultResiliencePoliciesEventHandler : IResiliencePoliciesEventHandler
     {
         public Task OnTimeoutAsync(TimeoutEvent timeoutEvent)
         {
