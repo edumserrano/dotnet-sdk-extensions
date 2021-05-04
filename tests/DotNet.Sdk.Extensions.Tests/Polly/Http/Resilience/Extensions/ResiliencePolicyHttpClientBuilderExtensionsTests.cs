@@ -14,8 +14,9 @@ using Polly.Wrap;
 using Shouldly;
 using Xunit;
 
-namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience
+namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
 {
+    [Trait("Category", XUnitCategories.Polly)]
     public class ResiliencePolicyHttpClientBuilderExtensionsTests
     {
         [Fact]

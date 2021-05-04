@@ -3,6 +3,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker;
 using DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker.Events;
 using DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker.Extensions;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers;
@@ -53,19 +54,22 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
         {
             AsyncPolicyWrap<HttpResponseMessage>? circuitBreakerPolicy = null;
             var httpClientName = "GitHub";
-            var durationOfBreakInSecs = 30;
-            var samplingDurationInSecs = 60;
-            var failureThreshold = 0.6;
-            var minimumThroughput = 10;
+            var circuitBreakerOptions = new CircuitBreakerOptions
+            {
+                DurationOfBreakInSecs = 30,
+                SamplingDurationInSecs = 60,
+                FailureThreshold = 0.6,
+                MinimumThroughput = 10
+            };
             var services = new ServiceCollection();
             services
                 .AddHttpClient(httpClientName)
                 .AddCircuitBreakerPolicy(options =>
                 {
-                    options.DurationOfBreakInSecs = durationOfBreakInSecs;
-                    options.SamplingDurationInSecs = samplingDurationInSecs;
-                    options.FailureThreshold = failureThreshold;
-                    options.MinimumThroughput = minimumThroughput;
+                    options.DurationOfBreakInSecs = circuitBreakerOptions.DurationOfBreakInSecs;
+                    options.SamplingDurationInSecs = circuitBreakerOptions.SamplingDurationInSecs;
+                    options.FailureThreshold = circuitBreakerOptions.FailureThreshold;
+                    options.MinimumThroughput = circuitBreakerOptions.MinimumThroughput;
                 })
                 .ConfigureHttpMessageHandlerBuilder(httpMessageHandlerBuilder =>
                 {
@@ -77,14 +81,11 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
             var serviceProvider = services.BuildServiceProvider();
             serviceProvider.InstantiateNamedHttpClient(httpClientName);
 
-            circuitBreakerPolicy.ShouldNotBeNull();
-            circuitBreakerPolicy.ShouldTriggerPolicyEventHandler(
-                httpClientName: httpClientName,
-                durationOfBreakInSecs: durationOfBreakInSecs,
-                samplingDurationInSecs: samplingDurationInSecs,
-                failureThreshold: failureThreshold,
-                minimumThroughput: minimumThroughput,
-                policyEventHandler: typeof(DefaultCircuitBreakerPolicyEventHandler));
+            var circuitBreakerAsserter = new CircuitBreakerPolicyAsserter(
+                httpClientName,
+                circuitBreakerOptions,
+                circuitBreakerPolicy);
+            circuitBreakerAsserter.PolicyShouldTriggerPolicyEventHandler(typeof(DefaultCircuitBreakerPolicyEventHandler));
         }
 
         /// <summary>
@@ -102,19 +103,22 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
         {
             AsyncPolicyWrap<HttpResponseMessage>? circuitBreakerPolicy = null;
             var httpClientName = "GitHub";
-            var durationOfBreakInSecs = 30;
-            var samplingDurationInSecs = 60;
-            var failureThreshold = 0.6;
-            var minimumThroughput = 10;
+            var circuitBreakerOptions = new CircuitBreakerOptions
+            {
+                DurationOfBreakInSecs = 30,
+                SamplingDurationInSecs = 60,
+                FailureThreshold = 0.6,
+                MinimumThroughput = 10
+            };
             var services = new ServiceCollection();
             services
                 .AddHttpClient(httpClientName)
                 .AddCircuitBreakerPolicy<TestCircuitBreakerPolicyEventHandler>(options =>
                 {
-                    options.DurationOfBreakInSecs = durationOfBreakInSecs;
-                    options.SamplingDurationInSecs = samplingDurationInSecs;
-                    options.FailureThreshold = failureThreshold;
-                    options.MinimumThroughput = minimumThroughput;
+                    options.DurationOfBreakInSecs = circuitBreakerOptions.DurationOfBreakInSecs;
+                    options.SamplingDurationInSecs = circuitBreakerOptions.SamplingDurationInSecs;
+                    options.FailureThreshold = circuitBreakerOptions.FailureThreshold;
+                    options.MinimumThroughput = circuitBreakerOptions.MinimumThroughput;
                 })
                 .ConfigureHttpMessageHandlerBuilder(httpMessageHandlerBuilder =>
                 {
@@ -126,14 +130,11 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
             var serviceProvider = services.BuildServiceProvider();
             serviceProvider.InstantiateNamedHttpClient(httpClientName);
 
-            circuitBreakerPolicy.ShouldNotBeNull();
-            circuitBreakerPolicy.ShouldTriggerPolicyEventHandler(
-                httpClientName: httpClientName,
-                durationOfBreakInSecs: durationOfBreakInSecs,
-                samplingDurationInSecs: samplingDurationInSecs,
-                failureThreshold: failureThreshold,
-                minimumThroughput: minimumThroughput,
-                policyEventHandler: typeof(TestCircuitBreakerPolicyEventHandler));
+            var circuitBreakerAsserter = new CircuitBreakerPolicyAsserter(
+                httpClientName,
+                circuitBreakerOptions,
+                circuitBreakerPolicy);
+            circuitBreakerAsserter.PolicyShouldTriggerPolicyEventHandler(typeof(TestCircuitBreakerPolicyEventHandler));
         }
 
         /// <summary>
@@ -149,19 +150,22 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
         {
             AsyncPolicyWrap<HttpResponseMessage>? wrappedCircuitBreakerPolicy = null;
             var httpClientName = "GitHub";
-            var durationOfBreakInSecs = 1;
-            var samplingDurationInSecs = 60;
-            var failureThreshold = 0.5;
-            var minimumThroughput = 4;
+            var circuitBreakerOptions = new CircuitBreakerOptions
+            {
+                DurationOfBreakInSecs = 1,
+                SamplingDurationInSecs = 60,
+                FailureThreshold = 0.5,
+                MinimumThroughput = 4
+            };
             var services = new ServiceCollection();
             services
                 .AddHttpClient(httpClientName)
                 .AddCircuitBreakerPolicy<TestCircuitBreakerPolicyEventHandler>(options =>
                 {
-                    options.DurationOfBreakInSecs = durationOfBreakInSecs;
-                    options.SamplingDurationInSecs = samplingDurationInSecs;
-                    options.FailureThreshold = failureThreshold;
-                    options.MinimumThroughput = minimumThroughput;
+                    options.DurationOfBreakInSecs = circuitBreakerOptions.DurationOfBreakInSecs;
+                    options.SamplingDurationInSecs = circuitBreakerOptions.SamplingDurationInSecs;
+                    options.FailureThreshold = circuitBreakerOptions.FailureThreshold;
+                    options.MinimumThroughput = circuitBreakerOptions.MinimumThroughput;
                 })
                 .ConfigurePrimaryHttpMessageHandler(() =>
                 {
@@ -201,7 +205,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
             TestCircuitBreakerPolicyEventHandler.OnHalfOpenAsyncCalls.Count.ShouldBe(0);
 
             // trigger the OnBreak by triggering the circuit breaker
-            for (var i = 0; i < minimumThroughput; i++)
+            for (var i = 0; i < circuitBreakerOptions.MinimumThroughput; i++)
             {
                 await httpClient.GetAsync("https://github.com/fail");
             }
@@ -211,8 +215,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
 
             // wait for the circuit to reset to trigger the OnReset and
             // put some successful traffic to trigger the OnHalfOpen
-            await Task.Delay(TimeSpan.FromSeconds(durationOfBreakInSecs + 1));
-            for (var i = 0; i < minimumThroughput; i++)
+            await Task.Delay(TimeSpan.FromSeconds(circuitBreakerOptions.DurationOfBreakInSecs + 1));
+            for (var i = 0; i < circuitBreakerOptions.MinimumThroughput; i++)
             {
                 await httpClient.GetAsync("https://github.com/ok");
             }
@@ -223,24 +227,24 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
             // assert some properties on the events
             TestCircuitBreakerPolicyEventHandler.OnBreakAsyncCalls
                 .Count(x => x.HttpClientName.Equals(httpClientName)
-                            && x.CircuitBreakerOptions.DurationOfBreakInSecs.Equals(durationOfBreakInSecs)
-                            && x.CircuitBreakerOptions.FailureThreshold.Equals(failureThreshold)
-                            && x.CircuitBreakerOptions.MinimumThroughput.Equals(minimumThroughput)
-                            && x.CircuitBreakerOptions.SamplingDurationInSecs.Equals(samplingDurationInSecs))
+                            && x.CircuitBreakerOptions.DurationOfBreakInSecs.Equals(circuitBreakerOptions.DurationOfBreakInSecs)
+                            && x.CircuitBreakerOptions.FailureThreshold.Equals(circuitBreakerOptions.FailureThreshold)
+                            && x.CircuitBreakerOptions.MinimumThroughput.Equals(circuitBreakerOptions.MinimumThroughput)
+                            && x.CircuitBreakerOptions.SamplingDurationInSecs.Equals(circuitBreakerOptions.SamplingDurationInSecs))
                 .ShouldBe(2);
             TestCircuitBreakerPolicyEventHandler.OnResetAsyncCalls
                 .Count(x => x.HttpClientName.Equals(httpClientName)
-                            && x.CircuitBreakerOptions.DurationOfBreakInSecs.Equals(durationOfBreakInSecs)
-                            && x.CircuitBreakerOptions.FailureThreshold.Equals(failureThreshold)
-                            && x.CircuitBreakerOptions.MinimumThroughput.Equals(minimumThroughput)
-                            && x.CircuitBreakerOptions.SamplingDurationInSecs.Equals(samplingDurationInSecs))
+                            && x.CircuitBreakerOptions.DurationOfBreakInSecs.Equals(circuitBreakerOptions.DurationOfBreakInSecs)
+                            && x.CircuitBreakerOptions.FailureThreshold.Equals(circuitBreakerOptions.FailureThreshold)
+                            && x.CircuitBreakerOptions.MinimumThroughput.Equals(circuitBreakerOptions.MinimumThroughput)
+                            && x.CircuitBreakerOptions.SamplingDurationInSecs.Equals(circuitBreakerOptions.SamplingDurationInSecs))
                 .ShouldBe(2);
             TestCircuitBreakerPolicyEventHandler.OnHalfOpenAsyncCalls
                 .Count(x => x.HttpClientName.Equals(httpClientName)
-                            && x.CircuitBreakerOptions.DurationOfBreakInSecs.Equals(durationOfBreakInSecs)
-                            && x.CircuitBreakerOptions.FailureThreshold.Equals(failureThreshold)
-                            && x.CircuitBreakerOptions.MinimumThroughput.Equals(minimumThroughput)
-                            && x.CircuitBreakerOptions.SamplingDurationInSecs.Equals(samplingDurationInSecs))
+                            && x.CircuitBreakerOptions.DurationOfBreakInSecs.Equals(circuitBreakerOptions.DurationOfBreakInSecs)
+                            && x.CircuitBreakerOptions.FailureThreshold.Equals(circuitBreakerOptions.FailureThreshold)
+                            && x.CircuitBreakerOptions.MinimumThroughput.Equals(circuitBreakerOptions.MinimumThroughput)
+                            && x.CircuitBreakerOptions.SamplingDurationInSecs.Equals(circuitBreakerOptions.SamplingDurationInSecs))
                 .ShouldBe(1);
         }
 

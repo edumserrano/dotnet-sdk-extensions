@@ -10,10 +10,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Resilience.Extensions
             this IServiceCollection services,
             string name)
         {
-            return services
-                .AddSingleton<IValidateOptions<ResilienceOptions>, ResilienceOptionsValidation>()
-                .AddOptions<ResilienceOptions>(name)
-                .ValidateDataAnnotations();
+            return services.AddOptions<ResilienceOptions>(name);
         }
 
         public static ResilienceOptions GetHttpClientResilienceOptions(

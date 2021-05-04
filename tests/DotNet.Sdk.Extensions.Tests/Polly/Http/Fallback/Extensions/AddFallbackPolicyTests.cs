@@ -59,11 +59,9 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Fallback.Extensions
             var serviceProvider = services.BuildServiceProvider();
             serviceProvider.InstantiateNamedHttpClient(httpClientName);
 
-            fallbackPolicy.ShouldNotBeNull();
-            fallbackPolicy.ShouldBeConfiguredAsExpected();
-            fallbackPolicy.ShouldTriggerPolicyEventHandler(
-                httpClientName: httpClientName,
-                policyEventHandler: typeof(DefaultFallbackPolicyEventHandler));
+            var fallbackPolicyAsserter = new FallbackPolicyAsserter(httpClientName, fallbackPolicy);
+            fallbackPolicyAsserter.PolicyShouldBeConfiguredAsExpected();
+            fallbackPolicyAsserter.PolicyShouldTriggerPolicyEventHandler(typeof(DefaultFallbackPolicyEventHandler));
         }
 
         /// <summary>
@@ -91,11 +89,9 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Fallback.Extensions
             var serviceProvider = services.BuildServiceProvider();
             serviceProvider.InstantiateNamedHttpClient(httpClientName);
 
-            fallbackPolicy.ShouldNotBeNull();
-            fallbackPolicy.ShouldBeConfiguredAsExpected();
-            fallbackPolicy.ShouldTriggerPolicyEventHandler(
-                httpClientName: httpClientName,
-                policyEventHandler: typeof(TestFallbackPolicyEventHandler));
+            var fallbackPolicyAsserter = new FallbackPolicyAsserter(httpClientName, fallbackPolicy);
+            fallbackPolicyAsserter.PolicyShouldBeConfiguredAsExpected();
+            fallbackPolicyAsserter.PolicyShouldTriggerPolicyEventHandler(typeof(TestFallbackPolicyEventHandler));
         }
 
         /// <summary>

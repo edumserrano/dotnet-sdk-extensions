@@ -3,6 +3,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using DotNet.Sdk.Extensions.Polly.Http.Retry;
 using DotNet.Sdk.Extensions.Polly.Http.Retry.Events;
 using DotNet.Sdk.Extensions.Polly.Http.Retry.Extensions;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers;
@@ -50,15 +51,18 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
         {
             AsyncRetryPolicy<HttpResponseMessage>? retryPolicy = null;
             var httpClientName = "GitHub";
-            var retryCount = 2;
-            var medianFirstRetryDelayInSecs = 1;
+            var retryOptions = new RetryOptions
+            {
+                RetryCount = 2,
+                MedianFirstRetryDelayInSecs = 1
+            };
             var services = new ServiceCollection();
             services
                 .AddHttpClient(httpClientName)
                 .AddRetryPolicy(options =>
                 {
-                    options.RetryCount = retryCount;
-                    options.MedianFirstRetryDelayInSecs = medianFirstRetryDelayInSecs;
+                    options.RetryCount = retryOptions.RetryCount;
+                    options.MedianFirstRetryDelayInSecs = retryOptions.MedianFirstRetryDelayInSecs;
                 })
                 .ConfigureHttpMessageHandlerBuilder(httpMessageHandlerBuilder =>
                 {
@@ -69,13 +73,12 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
 
             var serviceProvider = services.BuildServiceProvider();
             serviceProvider.InstantiateNamedHttpClient(httpClientName);
-
-            retryPolicy.ShouldNotBeNull();
-            retryPolicy.ShouldTriggerPolicyEventHandler(
-                httpClientName: httpClientName,
-                retryCount: retryCount,
-                medianFirstRetryDelayInSecs: medianFirstRetryDelayInSecs,
-                policyEventHandler: typeof(DefaultRetryPolicyEventHandler));
+            
+            var retryPolicyAsserter = new RetryPolicyAsserter(
+                httpClientName,
+                retryOptions,
+                retryPolicy);
+            retryPolicyAsserter.PolicyShouldTriggerPolicyEventHandler(typeof(DefaultRetryPolicyEventHandler));
         }
 
         /// <summary>
@@ -91,15 +94,18 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
         {
             AsyncRetryPolicy<HttpResponseMessage>? retryPolicy = null;
             var httpClientName = "GitHub";
-            var retryCount = 2;
-            var medianFirstRetryDelayInSecs = 1;
+            var retryOptions = new RetryOptions
+            {
+                RetryCount = 2,
+                MedianFirstRetryDelayInSecs = 1
+            };
             var services = new ServiceCollection();
             services
                 .AddHttpClient(httpClientName)
                 .AddRetryPolicy<TestRetryPolicyEventHandler>(options =>
                 {
-                    options.RetryCount = retryCount;
-                    options.MedianFirstRetryDelayInSecs = medianFirstRetryDelayInSecs;
+                    options.RetryCount = retryOptions.RetryCount;
+                    options.MedianFirstRetryDelayInSecs = retryOptions.MedianFirstRetryDelayInSecs;
                 })
                 .ConfigureHttpMessageHandlerBuilder(httpMessageHandlerBuilder =>
                 {
@@ -111,12 +117,11 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
             var serviceProvider = services.BuildServiceProvider();
             serviceProvider.InstantiateNamedHttpClient(httpClientName);
 
-            retryPolicy.ShouldNotBeNull();
-            retryPolicy.ShouldTriggerPolicyEventHandler(
-                httpClientName: httpClientName,
-                retryCount: retryCount,
-                medianFirstRetryDelayInSecs: medianFirstRetryDelayInSecs,
-                policyEventHandler: typeof(TestRetryPolicyEventHandler));
+            var retryPolicyAsserter = new RetryPolicyAsserter(
+                httpClientName,
+                retryOptions,
+                retryPolicy);
+            retryPolicyAsserter.PolicyShouldTriggerPolicyEventHandler(typeof(TestRetryPolicyEventHandler));
         }
 
         /// <summary>
@@ -130,15 +135,18 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
         public async Task AddRetryPolicyTriggersCustomEventHandler()
         {
             var httpClientName = "GitHub";
-            var retryCount = 2;
-            var medianFirstRetryDelayInSecs = 0.05; //50 ms
+            var retryOptions = new RetryOptions
+            {
+                RetryCount = 2,
+                MedianFirstRetryDelayInSecs = 0.05 //50 ms
+            };
             var services = new ServiceCollection();
             services
                 .AddHttpClient(httpClientName)
                 .AddRetryPolicy<TestRetryPolicyEventHandler>(options =>
                 {
-                    options.RetryCount = retryCount;
-                    options.MedianFirstRetryDelayInSecs = medianFirstRetryDelayInSecs;
+                    options.RetryCount = retryOptions.RetryCount;
+                    options.MedianFirstRetryDelayInSecs = retryOptions.MedianFirstRetryDelayInSecs;
                 })
                 .ConfigurePrimaryHttpMessageHandler(() =>
                 {
@@ -154,12 +162,12 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
             await httpClient.GetAsync("https://github.com");
 
-            TestRetryPolicyEventHandler.OnRetryAsyncCalls.Count.ShouldBe(retryCount);
+            TestRetryPolicyEventHandler.OnRetryAsyncCalls.Count.ShouldBe(retryOptions.RetryCount);
             foreach (var retryEvent in TestRetryPolicyEventHandler.OnRetryAsyncCalls)
             {
                 retryEvent.HttpClientName.ShouldBe(httpClientName);
-                retryEvent.RetryOptions.RetryCount.ShouldBe(retryCount);
-                retryEvent.RetryOptions.MedianFirstRetryDelayInSecs.ShouldBe(medianFirstRetryDelayInSecs);
+                retryEvent.RetryOptions.RetryCount.ShouldBe(retryOptions.RetryCount);
+                retryEvent.RetryOptions.MedianFirstRetryDelayInSecs.ShouldBe(retryOptions.MedianFirstRetryDelayInSecs);
             }
         }
 

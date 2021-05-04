@@ -42,7 +42,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Fallback
                         {
                             IsolatedCircuitException isolatedCircuitException => new CircuitBrokenHttpResponseMessage(isolatedCircuitException),
                             BrokenCircuitException brokenCircuitException => new CircuitBrokenHttpResponseMessage(brokenCircuitException),
-                            _ => throw new ArgumentOutOfRangeException(nameof(delegateResult.Exception), $"FallbackPolicyFactory: unexpected exception of type {delegateResult.Exception.GetType()}")
+                            _ => throw new ArgumentOutOfRangeException(nameof(delegateResult), $"FallbackPolicyFactory: unexpected exception of type {delegateResult.Exception.GetType()}")
                         };
                         return Task.FromResult<HttpResponseMessage>(circuitBrokenHttpResponseMessage);
                     },

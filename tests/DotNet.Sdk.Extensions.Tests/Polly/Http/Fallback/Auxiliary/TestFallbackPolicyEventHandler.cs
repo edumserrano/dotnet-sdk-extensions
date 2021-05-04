@@ -12,7 +12,6 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Fallback.Auxiliary
 
         public static IList<TaskCancelledFallbackEvent> OnTaskCancelledFallbackAsyncCalls { get; } = new List<TaskCancelledFallbackEvent>();
 
-
         public Task OnTimeoutFallbackAsync(TimeoutFallbackEvent timeoutFallbackEvent)
         {
             OnTimeoutFallbackAsyncCalls.Add(timeoutFallbackEvent);
