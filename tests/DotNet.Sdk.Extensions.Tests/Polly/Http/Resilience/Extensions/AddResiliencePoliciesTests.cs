@@ -31,7 +31,6 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
     /// Because of the reflection usage these tests can break when updating the Polly packages.
     /// </summary>
     [Trait("Category", XUnitCategories.Polly)]
-    [Collection(XUnitTestCollections.RetryPolicy)]
     public class AddResiliencePoliciesTests : IDisposable
     {
         /// <summary>
