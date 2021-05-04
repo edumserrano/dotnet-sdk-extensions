@@ -10,9 +10,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Timeout.Extensions
             this IServiceCollection services,
             string name)
         {
-            return services
-                .AddOptions<TimeoutOptions>(name: name)
-                .ValidateDataAnnotations();
+            return services.AddOptions<TimeoutOptions>(name: name);
         }
 
         public static TimeoutOptions GetHttpClientTimeoutOptions(

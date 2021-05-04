@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using DotNet.Sdk.Extensions.Polly.Http.Fallback.FallbackHttpResponseMessages;
 using DotNet.Sdk.Extensions.Polly.Policies;
 using NSubstitute;
 using Polly;
@@ -19,7 +20,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Policies
             {
                 CircuitBreakerCheckerAsyncPolicy<int>.Create(
                     circuitBreakerPolicy: null!,
-                    factory: (context, token) => Task.FromResult(1));
+                    factory: (circuitBreakerState, context, token) => Task.FromResult(1));
             });
             exception1.Message.ShouldBe("Value cannot be null. (Parameter 'circuitBreakerPolicy')");
             
@@ -40,7 +41,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Policies
                 .CircuitBreakerAsync(exceptionsAllowedBeforeBreaking: 2, durationOfBreak: TimeSpan.FromMinutes(1));
             var circuitBreakerCheckerPolicy = CircuitBreakerCheckerAsyncPolicy<int>.Create(
                 circuitBreakerPolicy: circuitBreakerPolicy,
-                factory: (context, token) => Task.FromResult(1));
+                factory: (circuitBreakerState, context, token) => Task.FromResult(1));
 
             // when the circuit breaker of the circuit breaker policy is not open
             // the circuit breaker checker policy will not do anything
@@ -51,12 +52,17 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Policies
         [Fact]
         public async Task CircuitBreakerCheckerWhenCircuitIsIsolated()
         {
+            CircuitBreakerState? circuitBreakerState = null;
             var circuitBreakerPolicy = Policy
                 .Handle<Exception>()
                 .CircuitBreakerAsync(exceptionsAllowedBeforeBreaking: 2, durationOfBreak: TimeSpan.FromMinutes(1));
             var circuitBreakerCheckerPolicy = CircuitBreakerCheckerAsyncPolicy<int>.Create(
                 circuitBreakerPolicy: circuitBreakerPolicy,
-                factory: (context, token) => Task.FromResult(1));
+                factory: (state, context, token) =>
+                {
+                    circuitBreakerState = state;
+                    return Task.FromResult(1);
+                });
 
             // when the circuit breaker of the circuit breaker policy is open
             // the circuit breaker checker policy will not call the action
@@ -71,18 +77,24 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Policies
             });
             var policyResult = await circuitBreakerCheckerPolicy.ExecuteAsync(() => Task.FromResult(2));
             policyResult.ShouldBe(1);
+            circuitBreakerState.ShouldBe(CircuitBreakerState.Isolated);
         }
 
         [Fact]
         public async Task CircuitBreakerCheckerWhenCircuitIsOpen()
         {
+            CircuitBreakerState? circuitBreakerState = null;
             var exceptionsAllowedBeforeBreaking = 2;
             var circuitBreakerPolicy = Policy
                 .Handle<Exception>()
                 .CircuitBreakerAsync(exceptionsAllowedBeforeBreaking: exceptionsAllowedBeforeBreaking, durationOfBreak: TimeSpan.FromMinutes(1));
             var circuitBreakerCheckerPolicy = CircuitBreakerCheckerAsyncPolicy<int>.Create(
                 circuitBreakerPolicy: circuitBreakerPolicy,
-                factory: (context, token) => Task.FromResult(1));
+                factory: (state, context, token) =>
+                {
+                    circuitBreakerState = state;
+                    return Task.FromResult(1);
+                });
 
             for (var i = 0; i < exceptionsAllowedBeforeBreaking; i++)
             {
@@ -94,6 +106,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Policies
             });
             var policyResult = await circuitBreakerCheckerPolicy.ExecuteAsync(() => Task.FromResult(2));
             policyResult.ShouldBe(1);
+            circuitBreakerState.ShouldBe(CircuitBreakerState.Open);
         }
     }
 }
