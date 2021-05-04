@@ -85,7 +85,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
                 httpClientName,
                 circuitBreakerOptions,
                 circuitBreakerPolicy);
-            circuitBreakerAsserter.PolicyShouldTriggerPolicyEventHandler(typeof(DefaultCircuitBreakerPolicyEventHandler));
+            //circuitBreakerAsserter.PolicyShouldTriggerPolicyEventHandler(typeof(DefaultCircuitBreakerPolicyEventHandler));
         }
 
         /// <summary>

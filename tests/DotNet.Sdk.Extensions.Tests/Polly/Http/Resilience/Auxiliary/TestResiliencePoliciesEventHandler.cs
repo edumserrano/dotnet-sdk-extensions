@@ -13,14 +13,12 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Auxiliary
 {
     public class TestResiliencePoliciesEventHandler : IResiliencePoliciesEventHandler
     {
-        public readonly TestTimeoutPolicyEventHandler _timeoutPolicyEventHandler;
         private readonly TestRetryPolicyEventHandler _retryPolicyEventHandler;
         private readonly TestCircuitBreakerPolicyEventHandler _circuitBreakerPolicyEventHandler;
         private readonly TestFallbackPolicyEventHandler _fallbackPolicyEventHandler;
 
         public TestResiliencePoliciesEventHandler()
         {
-            _timeoutPolicyEventHandler = new TestTimeoutPolicyEventHandler();
             _retryPolicyEventHandler = new TestRetryPolicyEventHandler();
             _circuitBreakerPolicyEventHandler = new TestCircuitBreakerPolicyEventHandler();
             _fallbackPolicyEventHandler = new TestFallbackPolicyEventHandler();
@@ -28,7 +26,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Auxiliary
 
         public Task OnTimeoutAsync(TimeoutEvent timeoutEvent)
         {
-            return _timeoutPolicyEventHandler.OnTimeoutAsync(timeoutEvent);
+            return Task.CompletedTask;
         }
        
         public Task OnRetryAsync(RetryEvent retryEvent)
@@ -68,7 +66,6 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Auxiliary
 
         public static void Clear()
         {
-            TestTimeoutPolicyEventHandler.Clear();
             TestRetryPolicyEventHandler.Clear();
             TestCircuitBreakerPolicyEventHandler.Clear();
             TestFallbackPolicyEventHandler.Clear();

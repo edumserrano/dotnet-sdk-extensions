@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Linq;
 using System.Net.Http;
+using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Polly.Http.Timeout;
 using DotNet.Sdk.Extensions.Polly.Http.Timeout.Events;
 using DotNet.Sdk.Extensions.Polly.Http.Timeout.Extensions;
+using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers;
 using DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary;
 using DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Auxiliary;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,19 +17,10 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
 {
     /// <summary>
     /// Tests for the <see cref="TimeoutPolicyHttpClientBuilderExtensions"/> class.
-    /// Specifically for the TimeoutPolicyHttpClientBuilderExtensions.AddTimeoutPolicy overloads.
-    /// 
-    /// Many tests here use reflection to check that the policy is configured as expected.
-    /// Although I'd prefer to do it without using reflection I couldn't find an alternative.
-    /// At least not one that wouldn't force me to trigger the policy in different scenarios
-    /// to check what I need. If I did that then it would almost be like testing that the Polly
-    /// policies do what they are supposed to do and my intention is NOT to test the Polly code.
-    ///
-    /// Because of the reflection usage these tests can break when updating the Polly packages.
+    /// Specifically for the TimeoutPolicyHttpClientBuilderExtensions.AddTimeoutPolicy overloads. 
     /// </summary>
     [Trait("Category", XUnitCategories.Polly)]
-    [Collection(XUnitTestCollections.TimeoutPolicy)]
-    public class AddTimeoutPolicyTests : IDisposable
+    public class AddTimeoutPolicyTests
     {
         /// <summary>
         /// Tests that the <see cref="TimeoutPolicyHttpClientBuilderExtensions.AddTimeoutPolicy(IHttpClientBuilder,Action{TimeoutOptions})"/>
@@ -36,13 +29,13 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
         /// This overload accepts only an action to configure the value of the <see cref="TimeoutOptions"/>.
         /// </summary>
         [Fact]
-        public void AddTimeoutPolicy1()
+        public async Task AddTimeoutPolicy1()
         {
-            AsyncTimeoutPolicy<HttpResponseMessage>? timeoutPolicy = null;
+            var testHttpMessageHandler = new TestHttpMessageHandler();
             var httpClientName = "GitHub";
             var timeoutOptions = new TimeoutOptions
             {
-                TimeoutInSecs = 1
+                TimeoutInSecs = 0.05
             };
             var services = new ServiceCollection();
             services
@@ -51,22 +44,14 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
                 {
                     options.TimeoutInSecs = timeoutOptions.TimeoutInSecs;
                 })
-                .ConfigureHttpMessageHandlerBuilder(httpMessageHandlerBuilder =>
-                {
-                    timeoutPolicy = httpMessageHandlerBuilder.AdditionalHandlers
-                        .GetPolicies<AsyncTimeoutPolicy<HttpResponseMessage>>()
-                        .FirstOrDefault();
-                });
+                .ConfigurePrimaryHttpMessageHandler(() => testHttpMessageHandler);
 
             var serviceProvider = services.BuildServiceProvider();
-            serviceProvider.InstantiateNamedHttpClient(httpClientName);
-            
-            var timeoutPolicyAsserter = new TimeoutPolicyAsserter(
-                httpClientName,
-                timeoutOptions,
-                timeoutPolicy);
-            timeoutPolicyAsserter.PolicyShouldBeConfiguredAsExpected();
-            timeoutPolicyAsserter.PolicyShouldTriggerPolicyEventHandler(typeof(DefaultTimeoutPolicyEventHandler));
+            var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
+            await Should.ThrowAsync<TimeoutRejectedException>(() =>
+            {
+                return httpClient.TriggerTimeoutPolicyAsync(timeoutOptions, testHttpMessageHandler);
+            });
         }
 
         /// <summary>
@@ -78,13 +63,13 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
         /// <see cref="TimeoutOptionsExtensions.AddHttpClientTimeoutOptions"/> extension method.
         /// </summary>
         [Fact]
-        public void AddTimeoutPolicy2()
+        public async Task AddTimeoutPolicy2()
         {
-            AsyncTimeoutPolicy<HttpResponseMessage>? timeoutPolicy = null;
+            var testHttpMessageHandler = new TestHttpMessageHandler();
             var httpClientName = "GitHub";
             var timeoutOptions = new TimeoutOptions
             {
-                TimeoutInSecs = 1
+                TimeoutInSecs = 0.05
             };
             var optionsName = "GitHubOptions";
             var services = new ServiceCollection();
@@ -94,22 +79,14 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
             services
                 .AddHttpClient(httpClientName)
                 .AddTimeoutPolicy(optionsName)
-                .ConfigureHttpMessageHandlerBuilder(httpMessageHandlerBuilder =>
-                {
-                    timeoutPolicy = httpMessageHandlerBuilder.AdditionalHandlers
-                        .GetPolicies<AsyncTimeoutPolicy<HttpResponseMessage>>()
-                        .FirstOrDefault();
-                });
+                .ConfigurePrimaryHttpMessageHandler(() => testHttpMessageHandler);
 
             var serviceProvider = services.BuildServiceProvider();
-            serviceProvider.InstantiateNamedHttpClient(httpClientName);
-
-            var timeoutPolicyAsserter = new TimeoutPolicyAsserter(
-                httpClientName,
-                timeoutOptions,
-                timeoutPolicy);
-            timeoutPolicyAsserter.PolicyShouldBeConfiguredAsExpected();
-            timeoutPolicyAsserter.PolicyShouldTriggerPolicyEventHandler(typeof(DefaultTimeoutPolicyEventHandler));
+            var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
+            await Should.ThrowAsync<TimeoutRejectedException>(() =>
+            {
+                return httpClient.TriggerTimeoutPolicyAsync(timeoutOptions, testHttpMessageHandler);
+            });
         }
 
         /// <summary>
@@ -118,39 +95,40 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
         /// 
         /// This overload accepts the name of the option to use for the value of the <see cref="TimeoutOptions"/>
         /// and a <see cref="ITimeoutPolicyEventHandler"/> type to handle the timeout policy events.
+        ///
+        /// This also tests that the  <see cref="ITimeoutPolicyEventHandler.OnTimeoutAsync"/> is triggered
+        /// with the correct values.
         /// </summary>
         [Fact]
-        public void AddTimeoutPolicy3()
+        public async Task AddTimeoutPolicy3()
         {
-            AsyncTimeoutPolicy<HttpResponseMessage>? timeoutPolicy = null;
+            var timeoutPolicyEventHandlerCalls = new TimeoutPolicyEventHandlerCalls();
+            var testHttpMessageHandler = new TestHttpMessageHandler();
             var httpClientName = "GitHub";
             var timeoutOptions = new TimeoutOptions
             {
-                TimeoutInSecs = 1
+                TimeoutInSecs = 0.05
             };
             var services = new ServiceCollection();
+            services.AddSingleton(timeoutPolicyEventHandlerCalls);
             services
                 .AddHttpClient(httpClientName)
                 .AddTimeoutPolicy<TestTimeoutPolicyEventHandler>(options =>
                 {
                     options.TimeoutInSecs = timeoutOptions.TimeoutInSecs;
                 })
-                .ConfigureHttpMessageHandlerBuilder(httpMessageHandlerBuilder =>
-                {
-                    timeoutPolicy = httpMessageHandlerBuilder.AdditionalHandlers
-                        .GetPolicies<AsyncTimeoutPolicy<HttpResponseMessage>>()
-                        .FirstOrDefault();
-                });
+                .ConfigurePrimaryHttpMessageHandler(() => testHttpMessageHandler);
 
             var serviceProvider = services.BuildServiceProvider();
-            serviceProvider.InstantiateNamedHttpClient(httpClientName);
-
-            var timeoutPolicyAsserter = new TimeoutPolicyAsserter(
-                httpClientName,
-                timeoutOptions,
-                timeoutPolicy);
-            timeoutPolicyAsserter.PolicyShouldBeConfiguredAsExpected();
-            timeoutPolicyAsserter.PolicyShouldTriggerPolicyEventHandler(typeof(TestTimeoutPolicyEventHandler));
+            var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
+            await Should.ThrowAsync<TimeoutRejectedException>(() =>
+            {
+                return httpClient.TriggerTimeoutPolicyAsync(timeoutOptions, testHttpMessageHandler);
+            });
+            timeoutPolicyEventHandlerCalls.ShouldBeAsExpected(
+                count: 1,
+                httpClientName: httpClientName,
+                timeoutOptions: timeoutOptions);
         }
 
         /// <summary>
@@ -162,43 +140,44 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
         /// <see cref="TimeoutOptionsExtensions.AddHttpClientTimeoutOptions"/> extension method.
         ///
         /// This overload also accepts an <see cref="ITimeoutPolicyEventHandler"/> type to handle the timeout policy events.
+        ///
+        /// This also tests that the  <see cref="ITimeoutPolicyEventHandler.OnTimeoutAsync"/> is triggered
+        /// with the correct values.
         /// </summary>
         [Fact]
-        public void AddTimeoutPolicy4()
+        public async Task AddTimeoutPolicy4()
         {
-            AsyncTimeoutPolicy<HttpResponseMessage>? timeoutPolicy = null;
+            var timeoutPolicyEventHandlerCalls = new TimeoutPolicyEventHandlerCalls();
+            var testHttpMessageHandler = new TestHttpMessageHandler();
             var httpClientName = "GitHub";
             var timeoutOptions = new TimeoutOptions
             {
-                TimeoutInSecs = 1
+                TimeoutInSecs = 0.05
             };
             var optionsName = "GitHubOptions";
-
             var services = new ServiceCollection();
+            services.AddSingleton(timeoutPolicyEventHandlerCalls);
             services
                 .AddHttpClientTimeoutOptions(optionsName)
                 .Configure(options => options.TimeoutInSecs = timeoutOptions.TimeoutInSecs);
             services
                 .AddHttpClient(httpClientName)
                 .AddTimeoutPolicy<TestTimeoutPolicyEventHandler>(optionsName)
-                .ConfigureHttpMessageHandlerBuilder(httpMessageHandlerBuilder =>
-                {
-                    timeoutPolicy = httpMessageHandlerBuilder.AdditionalHandlers
-                        .GetPolicies<AsyncTimeoutPolicy<HttpResponseMessage>>()
-                        .FirstOrDefault();
-                });
+                .ConfigurePrimaryHttpMessageHandler(() => testHttpMessageHandler);
 
             var serviceProvider = services.BuildServiceProvider();
             serviceProvider.InstantiateNamedHttpClient(httpClientName);
-            
-            var timeoutPolicyAsserter = new TimeoutPolicyAsserter(
-                httpClientName,
-                timeoutOptions,
-                timeoutPolicy);
-            timeoutPolicyAsserter.PolicyShouldBeConfiguredAsExpected();
-            timeoutPolicyAsserter.PolicyShouldTriggerPolicyEventHandler(typeof(TestTimeoutPolicyEventHandler));
+            var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
+            await Should.ThrowAsync<TimeoutRejectedException>(() =>
+            {
+                return httpClient.TriggerTimeoutPolicyAsync(timeoutOptions, testHttpMessageHandler);
+            });
+            timeoutPolicyEventHandlerCalls.ShouldBeAsExpected(
+                count: 1,
+                httpClientName: httpClientName,
+                timeoutOptions: timeoutOptions);
         }
-        
+
         /// <summary>
         /// This tests that the policies added to the <see cref="HttpClient"/> by the
         /// TimeoutPolicyHttpClientBuilderExtensions.AddTimeoutPolicy methods are unique.
@@ -245,11 +224,6 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
             timeoutPolicy2.ShouldNotBeNull();
             ReferenceEquals(timeoutPolicy1, timeoutPolicy2).ShouldBeFalse();
             timeoutPolicy1.PolicyKey.ShouldNotBe(timeoutPolicy2.PolicyKey);
-        }
-
-        public void Dispose()
-        {
-            TestTimeoutPolicyEventHandler.Clear();
         }
     }
 }

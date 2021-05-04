@@ -78,7 +78,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
                 httpClientName,
                 retryOptions,
                 retryPolicy);
-            retryPolicyAsserter.PolicyShouldTriggerPolicyEventHandler(typeof(DefaultRetryPolicyEventHandler));
+            //retryPolicyAsserter.PolicyShouldTriggerPolicyEventHandler(typeof(DefaultRetryPolicyEventHandler));
         }
 
         /// <summary>
