@@ -69,7 +69,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
         {
             foreach (var transientHttpStatusCode in HttpStatusCodesExtensions.GetTransientHttpStatusCodes())
             {
-                await using var circuitBreaker = _httpClient.CircuitBreaker(_options, _testHttpMessageHandler);
+                await using var circuitBreaker = _httpClient.CircuitBreakerExecutor(_options, _testHttpMessageHandler);
                 await circuitBreaker.TriggerFromTransientHttpStatusCodeAsync(transientHttpStatusCode);
                 await circuitBreaker.ShouldBeOpenAsync($"/circuit-breaker/transient-http-status-code/{transientHttpStatusCode}");
             }
@@ -83,7 +83,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
 
         private async Task CircuitBreakerPolicyHandlesException(Exception exception)
         {
-            await using var circuitBreaker = _httpClient.CircuitBreaker(_options, _testHttpMessageHandler);
+            await using var circuitBreaker = _httpClient.CircuitBreakerExecutor(_options, _testHttpMessageHandler);
             await circuitBreaker.TriggerFromExceptionAsync(exception);
             await circuitBreaker.ShouldBeOpenAsync($"/circuit-breaker/exception/{exception.GetType().Name}");
         }

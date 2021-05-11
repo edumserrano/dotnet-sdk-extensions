@@ -1,4 +1,4 @@
-﻿using System.Net;
+﻿using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Polly.Http.Retry;
@@ -11,32 +11,26 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Auxiliary
 {
     internal class RetryPolicyAsserter
     {
-        public async Task HttpClientShouldContainRetryPolicyAsync(
+        private readonly HttpClient _httpClient;
+        private readonly RetryOptions _options;
+        private readonly TestHttpMessageHandler _testHttpMessageHandler;
+
+        public RetryPolicyAsserter(
             HttpClient httpClient,
             RetryOptions options,
-            NumberOfCallsDelegatingHandler numberOfCallsDelegatingHandler,
             TestHttpMessageHandler testHttpMessageHandler)
         {
-            await RetryPolicyHandlesTransientStatusCodes(
-                httpClient,
-                options,
-                numberOfCallsDelegatingHandler,
-                testHttpMessageHandler);
-            await RetryPolicyHandlesHttpRequestException(
-                httpClient,
-                options,
-                numberOfCallsDelegatingHandler,
-                testHttpMessageHandler);
-            await RetryPolicyHandlesTimeoutRejectedException(
-                httpClient,
-                options,
-                numberOfCallsDelegatingHandler,
-                testHttpMessageHandler);
-            await RetryPolicyHandlesTaskCancelledException(
-                httpClient,
-                options,
-                numberOfCallsDelegatingHandler,
-                testHttpMessageHandler);
+            _httpClient = httpClient;
+            _options = options;
+            _testHttpMessageHandler = testHttpMessageHandler;
+        }
+
+        public async Task HttpClientShouldContainRetryPolicyAsync(NumberOfCallsDelegatingHandler numberOfCallsDelegatingHandler)
+        {
+            await RetryPolicyHandlesTransientStatusCodes(numberOfCallsDelegatingHandler);
+            await RetryPolicyHandlesException<HttpRequestException>(numberOfCallsDelegatingHandler);
+            await RetryPolicyHandlesException<TimeoutRejectedException>(numberOfCallsDelegatingHandler);
+            await RetryPolicyHandlesException<TaskCanceledException>(numberOfCallsDelegatingHandler);
         }
 
         public void EventHandlerShouldReceiveExpectedEvents(
@@ -54,100 +48,31 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Auxiliary
             }
         }
 
-        private async Task RetryPolicyHandlesTransientStatusCodes(
-            HttpClient httpClient,
-            RetryOptions retryOptions,
-            NumberOfCallsDelegatingHandler numberOfCallsDelegatingHandler,
-            TestHttpMessageHandler testHttpMessageHandler)
+        private async Task RetryPolicyHandlesTransientStatusCodes(NumberOfCallsDelegatingHandler numberOfCallsDelegatingHandler)
         {
-            await TriggerRetryPolicyFromTransientHttpStatusCodeAsync(httpClient, testHttpMessageHandler);
-            numberOfCallsDelegatingHandler.NumberOfHttpRequests.ShouldBe(retryOptions.RetryCount + 1);
-            numberOfCallsDelegatingHandler.Reset();
-        }
-
-        private async Task RetryPolicyHandlesHttpRequestException(
-            HttpClient httpClient,
-            RetryOptions retryOptions,
-            NumberOfCallsDelegatingHandler numberOfCallsDelegatingHandler,
-            TestHttpMessageHandler testHttpMessageHandler)
-        {
-            await Should.ThrowAsync<HttpRequestException>(() => TriggerRetryPolicyFromHttpRequestExceptionAsync(httpClient, testHttpMessageHandler));
-            numberOfCallsDelegatingHandler.NumberOfHttpRequests.ShouldBe(retryOptions.RetryCount + 1);
-            numberOfCallsDelegatingHandler.Reset();
-        }
-        
-        private async Task RetryPolicyHandlesTimeoutRejectedException(
-            HttpClient httpClient,
-            RetryOptions retryOptions,
-            NumberOfCallsDelegatingHandler numberOfCallsDelegatingHandler,
-            TestHttpMessageHandler testHttpMessageHandler)
-        {
-            await Should.ThrowAsync<TimeoutRejectedException>(() => TriggerRetryPolicyFromTimeoutRejectedExceptionAsync(httpClient, testHttpMessageHandler));
-            numberOfCallsDelegatingHandler.NumberOfHttpRequests.ShouldBe(retryOptions.RetryCount + 1);
-            numberOfCallsDelegatingHandler.Reset();
-        }
-
-        private async Task RetryPolicyHandlesTaskCancelledException(
-            HttpClient httpClient,
-            RetryOptions retryOptions,
-            NumberOfCallsDelegatingHandler numberOfCallsDelegatingHandler,
-            TestHttpMessageHandler testHttpMessageHandler)
-        {
-            await Should.ThrowAsync<TaskCanceledException>(() => TriggerRetryPolicyFromTaskCancelledExceptionAsync(httpClient, testHttpMessageHandler));
-            numberOfCallsDelegatingHandler.NumberOfHttpRequests.ShouldBe(retryOptions.RetryCount + 1);
-            numberOfCallsDelegatingHandler.Reset();
-        }
-
-        private Task<HttpResponseMessage> TriggerRetryPolicyFromTransientHttpStatusCodeAsync(
-            HttpClient httpClient,
-            TestHttpMessageHandler testHttpMessageHandler)
-        {
-            testHttpMessageHandler.MockHttpResponse(builder =>
+            var retryExecutor = _httpClient.RetryExecutor(_testHttpMessageHandler);
+            foreach (var transientHttpStatusCode in HttpStatusCodesExtensions.GetTransientHttpStatusCodes())
             {
-                builder
-                    .Where(httpRequestMessage => httpRequestMessage.RequestUri!.ToString().Contains("/transient-http-status-code"))
-                    .RespondWith(new HttpResponseMessage(HttpStatusCode.InternalServerError));
-            });
-            return httpClient.GetAsync("https://github.com/transient-http-status-code");
+                await retryExecutor.TriggerFromTransientHttpStatusCodeAsync(transientHttpStatusCode);
+                numberOfCallsDelegatingHandler.NumberOfHttpRequests.ShouldBe(_options.RetryCount + 1);
+                numberOfCallsDelegatingHandler.Reset();
+            }
         }
 
-        private Task<HttpResponseMessage> TriggerRetryPolicyFromHttpRequestExceptionAsync(
-            HttpClient httpClient,
-            TestHttpMessageHandler testHttpMessageHandler)
+        private Task RetryPolicyHandlesException<TException>(NumberOfCallsDelegatingHandler numberOfCallsDelegatingHandler)
+            where TException : Exception
         {
-            testHttpMessageHandler.MockHttpResponse(builder =>
-            {
-                builder
-                    .Where(httpRequestMessage => httpRequestMessage.RequestUri!.ToString().Contains("/http-request-exception"))
-                    .RespondWith(_ => throw new HttpRequestException());
-            });
-            return httpClient.GetAsync("https://github.com/http-request-exception");
+            var exception = Activator.CreateInstance<TException>();
+            return RetryPolicyHandlesException(exception, numberOfCallsDelegatingHandler);
         }
 
-        private Task<HttpResponseMessage> TriggerRetryPolicyFromTaskCancelledExceptionAsync(
-            HttpClient httpClient,
-            TestHttpMessageHandler testHttpMessageHandler)
+        private async Task RetryPolicyHandlesException(Exception exception, NumberOfCallsDelegatingHandler numberOfCallsDelegatingHandler)
         {
-            testHttpMessageHandler.MockHttpResponse(builder =>
-            {
-                builder
-                    .Where(httpRequestMessage => httpRequestMessage.RequestUri!.ToString().Contains("/task-cancelled-exception"))
-                    .RespondWith(_ => throw new TaskCanceledException());
-            });
-            return httpClient.GetAsync("https://github.com/task-cancelled-exception");
-        }
-        
-        private Task<HttpResponseMessage> TriggerRetryPolicyFromTimeoutRejectedExceptionAsync(
-            HttpClient httpClient,
-            TestHttpMessageHandler testHttpMessageHandler)
-        {
-            testHttpMessageHandler.MockHttpResponse(builder =>
-            {
-                builder
-                    .Where(httpRequestMessage => httpRequestMessage.RequestUri!.ToString().Contains("/timeout-rejected-exception"))
-                    .RespondWith(_ => throw new TimeoutRejectedException());
-            });
-            return httpClient.GetAsync("https://github.com/timeout-rejected-exception");
+            await _httpClient
+                .RetryExecutor(_testHttpMessageHandler)
+                .TriggerFromExceptionAsync(exception);
+            numberOfCallsDelegatingHandler.NumberOfHttpRequests.ShouldBe(_options.RetryCount + 1);
+            numberOfCallsDelegatingHandler.Reset();
         }
     }
 }
