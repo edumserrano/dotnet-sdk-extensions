@@ -3,6 +3,7 @@ using DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker;
 using DotNet.Sdk.Extensions.Polly.Http.Timeout;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers;
 using DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary;
+using DotNet.Sdk.Extensions.Tests.Polly.Http.Fallback.Auxiliary;
 using DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Auxiliary;
 using DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Auxiliary;
 
@@ -31,6 +32,13 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary
             TestHttpMessageHandler testHttpMessageHandler)
         {
             return new CircuitBreakerPolicyExecutor(httpClient, options, testHttpMessageHandler);
+        }
+        
+        public static FallbackPolicyExecutor FallbackExecutor(
+            this HttpClient httpClient,
+            TestHttpMessageHandler testHttpMessageHandler)
+        {
+            return new FallbackPolicyExecutor(httpClient, testHttpMessageHandler);
         }
     }
 }

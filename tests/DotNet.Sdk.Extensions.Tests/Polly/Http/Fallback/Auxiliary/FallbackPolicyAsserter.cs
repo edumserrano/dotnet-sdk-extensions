@@ -1,95 +1,110 @@
 ﻿using System;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Polly.Http.Fallback.Events;
+using DotNet.Sdk.Extensions.Polly.Http.Fallback.FallbackHttpResponseMessages;
+using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers;
 using DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary;
 using Polly;
 using Polly.CircuitBreaker;
-using Polly.Fallback;
 using Polly.Timeout;
-using Polly.Wrap;
 using Shouldly;
+using System.Linq;
 
 namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Fallback.Auxiliary
 {
     internal class FallbackPolicyAsserter
     {
-        private readonly string _httpClientName;
-        private readonly AsyncPolicyWrap<HttpResponseMessage>? _fallbackPolicy;
-        private readonly AsyncFallbackPolicy<HttpResponseMessage>? _timeoutFallback;
-        private readonly AsyncFallbackPolicy<HttpResponseMessage>? _brokenCircuitFallback;
-        private readonly AsyncFallbackPolicy<HttpResponseMessage>? _abortedFallback;
+        private readonly HttpClient _httpClient;
+        private readonly TestHttpMessageHandler _testHttpMessageHandler;
 
-        public FallbackPolicyAsserter(
+        public FallbackPolicyAsserter(HttpClient httpClient, TestHttpMessageHandler testHttpMessageHandler)
+        {
+            _httpClient = httpClient;
+            _testHttpMessageHandler = testHttpMessageHandler;
+        }
+
+        public async Task HttpClientShouldContainFallbackPolicyAsync()
+        {
+            await FallbackPolicyHandlesTimeout();
+            await FallbackPolicyHandlesBrokenCircuit();
+            await FallbackPolicyHandlesIsolatedCircuit();
+            await FallbackPolicyHandlesTaskCancelled();
+        }
+
+        private async Task FallbackPolicyHandlesTaskCancelled()
+        {
+            var taskCanceledException = new TaskCanceledException();
+            var response = await FallbackPolicyHandlesException(taskCanceledException);
+            var abortedHttpResponseMessage = response as AbortedHttpResponseMessage;
+            abortedHttpResponseMessage.ShouldNotBeNull();
+            abortedHttpResponseMessage.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
+            abortedHttpResponseMessage.Exception.ShouldBe(taskCanceledException);
+        }
+
+        private async Task FallbackPolicyHandlesIsolatedCircuit()
+        {
+            var isolatedCircuitException = new IsolatedCircuitException(message: string.Empty);
+            var response = await FallbackPolicyHandlesException(isolatedCircuitException);
+            var circuitBrokenHttpResponseMessage = response as CircuitBrokenHttpResponseMessage;
+            circuitBrokenHttpResponseMessage.ShouldNotBeNull();
+            circuitBrokenHttpResponseMessage.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
+            circuitBrokenHttpResponseMessage.CircuitBreakerState.ShouldBe(CircuitBreakerState.Isolated);
+            circuitBrokenHttpResponseMessage.IsolatedCircuitException.ShouldBe(isolatedCircuitException);
+            circuitBrokenHttpResponseMessage.BrokenCircuitException.ShouldBeNull();
+        }
+
+        private async Task FallbackPolicyHandlesBrokenCircuit()
+        {
+            var brokenCircuitException = new BrokenCircuitException();
+            var response = await FallbackPolicyHandlesException(brokenCircuitException);
+            var circuitBrokenHttpResponseMessage = response as CircuitBrokenHttpResponseMessage;
+            circuitBrokenHttpResponseMessage.ShouldNotBeNull();
+            circuitBrokenHttpResponseMessage.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
+            circuitBrokenHttpResponseMessage.CircuitBreakerState.ShouldBe(CircuitBreakerState.Open);
+            circuitBrokenHttpResponseMessage.BrokenCircuitException.ShouldBe(brokenCircuitException);
+            circuitBrokenHttpResponseMessage.IsolatedCircuitException.ShouldBeNull();
+        }
+
+        private async Task FallbackPolicyHandlesTimeout()
+        {
+            var timeoutRejectedException = new TimeoutRejectedException();
+            var response = await FallbackPolicyHandlesException(timeoutRejectedException);
+            var timeoutHttpResponseMessage = response as TimeoutHttpResponseMessage;
+            timeoutHttpResponseMessage.ShouldNotBeNull();
+            timeoutHttpResponseMessage.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
+            timeoutHttpResponseMessage.Exception.ShouldBe(timeoutRejectedException);
+        }
+
+        private Task<HttpResponseMessage> FallbackPolicyHandlesException(Exception exception)
+        {
+            return _httpClient
+                .FallbackExecutor(_testHttpMessageHandler)
+                .TriggerFromExceptionAsync(exception);
+        }
+
+        public void EventHandlerShouldReceiveExpectedEvents(
+            int count,
             string httpClientName,
-            AsyncPolicyWrap<HttpResponseMessage>? policy)
+            FallbackPolicyEventHandlerCalls eventHandlerCalls)
         {
-            _httpClientName = httpClientName;
-            _fallbackPolicy = policy;
-            _timeoutFallback = _fallbackPolicy?.Outer as AsyncFallbackPolicy<HttpResponseMessage>;
-            var brokenCircuitWrappedFallback = _fallbackPolicy?.Inner as AsyncPolicyWrap<HttpResponseMessage>;
-            _brokenCircuitFallback = brokenCircuitWrappedFallback?.Outer as AsyncFallbackPolicy<HttpResponseMessage>;
-            _abortedFallback = brokenCircuitWrappedFallback?.Inner as AsyncFallbackPolicy<HttpResponseMessage>;
-        }
-
-        public void PolicyShouldBeConfiguredAsExpected()
-        {
-            _fallbackPolicy.ShouldNotBeNull();
-            _timeoutFallback.ShouldNotBeNull();
-            _brokenCircuitFallback.ShouldNotBeNull();
-            _abortedFallback.ShouldNotBeNull();
-
-            TimeoutFallbackShouldBeConfiguredAsExpected(_timeoutFallback);
-            BrokenCircuitFallbackShouldBeConfiguredAsExpected(_brokenCircuitFallback);
-            AbortedFallbackShouldBeConfiguredAsExpected(_abortedFallback);
-        }
-
-        private void TimeoutFallbackShouldBeConfiguredAsExpected(AsyncFallbackPolicy<HttpResponseMessage> timeoutFallback)
-        {
-            var exceptionPredicates = timeoutFallback.GetExceptionPredicates();
-            exceptionPredicates.GetExceptionPredicatesCount().ShouldBe(1);
-            exceptionPredicates.HandlesException<TimeoutRejectedException>().ShouldBeTrue();
-
-            var resultPredicates = timeoutFallback.GetResultPredicates();
-            resultPredicates.GetResultPredicatesCount().ShouldBe(0);
-        }
-
-        private void BrokenCircuitFallbackShouldBeConfiguredAsExpected(AsyncFallbackPolicy<HttpResponseMessage> brokenCircuitFallback)
-        {
-            var exceptionPredicates = brokenCircuitFallback.GetExceptionPredicates();
-            exceptionPredicates.GetExceptionPredicatesCount().ShouldBe(2);
-            exceptionPredicates.HandlesException<BrokenCircuitException>().ShouldBeTrue();
-            exceptionPredicates.HandlesException(new IsolatedCircuitException("msg")).ShouldBeTrue();
-
-            var resultPredicates = brokenCircuitFallback.GetResultPredicates();
-            resultPredicates.GetResultPredicatesCount().ShouldBe(0);
-        }
-
-        private void AbortedFallbackShouldBeConfiguredAsExpected(AsyncFallbackPolicy<HttpResponseMessage> abortedFallback)
-        {
-            var exceptionPredicates = abortedFallback.GetExceptionPredicates();
-            exceptionPredicates.GetExceptionPredicatesCount().ShouldBe(1);
-            exceptionPredicates.HandlesException<TaskCanceledException>().ShouldBeTrue();
-
-            var resultPredicates = abortedFallback.GetResultPredicates();
-            resultPredicates.GetResultPredicatesCount().ShouldBe(0);
-        }
-
-        public void PolicyShouldTriggerPolicyEventHandler(Type policyEventHandler)
-        {
-            _fallbackPolicy.ShouldNotBeNull();
-            _timeoutFallback.ShouldNotBeNull();
-            _brokenCircuitFallback.ShouldNotBeNull();
-            _abortedFallback.ShouldNotBeNull();
-
-            var timeoutOnFallbackTarget = new OnFallbackTarget(_timeoutFallback);
-            ShouldTriggerPolicyEventHandler(timeoutOnFallbackTarget, _httpClientName, policyEventHandler);
-            
-            var brokenCircuitOnFallbackTarget = new OnFallbackTarget(_brokenCircuitFallback);
-            ShouldTriggerPolicyEventHandler(brokenCircuitOnFallbackTarget, _httpClientName, policyEventHandler);
-            
-            var abortedOnFallbackTarget = new OnFallbackTarget(_abortedFallback);
-            ShouldTriggerPolicyEventHandler(abortedOnFallbackTarget, _httpClientName, policyEventHandler);
+            eventHandlerCalls
+                .OnTimeoutFallbackAsyncCalls
+                .Count(x => x.HttpClientName.Equals(httpClientName))
+                .ShouldBe(count);
+            eventHandlerCalls
+                .OnBrokenCircuitFallbackAsyncCalls
+                .Count(x => x.HttpClientName.Equals(httpClientName) && x.Outcome.Exception is IsolatedCircuitException)
+                .ShouldBe(count);
+            eventHandlerCalls
+                .OnBrokenCircuitFallbackAsyncCalls // check BrokenCircuitException calls. IsolatedCircuitException are derived from BrokenCircuitException so excluding those
+                .Count(x => x.HttpClientName.Equals(httpClientName) && x.Outcome.Exception is not IsolatedCircuitException)
+                .ShouldBe(count);
+            eventHandlerCalls
+                .OnTaskCancelledFallbackAsyncCalls
+                .Count(x => x.HttpClientName.Equals(httpClientName))
+                .ShouldBe(count);
         }
 
         private void ShouldTriggerPolicyEventHandler(

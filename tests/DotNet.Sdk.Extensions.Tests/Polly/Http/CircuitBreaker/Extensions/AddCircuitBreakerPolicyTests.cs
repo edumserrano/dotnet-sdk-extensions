@@ -298,7 +298,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
             var circuitBreakerOptions = new CircuitBreakerOptions
             {
                 DurationOfBreakInSecs = 0.1,
-                SamplingDurationInSecs = 0.2,
+                SamplingDurationInSecs = 60,
                 FailureThreshold = 0.6,
                 MinimumThroughput = 10
             };
@@ -326,6 +326,13 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
             var response = await httpClient.GetAsync($"/circuit-breaker/transient-http-status-code/{HttpStatusCode.ServiceUnavailable}");
             var circuitBrokenHttpResponseMessage = response as CircuitBrokenHttpResponseMessage;
             circuitBrokenHttpResponseMessage.ShouldNotBeNull();
+            circuitBrokenHttpResponseMessage.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
+            circuitBrokenHttpResponseMessage.CircuitBreakerState.ShouldBe(CircuitBreakerState.Open);
+            // both the BrokenCircuitException and IsolatedCircuitException properties should be null
+            // because the circuit breaker should NOT be throwing an exception. The CircuitBreakerCheckerAsyncPolicy
+            // should check that the circuit is open and return the CircuitBrokenHttpResponseMessage without any exception
+            circuitBrokenHttpResponseMessage.BrokenCircuitException.ShouldBeNull();
+            circuitBrokenHttpResponseMessage.IsolatedCircuitException.ShouldBeNull();
         }
     }
 }

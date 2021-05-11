@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -34,7 +33,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
     /// Because of the reflection usage these tests can break when updating the Polly packages.
     /// </summary>
     [Trait("Category", XUnitCategories.Polly)]
-    public class AddResiliencePoliciesEventHandlerTests : IDisposable
+    public class AddResiliencePoliciesEventHandlerTests
     {
         /// <summary>
         /// Tests that the overloads of ResiliencePolicyHttpClientBuilderExtensions.AddResiliencePolicies that
@@ -239,11 +238,6 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             //    retryEvent.RetryOptions.RetryCount.ShouldBe(resilienceOptions.Retry.RetryCount);
             //    retryEvent.RetryOptions.MedianFirstRetryDelayInSecs.ShouldBe(resilienceOptions.Retry.MedianFirstRetryDelayInSecs);
             //}
-        }
-
-        public void Dispose()
-        {
-            TestResiliencePoliciesEventHandler.Clear();
         }
     }
 }

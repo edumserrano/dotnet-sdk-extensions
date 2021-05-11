@@ -18,30 +18,20 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Auxiliary
             _httpClient = httpClient;
             _testHttpMessageHandler = testHttpMessageHandler;
         }
-        
+
         public async Task TriggerFromExceptionAsync(Exception exception)
         {
             var requestPath = $"/retry/exception/{exception.GetType().Name}";
             _testHttpMessageHandler.HandleException(requestPath, exception);
-            await TriggerCircuitBreakerFromExceptionAsync(requestPath);
+            await Should.ThrowAsync<Exception>(() => _httpClient.GetAsync(requestPath));
         }
 
         public async Task TriggerFromTransientHttpStatusCodeAsync(HttpStatusCode httpStatusCode)
         {
-            var handledRequestPath = _testHttpMessageHandler.HandleTransientHttpStatusCode(
+            var requestPath = _testHttpMessageHandler.HandleTransientHttpStatusCode(
                 requestPath: "/retry/transient-http-status-code",
                 responseHttpStatusCode: httpStatusCode);
-            await TriggerRetryFromTransientStatusCodeAsync(handledRequestPath);
-        }
-
-        private async Task TriggerRetryFromTransientStatusCodeAsync(string requestPath)
-        {
             await _httpClient.GetAsync(requestPath);
-        }
-
-        private async Task TriggerCircuitBreakerFromExceptionAsync(string requestPath)
-        {
-            await Should.ThrowAsync<Exception>(() => _httpClient.GetAsync(requestPath));
         }
     }
 }

@@ -51,7 +51,6 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
             var serviceProvider = services.BuildServiceProvider();
             serviceProvider.InstantiateNamedHttpClient(httpClientName);
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
-
             var retryPolicyAsserter = new RetryPolicyAsserter(
                 httpClient,
                 retryOptions,

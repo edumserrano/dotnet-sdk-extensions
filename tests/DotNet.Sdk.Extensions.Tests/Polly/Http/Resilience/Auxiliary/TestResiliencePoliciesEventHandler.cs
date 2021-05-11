@@ -4,20 +4,11 @@ using DotNet.Sdk.Extensions.Polly.Http.Fallback.Events;
 using DotNet.Sdk.Extensions.Polly.Http.Resilience.Events;
 using DotNet.Sdk.Extensions.Polly.Http.Retry.Events;
 using DotNet.Sdk.Extensions.Polly.Http.Timeout.Events;
-using DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary;
-using DotNet.Sdk.Extensions.Tests.Polly.Http.Fallback.Auxiliary;
 
 namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Auxiliary
 {
     public class TestResiliencePoliciesEventHandler : IResiliencePoliciesEventHandler
     {
-        private readonly TestFallbackPolicyEventHandler _fallbackPolicyEventHandler;
-
-        public TestResiliencePoliciesEventHandler()
-        {
-            _fallbackPolicyEventHandler = new TestFallbackPolicyEventHandler();
-        }
-
         public Task OnTimeoutAsync(TimeoutEvent timeoutEvent)
         {
             return Task.CompletedTask;
@@ -45,22 +36,17 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Auxiliary
 
         public Task OnTimeoutFallbackAsync(TimeoutFallbackEvent timeoutFallbackEvent)
         {
-            return _fallbackPolicyEventHandler.OnTimeoutFallbackAsync(timeoutFallbackEvent);
+            return Task.CompletedTask;
         }
 
         public Task OnBrokenCircuitFallbackAsync(BrokenCircuitFallbackEvent brokenCircuitFallbackEvent)
         {
-            return _fallbackPolicyEventHandler.OnBrokenCircuitFallbackAsync(brokenCircuitFallbackEvent);
+            return Task.CompletedTask;
         }
 
         public Task OnTaskCancelledFallbackAsync(TaskCancelledFallbackEvent taskCancelledFallbackEvent)
         {
-            return _fallbackPolicyEventHandler.OnTaskCancelledFallbackAsync(taskCancelledFallbackEvent);
-        }
-
-        public static void Clear()
-        {
-            TestFallbackPolicyEventHandler.Clear();
+            return Task.CompletedTask;
         }
     }
 }

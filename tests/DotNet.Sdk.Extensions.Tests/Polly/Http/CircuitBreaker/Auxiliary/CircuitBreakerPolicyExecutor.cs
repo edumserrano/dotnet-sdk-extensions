@@ -70,6 +70,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
             var response = await _httpClient.GetAsync(requestPath);
             var circuitBrokenHttpResponseMessage = response as CircuitBrokenHttpResponseMessage;
             circuitBrokenHttpResponseMessage.ShouldNotBeNull();
+            circuitBrokenHttpResponseMessage.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
         }
 
         private string HandleResetRequest()
