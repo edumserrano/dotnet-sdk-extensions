@@ -34,5 +34,20 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary
                     .RespondWith(httpRequestMessage => throw exception);
             });
         }
+
+        public static void HandleTimeout(
+            this TestHttpMessageHandler testHttpMessageHandler,
+            string requestPath,
+            TimeSpan timeout)
+        {
+            testHttpMessageHandler.MockHttpResponse(builder =>
+            {
+                // this timeout is a max timeout before aborting but the polly timeout policy
+                // will timeout before this happens
+                builder
+                    .Where(httpRequestMessage => httpRequestMessage.RequestUri!.ToString().Contains(requestPath))
+                    .TimesOut(timeout);
+            });
+        }
     }
 }

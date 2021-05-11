@@ -31,7 +31,6 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Fallback.Extensions
     /// Because of the reflection usage these tests can break when updating the Polly packages.
     /// </summary>
     [Trait("Category", XUnitCategories.Polly)]
-    [Collection(XUnitTestCollections.FallbackPolicy)]
     public class AddFallbackPolicyTests : IDisposable
     {
         /// <summary>

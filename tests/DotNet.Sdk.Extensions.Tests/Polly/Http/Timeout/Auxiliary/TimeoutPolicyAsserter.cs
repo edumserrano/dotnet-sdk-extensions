@@ -1,24 +1,31 @@
-﻿using System;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Polly.Http.Timeout;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers;
-using Polly.Timeout;
+using DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary;
 using Shouldly;
 
 namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Auxiliary
 {
     internal class TimeoutPolicyAsserter
     {
-        public async Task HttpClientShouldContainTimeoutPolicyAsync(
+        private readonly HttpClient _httpClient;
+        private readonly TimeoutOptions _options;
+        private readonly TestHttpMessageHandler _testHttpMessageHandler;
+
+        public TimeoutPolicyAsserter(
             HttpClient httpClient,
             TimeoutOptions options,
             TestHttpMessageHandler testHttpMessageHandler)
         {
-            await TimeoutPolicyTriggersOnTimeout(
-                httpClient,
-                options,
-                testHttpMessageHandler);
+            _httpClient = httpClient;
+            _options = options;
+            _testHttpMessageHandler = testHttpMessageHandler;
+        }
+
+        public async Task HttpClientShouldContainTimeoutPolicyAsync()
+        {
+            await TimeoutPolicyTriggersOnTimeout();
         }
 
         public void EventHandlerShouldReceiveExpectedEvents(
@@ -35,18 +42,11 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Auxiliary
             }
         }
 
-        private Task TimeoutPolicyTriggersOnTimeout(
-            HttpClient httpClient,
-            TimeoutOptions timeoutOptions,
-            TestHttpMessageHandler testHttpMessageHandler)
+        private async Task TimeoutPolicyTriggersOnTimeout()
         {
-            testHttpMessageHandler.MockHttpResponse(builder =>
-            {
-                // this timeout is a max timeout before aborting
-                // but the polly timeout policy will timeout before this happens
-                builder.TimesOut(TimeSpan.FromSeconds(timeoutOptions.TimeoutInSecs + 1));
-            }); 
-            return Should.ThrowAsync<TimeoutRejectedException>(() => httpClient.GetAsync("https://github.com"));
+            await _httpClient
+                .TimeoutExecutor(_options, _testHttpMessageHandler)
+                .TriggerTimeoutPolicyAsync();
         }
     }
 }

@@ -1,19 +1,21 @@
 ﻿using System.Net.Http;
 using DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker;
+using DotNet.Sdk.Extensions.Polly.Http.Timeout;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers;
 using DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary;
 using DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Auxiliary;
+using DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Auxiliary;
 
 namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary
 {
     public static class HttpClientPolicyExtensions
     {
-        public static CircuitBreakerPolicyExecutor CircuitBreakerExecutor(
+        public static TimeoutPolicyExecutor TimeoutExecutor(
             this HttpClient httpClient,
-            CircuitBreakerOptions options,
+            TimeoutOptions timeout,
             TestHttpMessageHandler testHttpMessageHandler)
         {
-            return new CircuitBreakerPolicyExecutor(httpClient, options, testHttpMessageHandler);
+            return new TimeoutPolicyExecutor(httpClient, timeout, testHttpMessageHandler);
         }
 
         public static RetryPolicyExecutor RetryExecutor(
@@ -21,6 +23,14 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary
             TestHttpMessageHandler testHttpMessageHandler)
         {
             return new RetryPolicyExecutor(httpClient, testHttpMessageHandler);
+        }
+
+        public static CircuitBreakerPolicyExecutor CircuitBreakerExecutor(
+            this HttpClient httpClient,
+            CircuitBreakerOptions options,
+            TestHttpMessageHandler testHttpMessageHandler)
+        {
+            return new CircuitBreakerPolicyExecutor(httpClient, options, testHttpMessageHandler);
         }
     }
 }

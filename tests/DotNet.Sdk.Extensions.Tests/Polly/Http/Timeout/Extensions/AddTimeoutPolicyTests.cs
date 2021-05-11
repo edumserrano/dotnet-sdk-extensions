@@ -38,6 +38,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
             var services = new ServiceCollection();
             services
                 .AddHttpClient(httpClientName)
+                .ConfigureHttpClient(client => client.BaseAddress = new Uri("https://github.com"))
                 .AddTimeoutPolicy(options =>
                 {
                     options.TimeoutInSecs = timeoutOptions.TimeoutInSecs;
@@ -46,10 +47,9 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
 
             var serviceProvider = services.BuildServiceProvider();
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
-            await Should.ThrowAsync<TimeoutRejectedException>(() =>
-            {
-                return httpClient.TriggerTimeoutPolicyAsync(timeoutOptions, testHttpMessageHandler);
-            });
+            await httpClient
+                .TimeoutExecutor(timeoutOptions, testHttpMessageHandler)
+                .TriggerTimeoutPolicyAsync();
         }
 
         /// <summary>
@@ -72,15 +72,15 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
                 .Configure(options => options.TimeoutInSecs = timeoutOptions.TimeoutInSecs);
             services
                 .AddHttpClient(httpClientName)
+                .ConfigureHttpClient(client => client.BaseAddress = new Uri("https://github.com"))
                 .AddTimeoutPolicy(optionsName)
                 .ConfigurePrimaryHttpMessageHandler(() => testHttpMessageHandler);
 
             var serviceProvider = services.BuildServiceProvider();
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
-            await Should.ThrowAsync<TimeoutRejectedException>(() =>
-            {
-                return httpClient.TriggerTimeoutPolicyAsync(timeoutOptions, testHttpMessageHandler);
-            });
+            await httpClient
+                .TimeoutExecutor(timeoutOptions, testHttpMessageHandler)
+                .TriggerTimeoutPolicyAsync();
         }
 
         /// <summary>
@@ -103,6 +103,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
             services.AddSingleton(timeoutPolicyEventHandlerCalls);
             services
                 .AddHttpClient(httpClientName)
+                .ConfigureHttpClient(client => client.BaseAddress = new Uri("https://github.com"))
                 .AddTimeoutPolicy<TestTimeoutPolicyEventHandler>(options =>
                 {
                     options.TimeoutInSecs = timeoutOptions.TimeoutInSecs;
@@ -112,11 +113,11 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
             var serviceProvider = services.BuildServiceProvider();
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
 
-            var timeoutPolicyAsserter = new TimeoutPolicyAsserter();
-            await timeoutPolicyAsserter.HttpClientShouldContainTimeoutPolicyAsync(
+            var timeoutPolicyAsserter = new TimeoutPolicyAsserter(
                 httpClient,
                 timeoutOptions,
                 testHttpMessageHandler);
+            await timeoutPolicyAsserter.HttpClientShouldContainTimeoutPolicyAsync();
             timeoutPolicyAsserter.EventHandlerShouldReceiveExpectedEvents(
                 count: 1,
                 httpClientName: httpClientName,
@@ -148,6 +149,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
                 .Configure(options => options.TimeoutInSecs = timeoutOptions.TimeoutInSecs);
             services
                 .AddHttpClient(httpClientName)
+                .ConfigureHttpClient(client => client.BaseAddress = new Uri("https://github.com"))
                 .AddTimeoutPolicy<TestTimeoutPolicyEventHandler>(optionsName)
                 .ConfigurePrimaryHttpMessageHandler(() => testHttpMessageHandler);
 
@@ -155,11 +157,11 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
             serviceProvider.InstantiateNamedHttpClient(httpClientName);
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
 
-            var timeoutPolicyAsserter = new TimeoutPolicyAsserter();
-            await timeoutPolicyAsserter.HttpClientShouldContainTimeoutPolicyAsync(
+            var timeoutPolicyAsserter = new TimeoutPolicyAsserter(
                 httpClient,
                 timeoutOptions,
                 testHttpMessageHandler);
+            await timeoutPolicyAsserter.HttpClientShouldContainTimeoutPolicyAsync();
             timeoutPolicyAsserter.EventHandlerShouldReceiveExpectedEvents(
                 count: 1,
                 httpClientName: httpClientName,

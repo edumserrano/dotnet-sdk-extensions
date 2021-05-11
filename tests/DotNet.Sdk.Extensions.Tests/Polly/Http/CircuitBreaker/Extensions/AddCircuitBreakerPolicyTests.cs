@@ -31,7 +31,6 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
     /// the circuit breaker policy and I don't know how to manipulate/fake time for the policy.
     /// </summary>
     [Trait("Category", XUnitCategories.Polly)]
-    [Collection(XUnitTestCollections.CircuitBreakerPolicy)]
     public class AddCircuitBreakerPolicyTests
     {
         /// <summary>
