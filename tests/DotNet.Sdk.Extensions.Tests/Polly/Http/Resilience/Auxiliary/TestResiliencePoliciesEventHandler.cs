@@ -11,12 +11,10 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Auxiliary
 {
     public class TestResiliencePoliciesEventHandler : IResiliencePoliciesEventHandler
     {
-        private readonly TestCircuitBreakerPolicyEventHandler _circuitBreakerPolicyEventHandler;
         private readonly TestFallbackPolicyEventHandler _fallbackPolicyEventHandler;
 
         public TestResiliencePoliciesEventHandler()
         {
-            _circuitBreakerPolicyEventHandler = new TestCircuitBreakerPolicyEventHandler();
             _fallbackPolicyEventHandler = new TestFallbackPolicyEventHandler();
         }
 
@@ -32,17 +30,17 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Auxiliary
 
         public Task OnBreakAsync(BreakEvent breakEvent)
         {
-            return _circuitBreakerPolicyEventHandler.OnBreakAsync(breakEvent);
+            return Task.CompletedTask;
         }
 
         public Task OnHalfOpenAsync(HalfOpenEvent halfOpenEvent)
         {
-            return _circuitBreakerPolicyEventHandler.OnHalfOpenAsync(halfOpenEvent);
+            return Task.CompletedTask;
         }
 
         public Task OnResetAsync(ResetEvent resetEvent)
         {
-            return _circuitBreakerPolicyEventHandler.OnResetAsync(resetEvent);
+            return Task.CompletedTask;
         }
 
         public Task OnTimeoutFallbackAsync(TimeoutFallbackEvent timeoutFallbackEvent)
@@ -62,7 +60,6 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Auxiliary
 
         public static void Clear()
         {
-            TestCircuitBreakerPolicyEventHandler.Clear();
             TestFallbackPolicyEventHandler.Clear();
         }
     }

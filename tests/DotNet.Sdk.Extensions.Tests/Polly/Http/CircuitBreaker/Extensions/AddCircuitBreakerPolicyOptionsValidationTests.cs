@@ -216,8 +216,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
                 .Validate(options =>
                 {
                     return options.DurationOfBreakInSecs > 3;
-                })
-                ;
+                });
             services
                 .AddHttpClient(httpClientName)
                 .AddCircuitBreakerPolicy(optionsName);

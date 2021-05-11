@@ -2,9 +2,9 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Auxiliary
+namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary
 {
-    internal class RetryPolicyTestDelegatingHandler : DelegatingHandler
+    internal class NumberOfCallsDelegatingHandler : DelegatingHandler
     {
         public int NumberOfHttpRequests { get; private set; }
 

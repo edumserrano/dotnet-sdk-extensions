@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Polly.Http.Retry;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers;
+using DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary;
 using Polly.Timeout;
 using Shouldly;
 
@@ -13,28 +14,28 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Auxiliary
         public async Task HttpClientShouldContainRetryPolicyAsync(
             HttpClient httpClient,
             RetryOptions options,
-            RetryPolicyTestDelegatingHandler retryPolicyTestDelegatingHandler,
+            NumberOfCallsDelegatingHandler numberOfCallsDelegatingHandler,
             TestHttpMessageHandler testHttpMessageHandler)
         {
             await RetryPolicyHandlesTransientStatusCodes(
                 httpClient,
                 options,
-                retryPolicyTestDelegatingHandler,
+                numberOfCallsDelegatingHandler,
                 testHttpMessageHandler);
             await RetryPolicyHandlesHttpRequestException(
                 httpClient,
                 options,
-                retryPolicyTestDelegatingHandler,
+                numberOfCallsDelegatingHandler,
                 testHttpMessageHandler);
             await RetryPolicyHandlesTimeoutRejectedException(
                 httpClient,
                 options,
-                retryPolicyTestDelegatingHandler,
+                numberOfCallsDelegatingHandler,
                 testHttpMessageHandler);
             await RetryPolicyHandlesTaskCancelledException(
                 httpClient,
                 options,
-                retryPolicyTestDelegatingHandler,
+                numberOfCallsDelegatingHandler,
                 testHttpMessageHandler);
         }
 
@@ -56,45 +57,45 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Auxiliary
         private async Task RetryPolicyHandlesTransientStatusCodes(
             HttpClient httpClient,
             RetryOptions retryOptions,
-            RetryPolicyTestDelegatingHandler retryPolicyTestDelegatingHandler,
+            NumberOfCallsDelegatingHandler numberOfCallsDelegatingHandler,
             TestHttpMessageHandler testHttpMessageHandler)
         {
             await TriggerRetryPolicyFromTransientHttpStatusCodeAsync(httpClient, testHttpMessageHandler);
-            retryPolicyTestDelegatingHandler.NumberOfHttpRequests.ShouldBe(retryOptions.RetryCount + 1);
-            retryPolicyTestDelegatingHandler.Reset();
+            numberOfCallsDelegatingHandler.NumberOfHttpRequests.ShouldBe(retryOptions.RetryCount + 1);
+            numberOfCallsDelegatingHandler.Reset();
         }
 
         private async Task RetryPolicyHandlesHttpRequestException(
             HttpClient httpClient,
             RetryOptions retryOptions,
-            RetryPolicyTestDelegatingHandler retryPolicyTestDelegatingHandler,
+            NumberOfCallsDelegatingHandler numberOfCallsDelegatingHandler,
             TestHttpMessageHandler testHttpMessageHandler)
         {
             await Should.ThrowAsync<HttpRequestException>(() => TriggerRetryPolicyFromHttpRequestExceptionAsync(httpClient, testHttpMessageHandler));
-            retryPolicyTestDelegatingHandler.NumberOfHttpRequests.ShouldBe(retryOptions.RetryCount + 1);
-            retryPolicyTestDelegatingHandler.Reset();
+            numberOfCallsDelegatingHandler.NumberOfHttpRequests.ShouldBe(retryOptions.RetryCount + 1);
+            numberOfCallsDelegatingHandler.Reset();
         }
         
         private async Task RetryPolicyHandlesTimeoutRejectedException(
             HttpClient httpClient,
             RetryOptions retryOptions,
-            RetryPolicyTestDelegatingHandler retryPolicyTestDelegatingHandler,
+            NumberOfCallsDelegatingHandler numberOfCallsDelegatingHandler,
             TestHttpMessageHandler testHttpMessageHandler)
         {
             await Should.ThrowAsync<TimeoutRejectedException>(() => TriggerRetryPolicyFromTimeoutRejectedExceptionAsync(httpClient, testHttpMessageHandler));
-            retryPolicyTestDelegatingHandler.NumberOfHttpRequests.ShouldBe(retryOptions.RetryCount + 1);
-            retryPolicyTestDelegatingHandler.Reset();
+            numberOfCallsDelegatingHandler.NumberOfHttpRequests.ShouldBe(retryOptions.RetryCount + 1);
+            numberOfCallsDelegatingHandler.Reset();
         }
 
         private async Task RetryPolicyHandlesTaskCancelledException(
             HttpClient httpClient,
             RetryOptions retryOptions,
-            RetryPolicyTestDelegatingHandler retryPolicyTestDelegatingHandler,
+            NumberOfCallsDelegatingHandler numberOfCallsDelegatingHandler,
             TestHttpMessageHandler testHttpMessageHandler)
         {
             await Should.ThrowAsync<TaskCanceledException>(() => TriggerRetryPolicyFromTaskCancelledExceptionAsync(httpClient, testHttpMessageHandler));
-            retryPolicyTestDelegatingHandler.NumberOfHttpRequests.ShouldBe(retryOptions.RetryCount + 1);
-            retryPolicyTestDelegatingHandler.Reset();
+            numberOfCallsDelegatingHandler.NumberOfHttpRequests.ShouldBe(retryOptions.RetryCount + 1);
+            numberOfCallsDelegatingHandler.Reset();
         }
 
         private Task<HttpResponseMessage> TriggerRetryPolicyFromTransientHttpStatusCodeAsync(
