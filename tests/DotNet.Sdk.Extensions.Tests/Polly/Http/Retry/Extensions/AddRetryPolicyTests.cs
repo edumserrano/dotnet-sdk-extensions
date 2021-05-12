@@ -138,9 +138,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
                 testHttpMessageHandler);
             await retryPolicyAsserter.HttpClientShouldContainRetryPolicyAsync(numberOfCallsDelegatingHandler);
             retryPolicyAsserter.EventHandlerShouldReceiveExpectedEvents(
-                count: 15 * retryOptions.RetryCount, // the retryPolicyAsserter.HttpClientShouldContainRetryPolicyAsync triggers the retry policy 4 times
+                count: 15 * retryOptions.RetryCount, // the retryPolicyAsserter.HttpClientShouldContainRetryPolicyAsync triggers the retry policy 15 times
                 httpClientName: httpClientName,
-                options: retryOptions,
                 eventHandlerCalls: retryPolicyEventHandlerCalls);
         }
 
@@ -188,9 +187,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
                 testHttpMessageHandler);
             await retryPolicyAsserter.HttpClientShouldContainRetryPolicyAsync(numberOfCallsDelegatingHandler);
             retryPolicyAsserter.EventHandlerShouldReceiveExpectedEvents(
-                count: 15 * retryOptions.RetryCount, // the retryPolicyAsserter.HttpClientShouldContainRetryPolicyAsync triggers the retry policy 4 times
+                count: 15 * retryOptions.RetryCount, // the retryPolicyAsserter.HttpClientShouldContainRetryPolicyAsync triggers the retry policy 15 times
                 httpClientName: httpClientName,
-                options: retryOptions,
                 eventHandlerCalls: retryPolicyEventHandlerCalls);
         }
 

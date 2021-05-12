@@ -121,7 +121,6 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
             timeoutPolicyAsserter.EventHandlerShouldReceiveExpectedEvents(
                 count: 1,
                 httpClientName: httpClientName,
-                options: timeoutOptions,
                 eventHandlerCalls: timeoutPolicyEventHandlerCalls);
         }
 
@@ -165,7 +164,6 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
             timeoutPolicyAsserter.EventHandlerShouldReceiveExpectedEvents(
                 count: 1,
                 httpClientName: httpClientName,
-                options: timeoutOptions,
                 eventHandlerCalls: timeoutPolicyEventHandlerCalls);
         }
 

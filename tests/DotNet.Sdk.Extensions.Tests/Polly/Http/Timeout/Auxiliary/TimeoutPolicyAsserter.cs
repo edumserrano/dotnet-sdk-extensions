@@ -31,14 +31,13 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Auxiliary
         public void EventHandlerShouldReceiveExpectedEvents(
             int count,
             string httpClientName,
-            TimeoutOptions options,
             TimeoutPolicyEventHandlerCalls eventHandlerCalls)
         {
             eventHandlerCalls.OnTimeoutAsyncCalls.Count.ShouldBe(count);
             foreach (var onTimeoutAsyncCall in eventHandlerCalls.OnTimeoutAsyncCalls)
             {
                 onTimeoutAsyncCall.HttpClientName.ShouldBe(httpClientName);
-                onTimeoutAsyncCall.TimeoutOptions.TimeoutInSecs.ShouldBe(options.TimeoutInSecs);
+                onTimeoutAsyncCall.TimeoutOptions.TimeoutInSecs.ShouldBe(_options.TimeoutInSecs);
             }
         }
 

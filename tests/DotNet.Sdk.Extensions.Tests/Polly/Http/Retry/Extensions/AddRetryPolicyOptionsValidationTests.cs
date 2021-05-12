@@ -163,8 +163,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
                 .Validate(options =>
                 {
                     return options.RetryCount > 3;
-                })
-                ;
+                });
             services
                 .AddHttpClient(httpClientName)
                 .AddRetryPolicy(optionsName);

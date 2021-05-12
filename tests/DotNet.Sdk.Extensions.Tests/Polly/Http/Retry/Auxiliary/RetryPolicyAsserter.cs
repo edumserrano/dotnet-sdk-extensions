@@ -36,15 +36,14 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Auxiliary
         public void EventHandlerShouldReceiveExpectedEvents(
             int count,
             string httpClientName,
-            RetryOptions options,
             RetryPolicyEventHandlerCalls eventHandlerCalls)
         {
             eventHandlerCalls.OnRetryAsyncCalls.Count.ShouldBe(count);
             foreach (var onRetryAsyncCall in eventHandlerCalls.OnRetryAsyncCalls)
             {
                 onRetryAsyncCall.HttpClientName.ShouldBe(httpClientName);
-                onRetryAsyncCall.RetryOptions.RetryCount.ShouldBe(options.RetryCount);
-                onRetryAsyncCall.RetryOptions.MedianFirstRetryDelayInSecs.ShouldBe(options.MedianFirstRetryDelayInSecs);
+                onRetryAsyncCall.RetryOptions.RetryCount.ShouldBe(_options.RetryCount);
+                onRetryAsyncCall.RetryOptions.MedianFirstRetryDelayInSecs.ShouldBe(_options.MedianFirstRetryDelayInSecs);
             }
         }
 
@@ -54,7 +53,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Auxiliary
             foreach (var transientHttpStatusCode in HttpStatusCodesExtensions.GetTransientHttpStatusCodes())
             {
                 await retryExecutor.TriggerFromTransientHttpStatusCodeAsync(transientHttpStatusCode);
-                numberOfCallsDelegatingHandler.NumberOfHttpRequests.ShouldBe(_options.RetryCount + 1);
+                numberOfCallsDelegatingHandler.NumberOfHttpRequests.ShouldBe(_options.RetryCount + 1,$"{(int)transientHttpStatusCode}");
                 numberOfCallsDelegatingHandler.Reset();
             }
         }

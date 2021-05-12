@@ -298,7 +298,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
             var circuitBreakerOptions = new CircuitBreakerOptions
             {
                 DurationOfBreakInSecs = 0.1,
-                SamplingDurationInSecs = 60,
+                SamplingDurationInSecs = 0.2,
                 FailureThreshold = 0.6,
                 MinimumThroughput = 10
             };
