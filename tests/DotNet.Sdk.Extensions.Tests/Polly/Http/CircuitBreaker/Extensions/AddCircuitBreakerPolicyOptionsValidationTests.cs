@@ -16,7 +16,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
     public class AddCircuitBreakerPolicyOptionsValidationTests
     {
         /// <summary>
-        /// Tests that the RetryPolicyHttpClientBuilderExtensions.AddCircuitBreakerPolicy methods
+        /// Tests that the CircuitBreakerPolicyHttpClientBuilderExtensions.AddCircuitBreakerPolicy methods
         /// validate the <see cref="CircuitBreakerOptions"/> with the built in data annotations.
         ///
         /// Validates that the <see cref="CircuitBreakerOptions.DurationOfBreakInSecs"/> needs to be a double > 0.
@@ -49,7 +49,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
         }
         
         /// <summary>
-        /// Tests that the RetryPolicyHttpClientBuilderExtensions.AddCircuitBreakerPolicy methods
+        /// Tests that the CircuitBreakerPolicyHttpClientBuilderExtensions.AddCircuitBreakerPolicy methods
         /// validate the <see cref="CircuitBreakerOptions"/> with the built in data annotations.
         ///
         /// Validates that the <see cref="CircuitBreakerOptions.SamplingDurationInSecs"/> needs to be a double > 0.
@@ -82,7 +82,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
         }
 
         /// <summary>
-        /// Tests that the RetryPolicyHttpClientBuilderExtensions.AddCircuitBreakerPolicy methods
+        /// Tests that the CircuitBreakerPolicyHttpClientBuilderExtensions.AddCircuitBreakerPolicy methods
         /// validate the <see cref="CircuitBreakerOptions"/> with the built in data annotations.
         ///
         /// Validates that the <see cref="CircuitBreakerOptions.FailureThreshold"/> needs to be a double > 0
@@ -117,7 +117,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
         }
 
         /// <summary>
-        /// Tests that the RetryPolicyHttpClientBuilderExtensions.AddCircuitBreakerPolicy methods
+        /// Tests that the CircuitBreakerPolicyHttpClientBuilderExtensions.AddCircuitBreakerPolicy methods
         /// validate the <see cref="CircuitBreakerOptions"/> with the built in data annotations.
         ///
         /// Validates that the <see cref="CircuitBreakerOptions.MinimumThroughput"/> needs to be an int >= 2.
