@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net.Http;
 using System.Threading.Tasks;
+using DotNet.Sdk.Extensions.Polly.Http.Fallback.FallbackHttpResponseMessages;
 using DotNet.Sdk.Extensions.Polly.Http.Retry.Events;
 using Polly;
 using Polly.Contrib.WaitAndRetry;
@@ -21,7 +22,8 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Retry
             var retryDelays = Backoff.DecorrelatedJitterBackoffV2(medianFirstRetryDelay, options.RetryCount);
             return HttpPolicyExtensions
                 .HandleTransientHttpError()
-                .Or<TimeoutRejectedException>()
+                .OrResult(response => response is CircuitBrokenHttpResponseMessage) // returned by the CircuitBreakerCheckerAsyncPolicy when circuit is not open/isolated
+                .Or<TimeoutRejectedException>() // returned by the timeout policy when timeout occurs
                 .Or<TaskCanceledException>()
                 .WaitAndRetryAsync(
                     sleepDurations: retryDelays,

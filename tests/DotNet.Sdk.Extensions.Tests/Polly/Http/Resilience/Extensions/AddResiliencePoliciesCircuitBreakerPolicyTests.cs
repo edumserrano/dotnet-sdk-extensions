@@ -34,7 +34,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
         /// overload method adds a <see cref="DelegatingHandler"/> with a circuit break to the <see cref="HttpClient"/>.
         /// </summary>
         [Fact]
-        public async Task AddResiliencePolicies1()
+        public async Task AddResiliencePoliciesAddsCircuitBreakerPolicy1()
         {
             var testHttpMessageHandler = new TestHttpMessageHandler();
             var httpClientName = "GitHub";
@@ -86,7 +86,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
         /// overload method adds a <see cref="DelegatingHandler"/> with a circuit break to the <see cref="HttpClient"/>.
         /// </summary>
         [Fact]
-        public async Task AddResiliencePolicies2()
+        public async Task AddResiliencePoliciesAddsCircuitBreakerPolicy2()
         {
             var testHttpMessageHandler = new TestHttpMessageHandler();
             var httpClientName = "GitHub";
@@ -147,7 +147,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
         /// events are triggered with the correct values.
         /// </summary>
         [Fact]
-        public async Task AddResiliencePolicies3()
+        public async Task AddResiliencePoliciesAddsCircuitBreakerPolicy3()
         {
             var resiliencePoliciesEventHandlerCalls = new ResiliencePoliciesEventHandlerCalls();
             var testHttpMessageHandler = new TestHttpMessageHandler();
@@ -210,7 +210,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
         /// events are triggered with the correct values.
         /// </summary>
         [Fact]
-        public async Task AddResiliencePolicies4()
+        public async Task AddResiliencePoliciesAddsCircuitBreakerPolicy4()
         {
             var resiliencePoliciesEventHandlerCalls = new ResiliencePoliciesEventHandlerCalls();
             var testHttpMessageHandler = new TestHttpMessageHandler();

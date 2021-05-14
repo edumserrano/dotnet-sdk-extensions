@@ -28,7 +28,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
             _testHttpMessageHandler = testHttpMessageHandler;
             _resetRequestPath = HandleResetRequest();
         }
-        
+
         public async Task TriggerFromExceptionAsync(Exception exception)
         {
             var requestPath = $"/circuit-breaker/exception/{exception.GetType().Name}";
@@ -43,7 +43,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
                 responseHttpStatusCode: httpStatusCode);
             await TriggerCircuitBreakerFromTransientStatusCodeAsync(handledRequestPath, httpStatusCode);
         }
-
+        
         public async Task WaitForResetAsync()
         {
             // wait for the duration of break so that the circuit goes into half open state
@@ -58,7 +58,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
             // in the previous sampling window where the circuit state had already been open and closed.
             await Task.Delay(TimeSpan.FromSeconds(_circuitBreakerOptions.SamplingDurationInSecs));
         }
-        
+
         /// <remarks>
         /// The circuit breaker policy added is a wrapped policy which joins an
         /// <see cref="AsyncCircuitBreakerPolicy{TResult}"/> and a <see cref="CircuitBreakerCheckerAsyncPolicy{T}"/>.
@@ -94,9 +94,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
             return handledRequestPath;
         }
 
-        private async Task TriggerCircuitBreakerFromTransientStatusCodeAsync(
-            string requestPath,
-            HttpStatusCode httpStatusCode)
+        private async Task TriggerCircuitBreakerFromTransientStatusCodeAsync(string requestPath, HttpStatusCode httpStatusCode)
         {
             for (var i = 0; i < _circuitBreakerOptions.MinimumThroughput; i++)
             {
@@ -126,7 +124,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
                 }
             }
         }
-
+        
         public async ValueTask DisposeAsync()
         {
             await WaitForResetAsync();
