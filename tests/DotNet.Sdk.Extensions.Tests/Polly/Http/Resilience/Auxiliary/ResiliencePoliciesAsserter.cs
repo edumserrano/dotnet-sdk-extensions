@@ -7,6 +7,17 @@ using DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Auxiliary;
 
 namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Auxiliary
 {
+    internal static class ResiliencePoliciesAsserterExtensions
+    {
+        public static ResiliencePoliciesAsserter ResiliencePoliciesAsserter(
+            this HttpClient httpClient,
+            ResilienceOptions options,
+            TestHttpMessageHandler testHttpMessageHandler)
+        {
+            return new ResiliencePoliciesAsserter(httpClient, options, testHttpMessageHandler);
+        }
+    }
+
     /// <summary>
     /// This class uses composition with the other asserter classes to avoid repeating the
     /// assertion logic that makes sure a policy works as expected.

@@ -10,6 +10,17 @@ using Shouldly;
 
 namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
 {
+    internal static class CircuitBreakerPolicyAsserterExtensions
+    {
+        public static CircuitBreakerPolicyAsserter CircuitBreakerPolicyAsserter(
+            this HttpClient httpClient,
+            CircuitBreakerOptions options,
+            TestHttpMessageHandler testHttpMessageHandler)
+        {
+            return new CircuitBreakerPolicyAsserter(httpClient, options, testHttpMessageHandler);
+        }
+    }
+
     internal class CircuitBreakerPolicyAsserter
     {
         private readonly HttpClient _httpClient;

@@ -38,8 +38,9 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Fallback.Extensions
 
             var serviceProvider = services.BuildServiceProvider();
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
-            var fallbackPolicyAsserter = new FallbackPolicyAsserter(httpClient, testHttpMessageHandler);
-            await fallbackPolicyAsserter.HttpClientShouldContainFallbackPolicyAsync();
+            await httpClient
+                .FallbackPolicyAsserter(testHttpMessageHandler)
+                .HttpClientShouldContainFallbackPolicyAsync();
         }
 
         /// <summary>
@@ -66,7 +67,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Fallback.Extensions
 
             var serviceProvider = services.BuildServiceProvider();
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
-            var fallbackPolicyAsserter = new FallbackPolicyAsserter(httpClient, testHttpMessageHandler);
+            var fallbackPolicyAsserter = httpClient.FallbackPolicyAsserter(testHttpMessageHandler);
             await fallbackPolicyAsserter.HttpClientShouldContainFallbackPolicyAsync();
             fallbackPolicyAsserter.EventHandlerShouldReceiveExpectedEvents(
                 count: 1,

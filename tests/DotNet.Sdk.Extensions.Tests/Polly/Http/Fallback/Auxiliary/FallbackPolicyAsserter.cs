@@ -12,6 +12,16 @@ using System.Linq;
 
 namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Fallback.Auxiliary
 {
+    internal static class FallbackPolicyAsserterExtensions
+    {
+        public static FallbackPolicyAsserter FallbackPolicyAsserter(
+            this HttpClient httpClient,
+            TestHttpMessageHandler testHttpMessageHandler)
+        {
+            return new FallbackPolicyAsserter(httpClient, testHttpMessageHandler);
+        }
+    }
+
     internal class FallbackPolicyAsserter
     {
         private readonly HttpClient _httpClient;

@@ -47,11 +47,9 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
 
             var serviceProvider = services.BuildServiceProvider();
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
-            var timeoutPolicyAsserter = new TimeoutPolicyAsserter(
-                httpClient,
-                timeoutOptions,
-                testHttpMessageHandler);
-            await timeoutPolicyAsserter.HttpClientShouldContainTimeoutPolicyAsync();
+            await httpClient
+                .TimeoutPolicyAsserter(timeoutOptions, testHttpMessageHandler)
+                .HttpClientShouldContainTimeoutPolicyAsync();
         }
 
         /// <summary>
@@ -80,11 +78,9 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
 
             var serviceProvider = services.BuildServiceProvider();
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
-            var timeoutPolicyAsserter = new TimeoutPolicyAsserter(
-                httpClient,
-                timeoutOptions,
-                testHttpMessageHandler);
-            await timeoutPolicyAsserter.HttpClientShouldContainTimeoutPolicyAsync();
+            await httpClient
+                .TimeoutPolicyAsserter(timeoutOptions, testHttpMessageHandler)
+                .HttpClientShouldContainTimeoutPolicyAsync();
         }
 
         /// <summary>
@@ -116,15 +112,12 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
 
             var serviceProvider = services.BuildServiceProvider();
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
-            var timeoutPolicyAsserter = new TimeoutPolicyAsserter(
-                httpClient,
-                timeoutOptions,
-                testHttpMessageHandler);
+            var timeoutPolicyAsserter = httpClient.TimeoutPolicyAsserter(timeoutOptions, testHttpMessageHandler);
             await timeoutPolicyAsserter.HttpClientShouldContainTimeoutPolicyAsync();
             timeoutPolicyAsserter.EventHandlerShouldReceiveExpectedEvents(
-                count: 1,
-                httpClientName: httpClientName,
-                eventHandlerCalls: timeoutPolicyEventHandlerCalls);
+                    count: 1,
+                    httpClientName: httpClientName,
+                    eventHandlerCalls: timeoutPolicyEventHandlerCalls);
         }
 
         /// <summary>
@@ -158,10 +151,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
             var serviceProvider = services.BuildServiceProvider();
             serviceProvider.InstantiateNamedHttpClient(httpClientName);
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
-            var timeoutPolicyAsserter = new TimeoutPolicyAsserter(
-                httpClient,
-                timeoutOptions,
-                testHttpMessageHandler);
+            var timeoutPolicyAsserter = httpClient.TimeoutPolicyAsserter(timeoutOptions, testHttpMessageHandler);
             await timeoutPolicyAsserter.HttpClientShouldContainTimeoutPolicyAsync();
             timeoutPolicyAsserter.EventHandlerShouldReceiveExpectedEvents(
                 count: 1,

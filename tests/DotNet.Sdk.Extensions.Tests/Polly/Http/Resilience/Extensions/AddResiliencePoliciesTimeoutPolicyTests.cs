@@ -72,11 +72,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
 
             var serviceProvider = services.BuildServiceProvider();
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
-            var resiliencePoliciesAsserter = new ResiliencePoliciesAsserter(
-                httpClient,
-                resilienceOptions,
-                testHttpMessageHandler);
-            await resiliencePoliciesAsserter
+            await httpClient
+                .ResiliencePoliciesAsserter(resilienceOptions, testHttpMessageHandler)
                 .Timeout
                 .HttpClientShouldContainTimeoutPolicyWithFallbackAsync();
         }
@@ -131,11 +128,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
 
             var serviceProvider = services.BuildServiceProvider();
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
-            var resiliencePoliciesAsserter = new ResiliencePoliciesAsserter(
-                httpClient,
-                resilienceOptions,
-                testHttpMessageHandler);
-            await resiliencePoliciesAsserter
+            await httpClient
+                .ResiliencePoliciesAsserter(resilienceOptions, testHttpMessageHandler)
                 .Timeout
                 .HttpClientShouldContainTimeoutPolicyWithFallbackAsync();
         }
@@ -190,15 +184,10 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
 
             var serviceProvider = services.BuildServiceProvider();
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
-            var resiliencePoliciesAsserter = new ResiliencePoliciesAsserter(
-                httpClient,
-                resilienceOptions,
-                testHttpMessageHandler);
-            await resiliencePoliciesAsserter
-                .Timeout
+            var resiliencePoliciesAsserter = httpClient.ResiliencePoliciesAsserter(resilienceOptions, testHttpMessageHandler);
+            await resiliencePoliciesAsserter.Timeout
                 .HttpClientShouldContainTimeoutPolicyWithFallbackAsync();
-            resiliencePoliciesAsserter
-                .Timeout
+            resiliencePoliciesAsserter.Timeout
                 .EventHandlerShouldReceiveExpectedEvents(
                     count: 1,
                     httpClientName: httpClientName,
@@ -260,15 +249,10 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             var serviceProvider = services.BuildServiceProvider();
             serviceProvider.InstantiateNamedHttpClient(httpClientName);
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
-            var resiliencePoliciesAsserter = new ResiliencePoliciesAsserter(
-                httpClient,
-                resilienceOptions,
-                testHttpMessageHandler);
-            await resiliencePoliciesAsserter
-                .Timeout
+            var resiliencePoliciesAsserter = httpClient.ResiliencePoliciesAsserter(resilienceOptions, testHttpMessageHandler);
+            await resiliencePoliciesAsserter.Timeout
                 .HttpClientShouldContainTimeoutPolicyWithFallbackAsync();
-            resiliencePoliciesAsserter
-                .Timeout
+            resiliencePoliciesAsserter.Timeout
                 .EventHandlerShouldReceiveExpectedEvents(
                     count: 1,
                     httpClientName: httpClientName,

@@ -64,12 +64,9 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
 
             var serviceProvider = services.BuildServiceProvider();
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
-
-            var circuitBreakerAsserter = new CircuitBreakerPolicyAsserter(
-                httpClient,
-                circuitBreakerOptions,
-                testHttpMessageHandler);
-            await circuitBreakerAsserter.HttpClientShouldContainCircuitBreakerPolicyAsync();
+            await httpClient
+                .CircuitBreakerPolicyAsserter(circuitBreakerOptions, testHttpMessageHandler)
+                .HttpClientShouldContainCircuitBreakerPolicyAsync();
         }
 
         /// <summary>
@@ -107,11 +104,9 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
 
             var serviceProvider = services.BuildServiceProvider();
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
-            var circuitBreakerAsserter = new CircuitBreakerPolicyAsserter(
-                httpClient,
-                circuitBreakerOptions,
-                testHttpMessageHandler);
-            await circuitBreakerAsserter.HttpClientShouldContainCircuitBreakerPolicyAsync();
+            await httpClient
+                .CircuitBreakerPolicyAsserter(circuitBreakerOptions, testHttpMessageHandler)
+                .HttpClientShouldContainCircuitBreakerPolicyAsync();
         }
 
         /// <summary>
@@ -152,10 +147,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
 
             var serviceProvider = services.BuildServiceProvider();
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
-            var circuitBreakerAsserter = new CircuitBreakerPolicyAsserter(
-                httpClient,
-                circuitBreakerOptions,
-                testHttpMessageHandler);
+            var circuitBreakerAsserter = httpClient.CircuitBreakerPolicyAsserter(circuitBreakerOptions, testHttpMessageHandler);
             await circuitBreakerAsserter.HttpClientShouldContainCircuitBreakerPolicyAsync();
             circuitBreakerAsserter.EventHandlerShouldReceiveExpectedEvents(
                 count: 15, // the circuitBreakerAsserter.HttpClientShouldContainCircuitBreakerPolicyAsync triggers the circuit breaker 15 times
@@ -206,10 +198,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
 
             var serviceProvider = services.BuildServiceProvider();
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
-            var circuitBreakerAsserter = new CircuitBreakerPolicyAsserter(
-                httpClient,
-                circuitBreakerOptions,
-                testHttpMessageHandler);
+            var circuitBreakerAsserter = httpClient.CircuitBreakerPolicyAsserter(circuitBreakerOptions, testHttpMessageHandler);
             await circuitBreakerAsserter.HttpClientShouldContainCircuitBreakerPolicyAsync();
             circuitBreakerAsserter.EventHandlerShouldReceiveExpectedEvents(
                 count: 15, // the circuitBreakerAsserter.HttpClientShouldContainCircuitBreakerPolicyAsync triggers the circuit breaker 15 times

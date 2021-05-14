@@ -10,6 +10,17 @@ using Shouldly;
 
 namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Auxiliary
 {
+    internal static class TimeoutPolicyAsserterExtensions
+    {
+        public static TimeoutPolicyAsserter TimeoutPolicyAsserter(
+            this HttpClient httpClient,
+            TimeoutOptions options,
+            TestHttpMessageHandler testHttpMessageHandler)
+        {
+            return new TimeoutPolicyAsserter(httpClient, options, testHttpMessageHandler);
+        }
+    }
+    
     internal class TimeoutPolicyAsserter
     {
         private readonly HttpClient _httpClient;

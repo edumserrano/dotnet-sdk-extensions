@@ -2,7 +2,6 @@
 using System.Net.Http;
 using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker;
-using DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker.Events;
 using DotNet.Sdk.Extensions.Polly.Http.Resilience;
 using DotNet.Sdk.Extensions.Polly.Http.Resilience.Events;
 using DotNet.Sdk.Extensions.Polly.Http.Resilience.Extensions;
@@ -10,7 +9,6 @@ using DotNet.Sdk.Extensions.Polly.Http.Retry;
 using DotNet.Sdk.Extensions.Polly.Http.Timeout;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers;
 using DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary;
-using DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary;
 using DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Auxiliary;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
@@ -77,11 +75,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
 
             var serviceProvider = services.BuildServiceProvider();
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
-            var resiliencePoliciesAsserter = new ResiliencePoliciesAsserter(
-                httpClient,
-                resilienceOptions,
-                testHttpMessageHandler);
-            await resiliencePoliciesAsserter
+            await httpClient
+                .ResiliencePoliciesAsserter(resilienceOptions, testHttpMessageHandler)
                 .CircuitBreaker
                 .HttpClientShouldContainCircuitBreakerPolicyAsync();
         }
@@ -136,11 +131,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
 
             var serviceProvider = services.BuildServiceProvider();
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
-            var resiliencePoliciesAsserter = new ResiliencePoliciesAsserter(
-                httpClient,
-                resilienceOptions,
-                testHttpMessageHandler);
-            await resiliencePoliciesAsserter
+            await httpClient
+                .ResiliencePoliciesAsserter(resilienceOptions, testHttpMessageHandler)
                 .CircuitBreaker
                 .HttpClientShouldContainCircuitBreakerPolicyAsync();
         }
@@ -198,15 +190,10 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
 
             var serviceProvider = services.BuildServiceProvider();
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
-            var resiliencePoliciesAsserter = new ResiliencePoliciesAsserter(
-                httpClient,
-                resilienceOptions,
-                testHttpMessageHandler);
-            await resiliencePoliciesAsserter
-                .CircuitBreaker
+            var resiliencePoliciesAsserter = httpClient.ResiliencePoliciesAsserter(resilienceOptions, testHttpMessageHandler);
+            await resiliencePoliciesAsserter.CircuitBreaker
                 .HttpClientShouldContainCircuitBreakerPolicyAsync();
-            resiliencePoliciesAsserter
-                .CircuitBreaker
+            resiliencePoliciesAsserter.CircuitBreaker
                 .EventHandlerShouldReceiveExpectedEvents(
                     count: 15, // the circuitBreakerAsserter.HttpClientShouldContainCircuitBreakerPolicyAsync triggers the circuit breaker 15 times
                     httpClientName: httpClientName,
@@ -271,15 +258,10 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
 
             var serviceProvider = services.BuildServiceProvider();
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
-            var resiliencePoliciesAsserter = new ResiliencePoliciesAsserter(
-                httpClient,
-                resilienceOptions,
-                testHttpMessageHandler);
-            await resiliencePoliciesAsserter
-                .CircuitBreaker
+            var resiliencePoliciesAsserter = httpClient.ResiliencePoliciesAsserter(resilienceOptions, testHttpMessageHandler);
+            await resiliencePoliciesAsserter.CircuitBreaker
                 .HttpClientShouldContainCircuitBreakerPolicyAsync();
-            resiliencePoliciesAsserter
-                .CircuitBreaker
+            resiliencePoliciesAsserter.CircuitBreaker
                 .EventHandlerShouldReceiveExpectedEvents(
                     count: 15, // the circuitBreakerAsserter.HttpClientShouldContainCircuitBreakerPolicyAsync triggers the circuit breaker 15 times
                     httpClientName: httpClientName,

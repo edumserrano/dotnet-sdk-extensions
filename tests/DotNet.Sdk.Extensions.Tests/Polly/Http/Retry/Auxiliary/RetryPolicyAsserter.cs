@@ -9,6 +9,17 @@ using Shouldly;
 
 namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Auxiliary
 {
+    internal static class RetryPolicyAsserterExtensions
+    {
+        public static RetryPolicyAsserter RetryPolicyAsserter(
+            this HttpClient httpClient,
+            RetryOptions options,
+            TestHttpMessageHandler testHttpMessageHandler)
+        {
+            return new RetryPolicyAsserter(httpClient, options, testHttpMessageHandler);
+        }
+    }
+
     internal class RetryPolicyAsserter
     {
         private readonly HttpClient _httpClient;

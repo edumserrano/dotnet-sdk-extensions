@@ -70,11 +70,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
 
             var serviceProvider = services.BuildServiceProvider();
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
-            var resiliencePoliciesAsserter = new ResiliencePoliciesAsserter(
-                httpClient,
-                resilienceOptions,
-                testHttpMessageHandler);
-            await resiliencePoliciesAsserter
+            await httpClient
+                .ResiliencePoliciesAsserter(resilienceOptions, testHttpMessageHandler)
                 .Retry
                 .HttpClientShouldContainRetryPolicyAsync(numberOfCallsDelegatingHandler);
         }
@@ -131,11 +128,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
 
             var serviceProvider = services.BuildServiceProvider();
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
-            var resiliencePoliciesAsserter = new ResiliencePoliciesAsserter(
-                httpClient,
-                resilienceOptions,
-                testHttpMessageHandler);
-            await resiliencePoliciesAsserter
+            await httpClient
+                .ResiliencePoliciesAsserter(resilienceOptions, testHttpMessageHandler)
                 .Retry
                 .HttpClientShouldContainRetryPolicyAsync(numberOfCallsDelegatingHandler);
         }
@@ -192,15 +186,10 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
 
             var serviceProvider = services.BuildServiceProvider();
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
-            var resiliencePoliciesAsserter = new ResiliencePoliciesAsserter(
-                httpClient,
-                resilienceOptions,
-                testHttpMessageHandler);
-            await resiliencePoliciesAsserter
-                .Retry
+            var resiliencePoliciesAsserter = httpClient.ResiliencePoliciesAsserter(resilienceOptions, testHttpMessageHandler);
+            await resiliencePoliciesAsserter.Retry
                 .HttpClientShouldContainRetryPolicyAsync(numberOfCallsDelegatingHandler);
-            resiliencePoliciesAsserter
-                .Retry
+            resiliencePoliciesAsserter.Retry
                 .EventHandlerShouldReceiveExpectedEvents(
                     count: 15 * resilienceOptions.Retry.RetryCount, // the resiliencePoliciesAsserter.HttpClientShouldContainRetryPolicyAsync triggers the retry policy 15 times
                     httpClientName: httpClientName,
@@ -263,15 +252,10 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
 
             var serviceProvider = services.BuildServiceProvider();
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
-            var resiliencePoliciesAsserter = new ResiliencePoliciesAsserter(
-                httpClient,
-                resilienceOptions,
-                testHttpMessageHandler);
-            await resiliencePoliciesAsserter
-                .Retry
+            var resiliencePoliciesAsserter = httpClient.ResiliencePoliciesAsserter(resilienceOptions, testHttpMessageHandler);
+            await resiliencePoliciesAsserter.Retry
                 .HttpClientShouldContainRetryPolicyAsync(numberOfCallsDelegatingHandler);
-            resiliencePoliciesAsserter
-                .Retry
+            resiliencePoliciesAsserter.Retry
                 .EventHandlerShouldReceiveExpectedEvents(
                     count: 15 * resilienceOptions.Retry.RetryCount, // the resiliencePoliciesAsserter.HttpClientShouldContainRetryPolicyAsync triggers the retry policy 15 times
                     httpClientName: httpClientName,
