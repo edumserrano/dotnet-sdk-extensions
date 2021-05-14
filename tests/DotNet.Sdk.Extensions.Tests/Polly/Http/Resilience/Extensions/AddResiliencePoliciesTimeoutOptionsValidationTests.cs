@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using DotNet.Sdk.Extensions.Polly.Http.Resilience;
 using DotNet.Sdk.Extensions.Polly.Http.Resilience.Extensions;
-using DotNet.Sdk.Extensions.Polly.Http.Retry;
+using DotNet.Sdk.Extensions.Polly.Http.Timeout;
 using DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -12,16 +12,16 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
 {
     /// <summary>
     /// Tests for the <see cref="ResiliencePoliciesHttpClientBuilderExtensions"/> class.
-    /// Specifically for the <see cref="ResilienceOptions.Retry"/> validation.
+    /// Specifically for the <see cref="ResilienceOptions.Timeout"/> validation.
     /// </summary>
     [Trait("Category", XUnitCategories.Polly)]
-    public class AddResiliencePoliciesRetryOptionsValidationTests
+    public class AddResiliencePoliciesTimeoutOptionsValidationTests
     {
         /// <summary>
         /// Tests that the ResiliencePoliciesHttpClientBuilderExtensions.AddResiliencePolicies methods
         /// validate the <see cref="ResilienceOptions"/> with the built in data annotations.
         ///
-        /// Validates that the <see cref="ResilienceOptions.Retry"/> cannot be null.
+        /// Validates that the <see cref="ResilienceOptions.Timeout"/> cannot be null.
         /// </summary>
         [Fact]
         public void AddResiliencePoliciesOptionsValidationForRetryOptions()
@@ -32,9 +32,10 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 .AddHttpClient(httpClientName)
                 .AddResiliencePolicies(options =>
                 {
-                    options.Retry = null!;
+                    options.Timeout = null!;
 
-                    options.Timeout.TimeoutInSecs = 1;
+                    options.Retry.RetryCount = 1;
+                    options.Retry.MedianFirstRetryDelayInSecs = 2;
                     options.CircuitBreaker.DurationOfBreakInSecs = 1;
                     options.CircuitBreaker.FailureThreshold = 0.5;
                     options.CircuitBreaker.SamplingDurationInSecs = 60;
@@ -46,86 +47,20 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             {
                 serviceProvider.InstantiateNamedHttpClient(httpClientName);
             });
-            exception.Message.ShouldBe("The Retry field is required.");
+            exception.Message.ShouldBe("The Timeout field is required.");
         }
 
         /// <summary>
         /// Tests that the ResiliencePoliciesHttpClientBuilderExtensions.AddResiliencePolicies methods
-        /// validate the <see cref="ResilienceOptions.Retry"/> with the built in data annotations.
-        ///
-        /// Validates that the <see cref="RetryOptions.RetryCount"/> needs to be an int >= 0.
-        /// </summary>
-        [Theory]
-        [InlineData(-1)]
-        [InlineData(-2)]
-        [InlineData(-3)]
-        public void AddResiliencePoliciesOptionsValidationForRetryCount(int retryCount)
-        {
-            var httpClientName = "GitHub";
-            var services = new ServiceCollection();
-            services
-                .AddHttpClient(httpClientName)
-                .AddResiliencePolicies(options =>
-                {
-                    options.Retry.RetryCount = retryCount;
-                    options.Retry.MedianFirstRetryDelayInSecs = 1;
-
-                    options.Timeout.TimeoutInSecs = 1;
-                    options.CircuitBreaker.DurationOfBreakInSecs = 1;
-                    options.CircuitBreaker.FailureThreshold = 0.5;
-                    options.CircuitBreaker.SamplingDurationInSecs = 60;
-                    options.CircuitBreaker.MinimumThroughput = 4;
-                });
-
-            var serviceProvider = services.BuildServiceProvider();
-            var exception = Should.Throw<ValidationException>(() =>
-            {
-                serviceProvider.InstantiateNamedHttpClient(httpClientName);
-            });
-            exception.Message.ShouldBe($"The field RetryCount must be between {0} and {int.MaxValue}.");
-        }
-
-        /// <summary>
-        /// Tests that the ResiliencePoliciesHttpClientBuilderExtensions.AddResiliencePolicies methods
-        /// validate the <see cref="RetryOptions"/> with the built in data annotations.
-        ///
-        /// Validates that the <see cref="RetryOptions.RetryCount"/> can be zero.
-        /// </summary>
-        [Fact]
-        public void AddResiliencePoliciesOptionsValidationForRetryCount2()
-        {
-            var httpClientName = "GitHub";
-            var services = new ServiceCollection();
-            services
-                .AddHttpClient(httpClientName)
-                .AddResiliencePolicies(options =>
-                {
-                    options.Retry.RetryCount = 0;
-                    options.Retry.MedianFirstRetryDelayInSecs = 1;
-
-                    options.Timeout.TimeoutInSecs = 1;
-                    options.CircuitBreaker.DurationOfBreakInSecs = 1;
-                    options.CircuitBreaker.FailureThreshold = 0.5;
-                    options.CircuitBreaker.SamplingDurationInSecs = 60;
-                    options.CircuitBreaker.MinimumThroughput = 4;
-                });
-
-            var serviceProvider = services.BuildServiceProvider();
-            Should.NotThrow(() => serviceProvider.InstantiateNamedHttpClient(httpClientName));
-        }
-
-        /// <summary>
-        /// Tests that the ResiliencePoliciesHttpClientBuilderExtensions.AddResiliencePolicies methods
-        /// validate the <see cref="ResilienceOptions.Retry"/> with the built in data annotations.
-        ///
-        /// Validates that the <see cref="RetryOptions.MedianFirstRetryDelayInSecs"/> needs to be a double > 0.
+        /// validate the <see cref="ResilienceOptions.Timeout"/> with the built in data annotations.
+        /// 
+        /// Validates that the <see cref="TimeoutOptions.TimeoutInSecs"/> needs to be a double > 0.
         /// </summary>
         [Theory]
         [InlineData(0)]
         [InlineData(-1)]
         [InlineData(-2.2)]
-        [InlineData(-3.5)]
-        public void AddResiliencePoliciesOptionsValidationForMedianFirstRetryDelayInSecs(int medianFirstRetryDelayInSecs)
+        public void AddResiliencePoliciesOptionsValidation1(int timeoutInSecs)
         {
             var httpClientName = "GitHub";
             var services = new ServiceCollection();
@@ -133,10 +68,10 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 .AddHttpClient(httpClientName)
                 .AddResiliencePolicies(options =>
                 {
-                    options.Retry.RetryCount = 1;
-                    options.Retry.MedianFirstRetryDelayInSecs = medianFirstRetryDelayInSecs;
+                    options.Timeout.TimeoutInSecs = timeoutInSecs;
 
-                    options.Timeout.TimeoutInSecs = 1;
+                    options.Retry.RetryCount = 1;
+                    options.Retry.MedianFirstRetryDelayInSecs = 2;
                     options.CircuitBreaker.DurationOfBreakInSecs = 1;
                     options.CircuitBreaker.FailureThreshold = 0.5;
                     options.CircuitBreaker.SamplingDurationInSecs = 60;
@@ -148,7 +83,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             {
                 serviceProvider.InstantiateNamedHttpClient(httpClientName);
             });
-            exception.Message.ShouldBe($"The field MedianFirstRetryDelayInSecs must be between {double.Epsilon} and {double.MaxValue}.");
+            exception.Message.ShouldBe($"The field TimeoutInSecs must be between {double.Epsilon} and {double.MaxValue}.");
         }
 
         /// <summary>
@@ -156,9 +91,9 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
         /// after using <see cref="ResilienceOptionsExtensions.AddHttpClientResilienceOptions"/> and those option configurations
         /// will be honored.
         ///
-        /// In this test we configure the <see cref="RetryOptions.RetryCount"/> to 2 and force a validation
+        /// In this test we configure the <see cref="TimeoutOptions.TimeoutInSecs"/> to 1 and force a validation
         /// that this value must be > 3.
-        /// Although the default data annotation validations only enforces that the value must be >= 0, with the
+        /// Although the default data annotation validations only enforces that the value must be positive, with the
         /// extra validation the options validation will fail.
         /// </summary>
         [Fact]
@@ -171,10 +106,10 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 .AddHttpClientResilienceOptions(optionsName)
                 .Configure(options =>
                 {
-                    options.Retry.RetryCount = 2;
-                    options.Retry.MedianFirstRetryDelayInSecs = 1;
-
                     options.Timeout.TimeoutInSecs = 1;
+
+                    options.Retry.RetryCount = 1;
+                    options.Retry.MedianFirstRetryDelayInSecs = 2;
                     options.CircuitBreaker.DurationOfBreakInSecs = 1;
                     options.CircuitBreaker.FailureThreshold = 0.5;
                     options.CircuitBreaker.SamplingDurationInSecs = 60;
@@ -182,7 +117,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 })
                 .Validate(options =>
                 {
-                    return options.Retry.RetryCount > 3;
+                    return options.Timeout.TimeoutInSecs > 3;
                 });
             services
                 .AddHttpClient(httpClientName)
@@ -201,7 +136,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
         /// after using <see cref="ResilienceOptionsExtensions.AddHttpClientResilienceOptions"/> and those option configurations
         /// will be honored.
         ///
-        /// In this test we configure the <see cref="RetryOptions.RetryCount"/> to -1 and force a validation
+        /// In this test we configure the <see cref="TimeoutOptions.TimeoutInSecs"/> to -1 and force a validation
         /// that this value must be > 3.
         /// With this setup both the default data annotation validation and the custom one will be triggered.
         /// </summary>
@@ -215,10 +150,10 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 .AddHttpClientResilienceOptions(optionsName)
                 .Configure(options =>
                 {
-                    options.Retry.RetryCount = -1;
-                    options.Retry.MedianFirstRetryDelayInSecs = 1;
+                    options.Timeout.TimeoutInSecs = -1;
 
-                    options.Timeout.TimeoutInSecs = 1;
+                    options.Retry.RetryCount = 1;
+                    options.Retry.MedianFirstRetryDelayInSecs = 2;
                     options.CircuitBreaker.DurationOfBreakInSecs = 1;
                     options.CircuitBreaker.FailureThreshold = 0.5;
                     options.CircuitBreaker.SamplingDurationInSecs = 60;
@@ -226,7 +161,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 })
                 .Validate(options =>
                 {
-                    return options.Retry.RetryCount > 3;
+                    return options.Timeout.TimeoutInSecs > 3;
                 });
             services
                 .AddHttpClient(httpClientName)
@@ -237,7 +172,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             {
                 serviceProvider.InstantiateNamedHttpClient(httpClientName);
             });
-            exception.Message.ShouldBe($"The field RetryCount must be between {0} and {int.MaxValue}.");
+            exception.Message.ShouldBe($"The field TimeoutInSecs must be between {double.Epsilon} and {double.MaxValue}.");
         }
     }
 }
