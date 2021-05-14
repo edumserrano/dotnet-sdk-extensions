@@ -1,6 +1,7 @@
 ﻿using System.Net.Http;
 using DotNet.Sdk.Extensions.Polly.Http.Resilience;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers;
+using DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary;
 using DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Auxiliary;
 using DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Auxiliary;
 
@@ -15,26 +16,29 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Auxiliary
     /// </summary>
     internal class ResiliencePoliciesAsserter
     {
-        private readonly RetryPolicyAsserter _retryPolicyAsserter;
-        private readonly TimeoutPolicyAsserter _timeoutPolicyAsserter;
-
         public ResiliencePoliciesAsserter(
             HttpClient httpClient,
             ResilienceOptions resilienceOptions,
             TestHttpMessageHandler testHttpMessageHandler)
         {
-            _retryPolicyAsserter = new RetryPolicyAsserter(
+            Retry = new RetryPolicyAsserter(
                 httpClient,
                 resilienceOptions.Retry,
                 testHttpMessageHandler);
-            _timeoutPolicyAsserter = new TimeoutPolicyAsserter(
+            Timeout = new TimeoutPolicyAsserter(
                 httpClient,
                 resilienceOptions.Timeout,
                 testHttpMessageHandler);
+            CircuitBreaker = new CircuitBreakerPolicyAsserter(
+                httpClient,
+                resilienceOptions.CircuitBreaker,
+                testHttpMessageHandler);
         }
 
-        public TimeoutPolicyAsserter Timeout => _timeoutPolicyAsserter;
+        public TimeoutPolicyAsserter Timeout { get; }
 
-        public RetryPolicyAsserter Retry => _retryPolicyAsserter;
+        public RetryPolicyAsserter Retry { get; }
+
+        public CircuitBreakerPolicyAsserter CircuitBreaker { get; }
     }
 }

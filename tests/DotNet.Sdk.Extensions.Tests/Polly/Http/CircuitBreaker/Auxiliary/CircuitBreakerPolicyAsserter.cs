@@ -33,7 +33,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
             await CircuitBreakerPolicyHandlesException<TimeoutRejectedException>();
             await CircuitBreakerPolicyHandlesException<TaskCanceledException>();
         }
-
+        
         public void EventHandlerShouldReceiveExpectedEvents(
             int count,
             string httpClientName,
