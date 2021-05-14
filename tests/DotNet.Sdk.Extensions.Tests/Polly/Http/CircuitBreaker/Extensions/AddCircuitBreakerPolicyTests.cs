@@ -45,7 +45,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
             var circuitBreakerOptions = new CircuitBreakerOptions
             {
                 DurationOfBreakInSecs = 0.1,
-                SamplingDurationInSecs = 0.2,
+                SamplingDurationInSecs = 0.3,
                 FailureThreshold = 0.6,
                 MinimumThroughput = 10
             };
@@ -81,7 +81,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
             var circuitBreakerOptions = new CircuitBreakerOptions
             {
                 DurationOfBreakInSecs = 0.1,
-                SamplingDurationInSecs = 0.2,
+                SamplingDurationInSecs = 0.3,
                 FailureThreshold = 0.6,
                 MinimumThroughput = 10
             };
@@ -127,7 +127,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
             var circuitBreakerOptions = new CircuitBreakerOptions
             {
                 DurationOfBreakInSecs = 0.1,
-                SamplingDurationInSecs = 0.2,
+                SamplingDurationInSecs = 0.3,
                 FailureThreshold = 0.6,
                 MinimumThroughput = 10
             };
@@ -173,7 +173,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
             var circuitBreakerOptions = new CircuitBreakerOptions
             {
                 DurationOfBreakInSecs = 0.1,
-                SamplingDurationInSecs = 0.2,
+                SamplingDurationInSecs = 0.3,
                 FailureThreshold = 0.6,
                 MinimumThroughput = 10
             };
@@ -221,7 +221,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
             var circuitBreakerOptions = new CircuitBreakerOptions
             {
                 DurationOfBreakInSecs = 0.1,
-                SamplingDurationInSecs = 0.2,
+                SamplingDurationInSecs = 0.3,
                 FailureThreshold = 0.6,
                 MinimumThroughput = 10
             };
@@ -287,7 +287,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
             var circuitBreakerOptions = new CircuitBreakerOptions
             {
                 DurationOfBreakInSecs = 0.1,
-                SamplingDurationInSecs = 0.2,
+                SamplingDurationInSecs = 0.3,
                 FailureThreshold = 0.6,
                 MinimumThroughput = 10
             };
