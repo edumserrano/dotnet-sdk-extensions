@@ -2,11 +2,9 @@
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using DotNet.Sdk.Extensions.Polly.Http.Fallback.Events;
 using DotNet.Sdk.Extensions.Polly.Http.Fallback.FallbackHttpResponseMessages;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers;
 using DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary;
-using Polly;
 using Polly.CircuitBreaker;
 using Polly.Timeout;
 using Shouldly;
@@ -105,33 +103,6 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Fallback.Auxiliary
                 .OnTaskCancelledFallbackAsyncCalls
                 .Count(x => x.HttpClientName.Equals(httpClientName))
                 .ShouldBe(count);
-        }
-
-        private void ShouldTriggerPolicyEventHandler(
-            OnFallbackTarget onFallbackTarget,
-            string httpClientName,
-            Type policyEventHandler)
-        {
-            onFallbackTarget.HttpClientName.ShouldBe(httpClientName);
-            onFallbackTarget.PolicyEventHandler
-                .GetType()
-                .ShouldBe(policyEventHandler);
-        }
-
-        private class OnFallbackTarget
-        {
-            public OnFallbackTarget(IsPolicy policy)
-            {
-                var onTimeoutAsync = policy
-                    .GetInstanceField("_onFallbackAsync")
-                    .GetInstanceProperty("Target");
-                HttpClientName = onTimeoutAsync.GetInstanceField<string>("httpClientName");
-                PolicyEventHandler = onTimeoutAsync.GetInstanceField<IFallbackPolicyEventHandler>("policyEventHandler");
-            }
-
-            public string HttpClientName { get; }
-
-            public IFallbackPolicyEventHandler PolicyEventHandler { get; }
         }
     }
 }

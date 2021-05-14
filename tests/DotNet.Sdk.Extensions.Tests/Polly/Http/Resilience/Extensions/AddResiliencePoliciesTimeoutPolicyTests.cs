@@ -17,19 +17,22 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
 {
     /// <summary>
     /// Tests for the <see cref="ResiliencePoliciesHttpClientBuilderExtensions"/> class.
-    /// Specifically to test that the retry policy is added.
+    /// Specifically to test that the timeout policy is added.
+    ///
+    /// Because the ResiliencePoliciesHttpClientBuilderExtensions.AddResiliencePolicies overload methods also add
+    /// a fallback policy that handles timeouts we need to assert that the timeout will result in the
+    /// fallback policy response.
     /// </summary>
     [Trait("Category", XUnitCategories.Polly)]
-    public class AddResiliencePoliciesRetryPolicyTests
+    public class AddResiliencePoliciesTimeoutPolicyTests
     {
         /// <summary>
         /// Tests that the <see cref="ResiliencePoliciesHttpClientBuilderExtensions.AddResiliencePolicies(IHttpClientBuilder,Action{ResilienceOptions})"/>
-        /// overload method adds a <see cref="DelegatingHandler"/> with a retry policy to the <see cref="HttpClient"/>.
+        /// overload method adds a <see cref="DelegatingHandler"/> with a timeout policy to the <see cref="HttpClient"/>.
         /// </summary>
         [Fact]
-        public async Task AddResiliencePoliciesAddsRetryPolicy1()
+        public async Task AddResiliencePoliciesAddsTimeoutPolicy1()
         {
-            var numberOfCallsDelegatingHandler = new NumberOfCallsDelegatingHandler();
             var testHttpMessageHandler = new TestHttpMessageHandler();
             var httpClientName = "GitHub";
             var resilienceOptions = new ResilienceOptions
@@ -40,7 +43,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 },
                 Retry = new RetryOptions
                 {
-                    RetryCount = 2,
+                    RetryCount = 0, //disable retries to avoid the retry policy triggering when testing the timeout policy
                     MedianFirstRetryDelayInSecs = 0.01
                 },
                 CircuitBreaker = new CircuitBreakerOptions
@@ -48,7 +51,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                     DurationOfBreakInSecs = 0.1,
                     SamplingDurationInSecs = 0.2,
                     FailureThreshold = 0.6,
-                    MinimumThroughput = 1000 // configure high value to avoid the circuit breaker policy triggering when testing the retry policy
+                    MinimumThroughput = 1000 // configure high value to avoid the circuit breaker policy triggering when testing the timeout policy
                 }
             };
             var services = new ServiceCollection();
@@ -65,7 +68,6 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                     options.CircuitBreaker.SamplingDurationInSecs = resilienceOptions.CircuitBreaker.SamplingDurationInSecs;
                     options.CircuitBreaker.MinimumThroughput = resilienceOptions.CircuitBreaker.MinimumThroughput;
                 })
-                .AddHttpMessageHandler(() => numberOfCallsDelegatingHandler)
                 .ConfigurePrimaryHttpMessageHandler(() => testHttpMessageHandler);
 
             var serviceProvider = services.BuildServiceProvider();
@@ -75,18 +77,17 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 resilienceOptions,
                 testHttpMessageHandler);
             await resiliencePoliciesAsserter
-                .Retry
-                .HttpClientShouldContainRetryPolicyAsync(numberOfCallsDelegatingHandler);
+                .Timeout
+                .HttpClientShouldContainTimeoutPolicyWithFallbackAsync();
         }
 
         /// <summary>
         /// Tests that the <see cref="ResiliencePoliciesHttpClientBuilderExtensions.AddResiliencePolicies(IHttpClientBuilder,string)"/>
-        /// overload method adds a <see cref="DelegatingHandler"/> with a retry policy to the <see cref="HttpClient"/>.
+        /// overload method adds a <see cref="DelegatingHandler"/> with a timeout policy to the <see cref="HttpClient"/>.
         /// </summary>
         [Fact]
-        public async Task AddResiliencePoliciesAddsRetryPolicy2()
+        public async Task AddResiliencePoliciesAddsTimeoutPolicy2()
         {
-            var numberOfCallsDelegatingHandler = new NumberOfCallsDelegatingHandler();
             var testHttpMessageHandler = new TestHttpMessageHandler();
             var httpClientName = "GitHub";
             var resilienceOptions = new ResilienceOptions
@@ -97,7 +98,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 },
                 Retry = new RetryOptions
                 {
-                    RetryCount = 2,
+                    RetryCount = 0, //disable retries to avoid the retry policy triggering when testing the timeout policy
                     MedianFirstRetryDelayInSecs = 0.01
                 },
                 CircuitBreaker = new CircuitBreakerOptions
@@ -105,7 +106,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                     DurationOfBreakInSecs = 0.1,
                     SamplingDurationInSecs = 0.2,
                     FailureThreshold = 0.6,
-                    MinimumThroughput = 1000 // configure high value to avoid the circuit breaker policy triggering when testing the retry policy
+                    MinimumThroughput = 1000 // configure high value to avoid the circuit breaker policy triggering when testing the timeout policy
                 }
             };
             var optionsName = "GitHubOptions";
@@ -126,7 +127,6 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 .AddHttpClient(httpClientName)
                 .ConfigureHttpClient(client => client.BaseAddress = new Uri("https://github.com"))
                 .AddResiliencePolicies(optionsName)
-                .AddHttpMessageHandler(() => numberOfCallsDelegatingHandler)
                 .ConfigurePrimaryHttpMessageHandler(() => testHttpMessageHandler);
 
             var serviceProvider = services.BuildServiceProvider();
@@ -136,21 +136,20 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 resilienceOptions,
                 testHttpMessageHandler);
             await resiliencePoliciesAsserter
-                .Retry
-                .HttpClientShouldContainRetryPolicyAsync(numberOfCallsDelegatingHandler);
+                .Timeout
+                .HttpClientShouldContainTimeoutPolicyWithFallbackAsync();
         }
 
         /// <summary>
         /// Tests that the <see cref="ResiliencePoliciesHttpClientBuilderExtensions.AddResiliencePolicies{TPolicyEventHandler}(IHttpClientBuilder,Action{ResilienceOptions})"/>
-        /// overload method adds a <see cref="DelegatingHandler"/> with a retry policy to the <see cref="HttpClient"/>.
+        /// overload method adds a <see cref="DelegatingHandler"/> with a timeout policy to the <see cref="HttpClient"/>.
         /// 
-        /// This also tests that the <see cref="IResiliencePoliciesEventHandler.OnRetryAsync"/> is triggered with the correct values.
+        /// This also tests that the  <see cref="IResiliencePoliciesEventHandler.OnTimeoutAsync"/> is triggered with the correct values.
         /// </summary>
         [Fact]
-        public async Task AddResiliencePoliciesAddsRetryPolicy3()
+        public async Task AddResiliencePoliciesAddsTimeoutPolicy3()
         {
             var resiliencePoliciesEventHandlerCalls = new ResiliencePoliciesEventHandlerCalls();
-            var numberOfCallsDelegatingHandler = new NumberOfCallsDelegatingHandler();
             var testHttpMessageHandler = new TestHttpMessageHandler();
             var httpClientName = "GitHub";
             var resilienceOptions = new ResilienceOptions
@@ -161,7 +160,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 },
                 Retry = new RetryOptions
                 {
-                    RetryCount = 2,
+                    RetryCount = 0, //disable retries to avoid the retry policy triggering when testing the timeout policy
                     MedianFirstRetryDelayInSecs = 0.01
                 },
                 CircuitBreaker = new CircuitBreakerOptions
@@ -169,7 +168,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                     DurationOfBreakInSecs = 0.1,
                     SamplingDurationInSecs = 0.2,
                     FailureThreshold = 0.6,
-                    MinimumThroughput = 1000 // configure high value to avoid the circuit breaker policy triggering when testing the retry policy
+                    MinimumThroughput = 1000 // configure high value to avoid the circuit breaker policy triggering when testing the timeout policy
                 }
             };
             var services = new ServiceCollection();
@@ -187,7 +186,6 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                     options.CircuitBreaker.SamplingDurationInSecs = resilienceOptions.CircuitBreaker.SamplingDurationInSecs;
                     options.CircuitBreaker.MinimumThroughput = resilienceOptions.CircuitBreaker.MinimumThroughput;
                 })
-                .AddHttpMessageHandler(() => numberOfCallsDelegatingHandler)
                 .ConfigurePrimaryHttpMessageHandler(() => testHttpMessageHandler);
 
             var serviceProvider = services.BuildServiceProvider();
@@ -197,27 +195,26 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 resilienceOptions,
                 testHttpMessageHandler);
             await resiliencePoliciesAsserter
-                .Retry
-                .HttpClientShouldContainRetryPolicyAsync(numberOfCallsDelegatingHandler);
+                .Timeout
+                .HttpClientShouldContainTimeoutPolicyWithFallbackAsync();
             resiliencePoliciesAsserter
-                .Retry
+                .Timeout
                 .EventHandlerShouldReceiveExpectedEvents(
-                    count: 15 * resilienceOptions.Retry.RetryCount, // the resiliencePoliciesAsserter.HttpClientShouldContainRetryPolicyAsync triggers the retry policy 15 times
+                    count: 1,
                     httpClientName: httpClientName,
-                    eventHandlerCalls: resiliencePoliciesEventHandlerCalls.Retry);
+                    eventHandlerCalls: resiliencePoliciesEventHandlerCalls.Timeout);
         }
 
         /// <summary>
         /// Tests that the <see cref="ResiliencePoliciesHttpClientBuilderExtensions.AddResiliencePolicies{TPolicyEventHandler}(IHttpClientBuilder,string)"/>
-        /// overload method adds a <see cref="DelegatingHandler"/> with a retry policy to the <see cref="HttpClient"/>.
+        /// overload method adds a <see cref="DelegatingHandler"/> with a timeout policy to the <see cref="HttpClient"/>.
         ///
-        /// This also tests that the <see cref="IResiliencePoliciesEventHandler.OnRetryAsync"/> is triggered with the correct values.
+        /// This also tests that the  <see cref="IResiliencePoliciesEventHandler.OnTimeoutAsync"/> is triggered with the correct values.
         /// </summary>
         [Fact]
-        public async Task AddResiliencePoliciesAddsRetryPolicy4()
+        public async Task AddResiliencePoliciesAddsTimeoutPolicy4()
         {
             var resiliencePoliciesEventHandlerCalls = new ResiliencePoliciesEventHandlerCalls();
-            var numberOfCallsDelegatingHandler = new NumberOfCallsDelegatingHandler();
             var testHttpMessageHandler = new TestHttpMessageHandler();
             var httpClientName = "GitHub";
             var resilienceOptions = new ResilienceOptions
@@ -228,7 +225,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 },
                 Retry = new RetryOptions
                 {
-                    RetryCount = 2,
+                    RetryCount = 0, //disable retries to avoid the retry policy triggering when testing the timeout policy
                     MedianFirstRetryDelayInSecs = 0.01
                 },
                 CircuitBreaker = new CircuitBreakerOptions
@@ -236,7 +233,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                     DurationOfBreakInSecs = 0.1,
                     SamplingDurationInSecs = 0.2,
                     FailureThreshold = 0.6,
-                    MinimumThroughput = 1000 // configure high value to avoid the circuit breaker policy triggering when testing the retry policy
+                    MinimumThroughput = 1000 // configure high value to avoid the circuit breaker policy triggering when testing the timeout policy
                 }
             };
             var optionsName = "GitHubOptions";
@@ -258,24 +255,24 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 .AddHttpClient(httpClientName)
                 .ConfigureHttpClient(client => client.BaseAddress = new Uri("https://github.com"))
                 .AddResiliencePolicies<TestResiliencePoliciesEventHandler>(optionsName)
-                .AddHttpMessageHandler(() => numberOfCallsDelegatingHandler)
                 .ConfigurePrimaryHttpMessageHandler(() => testHttpMessageHandler);
 
             var serviceProvider = services.BuildServiceProvider();
+            serviceProvider.InstantiateNamedHttpClient(httpClientName);
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
             var resiliencePoliciesAsserter = new ResiliencePoliciesAsserter(
                 httpClient,
                 resilienceOptions,
                 testHttpMessageHandler);
             await resiliencePoliciesAsserter
-                .Retry
-                .HttpClientShouldContainRetryPolicyAsync(numberOfCallsDelegatingHandler);
+                .Timeout
+                .HttpClientShouldContainTimeoutPolicyWithFallbackAsync();
             resiliencePoliciesAsserter
-                .Retry
+                .Timeout
                 .EventHandlerShouldReceiveExpectedEvents(
-                    count: 15 * resilienceOptions.Retry.RetryCount, // the resiliencePoliciesAsserter.HttpClientShouldContainRetryPolicyAsync triggers the retry policy 15 times
+                    count: 1,
                     httpClientName: httpClientName,
-                    eventHandlerCalls: resiliencePoliciesEventHandlerCalls.Retry);
+                    eventHandlerCalls: resiliencePoliciesEventHandlerCalls.Timeout);
         }
     }
 }

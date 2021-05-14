@@ -8,7 +8,6 @@ using DotNet.Sdk.Extensions.Polly.Policies;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers;
 using DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary;
 using Polly.CircuitBreaker;
-using Shouldly;
 
 namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
 {
@@ -51,7 +50,10 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
             await Task.Delay(TimeSpan.FromSeconds(_circuitBreakerOptions.DurationOfBreakInSecs));
             // successful response will move the circuit breaker into closed state
             var response = await _httpClient.GetAsync(_resetRequestPath);
-            response.StatusCode.ShouldBe(HttpStatusCode.OK);
+            if (response.StatusCode != HttpStatusCode.OK)
+            {
+                throw new InvalidOperationException($"Unexpected status code from closed circuit. Got {response.StatusCode} but expected {HttpStatusCode.OK}.");
+            }
             // make sure we transition to a new sampling window or else requests would still fall
             // in the previous sampling window where the circuit state had already been open and closed.
             await Task.Delay(TimeSpan.FromSeconds(_circuitBreakerOptions.SamplingDurationInSecs));
@@ -69,8 +71,15 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
         {
             var response = await _httpClient.GetAsync(requestPath);
             var circuitBrokenHttpResponseMessage = response as CircuitBrokenHttpResponseMessage;
-            circuitBrokenHttpResponseMessage.ShouldNotBeNull();
-            circuitBrokenHttpResponseMessage.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
+            if (circuitBrokenHttpResponseMessage is null)
+            {
+                throw new InvalidOperationException($"Unexpected response type from open circuit. Expected a {typeof(CircuitBrokenHttpResponseMessage)} but got a {response.GetType()}");
+            }
+
+            if (circuitBrokenHttpResponseMessage.StatusCode != HttpStatusCode.InternalServerError)
+            {
+                throw new InvalidOperationException($"Unexpected status code from open circuit. Got {response.StatusCode} but expected {HttpStatusCode.InternalServerError}.");
+            }
         }
 
         private string HandleResetRequest()
@@ -95,7 +104,10 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
                 // the circuit should be closed during this loop which means it will be returning the 
                 // expected status code. Once the circuit is open it starts failing fast by returning
                 // a CircuitBrokenHttpResponseMessage instance whose status code is 500
-                response.StatusCode.ShouldBe(httpStatusCode); 
+                if (response.StatusCode != httpStatusCode)
+                {
+                    throw new InvalidOperationException($"Unexpected status code from closed circuit. Got {response.StatusCode} but expected {httpStatusCode}.");
+                }
             }
         }
 
@@ -103,10 +115,15 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
         {
             for (var i = 0; i < _circuitBreakerOptions.MinimumThroughput; i++)
             {
-                // not only asserts the exception is expected but also avoids the exception
-                // being propagated in order to open the circuit after the CircuitBreakerOptions.MinimumThroughput
-                // number of requests
-                await Should.ThrowAsync<Exception>(() => _httpClient.GetAsync(requestPath));
+                try
+                {
+                    await _httpClient.GetAsync(requestPath);
+                }
+                catch (Exception e)
+                {
+                    // avoids the exception being propagated in order to open the circuit once
+                    // the CircuitBreakerOptions.MinimumThroughput number of requests is reached
+                }
             }
         }
 

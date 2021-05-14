@@ -237,5 +237,83 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 .GetPolicy<AsyncTimeoutPolicy<HttpResponseMessage>>()
                 .ShouldNotBeNull();
         }
+
+        /// <summary>
+        /// This tests that the policies added to the <see cref="HttpClient"/> by the
+        /// ResiliencePolicyHttpClientBuilderExtensions.AddResiliencePolicies methods are unique.
+        ///
+        /// Policies should NOT be the same between HttpClients or else when one HttpClient triggers
+        /// the policy it would trigger for all.
+        /// </summary>
+        [Fact]
+        public void AddResiliencePoliciesUniquePolicyPerHttpClient()
+        {
+            var policyHttpMessageHandlers1 = new List<PolicyHttpMessageHandler>();
+            var policyHttpMessageHandlers2 = new List<PolicyHttpMessageHandler>();
+            var services = new ServiceCollection();
+            services
+                .AddHttpClient("GitHub")
+                .AddResiliencePolicies(options =>
+                {
+                    options.Timeout.TimeoutInSecs = 1;
+                    options.Retry.MedianFirstRetryDelayInSecs = 1;
+                    options.Retry.RetryCount = 3;
+                    options.CircuitBreaker.DurationOfBreakInSecs = 1;
+                    options.CircuitBreaker.FailureThreshold = 0.5;
+                    options.CircuitBreaker.SamplingDurationInSecs = 60;
+                    options.CircuitBreaker.MinimumThroughput = 4;
+                })
+                .ConfigureHttpMessageHandlerBuilder(httpMessageHandlerBuilder =>
+                {
+                    policyHttpMessageHandlers1 = httpMessageHandlerBuilder
+                        .AdditionalHandlers
+                        .OfType<PolicyHttpMessageHandler>()
+                        .ToList();
+                });
+            services
+                .AddHttpClient("Microsoft")
+                .AddResiliencePolicies(options =>
+                {
+                    options.Timeout.TimeoutInSecs = 1;
+                    options.Retry.MedianFirstRetryDelayInSecs = 1;
+                    options.Retry.RetryCount = 3;
+                    options.CircuitBreaker.DurationOfBreakInSecs = 1;
+                    options.CircuitBreaker.FailureThreshold = 0.5;
+                    options.CircuitBreaker.SamplingDurationInSecs = 60;
+                    options.CircuitBreaker.MinimumThroughput = 4;
+                })
+                .ConfigureHttpMessageHandlerBuilder(httpMessageHandlerBuilder =>
+                {
+                    policyHttpMessageHandlers2 = httpMessageHandlerBuilder
+                        .AdditionalHandlers
+                        .OfType<PolicyHttpMessageHandler>()
+                        .ToList();
+                });
+
+            var serviceProvider = services.BuildServiceProvider();
+            serviceProvider.InstantiateNamedHttpClient("GitHub");
+            serviceProvider.InstantiateNamedHttpClient("Microsoft");
+
+            var resiliencePolicies1 = new ResiliencePolicies(policyHttpMessageHandlers1);
+            resiliencePolicies1.TimeoutPolicy.ShouldNotBeNull();
+            resiliencePolicies1.RetryPolicy.ShouldNotBeNull();
+            resiliencePolicies1.CircuitBreakerPolicy.ShouldNotBeNull();
+            resiliencePolicies1.FallbackPolicy.ShouldNotBeNull();
+
+            var resiliencePolicies2 = new ResiliencePolicies(policyHttpMessageHandlers2);
+            resiliencePolicies2.TimeoutPolicy.ShouldNotBeNull();
+            resiliencePolicies2.RetryPolicy.ShouldNotBeNull();
+            resiliencePolicies2.CircuitBreakerPolicy.ShouldNotBeNull();
+            resiliencePolicies2.FallbackPolicy.ShouldNotBeNull();
+
+            ReferenceEquals(resiliencePolicies1.TimeoutPolicy, resiliencePolicies2.TimeoutPolicy).ShouldBeFalse();
+            resiliencePolicies1.TimeoutPolicy.PolicyKey.ShouldNotBe(resiliencePolicies2.TimeoutPolicy.PolicyKey);
+            ReferenceEquals(resiliencePolicies1.RetryPolicy, resiliencePolicies2.RetryPolicy).ShouldBeFalse();
+            resiliencePolicies1.RetryPolicy.PolicyKey.ShouldNotBe(resiliencePolicies2.RetryPolicy.PolicyKey);
+            ReferenceEquals(resiliencePolicies1.CircuitBreakerPolicy, resiliencePolicies2.CircuitBreakerPolicy).ShouldBeFalse();
+            resiliencePolicies1.CircuitBreakerPolicy.PolicyKey.ShouldNotBe(resiliencePolicies2.CircuitBreakerPolicy.PolicyKey);
+            ReferenceEquals(resiliencePolicies1.FallbackPolicy, resiliencePolicies2.FallbackPolicy).ShouldBeFalse();
+            resiliencePolicies1.FallbackPolicy.PolicyKey.ShouldNotBe(resiliencePolicies2.FallbackPolicy.PolicyKey);
+        }
     }
 }

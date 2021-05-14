@@ -67,9 +67,12 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Auxiliary
 
         private async Task RetryPolicyHandlesException(Exception exception, NumberOfCallsDelegatingHandler numberOfCallsDelegatingHandler)
         {
-            await _httpClient
-                .RetryExecutor(_testHttpMessageHandler)
-                .TriggerFromExceptionAsync(exception);
+            await Should.ThrowAsync<Exception>(() =>
+            {
+                return _httpClient
+                    .RetryExecutor(_testHttpMessageHandler)
+                    .TriggerFromExceptionAsync(exception);
+            });
             numberOfCallsDelegatingHandler.NumberOfHttpRequests.ShouldBe(_options.RetryCount + 1);
             numberOfCallsDelegatingHandler.Reset();
         }

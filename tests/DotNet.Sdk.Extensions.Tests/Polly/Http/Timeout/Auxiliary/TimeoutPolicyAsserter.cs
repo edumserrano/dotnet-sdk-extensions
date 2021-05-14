@@ -1,8 +1,11 @@
-﻿using System.Net.Http;
+﻿using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
+using DotNet.Sdk.Extensions.Polly.Http.Fallback.FallbackHttpResponseMessages;
 using DotNet.Sdk.Extensions.Polly.Http.Timeout;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers;
 using DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary;
+using Polly.Timeout;
 using Shouldly;
 
 namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Auxiliary
@@ -28,6 +31,11 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Auxiliary
             await TimeoutPolicyTriggersOnTimeout();
         }
 
+        public async Task HttpClientShouldContainTimeoutPolicyWithFallbackAsync()
+        {
+            await TimeoutPolicyTriggersOnTimeoutButHasFallback();
+        }
+
         public void EventHandlerShouldReceiveExpectedEvents(
             int count,
             string httpClientName,
@@ -43,9 +51,22 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Auxiliary
 
         private async Task TimeoutPolicyTriggersOnTimeout()
         {
-            await _httpClient
+            await Should.ThrowAsync<TimeoutRejectedException>(() =>
+            {
+                return _httpClient
+                    .TimeoutExecutor(_options, _testHttpMessageHandler)
+                    .TriggerTimeoutPolicyAsync();
+            });
+        }
+
+        private async Task TimeoutPolicyTriggersOnTimeoutButHasFallback()
+        {
+            var fallbackResponse = await _httpClient
                 .TimeoutExecutor(_options, _testHttpMessageHandler)
                 .TriggerTimeoutPolicyAsync();
+            var timeoutResponse = fallbackResponse as TimeoutHttpResponseMessage;
+            timeoutResponse.ShouldNotBeNull();
+            timeoutResponse.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
         }
     }
 }

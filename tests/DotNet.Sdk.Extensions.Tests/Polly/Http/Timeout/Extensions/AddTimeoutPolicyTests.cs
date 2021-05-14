@@ -47,9 +47,11 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
 
             var serviceProvider = services.BuildServiceProvider();
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
-            await httpClient
-                .TimeoutExecutor(timeoutOptions, testHttpMessageHandler)
-                .TriggerTimeoutPolicyAsync();
+            var timeoutPolicyAsserter = new TimeoutPolicyAsserter(
+                httpClient,
+                timeoutOptions,
+                testHttpMessageHandler);
+            await timeoutPolicyAsserter.HttpClientShouldContainTimeoutPolicyAsync();
         }
 
         /// <summary>
@@ -78,9 +80,11 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
 
             var serviceProvider = services.BuildServiceProvider();
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
-            await httpClient
-                .TimeoutExecutor(timeoutOptions, testHttpMessageHandler)
-                .TriggerTimeoutPolicyAsync();
+            var timeoutPolicyAsserter = new TimeoutPolicyAsserter(
+                httpClient,
+                timeoutOptions,
+                testHttpMessageHandler);
+            await timeoutPolicyAsserter.HttpClientShouldContainTimeoutPolicyAsync();
         }
 
         /// <summary>
@@ -112,7 +116,6 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
 
             var serviceProvider = services.BuildServiceProvider();
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
-
             var timeoutPolicyAsserter = new TimeoutPolicyAsserter(
                 httpClient,
                 timeoutOptions,
@@ -155,7 +158,6 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
             var serviceProvider = services.BuildServiceProvider();
             serviceProvider.InstantiateNamedHttpClient(httpClientName);
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
-
             var timeoutPolicyAsserter = new TimeoutPolicyAsserter(
                 httpClient,
                 timeoutOptions,

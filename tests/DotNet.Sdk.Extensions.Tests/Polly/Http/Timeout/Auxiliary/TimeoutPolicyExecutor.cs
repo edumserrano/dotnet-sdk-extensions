@@ -4,8 +4,6 @@ using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Polly.Http.Timeout;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers;
 using DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary;
-using Polly.Timeout;
-using Shouldly;
 
 namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Auxiliary
 {
@@ -25,12 +23,12 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Auxiliary
             _testHttpMessageHandler = testHttpMessageHandler;
         }
 
-        public async Task TriggerTimeoutPolicyAsync()
+        public Task<HttpResponseMessage> TriggerTimeoutPolicyAsync()
         {
             var requestPath = "/timeout";
             var timeout = TimeSpan.FromSeconds(_timeoutOptions.TimeoutInSecs + 1);
             _testHttpMessageHandler.HandleTimeout(requestPath, timeout);
-            await Should.ThrowAsync<TimeoutRejectedException>(()=>_httpClient.GetAsync(requestPath));
+            return _httpClient.GetAsync(requestPath);
         }
     }
 }
