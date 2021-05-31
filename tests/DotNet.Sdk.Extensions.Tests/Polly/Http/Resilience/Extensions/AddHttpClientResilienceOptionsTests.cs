@@ -54,6 +54,16 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             resilienceOptions.CircuitBreaker.FailureThreshold.ShouldBe(failureThreshold);
             resilienceOptions.CircuitBreaker.SamplingDurationInSecs.ShouldBe(samplingDurationInSecs);
             resilienceOptions.CircuitBreaker.MinimumThroughput.ShouldBe(minimumThroughput);
+        } 
+        
+        /// <summary>
+        /// Tests that the default for <see cref="ResilienceOptions.EnableFallbackPolicy"/> is true.
+        /// </summary>
+        [Fact]
+        public void ResilienceOptionsTest1()
+        {
+            var options = new ResilienceOptions();
+            options.EnableFallbackPolicy.ShouldBeTrue();
         }
     }
 }

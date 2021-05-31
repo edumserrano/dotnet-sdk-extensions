@@ -135,7 +135,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
         }
 
         /// <summary>
-        /// Tests that when requests fail with a transient error http status code:
+        /// Tests that when requests fail because of a timeout:
         /// - the retry policy retries requests
         /// - until the circuit breaker opens the response returned is a TimeoutHttpResponseMessage because of the fallback policy
         /// - once the circuit breaker opens requests fail fast, even when retried (it never even gets to the timeout policy)

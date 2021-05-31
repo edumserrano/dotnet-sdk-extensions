@@ -62,9 +62,9 @@ namespace DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker.Extensions
 
             return httpClientBuilder.AddHttpMessageHandler(provider =>
             {
-                var policyConfiguration = provider.GetRequiredService<TPolicyEventHandler>();
+                var policyEventHandler = provider.GetRequiredService<TPolicyEventHandler>();
                 var retryOptions = provider.GetHttpClientCircuitBreakerOptions(optionsName);
-                var circuitBreakerPolicy = CircuitBreakerPolicyFactory.CreateCircuitBreakerPolicy(httpClientName, retryOptions, policyConfiguration);
+                var circuitBreakerPolicy = CircuitBreakerPolicyFactory.CreateCircuitBreakerPolicy(httpClientName, retryOptions, policyEventHandler);
                 return new PolicyHttpMessageHandler(circuitBreakerPolicy);
             });
         }

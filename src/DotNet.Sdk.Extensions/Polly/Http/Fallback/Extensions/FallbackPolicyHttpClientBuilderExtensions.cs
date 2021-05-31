@@ -25,8 +25,8 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Fallback.Extensions
 
             return httpClientBuilder.AddHttpMessageHandler(provider =>
             {
-                var policyConfiguration = provider.GetRequiredService<TPolicyEventHandler>();
-                var fallbackPolicy = FallbackPolicyFactory.CreateFallbackPolicy(httpClientName, policyConfiguration);
+                var policyEventHandler = provider.GetRequiredService<TPolicyEventHandler>();
+                var fallbackPolicy = FallbackPolicyFactory.CreateFallbackPolicy(httpClientName, policyEventHandler);
                 return new PolicyHttpMessageHandler(fallbackPolicy);
             });
         }

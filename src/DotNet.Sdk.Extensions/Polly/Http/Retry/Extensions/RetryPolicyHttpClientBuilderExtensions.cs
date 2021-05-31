@@ -62,9 +62,9 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Retry.Extensions
 
             return httpClientBuilder.AddHttpMessageHandler(provider =>
             {
-                var policyConfiguration = provider.GetRequiredService<TPolicyEventHandler>();
+                var policyEventHandler = provider.GetRequiredService<TPolicyEventHandler>();
                 var retryOptions = provider.GetHttpClientRetryOptions(optionsName);
-                var retryPolicy = RetryPolicyFactory.CreateRetryPolicy(httpClientName, retryOptions, policyConfiguration);
+                var retryPolicy = RetryPolicyFactory.CreateRetryPolicy(httpClientName, retryOptions, policyEventHandler);
                 return new PolicyHttpMessageHandler(retryPolicy);
             });
         }
