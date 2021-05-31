@@ -47,7 +47,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
         public async Task WaitForResetAsync()
         {
             // wait for the duration of break so that the circuit goes into half open state
-            await Task.Delay(TimeSpan.FromSeconds(_circuitBreakerOptions.DurationOfBreakInSecs));
+            await Task.Delay(TimeSpan.FromSeconds(_circuitBreakerOptions.DurationOfBreakInSecs + 0.02));
             // successful response will move the circuit breaker into closed state
             var response = await _httpClient.GetAsync(_resetRequestPath);
             if (response.StatusCode != HttpStatusCode.OK)
@@ -56,7 +56,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
             }
             // make sure we transition to a new sampling window or else requests would still fall
             // in the previous sampling window where the circuit state had already been open and closed.
-            await Task.Delay(TimeSpan.FromSeconds(_circuitBreakerOptions.SamplingDurationInSecs));
+            await Task.Delay(TimeSpan.FromSeconds(_circuitBreakerOptions.SamplingDurationInSecs + 0.02));
         }
 
         /// <remarks>
@@ -104,7 +104,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
                 // a CircuitBrokenHttpResponseMessage instance whose status code is 500
                 if (response.StatusCode != httpStatusCode)
                 {
-                    throw new InvalidOperationException($"Unexpected status code from closed circuit. Got {response.StatusCode} but expected {httpStatusCode}.");
+                    throw new InvalidOperationException($"Unexpected status code from closed circuit. Got {response.StatusCode} but expected {httpStatusCode}. Iteration {i} of minimum throughput {_circuitBreakerOptions.MinimumThroughput}");
                 }
             }
         }
