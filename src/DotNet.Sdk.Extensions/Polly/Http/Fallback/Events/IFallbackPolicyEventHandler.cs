@@ -4,10 +4,12 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Fallback.Events
 {
     public interface IFallbackPolicyEventHandler
     {
-        Task OnTimeoutFallbackAsync(TimeoutFallbackEvent timeoutFallbackEvent);
+        Task OnHttpRequestExceptionFallbackAsync(FallbackEvent fallbackEvent);
+
+        Task OnTimeoutFallbackAsync(FallbackEvent fallbackEvent);
         
-        Task OnBrokenCircuitFallbackAsync(BrokenCircuitFallbackEvent brokenCircuitFallbackEvent);
+        Task OnBrokenCircuitFallbackAsync(FallbackEvent fallbackEvent);
         
-        Task OnTaskCancelledFallbackAsync(TaskCancelledFallbackEvent taskCancelledFallbackEvent);
+        Task OnTaskCancelledFallbackAsync(FallbackEvent fallbackEvent);
     }
 }

@@ -4,9 +4,9 @@ using System.Net.Http;
 
 namespace DotNet.Sdk.Extensions.Polly.Http.Fallback.FallbackHttpResponseMessages
 {
-    public class AbortedHttpResponseMessage : HttpResponseMessage
+    public class ExceptionHttpResponseMessage : HttpResponseMessage
     {
-        public AbortedHttpResponseMessage(Exception exception)
+        public ExceptionHttpResponseMessage(Exception exception)
         {
             StatusCode = HttpStatusCode.InternalServerError;
             Exception = exception;

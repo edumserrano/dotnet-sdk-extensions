@@ -46,19 +46,25 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Auxiliary
             return Task.CompletedTask;
         }
 
-        public Task OnTimeoutFallbackAsync(TimeoutFallbackEvent timeoutFallbackEvent)
+        public Task OnHttpRequestExceptionFallbackAsync(FallbackEvent fallbackEvent)
+        {
+            _resiliencePoliciesEventHandlerCalls.Fallback.AddOnHttpRequestExceptionFallback(fallbackEvent);
+            return Task.CompletedTask;
+        }
+
+        public Task OnTimeoutFallbackAsync(FallbackEvent timeoutFallbackEvent)
         {
             _resiliencePoliciesEventHandlerCalls.Fallback.AddOnTimeoutFallback(timeoutFallbackEvent);
             return Task.CompletedTask;
         }
 
-        public Task OnBrokenCircuitFallbackAsync(BrokenCircuitFallbackEvent brokenCircuitFallbackEvent)
+        public Task OnBrokenCircuitFallbackAsync(FallbackEvent brokenCircuitFallbackEvent)
         {
             _resiliencePoliciesEventHandlerCalls.Fallback.AddOnBrokenCircuitFallback(brokenCircuitFallbackEvent);
             return Task.CompletedTask;
         }
 
-        public Task OnTaskCancelledFallbackAsync(TaskCancelledFallbackEvent taskCancelledFallbackEvent)
+        public Task OnTaskCancelledFallbackAsync(FallbackEvent taskCancelledFallbackEvent)
         {
             _resiliencePoliciesEventHandlerCalls.Fallback.AddOnTaskCancelledFallback(taskCancelledFallbackEvent);
             return Task.CompletedTask;

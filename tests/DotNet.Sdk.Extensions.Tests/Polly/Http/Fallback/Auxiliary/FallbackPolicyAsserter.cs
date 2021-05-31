@@ -35,6 +35,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Fallback.Auxiliary
 
         public async Task HttpClientShouldContainFallbackPolicyAsync()
         {
+            await FallbackPolicyHandlesHttpRequestException();
             await FallbackPolicyHandlesTimeoutRejectedException();
             await FallbackPolicyHandlesBrokenCircuitException();
             await FallbackPolicyHandlesIsolatedCircuitException();
@@ -42,6 +43,16 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Fallback.Auxiliary
             await FallbackPolicyHandlesTaskCancelledExceptionWithTimeoutException();
         }
 
+        private async Task FallbackPolicyHandlesHttpRequestException()
+        {
+            var httpRequestException = new HttpRequestException();
+            var response = await FallbackPolicyHandlesException(httpRequestException);
+            var exceptionHttpResponseMessage = response as ExceptionHttpResponseMessage;
+            exceptionHttpResponseMessage.ShouldNotBeNull();
+            exceptionHttpResponseMessage.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
+            exceptionHttpResponseMessage.Exception.ShouldBe(httpRequestException);
+        }
+        
         private async Task FallbackPolicyHandlesTaskCancelledException()
         {
             var taskCanceledException = new TaskCanceledException();
@@ -72,8 +83,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Fallback.Auxiliary
             circuitBrokenHttpResponseMessage.ShouldNotBeNull();
             circuitBrokenHttpResponseMessage.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
             circuitBrokenHttpResponseMessage.CircuitBreakerState.ShouldBe(CircuitBreakerState.Isolated);
-            circuitBrokenHttpResponseMessage.IsolatedCircuitException.ShouldBe(isolatedCircuitException);
-            circuitBrokenHttpResponseMessage.BrokenCircuitException.ShouldBeNull();
+            circuitBrokenHttpResponseMessage.Exception.ShouldBe(isolatedCircuitException);
         }
 
         private async Task FallbackPolicyHandlesBrokenCircuitException()
@@ -84,8 +94,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Fallback.Auxiliary
             circuitBrokenHttpResponseMessage.ShouldNotBeNull();
             circuitBrokenHttpResponseMessage.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
             circuitBrokenHttpResponseMessage.CircuitBreakerState.ShouldBe(CircuitBreakerState.Open);
-            circuitBrokenHttpResponseMessage.BrokenCircuitException.ShouldBe(brokenCircuitException);
-            circuitBrokenHttpResponseMessage.IsolatedCircuitException.ShouldBeNull();
+            circuitBrokenHttpResponseMessage.Exception.ShouldBe(brokenCircuitException);
         }
 
         private async Task FallbackPolicyHandlesTimeoutRejectedException()
@@ -106,6 +115,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Fallback.Auxiliary
         }
 
         public void EventHandlerShouldReceiveExpectedEvents(
+            int onHttpRequestExceptionCount,
             int onTimeoutCallsCount,
             int onBrokenCircuitCallsCount,
             int onIsolatedCircuitCallsCount,
@@ -113,6 +123,10 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Fallback.Auxiliary
             string httpClientName,
             FallbackPolicyEventHandlerCalls eventHandlerCalls)
         {
+            eventHandlerCalls
+                .OnHttpRequestExceptionFallbackAsyncCalls
+                .Count(x => x.HttpClientName.Equals(httpClientName))
+                .ShouldBe(onHttpRequestExceptionCount);
             eventHandlerCalls
                 .OnTimeoutFallbackAsyncCalls
                 .Count(x => x.HttpClientName.Equals(httpClientName))

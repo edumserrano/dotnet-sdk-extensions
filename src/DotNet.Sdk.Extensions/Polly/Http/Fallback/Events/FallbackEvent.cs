@@ -3,9 +3,9 @@ using Polly;
 
 namespace DotNet.Sdk.Extensions.Polly.Http.Fallback.Events
 {
-    public class BrokenCircuitFallbackEvent
+    public class FallbackEvent
     {
-        internal BrokenCircuitFallbackEvent(
+        internal FallbackEvent(
             string httpClientName,
             DelegateResult<HttpResponseMessage> outcome,
             Context context)

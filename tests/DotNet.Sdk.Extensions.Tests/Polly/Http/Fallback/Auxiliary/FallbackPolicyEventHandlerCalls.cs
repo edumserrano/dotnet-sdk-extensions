@@ -5,25 +5,32 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Fallback.Auxiliary
 {
     public class FallbackPolicyEventHandlerCalls
     {
-        public IList<TimeoutFallbackEvent> OnTimeoutFallbackAsyncCalls { get; } = new List<TimeoutFallbackEvent>();
+        public IList<FallbackEvent> OnHttpRequestExceptionFallbackAsyncCalls { get; } = new List<FallbackEvent>();
+
+        public IList<FallbackEvent> OnTimeoutFallbackAsyncCalls { get; } = new List<FallbackEvent>();
         
-        public IList<BrokenCircuitFallbackEvent> OnBrokenCircuitFallbackAsyncCalls { get; } = new List<BrokenCircuitFallbackEvent>();
+        public IList<FallbackEvent> OnBrokenCircuitFallbackAsyncCalls { get; } = new List<FallbackEvent>();
         
-        public IList<TaskCancelledFallbackEvent> OnTaskCancelledFallbackAsyncCalls { get; } = new List<TaskCancelledFallbackEvent>();
+        public IList<FallbackEvent> OnTaskCancelledFallbackAsyncCalls { get; } = new List<FallbackEvent>();
         
-        public void AddOnTimeoutFallback(TimeoutFallbackEvent timeoutFallbackEvent)
+        public void AddOnHttpRequestExceptionFallback(FallbackEvent fallbackEvent)
         {
-            OnTimeoutFallbackAsyncCalls.Add(timeoutFallbackEvent);
+            OnHttpRequestExceptionFallbackAsyncCalls.Add(fallbackEvent);
         }
 
-        public void AddOnBrokenCircuitFallback(BrokenCircuitFallbackEvent brokenCircuitFallbackEvent)
+        public void AddOnTimeoutFallback(FallbackEvent fallbackEvent)
         {
-            OnBrokenCircuitFallbackAsyncCalls.Add(brokenCircuitFallbackEvent);
+            OnTimeoutFallbackAsyncCalls.Add(fallbackEvent);
         }
 
-        public void AddOnTaskCancelledFallback(TaskCancelledFallbackEvent taskCancelledFallbackEvent)
+        public void AddOnBrokenCircuitFallback(FallbackEvent fallbackEvent)
         {
-            OnTaskCancelledFallbackAsyncCalls.Add(taskCancelledFallbackEvent);
+            OnBrokenCircuitFallbackAsyncCalls.Add(fallbackEvent);
+        }
+
+        public void AddOnTaskCancelledFallback(FallbackEvent fallbackEvent)
+        {
+            OnTaskCancelledFallbackAsyncCalls.Add(fallbackEvent);
         }
     }
 }

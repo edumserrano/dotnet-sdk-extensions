@@ -12,21 +12,27 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Fallback.Auxiliary
             _fallbackPolicyEventHandlerCalls = fallbackPolicyEventHandlerCalls;
         }
 
-        public Task OnTimeoutFallbackAsync(TimeoutFallbackEvent timeoutFallbackEvent)
+        public Task OnHttpRequestExceptionFallbackAsync(FallbackEvent fallbackEvent)
         {
-            _fallbackPolicyEventHandlerCalls.AddOnTimeoutFallback(timeoutFallbackEvent);
+            _fallbackPolicyEventHandlerCalls.AddOnHttpRequestExceptionFallback(fallbackEvent);
             return Task.CompletedTask;
         }
 
-        public Task OnBrokenCircuitFallbackAsync(BrokenCircuitFallbackEvent brokenCircuitFallbackEvent)
+        public Task OnTimeoutFallbackAsync(FallbackEvent fallbackEvent)
         {
-            _fallbackPolicyEventHandlerCalls.AddOnBrokenCircuitFallback(brokenCircuitFallbackEvent);
+            _fallbackPolicyEventHandlerCalls.AddOnTimeoutFallback(fallbackEvent);
             return Task.CompletedTask;
         }
 
-        public Task OnTaskCancelledFallbackAsync(TaskCancelledFallbackEvent taskCancelledFallbackEvent)
+        public Task OnBrokenCircuitFallbackAsync(FallbackEvent fallbackEvent)
         {
-            _fallbackPolicyEventHandlerCalls.AddOnTaskCancelledFallback(taskCancelledFallbackEvent);
+            _fallbackPolicyEventHandlerCalls.AddOnBrokenCircuitFallback(fallbackEvent);
+            return Task.CompletedTask;
+        }
+
+        public Task OnTaskCancelledFallbackAsync(FallbackEvent fallbackEvent)
+        {
+            _fallbackPolicyEventHandlerCalls.AddOnTaskCancelledFallback(fallbackEvent);
             return Task.CompletedTask;
         }
     }

@@ -1,6 +1,6 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Net.Http;
-using Polly.CircuitBreaker;
 
 namespace DotNet.Sdk.Extensions.Polly.Http.Fallback.FallbackHttpResponseMessages
 {
@@ -18,22 +18,14 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Fallback.FallbackHttpResponseMessages
             StatusCode = HttpStatusCode.InternalServerError;
         }
 
-        public CircuitBrokenHttpResponseMessage(BrokenCircuitException brokenCircuitException)
-            : this(CircuitBreakerState.Open)
+        public CircuitBrokenHttpResponseMessage(CircuitBreakerState circuitBreakerState, Exception exception)
+            : this(circuitBreakerState)
         {
-            BrokenCircuitException = brokenCircuitException;
-        }
-
-        public CircuitBrokenHttpResponseMessage(IsolatedCircuitException isolatedCircuitException)
-            : this(CircuitBreakerState.Isolated)
-        {
-            IsolatedCircuitException = isolatedCircuitException;
+            Exception = exception;
         }
         
         public CircuitBreakerState CircuitBreakerState { get; }
-
-        public IsolatedCircuitException? IsolatedCircuitException { get; }
-
-        public BrokenCircuitException? BrokenCircuitException { get; }
+        
+        public Exception? Exception { get; }
     }
 }

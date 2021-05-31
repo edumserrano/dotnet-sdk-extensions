@@ -14,6 +14,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Polly;
 using DotNet.Sdk.Extensions.Polly.Http.Retry.Events;
+using DotNet.Sdk.Extensions.Polly.Http.Retry.Extensions;
 using DotNet.Sdk.Extensions.Polly.Http.Timeout;
 using DotNet.Sdk.Extensions.Polly.Http.Timeout.Events;
 using Microsoft.Extensions.Options;
@@ -112,10 +113,14 @@ namespace WebApplication1
                 //    })
                 
                 //.AddFallbackPolicy()
-                //.AddRetryPolicy(options => { })
+                .AddRetryPolicy(options => { })
+                .AddRetryPolicy<GitHubPoliciesEventHandler>(options => { })
+                //.AddRetryPolicy(
+                //    configureOptions:options => { },
+                //    eventHandlerFactory: serviceProvider=> { return new GitHubPoliciesEventHandler() })
                 //.AddCircuitBreakerPolicy(options => { })
                 //.AddTimeoutPolicy(options => options.TimeoutInSecs = 1)
-                
+
                 .AddResiliencePolicies(options => {  })
                 
                 //.AddTimeoutPolicy<GitHubPoliciesConfiguration>(optionsName: "GitHubTimeoutOptions")
@@ -161,7 +166,7 @@ namespace WebApplication1
         }
     }
     
-    public class GitHubPoliciesEventReceiver :
+    public class GitHubPoliciesEventHandler :
         ITimeoutPolicyEventHandler,
         IRetryPolicyEventHandler,
         ICircuitBreakerPolicyEventHandler,
@@ -191,18 +196,23 @@ namespace WebApplication1
         {
             return Task.CompletedTask;
         }
-        
-        public Task OnTimeoutFallbackAsync(TimeoutFallbackEvent timeoutFallbackEvent)
+
+        public Task OnHttpRequestExceptionFallbackAsync(FallbackEvent timeoutFallbackEvent)
         {
             return Task.CompletedTask;
         }
 
-        public Task OnBrokenCircuitFallbackAsync(BrokenCircuitFallbackEvent brokenCircuitFallbackEvent)
+        public Task OnTimeoutFallbackAsync(FallbackEvent timeoutFallbackEvent)
         {
             return Task.CompletedTask;
         }
 
-        public Task OnTaskCancelledFallbackAsync(TaskCancelledFallbackEvent taskCancelledFallbackEvent)
+        public Task OnBrokenCircuitFallbackAsync(FallbackEvent brokenCircuitFallbackEvent)
+        {
+            return Task.CompletedTask;
+        }
+
+        public Task OnTaskCancelledFallbackAsync(FallbackEvent taskCancelledFallbackEvent)
         {
             return Task.CompletedTask;
         }

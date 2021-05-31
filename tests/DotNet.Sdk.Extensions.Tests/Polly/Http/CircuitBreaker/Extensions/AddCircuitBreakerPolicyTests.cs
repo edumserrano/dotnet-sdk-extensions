@@ -317,11 +317,10 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
             circuitBrokenHttpResponseMessage.ShouldNotBeNull();
             circuitBrokenHttpResponseMessage.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
             circuitBrokenHttpResponseMessage.CircuitBreakerState.ShouldBe(CircuitBreakerState.Open);
-            // both the BrokenCircuitException and IsolatedCircuitException properties should be null
-            // because the circuit breaker should NOT be throwing an exception. The CircuitBreakerCheckerAsyncPolicy
-            // should check that the circuit is open and return the CircuitBrokenHttpResponseMessage without any exception
-            circuitBrokenHttpResponseMessage.BrokenCircuitException.ShouldBeNull();
-            circuitBrokenHttpResponseMessage.IsolatedCircuitException.ShouldBeNull();
+            // the Exception property should be null because the circuit breaker should NOT be throwing an exception.
+            // The CircuitBreakerCheckerAsyncPolicy should check that the circuit is open and return the
+            // CircuitBrokenHttpResponseMessage without any exception
+            circuitBrokenHttpResponseMessage.Exception.ShouldBeNull();
         }
     }
 }
