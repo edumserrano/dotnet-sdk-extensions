@@ -3,6 +3,8 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker.Events;
 using DotNet.Sdk.Extensions.Polly.Http.Fallback.Events;
+using DotNet.Sdk.Extensions.Polly.Http.Fallback.Extensions;
+using DotNet.Sdk.Extensions.Polly.Http.Resilience.Extensions;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -113,7 +115,8 @@ namespace WebApplication1
                 //.AddRetryPolicy(options => { })
                 //.AddCircuitBreakerPolicy(options => { })
                 //.AddTimeoutPolicy(options => options.TimeoutInSecs = 1)
-                //.AddResiliencePolicies(options => { })
+                
+                .AddResiliencePolicies(options => {  })
                 
                 //.AddTimeoutPolicy<GitHubPoliciesConfiguration>(optionsName: "GitHubTimeoutOptions")
                 .AddHttpMessageHandler(() =>

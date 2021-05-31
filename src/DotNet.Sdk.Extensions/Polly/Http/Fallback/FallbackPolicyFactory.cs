@@ -53,15 +53,19 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Fallback
                     });
 
             // handle TaskCanceledException thrown by HttpClient when it times out.
-            // on newer versions .NET still throws TaskCanceledException but the inner exception is of type System.TimeoutException.
-            // see https://devblogs.microsoft.com/dotnet/net-5-new-networking-improvements/#better-error-handling
             var abortedFallback = Policy<HttpResponseMessage>
                 .Handle<TaskCanceledException>()
                 .FallbackAsync(
                     fallbackAction: (delegateResult, pollyContext, cancellationToken) =>
                     {
+                        // on newer versions .NET still throws TaskCanceledException but the inner exception is of type System.TimeoutException.
+                        // see https://devblogs.microsoft.com/dotnet/net-5-new-networking-improvements/#better-error-handling
                         var exception = (TaskCanceledException)delegateResult.Exception;
-                        return Task.FromResult<HttpResponseMessage>(new AbortedHttpResponseMessage(exception));
+                        return exception switch
+                        {
+                            Exception { InnerException: TimeoutException } => Task.FromResult<HttpResponseMessage>(new TimeoutHttpResponseMessage(exception)),
+                            _ => Task.FromResult<HttpResponseMessage>(new AbortedHttpResponseMessage(exception))
+                        };
                     },
                     onFallbackAsync: (outcome, context) =>
                     {

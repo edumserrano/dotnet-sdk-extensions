@@ -1,17 +1,17 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Net.Http;
-using Polly.Timeout;
 
 namespace DotNet.Sdk.Extensions.Polly.Http.Fallback.FallbackHttpResponseMessages
 {
     public class TimeoutHttpResponseMessage : HttpResponseMessage
     {
-        public TimeoutHttpResponseMessage(TimeoutRejectedException exception)
+        public TimeoutHttpResponseMessage(Exception exception)
         {
             StatusCode = HttpStatusCode.InternalServerError;
             Exception = exception;
         }
 
-        public TimeoutRejectedException Exception { get; }
+        public Exception Exception { get; }
     }
 }

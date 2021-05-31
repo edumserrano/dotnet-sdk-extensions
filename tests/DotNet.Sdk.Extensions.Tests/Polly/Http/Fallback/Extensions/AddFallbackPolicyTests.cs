@@ -70,7 +70,10 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Fallback.Extensions
             var fallbackPolicyAsserter = httpClient.FallbackPolicyAsserter(testHttpMessageHandler);
             await fallbackPolicyAsserter.HttpClientShouldContainFallbackPolicyAsync();
             fallbackPolicyAsserter.EventHandlerShouldReceiveExpectedEvents(
-                count: 1,
+                onTimeoutCallsCount: 1,
+                onBrokenCircuitCallsCount:1,
+                onIsolatedCircuitCallsCount:1,
+                onTaskCancelledCallsCount: 2,
                 httpClientName: httpClientName,
                 eventHandlerCalls: fallbackPolicyEventHandlerCalls);
         }
