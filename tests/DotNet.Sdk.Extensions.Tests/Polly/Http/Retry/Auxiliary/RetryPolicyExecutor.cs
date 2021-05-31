@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -11,26 +13,33 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Auxiliary
     {
         private readonly HttpClient _httpClient;
         private readonly TestHttpMessageHandler _testHttpMessageHandler;
+        private readonly List<HttpStatusCode> _transientHttpStatusCodes;
 
         public RetryPolicyExecutor(HttpClient httpClient, TestHttpMessageHandler testHttpMessageHandler)
         {
             _httpClient = httpClient;
             _testHttpMessageHandler = testHttpMessageHandler;
+            _transientHttpStatusCodes = HttpStatusCodesExtensions.GetTransientHttpStatusCodes().ToList();
         }
 
-        public Task TriggerFromExceptionAsync(Exception exception)
+        public Task<HttpResponseMessage> TriggerFromExceptionAsync(Exception exception)
         {
             var requestPath = $"/retry/exception/{exception.GetType().Name}";
             _testHttpMessageHandler.HandleException(requestPath, exception);
             return _httpClient.GetAsync(requestPath);
         }
 
-        public async Task TriggerFromTransientHttpStatusCodeAsync(HttpStatusCode httpStatusCode)
+        public async Task<HttpResponseMessage> TriggerFromTransientHttpStatusCodeAsync(HttpStatusCode httpStatusCode)
         {
+            if (!_transientHttpStatusCodes.Contains(httpStatusCode))
+            {
+                throw new ArgumentException($"{httpStatusCode} is not a transient HTTP status code.", nameof(httpStatusCode));
+            }
+
             var requestPath = _testHttpMessageHandler.HandleTransientHttpStatusCode(
                 requestPath: "/retry/transient-http-status-code",
                 responseHttpStatusCode: httpStatusCode);
-            await _httpClient.GetAsync(requestPath);
+            return await _httpClient.GetAsync(requestPath);
         }
     }
 }

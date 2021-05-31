@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
-using DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker;
 using DotNet.Sdk.Extensions.Polly.Http.Fallback.FallbackHttpResponseMessages;
 using DotNet.Sdk.Extensions.Polly.Http.Resilience;
 using DotNet.Sdk.Extensions.Polly.Http.Resilience.Extensions;
-using DotNet.Sdk.Extensions.Polly.Http.Retry;
 using DotNet.Sdk.Extensions.Polly.Http.Timeout;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers;
 using DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary;
@@ -28,7 +26,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
     /// it is quite hard to be able to test all of the fallback conditions.
     /// Not to worry much since the AddResiliencePolicies reuses the AddFallbackPolicy which is thoroughly tested
     /// by <see cref="AddFallbackPolicyTests"/>.
-    /// 
+    ///
+    /// Disables other policies to avoid triggering them when testing the fallback policy. 
     /// </summary>
     [Trait("Category", XUnitCategories.Polly)]
     public class AddResiliencePoliciesFallbackTests
@@ -48,22 +47,12 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             var resilienceOptions = new ResilienceOptions
             {
                 EnableFallbackPolicy = false,
+                EnableCircuitBreakerPolicy = false,
+                EnableRetryPolicy = false,
                 Timeout = new TimeoutOptions
                 {
                     TimeoutInSecs = 0.05
                 },
-                Retry = new RetryOptions
-                {
-                    RetryCount = 2,
-                    MedianFirstRetryDelayInSecs = 0.01
-                },
-                CircuitBreaker = new CircuitBreakerOptions
-                {
-                    DurationOfBreakInSecs = 5,
-                    SamplingDurationInSecs = 10,
-                    FailureThreshold = 0.6,
-                    MinimumThroughput = 10
-                }
             };
             var services = new ServiceCollection();
             services.AddSingleton(resiliencePoliciesEventHandlerCalls);
@@ -73,13 +62,9 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 .AddResiliencePolicies<TestResiliencePoliciesEventHandler>(options =>
                 {
                     options.EnableFallbackPolicy = resilienceOptions.EnableFallbackPolicy;
+                    options.EnableRetryPolicy = resilienceOptions.EnableRetryPolicy;
+                    options.EnableCircuitBreakerPolicy = resilienceOptions.EnableCircuitBreakerPolicy;
                     options.Timeout.TimeoutInSecs = resilienceOptions.Timeout.TimeoutInSecs;
-                    options.Retry.MedianFirstRetryDelayInSecs = resilienceOptions.Retry.MedianFirstRetryDelayInSecs;
-                    options.Retry.RetryCount = resilienceOptions.Retry.RetryCount;
-                    options.CircuitBreaker.DurationOfBreakInSecs = resilienceOptions.CircuitBreaker.DurationOfBreakInSecs;
-                    options.CircuitBreaker.FailureThreshold = resilienceOptions.CircuitBreaker.FailureThreshold;
-                    options.CircuitBreaker.SamplingDurationInSecs = resilienceOptions.CircuitBreaker.SamplingDurationInSecs;
-                    options.CircuitBreaker.MinimumThroughput = resilienceOptions.CircuitBreaker.MinimumThroughput;
                 })
                 .AddHttpMessageHandler(() => numberOfCallsDelegatingHandler)
                 .ConfigurePrimaryHttpMessageHandler(() => testHttpMessageHandler);
@@ -107,22 +92,12 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             var resilienceOptions = new ResilienceOptions
             {
                 EnableFallbackPolicy = true,
+                EnableCircuitBreakerPolicy = false,
+                EnableRetryPolicy = false,
                 Timeout = new TimeoutOptions
                 {
                     TimeoutInSecs = 0.05
                 },
-                Retry = new RetryOptions
-                {
-                    RetryCount = 2,
-                    MedianFirstRetryDelayInSecs = 0.01
-                },
-                CircuitBreaker = new CircuitBreakerOptions
-                {
-                    DurationOfBreakInSecs = 5,
-                    SamplingDurationInSecs = 10,
-                    FailureThreshold = 0.6,
-                    MinimumThroughput = 10
-                }
             };
             var services = new ServiceCollection();
             services.AddSingleton(resiliencePoliciesEventHandlerCalls);
@@ -132,13 +107,9 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 .AddResiliencePolicies<TestResiliencePoliciesEventHandler>(options =>
                 {
                     options.EnableFallbackPolicy = resilienceOptions.EnableFallbackPolicy;
+                    options.EnableRetryPolicy = resilienceOptions.EnableRetryPolicy;
+                    options.EnableCircuitBreakerPolicy = resilienceOptions.EnableCircuitBreakerPolicy;
                     options.Timeout.TimeoutInSecs = resilienceOptions.Timeout.TimeoutInSecs;
-                    options.Retry.MedianFirstRetryDelayInSecs = resilienceOptions.Retry.MedianFirstRetryDelayInSecs;
-                    options.Retry.RetryCount = resilienceOptions.Retry.RetryCount;
-                    options.CircuitBreaker.DurationOfBreakInSecs = resilienceOptions.CircuitBreaker.DurationOfBreakInSecs;
-                    options.CircuitBreaker.FailureThreshold = resilienceOptions.CircuitBreaker.FailureThreshold;
-                    options.CircuitBreaker.SamplingDurationInSecs = resilienceOptions.CircuitBreaker.SamplingDurationInSecs;
-                    options.CircuitBreaker.MinimumThroughput = resilienceOptions.CircuitBreaker.MinimumThroughput;
                 })
                 .AddHttpMessageHandler(() => numberOfCallsDelegatingHandler)
                 .ConfigurePrimaryHttpMessageHandler(() => testHttpMessageHandler);

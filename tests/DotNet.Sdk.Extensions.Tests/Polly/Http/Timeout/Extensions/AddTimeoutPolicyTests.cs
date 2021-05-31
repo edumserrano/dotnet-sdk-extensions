@@ -115,9 +115,9 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
             var timeoutPolicyAsserter = httpClient.TimeoutPolicyAsserter(timeoutOptions, testHttpMessageHandler);
             await timeoutPolicyAsserter.HttpClientShouldContainTimeoutPolicyAsync();
             timeoutPolicyAsserter.EventHandlerShouldReceiveExpectedEvents(
-                    count: 1,
-                    httpClientName: httpClientName,
-                    eventHandlerCalls: timeoutPolicyEventHandlerCalls);
+                count: 1,
+                httpClientName: httpClientName,
+                eventHandlerCalls: timeoutPolicyEventHandlerCalls);
         }
 
         /// <summary>

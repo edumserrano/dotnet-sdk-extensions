@@ -41,12 +41,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Auxiliary
         {
             await TimeoutPolicyTriggersOnTimeout();
         }
-
-        public async Task HttpClientShouldContainTimeoutPolicyWithFallbackAsync()
-        {
-            await TimeoutPolicyTriggersOnTimeoutButHasFallback();
-        }
-
+        
         public void EventHandlerShouldReceiveExpectedEvents(
             int count,
             string httpClientName,
@@ -68,16 +63,6 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Auxiliary
                     .TimeoutExecutor(_options, _testHttpMessageHandler)
                     .TriggerTimeoutPolicyAsync();
             });
-        }
-
-        private async Task TimeoutPolicyTriggersOnTimeoutButHasFallback()
-        {
-            var fallbackResponse = await _httpClient
-                .TimeoutExecutor(_options, _testHttpMessageHandler)
-                .TriggerTimeoutPolicyAsync();
-            var timeoutResponse = fallbackResponse as TimeoutHttpResponseMessage;
-            timeoutResponse.ShouldNotBeNull();
-            timeoutResponse.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
         }
     }
 }

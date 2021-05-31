@@ -91,13 +91,13 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Resilience.Extensions
         {
             return httpClientBuilder.AddHttpMessageHandler(provider =>
             {
-                var policyEventHandler = provider.GetRequiredService<TPolicyEventHandler>();
                 var resilienceOptions = provider.GetHttpClientResilienceOptions(optionsName);
                 if (!resilienceOptions.EnableFallbackPolicy)
                 {
                     return new BlankHttpMessageHandler();
                 }
-
+                
+                var policyEventHandler = provider.GetRequiredService<TPolicyEventHandler>();
                 var retryPolicy = FallbackPolicyFactory.CreateFallbackPolicy(
                     httpClientBuilder.Name,
                     policyEventHandler);
@@ -112,8 +112,13 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Resilience.Extensions
         {
             return httpClientBuilder.AddHttpMessageHandler(provider =>
             {
-                var policyEventHandler = provider.GetRequiredService<TPolicyEventHandler>();
                 var resilienceOptions = provider.GetHttpClientResilienceOptions(optionsName);
+                if (!resilienceOptions.EnableRetryPolicy)
+                {
+                    return new BlankHttpMessageHandler();
+                }
+
+                var policyEventHandler = provider.GetRequiredService<TPolicyEventHandler>();
                 var retryPolicy = RetryPolicyFactory.CreateRetryPolicy(
                     httpClientBuilder.Name, 
                     resilienceOptions.Retry,
@@ -129,8 +134,13 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Resilience.Extensions
         {
             return httpClientBuilder.AddHttpMessageHandler(provider =>
             {
-                var policyEventHandler = provider.GetRequiredService<TPolicyEventHandler>();
                 var resilienceOptions = provider.GetHttpClientResilienceOptions(optionsName);
+                if (!resilienceOptions.EnableCircuitBreakerPolicy)
+                {
+                    return new BlankHttpMessageHandler();
+                }
+
+                var policyEventHandler = provider.GetRequiredService<TPolicyEventHandler>();
                 var retryPolicy = CircuitBreakerPolicyFactory.CreateCircuitBreakerPolicy(
                     httpClientBuilder.Name, 
                     resilienceOptions.CircuitBreaker,
@@ -146,8 +156,13 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Resilience.Extensions
         {
             return httpClientBuilder.AddHttpMessageHandler(provider =>
             {
-                var policyEventHandler = provider.GetRequiredService<TPolicyEventHandler>();
                 var resilienceOptions = provider.GetHttpClientResilienceOptions(optionsName);
+                if (!resilienceOptions.EnableTimeoutPolicy)
+                {
+                    return new BlankHttpMessageHandler();
+                }
+
+                var policyEventHandler = provider.GetRequiredService<TPolicyEventHandler>();
                 var retryPolicy = TimeoutPolicyFactory.CreateTimeoutPolicy(
                     httpClientBuilder.Name,
                     resilienceOptions.Timeout,

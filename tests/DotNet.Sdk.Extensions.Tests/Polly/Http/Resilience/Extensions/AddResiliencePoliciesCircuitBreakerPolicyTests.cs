@@ -1,16 +1,17 @@
 ﻿using System;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker;
+using DotNet.Sdk.Extensions.Polly.Http.Fallback.FallbackHttpResponseMessages;
 using DotNet.Sdk.Extensions.Polly.Http.Resilience;
 using DotNet.Sdk.Extensions.Polly.Http.Resilience.Events;
 using DotNet.Sdk.Extensions.Polly.Http.Resilience.Extensions;
-using DotNet.Sdk.Extensions.Polly.Http.Retry;
-using DotNet.Sdk.Extensions.Polly.Http.Timeout;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers;
 using DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary;
 using DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Auxiliary;
 using Microsoft.Extensions.DependencyInjection;
+using Shouldly;
 using Xunit;
 
 namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
@@ -25,6 +26,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
     ///
     /// This is not ideal but at the moment it's the only suggested workaround because these tests are triggering
     /// the circuit breaker policy and I don't know how to manipulate/fake time for the policy.
+    ///
+    /// Disables other policies to avoid triggering them when testing the circuit breaker policy.
     /// </summary>
     [Trait("Category", XUnitCategories.Polly)]
     public class AddResiliencePoliciesCircuitBreakerPolicyTests
@@ -40,15 +43,9 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             var httpClientName = "GitHub";
             var resilienceOptions = new ResilienceOptions
             {
-                Timeout = new TimeoutOptions
-                {
-                    TimeoutInSecs = 0.05
-                },
-                Retry = new RetryOptions
-                {
-                    RetryCount = 0, //disable retries to avoid the retry policy triggering when testing the circuit breaker policy
-                    MedianFirstRetryDelayInSecs = 0.01
-                },
+                EnableFallbackPolicy = false,
+                EnableRetryPolicy = false,
+                EnableTimeoutPolicy = false,
                 CircuitBreaker = new CircuitBreakerOptions
                 {
                     DurationOfBreakInSecs = 0.1,
@@ -63,9 +60,9 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 .ConfigureHttpClient(client => client.BaseAddress = new Uri("https://github.com"))
                 .AddResiliencePolicies(options =>
                 {
-                    options.Timeout.TimeoutInSecs = resilienceOptions.Timeout.TimeoutInSecs;
-                    options.Retry.MedianFirstRetryDelayInSecs = resilienceOptions.Retry.MedianFirstRetryDelayInSecs;
-                    options.Retry.RetryCount = resilienceOptions.Retry.RetryCount;
+                    options.EnableFallbackPolicy = resilienceOptions.EnableFallbackPolicy;
+                    options.EnableRetryPolicy = resilienceOptions.EnableRetryPolicy;
+                    options.EnableTimeoutPolicy = resilienceOptions.EnableTimeoutPolicy;
                     options.CircuitBreaker.DurationOfBreakInSecs = resilienceOptions.CircuitBreaker.DurationOfBreakInSecs;
                     options.CircuitBreaker.FailureThreshold = resilienceOptions.CircuitBreaker.FailureThreshold;
                     options.CircuitBreaker.SamplingDurationInSecs = resilienceOptions.CircuitBreaker.SamplingDurationInSecs;
@@ -92,15 +89,9 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             var httpClientName = "GitHub";
             var resilienceOptions = new ResilienceOptions
             {
-                Timeout = new TimeoutOptions
-                {
-                    TimeoutInSecs = 0.05
-                },
-                Retry = new RetryOptions
-                {
-                    RetryCount = 0, //disable retries to avoid the retry policy triggering when testing the circuit breaker policy
-                    MedianFirstRetryDelayInSecs = 0.01
-                },
+                EnableFallbackPolicy = false,
+                EnableRetryPolicy = false,
+                EnableTimeoutPolicy = false,
                 CircuitBreaker = new CircuitBreakerOptions
                 {
                     DurationOfBreakInSecs = 0.1,
@@ -115,9 +106,9 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 .AddHttpClientResilienceOptions(optionsName)
                 .Configure(options =>
                 {
-                    options.Timeout.TimeoutInSecs = resilienceOptions.Timeout.TimeoutInSecs;
-                    options.Retry.MedianFirstRetryDelayInSecs = resilienceOptions.Retry.MedianFirstRetryDelayInSecs;
-                    options.Retry.RetryCount = resilienceOptions.Retry.RetryCount;
+                    options.EnableFallbackPolicy = resilienceOptions.EnableFallbackPolicy;
+                    options.EnableRetryPolicy = resilienceOptions.EnableRetryPolicy;
+                    options.EnableTimeoutPolicy = resilienceOptions.EnableTimeoutPolicy;
                     options.CircuitBreaker.DurationOfBreakInSecs = resilienceOptions.CircuitBreaker.DurationOfBreakInSecs;
                     options.CircuitBreaker.FailureThreshold = resilienceOptions.CircuitBreaker.FailureThreshold;
                     options.CircuitBreaker.SamplingDurationInSecs = resilienceOptions.CircuitBreaker.SamplingDurationInSecs;
@@ -154,15 +145,9 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             var httpClientName = "GitHub";
             var resilienceOptions = new ResilienceOptions
             {
-                Timeout = new TimeoutOptions
-                {
-                    TimeoutInSecs = 0.05
-                },
-                Retry = new RetryOptions
-                {
-                    RetryCount = 0, //disable retries to avoid the retry policy triggering when testing the circuit breaker policy
-                    MedianFirstRetryDelayInSecs = 0.01
-                },
+                EnableFallbackPolicy = false,
+                EnableRetryPolicy = false,
+                EnableTimeoutPolicy = false,
                 CircuitBreaker = new CircuitBreakerOptions
                 {
                     DurationOfBreakInSecs = 0.1,
@@ -178,9 +163,9 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 .ConfigureHttpClient(client => client.BaseAddress = new Uri("https://github.com"))
                 .AddResiliencePolicies<TestResiliencePoliciesEventHandler>(options =>
                 {
-                    options.Timeout.TimeoutInSecs = resilienceOptions.Timeout.TimeoutInSecs;
-                    options.Retry.MedianFirstRetryDelayInSecs = resilienceOptions.Retry.MedianFirstRetryDelayInSecs;
-                    options.Retry.RetryCount = resilienceOptions.Retry.RetryCount;
+                    options.EnableFallbackPolicy = resilienceOptions.EnableFallbackPolicy;
+                    options.EnableRetryPolicy = resilienceOptions.EnableRetryPolicy;
+                    options.EnableTimeoutPolicy = resilienceOptions.EnableTimeoutPolicy;
                     options.CircuitBreaker.DurationOfBreakInSecs = resilienceOptions.CircuitBreaker.DurationOfBreakInSecs;
                     options.CircuitBreaker.FailureThreshold = resilienceOptions.CircuitBreaker.FailureThreshold;
                     options.CircuitBreaker.SamplingDurationInSecs = resilienceOptions.CircuitBreaker.SamplingDurationInSecs;
@@ -191,13 +176,11 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             var serviceProvider = services.BuildServiceProvider();
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
             var resiliencePoliciesAsserter = httpClient.ResiliencePoliciesAsserter(resilienceOptions, testHttpMessageHandler);
-            await resiliencePoliciesAsserter.CircuitBreaker
-                .HttpClientShouldContainCircuitBreakerPolicyAsync();
-            resiliencePoliciesAsserter.CircuitBreaker
-                .EventHandlerShouldReceiveExpectedEvents(
-                    count: 15, // the circuitBreakerAsserter.HttpClientShouldContainCircuitBreakerPolicyAsync triggers the circuit breaker 15 times
-                    httpClientName: httpClientName,
-                    eventHandlerCalls: resiliencePoliciesEventHandlerCalls.CircuitBreaker);
+            await resiliencePoliciesAsserter.CircuitBreaker.HttpClientShouldContainCircuitBreakerPolicyAsync();
+            resiliencePoliciesAsserter.CircuitBreaker.EventHandlerShouldReceiveExpectedEvents(
+                count: 15, // the circuitBreakerAsserter.HttpClientShouldContainCircuitBreakerPolicyAsync triggers the circuit breaker 15 times
+                httpClientName: httpClientName,
+                eventHandlerCalls: resiliencePoliciesEventHandlerCalls.CircuitBreaker);
         }
 
         /// <summary>
@@ -217,15 +200,9 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             var httpClientName = "GitHub";
             var resilienceOptions = new ResilienceOptions
             {
-                Timeout = new TimeoutOptions
-                {
-                    TimeoutInSecs = 0.05
-                },
-                Retry = new RetryOptions
-                {
-                    RetryCount = 0, //disable retries to avoid the retry policy triggering when testing the circuit breaker policy
-                    MedianFirstRetryDelayInSecs = 0.01
-                },
+                EnableFallbackPolicy = false,
+                EnableRetryPolicy = false,
+                EnableTimeoutPolicy = false,
                 CircuitBreaker = new CircuitBreakerOptions
                 {
                     DurationOfBreakInSecs = 0.1,
@@ -242,9 +219,9 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 .AddHttpClientResilienceOptions(optionsName)
                 .Configure(options =>
                 {
-                    options.Timeout.TimeoutInSecs = resilienceOptions.Timeout.TimeoutInSecs;
-                    options.Retry.MedianFirstRetryDelayInSecs = resilienceOptions.Retry.MedianFirstRetryDelayInSecs;
-                    options.Retry.RetryCount = resilienceOptions.Retry.RetryCount;
+                    options.EnableFallbackPolicy = resilienceOptions.EnableFallbackPolicy;
+                    options.EnableRetryPolicy = resilienceOptions.EnableRetryPolicy;
+                    options.EnableTimeoutPolicy = resilienceOptions.EnableTimeoutPolicy;
                     options.CircuitBreaker.DurationOfBreakInSecs = resilienceOptions.CircuitBreaker.DurationOfBreakInSecs;
                     options.CircuitBreaker.FailureThreshold = resilienceOptions.CircuitBreaker.FailureThreshold;
                     options.CircuitBreaker.SamplingDurationInSecs = resilienceOptions.CircuitBreaker.SamplingDurationInSecs;
@@ -259,13 +236,60 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             var serviceProvider = services.BuildServiceProvider();
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
             var resiliencePoliciesAsserter = httpClient.ResiliencePoliciesAsserter(resilienceOptions, testHttpMessageHandler);
-            await resiliencePoliciesAsserter.CircuitBreaker
-                .HttpClientShouldContainCircuitBreakerPolicyAsync();
-            resiliencePoliciesAsserter.CircuitBreaker
-                .EventHandlerShouldReceiveExpectedEvents(
-                    count: 15, // the circuitBreakerAsserter.HttpClientShouldContainCircuitBreakerPolicyAsync triggers the circuit breaker 15 times
-                    httpClientName: httpClientName,
-                    eventHandlerCalls: resiliencePoliciesEventHandlerCalls.CircuitBreaker);
+            await resiliencePoliciesAsserter.CircuitBreaker.HttpClientShouldContainCircuitBreakerPolicyAsync();
+            resiliencePoliciesAsserter.CircuitBreaker.EventHandlerShouldReceiveExpectedEvents(
+                count: 15, // the circuitBreakerAsserter.HttpClientShouldContainCircuitBreakerPolicyAsync triggers the circuit breaker 15 times
+                httpClientName: httpClientName,
+                eventHandlerCalls: resiliencePoliciesEventHandlerCalls.CircuitBreaker);
+        }
+
+        /// <summary>
+        /// Tests that the AddResiliencePolicies method does not add a circuit breaker policy if
+        /// the <see cref="ResilienceOptions.EnableCircuitBreakerPolicy"/> option is false.
+        /// </summary>
+        [Fact]
+        public async Task AddResiliencePoliciesAddsCircuitBreakerPolicy5()
+        {
+            var testHttpMessageHandler = new TestHttpMessageHandler();
+            var httpClientName = "GitHub";
+            var resilienceOptions = new ResilienceOptions
+            {
+                EnableCircuitBreakerPolicy = false,
+                EnableFallbackPolicy = false,
+                EnableRetryPolicy = false,
+                EnableTimeoutPolicy = false,
+                CircuitBreaker = new CircuitBreakerOptions
+                {
+                    DurationOfBreakInSecs = 0.1,
+                    SamplingDurationInSecs = 0.3,
+                    FailureThreshold = 0.6,
+                    MinimumThroughput = 10
+                }
+            };
+            var services = new ServiceCollection();
+            services
+                .AddHttpClient(httpClientName)
+                .ConfigureHttpClient(client => client.BaseAddress = new Uri("https://github.com"))
+                .AddResiliencePolicies(options =>
+                {
+                    options.EnableFallbackPolicy = resilienceOptions.EnableFallbackPolicy;
+                    options.EnableRetryPolicy = resilienceOptions.EnableRetryPolicy;
+                    options.EnableTimeoutPolicy = resilienceOptions.EnableTimeoutPolicy;
+                    options.EnableCircuitBreakerPolicy = resilienceOptions.EnableCircuitBreakerPolicy;
+                    options.CircuitBreaker.DurationOfBreakInSecs = resilienceOptions.CircuitBreaker.DurationOfBreakInSecs;
+                    options.CircuitBreaker.FailureThreshold = resilienceOptions.CircuitBreaker.FailureThreshold;
+                    options.CircuitBreaker.SamplingDurationInSecs = resilienceOptions.CircuitBreaker.SamplingDurationInSecs;
+                    options.CircuitBreaker.MinimumThroughput = resilienceOptions.CircuitBreaker.MinimumThroughput;
+                })
+                .ConfigurePrimaryHttpMessageHandler(() => testHttpMessageHandler);
+
+            var serviceProvider = services.BuildServiceProvider();
+            var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
+            await using var circuitBreaker = httpClient.CircuitBreakerExecutor(resilienceOptions.CircuitBreaker, testHttpMessageHandler);
+            var transientHttpStatusCode = HttpStatusCode.ServiceUnavailable;
+            await circuitBreaker.TriggerFromTransientHttpStatusCodeAsync(transientHttpStatusCode);
+            var response = await httpClient.GetAsync($"/circuit-breaker/transient-http-status-code/{transientHttpStatusCode}");
+            response.ShouldNotBeOfType<CircuitBrokenHttpResponseMessage>(); // if circuit breaker policy is added a CircuitBrokenHttpResponseMessage is returned when the circuit is open
         }
     }
 }

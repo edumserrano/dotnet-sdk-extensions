@@ -13,6 +13,9 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Resilience
             Timeout = new TimeoutOptions();
             Retry = new RetryOptions();
             EnableFallbackPolicy = true;
+            EnableTimeoutPolicy = true;
+            EnableRetryPolicy = true;
+            EnableCircuitBreakerPolicy = true;
         }
 
         [Required]
@@ -25,5 +28,11 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Resilience
         public RetryOptions Retry { get; set; }
 
         public bool EnableFallbackPolicy { get; set; }
+
+        public bool EnableRetryPolicy { get; set; }
+        
+        public bool EnableCircuitBreakerPolicy { get; set; }
+        
+        public bool EnableTimeoutPolicy { get; set; }
     }
 }

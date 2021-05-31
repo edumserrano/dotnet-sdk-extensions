@@ -57,13 +57,19 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
         } 
         
         /// <summary>
-        /// Tests that the default for <see cref="ResilienceOptions.EnableFallbackPolicy"/> is true.
+        /// Tests default values for <see cref="ResilienceOptions"/>.
         /// </summary>
         [Fact]
         public void ResilienceOptionsTest1()
         {
             var options = new ResilienceOptions();
             options.EnableFallbackPolicy.ShouldBeTrue();
+            options.EnableCircuitBreakerPolicy.ShouldBeTrue();
+            options.EnableRetryPolicy.ShouldBeTrue();
+            options.EnableTimeoutPolicy.ShouldBeTrue();
+            options.CircuitBreaker.ShouldNotBeNull();
+            options.Retry.ShouldNotBeNull();
+            options.Timeout.ShouldNotBeNull();
         }
     }
 }
