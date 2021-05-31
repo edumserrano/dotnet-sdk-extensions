@@ -33,10 +33,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 .AddResiliencePolicies(options =>
                 {
                     options.CircuitBreaker = null!;
-
-                    options.Timeout.TimeoutInSecs = 1;
-                    options.Retry.RetryCount = 1;
-                    options.Retry.MedianFirstRetryDelayInSecs = 2;
+                    options.EnableRetryPolicy = false;
+                    options.EnableTimeoutPolicy = false;
                 });
 
             var serviceProvider = services.BuildServiceProvider();
@@ -70,10 +68,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                     options.CircuitBreaker.SamplingDurationInSecs = 60;
                     options.CircuitBreaker.FailureThreshold = 0.6;
                     options.CircuitBreaker.MinimumThroughput = 10;
-
-                    options.Timeout.TimeoutInSecs = 1;
-                    options.Retry.RetryCount = 1;
-                    options.Retry.MedianFirstRetryDelayInSecs = 2;
+                    options.EnableRetryPolicy = false;
+                    options.EnableTimeoutPolicy = false;
                 });
 
             var serviceProvider = services.BuildServiceProvider();
@@ -107,10 +103,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                     options.CircuitBreaker.SamplingDurationInSecs = samplingDurationInSecs;
                     options.CircuitBreaker.FailureThreshold = 0.6;
                     options.CircuitBreaker.MinimumThroughput = 10;
-
-                    options.Timeout.TimeoutInSecs = 1;
-                    options.Retry.RetryCount = 1;
-                    options.Retry.MedianFirstRetryDelayInSecs = 2;
+                    options.EnableRetryPolicy = false;
+                    options.EnableTimeoutPolicy = false;
                 });
 
             var serviceProvider = services.BuildServiceProvider();
@@ -146,10 +140,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                     options.CircuitBreaker.SamplingDurationInSecs = 60;
                     options.CircuitBreaker.FailureThreshold = failureThreshold;
                     options.CircuitBreaker.MinimumThroughput = 10;
-
-                    options.Timeout.TimeoutInSecs = 1;
-                    options.Retry.RetryCount = 1;
-                    options.Retry.MedianFirstRetryDelayInSecs = 2;
+                    options.EnableRetryPolicy = false;
+                    options.EnableTimeoutPolicy = false;
                 });
 
             var serviceProvider = services.BuildServiceProvider();
@@ -182,10 +174,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                     options.CircuitBreaker.SamplingDurationInSecs = 60;
                     options.CircuitBreaker.FailureThreshold = 0.6;
                     options.CircuitBreaker.MinimumThroughput = minimumThroughput;
-
-                    options.Timeout.TimeoutInSecs = 1;
-                    options.Retry.RetryCount = 1;
-                    options.Retry.MedianFirstRetryDelayInSecs = 2;
+                    options.EnableRetryPolicy = false;
+                    options.EnableTimeoutPolicy = false;
                 });
 
             var serviceProvider = services.BuildServiceProvider();
@@ -220,10 +210,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                     options.CircuitBreaker.SamplingDurationInSecs = 60;
                     options.CircuitBreaker.FailureThreshold = 0.6;
                     options.CircuitBreaker.MinimumThroughput = 10;
-
-                    options.Timeout.TimeoutInSecs = 1;
-                    options.Retry.RetryCount = 1;
-                    options.Retry.MedianFirstRetryDelayInSecs = 2;
+                    options.EnableRetryPolicy = false;
+                    options.EnableTimeoutPolicy = false;
                 })
                 .Validate(options =>
                 {
@@ -264,10 +252,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                     options.CircuitBreaker.SamplingDurationInSecs = 60;
                     options.CircuitBreaker.FailureThreshold = 0.6;
                     options.CircuitBreaker.MinimumThroughput = 10;
-
-                    options.Timeout.TimeoutInSecs = 1;
-                    options.Retry.RetryCount = 1;
-                    options.Retry.MedianFirstRetryDelayInSecs = 2;
+                    options.EnableRetryPolicy = false;
+                    options.EnableTimeoutPolicy = false;
                 })
                 .Validate(options =>
                 {
@@ -283,6 +269,33 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 serviceProvider.InstantiateNamedHttpClient(httpClientName);
             });
             exception.Message.ShouldBe($"The field DurationOfBreakInSecs must be between {double.Epsilon} and {double.MaxValue}.");
+        }
+
+        /// <summary>
+        /// Tests that the ResiliencePoliciesHttpClientBuilderExtensions.AddResiliencePolicies methods
+        /// don't validate the <see cref="ResilienceOptions.CircuitBreaker"/> when the <see cref="ResilienceOptions.EnableCircuitBreakerPolicy"/>.
+        /// is false.
+        /// </summary>
+        [Fact]
+        public void AddResiliencePoliciesOptionsValidation4()
+        {
+            var httpClientName = "GitHub";
+            var services = new ServiceCollection();
+            services
+                .AddHttpClient(httpClientName)
+                .AddResiliencePolicies(options =>
+                {
+                    options.EnableRetryPolicy = false;
+                    options.EnableCircuitBreakerPolicy = false;
+                    options.EnableTimeoutPolicy = false;
+                    options.CircuitBreaker.DurationOfBreakInSecs = -1; // this should cause validation to fail if the EnableRetryPolicy was set to true
+                    options.CircuitBreaker.SamplingDurationInSecs = 60;
+                    options.CircuitBreaker.FailureThreshold = 0.6;
+                    options.CircuitBreaker.MinimumThroughput = 10;
+                });
+
+            var serviceProvider = services.BuildServiceProvider();
+            Should.NotThrow(() => serviceProvider.InstantiateNamedHttpClient(httpClientName));
         }
     }
 }

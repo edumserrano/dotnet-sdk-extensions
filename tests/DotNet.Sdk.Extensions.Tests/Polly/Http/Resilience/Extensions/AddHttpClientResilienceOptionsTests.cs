@@ -22,7 +22,48 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
         /// It also tests the <see cref="ResilienceOptionsExtensions.GetHttpClientResilienceOptions"/> extension method.
         /// </summary>
         [Fact]
-        public void AddHttpClientResilienceOptions()
+        public void AddHttpClientResilienceOptions1()
+        {
+            var optionsName = "resilienceOptions";
+            var timeoutInSecs = 2;
+            var medianFirstRetryDelayInSecs = 1;
+            var retryCount = 3;
+            var durationOfBreakInSecs = 4;
+            var failureThreshold = 0.5;
+            var samplingDurationInSecs = 60;
+            var minimumThroughput = 5;
+            var services = new ServiceCollection();
+            services
+                .AddHttpClientResilienceOptions(optionsName)
+                .Configure(options =>
+                {
+                    options.Timeout.TimeoutInSecs = timeoutInSecs;
+                    options.Retry.MedianFirstRetryDelayInSecs = medianFirstRetryDelayInSecs;
+                    options.Retry.RetryCount = retryCount;
+                    options.CircuitBreaker.DurationOfBreakInSecs = durationOfBreakInSecs;
+                    options.CircuitBreaker.FailureThreshold = failureThreshold;
+                    options.CircuitBreaker.SamplingDurationInSecs = samplingDurationInSecs;
+                    options.CircuitBreaker.MinimumThroughput = minimumThroughput;
+                });
+            var serviceProvider = services.BuildServiceProvider();
+            var resilienceOptions = serviceProvider.GetHttpClientResilienceOptions(optionsName);
+            resilienceOptions.Timeout.TimeoutInSecs.ShouldBe(timeoutInSecs);
+            resilienceOptions.Retry.RetryCount.ShouldBe(retryCount);
+            resilienceOptions.Retry.MedianFirstRetryDelayInSecs.ShouldBe(medianFirstRetryDelayInSecs);
+            resilienceOptions.CircuitBreaker.DurationOfBreakInSecs.ShouldBe(durationOfBreakInSecs);
+            resilienceOptions.CircuitBreaker.FailureThreshold.ShouldBe(failureThreshold);
+            resilienceOptions.CircuitBreaker.SamplingDurationInSecs.ShouldBe(samplingDurationInSecs);
+            resilienceOptions.CircuitBreaker.MinimumThroughput.ShouldBe(minimumThroughput);
+        }
+
+        /// <summary>
+        /// Tests that the <see cref="ResilienceOptionsExtensions.AddHttpClientResilienceOptions"/> method
+        /// validates the <see cref="ResilienceOptions"/> with the built in data annotations.
+        ///
+        /// Validates that the <see cref="ResilienceOptions.Retry"/> cannot be null. 
+        /// </summary>
+        [Fact]
+        public void AddHttpClientResilienceOptions2()
         {
             var optionsName = "resilienceOptions";
             var timeoutInSecs = 2;
