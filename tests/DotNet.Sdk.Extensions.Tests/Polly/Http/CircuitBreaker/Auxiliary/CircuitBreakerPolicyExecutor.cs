@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -17,6 +19,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
         private readonly CircuitBreakerOptions _circuitBreakerOptions;
         private readonly TestHttpMessageHandler _testHttpMessageHandler;
         private readonly string _resetRequestPath;
+        private readonly List<HttpStatusCode> _transientHttpStatusCodes;
 
         public CircuitBreakerPolicyExecutor(
             HttpClient httpClient,
@@ -27,6 +30,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
             _circuitBreakerOptions = circuitBreakerOptions;
             _testHttpMessageHandler = testHttpMessageHandler;
             _resetRequestPath = HandleResetRequest();
+            _transientHttpStatusCodes = HttpStatusCodesExtensions.GetTransientHttpStatusCodes().ToList();
         }
 
         public async Task TriggerFromExceptionAsync(Exception exception)
@@ -96,6 +100,11 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
 
         private async Task TriggerCircuitBreakerFromTransientStatusCodeAsync(string requestPath, HttpStatusCode httpStatusCode)
         {
+            if (!_transientHttpStatusCodes.Contains(httpStatusCode))
+            {
+                throw new ArgumentException($"{httpStatusCode} is not a transient HTTP status code.", nameof(httpStatusCode));
+            }
+
             for (var i = 0; i < _circuitBreakerOptions.MinimumThroughput; i++)
             {
                 var response = await _httpClient.GetAsync(requestPath);

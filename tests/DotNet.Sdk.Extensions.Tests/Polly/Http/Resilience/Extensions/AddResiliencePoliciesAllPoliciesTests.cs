@@ -124,10 +124,20 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             resiliencePoliciesEventHandlerCalls.CircuitBreaker.OnBreakAsyncCalls
                 .Count()
                 .ShouldBe(1);
-            // because all requests fail the retry policy retries them all
+            // all requests fail and each request will do actually 3 requests because of the retry count is set to 2
+            // after the minimum throughput for the circuit breaker is hit at 10 requests, the requests aren't even
+            // retried, everything fails fast. When the circuit breaker state transitions to open there was
+            // 7 retries
+            // 1 req + 2 retries = 3 total requests on the circuit breaker failing
+            // plus 1 req + 2 retries = 6 total requests on the circuit breaker failing
+            // plus 1 req + 2 retries = 9 total requests on the circuit breaker failing
+            // plus 1 req = 10 requests failing on the circuit breaker (now the circuit breaker state is open)
+            // plus 1 retry (1 of the 2 retries that should happen) = this retry fails fast because the circuit state is open
+            // plus 0 retry = the second retry does NOT happen because the circuit breaker returned a CircuitBrokenHttpResponseMessage which is not retried
+            // Summing all retries = 7
             resiliencePoliciesEventHandlerCalls.Retry.OnRetryAsyncCalls
                 .Count()
-                .ShouldBe(resilienceOptions.Retry.RetryCount * totalRequestsCount);
+                .ShouldBe(7);
             // even though there are 13 total requests made once the circuit breaker is open the remaining
             // requests don't actually get made, they don't pass through the the circuit breaker
             numberOfCallsDelegatingHandler.NumberOfHttpRequests.ShouldNotBe(totalRequestsCount);
@@ -231,10 +241,20 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             resiliencePoliciesEventHandlerCalls.CircuitBreaker.OnBreakAsyncCalls
                 .Count()
                 .ShouldBe(1);
-            // because all requests fail the retry policy retries them all
+            // all requests fail and each request will do actually 3 requests because of the retry count is set to 2
+            // after the minimum throughput for the circuit breaker is hit at 10 requests, the requests aren't even
+            // retried, everything fails fast. When the circuit breaker state transitions to open there was
+            // 7 retries
+            // 1 req + 2 retries = 3 total requests on the circuit breaker failing
+            // plus 1 req + 2 retries = 6 total requests on the circuit breaker failing
+            // plus 1 req + 2 retries = 9 total requests on the circuit breaker failing
+            // plus 1 req = 10 requests failing on the circuit breaker (now the circuit breaker state is open)
+            // plus 1 retry (1 of the 2 retries that should happen) = this retry fails fast because the circuit state is open
+            // plus 0 retry = the second retry does NOT happen because the circuit breaker returned a CircuitBrokenHttpResponseMessage which is not retried
+            // Summing all retries = 7
             resiliencePoliciesEventHandlerCalls.Retry.OnRetryAsyncCalls
                 .Count()
-                .ShouldBe(resilienceOptions.Retry.RetryCount * totalRequestsCount);
+                .ShouldBe(7);
             // even though there are 13 total requests made once the circuit breaker is open the remaining
             // requests don't actually get made, they don't pass through the the circuit breaker
             numberOfCallsDelegatingHandler.NumberOfHttpRequests.ShouldNotBe(totalRequestsCount);

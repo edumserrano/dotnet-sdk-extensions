@@ -38,6 +38,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Auxiliary
 
         public async Task HttpClientShouldContainRetryPolicyAsync(NumberOfCallsDelegatingHandler numberOfCallsDelegatingHandler)
         {
+            await RetryPolicyDoesNotHandleCircuitBrokenHttpResponseMessage(numberOfCallsDelegatingHandler);
             await RetryPolicyHandlesTransientStatusCodes(numberOfCallsDelegatingHandler);
             await RetryPolicyHandlesException<HttpRequestException>(numberOfCallsDelegatingHandler);
             await RetryPolicyHandlesException<TimeoutRejectedException>(numberOfCallsDelegatingHandler);
@@ -64,9 +65,17 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Auxiliary
             foreach (var transientHttpStatusCode in HttpStatusCodesExtensions.GetTransientHttpStatusCodes())
             {
                 await retryExecutor.TriggerFromTransientHttpStatusCodeAsync(transientHttpStatusCode);
-                numberOfCallsDelegatingHandler.NumberOfHttpRequests.ShouldBe(_options.RetryCount + 1,$"{(int)transientHttpStatusCode}");
+                numberOfCallsDelegatingHandler.NumberOfHttpRequests.ShouldBe(_options.RetryCount + 1, $"{(int)transientHttpStatusCode}");
                 numberOfCallsDelegatingHandler.Reset();
             }
+        }
+
+        private async Task RetryPolicyDoesNotHandleCircuitBrokenHttpResponseMessage(NumberOfCallsDelegatingHandler numberOfCallsDelegatingHandler)
+        {
+            var retryExecutor = _httpClient.RetryExecutor(_testHttpMessageHandler);
+            await retryExecutor.ExecuteCircuitBrokenHttpResponseMessageAsync();
+            numberOfCallsDelegatingHandler.NumberOfHttpRequests.ShouldBe(1); // no retries when a CircuitBrokenHttpResponseMessage is returned
+            numberOfCallsDelegatingHandler.Reset();
         }
 
         private Task RetryPolicyHandlesException<TException>(NumberOfCallsDelegatingHandler numberOfCallsDelegatingHandler)

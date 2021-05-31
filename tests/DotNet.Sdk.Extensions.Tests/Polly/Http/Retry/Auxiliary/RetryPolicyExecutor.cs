@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using DotNet.Sdk.Extensions.Polly.Http.Fallback.FallbackHttpResponseMessages;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers;
 using DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary;
 
@@ -39,6 +40,19 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Auxiliary
             var requestPath = _testHttpMessageHandler.HandleTransientHttpStatusCode(
                 requestPath: "/retry/transient-http-status-code",
                 responseHttpStatusCode: httpStatusCode);
+            return await _httpClient.GetAsync(requestPath);
+        }
+        
+        public async Task<HttpResponseMessage> ExecuteCircuitBrokenHttpResponseMessageAsync()
+        {
+            var response = new CircuitBrokenHttpResponseMessage(CircuitBreakerState.Open);
+            var requestPath = $"/retry/circuit-broken-response/{response.GetHashCode()}";
+            _testHttpMessageHandler.MockHttpResponse(builder =>
+            {
+                builder
+                    .Where(httpRequestMessage => httpRequestMessage.RequestUri!.ToString().Contains(requestPath))
+                    .RespondWith(response);
+            });
             return await _httpClient.GetAsync(requestPath);
         }
     }

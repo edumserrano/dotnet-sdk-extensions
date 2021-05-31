@@ -1,11 +1,11 @@
 ﻿using System;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Polly.Http.Fallback.FallbackHttpResponseMessages;
 using DotNet.Sdk.Extensions.Polly.Http.Retry.Events;
 using Polly;
 using Polly.Contrib.WaitAndRetry;
-using Polly.Extensions.Http;
 using Polly.Retry;
 using Polly.Timeout;
 
@@ -20,11 +20,22 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Retry
         {
             var medianFirstRetryDelay = TimeSpan.FromSeconds(options.MedianFirstRetryDelayInSecs);
             var retryDelays = Backoff.DecorrelatedJitterBackoffV2(medianFirstRetryDelay, options.RetryCount);
-            return HttpPolicyExtensions
-                .HandleTransientHttpError()
-                .OrResult(response => response is CircuitBrokenHttpResponseMessage) // returned by the CircuitBreakerCheckerAsyncPolicy when circuit is not open/isolated
+            return Policy<HttpResponseMessage>
+                .Handle<HttpRequestException>()
                 .Or<TimeoutRejectedException>() // returned by the timeout policy when timeout occurs
                 .Or<TaskCanceledException>()
+                .OrResult(response =>
+                {
+                    // handle transient http status codes except if it's a CircuitBrokenHttpResponseMessage
+                    // if the circuit is open no point in retrying
+                    if (response is CircuitBrokenHttpResponseMessage)
+                    {
+                        return false;
+                    }
+
+                    return response.StatusCode >= HttpStatusCode.InternalServerError
+                           || response.StatusCode == HttpStatusCode.RequestTimeout;
+                })
                 .WaitAndRetryAsync(
                     sleepDurations: retryDelays,
                     onRetryAsync: (outcome, retryDelay, retryNumber, pollyContext) =>
