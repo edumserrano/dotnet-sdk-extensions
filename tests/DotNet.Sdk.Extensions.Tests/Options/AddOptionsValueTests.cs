@@ -23,7 +23,7 @@ namespace DotNet.Sdk.Extensions.Tests.Options
             var configuration = new ConfigurationRoot(new List<IConfigurationProvider>());
             var serviceCollection = new ServiceCollection();
             serviceCollection.AddOptionsValue<MyOptions>(configuration);
-            var serviceProvider = serviceCollection.BuildServiceProvider();
+            using var serviceProvider = serviceCollection.BuildServiceProvider();
             var myOptions = serviceProvider.GetRequiredService<MyOptions>();
             myOptions.ShouldNotBeNull();
         }
@@ -63,7 +63,7 @@ namespace DotNet.Sdk.Extensions.Tests.Options
 
             var serviceCollection = new ServiceCollection();
             serviceCollection.AddOptionsValue<MyOptions>(configuration, sectionName: "MyOptionsSection");
-            var serviceProvider = serviceCollection.BuildServiceProvider();
+            using var serviceProvider = serviceCollection.BuildServiceProvider();
             var myOptions = serviceProvider.GetRequiredService<MyOptions>();
             myOptions.SomeOption.ShouldBe("some value");
         }
@@ -102,7 +102,7 @@ namespace DotNet.Sdk.Extensions.Tests.Options
                 .AddOptions<MyOptions>()
                 .Bind(configuration)
                 .AddOptionsValue();
-            var serviceProvider = serviceCollection.BuildServiceProvider();
+            using var serviceProvider = serviceCollection.BuildServiceProvider();
             var myOptions = serviceProvider.GetRequiredService<MyOptions>();
             myOptions.ShouldNotBeNull();
         }

@@ -7,7 +7,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary
     {
         public static HttpClient InstantiateNamedHttpClient(this ServiceProvider serviceProvider, string name)
         {
-            var httpClientFactory = serviceProvider.GetService<IHttpClientFactory>();
+            var httpClientFactory = serviceProvider.GetRequiredService<IHttpClientFactory>();
             return httpClientFactory.CreateClient(name);
         }
     }

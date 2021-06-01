@@ -69,7 +69,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 .AddHttpMessageHandler(() => numberOfCallsDelegatingHandler)
                 .ConfigurePrimaryHttpMessageHandler(() => testHttpMessageHandler);
 
-            var serviceProvider = services.BuildServiceProvider();
+            await using var serviceProvider = services.BuildServiceProvider();
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
             var triggerTimeoutPath = "/timeout";
             var timeout = TimeSpan.FromSeconds(resilienceOptions.Timeout.TimeoutInSecs + 1);
@@ -114,7 +114,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 .AddHttpMessageHandler(() => numberOfCallsDelegatingHandler)
                 .ConfigurePrimaryHttpMessageHandler(() => testHttpMessageHandler);
 
-            var serviceProvider = services.BuildServiceProvider();
+            await using var serviceProvider = services.BuildServiceProvider();
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
             var triggerTimeoutPath = "/timeout";
             var timeout = TimeSpan.FromSeconds(resilienceOptions.Timeout.TimeoutInSecs + 1);

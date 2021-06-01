@@ -126,7 +126,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
                 {
                     await _httpClient.GetAsync(requestPath);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     // avoids the exception being propagated in order to open the circuit once
                     // the CircuitBreakerOptions.MinimumThroughput number of requests is reached

@@ -39,7 +39,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
                     options.MinimumThroughput = minimumThroughput;
                     options.SamplingDurationInSecs = samplingDurationInSecs;
                 });
-            var serviceProvider = services.BuildServiceProvider();
+            using var serviceProvider = services.BuildServiceProvider();
             var circuitBreakerOptions = serviceProvider.GetHttpClientCircuitBreakerOptions(optionsName);
             circuitBreakerOptions.DurationOfBreakInSecs.ShouldBe(durationOfBreakInSecs);
             circuitBreakerOptions.FailureThreshold.ShouldBe(failureThreshold);

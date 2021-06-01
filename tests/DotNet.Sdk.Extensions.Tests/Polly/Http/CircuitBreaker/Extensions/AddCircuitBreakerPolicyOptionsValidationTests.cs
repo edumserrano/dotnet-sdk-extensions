@@ -40,7 +40,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
                     options.MinimumThroughput = 10;
                 });
 
-            var serviceProvider = services.BuildServiceProvider();
+            using var serviceProvider = services.BuildServiceProvider();
             var exception = Should.Throw<OptionsValidationException>(() =>
             {
                 serviceProvider.InstantiateNamedHttpClient(httpClientName);
@@ -73,7 +73,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
                     options.MinimumThroughput = 10;
                 });
 
-            var serviceProvider = services.BuildServiceProvider();
+            using var serviceProvider = services.BuildServiceProvider();
             var exception = Should.Throw<OptionsValidationException>(() =>
             {
                 serviceProvider.InstantiateNamedHttpClient(httpClientName);
@@ -108,7 +108,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
                     options.MinimumThroughput = 10;
                 });
 
-            var serviceProvider = services.BuildServiceProvider();
+            using var serviceProvider = services.BuildServiceProvider();
             var exception = Should.Throw<OptionsValidationException>(() =>
             {
                 serviceProvider.InstantiateNamedHttpClient(httpClientName);
@@ -140,7 +140,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
                     options.MinimumThroughput = minimumThroughput;
                 });
 
-            var serviceProvider = services.BuildServiceProvider();
+            using var serviceProvider = services.BuildServiceProvider();
             var exception = Should.Throw<OptionsValidationException>(() =>
             {
                 serviceProvider.InstantiateNamedHttpClient(httpClientName);
@@ -181,7 +181,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
                 .AddHttpClient(httpClientName)
                 .AddCircuitBreakerPolicy(optionsName);
 
-            var serviceProvider = services.BuildServiceProvider();
+            using var serviceProvider = services.BuildServiceProvider();
             var exception = Should.Throw<OptionsValidationException>(() =>
             {
                 serviceProvider.InstantiateNamedHttpClient(httpClientName);
@@ -221,7 +221,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
                 .AddHttpClient(httpClientName)
                 .AddCircuitBreakerPolicy(optionsName);
 
-            var serviceProvider = services.BuildServiceProvider();
+            using var serviceProvider = services.BuildServiceProvider();
             var exception = Should.Throw<OptionsValidationException>(() =>
             {
                 serviceProvider.InstantiateNamedHttpClient(httpClientName);

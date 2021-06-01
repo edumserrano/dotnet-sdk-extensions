@@ -55,7 +55,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 })
                 .ConfigurePrimaryHttpMessageHandler(() => testHttpMessageHandler);
 
-            var serviceProvider = services.BuildServiceProvider();
+            await using var serviceProvider = services.BuildServiceProvider();
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
             await httpClient
                 .ResiliencePoliciesAsserter(resilienceOptions, testHttpMessageHandler)
@@ -99,7 +99,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 .AddResiliencePolicies(optionsName)
                 .ConfigurePrimaryHttpMessageHandler(() => testHttpMessageHandler);
 
-            var serviceProvider = services.BuildServiceProvider();
+            await using var serviceProvider = services.BuildServiceProvider();
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
             await httpClient
                 .ResiliencePoliciesAsserter(resilienceOptions, testHttpMessageHandler)
@@ -143,7 +143,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 })
                 .ConfigurePrimaryHttpMessageHandler(() => testHttpMessageHandler);
 
-            var serviceProvider = services.BuildServiceProvider();
+            await using var serviceProvider = services.BuildServiceProvider();
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
             var resiliencePoliciesAsserter = httpClient.ResiliencePoliciesAsserter(resilienceOptions, testHttpMessageHandler);
             await resiliencePoliciesAsserter.Timeout.HttpClientShouldContainTimeoutPolicyAsync();
@@ -193,7 +193,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 .AddResiliencePolicies<TestResiliencePoliciesEventHandler>(optionsName)
                 .ConfigurePrimaryHttpMessageHandler(() => testHttpMessageHandler);
 
-            var serviceProvider = services.BuildServiceProvider();
+            await using var serviceProvider = services.BuildServiceProvider();
             serviceProvider.InstantiateNamedHttpClient(httpClientName);
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
             var resiliencePoliciesAsserter = httpClient.ResiliencePoliciesAsserter(resilienceOptions, testHttpMessageHandler);
@@ -238,7 +238,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 })
                 .ConfigurePrimaryHttpMessageHandler(() => testHttpMessageHandler);
 
-            var serviceProvider = services.BuildServiceProvider();
+            await using var serviceProvider = services.BuildServiceProvider();
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
             await Should.ThrowAsync<TaskCanceledException>(() =>
             {

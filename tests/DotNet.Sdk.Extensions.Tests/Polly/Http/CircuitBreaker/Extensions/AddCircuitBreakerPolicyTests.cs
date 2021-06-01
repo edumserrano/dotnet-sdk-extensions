@@ -62,7 +62,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
                 })
                 .ConfigurePrimaryHttpMessageHandler(() => testHttpMessageHandler);
 
-            var serviceProvider = services.BuildServiceProvider();
+            await using var serviceProvider = services.BuildServiceProvider();
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
             await httpClient
                 .CircuitBreakerPolicyAsserter(circuitBreakerOptions, testHttpMessageHandler)
@@ -102,7 +102,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
                 .AddCircuitBreakerPolicy(optionsName)
                 .ConfigurePrimaryHttpMessageHandler(() => testHttpMessageHandler);
 
-            var serviceProvider = services.BuildServiceProvider();
+            await using var serviceProvider = services.BuildServiceProvider();
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
             await httpClient
                 .CircuitBreakerPolicyAsserter(circuitBreakerOptions, testHttpMessageHandler)
@@ -145,7 +145,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
                 })
                 .ConfigurePrimaryHttpMessageHandler(() => testHttpMessageHandler);
 
-            var serviceProvider = services.BuildServiceProvider();
+            await using var serviceProvider = services.BuildServiceProvider();
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
             var circuitBreakerAsserter = httpClient.CircuitBreakerPolicyAsserter(circuitBreakerOptions, testHttpMessageHandler);
             await circuitBreakerAsserter.HttpClientShouldContainCircuitBreakerPolicyAsync();
@@ -196,7 +196,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
                 .AddCircuitBreakerPolicy<TestCircuitBreakerPolicyEventHandler>(optionsName)
                 .ConfigurePrimaryHttpMessageHandler(() => testHttpMessageHandler);
 
-            var serviceProvider = services.BuildServiceProvider();
+            await using var serviceProvider = services.BuildServiceProvider();
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
             var circuitBreakerAsserter = httpClient.CircuitBreakerPolicyAsserter(circuitBreakerOptions, testHttpMessageHandler);
             await circuitBreakerAsserter.HttpClientShouldContainCircuitBreakerPolicyAsync();
@@ -257,7 +257,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
                         .FirstOrDefault();
                 });
 
-            var serviceProvider = services.BuildServiceProvider();
+            using var serviceProvider = services.BuildServiceProvider();
             serviceProvider.InstantiateNamedHttpClient("GitHub");
             serviceProvider.InstantiateNamedHttpClient("Microsoft");
             circuitBreakerPolicy1.ShouldNotBeNull();
@@ -304,7 +304,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
                 })
                 .ConfigurePrimaryHttpMessageHandler(() => testHttpMessageHandler);
 
-            var serviceProvider = services.BuildServiceProvider();
+            await using var serviceProvider = services.BuildServiceProvider();
             var httpClient = serviceProvider.InstantiateNamedHttpClient("GitHub");
             var circuitBreaker = httpClient.CircuitBreakerExecutor(circuitBreakerOptions, testHttpMessageHandler);
             await circuitBreaker.TriggerFromTransientHttpStatusCodeAsync(HttpStatusCode.ServiceUnavailable);

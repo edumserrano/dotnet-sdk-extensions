@@ -37,7 +37,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
                     options.MedianFirstRetryDelayInSecs = 1;
                 });
 
-            var serviceProvider = services.BuildServiceProvider();
+            using var serviceProvider = services.BuildServiceProvider();
             var exception = Should.Throw<OptionsValidationException>(() =>
             {
                 serviceProvider.InstantiateNamedHttpClient(httpClientName);
@@ -64,7 +64,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
                     options.MedianFirstRetryDelayInSecs = 1;
                 });
 
-            var serviceProvider = services.BuildServiceProvider();
+            using var serviceProvider = services.BuildServiceProvider();
             Should.NotThrow(() => serviceProvider.InstantiateNamedHttpClient(httpClientName));
         }
 
@@ -91,7 +91,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
                     options.MedianFirstRetryDelayInSecs = medianFirstRetryDelayInSecs;
                 });
 
-            var serviceProvider = services.BuildServiceProvider();
+            using var serviceProvider = services.BuildServiceProvider();
             var exception = Should.Throw<OptionsValidationException>(() =>
             {
                 serviceProvider.InstantiateNamedHttpClient(httpClientName);
@@ -130,7 +130,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
                 .AddHttpClient(httpClientName)
                 .AddRetryPolicy(optionsName);
 
-            var serviceProvider = services.BuildServiceProvider();
+            using var serviceProvider = services.BuildServiceProvider();
             var exception = Should.Throw<OptionsValidationException>(() =>
             {
                 serviceProvider.InstantiateNamedHttpClient(httpClientName);
@@ -168,7 +168,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
                 .AddHttpClient(httpClientName)
                 .AddRetryPolicy(optionsName);
 
-            var serviceProvider = services.BuildServiceProvider();
+            using var serviceProvider = services.BuildServiceProvider();
             var exception = Should.Throw<OptionsValidationException>(() =>
             {
                 serviceProvider.InstantiateNamedHttpClient(httpClientName);

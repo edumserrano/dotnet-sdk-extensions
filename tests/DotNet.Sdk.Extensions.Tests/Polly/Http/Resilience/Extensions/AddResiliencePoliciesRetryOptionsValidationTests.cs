@@ -37,7 +37,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                     options.EnableTimeoutPolicy = false;
                 });
 
-            var serviceProvider = services.BuildServiceProvider();
+            using var serviceProvider = services.BuildServiceProvider();
             var exception = Should.Throw<ValidationException>(() =>
             {
                 serviceProvider.InstantiateNamedHttpClient(httpClientName);
@@ -69,7 +69,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                     options.EnableTimeoutPolicy = false;
                 });
 
-            var serviceProvider = services.BuildServiceProvider();
+            using var serviceProvider = services.BuildServiceProvider();
             var exception = Should.Throw<ValidationException>(() =>
             {
                 serviceProvider.InstantiateNamedHttpClient(httpClientName);
@@ -102,7 +102,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                     options.CircuitBreaker.MinimumThroughput = 4;
                 });
 
-            var serviceProvider = services.BuildServiceProvider();
+            using var serviceProvider = services.BuildServiceProvider();
             Should.NotThrow(() => serviceProvider.InstantiateNamedHttpClient(httpClientName));
         }
 
@@ -135,7 +135,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                     options.CircuitBreaker.MinimumThroughput = 4;
                 });
 
-            var serviceProvider = services.BuildServiceProvider();
+            using var serviceProvider = services.BuildServiceProvider();
             var exception = Should.Throw<ValidationException>(() =>
             {
                 serviceProvider.InstantiateNamedHttpClient(httpClientName);
@@ -176,7 +176,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 .AddHttpClient(httpClientName)
                 .AddResiliencePolicies(optionsName);
 
-            var serviceProvider = services.BuildServiceProvider();
+            using var serviceProvider = services.BuildServiceProvider();
             var exception = Should.Throw<OptionsValidationException>(() =>
             {
                 serviceProvider.InstantiateNamedHttpClient(httpClientName);
@@ -216,7 +216,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 .AddHttpClient(httpClientName)
                 .AddResiliencePolicies(optionsName);
 
-            var serviceProvider = services.BuildServiceProvider();
+            using var serviceProvider = services.BuildServiceProvider();
             var exception = Should.Throw<ValidationException>(() =>
             {
                 serviceProvider.InstantiateNamedHttpClient(httpClientName);
@@ -245,7 +245,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                     options.Retry.MedianFirstRetryDelayInSecs = 1;
                 });
 
-            var serviceProvider = services.BuildServiceProvider();
+            using var serviceProvider = services.BuildServiceProvider();
             Should.NotThrow(() => serviceProvider.InstantiateNamedHttpClient(httpClientName));
         }
     }
