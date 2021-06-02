@@ -44,8 +44,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
             var httpClientName = "GitHub";
             var circuitBreakerOptions = new CircuitBreakerOptions
             {
-                DurationOfBreakInSecs = 0.1,
-                SamplingDurationInSecs = 0.3,
+                DurationOfBreakInSecs = 0.01,
+                SamplingDurationInSecs = 0.02,
                 FailureThreshold = 0.6,
                 MinimumThroughput = 10
             };
@@ -80,8 +80,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
             var httpClientName = "GitHub";
             var circuitBreakerOptions = new CircuitBreakerOptions
             {
-                DurationOfBreakInSecs = 0.1,
-                SamplingDurationInSecs = 0.3,
+                DurationOfBreakInSecs = 0.01,
+                SamplingDurationInSecs = 0.02,
                 FailureThreshold = 0.6,
                 MinimumThroughput = 10
             };
@@ -126,8 +126,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
             var httpClientName = "GitHub";
             var circuitBreakerOptions = new CircuitBreakerOptions
             {
-                DurationOfBreakInSecs = 0.1,
-                SamplingDurationInSecs = 0.3,
+                DurationOfBreakInSecs = 0.01,
+                SamplingDurationInSecs = 0.02,
                 FailureThreshold = 0.6,
                 MinimumThroughput = 10
             };
@@ -172,8 +172,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
             var httpClientName = "GitHub";
             var circuitBreakerOptions = new CircuitBreakerOptions
             {
-                DurationOfBreakInSecs = 0.1,
-                SamplingDurationInSecs = 0.3,
+                DurationOfBreakInSecs = 0.01,
+                SamplingDurationInSecs = 0.02,
                 FailureThreshold = 0.6,
                 MinimumThroughput = 10
             };
@@ -223,8 +223,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
             var httpClientName = "GitHub";
             var circuitBreakerOptions = new CircuitBreakerOptions
             {
-                DurationOfBreakInSecs = 0.1,
-                SamplingDurationInSecs = 0.3,
+                DurationOfBreakInSecs = 0.01,
+                SamplingDurationInSecs = 0.02,
                 FailureThreshold = 0.6,
                 MinimumThroughput = 10
             };
@@ -276,8 +276,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
             var httpClientName = "GitHub";
             var circuitBreakerOptions = new CircuitBreakerOptions
             {
-                DurationOfBreakInSecs = 0.1,
-                SamplingDurationInSecs = 0.3,
+                DurationOfBreakInSecs = 0.01,
+                SamplingDurationInSecs = 0.02,
                 FailureThreshold = 0.6,
                 MinimumThroughput = 10
             };
@@ -323,8 +323,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
             AsyncPolicyWrap<HttpResponseMessage>? circuitBreakerPolicy2 = null;
             var circuitBreakerOptions = new CircuitBreakerOptions
             {
-                DurationOfBreakInSecs = 0.1,
-                SamplingDurationInSecs = 0.3,
+                DurationOfBreakInSecs = 0.01,
+                SamplingDurationInSecs = 0.02,
                 FailureThreshold = 0.6,
                 MinimumThroughput = 10
             };
@@ -389,8 +389,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
             var testHttpMessageHandler = new TestHttpMessageHandler();
             var circuitBreakerOptions = new CircuitBreakerOptions
             {
-                DurationOfBreakInSecs = 0.1,
-                SamplingDurationInSecs = 0.3,
+                DurationOfBreakInSecs = 0.01,
+                SamplingDurationInSecs = 0.02,
                 FailureThreshold = 0.6,
                 MinimumThroughput = 10
             };
