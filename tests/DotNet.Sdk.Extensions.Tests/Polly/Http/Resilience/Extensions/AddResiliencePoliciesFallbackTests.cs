@@ -2,17 +2,14 @@
 using System.Net.Http;
 using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Polly.Http.Fallback.Events;
-using DotNet.Sdk.Extensions.Polly.Http.Fallback.FallbackHttpResponseMessages;
 using DotNet.Sdk.Extensions.Polly.Http.Resilience;
 using DotNet.Sdk.Extensions.Polly.Http.Resilience.Events;
 using DotNet.Sdk.Extensions.Polly.Http.Resilience.Extensions;
 using DotNet.Sdk.Extensions.Polly.Http.Timeout;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers;
 using DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary;
-using DotNet.Sdk.Extensions.Tests.Polly.Http.Fallback.Extensions;
 using DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Auxiliary;
 using Microsoft.Extensions.DependencyInjection;
-using Polly.CircuitBreaker;
 using Polly.Timeout;
 using Shouldly;
 using Xunit;
@@ -22,13 +19,6 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
     /// <summary>
     /// Tests for the <see cref="ResiliencePoliciesHttpClientBuilderExtensions"/> class.
     /// Specifically to test that the fallback policy is added.
-    ///
-    /// There should be more tests for the conditions that the fallback policy handles. For instance, tests
-    /// for when a <see cref="BrokenCircuitException"/> happens the fallback is a <see cref="CircuitBrokenHttpResponseMessage"/>.
-    /// However, when all the policies are added together via the AddResiliencePolicies extension method,
-    /// it is quite hard to be able to test all of the fallback conditions.
-    /// Not to worry much since the AddResiliencePolicies reuses the AddFallbackPolicy which is thoroughly tested
-    /// by <see cref="AddFallbackPolicyTests"/>.
     ///
     /// Disables other policies to avoid triggering them when testing the fallback policy. 
     /// </summary>
