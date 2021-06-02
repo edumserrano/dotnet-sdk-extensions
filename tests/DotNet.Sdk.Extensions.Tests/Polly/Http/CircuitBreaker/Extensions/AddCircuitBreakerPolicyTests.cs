@@ -113,10 +113,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
         /// Tests that the <see cref="CircuitBreakerPolicyHttpClientBuilderExtensions.AddCircuitBreakerPolicy{TPolicyEventHandler}(IHttpClientBuilder,Action{CircuitBreakerOptions})"/>
         /// overload method adds a <see cref="DelegatingHandler"/> with a circuit break to the <see cref="HttpClient"/>.
         /// 
-        /// This also tests that the  <see cref="ICircuitBreakerPolicyEventHandler.OnBreakAsync"/>,
-        /// <see cref="ICircuitBreakerPolicyEventHandler.OnResetAsync"/> and
-        /// <see cref="ICircuitBreakerPolicyEventHandler.OnHalfOpenAsync"/>,
-        /// events are triggered with the correct values.
+        /// This also tests that the <see cref="ICircuitBreakerPolicyEventHandler"/> events are triggered with the correct values.
         /// </summary>
         [Fact]
         public async Task AddCircuitBreakerPolicy3()
@@ -159,10 +156,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
         /// Tests that the <see cref="CircuitBreakerPolicyHttpClientBuilderExtensions.AddCircuitBreakerPolicy{TPolicyEventHandler}(IHttpClientBuilder,string)"/>
         /// overload method adds a <see cref="DelegatingHandler"/> with a circuit break to the <see cref="HttpClient"/>.
         ///
-        /// This also tests that the  <see cref="ICircuitBreakerPolicyEventHandler.OnBreakAsync"/>,
-        /// <see cref="ICircuitBreakerPolicyEventHandler.OnResetAsync"/> and
-        /// <see cref="ICircuitBreakerPolicyEventHandler.OnHalfOpenAsync"/>,
-        /// events are triggered with the correct values.
+        /// This also tests that the <see cref="ICircuitBreakerPolicyEventHandler"/> events are triggered with the correct values.
         /// </summary>
         [Fact]
         public async Task AddCircuitBreakerPolicy4()
@@ -210,10 +204,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
         /// Tests that the <see cref="CircuitBreakerPolicyHttpClientBuilderExtensions.AddCircuitBreakerPolicy(IHttpClientBuilder,string,Func{IServiceProvider,ICircuitBreakerPolicyEventHandler})"/>
         /// overload method adds a <see cref="DelegatingHandler"/> with a circuit break to the <see cref="HttpClient"/>.
         ///
-        /// This also tests that the  <see cref="ICircuitBreakerPolicyEventHandler.OnBreakAsync"/>,
-        /// <see cref="ICircuitBreakerPolicyEventHandler.OnResetAsync"/> and
-        /// <see cref="ICircuitBreakerPolicyEventHandler.OnHalfOpenAsync"/>,
-        /// events are triggered with the correct values.
+        /// This also tests that the <see cref="ICircuitBreakerPolicyEventHandler"/> events are triggered with the correct values.
         /// </summary>
         [Fact]
         public async Task AddCircuitBreakerPolicy5()
@@ -263,10 +254,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
         /// Tests that the <see cref="CircuitBreakerPolicyHttpClientBuilderExtensions.AddCircuitBreakerPolicy(IHttpClientBuilder,Action{CircuitBreakerOptions},Func{IServiceProvider,ICircuitBreakerPolicyEventHandler})"/>
         /// overload method adds a <see cref="DelegatingHandler"/> with a circuit break to the <see cref="HttpClient"/>.
         /// 
-        /// This also tests that the  <see cref="ICircuitBreakerPolicyEventHandler.OnBreakAsync"/>,
-        /// <see cref="ICircuitBreakerPolicyEventHandler.OnResetAsync"/> and
-        /// <see cref="ICircuitBreakerPolicyEventHandler.OnHalfOpenAsync"/>,
-        /// events are triggered with the correct values.
+        /// This also tests that the <see cref="ICircuitBreakerPolicyEventHandler"/> events are triggered with the correct values.
         /// </summary>
         [Fact]
         public async Task AddCircuitBreakerPolicy6()

@@ -98,7 +98,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
         /// Tests that the <see cref="RetryPolicyHttpClientBuilderExtensions.AddRetryPolicy{TPolicyEventHandler}(IHttpClientBuilder,Action{RetryOptions})"/>
         /// overload method adds a <see cref="DelegatingHandler"/> with a retry policy to the <see cref="HttpClient"/>.
         /// 
-        /// This also tests that the <see cref="IRetryPolicyEventHandler.OnRetryAsync"/> is triggered with the correct values.
+        /// This also tests that the <see cref="IRetryPolicyEventHandler"/> events are triggered with the correct values.
         /// </summary>
         [Fact]
         public async Task AddRetryPolicy3()
@@ -139,7 +139,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
         /// Tests that the <see cref="RetryPolicyHttpClientBuilderExtensions.AddRetryPolicy{TPolicyEventHandler}(IHttpClientBuilder,string)"/>
         /// overload method adds a <see cref="DelegatingHandler"/> with a retry policy to the <see cref="HttpClient"/>.
         ///
-        /// This also tests that the <see cref="IRetryPolicyEventHandler.OnRetryAsync"/> is triggered with the correct values.
+        /// This also tests that the <see cref="IRetryPolicyEventHandler"/> events are triggered with the correct values.
         /// </summary>
         [Fact]
         public async Task AddRetryPolicy4()
@@ -184,7 +184,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
         /// Tests that the <see cref="RetryPolicyHttpClientBuilderExtensions.AddRetryPolicy(IHttpClientBuilder,string,Func{IServiceProvider,IRetryPolicyEventHandler})"/>
         /// overload method adds a <see cref="DelegatingHandler"/> with a retry policy to the <see cref="HttpClient"/>.
         ///
-        /// This also tests that the <see cref="IRetryPolicyEventHandler.OnRetryAsync"/> is triggered with the correct values.
+        /// This also tests that the <see cref="IRetryPolicyEventHandler"/> events are triggered with the correct values.
         /// </summary>
         [Fact]
         public async Task AddRetryPolicy5()
@@ -231,7 +231,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
         /// Tests that the <see cref="RetryPolicyHttpClientBuilderExtensions.AddRetryPolicy(IHttpClientBuilder,Action{RetryOptions},Func{IServiceProvider,IRetryPolicyEventHandler})"/>
         /// overload method adds a <see cref="DelegatingHandler"/> with a retry policy to the <see cref="HttpClient"/>.
         /// 
-        /// This also tests that the <see cref="IRetryPolicyEventHandler.OnRetryAsync"/> is triggered with the correct values.
+        /// This also tests that the <see cref="IRetryPolicyEventHandler"/> events are triggered with the correct values.
         /// </summary>
         [Fact]
         public async Task AddRetryPolicy6()

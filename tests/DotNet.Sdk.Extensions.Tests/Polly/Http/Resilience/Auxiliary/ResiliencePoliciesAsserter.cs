@@ -2,6 +2,7 @@
 using DotNet.Sdk.Extensions.Polly.Http.Resilience;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers;
 using DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary;
+using DotNet.Sdk.Extensions.Tests.Polly.Http.Fallback.Auxiliary;
 using DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Auxiliary;
 using DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Auxiliary;
 
@@ -44,8 +45,13 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Auxiliary
                 httpClient,
                 resilienceOptions.CircuitBreaker,
                 testHttpMessageHandler);
+            Fallback = new FallbackPolicyAsserter(
+                httpClient,
+                testHttpMessageHandler);
         }
 
+        public FallbackPolicyAsserter Fallback { get; }
+        
         public TimeoutPolicyAsserter Timeout { get; }
 
         public RetryPolicyAsserter Retry { get; }

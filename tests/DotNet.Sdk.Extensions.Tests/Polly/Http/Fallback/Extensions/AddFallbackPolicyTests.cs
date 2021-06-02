@@ -47,9 +47,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Fallback.Extensions
         /// Tests that the <see cref="FallbackPolicyHttpClientBuilderExtensions.AddFallbackPolicy{TPolicyEventHandler}"/>
         /// overload method adds a <see cref="DelegatingHandler"/> with a fallback policy to the <see cref="HttpClient"/>.
         ///
-        /// This also tests that the  <see cref="IFallbackPolicyEventHandler.OnBrokenCircuitFallbackAsync"/>,
-        /// <see cref="IFallbackPolicyEventHandler.OnTaskCancelledFallbackAsync"/> and
-        /// <see cref="IFallbackPolicyEventHandler.OnTimeoutFallbackAsync"/> events are triggered with the correct values.
+        /// This also tests that the <see cref="IFallbackPolicyEventHandler"/> events are triggered with the correct values.
         /// </summary>
         [Fact]
         public async Task AddFallbackPolicy2()
@@ -83,9 +81,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Fallback.Extensions
         /// Tests that the <see cref="FallbackPolicyHttpClientBuilderExtensions.AddFallbackPolicy(IHttpClientBuilder,Func{IServiceProvider,IFallbackPolicyEventHandler})"/>
         /// overload method adds a <see cref="DelegatingHandler"/> with a fallback policy to the <see cref="HttpClient"/>.
         ///
-        /// This also tests that the  <see cref="IFallbackPolicyEventHandler.OnBrokenCircuitFallbackAsync"/>,
-        /// <see cref="IFallbackPolicyEventHandler.OnTaskCancelledFallbackAsync"/> and
-        /// <see cref="IFallbackPolicyEventHandler.OnTimeoutFallbackAsync"/> events are triggered with the correct values.
+        /// This also tests that the <see cref="IFallbackPolicyEventHandler"/> events are triggered with the correct values.
         /// </summary>
         [Fact]
         public async Task AddFallbackPolicy3()

@@ -132,10 +132,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
         /// Tests that the <see cref="ResiliencePoliciesHttpClientBuilderExtensions.AddResiliencePolicies{TPolicyEventHandler}(IHttpClientBuilder,Action{ResilienceOptions})"/>
         /// overload method adds a <see cref="DelegatingHandler"/> with a circuit break to the <see cref="HttpClient"/>.
         /// 
-        /// This also tests that the  <see cref="IResiliencePoliciesEventHandler.OnBreakAsync"/>,
-        /// <see cref="IResiliencePoliciesEventHandler.OnResetAsync"/> and
-        /// <see cref="IResiliencePoliciesEventHandler.OnHalfOpenAsync"/>,
-        /// events are triggered with the correct values.
+        /// This also tests that the  <see cref="IResiliencePoliciesEventHandler"/> events are triggered with the correct values.
         /// </summary>
         [Fact]
         public async Task AddResiliencePoliciesAddsCircuitBreakerPolicy3()
@@ -187,10 +184,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
         /// Tests that the <see cref="ResiliencePoliciesHttpClientBuilderExtensions.AddResiliencePolicies{TPolicyEventHandler}(IHttpClientBuilder,string)"/>
         /// overload method adds a <see cref="DelegatingHandler"/> with a circuit break to the <see cref="HttpClient"/>.
         ///
-        /// This also tests that the  <see cref="IResiliencePoliciesEventHandler.OnBreakAsync"/>,
-        /// <see cref="IResiliencePoliciesEventHandler.OnResetAsync"/> and
-        /// <see cref="IResiliencePoliciesEventHandler.OnHalfOpenAsync"/>,
-        /// events are triggered with the correct values.
+        /// This also tests that the  <see cref="IResiliencePoliciesEventHandler"/> events are triggered with the correct values.
         /// </summary>
         [Fact]
         public async Task AddResiliencePoliciesAddsCircuitBreakerPolicy4()
@@ -247,10 +241,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
         /// Tests that the <see cref="ResiliencePoliciesHttpClientBuilderExtensions.AddResiliencePolicies(IHttpClientBuilder,string,Func{IServiceProvider,IResiliencePoliciesEventHandler})"/>
         /// overload method adds a <see cref="DelegatingHandler"/> with a circuit break to the <see cref="HttpClient"/>.
         ///
-        /// This also tests that the  <see cref="IResiliencePoliciesEventHandler.OnBreakAsync"/>,
-        /// <see cref="IResiliencePoliciesEventHandler.OnResetAsync"/> and
-        /// <see cref="IResiliencePoliciesEventHandler.OnHalfOpenAsync"/>,
-        /// events are triggered with the correct values.
+        /// This also tests that the  <see cref="IResiliencePoliciesEventHandler"/> events are triggered with the correct values.
         /// </summary>
         [Fact]
         public async Task AddResiliencePoliciesAddsCircuitBreakerPolicy5()
@@ -309,10 +300,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
         /// Tests that the <see cref="ResiliencePoliciesHttpClientBuilderExtensions.AddResiliencePolicies(IHttpClientBuilder,Action{ResilienceOptions},Func{IServiceProvider,IResiliencePoliciesEventHandler})"/>
         /// overload method adds a <see cref="DelegatingHandler"/> with a circuit break to the <see cref="HttpClient"/>.
         /// 
-        /// This also tests that the  <see cref="IResiliencePoliciesEventHandler.OnBreakAsync"/>,
-        /// <see cref="IResiliencePoliciesEventHandler.OnResetAsync"/> and
-        /// <see cref="IResiliencePoliciesEventHandler.OnHalfOpenAsync"/>,
-        /// events are triggered with the correct values.
+        /// This also tests that the  <see cref="IResiliencePoliciesEventHandler"/> events are triggered with the correct values.
         /// </summary>
         [Fact]
         public async Task AddResiliencePoliciesAddsCircuitBreakerPolicy6()
