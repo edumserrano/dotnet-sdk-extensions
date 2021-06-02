@@ -216,7 +216,6 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
             {
                 TimeoutInSecs = 0.05
             };
-            var optionsName = "GitHubOptions";
             var services = new ServiceCollection();
             services
                 .AddHttpClient(httpClientName)
