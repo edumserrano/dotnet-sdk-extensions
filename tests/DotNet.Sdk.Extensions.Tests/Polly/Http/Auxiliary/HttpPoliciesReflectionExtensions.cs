@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using Microsoft.Extensions.Http;
@@ -19,10 +20,11 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary
         {
             return delegatingHandlers
                 .OfType<PolicyHttpMessageHandler>()
-                .Select(x => x.GetPolicy<IsPolicy>());
+                .Select(x => x.GetPolicy<IsPolicy>())
+                .Where(x=> x is not null)!;
         }
         
-        public static T GetPolicy<T>(this PolicyHttpMessageHandler policyHttpMessageHandler)
+        public static T? GetPolicy<T>(this PolicyHttpMessageHandler policyHttpMessageHandler)
         {
             return policyHttpMessageHandler.GetInstanceField<T>("_policy");
         }
