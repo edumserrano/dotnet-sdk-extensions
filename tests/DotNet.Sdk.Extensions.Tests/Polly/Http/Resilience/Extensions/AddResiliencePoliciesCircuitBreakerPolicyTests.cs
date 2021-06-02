@@ -244,11 +244,132 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
         }
 
         /// <summary>
+        /// Tests that the <see cref="ResiliencePoliciesHttpClientBuilderExtensions.AddResiliencePolicies(IHttpClientBuilder,string,Func{IServiceProvider,IResiliencePoliciesEventHandler})"/>
+        /// overload method adds a <see cref="DelegatingHandler"/> with a circuit break to the <see cref="HttpClient"/>.
+        ///
+        /// This also tests that the  <see cref="IResiliencePoliciesEventHandler.OnBreakAsync"/>,
+        /// <see cref="IResiliencePoliciesEventHandler.OnResetAsync"/> and
+        /// <see cref="IResiliencePoliciesEventHandler.OnHalfOpenAsync"/>,
+        /// events are triggered with the correct values.
+        /// </summary>
+        [Fact]
+        public async Task AddResiliencePoliciesAddsCircuitBreakerPolicy5()
+        {
+            var resiliencePoliciesEventHandlerCalls = new ResiliencePoliciesEventHandlerCalls();
+            var testHttpMessageHandler = new TestHttpMessageHandler();
+            var httpClientName = "GitHub";
+            var resilienceOptions = new ResilienceOptions
+            {
+                EnableFallbackPolicy = false,
+                EnableRetryPolicy = false,
+                EnableTimeoutPolicy = false,
+                CircuitBreaker = new CircuitBreakerOptions
+                {
+                    DurationOfBreakInSecs = 0.1,
+                    SamplingDurationInSecs = 0.3,
+                    FailureThreshold = 0.6,
+                    MinimumThroughput = 10
+                }
+            };
+            var optionsName = "GitHubOptions";
+
+            var services = new ServiceCollection();
+            services
+                .AddHttpClientResilienceOptions(optionsName)
+                .Configure(options =>
+                {
+                    options.EnableFallbackPolicy = resilienceOptions.EnableFallbackPolicy;
+                    options.EnableRetryPolicy = resilienceOptions.EnableRetryPolicy;
+                    options.EnableTimeoutPolicy = resilienceOptions.EnableTimeoutPolicy;
+                    options.CircuitBreaker.DurationOfBreakInSecs = resilienceOptions.CircuitBreaker.DurationOfBreakInSecs;
+                    options.CircuitBreaker.FailureThreshold = resilienceOptions.CircuitBreaker.FailureThreshold;
+                    options.CircuitBreaker.SamplingDurationInSecs = resilienceOptions.CircuitBreaker.SamplingDurationInSecs;
+                    options.CircuitBreaker.MinimumThroughput = resilienceOptions.CircuitBreaker.MinimumThroughput;
+                });
+            services
+                .AddHttpClient(httpClientName)
+                .ConfigureHttpClient(client => client.BaseAddress = new Uri("https://github.com"))
+                .AddResiliencePolicies(optionsName, provider =>
+                {
+                    return new TestResiliencePoliciesEventHandler(resiliencePoliciesEventHandlerCalls);
+                })
+                .ConfigurePrimaryHttpMessageHandler(() => testHttpMessageHandler);
+
+            await using var serviceProvider = services.BuildServiceProvider();
+            var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
+            var resiliencePoliciesAsserter = httpClient.ResiliencePoliciesAsserter(resilienceOptions, testHttpMessageHandler);
+            await resiliencePoliciesAsserter.CircuitBreaker.HttpClientShouldContainCircuitBreakerPolicyAsync();
+            resiliencePoliciesAsserter.CircuitBreaker.EventHandlerShouldReceiveExpectedEvents(
+                count: 15, // the circuitBreakerAsserter.HttpClientShouldContainCircuitBreakerPolicyAsync triggers the circuit breaker 15 times
+                httpClientName: httpClientName,
+                eventHandlerCalls: resiliencePoliciesEventHandlerCalls.CircuitBreaker);
+        }
+
+        /// <summary>
+        /// Tests that the <see cref="ResiliencePoliciesHttpClientBuilderExtensions.AddResiliencePolicies(IHttpClientBuilder,Action{ResilienceOptions},Func{IServiceProvider,IResiliencePoliciesEventHandler})"/>
+        /// overload method adds a <see cref="DelegatingHandler"/> with a circuit break to the <see cref="HttpClient"/>.
+        /// 
+        /// This also tests that the  <see cref="IResiliencePoliciesEventHandler.OnBreakAsync"/>,
+        /// <see cref="IResiliencePoliciesEventHandler.OnResetAsync"/> and
+        /// <see cref="IResiliencePoliciesEventHandler.OnHalfOpenAsync"/>,
+        /// events are triggered with the correct values.
+        /// </summary>
+        [Fact]
+        public async Task AddResiliencePoliciesAddsCircuitBreakerPolicy6()
+        {
+            var resiliencePoliciesEventHandlerCalls = new ResiliencePoliciesEventHandlerCalls();
+            var testHttpMessageHandler = new TestHttpMessageHandler();
+            var httpClientName = "GitHub";
+            var resilienceOptions = new ResilienceOptions
+            {
+                EnableFallbackPolicy = false,
+                EnableRetryPolicy = false,
+                EnableTimeoutPolicy = false,
+                CircuitBreaker = new CircuitBreakerOptions
+                {
+                    DurationOfBreakInSecs = 0.1,
+                    SamplingDurationInSecs = 0.3,
+                    FailureThreshold = 0.6,
+                    MinimumThroughput = 10
+                }
+            };
+            var services = new ServiceCollection();
+            services
+                .AddHttpClient(httpClientName)
+                .ConfigureHttpClient(client => client.BaseAddress = new Uri("https://github.com"))
+                .AddResiliencePolicies(
+                    options =>
+                    {
+                        options.EnableFallbackPolicy = resilienceOptions.EnableFallbackPolicy;
+                        options.EnableRetryPolicy = resilienceOptions.EnableRetryPolicy;
+                        options.EnableTimeoutPolicy = resilienceOptions.EnableTimeoutPolicy;
+                        options.CircuitBreaker.DurationOfBreakInSecs = resilienceOptions.CircuitBreaker.DurationOfBreakInSecs;
+                        options.CircuitBreaker.FailureThreshold = resilienceOptions.CircuitBreaker.FailureThreshold;
+                        options.CircuitBreaker.SamplingDurationInSecs = resilienceOptions.CircuitBreaker.SamplingDurationInSecs;
+                        options.CircuitBreaker.MinimumThroughput = resilienceOptions.CircuitBreaker.MinimumThroughput;
+                    },
+                    eventHandlerFactory: provider =>
+                    {
+                        return new TestResiliencePoliciesEventHandler(resiliencePoliciesEventHandlerCalls);
+                    })
+                .ConfigurePrimaryHttpMessageHandler(() => testHttpMessageHandler);
+
+            await using var serviceProvider = services.BuildServiceProvider();
+            var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
+            var resiliencePoliciesAsserter = httpClient.ResiliencePoliciesAsserter(resilienceOptions, testHttpMessageHandler);
+            await resiliencePoliciesAsserter.CircuitBreaker.HttpClientShouldContainCircuitBreakerPolicyAsync();
+            resiliencePoliciesAsserter.CircuitBreaker.EventHandlerShouldReceiveExpectedEvents(
+                count: 15, // the circuitBreakerAsserter.HttpClientShouldContainCircuitBreakerPolicyAsync triggers the circuit breaker 15 times
+                httpClientName: httpClientName,
+                eventHandlerCalls: resiliencePoliciesEventHandlerCalls.CircuitBreaker);
+        }
+
+        /// <summary>
         /// Tests that the AddResiliencePolicies method does not add a circuit breaker policy if
         /// the <see cref="ResilienceOptions.EnableCircuitBreakerPolicy"/> option is false.
         /// </summary>
         [Fact]
-        public async Task AddResiliencePoliciesAddsCircuitBreakerPolicy5()
+        public async Task AddResiliencePoliciesAddsCircuitBreakerPolicy7()
         {
             var testHttpMessageHandler = new TestHttpMessageHandler();
             var httpClientName = "GitHub";

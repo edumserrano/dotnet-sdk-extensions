@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using DotNet.Sdk.Extensions.Polly.Http.Resilience;
+using DotNet.Sdk.Extensions.Polly.Http.Resilience.Events;
 using DotNet.Sdk.Extensions.Polly.Http.Resilience.Extensions;
 using DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary;
 using DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Auxiliary;
@@ -208,6 +209,122 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             services
                 .AddHttpClient("GitHub")
                 .AddResiliencePolicies<TestResiliencePoliciesEventHandler>(optionsName)
+                .ConfigureHttpMessageHandlerBuilder(httpMessageHandlerBuilder =>
+                {
+                    policyHttpMessageHandlers = httpMessageHandlerBuilder
+                        .AdditionalHandlers
+                        .OfType<PolicyHttpMessageHandler>()
+                        .ToList();
+                });
+
+            using var serviceProvider = services.BuildServiceProvider();
+            serviceProvider.InstantiateNamedHttpClient("GitHub");
+
+            policyHttpMessageHandlers.Count.ShouldBe(4);
+            // fallback policy
+            policyHttpMessageHandlers[0]
+                .GetPolicy<AsyncPolicyWrap<HttpResponseMessage>>()
+                .ShouldNotBeNull();
+            // retry policy
+            policyHttpMessageHandlers[1]
+                .GetPolicy<AsyncRetryPolicy<HttpResponseMessage>>()
+                .ShouldNotBeNull();
+            // circuit breaker policy 
+            policyHttpMessageHandlers[2]
+                .GetPolicy<AsyncPolicyWrap<HttpResponseMessage>>()
+                .ShouldNotBeNull();
+            // timeout policy
+            policyHttpMessageHandlers[3]
+                .GetPolicy<AsyncTimeoutPolicy<HttpResponseMessage>>()
+                .ShouldNotBeNull();
+        }
+
+        /// <summary>
+        /// Tests that the <see cref="ResiliencePoliciesHttpClientBuilderExtensions.AddResiliencePolicies(IHttpClientBuilder,string,Func{IServiceProvider,IResiliencePoliciesEventHandler})"/>
+        /// overload method adds all the policy handlers in the expected order.
+        /// </summary>
+        [Fact]
+        public void AddResiliencePoliciesAddsPoliciesInOrder5()
+        {
+            var resiliencePoliciesEventHandlerCalls = new ResiliencePoliciesEventHandlerCalls();
+            var policyHttpMessageHandlers = new List<PolicyHttpMessageHandler>();
+            var optionsName = "GitHubOptions";
+            var services = new ServiceCollection();
+            services
+                .AddHttpClientResilienceOptions(optionsName)
+                .Configure(options =>
+                {
+                    options.Timeout.TimeoutInSecs = 1;
+                    options.Retry.MedianFirstRetryDelayInSecs = 1;
+                    options.Retry.RetryCount = 3;
+                    options.CircuitBreaker.DurationOfBreakInSecs = 1;
+                    options.CircuitBreaker.FailureThreshold = 0.5;
+                    options.CircuitBreaker.SamplingDurationInSecs = 60;
+                    options.CircuitBreaker.MinimumThroughput = 4;
+                });
+            services
+                .AddHttpClient("GitHub")
+                .AddResiliencePolicies(optionsName, provider =>
+                {
+                    return new TestResiliencePoliciesEventHandler(resiliencePoliciesEventHandlerCalls);
+                })
+                .ConfigureHttpMessageHandlerBuilder(httpMessageHandlerBuilder =>
+                {
+                    policyHttpMessageHandlers = httpMessageHandlerBuilder
+                        .AdditionalHandlers
+                        .OfType<PolicyHttpMessageHandler>()
+                        .ToList();
+                });
+
+            using var serviceProvider = services.BuildServiceProvider();
+            serviceProvider.InstantiateNamedHttpClient("GitHub");
+
+            policyHttpMessageHandlers.Count.ShouldBe(4);
+            // fallback policy
+            policyHttpMessageHandlers[0]
+                .GetPolicy<AsyncPolicyWrap<HttpResponseMessage>>()
+                .ShouldNotBeNull();
+            // retry policy
+            policyHttpMessageHandlers[1]
+                .GetPolicy<AsyncRetryPolicy<HttpResponseMessage>>()
+                .ShouldNotBeNull();
+            // circuit breaker policy 
+            policyHttpMessageHandlers[2]
+                .GetPolicy<AsyncPolicyWrap<HttpResponseMessage>>()
+                .ShouldNotBeNull();
+            // timeout policy
+            policyHttpMessageHandlers[3]
+                .GetPolicy<AsyncTimeoutPolicy<HttpResponseMessage>>()
+                .ShouldNotBeNull();
+        }
+
+        /// <summary>
+        /// Tests that the <see cref="ResiliencePoliciesHttpClientBuilderExtensions.AddResiliencePolicies(IHttpClientBuilder,Action{ResilienceOptions},Func{IServiceProvider,IResiliencePoliciesEventHandler})"/>
+        /// overload method adds all the policy handlers in the expected order.
+        /// </summary>
+        [Fact]
+        public void AddResiliencePoliciesAddsPoliciesInOrder6()
+        {
+            var resiliencePoliciesEventHandlerCalls = new ResiliencePoliciesEventHandlerCalls();
+            var policyHttpMessageHandlers = new List<PolicyHttpMessageHandler>();
+            var services = new ServiceCollection();
+            services
+                .AddHttpClient("GitHub")
+                .AddResiliencePolicies(
+                    configureOptions: options =>
+                    {
+                        options.Timeout.TimeoutInSecs = 1;
+                        options.Retry.MedianFirstRetryDelayInSecs = 1;
+                        options.Retry.RetryCount = 3;
+                        options.CircuitBreaker.DurationOfBreakInSecs = 1;
+                        options.CircuitBreaker.FailureThreshold = 0.5;
+                        options.CircuitBreaker.SamplingDurationInSecs = 60;
+                        options.CircuitBreaker.MinimumThroughput = 4;
+                    },
+                    eventHandlerFactory: provider =>
+                    {
+                        return new TestResiliencePoliciesEventHandler(resiliencePoliciesEventHandlerCalls);
+                    })
                 .ConfigureHttpMessageHandlerBuilder(httpMessageHandlerBuilder =>
                 {
                     policyHttpMessageHandlers = httpMessageHandlerBuilder

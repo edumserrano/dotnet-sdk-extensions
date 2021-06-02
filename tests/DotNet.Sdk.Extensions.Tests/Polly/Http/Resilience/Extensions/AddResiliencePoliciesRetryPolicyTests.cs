@@ -67,7 +67,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 .Retry
                 .HttpClientShouldContainRetryPolicyAsync(numberOfCallsDelegatingHandler);
         }
-        
+
         /// <summary>
         /// Tests that the <see cref="ResiliencePoliciesHttpClientBuilderExtensions.AddResiliencePolicies{TPolicyEventHandler}(IHttpClientBuilder,Action{ResilienceOptions})"/>
         /// overload method adds a <see cref="DelegatingHandler"/> with a retry policy to the <see cref="HttpClient"/>.
@@ -173,11 +173,121 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
         }
 
         /// <summary>
+        /// Tests that the <see cref="ResiliencePoliciesHttpClientBuilderExtensions.AddResiliencePolicies(IHttpClientBuilder,string,Func{IServiceProvider,IResiliencePoliciesEventHandler})"/>
+        /// overload method adds a <see cref="DelegatingHandler"/> with a retry policy to the <see cref="HttpClient"/>.
+        ///
+        /// This also tests that the <see cref="IResiliencePoliciesEventHandler.OnRetryAsync"/> is triggered with the correct values.
+        /// </summary>
+        [Fact]
+        public async Task AddResiliencePoliciesAddsRetryPolicy5()
+        {
+            var resiliencePoliciesEventHandlerCalls = new ResiliencePoliciesEventHandlerCalls();
+            var numberOfCallsDelegatingHandler = new NumberOfCallsDelegatingHandler();
+            var testHttpMessageHandler = new TestHttpMessageHandler();
+            var httpClientName = "GitHub";
+            var resilienceOptions = new ResilienceOptions
+            {
+                EnableFallbackPolicy = false,
+                EnableCircuitBreakerPolicy = false,
+                EnableTimeoutPolicy = false,
+                Retry = new RetryOptions
+                {
+                    RetryCount = 2,
+                    MedianFirstRetryDelayInSecs = 0.01
+                }
+            };
+            var optionsName = "GitHubOptions";
+            var services = new ServiceCollection();
+            services
+                .AddHttpClientResilienceOptions(optionsName)
+                .Configure(options =>
+                {
+                    options.EnableFallbackPolicy = resilienceOptions.EnableFallbackPolicy;
+                    options.EnableCircuitBreakerPolicy = resilienceOptions.EnableCircuitBreakerPolicy;
+                    options.EnableTimeoutPolicy = resilienceOptions.EnableTimeoutPolicy;
+                    options.Retry.MedianFirstRetryDelayInSecs = resilienceOptions.Retry.MedianFirstRetryDelayInSecs;
+                    options.Retry.RetryCount = resilienceOptions.Retry.RetryCount;
+                });
+            services
+                .AddHttpClient(httpClientName)
+                .ConfigureHttpClient(client => client.BaseAddress = new Uri("https://github.com"))
+                .AddResiliencePolicies(optionsName, provider =>
+                {
+                    return new TestResiliencePoliciesEventHandler(resiliencePoliciesEventHandlerCalls);
+                })
+                .AddHttpMessageHandler(() => numberOfCallsDelegatingHandler)
+                .ConfigurePrimaryHttpMessageHandler(() => testHttpMessageHandler);
+
+            await using var serviceProvider = services.BuildServiceProvider();
+            var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
+            var resiliencePoliciesAsserter = httpClient.ResiliencePoliciesAsserter(resilienceOptions, testHttpMessageHandler);
+            await resiliencePoliciesAsserter.Retry.HttpClientShouldContainRetryPolicyAsync(numberOfCallsDelegatingHandler);
+            resiliencePoliciesAsserter.Retry.EventHandlerShouldReceiveExpectedEvents(
+                count: 15 * resilienceOptions.Retry.RetryCount, // the resiliencePoliciesAsserter.HttpClientShouldContainRetryPolicyAsync triggers the retry policy 15 times
+                httpClientName: httpClientName,
+                eventHandlerCalls: resiliencePoliciesEventHandlerCalls.Retry);
+        }
+
+        /// <summary>
+        /// Tests that the <see cref="ResiliencePoliciesHttpClientBuilderExtensions.AddResiliencePolicies(IHttpClientBuilder,Action{ResilienceOptions},Func{IServiceProvider,IResiliencePoliciesEventHandler})"/>
+        /// overload method adds a <see cref="DelegatingHandler"/> with a retry policy to the <see cref="HttpClient"/>.
+        /// 
+        /// This also tests that the <see cref="IResiliencePoliciesEventHandler.OnRetryAsync"/> is triggered with the correct values.
+        /// </summary>
+        [Fact]
+        public async Task AddResiliencePoliciesAddsRetryPolicy6()
+        {
+            var resiliencePoliciesEventHandlerCalls = new ResiliencePoliciesEventHandlerCalls();
+            var numberOfCallsDelegatingHandler = new NumberOfCallsDelegatingHandler();
+            var testHttpMessageHandler = new TestHttpMessageHandler();
+            var httpClientName = "GitHub";
+            var resilienceOptions = new ResilienceOptions
+            {
+                EnableFallbackPolicy = false,
+                EnableCircuitBreakerPolicy = false,
+                EnableTimeoutPolicy = false,
+                Retry = new RetryOptions
+                {
+                    RetryCount = 2,
+                    MedianFirstRetryDelayInSecs = 0.01
+                }
+            };
+            var services = new ServiceCollection();
+            services
+                .AddHttpClient(httpClientName)
+                .ConfigureHttpClient(client => client.BaseAddress = new Uri("https://github.com"))
+                .AddResiliencePolicies(
+                    configureOptions: options =>
+                    {
+                        options.EnableFallbackPolicy = resilienceOptions.EnableFallbackPolicy;
+                        options.EnableCircuitBreakerPolicy = resilienceOptions.EnableCircuitBreakerPolicy;
+                        options.EnableTimeoutPolicy = resilienceOptions.EnableTimeoutPolicy;
+                        options.Retry.MedianFirstRetryDelayInSecs = resilienceOptions.Retry.MedianFirstRetryDelayInSecs;
+                        options.Retry.RetryCount = resilienceOptions.Retry.RetryCount;
+                    },
+                    eventHandlerFactory: provider =>
+                    {
+                        return new TestResiliencePoliciesEventHandler(resiliencePoliciesEventHandlerCalls);
+                    })
+                .AddHttpMessageHandler(() => numberOfCallsDelegatingHandler)
+                .ConfigurePrimaryHttpMessageHandler(() => testHttpMessageHandler);
+
+            await using var serviceProvider = services.BuildServiceProvider();
+            var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
+            var resiliencePoliciesAsserter = httpClient.ResiliencePoliciesAsserter(resilienceOptions, testHttpMessageHandler);
+            await resiliencePoliciesAsserter.Retry.HttpClientShouldContainRetryPolicyAsync(numberOfCallsDelegatingHandler);
+            resiliencePoliciesAsserter.Retry.EventHandlerShouldReceiveExpectedEvents(
+                count: 15 * resilienceOptions.Retry.RetryCount, // the resiliencePoliciesAsserter.HttpClientShouldContainRetryPolicyAsync triggers the retry policy 15 times
+                httpClientName: httpClientName,
+                eventHandlerCalls: resiliencePoliciesEventHandlerCalls.Retry);
+        }
+
+        /// <summary>
         /// Tests that the AddResiliencePolicies method does not add a retry policy if
         /// the <see cref="ResilienceOptions.EnableRetryPolicy"/> option is false.
         /// </summary>
         [Fact]
-        public async Task AddResiliencePoliciesAddsRetryPolicy5()
+        public async Task AddResiliencePoliciesAddsRetryPolicy7()
         {
             var numberOfCallsDelegatingHandler = new NumberOfCallsDelegatingHandler();
             var testHttpMessageHandler = new TestHttpMessageHandler();

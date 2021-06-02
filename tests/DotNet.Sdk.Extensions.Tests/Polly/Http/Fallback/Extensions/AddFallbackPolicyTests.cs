@@ -21,7 +21,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Fallback.Extensions
     public class AddFallbackPolicyTests
     {
         /// <summary>
-        /// Tests that the <see cref="FallbackPolicyHttpClientBuilderExtensions.AddFallbackPolicy"/>
+        /// Tests that the <see cref="FallbackPolicyHttpClientBuilderExtensions.AddFallbackPolicy(Microsoft.Extensions.DependencyInjection.IHttpClientBuilder)"/>
         /// overload method adds a <see cref="DelegatingHandler"/> with a fallback policy to the <see cref="HttpClient"/>.
         /// </summary>
         [Fact]
@@ -72,8 +72,46 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Fallback.Extensions
             fallbackPolicyAsserter.EventHandlerShouldReceiveExpectedEvents(
                 onHttpRequestExceptionCount: 1,
                 onTimeoutCallsCount: 1,
-                onBrokenCircuitCallsCount:1,
-                onIsolatedCircuitCallsCount:1,
+                onBrokenCircuitCallsCount: 1,
+                onIsolatedCircuitCallsCount: 1,
+                onTaskCancelledCallsCount: 2,
+                httpClientName: httpClientName,
+                eventHandlerCalls: fallbackPolicyEventHandlerCalls);
+        }
+
+        /// <summary>
+        /// Tests that the <see cref="FallbackPolicyHttpClientBuilderExtensions.AddFallbackPolicy(IHttpClientBuilder,Func{IServiceProvider,IFallbackPolicyEventHandler})"/>
+        /// overload method adds a <see cref="DelegatingHandler"/> with a fallback policy to the <see cref="HttpClient"/>.
+        ///
+        /// This also tests that the  <see cref="IFallbackPolicyEventHandler.OnBrokenCircuitFallbackAsync"/>,
+        /// <see cref="IFallbackPolicyEventHandler.OnTaskCancelledFallbackAsync"/> and
+        /// <see cref="IFallbackPolicyEventHandler.OnTimeoutFallbackAsync"/> events are triggered with the correct values.
+        /// </summary>
+        [Fact]
+        public async Task AddFallbackPolicy3()
+        {
+            var fallbackPolicyEventHandlerCalls = new FallbackPolicyEventHandlerCalls();
+            var testHttpMessageHandler = new TestHttpMessageHandler();
+            var httpClientName = "GitHub";
+            var services = new ServiceCollection();
+            services
+                .AddHttpClient(httpClientName)
+                .ConfigureHttpClient(client => client.BaseAddress = new Uri("https://github.com"))
+                .AddFallbackPolicy(provider =>
+                {
+                    return new TestFallbackPolicyEventHandler(fallbackPolicyEventHandlerCalls);
+                })
+                .ConfigurePrimaryHttpMessageHandler(() => testHttpMessageHandler);
+
+            await using var serviceProvider = services.BuildServiceProvider();
+            var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
+            var fallbackPolicyAsserter = httpClient.FallbackPolicyAsserter(testHttpMessageHandler);
+            await fallbackPolicyAsserter.HttpClientShouldContainFallbackPolicyAsync();
+            fallbackPolicyAsserter.EventHandlerShouldReceiveExpectedEvents(
+                onHttpRequestExceptionCount: 1,
+                onTimeoutCallsCount: 1,
+                onBrokenCircuitCallsCount: 1,
+                onIsolatedCircuitCallsCount: 1,
                 onTaskCancelledCallsCount: 2,
                 httpClientName: httpClientName,
                 eventHandlerCalls: fallbackPolicyEventHandlerCalls);

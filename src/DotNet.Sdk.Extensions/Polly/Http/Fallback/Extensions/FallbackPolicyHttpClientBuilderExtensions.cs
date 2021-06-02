@@ -1,5 +1,7 @@
-﻿using DotNet.Sdk.Extensions.Polly.Http.Fallback.Events;
+﻿using System;
+using DotNet.Sdk.Extensions.Polly.Http.Fallback.Events;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Http;
 
 namespace DotNet.Sdk.Extensions.Polly.Http.Fallback.Extensions
@@ -8,24 +10,26 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Fallback.Extensions
     {
         public static IHttpClientBuilder AddFallbackPolicy(this IHttpClientBuilder httpClientBuilder)
         {
-            return httpClientBuilder.AddFallbackPolicyCore<DefaultFallbackPolicyEventHandler>();
+            Func<IServiceProvider, IFallbackPolicyEventHandler> eventHandlerFactory = _ => new DefaultFallbackPolicyEventHandler();
+            return httpClientBuilder.AddFallbackPolicy(eventHandlerFactory);
         }
-        
+
         public static IHttpClientBuilder AddFallbackPolicy<TPolicyEventHandler>(this IHttpClientBuilder httpClientBuilder)
             where TPolicyEventHandler : class, IFallbackPolicyEventHandler
         {
-            return httpClientBuilder.AddFallbackPolicyCore<TPolicyEventHandler>();
+            httpClientBuilder.Services.TryAddSingleton<TPolicyEventHandler>();
+            Func<IServiceProvider, IFallbackPolicyEventHandler> eventHandlerFactory = provider => provider.GetRequiredService<TPolicyEventHandler>();
+            return httpClientBuilder.AddFallbackPolicy(eventHandlerFactory);
         }
-
-        private static IHttpClientBuilder AddFallbackPolicyCore<TPolicyEventHandler>(this IHttpClientBuilder httpClientBuilder)
-            where TPolicyEventHandler : class, IFallbackPolicyEventHandler
+        
+        public static IHttpClientBuilder AddFallbackPolicy(
+            this IHttpClientBuilder httpClientBuilder,
+            Func<IServiceProvider, IFallbackPolicyEventHandler> eventHandlerFactory)
         {
             var httpClientName = httpClientBuilder.Name;
-            httpClientBuilder.Services.AddSingleton<TPolicyEventHandler>();
-
             return httpClientBuilder.AddHttpMessageHandler(provider =>
             {
-                var policyEventHandler = provider.GetRequiredService<TPolicyEventHandler>();
+                var policyEventHandler = eventHandlerFactory(provider);
                 var fallbackPolicy = FallbackPolicyFactory.CreateFallbackPolicy(httpClientName, policyEventHandler);
                 return new PolicyHttpMessageHandler(fallbackPolicy);
             });

@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Net.Http;
 using DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker;
-using DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker.Events;
 using DotNet.Sdk.Extensions.Polly.Http.Fallback;
-using DotNet.Sdk.Extensions.Polly.Http.Fallback.Events;
 using DotNet.Sdk.Extensions.Polly.Http.Resilience.Events;
 using DotNet.Sdk.Extensions.Polly.Http.Retry;
-using DotNet.Sdk.Extensions.Polly.Http.Retry.Events;
 using DotNet.Sdk.Extensions.Polly.Http.Timeout;
-using DotNet.Sdk.Extensions.Polly.Http.Timeout.Events;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Http;
 using Microsoft.Extensions.Options;
 
@@ -17,32 +14,41 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Resilience.Extensions
 {
     public static class ResiliencePoliciesHttpClientBuilderExtensions
     {
+        private class BlankHttpMessageHandler : DelegatingHandler { }
+
         public static IHttpClientBuilder AddResiliencePolicies(
             this IHttpClientBuilder httpClientBuilder,
             string optionsName)
         {
-            return httpClientBuilder.AddResiliencePoliciesCore<DefaultResiliencePoliciesEventHandler>(
+            Func<IServiceProvider, IResiliencePoliciesEventHandler> eventHandlerFactory = _ => new DefaultResiliencePoliciesEventHandler();
+            return httpClientBuilder.AddResiliencePoliciesCore(
                 optionsName: optionsName,
-                configureOptions: null);
+                configureOptions: null,
+                eventHandlerFactory: eventHandlerFactory);
         }
 
         public static IHttpClientBuilder AddResiliencePolicies(
             this IHttpClientBuilder httpClientBuilder,
             Action<ResilienceOptions> configureOptions)
         {
-            return httpClientBuilder.AddResiliencePoliciesCore<DefaultResiliencePoliciesEventHandler>(
+            Func<IServiceProvider, IResiliencePoliciesEventHandler> eventHandlerFactory = _ => new DefaultResiliencePoliciesEventHandler();
+            return httpClientBuilder.AddResiliencePoliciesCore(
                 optionsName: null,
-                configureOptions: configureOptions);
+                configureOptions: configureOptions,
+                eventHandlerFactory: eventHandlerFactory);
         }
-        
+
         public static IHttpClientBuilder AddResiliencePolicies<TPolicyEventHandler>(
             this IHttpClientBuilder httpClientBuilder,
             string optionsName)
             where TPolicyEventHandler : class, IResiliencePoliciesEventHandler
         {
-            return httpClientBuilder.AddResiliencePoliciesCore<TPolicyEventHandler>(
+            httpClientBuilder.Services.TryAddSingleton<TPolicyEventHandler>();
+            Func<IServiceProvider, IResiliencePoliciesEventHandler> eventHandlerFactory = provider => provider.GetRequiredService<TPolicyEventHandler>();
+            return httpClientBuilder.AddResiliencePoliciesCore(
                 optionsName: optionsName,
-                configureOptions: null);
+                configureOptions: null,
+                eventHandlerFactory: eventHandlerFactory);
         }
 
         public static IHttpClientBuilder AddResiliencePolicies<TPolicyEventHandler>(
@@ -50,22 +56,46 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Resilience.Extensions
             Action<ResilienceOptions> configureOptions)
             where TPolicyEventHandler : class, IResiliencePoliciesEventHandler
         {
-            return httpClientBuilder.AddResiliencePoliciesCore<TPolicyEventHandler>(
+            httpClientBuilder.Services.TryAddSingleton<TPolicyEventHandler>();
+            Func<IServiceProvider, IResiliencePoliciesEventHandler> eventHandlerFactory = provider => provider.GetRequiredService<TPolicyEventHandler>();
+            return httpClientBuilder.AddResiliencePoliciesCore(
                 optionsName: null,
-                configureOptions: configureOptions);
+                configureOptions: configureOptions,
+                eventHandlerFactory: eventHandlerFactory);
         }
-        
-        private static IHttpClientBuilder AddResiliencePoliciesCore<TPolicyEventHandler>(
+
+        public static IHttpClientBuilder AddResiliencePolicies(
             this IHttpClientBuilder httpClientBuilder,
-            string? optionsName = null,
-            Action<ResilienceOptions>? configureOptions = null)
-            where TPolicyEventHandler : class, IResiliencePoliciesEventHandler
+            string optionsName,
+            Func<IServiceProvider, IResiliencePoliciesEventHandler> eventHandlerFactory)
+        {
+            return httpClientBuilder.AddResiliencePoliciesCore(
+                optionsName: optionsName,
+                configureOptions: null,
+                eventHandlerFactory: eventHandlerFactory);
+        }
+
+        public static IHttpClientBuilder AddResiliencePolicies(
+            this IHttpClientBuilder httpClientBuilder,
+            Action<ResilienceOptions> configureOptions,
+            Func<IServiceProvider, IResiliencePoliciesEventHandler> eventHandlerFactory)
+        {
+            return httpClientBuilder.AddResiliencePoliciesCore(
+                optionsName: null,
+                configureOptions: configureOptions,
+                eventHandlerFactory: eventHandlerFactory);
+        }
+
+        private static IHttpClientBuilder AddResiliencePoliciesCore(
+            this IHttpClientBuilder httpClientBuilder,
+            string? optionsName,
+            Action<ResilienceOptions>? configureOptions,
+            Func<IServiceProvider, IResiliencePoliciesEventHandler> eventHandlerFactory)
         {
             var httpClientName = httpClientBuilder.Name;
             optionsName ??= $"{httpClientName}_resilience_{Guid.NewGuid()}";
             configureOptions ??= _ => { };
             httpClientBuilder.Services
-                .AddSingleton<TPolicyEventHandler>()
                 .AddSingleton<IValidateOptions<ResilienceOptions>, ResilienceOptionsValidation>()
                 .AddHttpClientResilienceOptions(optionsName)
                 .ValidateDataAnnotations()
@@ -78,16 +108,16 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Resilience.Extensions
             // This would lead to duplicated registrations and incorrect behavior when
             // validating options (multiple validations and multiple error messages when validations fail).
             return httpClientBuilder
-                .AddResilienceFallbackPolicy<TPolicyEventHandler>(optionsName)
-                .AddResilienceRetryPolicy<TPolicyEventHandler>(optionsName)
-                .AddResilienceCircuitBreakerPolicy<TPolicyEventHandler>(optionsName)
-                .AddResilienceTimeoutPolicy<TPolicyEventHandler>(optionsName);
+                .AddResilienceFallbackPolicy(optionsName, eventHandlerFactory)
+                .AddResilienceRetryPolicy(optionsName, eventHandlerFactory)
+                .AddResilienceCircuitBreakerPolicy(optionsName, eventHandlerFactory)
+                .AddResilienceTimeoutPolicy(optionsName, eventHandlerFactory);
         }
 
-        private static IHttpClientBuilder AddResilienceFallbackPolicy<TPolicyEventHandler>(
+        private static IHttpClientBuilder AddResilienceFallbackPolicy(
             this IHttpClientBuilder httpClientBuilder,
-            string optionsName)
-            where TPolicyEventHandler : class, IFallbackPolicyEventHandler
+            string optionsName,
+            Func<IServiceProvider, IResiliencePoliciesEventHandler> eventHandlerFactory)
         {
             return httpClientBuilder.AddHttpMessageHandler(provider =>
             {
@@ -96,8 +126,8 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Resilience.Extensions
                 {
                     return new BlankHttpMessageHandler();
                 }
-                
-                var policyEventHandler = provider.GetRequiredService<TPolicyEventHandler>();
+
+                var policyEventHandler = eventHandlerFactory(provider);
                 var retryPolicy = FallbackPolicyFactory.CreateFallbackPolicy(
                     httpClientBuilder.Name,
                     policyEventHandler);
@@ -105,10 +135,10 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Resilience.Extensions
             });
         }
 
-        private static IHttpClientBuilder AddResilienceRetryPolicy<TPolicyEventHandler>(
+        private static IHttpClientBuilder AddResilienceRetryPolicy(
             this IHttpClientBuilder httpClientBuilder,
-            string optionsName)
-            where TPolicyEventHandler : class, IRetryPolicyEventHandler
+            string optionsName, Func<IServiceProvider,
+                IResiliencePoliciesEventHandler> eventHandlerFactory)
         {
             return httpClientBuilder.AddHttpMessageHandler(provider =>
             {
@@ -118,19 +148,19 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Resilience.Extensions
                     return new BlankHttpMessageHandler();
                 }
 
-                var policyEventHandler = provider.GetRequiredService<TPolicyEventHandler>();
+                var policyEventHandler = eventHandlerFactory(provider);
                 var retryPolicy = RetryPolicyFactory.CreateRetryPolicy(
-                    httpClientBuilder.Name, 
+                    httpClientBuilder.Name,
                     resilienceOptions.Retry,
                     policyEventHandler);
                 return new PolicyHttpMessageHandler(retryPolicy);
             });
-        } 
-        
-        private static IHttpClientBuilder AddResilienceCircuitBreakerPolicy<TPolicyEventHandler>(
+        }
+
+        private static IHttpClientBuilder AddResilienceCircuitBreakerPolicy(
             this IHttpClientBuilder httpClientBuilder,
-            string optionsName)
-            where TPolicyEventHandler : class, ICircuitBreakerPolicyEventHandler
+            string optionsName,
+            Func<IServiceProvider, IResiliencePoliciesEventHandler> eventHandlerFactory)
         {
             return httpClientBuilder.AddHttpMessageHandler(provider =>
             {
@@ -140,19 +170,19 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Resilience.Extensions
                     return new BlankHttpMessageHandler();
                 }
 
-                var policyEventHandler = provider.GetRequiredService<TPolicyEventHandler>();
+                var policyEventHandler = eventHandlerFactory(provider);
                 var retryPolicy = CircuitBreakerPolicyFactory.CreateCircuitBreakerPolicy(
-                    httpClientBuilder.Name, 
+                    httpClientBuilder.Name,
                     resilienceOptions.CircuitBreaker,
                     policyEventHandler);
                 return new PolicyHttpMessageHandler(retryPolicy);
             });
         }
 
-        private static IHttpClientBuilder AddResilienceTimeoutPolicy<TPolicyEventHandler>(
+        private static IHttpClientBuilder AddResilienceTimeoutPolicy(
             this IHttpClientBuilder httpClientBuilder,
-            string optionsName)
-            where TPolicyEventHandler : class, ITimeoutPolicyEventHandler
+            string optionsName,
+            Func<IServiceProvider, IResiliencePoliciesEventHandler> eventHandlerFactory)
         {
             return httpClientBuilder.AddHttpMessageHandler(provider =>
             {
@@ -162,18 +192,13 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Resilience.Extensions
                     return new BlankHttpMessageHandler();
                 }
 
-                var policyEventHandler = provider.GetRequiredService<TPolicyEventHandler>();
+                var policyEventHandler = eventHandlerFactory(provider);
                 var retryPolicy = TimeoutPolicyFactory.CreateTimeoutPolicy(
                     httpClientBuilder.Name,
                     resilienceOptions.Timeout,
                     policyEventHandler);
                 return new PolicyHttpMessageHandler(retryPolicy);
             });
-        }
-
-        private class BlankHttpMessageHandler : DelegatingHandler
-        {
-
         }
     }
 }

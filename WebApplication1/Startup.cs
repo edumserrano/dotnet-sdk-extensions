@@ -3,7 +3,6 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker.Events;
 using DotNet.Sdk.Extensions.Polly.Http.Fallback.Events;
-using DotNet.Sdk.Extensions.Polly.Http.Fallback.Extensions;
 using DotNet.Sdk.Extensions.Polly.Http.Resilience.Extensions;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers;
 using Microsoft.AspNetCore.Builder;
@@ -21,6 +20,12 @@ using Microsoft.Extensions.Options;
 
 namespace WebApplication1
 {
+    // fallback -- if it's a timeout exception then return custom response (HttpResponseMessage) with 500
+    // retry
+    // circuit breaker
+    // timeout 
+    // 
+    
     internal class TestOptionsValidation : IValidateOptions<TimeoutOptions>
     {
         public ValidateOptionsResult Validate(string name, TimeoutOptions options)
@@ -166,6 +171,7 @@ namespace WebApplication1
         }
     }
     
+
     public class GitHubPoliciesEventHandler :
         ITimeoutPolicyEventHandler,
         IRetryPolicyEventHandler,

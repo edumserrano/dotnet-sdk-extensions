@@ -111,7 +111,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
         /// Tests that the <see cref="ResiliencePoliciesHttpClientBuilderExtensions.AddResiliencePolicies{TPolicyEventHandler}(IHttpClientBuilder,Action{ResilienceOptions})"/>
         /// overload method adds a <see cref="DelegatingHandler"/> with a timeout policy to the <see cref="HttpClient"/>.
         /// 
-        /// This also tests that the  <see cref="IResiliencePoliciesEventHandler.OnTimeoutAsync"/> is triggered with the correct values.
+        /// This also tests that the <see cref="IResiliencePoliciesEventHandler.OnTimeoutAsync"/> is triggered with the correct values.
         /// </summary>
         [Fact]
         public async Task AddResiliencePoliciesAddsTimeoutPolicy3()
@@ -157,7 +157,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
         /// Tests that the <see cref="ResiliencePoliciesHttpClientBuilderExtensions.AddResiliencePolicies{TPolicyEventHandler}(IHttpClientBuilder,string)"/>
         /// overload method adds a <see cref="DelegatingHandler"/> with a timeout policy to the <see cref="HttpClient"/>.
         ///
-        /// This also tests that the  <see cref="IResiliencePoliciesEventHandler.OnTimeoutAsync"/> is triggered with the correct values.
+        /// This also tests that the <see cref="IResiliencePoliciesEventHandler.OnTimeoutAsync"/> is triggered with the correct values.
         /// </summary>
         [Fact]
         public async Task AddResiliencePoliciesAddsTimeoutPolicy4()
@@ -205,11 +205,114 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
         }
 
         /// <summary>
+        /// Tests that the <see cref="ResiliencePoliciesHttpClientBuilderExtensions.AddResiliencePolicies(IHttpClientBuilder,string,Func{IServiceProvider,IResiliencePoliciesEventHandler})"/>
+        /// overload method adds a <see cref="DelegatingHandler"/> with a timeout policy to the <see cref="HttpClient"/>.
+        ///
+        /// This also tests that the <see cref="IResiliencePoliciesEventHandler.OnTimeoutAsync"/> is triggered with the correct values.
+        /// </summary>
+        [Fact]
+        public async Task AddResiliencePoliciesAddsTimeoutPolicy5()
+        {
+            var resiliencePoliciesEventHandlerCalls = new ResiliencePoliciesEventHandlerCalls();
+            var testHttpMessageHandler = new TestHttpMessageHandler();
+            var httpClientName = "GitHub";
+            var resilienceOptions = new ResilienceOptions
+            {
+                EnableFallbackPolicy = false,
+                EnableRetryPolicy = false,
+                EnableCircuitBreakerPolicy = false,
+                Timeout = new TimeoutOptions
+                {
+                    TimeoutInSecs = 0.05
+                }
+            };
+            var optionsName = "GitHubOptions";
+            var services = new ServiceCollection();
+            services
+                .AddHttpClientResilienceOptions(optionsName)
+                .Configure(options =>
+                {
+                    options.EnableFallbackPolicy = resilienceOptions.EnableFallbackPolicy;
+                    options.EnableRetryPolicy = resilienceOptions.EnableRetryPolicy;
+                    options.EnableCircuitBreakerPolicy = resilienceOptions.EnableCircuitBreakerPolicy;
+                    options.Timeout.TimeoutInSecs = resilienceOptions.Timeout.TimeoutInSecs;
+                });
+            services
+                .AddHttpClient(httpClientName)
+                .ConfigureHttpClient(client => client.BaseAddress = new Uri("https://github.com"))
+                .AddResiliencePolicies(optionsName, provider =>
+                {
+                    return new TestResiliencePoliciesEventHandler(resiliencePoliciesEventHandlerCalls);
+                })
+                .ConfigurePrimaryHttpMessageHandler(() => testHttpMessageHandler);
+
+            await using var serviceProvider = services.BuildServiceProvider();
+            serviceProvider.InstantiateNamedHttpClient(httpClientName);
+            var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
+            var resiliencePoliciesAsserter = httpClient.ResiliencePoliciesAsserter(resilienceOptions, testHttpMessageHandler);
+            await resiliencePoliciesAsserter.Timeout.HttpClientShouldContainTimeoutPolicyAsync();
+            resiliencePoliciesAsserter.Timeout.EventHandlerShouldReceiveExpectedEvents(
+                count: 1,
+                httpClientName: httpClientName,
+                eventHandlerCalls: resiliencePoliciesEventHandlerCalls.Timeout);
+        }
+
+        /// <summary>
+        /// Tests that the <see cref="ResiliencePoliciesHttpClientBuilderExtensions.AddResiliencePolicies(IHttpClientBuilder,Action{ResilienceOptions},Func{IServiceProvider,IResiliencePoliciesEventHandler})"/>
+        /// overload method adds a <see cref="DelegatingHandler"/> with a timeout policy to the <see cref="HttpClient"/>.
+        /// 
+        /// This also tests that the <see cref="IResiliencePoliciesEventHandler.OnTimeoutAsync"/> is triggered with the correct values.
+        /// </summary>
+        [Fact]
+        public async Task AddResiliencePoliciesAddsTimeoutPolicy6()
+        {
+            var resiliencePoliciesEventHandlerCalls = new ResiliencePoliciesEventHandlerCalls();
+            var testHttpMessageHandler = new TestHttpMessageHandler();
+            var httpClientName = "GitHub";
+            var resilienceOptions = new ResilienceOptions
+            {
+                EnableFallbackPolicy = false,
+                EnableRetryPolicy = false,
+                EnableCircuitBreakerPolicy = false,
+                Timeout = new TimeoutOptions
+                {
+                    TimeoutInSecs = 0.05
+                }
+            };
+            var services = new ServiceCollection();
+            services
+                .AddHttpClient(httpClientName)
+                .ConfigureHttpClient(client => client.BaseAddress = new Uri("https://github.com"))
+                .AddResiliencePolicies(
+                    configureOptions: options =>
+                    {
+                        options.EnableFallbackPolicy = resilienceOptions.EnableFallbackPolicy;
+                        options.EnableRetryPolicy = resilienceOptions.EnableRetryPolicy;
+                        options.EnableCircuitBreakerPolicy = resilienceOptions.EnableCircuitBreakerPolicy;
+                        options.Timeout.TimeoutInSecs = resilienceOptions.Timeout.TimeoutInSecs;
+                    },
+                    eventHandlerFactory: provider =>
+                    {
+                        return new TestResiliencePoliciesEventHandler(resiliencePoliciesEventHandlerCalls);
+                    })
+                .ConfigurePrimaryHttpMessageHandler(() => testHttpMessageHandler);
+
+            await using var serviceProvider = services.BuildServiceProvider();
+            var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
+            var resiliencePoliciesAsserter = httpClient.ResiliencePoliciesAsserter(resilienceOptions, testHttpMessageHandler);
+            await resiliencePoliciesAsserter.Timeout.HttpClientShouldContainTimeoutPolicyAsync();
+            resiliencePoliciesAsserter.Timeout.EventHandlerShouldReceiveExpectedEvents(
+                count: 1,
+                httpClientName: httpClientName,
+                eventHandlerCalls: resiliencePoliciesEventHandlerCalls.Timeout);
+        }
+
+        /// <summary>
         /// Tests that the AddResiliencePolicies method does not add a timeout policy if
         /// the <see cref="ResilienceOptions.EnableTimeoutPolicy"/> option is false.
         /// </summary>
         [Fact]
-        public async Task AddResiliencePoliciesAddsTimeoutPolicy5()
+        public async Task AddResiliencePoliciesAddsTimeoutPolicy7()
         {
             var testHttpMessageHandler = new TestHttpMessageHandler();
             var httpClientName = "GitHub";
