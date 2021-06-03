@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.Http;
 using DotNet.Sdk.Extensions.Polly.Http.Retry.Events;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -6,8 +7,17 @@ using Microsoft.Extensions.Http;
 
 namespace DotNet.Sdk.Extensions.Polly.Http.Retry.Extensions
 {
+    /// <summary>
+    /// Provides methods to add a retry policy to an <see cref="HttpClient"/> via the <see cref="IHttpClientBuilder"/>.
+    /// </summary>
     public static class RetryPolicyHttpClientBuilderExtensions
     {
+        /// <summary>
+        /// Adds a retry policy to the <see cref="HttpClient"/>.
+        /// </summary>
+        /// <param name="httpClientBuilder">The <see cref="IHttpClientBuilder"/> instance to add the retry policy to.</param>
+        /// <param name="optionsName">The name of the <see cref="RetryOptions"/> options to use to configure the retry policy.</param>
+        /// <returns>The <see cref="IHttpClientBuilder"/> for chaining.</returns>
         public static IHttpClientBuilder AddRetryPolicy(
             this IHttpClientBuilder httpClientBuilder,
             string optionsName)
@@ -19,6 +29,12 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Retry.Extensions
                 eventHandlerFactory: eventHandlerFactory);
         }
 
+        /// <summary>
+        /// Adds a retry policy to the <see cref="HttpClient"/>.
+        /// </summary>
+        /// <param name="httpClientBuilder">The <see cref="IHttpClientBuilder"/> instance to add the retry policy to.</param>
+        /// <param name="configureOptions">An action to define the the <see cref="RetryOptions"/> options to use to configure the retry policy.</param>
+        /// <returns>The <see cref="IHttpClientBuilder"/> for chaining.</returns>
         public static IHttpClientBuilder AddRetryPolicy(
             this IHttpClientBuilder httpClientBuilder,
             Action<RetryOptions> configureOptions)
@@ -30,6 +46,13 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Retry.Extensions
                 eventHandlerFactory: eventHandlerFactory);
         }
 
+        /// <summary>
+        /// Adds a retry policy to the <see cref="HttpClient"/>.
+        /// </summary>
+        /// <typeparam name="TPolicyEventHandler">The type that will handle retry events.</typeparam>
+        /// <param name="httpClientBuilder">The <see cref="IHttpClientBuilder"/> instance to add the retry policy to.</param>
+        /// <param name="optionsName">The name of the <see cref="RetryOptions"/> options to use to configure the retry policy.</param>
+        /// <returns>The <see cref="IHttpClientBuilder"/> for chaining.</returns>
         public static IHttpClientBuilder AddRetryPolicy<TPolicyEventHandler>(
             this IHttpClientBuilder httpClientBuilder,
             string optionsName)
@@ -43,6 +66,13 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Retry.Extensions
                 eventHandlerFactory: eventHandlerFactory);
         }
 
+        /// <summary>
+        /// Adds a retry policy to the <see cref="HttpClient"/>.
+        /// </summary>
+        /// <typeparam name="TPolicyEventHandler">The type that will handle retry events.</typeparam>
+        /// <param name="httpClientBuilder">The <see cref="IHttpClientBuilder"/> instance to add the retry policy to.</param>
+        /// <param name="configureOptions">An action to define the the <see cref="RetryOptions"/> options to use to configure the retry policy.</param>
+        /// <returns>The <see cref="IHttpClientBuilder"/> for chaining.</returns>
         public static IHttpClientBuilder AddRetryPolicy<TPolicyEventHandler>(
             this IHttpClientBuilder httpClientBuilder,
             Action<RetryOptions> configureOptions)
@@ -56,6 +86,13 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Retry.Extensions
                 eventHandlerFactory: eventHandlerFactory);
         }
 
+        /// <summary>
+        /// Adds a retry policy to the <see cref="HttpClient"/>.
+        /// </summary>
+        /// <param name="httpClientBuilder">The <see cref="IHttpClientBuilder"/> instance to add the retry policy to.</param>
+        /// <param name="optionsName">The name of the <see cref="RetryOptions"/> options to use to configure the retry policy.</param>
+        /// <param name="eventHandlerFactory">Delegate to create an instance that will handle retry events.</param>
+        /// <returns>The <see cref="IHttpClientBuilder"/> for chaining.</returns>
         public static IHttpClientBuilder AddRetryPolicy(
             this IHttpClientBuilder httpClientBuilder,
             string optionsName,
@@ -67,6 +104,13 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Retry.Extensions
                 eventHandlerFactory: eventHandlerFactory);
         }
 
+        /// <summary>
+        /// Adds a retry policy to the <see cref="HttpClient"/>.
+        /// </summary>
+        /// <param name="httpClientBuilder">The <see cref="IHttpClientBuilder"/> instance to add the retry policy to.</param>
+        /// <param name="configureOptions">An action to define the the <see cref="RetryOptions"/> options to use to configure the retry policy.</param>
+        /// <param name="eventHandlerFactory">Delegate to create an instance that will handle retry events.</param>
+        /// <returns>The <see cref="IHttpClientBuilder"/> for chaining.</returns>
         public static IHttpClientBuilder AddRetryPolicy(
             this IHttpClientBuilder httpClientBuilder,
             Action<RetryOptions> configureOptions,
