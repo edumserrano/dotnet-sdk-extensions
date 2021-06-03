@@ -235,7 +235,7 @@ namespace WebApplication1
 
         public async Task<string> Get()
         {
-            var response = await _httpClient.GetAsync("https://github.com");
+            var _ = await _httpClient.GetAsync("https://github.com");
             return "bla";
         }
     }

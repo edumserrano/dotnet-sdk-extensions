@@ -74,8 +74,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
         public async Task ShouldBeOpenAsync(string requestPath)
         {
             var response = await _httpClient.GetAsync(requestPath);
-            var circuitBrokenHttpResponseMessage = response as CircuitBrokenHttpResponseMessage;
-            if (circuitBrokenHttpResponseMessage is null)
+            if (response is not CircuitBrokenHttpResponseMessage circuitBrokenHttpResponseMessage)
             {
                 throw new InvalidOperationException($"Unexpected response type from open circuit. Expected a {typeof(CircuitBrokenHttpResponseMessage)} but got a {response.GetType()}");
             }
