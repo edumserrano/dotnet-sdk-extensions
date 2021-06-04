@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DotNet-Sdk-Extensions" Version="1.0.7-alpha" />
+    <PackageReference Include="DotNet-Sdk-Extensions" Version="1.0.9-alpha" />
   </ItemGroup>
 
 </Project>

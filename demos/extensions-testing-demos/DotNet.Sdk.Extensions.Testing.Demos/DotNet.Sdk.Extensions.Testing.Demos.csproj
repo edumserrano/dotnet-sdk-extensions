@@ -6,11 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Configuration\AppSettings\appsettings.Default.json" />
-    <None Remove="Configuration\AppSettings\appsettings.json" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Content Include="Configuration\AppSettings\appsettings.Default.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
@@ -25,8 +20,8 @@
 
   <ItemGroup>
     <PackageReference Include="DotNet-Sdk-Extensions-Testing" Version="1.0.9-alpha" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="5.0.3" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="5.0.6" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.10.0" />
     <PackageReference Include="NSubstitute" Version="4.2.2" />
     <PackageReference Include="Shouldly" Version="4.0.3" />
     <PackageReference Include="xunit" Version="2.4.1" />

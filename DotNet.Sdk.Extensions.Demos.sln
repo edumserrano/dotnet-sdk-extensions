@@ -17,6 +17,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OptionsValue", "demos\exten
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNet.Sdk.Extensions.Testing.Demos", "demos\extensions-testing-demos\DotNet.Sdk.Extensions.Testing.Demos\DotNet.Sdk.Extensions.Testing.Demos.csproj", "{3906393F-2F17-4B19-8B92-44235343F612}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "polly", "polly", "{5F17D1B2-17F4-466F-88F0-BC743932E964}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "http", "http", "{BFB01A8E-6483-44D2-A56C-BC36FEAE7279}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "policies", "policies", "{20A2EF70-DF9A-492C-A621-F1EFD38CB12F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CircuitBreakerCheckerPolicy", "demos\extensions-demos\polly\policies\CircuitBreakerCheckerPolicy\CircuitBreakerCheckerPolicy.csproj", "{9F5DCE81-89B5-44EB-942C-A1CAB737E38C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,6 +43,10 @@ Global
 		{3906393F-2F17-4B19-8B92-44235343F612}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3906393F-2F17-4B19-8B92-44235343F612}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3906393F-2F17-4B19-8B92-44235343F612}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9F5DCE81-89B5-44EB-942C-A1CAB737E38C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F5DCE81-89B5-44EB-942C-A1CAB737E38C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9F5DCE81-89B5-44EB-942C-A1CAB737E38C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9F5DCE81-89B5-44EB-942C-A1CAB737E38C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -46,6 +58,10 @@ Global
 		{AD33F885-4A0B-493C-B971-D345B8369B63} = {46B10871-6A4D-440E-8B3D-8847C53E9055}
 		{375BC5CF-3607-4B4E-9886-E6A3FAC17BB8} = {46B10871-6A4D-440E-8B3D-8847C53E9055}
 		{3906393F-2F17-4B19-8B92-44235343F612} = {E8AF9607-DD4E-467D-A2E3-E019E874132F}
+		{5F17D1B2-17F4-466F-88F0-BC743932E964} = {2AF38977-87D7-4EC7-AC5A-8846E5C1FF26}
+		{BFB01A8E-6483-44D2-A56C-BC36FEAE7279} = {5F17D1B2-17F4-466F-88F0-BC743932E964}
+		{20A2EF70-DF9A-492C-A621-F1EFD38CB12F} = {5F17D1B2-17F4-466F-88F0-BC743932E964}
+		{9F5DCE81-89B5-44EB-942C-A1CAB737E38C} = {20A2EF70-DF9A-492C-A621-F1EFD38CB12F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {30D7160D-5F70-4D4F-A5E4-A84A049A4A7D}
