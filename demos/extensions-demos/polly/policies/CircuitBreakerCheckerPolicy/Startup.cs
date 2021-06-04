@@ -36,6 +36,8 @@ namespace CircuitBreakerCheckerPolicy
      */
     public class Startup
     {
+        private DateTime? _withCircuitBreakerCloseTime;
+        private DateTime? _withoutCircuitBreakerCloseTime;
         private const int _maxAllowedConsecutiveFailures = 2;
         private const int _durationOfBreakInSecs = 3;
         private int _withConsecutiveFailedRequestsCount;
@@ -50,7 +52,7 @@ More info
 5. After {_durationOfBreakInSecs} seconds the circuit state transitions from open to closed and normal operation is resumed.
 
 Keep refreshing the /with endpoint to see this example in action.
-To check an example WITHOUT the circuit breaker checker policy go to the /without endpoint.
+To check an example WITHOUT the circuit breaker checker policy go to the https://localhost:5001/without endpoint.
 ";
         private readonly string _withoutEndpointInfo = $@"
 More info
@@ -62,7 +64,7 @@ More info
 5. After {_durationOfBreakInSecs} seconds the circuit state transitions from open to closed and normal operation is resumed.
 
 Keep refreshing the /without endpoint to see this example in action.
-To check an example WITH the circuit breaker checker policy go to the /with endpoint.
+To check an example WITH the circuit breaker checker policy go to the https://localhost:5001/with endpoint.
 ";
         public Startup(IConfiguration configuration)
         {
@@ -154,10 +156,19 @@ To check an example WITH the circuit breaker checker policy go to the /with endp
                         var httpClientFactory = context.RequestServices.GetRequiredService<IHttpClientFactory>();
                         var httpClient = httpClientFactory.CreateClient("http-client-with");
                         var response = await httpClient.GetAsync("/");
-                        _withConsecutiveFailedRequestsCount = response.IsSuccessStatusCode ? 0 : _withConsecutiveFailedRequestsCount + 1;
+                        if (response.IsSuccessStatusCode)
+                        {
+                            _withConsecutiveFailedRequestsCount = 0;
+                            _withCircuitBreakerCloseTime = null;
+                        }
+                        else
+                        {
+                            _withConsecutiveFailedRequestsCount++;
+                        }
+
                         var message = response switch
                         {
-                            CircuitBrokenHttpResponseMessage circuitBrokenHttpResponseMessage => CreateCircuitOpenMessage(circuitBrokenHttpResponseMessage, _withEndpointInfo),
+                            CircuitBrokenHttpResponseMessage circuitBrokenHttpResponseMessage => CreateCircuitOpenMessageForWithEndpoint(circuitBrokenHttpResponseMessage),
                             _ => CreateCircuitClosedMessage(response, _withConsecutiveFailedRequestsCount, _withEndpointInfo)
                         };
                         await context.Response.WriteAsync(message);
@@ -178,7 +189,7 @@ To check an example WITH the circuit breaker checker policy go to the /with endp
                         }
                         catch (Exception e)
                         {
-                            message = CreateCircuitOpenMessage(e, _withoutEndpointInfo);
+                            message = CreateCircuitOpenMessageForWithoutEndpoint(e);
                         }
 
                         await context.Response.WriteAsync(message);
@@ -186,30 +197,33 @@ To check an example WITH the circuit breaker checker policy go to the /with endp
                 });
         }
 
-        private static string CreateCircuitOpenMessage(CircuitBrokenHttpResponseMessage circuitBrokenHttpResponseMessage, string endpointMessage)
+        private string CreateCircuitOpenMessageForWithEndpoint(CircuitBrokenHttpResponseMessage circuitBrokenHttpResponseMessage)
         {
+            _withCircuitBreakerCloseTime ??= DateTime.Now.AddSeconds(_durationOfBreakInSecs);
             return @$"
 FAILING FAST
 ========================
 Circuit state: {circuitBrokenHttpResponseMessage.CircuitBreakerState}
 Response status code: {(int)circuitBrokenHttpResponseMessage.StatusCode} {circuitBrokenHttpResponseMessage.StatusCode}
-Circuit state will transition to close after 3 seconds
+Circuit state will transition to close after {_durationOfBreakInSecs} seconds at {_withCircuitBreakerCloseTime}
 
-{endpointMessage}
+{_withEndpointInfo}
 ";
         }
 
-        private static string CreateCircuitOpenMessage(Exception exception, string endpointMessage)
+        private string CreateCircuitOpenMessageForWithoutEndpoint(Exception exception)
         {
+            _withoutCircuitBreakerCloseTime ??= DateTime.Now.AddSeconds(_durationOfBreakInSecs);
             return @$"
 FAILING FAST
 ========================
 Circuit state: open
+Circuit state will transition to close after {_durationOfBreakInSecs} seconds at {_withoutCircuitBreakerCloseTime}
+
 Exception thrown: {exception.GetType()}
 {exception}
-Circuit state will transition to close after 3 seconds
 
-{endpointMessage}
+{_withoutEndpointInfo}
 ";
         }
 
