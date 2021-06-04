@@ -2,80 +2,99 @@
 using System.Net.Http;
 using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Polly.Http.Retry;
-using DotNet.Sdk.Extensions.Polly.Http.Retry.Events;
+using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers;
 using DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary;
-using Polly;
-using Polly.Retry;
 using Polly.Timeout;
 using Shouldly;
 
 namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Auxiliary
 {
+    internal static class RetryPolicyAsserterExtensions
+    {
+        public static RetryPolicyAsserter RetryPolicyAsserter(
+            this HttpClient httpClient,
+            RetryOptions options,
+            TestHttpMessageHandler testHttpMessageHandler)
+        {
+            return new RetryPolicyAsserter(httpClient, options, testHttpMessageHandler);
+        }
+    }
+
     internal class RetryPolicyAsserter
     {
-        private readonly string _httpClientName;
-        private readonly RetryOptions _retryOptions;
-        private readonly AsyncRetryPolicy<HttpResponseMessage>? _retryPolicy;
+        private readonly HttpClient _httpClient;
+        private readonly RetryOptions _options;
+        private readonly TestHttpMessageHandler _testHttpMessageHandler;
 
         public RetryPolicyAsserter(
+            HttpClient httpClient,
+            RetryOptions options,
+            TestHttpMessageHandler testHttpMessageHandler)
+        {
+            _httpClient = httpClient;
+            _options = options;
+            _testHttpMessageHandler = testHttpMessageHandler;
+        }
+
+        public async Task HttpClientShouldContainRetryPolicyAsync(NumberOfCallsDelegatingHandler numberOfCallsDelegatingHandler)
+        {
+            await RetryPolicyDoesNotHandleCircuitBrokenHttpResponseMessage(numberOfCallsDelegatingHandler);
+            await RetryPolicyHandlesTransientStatusCodes(numberOfCallsDelegatingHandler);
+            await RetryPolicyHandlesException<HttpRequestException>(numberOfCallsDelegatingHandler);
+            await RetryPolicyHandlesException<TimeoutRejectedException>(numberOfCallsDelegatingHandler);
+            await RetryPolicyHandlesException<TaskCanceledException>(numberOfCallsDelegatingHandler);
+        }
+
+        public void EventHandlerShouldReceiveExpectedEvents(
+            int count,
             string httpClientName,
-            RetryOptions retryOptions,
-            AsyncRetryPolicy<HttpResponseMessage>? policy)
+            RetryPolicyEventHandlerCalls eventHandlerCalls)
         {
-            _httpClientName = httpClientName;
-            _retryOptions = retryOptions;
-            _retryPolicy = policy;
-        }
-
-        public void PolicyShouldBeConfiguredAsExpected()
-        {
-            _retryPolicy.ShouldNotBeNull();
-
-            _retryPolicy.GetRetryCount()
-                .ShouldBe(_retryOptions.RetryCount);
-            _retryPolicy.GetMedianFirstRetryDelay()
-                .ShouldBe(TimeSpan.FromSeconds(_retryOptions.MedianFirstRetryDelayInSecs));
-
-            var exceptionPredicates = _retryPolicy.GetExceptionPredicates();
-            exceptionPredicates.GetExceptionPredicatesCount().ShouldBe(3);
-            exceptionPredicates.HandlesException<TaskCanceledException>().ShouldBeTrue();
-            exceptionPredicates.HandlesException<TimeoutRejectedException>().ShouldBeTrue();
-            exceptionPredicates.HandlesException<HttpRequestException>().ShouldBeTrue();
-
-            var resultPredicates = _retryPolicy.GetResultPredicates();
-            resultPredicates.GetResultPredicatesCount().ShouldBe(1);
-            resultPredicates.HandlesTransientHttpStatusCode().ShouldBe(true);
-        }
-
-        public void PolicyShouldTriggerPolicyEventHandler(Type policyEventHandler)
-        {
-            _retryPolicy.ShouldNotBeNull();
-            var policyEventHandlerTarget = new OnRetryTarget(_retryPolicy);
-            policyEventHandlerTarget.HttpClientName.ShouldBe(_httpClientName);
-            policyEventHandlerTarget.RetryOptions.RetryCount.ShouldBe(_retryOptions.RetryCount);
-            policyEventHandlerTarget.RetryOptions.MedianFirstRetryDelayInSecs.ShouldBe(_retryOptions.MedianFirstRetryDelayInSecs);
-            policyEventHandlerTarget.PolicyEventHandler
-                .GetType()
-                .ShouldBe(policyEventHandler);
-        }
-
-        private class OnRetryTarget
-        {
-            public OnRetryTarget(IsPolicy policy)
+            eventHandlerCalls.OnRetryAsyncCalls.Count.ShouldBe(count);
+            foreach (var onRetryAsyncCall in eventHandlerCalls.OnRetryAsyncCalls)
             {
-                var onTimeoutAsync = policy
-                    .GetInstanceField("_onRetryAsync")
-                    .GetInstanceProperty("Target");
-                HttpClientName = onTimeoutAsync.GetInstanceField<string>("httpClientName");
-                RetryOptions = onTimeoutAsync.GetInstanceField<RetryOptions>("options");
-                PolicyEventHandler = onTimeoutAsync.GetInstanceField<IRetryPolicyEventHandler>("policyEventHandler");
+                onRetryAsyncCall.HttpClientName.ShouldBe(httpClientName);
+                onRetryAsyncCall.RetryOptions.RetryCount.ShouldBe(_options.RetryCount);
+                onRetryAsyncCall.RetryOptions.MedianFirstRetryDelayInSecs.ShouldBe(_options.MedianFirstRetryDelayInSecs);
             }
+        }
 
-            public string HttpClientName { get; }
+        private async Task RetryPolicyHandlesTransientStatusCodes(NumberOfCallsDelegatingHandler numberOfCallsDelegatingHandler)
+        {
+            var retryExecutor = _httpClient.RetryExecutor(_testHttpMessageHandler);
+            foreach (var transientHttpStatusCode in HttpStatusCodesExtensions.GetTransientHttpStatusCodes())
+            {
+                await retryExecutor.TriggerFromTransientHttpStatusCodeAsync(transientHttpStatusCode);
+                numberOfCallsDelegatingHandler.NumberOfHttpRequests.ShouldBe(_options.RetryCount + 1, $"{(int)transientHttpStatusCode}");
+                numberOfCallsDelegatingHandler.Reset();
+            }
+        }
 
-            public RetryOptions RetryOptions { get; }
+        private async Task RetryPolicyDoesNotHandleCircuitBrokenHttpResponseMessage(NumberOfCallsDelegatingHandler numberOfCallsDelegatingHandler)
+        {
+            var retryExecutor = _httpClient.RetryExecutor(_testHttpMessageHandler);
+            await retryExecutor.ExecuteCircuitBrokenHttpResponseMessageAsync();
+            numberOfCallsDelegatingHandler.NumberOfHttpRequests.ShouldBe(1); // no retries when a CircuitBrokenHttpResponseMessage is returned
+            numberOfCallsDelegatingHandler.Reset();
+        }
 
-            public IRetryPolicyEventHandler PolicyEventHandler { get; }
+        private Task RetryPolicyHandlesException<TException>(NumberOfCallsDelegatingHandler numberOfCallsDelegatingHandler)
+            where TException : Exception
+        {
+            var exception = Activator.CreateInstance<TException>();
+            return RetryPolicyHandlesException(exception, numberOfCallsDelegatingHandler);
+        }
+
+        private async Task RetryPolicyHandlesException(Exception exception, NumberOfCallsDelegatingHandler numberOfCallsDelegatingHandler)
+        {
+            await Should.ThrowAsync<Exception>(() =>
+            {
+                return _httpClient
+                    .RetryExecutor(_testHttpMessageHandler)
+                    .TriggerFromExceptionAsync(exception);
+            });
+            numberOfCallsDelegatingHandler.NumberOfHttpRequests.ShouldBe(_options.RetryCount + 1);
+            numberOfCallsDelegatingHandler.Reset();
         }
     }
 }

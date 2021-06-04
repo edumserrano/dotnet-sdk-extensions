@@ -4,74 +4,70 @@ using DotNet.Sdk.Extensions.Polly.Http.Fallback.Events;
 using DotNet.Sdk.Extensions.Polly.Http.Resilience.Events;
 using DotNet.Sdk.Extensions.Polly.Http.Retry.Events;
 using DotNet.Sdk.Extensions.Polly.Http.Timeout.Events;
-using DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary;
-using DotNet.Sdk.Extensions.Tests.Polly.Http.Fallback.Auxiliary;
-using DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Auxiliary;
-using DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Auxiliary;
 
 namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Auxiliary
 {
     public class TestResiliencePoliciesEventHandler : IResiliencePoliciesEventHandler
     {
-        public readonly TestTimeoutPolicyEventHandler _timeoutPolicyEventHandler;
-        private readonly TestRetryPolicyEventHandler _retryPolicyEventHandler;
-        private readonly TestCircuitBreakerPolicyEventHandler _circuitBreakerPolicyEventHandler;
-        private readonly TestFallbackPolicyEventHandler _fallbackPolicyEventHandler;
+        private readonly ResiliencePoliciesEventHandlerCalls _resiliencePoliciesEventHandlerCalls;
 
-        public TestResiliencePoliciesEventHandler()
+        public TestResiliencePoliciesEventHandler(ResiliencePoliciesEventHandlerCalls resiliencePoliciesEventHandlerCalls)
         {
-            _timeoutPolicyEventHandler = new TestTimeoutPolicyEventHandler();
-            _retryPolicyEventHandler = new TestRetryPolicyEventHandler();
-            _circuitBreakerPolicyEventHandler = new TestCircuitBreakerPolicyEventHandler();
-            _fallbackPolicyEventHandler = new TestFallbackPolicyEventHandler();
+            _resiliencePoliciesEventHandlerCalls = resiliencePoliciesEventHandlerCalls;
         }
 
         public Task OnTimeoutAsync(TimeoutEvent timeoutEvent)
         {
-            return _timeoutPolicyEventHandler.OnTimeoutAsync(timeoutEvent);
+            _resiliencePoliciesEventHandlerCalls.Timeout.AddOnTimeoutAsync(timeoutEvent);
+            return Task.CompletedTask;
         }
        
         public Task OnRetryAsync(RetryEvent retryEvent)
         {
-            return _retryPolicyEventHandler.OnRetryAsync(retryEvent);
+            _resiliencePoliciesEventHandlerCalls.Retry.AddOnRetryAsync(retryEvent);
+            return Task.CompletedTask;
         }
 
         public Task OnBreakAsync(BreakEvent breakEvent)
         {
-            return _circuitBreakerPolicyEventHandler.OnBreakAsync(breakEvent);
+            _resiliencePoliciesEventHandlerCalls.CircuitBreaker.AddOnBreakAsync(breakEvent);
+            return Task.CompletedTask;
         }
 
         public Task OnHalfOpenAsync(HalfOpenEvent halfOpenEvent)
         {
-            return _circuitBreakerPolicyEventHandler.OnHalfOpenAsync(halfOpenEvent);
+            _resiliencePoliciesEventHandlerCalls.CircuitBreaker.AddOnHalfOpenAsync(halfOpenEvent);
+            return Task.CompletedTask;
         }
 
         public Task OnResetAsync(ResetEvent resetEvent)
         {
-            return _circuitBreakerPolicyEventHandler.OnResetAsync(resetEvent);
+            _resiliencePoliciesEventHandlerCalls.CircuitBreaker.AddOnResetAsync(resetEvent);
+            return Task.CompletedTask;
         }
 
-        public Task OnTimeoutFallbackAsync(TimeoutFallbackEvent timeoutFallbackEvent)
+        public Task OnHttpRequestExceptionFallbackAsync(FallbackEvent fallbackEvent)
         {
-            return _fallbackPolicyEventHandler.OnTimeoutFallbackAsync(timeoutFallbackEvent);
+            _resiliencePoliciesEventHandlerCalls.Fallback.AddOnHttpRequestExceptionFallback(fallbackEvent);
+            return Task.CompletedTask;
         }
 
-        public Task OnBrokenCircuitFallbackAsync(BrokenCircuitFallbackEvent brokenCircuitFallbackEvent)
+        public Task OnTimeoutFallbackAsync(FallbackEvent timeoutFallbackEvent)
         {
-            return _fallbackPolicyEventHandler.OnBrokenCircuitFallbackAsync(brokenCircuitFallbackEvent);
+            _resiliencePoliciesEventHandlerCalls.Fallback.AddOnTimeoutFallback(timeoutFallbackEvent);
+            return Task.CompletedTask;
         }
 
-        public Task OnTaskCancelledFallbackAsync(TaskCancelledFallbackEvent taskCancelledFallbackEvent)
+        public Task OnBrokenCircuitFallbackAsync(FallbackEvent brokenCircuitFallbackEvent)
         {
-            return _fallbackPolicyEventHandler.OnTaskCancelledFallbackAsync(taskCancelledFallbackEvent);
+            _resiliencePoliciesEventHandlerCalls.Fallback.AddOnBrokenCircuitFallback(brokenCircuitFallbackEvent);
+            return Task.CompletedTask;
         }
 
-        public static void Clear()
+        public Task OnTaskCancelledFallbackAsync(FallbackEvent taskCancelledFallbackEvent)
         {
-            TestTimeoutPolicyEventHandler.Clear();
-            TestRetryPolicyEventHandler.Clear();
-            TestCircuitBreakerPolicyEventHandler.Clear();
-            TestFallbackPolicyEventHandler.Clear();
+            _resiliencePoliciesEventHandlerCalls.Fallback.AddOnTaskCancelledFallback(taskCancelledFallbackEvent);
+            return Task.CompletedTask;
         }
     }
 }

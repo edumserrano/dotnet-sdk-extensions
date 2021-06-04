@@ -1,21 +1,29 @@
 ﻿using System;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace DotNet.Sdk.Extensions.Polly.Http.Fallback.FallbackHttpResponseMessages
 {
+    /// <summary>
+    /// Represents the fallback <see cref="HttpResponseMessage"/> returned
+    /// when the HttpClient's request throws a <see cref="TaskCanceledException"/>.
+    /// </summary>
     public class AbortedHttpResponseMessage : HttpResponseMessage
     {
-        public AbortedHttpResponseMessage(TaskCanceledException exception)
+        /// <summary>
+        /// Creates an instance of <see cref="AbortedHttpResponseMessage"/>
+        /// </summary>
+        /// <param name="exception">The exception that resulted in the fallback response.</param>
+        public AbortedHttpResponseMessage(Exception exception)
         {
+            StatusCode = HttpStatusCode.InternalServerError;
             Exception = exception;
-            // on newer versions .NET still throws TaskCanceledException but the inner exception is of type System.TimeoutException.
-            // see https://devblogs.microsoft.com/dotnet/net-5-new-networking-improvements/#better-error-handling
-            var innerException = exception?.InnerException;
-            TriggeredByTimeoutException = innerException is TimeoutException;
         }
-        public TaskCanceledException Exception { get; }
 
-        public bool TriggeredByTimeoutException { get; }
+        /// <summary>
+        /// Exception that triggered the <see cref="AbortedHttpResponseMessage"/> fallback response.
+        /// </summary>
+        public Exception Exception { get; }
     }
 }

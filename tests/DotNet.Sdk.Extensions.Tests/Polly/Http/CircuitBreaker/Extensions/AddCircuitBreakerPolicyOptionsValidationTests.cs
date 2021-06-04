@@ -16,7 +16,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
     public class AddCircuitBreakerPolicyOptionsValidationTests
     {
         /// <summary>
-        /// Tests that the RetryPolicyHttpClientBuilderExtensions.AddCircuitBreakerPolicy methods
+        /// Tests that the CircuitBreakerPolicyHttpClientBuilderExtensions.AddCircuitBreakerPolicy methods
         /// validate the <see cref="CircuitBreakerOptions"/> with the built in data annotations.
         ///
         /// Validates that the <see cref="CircuitBreakerOptions.DurationOfBreakInSecs"/> needs to be a double > 0.
@@ -40,7 +40,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
                     options.MinimumThroughput = 10;
                 });
 
-            var serviceProvider = services.BuildServiceProvider();
+            using var serviceProvider = services.BuildServiceProvider();
             var exception = Should.Throw<OptionsValidationException>(() =>
             {
                 serviceProvider.InstantiateNamedHttpClient(httpClientName);
@@ -49,7 +49,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
         }
         
         /// <summary>
-        /// Tests that the RetryPolicyHttpClientBuilderExtensions.AddCircuitBreakerPolicy methods
+        /// Tests that the CircuitBreakerPolicyHttpClientBuilderExtensions.AddCircuitBreakerPolicy methods
         /// validate the <see cref="CircuitBreakerOptions"/> with the built in data annotations.
         ///
         /// Validates that the <see cref="CircuitBreakerOptions.SamplingDurationInSecs"/> needs to be a double > 0.
@@ -73,7 +73,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
                     options.MinimumThroughput = 10;
                 });
 
-            var serviceProvider = services.BuildServiceProvider();
+            using var serviceProvider = services.BuildServiceProvider();
             var exception = Should.Throw<OptionsValidationException>(() =>
             {
                 serviceProvider.InstantiateNamedHttpClient(httpClientName);
@@ -82,7 +82,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
         }
 
         /// <summary>
-        /// Tests that the RetryPolicyHttpClientBuilderExtensions.AddCircuitBreakerPolicy methods
+        /// Tests that the CircuitBreakerPolicyHttpClientBuilderExtensions.AddCircuitBreakerPolicy methods
         /// validate the <see cref="CircuitBreakerOptions"/> with the built in data annotations.
         ///
         /// Validates that the <see cref="CircuitBreakerOptions.FailureThreshold"/> needs to be a double > 0
@@ -108,7 +108,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
                     options.MinimumThroughput = 10;
                 });
 
-            var serviceProvider = services.BuildServiceProvider();
+            using var serviceProvider = services.BuildServiceProvider();
             var exception = Should.Throw<OptionsValidationException>(() =>
             {
                 serviceProvider.InstantiateNamedHttpClient(httpClientName);
@@ -117,7 +117,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
         }
 
         /// <summary>
-        /// Tests that the RetryPolicyHttpClientBuilderExtensions.AddCircuitBreakerPolicy methods
+        /// Tests that the CircuitBreakerPolicyHttpClientBuilderExtensions.AddCircuitBreakerPolicy methods
         /// validate the <see cref="CircuitBreakerOptions"/> with the built in data annotations.
         ///
         /// Validates that the <see cref="CircuitBreakerOptions.MinimumThroughput"/> needs to be an int >= 2.
@@ -140,7 +140,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
                     options.MinimumThroughput = minimumThroughput;
                 });
 
-            var serviceProvider = services.BuildServiceProvider();
+            using var serviceProvider = services.BuildServiceProvider();
             var exception = Should.Throw<OptionsValidationException>(() =>
             {
                 serviceProvider.InstantiateNamedHttpClient(httpClientName);
@@ -181,7 +181,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
                 .AddHttpClient(httpClientName)
                 .AddCircuitBreakerPolicy(optionsName);
 
-            var serviceProvider = services.BuildServiceProvider();
+            using var serviceProvider = services.BuildServiceProvider();
             var exception = Should.Throw<OptionsValidationException>(() =>
             {
                 serviceProvider.InstantiateNamedHttpClient(httpClientName);
@@ -216,13 +216,12 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
                 .Validate(options =>
                 {
                     return options.DurationOfBreakInSecs > 3;
-                })
-                ;
+                });
             services
                 .AddHttpClient(httpClientName)
                 .AddCircuitBreakerPolicy(optionsName);
 
-            var serviceProvider = services.BuildServiceProvider();
+            using var serviceProvider = services.BuildServiceProvider();
             var exception = Should.Throw<OptionsValidationException>(() =>
             {
                 serviceProvider.InstantiateNamedHttpClient(httpClientName);

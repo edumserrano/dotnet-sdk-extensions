@@ -1,40 +1,39 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Polly.Http.Fallback.Events;
 
 namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Fallback.Auxiliary
 {
     public class TestFallbackPolicyEventHandler : IFallbackPolicyEventHandler
     {
-        public static IList<TimeoutFallbackEvent> OnTimeoutFallbackAsyncCalls { get; } = new List<TimeoutFallbackEvent>();
+        private readonly FallbackPolicyEventHandlerCalls _fallbackPolicyEventHandlerCalls;
 
-        public static IList<BrokenCircuitFallbackEvent> OnBrokenCircuitFallbackAsyncAsyncCalls { get; } = new List<BrokenCircuitFallbackEvent>();
-
-        public static IList<TaskCancelledFallbackEvent> OnTaskCancelledFallbackAsyncCalls { get; } = new List<TaskCancelledFallbackEvent>();
-
-        public Task OnTimeoutFallbackAsync(TimeoutFallbackEvent timeoutFallbackEvent)
+        public TestFallbackPolicyEventHandler(FallbackPolicyEventHandlerCalls fallbackPolicyEventHandlerCalls)
         {
-            OnTimeoutFallbackAsyncCalls.Add(timeoutFallbackEvent);
+            _fallbackPolicyEventHandlerCalls = fallbackPolicyEventHandlerCalls;
+        }
+
+        public Task OnHttpRequestExceptionFallbackAsync(FallbackEvent fallbackEvent)
+        {
+            _fallbackPolicyEventHandlerCalls.AddOnHttpRequestExceptionFallback(fallbackEvent);
             return Task.CompletedTask;
         }
 
-        public Task OnBrokenCircuitFallbackAsync(BrokenCircuitFallbackEvent brokenCircuitFallbackEvent)
+        public Task OnTimeoutFallbackAsync(FallbackEvent fallbackEvent)
         {
-            OnBrokenCircuitFallbackAsyncAsyncCalls.Add(brokenCircuitFallbackEvent);
+            _fallbackPolicyEventHandlerCalls.AddOnTimeoutFallback(fallbackEvent);
             return Task.CompletedTask;
         }
 
-        public Task OnTaskCancelledFallbackAsync(TaskCancelledFallbackEvent taskCancelledFallbackEvent)
+        public Task OnBrokenCircuitFallbackAsync(FallbackEvent fallbackEvent)
         {
-            OnTaskCancelledFallbackAsyncCalls.Add(taskCancelledFallbackEvent);
+            _fallbackPolicyEventHandlerCalls.AddOnBrokenCircuitFallback(fallbackEvent);
             return Task.CompletedTask;
         }
-        
-        public static void Clear()
+
+        public Task OnTaskCancelledFallbackAsync(FallbackEvent fallbackEvent)
         {
-            OnTimeoutFallbackAsyncCalls.Clear();
-            OnBrokenCircuitFallbackAsyncAsyncCalls.Clear();
-            OnTaskCancelledFallbackAsyncCalls.Clear();
+            _fallbackPolicyEventHandlerCalls.AddOnTaskCancelledFallback(fallbackEvent);
+            return Task.CompletedTask;
         }
     }
 }

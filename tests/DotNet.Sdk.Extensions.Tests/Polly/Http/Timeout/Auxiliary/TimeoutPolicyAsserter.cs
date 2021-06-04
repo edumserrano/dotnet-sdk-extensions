@@ -1,77 +1,66 @@
-﻿using System;
-using System.Net.Http;
+﻿using System.Net.Http;
+using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Polly.Http.Timeout;
-using DotNet.Sdk.Extensions.Polly.Http.Timeout.Events;
+using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers;
 using DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary;
-using Polly;
 using Polly.Timeout;
 using Shouldly;
 
 namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Auxiliary
 {
+    internal static class TimeoutPolicyAsserterExtensions
+    {
+        public static TimeoutPolicyAsserter TimeoutPolicyAsserter(
+            this HttpClient httpClient,
+            TimeoutOptions options,
+            TestHttpMessageHandler testHttpMessageHandler)
+        {
+            return new TimeoutPolicyAsserter(httpClient, options, testHttpMessageHandler);
+        }
+    }
+    
     internal class TimeoutPolicyAsserter
     {
-        private readonly string _httpClientName;
-        private readonly TimeoutOptions _timeoutOptions;
-        private readonly AsyncTimeoutPolicy<HttpResponseMessage>? _timeoutPolicy;
+        private readonly HttpClient _httpClient;
+        private readonly TimeoutOptions _options;
+        private readonly TestHttpMessageHandler _testHttpMessageHandler;
 
         public TimeoutPolicyAsserter(
-            string httpClientName,
-            TimeoutOptions timeoutOptions,
-            AsyncTimeoutPolicy<HttpResponseMessage>? policy)
+            HttpClient httpClient,
+            TimeoutOptions options,
+            TestHttpMessageHandler testHttpMessageHandler)
         {
-            _httpClientName = httpClientName;
-            _timeoutOptions = timeoutOptions;
-            _timeoutPolicy = policy;
+            _httpClient = httpClient;
+            _options = options;
+            _testHttpMessageHandler = testHttpMessageHandler;
         }
 
-        public void PolicyShouldBeConfiguredAsExpected()
+        public async Task HttpClientShouldContainTimeoutPolicyAsync()
         {
-            _timeoutPolicy.ShouldNotBeNull();
-            _timeoutPolicy
-                .GetTimeoutStrategy()
-                .ShouldBe(TimeoutStrategy.Optimistic);
-            _timeoutPolicy
-                .GetTimeout()
-                .ShouldBe(TimeSpan.FromSeconds(_timeoutOptions.TimeoutInSecs));
-            _timeoutPolicy
-                .GetExceptionPredicates()
-                .GetExceptionPredicatesCount()
-                .ShouldBe(0);
-            _timeoutPolicy
-                .GetResultPredicates()
-                .GetResultPredicatesCount()
-                .ShouldBe(0);
-        }
-
-        public void PolicyShouldTriggerPolicyEventHandler(Type policyEventHandler)
-        {
-            _timeoutPolicy.ShouldNotBeNull();
-            var policyEventHandlerTarget = new OnTimeoutTarget(_timeoutPolicy);
-            policyEventHandlerTarget.HttpClientName.ShouldBe(_httpClientName);
-            policyEventHandlerTarget.TimeoutOptions.TimeoutInSecs.ShouldBe(_timeoutOptions.TimeoutInSecs);
-            policyEventHandlerTarget.PolicyEventHandler
-                .GetType()
-                .ShouldBe(policyEventHandler);
+            await TimeoutPolicyTriggersOnTimeout();
         }
         
-        private class OnTimeoutTarget
+        public void EventHandlerShouldReceiveExpectedEvents(
+            int count,
+            string httpClientName,
+            TimeoutPolicyEventHandlerCalls eventHandlerCalls)
         {
-            public OnTimeoutTarget(IsPolicy policy)
+            eventHandlerCalls.OnTimeoutAsyncCalls.Count.ShouldBe(count);
+            foreach (var onTimeoutAsyncCall in eventHandlerCalls.OnTimeoutAsyncCalls)
             {
-                var onTimeoutAsync = policy
-                    .GetInstanceField("_onTimeoutAsync")
-                    .GetInstanceProperty("Target");
-                HttpClientName = onTimeoutAsync.GetInstanceField<string>("httpClientName");
-                TimeoutOptions = onTimeoutAsync.GetInstanceField<TimeoutOptions>("options");
-                PolicyEventHandler = onTimeoutAsync.GetInstanceField<ITimeoutPolicyEventHandler>("policyEventHandler");
+                onTimeoutAsyncCall.HttpClientName.ShouldBe(httpClientName);
+                onTimeoutAsyncCall.TimeoutOptions.TimeoutInSecs.ShouldBe(_options.TimeoutInSecs);
             }
+        }
 
-            public string HttpClientName { get; }
-
-            public TimeoutOptions TimeoutOptions { get; }
-
-            public ITimeoutPolicyEventHandler PolicyEventHandler { get; }
+        private async Task TimeoutPolicyTriggersOnTimeout()
+        {
+            await Should.ThrowAsync<TimeoutRejectedException>(() =>
+            {
+                return _httpClient
+                    .TimeoutExecutor(_options, _testHttpMessageHandler)
+                    .TriggerTimeoutPolicyAsync();
+            });
         }
     }
 }

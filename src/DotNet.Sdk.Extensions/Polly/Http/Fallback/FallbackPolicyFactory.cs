@@ -16,18 +16,33 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Fallback
             string httpClientName,
             IFallbackPolicyEventHandler policyEventHandler)
         {
+            // handle HttpRequestException thrown by the HttpClient
+            var httpRequestExceptionFallback = Policy<HttpResponseMessage>
+                .Handle<HttpRequestException>()
+                .FallbackAsync(
+                    fallbackAction: (delegateResult, pollyContext, cancellationToken) =>
+                    {
+                        var response = new ExceptionHttpResponseMessage(delegateResult.Exception);
+                        return Task.FromResult<HttpResponseMessage>(response);
+                    },
+                    onFallbackAsync: (outcome, context) =>
+                    {
+                        var fallbackEvent = new FallbackEvent(httpClientName, outcome, context);
+                        return policyEventHandler.OnHttpRequestExceptionFallbackAsync(fallbackEvent);
+                    });
+
             // handle TimeoutRejectedException thrown by a timeout policy
             var timeoutFallback = Policy<HttpResponseMessage>
                 .Handle<TimeoutRejectedException>()
                 .FallbackAsync(
                     fallbackAction: (delegateResult, pollyContext, cancellationToken) =>
                     {
-                        var exception = (TimeoutRejectedException)delegateResult.Exception;
-                        return Task.FromResult<HttpResponseMessage>(new TimeoutHttpResponseMessage(exception));
+                        var response = new TimeoutHttpResponseMessage(delegateResult.Exception);
+                        return Task.FromResult<HttpResponseMessage>(response);
                     },
                     onFallbackAsync: (outcome, context) =>
                     {
-                        var fallbackEvent = new TimeoutFallbackEvent(httpClientName, outcome, context);
+                        var fallbackEvent = new FallbackEvent(httpClientName, outcome, context);
                         return policyEventHandler.OnTimeoutFallbackAsync(fallbackEvent);
                     });
 
@@ -38,38 +53,46 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Fallback
                 .FallbackAsync(
                     fallbackAction: (delegateResult, pollyContext, cancellationToken) =>
                     {
-                        var circuitBrokenHttpResponseMessage = delegateResult.Exception switch
+                        var exception = delegateResult.Exception;
+                        var response = exception switch
                         {
-                            IsolatedCircuitException isolatedCircuitException => new CircuitBrokenHttpResponseMessage(isolatedCircuitException),
-                            BrokenCircuitException brokenCircuitException => new CircuitBrokenHttpResponseMessage(brokenCircuitException),
+                            IsolatedCircuitException => new CircuitBrokenHttpResponseMessage(CircuitBreakerState.Isolated, exception),
+                            BrokenCircuitException => new CircuitBrokenHttpResponseMessage(CircuitBreakerState.Open, exception),
                             _ => throw new ArgumentOutOfRangeException(nameof(delegateResult), $"FallbackPolicyFactory: unexpected exception of type {delegateResult.Exception.GetType()}")
                         };
-                        return Task.FromResult<HttpResponseMessage>(circuitBrokenHttpResponseMessage);
+                        return Task.FromResult<HttpResponseMessage>(response);
                     },
                     onFallbackAsync: (outcome, context) =>
                     {
-                        var fallbackEvent = new BrokenCircuitFallbackEvent(httpClientName, outcome, context);
+                        var fallbackEvent = new FallbackEvent(httpClientName, outcome, context);
                         return policyEventHandler.OnBrokenCircuitFallbackAsync(fallbackEvent);
                     });
 
             // handle TaskCanceledException thrown by HttpClient when it times out.
-            // on newer versions .NET still throws TaskCanceledException but the inner exception is of type System.TimeoutException.
-            // see https://devblogs.microsoft.com/dotnet/net-5-new-networking-improvements/#better-error-handling
             var abortedFallback = Policy<HttpResponseMessage>
                 .Handle<TaskCanceledException>()
                 .FallbackAsync(
                     fallbackAction: (delegateResult, pollyContext, cancellationToken) =>
                     {
-                        var exception = (TaskCanceledException)delegateResult.Exception;
-                        return Task.FromResult<HttpResponseMessage>(new AbortedHttpResponseMessage(exception));
+                        // on newer versions .NET still throws TaskCanceledException but the inner exception is of type System.TimeoutException.
+                        // see https://devblogs.microsoft.com/dotnet/net-5-new-networking-improvements/#better-error-handling
+                        var exception = delegateResult.Exception;
+                        return exception switch
+                        {
+                            { InnerException: TimeoutException } => Task.FromResult<HttpResponseMessage>(new TimeoutHttpResponseMessage(exception)),
+                            _ => Task.FromResult<HttpResponseMessage>(new AbortedHttpResponseMessage(exception))
+                        };
                     },
                     onFallbackAsync: (outcome, context) =>
                     {
-                        var fallbackEvent = new TaskCancelledFallbackEvent(httpClientName, outcome, context);
+                        var fallbackEvent = new FallbackEvent(httpClientName, outcome, context);
                         return policyEventHandler.OnTaskCancelledFallbackAsync(fallbackEvent);
                     });
 
-            var policy = Policy.WrapAsync(timeoutFallback, brokenCircuitFallback, abortedFallback);
+            var policy = Policy.WrapAsync(httpRequestExceptionFallback,
+                timeoutFallback, 
+                brokenCircuitFallback, 
+                abortedFallback);
             return policy;
         }
     }

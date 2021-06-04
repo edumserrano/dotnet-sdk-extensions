@@ -2,17 +2,45 @@
 
 namespace DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker
 {
+    /// <summary>
+    /// Represents the options available to configure a circuit breaker policy.
+    /// </summary>
     public class CircuitBreakerOptions
     {
+        /// <summary>
+        /// The failure threshold at which the circuit will break, eg 0.5 represents breaking if 50% or more of actions result in a handled failure.
+        /// </summary>
+        /// <remarks>
+        /// Must be a value between <see cref="double.Epsilon"/> and 1. 
+        /// </remarks>
         [Range(double.Epsilon, 1)]
         public double FailureThreshold { get; set; }
 
+        /// <summary>
+        /// The duration of the timeslice over which failure ratios are assessed.
+        /// </summary>
+        /// <remarks>
+        /// Must be a value between <see cref="double.Epsilon"/> and <see cref="double.MaxValue"/>.
+        /// </remarks>
         [Range(double.Epsilon, double.MaxValue)]
         public double SamplingDurationInSecs { get; set; }
 
+        /// <summary>
+        /// The minimum throughput: this many actions or more must pass through the circuit in the timeslice,
+        /// for statistics to be considered significant and the circuit-breaker to come into action.
+        /// </summary>
+        /// <remarks>
+        /// Must be a value between 2 and <see cref="int.MaxValue"/>.
+        /// </remarks>
         [Range(2, int.MaxValue)]
         public int MinimumThroughput { get; set; }
 
+        /// <summary>
+        /// The duration the circuit will stay open before resetting.
+        /// </summary>
+        /// <remarks>
+        /// Must be a value between <see cref="double.Epsilon"/> and <see cref="double.MaxValue"/>.
+        /// </remarks>
         [Range(double.Epsilon, double.MaxValue)]
         public double DurationOfBreakInSecs { get; set; }
     }

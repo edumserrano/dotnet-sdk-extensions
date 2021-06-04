@@ -21,41 +21,38 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
 {
     /// <summary>
     /// Tests for the <see cref="CircuitBreakerPolicyHttpClientBuilderExtensions"/> class.
-    /// Specifically for the CircuitBreakerHttpClientBuilderExtensions.AddCircuitBreakerPolicy overloads.
     ///
-    /// Many tests here use reflection to check that the policy is configured as expected.
-    /// Although I'd prefer to do it without using reflection I couldn't find an alternative.
-    /// At least not one that wouldn't force me to trigger the policy in different scenarios
-    /// to check what I need. If I did that then it would almost be like testing that the Polly
-    /// policies do what they are supposed to do and my intention is NOT to test the Polly code.
+    /// NOTE: when debugging sometimes the tests might not behave as expected because the circuit breaker
+    /// is time sensitive in its nature as shown by the duration of break and sampling duration properties.
+    /// If required try to increase the CircuitBreakerOptions.SamplingDurationInSecs to a greater value to
+    /// allow the tests to run successfully when the debugger is attached. For instance, set it to 2 instead of 0.2.
     ///
-    /// Because of the reflection usage these tests can break when updating the Polly packages.
+    /// This is not ideal but at the moment it's the only suggested workaround because these tests are triggering
+    /// the circuit breaker policy and I don't know how to manipulate/fake time for the policy.
     /// </summary>
     [Trait("Category", XUnitCategories.Polly)]
-    [Collection(XUnitTestCollections.CircuitBreakerPolicy)]
-    public class AddCircuitBreakerPolicyTests : IDisposable
+    public class AddCircuitBreakerPolicyTests
     {
         /// <summary>
         /// Tests that the <see cref="CircuitBreakerPolicyHttpClientBuilderExtensions.AddCircuitBreakerPolicy(IHttpClientBuilder,Action{CircuitBreakerOptions})"/>
         /// overload method adds a <see cref="DelegatingHandler"/> with a circuit break to the <see cref="HttpClient"/>.
-        ///
-        /// This overload accepts only an action to configure the value of the <see cref="CircuitBreakerOptions"/>.
         /// </summary>
         [Fact]
-        public void AddCircuitBreakerPolicy1()
+        public async Task AddCircuitBreakerPolicy1()
         {
-            AsyncPolicyWrap<HttpResponseMessage>? circuitBreakerPolicy = null;
+            var testHttpMessageHandler = new TestHttpMessageHandler();
             var httpClientName = "GitHub";
             var circuitBreakerOptions = new CircuitBreakerOptions
             {
-                DurationOfBreakInSecs = 30,
-                SamplingDurationInSecs = 60,
+                DurationOfBreakInSecs = 0.01,
+                SamplingDurationInSecs = 0.02,
                 FailureThreshold = 0.6,
                 MinimumThroughput = 10
             };
             var services = new ServiceCollection();
             services
                 .AddHttpClient(httpClientName)
+                .ConfigureHttpClient(client => client.BaseAddress = new Uri("https://github.com"))
                 .AddCircuitBreakerPolicy(options =>
                 {
                     options.DurationOfBreakInSecs = circuitBreakerOptions.DurationOfBreakInSecs;
@@ -63,41 +60,28 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
                     options.FailureThreshold = circuitBreakerOptions.FailureThreshold;
                     options.MinimumThroughput = circuitBreakerOptions.MinimumThroughput;
                 })
-                .ConfigureHttpMessageHandlerBuilder(httpMessageHandlerBuilder =>
-                {
-                    circuitBreakerPolicy = httpMessageHandlerBuilder.AdditionalHandlers
-                        .GetPolicies<AsyncPolicyWrap<HttpResponseMessage>>()
-                        .FirstOrDefault();
-                });
+                .ConfigurePrimaryHttpMessageHandler(() => testHttpMessageHandler);
 
-            var serviceProvider = services.BuildServiceProvider();
-            serviceProvider.InstantiateNamedHttpClient(httpClientName);
-
-            var circuitBreakerAsserter = new CircuitBreakerPolicyAsserter(
-                httpClientName,
-                circuitBreakerOptions,
-                circuitBreakerPolicy);
-            circuitBreakerAsserter.PolicyShouldBeConfiguredAsExpected();
-            circuitBreakerAsserter.PolicyShouldTriggerPolicyEventHandler(typeof(DefaultCircuitBreakerPolicyEventHandler));
+            await using var serviceProvider = services.BuildServiceProvider();
+            var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
+            await httpClient
+                .CircuitBreakerPolicyAsserter(circuitBreakerOptions, testHttpMessageHandler)
+                .HttpClientShouldContainCircuitBreakerPolicyAsync();
         }
 
         /// <summary>
         /// Tests that the <see cref="CircuitBreakerPolicyHttpClientBuilderExtensions.AddCircuitBreakerPolicy(IHttpClientBuilder,string)"/>
         /// overload method adds a <see cref="DelegatingHandler"/> with a circuit break to the <see cref="HttpClient"/>.
-        /// 
-        /// This overload accepts only the name of the option to use for the value of the <see cref="CircuitBreakerOptions"/>.
-        /// The options must be added and configured on the <see cref="ServiceCollection"/>. This is done via the
-        /// <see cref="CircuitBreakerOptionsExtensions.AddHttpClientCircuitBreakerOptions"/> extension method.
         /// </summary>
         [Fact]
-        public void AddCircuitBreakerPolicy2()
+        public async Task AddCircuitBreakerPolicy2()
         {
-            AsyncPolicyWrap<HttpResponseMessage>? circuitBreakerPolicy = null;
+            var testHttpMessageHandler = new TestHttpMessageHandler();
             var httpClientName = "GitHub";
             var circuitBreakerOptions = new CircuitBreakerOptions
             {
-                DurationOfBreakInSecs = 30,
-                SamplingDurationInSecs = 60,
+                DurationOfBreakInSecs = 0.01,
+                SamplingDurationInSecs = 0.02,
                 FailureThreshold = 0.6,
                 MinimumThroughput = 10
             };
@@ -114,47 +98,41 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
                 });
             services
                 .AddHttpClient(httpClientName)
+                .ConfigureHttpClient(client => client.BaseAddress = new Uri("https://github.com"))
                 .AddCircuitBreakerPolicy(optionsName)
-                .ConfigureHttpMessageHandlerBuilder(httpMessageHandlerBuilder =>
-                {
-                    circuitBreakerPolicy = httpMessageHandlerBuilder.AdditionalHandlers
-                        .GetPolicies<AsyncPolicyWrap<HttpResponseMessage>>()
-                        .FirstOrDefault();
-                });
+                .ConfigurePrimaryHttpMessageHandler(() => testHttpMessageHandler);
 
-            var serviceProvider = services.BuildServiceProvider();
-            serviceProvider.InstantiateNamedHttpClient(httpClientName);
-
-            var circuitBreakerAsserter = new CircuitBreakerPolicyAsserter(
-                httpClientName,
-                circuitBreakerOptions,
-                circuitBreakerPolicy);
-            circuitBreakerAsserter.PolicyShouldBeConfiguredAsExpected();
-            circuitBreakerAsserter.PolicyShouldTriggerPolicyEventHandler(typeof(DefaultCircuitBreakerPolicyEventHandler));
+            await using var serviceProvider = services.BuildServiceProvider();
+            var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
+            await httpClient
+                .CircuitBreakerPolicyAsserter(circuitBreakerOptions, testHttpMessageHandler)
+                .HttpClientShouldContainCircuitBreakerPolicyAsync();
         }
 
         /// <summary>
         /// Tests that the <see cref="CircuitBreakerPolicyHttpClientBuilderExtensions.AddCircuitBreakerPolicy{TPolicyEventHandler}(IHttpClientBuilder,Action{CircuitBreakerOptions})"/>
         /// overload method adds a <see cref="DelegatingHandler"/> with a circuit break to the <see cref="HttpClient"/>.
         /// 
-        /// This overload accepts the name of the option to use for the value of the <see cref="CircuitBreakerOptions"/>
-        /// and a <see cref="ICircuitBreakerPolicyEventHandler"/> type to handle the circuit break events.
+        /// This also tests that the <see cref="ICircuitBreakerPolicyEventHandler"/> events are triggered with the correct values.
         /// </summary>
         [Fact]
-        public void AddCircuitBreakerPolicy3()
+        public async Task AddCircuitBreakerPolicy3()
         {
-            AsyncPolicyWrap<HttpResponseMessage>? circuitBreakerPolicy = null;
+            var circuitBreakerPolicyEventHandlerCalls = new CircuitBreakerPolicyEventHandlerCalls();
+            var testHttpMessageHandler = new TestHttpMessageHandler();
             var httpClientName = "GitHub";
             var circuitBreakerOptions = new CircuitBreakerOptions
             {
-                DurationOfBreakInSecs = 30,
-                SamplingDurationInSecs = 60,
+                DurationOfBreakInSecs = 0.01,
+                SamplingDurationInSecs = 0.02,
                 FailureThreshold = 0.6,
                 MinimumThroughput = 10
             };
             var services = new ServiceCollection();
+            services.AddSingleton(circuitBreakerPolicyEventHandlerCalls);
             services
                 .AddHttpClient(httpClientName)
+                .ConfigureHttpClient(client => client.BaseAddress = new Uri("https://github.com"))
                 .AddCircuitBreakerPolicy<TestCircuitBreakerPolicyEventHandler>(options =>
                 {
                     options.DurationOfBreakInSecs = circuitBreakerOptions.DurationOfBreakInSecs;
@@ -162,43 +140,82 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
                     options.FailureThreshold = circuitBreakerOptions.FailureThreshold;
                     options.MinimumThroughput = circuitBreakerOptions.MinimumThroughput;
                 })
-                .ConfigureHttpMessageHandlerBuilder(httpMessageHandlerBuilder =>
-                {
-                    circuitBreakerPolicy = httpMessageHandlerBuilder.AdditionalHandlers
-                        .GetPolicies<AsyncPolicyWrap<HttpResponseMessage>>()
-                        .FirstOrDefault();
-                });
+                .ConfigurePrimaryHttpMessageHandler(() => testHttpMessageHandler);
 
-            var serviceProvider = services.BuildServiceProvider();
-            serviceProvider.InstantiateNamedHttpClient(httpClientName);
-
-            var circuitBreakerAsserter = new CircuitBreakerPolicyAsserter(
-                httpClientName,
-                circuitBreakerOptions,
-                circuitBreakerPolicy);
-            circuitBreakerAsserter.PolicyShouldBeConfiguredAsExpected();
-            circuitBreakerAsserter.PolicyShouldTriggerPolicyEventHandler(typeof(TestCircuitBreakerPolicyEventHandler));
+            await using var serviceProvider = services.BuildServiceProvider();
+            var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
+            var circuitBreakerAsserter = httpClient.CircuitBreakerPolicyAsserter(circuitBreakerOptions, testHttpMessageHandler);
+            await circuitBreakerAsserter.HttpClientShouldContainCircuitBreakerPolicyAsync();
+            circuitBreakerAsserter.EventHandlerShouldReceiveExpectedEvents(
+                count: 15, // the circuitBreakerAsserter.HttpClientShouldContainCircuitBreakerPolicyAsync triggers the circuit breaker 15 times
+                httpClientName: httpClientName,
+                eventHandlerCalls: circuitBreakerPolicyEventHandlerCalls);
         }
 
         /// <summary>
         /// Tests that the <see cref="CircuitBreakerPolicyHttpClientBuilderExtensions.AddCircuitBreakerPolicy{TPolicyEventHandler}(IHttpClientBuilder,string)"/>
         /// overload method adds a <see cref="DelegatingHandler"/> with a circuit break to the <see cref="HttpClient"/>.
         ///
-        /// This overload accepts the name of the option to use for the value of the <see cref="CircuitBreakerOptions"/>.
-        /// The options must be added and configured on the <see cref="ServiceCollection"/>. This is done via the
-        /// <see cref="CircuitBreakerOptionsExtensions.AddHttpClientCircuitBreakerOptions"/> extension method.
-        ///
-        /// This overload also accepts an <see cref="ICircuitBreakerPolicyEventHandler"/> type to handle the circuit break events.
+        /// This also tests that the <see cref="ICircuitBreakerPolicyEventHandler"/> events are triggered with the correct values.
         /// </summary>
         [Fact]
-        public void AddCircuitBreakerPolicy4()
+        public async Task AddCircuitBreakerPolicy4()
         {
-            AsyncPolicyWrap<HttpResponseMessage>? circuitBreakerPolicy = null;
+            var circuitBreakerPolicyEventHandlerCalls = new CircuitBreakerPolicyEventHandlerCalls();
+            var testHttpMessageHandler = new TestHttpMessageHandler();
             var httpClientName = "GitHub";
             var circuitBreakerOptions = new CircuitBreakerOptions
             {
-                DurationOfBreakInSecs = 30,
-                SamplingDurationInSecs = 60,
+                DurationOfBreakInSecs = 0.01,
+                SamplingDurationInSecs = 0.02,
+                FailureThreshold = 0.6,
+                MinimumThroughput = 10
+            };
+            var optionsName = "GitHubOptions";
+
+            var services = new ServiceCollection();
+            services.AddSingleton(circuitBreakerPolicyEventHandlerCalls);
+            services
+                .AddHttpClientCircuitBreakerOptions(optionsName)
+                .Configure(options =>
+                {
+                    options.DurationOfBreakInSecs = circuitBreakerOptions.DurationOfBreakInSecs;
+                    options.SamplingDurationInSecs = circuitBreakerOptions.SamplingDurationInSecs;
+                    options.FailureThreshold = circuitBreakerOptions.FailureThreshold;
+                    options.MinimumThroughput = circuitBreakerOptions.MinimumThroughput;
+                });
+            services
+                .AddHttpClient(httpClientName)
+                .ConfigureHttpClient(client => client.BaseAddress = new Uri("https://github.com"))
+                .AddCircuitBreakerPolicy<TestCircuitBreakerPolicyEventHandler>(optionsName)
+                .ConfigurePrimaryHttpMessageHandler(() => testHttpMessageHandler);
+
+            await using var serviceProvider = services.BuildServiceProvider();
+            var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
+            var circuitBreakerAsserter = httpClient.CircuitBreakerPolicyAsserter(circuitBreakerOptions, testHttpMessageHandler);
+            await circuitBreakerAsserter.HttpClientShouldContainCircuitBreakerPolicyAsync();
+            circuitBreakerAsserter.EventHandlerShouldReceiveExpectedEvents(
+                count: 15, // the circuitBreakerAsserter.HttpClientShouldContainCircuitBreakerPolicyAsync triggers the circuit breaker 15 times
+                httpClientName: httpClientName,
+                eventHandlerCalls: circuitBreakerPolicyEventHandlerCalls);
+        }
+
+        /// <summary>
+        /// Tests that the <see cref="CircuitBreakerPolicyHttpClientBuilderExtensions.AddCircuitBreakerPolicy(IHttpClientBuilder,string,Func{IServiceProvider,ICircuitBreakerPolicyEventHandler})"/>
+        /// overload method adds a <see cref="DelegatingHandler"/> with a circuit break to the <see cref="HttpClient"/>.
+        ///
+        /// This also tests that the <see cref="ICircuitBreakerPolicyEventHandler"/> events are triggered with the correct values.
+        /// </summary>
+        [Fact]
+        public async Task AddCircuitBreakerPolicy5()
+        {
+            var circuitBreakerPolicyEventHandlerCalls = new CircuitBreakerPolicyEventHandlerCalls();
+            var testHttpMessageHandler = new TestHttpMessageHandler();
+            var httpClientName = "GitHub";
+            var circuitBreakerOptions = new CircuitBreakerOptions
+            {
+                DurationOfBreakInSecs = 0.01,
+                SamplingDurationInSecs = 0.02,
                 FailureThreshold = 0.6,
                 MinimumThroughput = 10
             };
@@ -216,23 +233,68 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
                 });
             services
                 .AddHttpClient(httpClientName)
-                .AddCircuitBreakerPolicy<TestCircuitBreakerPolicyEventHandler>(optionsName)
-                .ConfigureHttpMessageHandlerBuilder(httpMessageHandlerBuilder =>
+                .ConfigureHttpClient(client => client.BaseAddress = new Uri("https://github.com"))
+                .AddCircuitBreakerPolicy(optionsName, provider =>
                 {
-                    circuitBreakerPolicy = httpMessageHandlerBuilder.AdditionalHandlers
-                        .GetPolicies<AsyncPolicyWrap<HttpResponseMessage>>()
-                        .FirstOrDefault();
-                });
+                    return new TestCircuitBreakerPolicyEventHandler(circuitBreakerPolicyEventHandlerCalls);
+                })
+                .ConfigurePrimaryHttpMessageHandler(() => testHttpMessageHandler);
 
-            var serviceProvider = services.BuildServiceProvider();
-            serviceProvider.InstantiateNamedHttpClient(httpClientName);
+            await using var serviceProvider = services.BuildServiceProvider();
+            var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
+            var circuitBreakerAsserter = httpClient.CircuitBreakerPolicyAsserter(circuitBreakerOptions, testHttpMessageHandler);
+            await circuitBreakerAsserter.HttpClientShouldContainCircuitBreakerPolicyAsync();
+            circuitBreakerAsserter.EventHandlerShouldReceiveExpectedEvents(
+                count: 15, // the circuitBreakerAsserter.HttpClientShouldContainCircuitBreakerPolicyAsync triggers the circuit breaker 15 times
+                httpClientName: httpClientName,
+                eventHandlerCalls: circuitBreakerPolicyEventHandlerCalls);
+        }
 
-            var circuitBreakerAsserter = new CircuitBreakerPolicyAsserter(
-                httpClientName,
-                circuitBreakerOptions,
-                circuitBreakerPolicy);
-            circuitBreakerAsserter.PolicyShouldBeConfiguredAsExpected();
-            circuitBreakerAsserter.PolicyShouldTriggerPolicyEventHandler(typeof(TestCircuitBreakerPolicyEventHandler));
+        /// <summary>
+        /// Tests that the <see cref="CircuitBreakerPolicyHttpClientBuilderExtensions.AddCircuitBreakerPolicy(IHttpClientBuilder,Action{CircuitBreakerOptions},Func{IServiceProvider,ICircuitBreakerPolicyEventHandler})"/>
+        /// overload method adds a <see cref="DelegatingHandler"/> with a circuit break to the <see cref="HttpClient"/>.
+        /// 
+        /// This also tests that the <see cref="ICircuitBreakerPolicyEventHandler"/> events are triggered with the correct values.
+        /// </summary>
+        [Fact]
+        public async Task AddCircuitBreakerPolicy6()
+        {
+            var circuitBreakerPolicyEventHandlerCalls = new CircuitBreakerPolicyEventHandlerCalls();
+            var testHttpMessageHandler = new TestHttpMessageHandler();
+            var httpClientName = "GitHub";
+            var circuitBreakerOptions = new CircuitBreakerOptions
+            {
+                DurationOfBreakInSecs = 0.01,
+                SamplingDurationInSecs = 0.02,
+                FailureThreshold = 0.6,
+                MinimumThroughput = 10
+            };
+            var services = new ServiceCollection();
+            services
+                .AddHttpClient(httpClientName)
+                .ConfigureHttpClient(client => client.BaseAddress = new Uri("https://github.com"))
+                .AddCircuitBreakerPolicy(
+                    configureOptions: options =>
+                    {
+                        options.DurationOfBreakInSecs = circuitBreakerOptions.DurationOfBreakInSecs;
+                        options.SamplingDurationInSecs = circuitBreakerOptions.SamplingDurationInSecs;
+                        options.FailureThreshold = circuitBreakerOptions.FailureThreshold;
+                        options.MinimumThroughput = circuitBreakerOptions.MinimumThroughput;
+                    },
+                    eventHandlerFactory: provider =>
+                    {
+                        return new TestCircuitBreakerPolicyEventHandler(circuitBreakerPolicyEventHandlerCalls);
+                    })
+                .ConfigurePrimaryHttpMessageHandler(() => testHttpMessageHandler);
+
+            await using var serviceProvider = services.BuildServiceProvider();
+            var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
+            var circuitBreakerAsserter = httpClient.CircuitBreakerPolicyAsserter(circuitBreakerOptions, testHttpMessageHandler);
+            await circuitBreakerAsserter.HttpClientShouldContainCircuitBreakerPolicyAsync();
+            circuitBreakerAsserter.EventHandlerShouldReceiveExpectedEvents(
+                count: 15, // the circuitBreakerAsserter.HttpClientShouldContainCircuitBreakerPolicyAsync triggers the circuit breaker 15 times
+                httpClientName: httpClientName,
+                eventHandlerCalls: circuitBreakerPolicyEventHandlerCalls);
         }
 
         /// <summary>
@@ -249,8 +311,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
             AsyncPolicyWrap<HttpResponseMessage>? circuitBreakerPolicy2 = null;
             var circuitBreakerOptions = new CircuitBreakerOptions
             {
-                DurationOfBreakInSecs = 30,
-                SamplingDurationInSecs = 60,
+                DurationOfBreakInSecs = 0.01,
+                SamplingDurationInSecs = 0.02,
                 FailureThreshold = 0.6,
                 MinimumThroughput = 10
             };
@@ -286,10 +348,9 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
                         .FirstOrDefault();
                 });
 
-            var serviceProvider = services.BuildServiceProvider();
+            using var serviceProvider = services.BuildServiceProvider();
             serviceProvider.InstantiateNamedHttpClient("GitHub");
             serviceProvider.InstantiateNamedHttpClient("Microsoft");
-
             circuitBreakerPolicy1.ShouldNotBeNull();
             circuitBreakerPolicy2.ShouldNotBeNull();
             ReferenceEquals(circuitBreakerPolicy1, circuitBreakerPolicy2).ShouldBeFalse();
@@ -313,17 +374,18 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
         [Fact]
         public async Task AddCircuitBreakerPolicyDoesNotThrowExceptionWhenCircuitIsOpen()
         {
-            AsyncPolicyWrap<HttpResponseMessage>? wrappedCircuitBreakerPolicy = null;
+            var testHttpMessageHandler = new TestHttpMessageHandler();
             var circuitBreakerOptions = new CircuitBreakerOptions
             {
-                DurationOfBreakInSecs = 30,
-                SamplingDurationInSecs = 60,
+                DurationOfBreakInSecs = 0.01,
+                SamplingDurationInSecs = 0.02,
                 FailureThreshold = 0.6,
                 MinimumThroughput = 10
             };
             var services = new ServiceCollection();
             services
                 .AddHttpClient("GitHub")
+                .ConfigureHttpClient(client => client.BaseAddress = new Uri("https://github.com"))
                 .AddCircuitBreakerPolicy(options =>
                 {
                     options.DurationOfBreakInSecs = circuitBreakerOptions.DurationOfBreakInSecs;
@@ -331,62 +393,25 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
                     options.FailureThreshold = circuitBreakerOptions.FailureThreshold;
                     options.MinimumThroughput = circuitBreakerOptions.MinimumThroughput;
                 })
-                .ConfigurePrimaryHttpMessageHandler(() =>
-                {
-                    return new TestHttpMessageHandler()
-                        .MockHttpResponse(builder =>
-                        {
-                            builder.RespondWith(httpRequestMessage =>
-                            {
-                                // return HttpStatusCode.ServiceUnavailable to trigger the circuit breaker
-                                return new HttpResponseMessage(HttpStatusCode.ServiceUnavailable);
-                            });
-                        });
-                })
-                .ConfigureHttpMessageHandlerBuilder(httpMessageHandlerBuilder =>
-                {
-                    wrappedCircuitBreakerPolicy = httpMessageHandlerBuilder.AdditionalHandlers
-                        .GetPolicies<AsyncPolicyWrap<HttpResponseMessage>>()
-                        .FirstOrDefault();
-                });
+                .ConfigurePrimaryHttpMessageHandler(() => testHttpMessageHandler);
 
-            var serviceProvider = services.BuildServiceProvider();
+            await using var serviceProvider = services.BuildServiceProvider();
             var httpClient = serviceProvider.InstantiateNamedHttpClient("GitHub");
-
-            wrappedCircuitBreakerPolicy.ShouldNotBeNull();
-            var circuitBreakerPolicy = (AsyncCircuitBreakerPolicy<HttpResponseMessage>)wrappedCircuitBreakerPolicy.Inner;
-
-            // isolate the circuit and do a request to check it does not throw an exception
-            circuitBreakerPolicy.Isolate();
-            var circuitBrokenHttpResponseMessage1 = (CircuitBrokenHttpResponseMessage)await httpClient.GetAsync("http://github.com");
-            circuitBrokenHttpResponseMessage1.StatusCode.ShouldBe(HttpStatusCode.InternalServerError); 
-            circuitBrokenHttpResponseMessage1.CircuitBreakerState.ShouldBe(CircuitBreakerState.Isolated);
-            circuitBrokenHttpResponseMessage1.BrokenCircuitException.ShouldBeNull();
-            circuitBrokenHttpResponseMessage1.IsolatedCircuitException.ShouldBeNull();
-
-            // reset and trigger the circuit breaker policy so that the circuit opens then send a request
-            // which should also not throw an exception
-            circuitBreakerPolicy.Reset();
-            for (var i = 0; i < circuitBreakerOptions.MinimumThroughput; i++)
-            {
-                var response = await httpClient.GetAsync("https://github.com");
-                // just to show that the status code that is being return is HttpStatusCode.ServiceUnavailable
-                // and that will trigger the circuit after this while loop is done. Then the status code
-                // will be a HttpStatusCode.InternalServerError just to indicate that request failed, it was a quick
-                // fail because the circuit is open, the request was not even attempted and it didn't reach the circuit
-                // breaker or else an exception would have been thrown
-                response.StatusCode.ShouldBe(HttpStatusCode.ServiceUnavailable);
-            }
-            var circuitBrokenHttpResponseMessage2 = (CircuitBrokenHttpResponseMessage)await httpClient.GetAsync("http://github.com");
-            circuitBrokenHttpResponseMessage2.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
-            circuitBrokenHttpResponseMessage2.CircuitBreakerState.ShouldBe(CircuitBreakerState.Open);
-            circuitBrokenHttpResponseMessage2.BrokenCircuitException.ShouldBeNull();
-            circuitBrokenHttpResponseMessage2.IsolatedCircuitException.ShouldBeNull();
-        }
-
-        public void Dispose()
-        {
-            TestCircuitBreakerPolicyEventHandler.Clear();
+            var circuitBreaker = httpClient.CircuitBreakerExecutor(circuitBreakerOptions, testHttpMessageHandler);
+            await circuitBreaker.TriggerFromTransientHttpStatusCodeAsync(HttpStatusCode.ServiceUnavailable);
+            // after the above the circuit state is now open which means the following http request, if it hit the
+            // circuit breaker policy, would throw a BrokenCircuitException/IsolatedCircuitException; however,
+            // because we wrapped the circuit breaker policy with a CircuitBreakerCheckerAsyncPolicy what we get
+            // instead is a CircuitBrokenHttpResponseMessage instance
+            var response = await httpClient.GetAsync($"/circuit-breaker/transient-http-status-code/{HttpStatusCode.ServiceUnavailable}");
+            var circuitBrokenHttpResponseMessage = response as CircuitBrokenHttpResponseMessage;
+            circuitBrokenHttpResponseMessage.ShouldNotBeNull();
+            circuitBrokenHttpResponseMessage.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
+            circuitBrokenHttpResponseMessage.CircuitBreakerState.ShouldBe(CircuitBreakerState.Open);
+            // the Exception property should be null because the circuit breaker should NOT be throwing an exception.
+            // The CircuitBreakerCheckerAsyncPolicy should check that the circuit is open and return the
+            // CircuitBrokenHttpResponseMessage without any exception
+            circuitBrokenHttpResponseMessage.Exception.ShouldBeNull();
         }
     }
 }

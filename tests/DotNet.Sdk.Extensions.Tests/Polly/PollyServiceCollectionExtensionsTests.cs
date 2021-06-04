@@ -47,7 +47,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly
         {
             var services = new ServiceCollection();
             services.AddPolicyRegistry((provider, policyRegistry) => { });
-            var serviceProvider = services.BuildServiceProvider();
+            using var serviceProvider = services.BuildServiceProvider();
             var registry = serviceProvider.GetService<IPolicyRegistry<string>>();
             var readOnlyRegistry = serviceProvider.GetService<IReadOnlyPolicyRegistry<string>>();
             registry.ShouldNotBeNull();
@@ -70,7 +70,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly
                 policyRegistry.Add(key: policyKey, expectedPolicy);
             });
 
-            var serviceProvider = services.BuildServiceProvider();
+            using var serviceProvider = services.BuildServiceProvider();
             var registry = serviceProvider.GetRequiredService<IReadOnlyPolicyRegistry<string>>();
             registry.TryGet<IsPolicy>(policyKey, out var policy).ShouldBeTrue();
             ReferenceEquals(expectedPolicy, policy).ShouldBeTrue();

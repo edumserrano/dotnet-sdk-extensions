@@ -1,22 +1,21 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Polly.Http.Timeout.Events;
 
 namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Auxiliary
 {
     public class TestTimeoutPolicyEventHandler : ITimeoutPolicyEventHandler
     {
-        public static IList<TimeoutEvent> OnTimeoutAsyncCalls { get; } = new List<TimeoutEvent>();
+        private readonly TimeoutPolicyEventHandlerCalls _timeoutPolicyEventHandlerCalls;
+
+        public TestTimeoutPolicyEventHandler(TimeoutPolicyEventHandlerCalls timeoutPolicyEventHandlerCalls)
+        {
+            _timeoutPolicyEventHandlerCalls = timeoutPolicyEventHandlerCalls;
+        }
 
         public Task OnTimeoutAsync(TimeoutEvent timeoutEvent)
         {
-            OnTimeoutAsyncCalls.Add(timeoutEvent);
+            _timeoutPolicyEventHandlerCalls.AddOnTimeoutAsync(timeoutEvent);
             return Task.CompletedTask;
-        }
-
-        public static void Clear()
-        {
-            OnTimeoutAsyncCalls.Clear();
         }
     }
 }
