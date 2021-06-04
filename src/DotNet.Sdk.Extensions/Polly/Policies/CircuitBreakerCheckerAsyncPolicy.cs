@@ -8,14 +8,16 @@ using Polly.CircuitBreaker;
 namespace DotNet.Sdk.Extensions.Polly.Policies
 {
     /// <summary>
-    /// Polly policy to check if a circuit breaker is opened and avoid throwing an exception if the circuit is open/isolated.
+    /// The purpose of this class is just to provide a slightly different syntax usage of
+    /// the <see cref="CircuitBreakerCheckerAsyncPolicy{T}.Create"/> factory method.
     /// </summary>
-    /// <typeparam name="T">The return type of the delegate that the policy is applied to.</typeparam>
-    public class CircuitBreakerCheckerAsyncPolicy<T> : AsyncPolicy<T>
+    /// <remarks>
+    /// It allows keeping the same syntax between extension and non-extension methods because
+    /// instead of doing <see cref="CircuitBreakerCheckerAsyncPolicy{T}.Create"/> it allows doing
+    /// <see cref="CircuitBreakerCheckerAsyncPolicy.Create{T}"/>
+    /// </remarks>
+    public class CircuitBreakerCheckerAsyncPolicy
     {
-        private readonly ICircuitBreakerPolicy _circuitBreakerPolicy;
-        private readonly Func<CircuitBreakerState, Context, CancellationToken, Task<T>> _factory;
-
         /// <summary>
         /// Create a policy to to check if a circuit breaker is opened and avoid throwing an exception if the circuit is open/isolated. 
         /// </summary>
@@ -23,10 +25,28 @@ namespace DotNet.Sdk.Extensions.Polly.Policies
         /// If the state of the circuit breaker policy is open or isolated then the policy chain execution is short circuited and the
         /// factory methods are invoked invoked to return a result.
         /// </remarks>
+        /// <typeparam name="T">The type returned by the delegate to which the policy is applied to.</typeparam>
         /// <param name="circuitBreakerPolicy">The circuit breaker policy whose state will be checked.</param>
         /// <param name="factory">A delegate to create a valid return type if the circuit's state is open or isolated.</param>
-        /// <returns></returns>
-        public static CircuitBreakerCheckerAsyncPolicy<T> Create(
+        /// <returns>The circuit breaker checker policy</returns>
+        public static CircuitBreakerCheckerAsyncPolicy<T> Create<T>(
+            ICircuitBreakerPolicy circuitBreakerPolicy,
+            Func<CircuitBreakerState, Context, CancellationToken, Task<T>> factory)
+        {
+            return CircuitBreakerCheckerAsyncPolicy<T>.Create(circuitBreakerPolicy, factory);
+        }
+    }
+
+    /// <summary>
+    /// Polly policy to check if a circuit breaker is opened and avoid throwing an exception if the circuit is open/isolated.
+    /// </summary>
+    /// <typeparam name="T">The return type of the delegate that the policy is applied to.</typeparam>
+    public class CircuitBreakerCheckerAsyncPolicy<T> : AsyncPolicy<T>
+    {
+        private readonly ICircuitBreakerPolicy _circuitBreakerPolicy;
+        private readonly Func<CircuitBreakerState, Context, CancellationToken, Task<T>> _factory;
+        
+        internal static CircuitBreakerCheckerAsyncPolicy<T> Create(
             ICircuitBreakerPolicy circuitBreakerPolicy,
             Func<CircuitBreakerState, Context, CancellationToken, Task<T>> factory)
         {

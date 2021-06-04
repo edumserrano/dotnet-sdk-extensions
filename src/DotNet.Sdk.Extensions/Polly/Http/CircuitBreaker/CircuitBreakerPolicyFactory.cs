@@ -48,7 +48,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker
                         var halfOpenEvent = new HalfOpenEvent(httpClientName, options);
                         await policyEventHandler.OnHalfOpenAsync(halfOpenEvent);
                     });
-            var circuitBreakerCheckerPolicy = CircuitBreakerCheckerAsyncPolicy<HttpResponseMessage>.Create(
+            var circuitBreakerCheckerPolicy = CircuitBreakerCheckerAsyncPolicy.Create(
                 circuitBreakerPolicy: circuitBreakerPolicy,
                 factory: (circuitBreakerState, context, cancellationToken) =>
                 {
