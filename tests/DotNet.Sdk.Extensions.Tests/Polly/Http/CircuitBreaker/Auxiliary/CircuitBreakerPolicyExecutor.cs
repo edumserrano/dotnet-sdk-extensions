@@ -76,12 +76,12 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
             var response = await _httpClient.GetAsync(requestPath);
             if (response is not CircuitBrokenHttpResponseMessage circuitBrokenHttpResponseMessage)
             {
-                throw new InvalidOperationException($"Unexpected response type from open circuit. Expected a {typeof(CircuitBrokenHttpResponseMessage)} but got a {response.GetType()}");
+                throw new InvalidOperationException($"Unexpected response type from open circuit. Expected a {typeof(CircuitBrokenHttpResponseMessage)} but got a {response.GetType()} from requestPath: {requestPath}");
             }
 
             if (circuitBrokenHttpResponseMessage.StatusCode != HttpStatusCode.InternalServerError)
             {
-                throw new InvalidOperationException($"Unexpected status code from open circuit. Got {response.StatusCode} but expected {HttpStatusCode.InternalServerError}.");
+                throw new InvalidOperationException($"Unexpected status code from open circuit. Got {response.StatusCode} but expected {HttpStatusCode.InternalServerError} from requestPath: {requestPath}");
             }
         }
 
