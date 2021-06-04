@@ -19,8 +19,9 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Fallback.Extensions
         /// <returns>The <see cref="IHttpClientBuilder"/> for chaining.</returns>
         public static IHttpClientBuilder AddFallbackPolicy(this IHttpClientBuilder httpClientBuilder)
         {
-            Func<IServiceProvider, IFallbackPolicyEventHandler> eventHandlerFactory = _ => new DefaultFallbackPolicyEventHandler();
-            return httpClientBuilder.AddFallbackPolicy(eventHandlerFactory);
+            return httpClientBuilder.AddFallbackPolicy(EventHandlerFactory);
+
+            static IFallbackPolicyEventHandler EventHandlerFactory(IServiceProvider _) => new DefaultFallbackPolicyEventHandler();
         }
 
 
@@ -34,8 +35,9 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Fallback.Extensions
             where TPolicyEventHandler : class, IFallbackPolicyEventHandler
         {
             httpClientBuilder.Services.TryAddSingleton<TPolicyEventHandler>();
-            Func<IServiceProvider, IFallbackPolicyEventHandler> eventHandlerFactory = provider => provider.GetRequiredService<TPolicyEventHandler>();
-            return httpClientBuilder.AddFallbackPolicy(eventHandlerFactory);
+            return httpClientBuilder.AddFallbackPolicy(EventHandlerFactory);
+
+            static IFallbackPolicyEventHandler EventHandlerFactory(IServiceProvider provider) => provider.GetRequiredService<TPolicyEventHandler>();
         }
         /// <summary>
         /// Adds a fallback policy to the <see cref="HttpClient"/>.

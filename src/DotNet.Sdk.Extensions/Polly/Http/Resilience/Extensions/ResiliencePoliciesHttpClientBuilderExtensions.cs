@@ -29,11 +29,12 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Resilience.Extensions
             this IHttpClientBuilder httpClientBuilder,
             string optionsName)
         {
-            Func<IServiceProvider, IResiliencePoliciesEventHandler> eventHandlerFactory = _ => new DefaultResiliencePoliciesEventHandler();
             return httpClientBuilder.AddResiliencePoliciesCore(
                 optionsName: optionsName,
                 configureOptions: null,
-                eventHandlerFactory: eventHandlerFactory);
+                eventHandlerFactory: EventHandlerFactory);
+
+            static IResiliencePoliciesEventHandler EventHandlerFactory(IServiceProvider _) => new DefaultResiliencePoliciesEventHandler();
         }
 
         /// <summary>
@@ -46,11 +47,12 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Resilience.Extensions
             this IHttpClientBuilder httpClientBuilder,
             Action<ResilienceOptions> configureOptions)
         {
-            Func<IServiceProvider, IResiliencePoliciesEventHandler> eventHandlerFactory = _ => new DefaultResiliencePoliciesEventHandler();
             return httpClientBuilder.AddResiliencePoliciesCore(
                 optionsName: null,
                 configureOptions: configureOptions,
-                eventHandlerFactory: eventHandlerFactory);
+                eventHandlerFactory: EventHandlerFactory);
+
+            static IResiliencePoliciesEventHandler EventHandlerFactory(IServiceProvider _) => new DefaultResiliencePoliciesEventHandler();
         }
 
         /// <summary>
@@ -66,11 +68,12 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Resilience.Extensions
             where TPolicyEventHandler : class, IResiliencePoliciesEventHandler
         {
             httpClientBuilder.Services.TryAddSingleton<TPolicyEventHandler>();
-            Func<IServiceProvider, IResiliencePoliciesEventHandler> eventHandlerFactory = provider => provider.GetRequiredService<TPolicyEventHandler>();
             return httpClientBuilder.AddResiliencePoliciesCore(
                 optionsName: optionsName,
                 configureOptions: null,
-                eventHandlerFactory: eventHandlerFactory);
+                eventHandlerFactory: EventHandlerFactory);
+
+            static IResiliencePoliciesEventHandler EventHandlerFactory(IServiceProvider provider) => provider.GetRequiredService<TPolicyEventHandler>();
         }
 
         /// <summary>
@@ -86,11 +89,12 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Resilience.Extensions
             where TPolicyEventHandler : class, IResiliencePoliciesEventHandler
         {
             httpClientBuilder.Services.TryAddSingleton<TPolicyEventHandler>();
-            Func<IServiceProvider, IResiliencePoliciesEventHandler> eventHandlerFactory = provider => provider.GetRequiredService<TPolicyEventHandler>();
             return httpClientBuilder.AddResiliencePoliciesCore(
                 optionsName: null,
                 configureOptions: configureOptions,
-                eventHandlerFactory: eventHandlerFactory);
+                eventHandlerFactory: EventHandlerFactory);
+
+            static IResiliencePoliciesEventHandler EventHandlerFactory(IServiceProvider provider) => provider.GetRequiredService<TPolicyEventHandler>();
         }
 
         /// <summary>

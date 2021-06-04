@@ -22,11 +22,12 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Retry.Extensions
             this IHttpClientBuilder httpClientBuilder,
             string optionsName)
         {
-            Func<IServiceProvider, IRetryPolicyEventHandler> eventHandlerFactory = _ => new DefaultRetryPolicyEventHandler();
             return httpClientBuilder.AddRetryPolicyCore(
                 optionsName: optionsName,
                 configureOptions: null,
-                eventHandlerFactory: eventHandlerFactory);
+                eventHandlerFactory: EventHandlerFactory);
+
+            static IRetryPolicyEventHandler EventHandlerFactory(IServiceProvider _) => new DefaultRetryPolicyEventHandler();
         }
 
         /// <summary>
@@ -39,11 +40,12 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Retry.Extensions
             this IHttpClientBuilder httpClientBuilder,
             Action<RetryOptions> configureOptions)
         {
-            Func<IServiceProvider, IRetryPolicyEventHandler> eventHandlerFactory = _ => new DefaultRetryPolicyEventHandler();
             return httpClientBuilder.AddRetryPolicyCore(
                 optionsName: null,
                 configureOptions: configureOptions,
-                eventHandlerFactory: eventHandlerFactory);
+                eventHandlerFactory: EventHandlerFactory);
+
+            static IRetryPolicyEventHandler EventHandlerFactory(IServiceProvider _) => new DefaultRetryPolicyEventHandler();
         }
 
         /// <summary>
@@ -59,11 +61,12 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Retry.Extensions
             where TPolicyEventHandler : class, IRetryPolicyEventHandler
         {
             httpClientBuilder.Services.TryAddSingleton<TPolicyEventHandler>();
-            Func<IServiceProvider, IRetryPolicyEventHandler> eventHandlerFactory = provider => provider.GetRequiredService<TPolicyEventHandler>();
             return httpClientBuilder.AddRetryPolicyCore(
                 optionsName: optionsName,
                 configureOptions: null,
-                eventHandlerFactory: eventHandlerFactory);
+                eventHandlerFactory: EventHandlerFactory);
+
+            static IRetryPolicyEventHandler EventHandlerFactory(IServiceProvider provider) => provider.GetRequiredService<TPolicyEventHandler>();
         }
 
         /// <summary>
@@ -79,11 +82,12 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Retry.Extensions
             where TPolicyEventHandler : class, IRetryPolicyEventHandler
         {
             httpClientBuilder.Services.TryAddSingleton<TPolicyEventHandler>();
-            Func<IServiceProvider, IRetryPolicyEventHandler> eventHandlerFactory = provider => provider.GetRequiredService<TPolicyEventHandler>();
             return httpClientBuilder.AddRetryPolicyCore(
                 optionsName: null,
                 configureOptions: configureOptions,
-                eventHandlerFactory: eventHandlerFactory);
+                eventHandlerFactory: EventHandlerFactory);
+
+            static IRetryPolicyEventHandler EventHandlerFactory(IServiceProvider provider) => provider.GetRequiredService<TPolicyEventHandler>();
         }
 
         /// <summary>
