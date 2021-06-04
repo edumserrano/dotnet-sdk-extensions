@@ -3,7 +3,7 @@
 namespace DotNet.Sdk.Extensions.Polly.Http.Timeout.Events
 {
     /// <summary>
-    /// Defines the events produced by the HttpClient's timeout policy
+    /// Defines the events produced by the HttpClient's timeout policy.
     /// </summary>
     public interface ITimeoutPolicyEventHandler
     {
