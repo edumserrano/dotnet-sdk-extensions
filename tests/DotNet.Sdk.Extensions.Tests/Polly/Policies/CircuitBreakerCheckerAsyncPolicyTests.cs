@@ -18,7 +18,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Policies
         {
             var exception1 = Should.Throw<ArgumentNullException>(() =>
             {
-                CircuitBreakerCheckerAsyncPolicy<int>.Create(
+                CircuitBreakerCheckerAsyncPolicy.Create(
                     circuitBreakerPolicy: null!,
                     factory: (circuitBreakerState, context, token) => Task.FromResult(1));
             });
@@ -26,7 +26,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Policies
             
             var exception2 = Should.Throw<ArgumentNullException>(() =>
             {
-                CircuitBreakerCheckerAsyncPolicy<int>.Create(
+                CircuitBreakerCheckerAsyncPolicy.Create<int>(
                     circuitBreakerPolicy: Substitute.For<ICircuitBreakerPolicy>(),
                     factory: null!);
             });
@@ -39,7 +39,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Policies
             var circuitBreakerPolicy = Policy
                 .Handle<Exception>()
                 .CircuitBreakerAsync(exceptionsAllowedBeforeBreaking: 2, durationOfBreak: TimeSpan.FromMinutes(1));
-            var circuitBreakerCheckerPolicy = CircuitBreakerCheckerAsyncPolicy<int>.Create(
+            var circuitBreakerCheckerPolicy = CircuitBreakerCheckerAsyncPolicy.Create(
                 circuitBreakerPolicy: circuitBreakerPolicy,
                 factory: (circuitBreakerState, context, token) => Task.FromResult(1));
 
@@ -56,7 +56,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Policies
             var circuitBreakerPolicy = Policy
                 .Handle<Exception>()
                 .CircuitBreakerAsync(exceptionsAllowedBeforeBreaking: 2, durationOfBreak: TimeSpan.FromMinutes(1));
-            var circuitBreakerCheckerPolicy = CircuitBreakerCheckerAsyncPolicy<int>.Create(
+            var circuitBreakerCheckerPolicy = CircuitBreakerCheckerAsyncPolicy.Create(
                 circuitBreakerPolicy: circuitBreakerPolicy,
                 factory: (state, context, token) =>
                 {
@@ -88,7 +88,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Policies
             var circuitBreakerPolicy = Policy
                 .Handle<Exception>()
                 .CircuitBreakerAsync(exceptionsAllowedBeforeBreaking: exceptionsAllowedBeforeBreaking, durationOfBreak: TimeSpan.FromMinutes(1));
-            var circuitBreakerCheckerPolicy = CircuitBreakerCheckerAsyncPolicy<int>.Create(
+            var circuitBreakerCheckerPolicy = CircuitBreakerCheckerAsyncPolicy.Create(
                 circuitBreakerPolicy: circuitBreakerPolicy,
                 factory: (state, context, token) =>
                 {
