@@ -121,8 +121,8 @@ namespace WebApplication1
                 .AddRetryPolicy(options => { })
                 .AddRetryPolicy<GitHubPoliciesEventHandler>(options => { })
                 //.AddRetryPolicy(
-                //    configureOptions:options => { },
-                //    eventHandlerFactory: serviceProvider=> { return new GitHubPoliciesEventHandler() })
+                //    configureOptions: options => { },
+                //    eventHandlerFactory: serviceProvider => new GitHubPoliciesEventHandler())
                 //.AddCircuitBreakerPolicy(options => { })
                 //.AddTimeoutPolicy(options => options.TimeoutInSecs = 1)
 
