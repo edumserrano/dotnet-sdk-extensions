@@ -3,6 +3,9 @@ using Polly;
 
 namespace DotNet.Sdk.Extensions.Polly.Http.Fallback.Events
 {
+    /// <summary>
+    /// Contains the event data when a fallback <see cref="HttpResponseMessage"/> is returned via Polly's fallback policy.
+    /// </summary>
     public class FallbackEvent
     {
         internal FallbackEvent(
@@ -15,10 +18,19 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Fallback.Events
             Context = context;
         }
 
+        /// <summary>
+        /// The name of the HttpClient that triggered this event.
+        /// </summary>
         public string HttpClientName { get; }
 
+        /// <summary>
+        /// Result from the HttpClient execution.
+        /// </summary>
         public DelegateResult<HttpResponseMessage> Outcome { get; }
-        
+
+        /// <summary>
+        /// The Polly Context.
+        /// </summary>
         public Context Context { get; }
     }
 }

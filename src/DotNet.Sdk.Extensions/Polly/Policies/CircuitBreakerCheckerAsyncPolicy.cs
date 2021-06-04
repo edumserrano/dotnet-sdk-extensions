@@ -40,6 +40,7 @@ namespace DotNet.Sdk.Extensions.Polly.Policies
             _factory = factory ?? throw new ArgumentNullException(nameof(factory));
         }
 
+        /// <inheritdoc />
         protected override async Task<T> ImplementationAsync(
             Func<Context, CancellationToken, Task<T>> action,
             Context context,
