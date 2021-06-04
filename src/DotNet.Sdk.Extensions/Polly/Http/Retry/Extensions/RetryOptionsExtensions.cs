@@ -10,15 +10,15 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Retry.Extensions
     public static class RetryOptionsExtensions
     {
         /// <summary>
-        /// Adds an instance of <see cref="RetryOptions"/> to the <see cref="IServiceCollection"/>;
+        /// Adds an instance of <see cref="RetryOptions"/> to the <see cref="IServiceCollection"/>.
         /// </summary>
         /// <remarks>
-        /// Same as doing services.AddOptions{RetryOptions}(name) where services is of type <see cref="IServiceCollection"/>. 
+        /// Same as doing services.AddOptions for a type RetryOptions with a name where services is of type <see cref="IServiceCollection"/>. 
         /// This is an alias method to make it easier to add the options type required by the retry policy.
         /// </remarks>
         /// <param name="services">The <see cref="IServiceCollection"/> instance to add the options to.</param>
         /// <param name="name">The name of the options.</param>
-        /// <returns></returns>
+        /// <returns>The <see cref="OptionsBuilder{TOptions}"/> for chaining.</returns>
         public static OptionsBuilder<RetryOptions> AddHttpClientRetryOptions(
             this IServiceCollection services,
             string name)

@@ -10,15 +10,15 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Timeout.Extensions
     public static class TimeoutOptionsExtensions
     {
         /// <summary>
-        /// Adds an instance of <see cref="TimeoutOptions"/> to the <see cref="IServiceCollection"/>;
+        /// Adds an instance of <see cref="TimeoutOptions"/> to the <see cref="IServiceCollection"/>.
         /// </summary>
         /// <remarks>
-        /// Same as doing services.AddOptions{TimeoutOptions}(name) where services is of type <see cref="IServiceCollection"/>. 
+        /// Same as doing services.AddOptions for a type TimeoutOptions with a name where services is of type <see cref="IServiceCollection"/>. 
         /// This is an alias method to make it easier to add the options type required by the timeout policy.
         /// </remarks>
         /// <param name="services">The <see cref="IServiceCollection"/> instance to add the options to.</param>
         /// <param name="name">The name of the options.</param>
-        /// <returns></returns>
+        /// <returns>The <see cref="OptionsBuilder{TOptions}"/> for chaining.</returns>
         public static OptionsBuilder<TimeoutOptions> AddHttpClientTimeoutOptions(
             this IServiceCollection services,
             string name)
