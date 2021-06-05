@@ -20,12 +20,12 @@ This API key will expire on  and will have to be renewed before 5th February 202
 Initially the nuget package and symbols push step was being done by:
 
 ```
-dotnet nuget push ./*.nupkg --api-key <api-key> --source https://api.nuget.org/v3/index.json --skip-duplicate'
+dotnet nuget push ./*.nupkg --api-key <api-key> --source https://api.nuget.org/v3/index.json --skip-duplicate
 ```
 
 This step had a flag set to skip publishing the NuGet (.nupgk) if the version has already been publish. This allowed the workflow to run without failing even if we didn't want to publish a new version of the package.
 
-However there was an issue with this approach in that even if the nuget package already existed the '--skip-duplicate' flag only makes it so that the nuget push command doesn't fail due to the returned 409 from the server but it still tries to push the symbols package after.
+However there was an issue with this approach in that even if the nuget package already existed the `--skip-duplicate` flag only makes it so that the nuget push command doesn't fail due to the returned 409 from the server but it still tries to push the symbols package after.
 
 The above doesn't fail but it makes NuGet.org send emails to the owner of the package with the following:
  
