@@ -12,7 +12,7 @@ namespace DotNet.Sdk.Extensions.Testing.Demos.Configuration
      * via test appsettings files for integration tests.
      *
      */
-    public class ConfiguringWebHostDemoTests : IClassFixture<ConfiguringWebHostWebApplicationFactory>, IDisposable
+    public sealed class ConfiguringWebHostDemoTests : IClassFixture<ConfiguringWebHostWebApplicationFactory>, IDisposable
     {
         private readonly ConfiguringWebHostWebApplicationFactory _webApplicationFactory;
 

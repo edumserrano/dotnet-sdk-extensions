@@ -50,7 +50,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker
                     });
             var circuitBreakerCheckerPolicy = CircuitBreakerCheckerAsyncPolicy.Create(
                 circuitBreakerPolicy: circuitBreakerPolicy,
-                factory: (circuitBreakerState, context, cancellationToken) =>
+                fallbackValueFactory: (circuitBreakerState, context, cancellationToken) =>
                 {
                     return Task.FromResult<HttpResponseMessage>(new CircuitBrokenHttpResponseMessage(circuitBreakerState));
                 });

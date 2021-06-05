@@ -23,7 +23,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "http", "http", "{BFB01A8E-6
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "policies", "policies", "{20A2EF70-DF9A-492C-A621-F1EFD38CB12F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CircuitBreakerCheckerPolicy", "demos\extensions-demos\polly\policies\CircuitBreakerCheckerPolicy\CircuitBreakerCheckerPolicy.csproj", "{9F5DCE81-89B5-44EB-942C-A1CAB737E38C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CircuitBreakerCheckerPolicy", "demos\extensions-demos\polly\policies\CircuitBreakerCheckerPolicy\CircuitBreakerCheckerPolicy.csproj", "{9F5DCE81-89B5-44EB-942C-A1CAB737E38C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HttpClientWithResiliencePolicies", "demos\extensions-demos\polly\http\HttpClientWithResiliencePolicies\HttpClientWithResiliencePolicies.csproj", "{F30E71C7-1169-40D1-9ACE-EC9525545D88}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,6 +49,10 @@ Global
 		{9F5DCE81-89B5-44EB-942C-A1CAB737E38C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9F5DCE81-89B5-44EB-942C-A1CAB737E38C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9F5DCE81-89B5-44EB-942C-A1CAB737E38C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F30E71C7-1169-40D1-9ACE-EC9525545D88}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F30E71C7-1169-40D1-9ACE-EC9525545D88}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F30E71C7-1169-40D1-9ACE-EC9525545D88}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F30E71C7-1169-40D1-9ACE-EC9525545D88}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -62,6 +68,7 @@ Global
 		{BFB01A8E-6483-44D2-A56C-BC36FEAE7279} = {5F17D1B2-17F4-466F-88F0-BC743932E964}
 		{20A2EF70-DF9A-492C-A621-F1EFD38CB12F} = {5F17D1B2-17F4-466F-88F0-BC743932E964}
 		{9F5DCE81-89B5-44EB-942C-A1CAB737E38C} = {20A2EF70-DF9A-492C-A621-F1EFD38CB12F}
+		{F30E71C7-1169-40D1-9ACE-EC9525545D88} = {BFB01A8E-6483-44D2-A56C-BC36FEAE7279}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {30D7160D-5F70-4D4F-A5E4-A84A049A4A7D}

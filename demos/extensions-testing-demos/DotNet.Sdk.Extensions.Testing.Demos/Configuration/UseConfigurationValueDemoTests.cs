@@ -12,7 +12,7 @@ namespace DotNet.Sdk.Extensions.Testing.Demos.Configuration
      * to provide configuration values for integration tests.
      *
      */
-    public class UseConfigurationValueDemoTests : IClassFixture<UseConfigurationValueWebApplicationFactory>, IDisposable
+    public sealed class UseConfigurationValueDemoTests : IClassFixture<UseConfigurationValueWebApplicationFactory>, IDisposable
     {
         private readonly UseConfigurationValueWebApplicationFactory _valueWebApplicationFactory;
 

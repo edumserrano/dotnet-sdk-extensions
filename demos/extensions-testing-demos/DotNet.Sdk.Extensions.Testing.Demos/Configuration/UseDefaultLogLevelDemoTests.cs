@@ -13,7 +13,7 @@ namespace DotNet.Sdk.Extensions.Testing.Demos.Configuration
      * to set the default log level for integration tests.
      *
      */
-    public class UseDefaultLogLevelDemoTests : IClassFixture<UseDefaultLogLevelWebApplicationFactory>, IDisposable
+    public sealed class UseDefaultLogLevelDemoTests : IClassFixture<UseDefaultLogLevelWebApplicationFactory>, IDisposable
     {
         private readonly UseDefaultLogLevelWebApplicationFactory _webApplicationFactory;
 

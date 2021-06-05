@@ -14,6 +14,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Http;
 using Polly;
 using Polly.Extensions.Http;
+using Polly.Registry;
 
 namespace CircuitBreakerCheckerPolicy
 {
@@ -75,6 +76,23 @@ To check an example WITH the circuit breaker checker policy go to the https://lo
 
         public void ConfigureServices(IServiceCollection services)
         {
+            var circuitBreakerPolicy = HttpPolicyExtensions
+                .HandleTransientHttpError()
+                .CircuitBreakerAsync(2, TimeSpan.FromMinutes(1));
+            var circuitBreakerCheckerPolicy = CircuitBreakerCheckerAsyncPolicy.Create(
+                circuitBreakerPolicy: circuitBreakerPolicy,
+                factory: (circuitState, context, cancellationToken) =>
+                {
+                    var response = new CircuitBrokenHttpResponseMessage(circuitState);
+                    return Task.FromResult<HttpResponseMessage>(response);
+                });
+            var registry = new PolicyRegistry
+            {
+                {"circuit-breaker", circuitBreakerPolicy},
+                {"circuit-breaker-checker", circuitBreakerCheckerPolicy}
+            };
+            services.AddPolicyRegistry(registry);
+
             // setup an HttpClient WITH the circuit breaker checker policy
             services
                 .AddHttpClient("http-client-with")
@@ -82,28 +100,32 @@ To check an example WITH the circuit breaker checker policy go to the https://lo
                 {
                     httpClient.BaseAddress = new Uri("https://github.com");
                 })
-                .AddHttpMessageHandler(() =>
-                {
-                    // create the circuit breaker policy
-                    var circuitBreakerPolicy = HttpPolicyExtensions
-                        .HandleTransientHttpError()
-                        .CircuitBreakerAsync(handledEventsAllowedBeforeBreaking: _maxAllowedConsecutiveFailures, durationOfBreak: TimeSpan.FromSeconds(_durationOfBreakInSecs));
-                    // create the circuit breaker checker policy   
-                    var circuitBreakerCheckerPolicy = CircuitBreakerCheckerAsyncPolicy.Create(
-                         circuitBreakerPolicy: circuitBreakerPolicy,
-                         factory: (circuitState, context, cancellationToken) =>
-                         {
-                             // this function needs to return a type of HttpResponseMessage
-                             // in this demo I'm using the CircuitBrokenHttpResponseMessage that is part of the DotNet-Sdk-Extensions nuget
-                             // however you could create your own type that derives from HttpResponseMessage or simply an HttpResponseMessage
-                             // with the desired return status code. This acts as a fallback return when the circuit breaker state is open/isolated.
-                             var response = new CircuitBrokenHttpResponseMessage(circuitState);
-                             return Task.FromResult<HttpResponseMessage>(response);
-                         });
-                    // create a policy that applies both the circuit breaker checker and the circuit breaker policy
-                    var finalPolicy = Policy.WrapAsync(circuitBreakerCheckerPolicy, circuitBreakerPolicy);
-                    return new PolicyHttpMessageHandler(finalPolicy);
-                })
+                .AddPolicyHandlerFromRegistry("circuit-breaker-checker")
+                .AddPolicyHandlerFromRegistry("circuit-breaker")
+                
+                //.AddHttpMessageHandler(() =>
+                //{
+                //    // create the circuit breaker policy
+                //    var circuitBreakerPolicy = HttpPolicyExtensions
+                //        .HandleTransientHttpError()
+                //        .CircuitBreakerAsync(handledEventsAllowedBeforeBreaking: _maxAllowedConsecutiveFailures, durationOfBreak: TimeSpan.FromSeconds(_durationOfBreakInSecs));
+                //    // create the circuit breaker checker policy   
+                //    var circuitBreakerCheckerPolicy = CircuitBreakerCheckerAsyncPolicy.Create(
+                //         circuitBreakerPolicy: circuitBreakerPolicy,
+                //         factory: (circuitState, context, cancellationToken) =>
+                //         {
+                //             // this function needs to return a type of HttpResponseMessage
+                //             // in this demo I'm using the CircuitBrokenHttpResponseMessage that is part of the DotNet-Sdk-Extensions nuget
+                //             // however you could create your own type that derives from HttpResponseMessage or simply an HttpResponseMessage
+                //             // with the desired return status code. This acts as a fallback return when the circuit breaker state is open/isolated.
+                //             var response = new CircuitBrokenHttpResponseMessage(circuitState);
+                //             var r = new HttpResponseMessage(HttpStatusCode.InternalServerError);
+                //             return Task.FromResult<HttpResponseMessage>(response);
+                //         });
+                //    // create a policy that applies both the circuit breaker checker and the circuit breaker policy
+                //    var finalPolicy = Policy.WrapAsync(circuitBreakerCheckerPolicy, circuitBreakerPolicy);
+                //    return new PolicyHttpMessageHandler(finalPolicy);
+                //})
                 .AddHttpMessageHandler(() =>
                 {
                     var count = 0;

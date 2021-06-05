@@ -29,7 +29,7 @@ namespace DotNet.Sdk.Extensions.Testing.Demos.HttpMocking.OutOfProcess.ResponseB
      * must be configured to be able to reply to GET requests on these 3 paths.
      *
      */
-    public class OutOfProcessResponseBasedDemoTests : IClassFixture<OutOfProcessHttpResponseMockingWebApplicationFactory>, IDisposable
+    public sealed class OutOfProcessResponseBasedDemoTests : IClassFixture<OutOfProcessHttpResponseMockingWebApplicationFactory>, IDisposable
     {
         private readonly OutOfProcessHttpResponseMockingWebApplicationFactory _webApplicationFactory;
 

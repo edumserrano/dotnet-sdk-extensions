@@ -17,7 +17,7 @@ namespace DotNet.Sdk.Extensions.Testing.Demos.HttpMocking.InProcess
      * for each of the http clients and make it return an OK status.
      *
      */
-    public class InProcessHttpResponseMockingDemoTests : IClassFixture<InProcessHttpResponseMockingWebApplicationFactory>, IDisposable
+    public sealed class InProcessHttpResponseMockingDemoTests : IClassFixture<InProcessHttpResponseMockingWebApplicationFactory>, IDisposable
     {
         private readonly InProcessHttpResponseMockingWebApplicationFactory _webApplicationFactory;
 

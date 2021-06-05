@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DotNet-Sdk-Extensions" Version="1.0.9-alpha" />
+    <PackageReference Include="DotNet-Sdk-Extensions-Testing" Version="1.0.9-alpha" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Controllers\CircuitBreaker\" />
+    <Folder Include="Controllers\Fallback\" />
+    <Folder Include="Controllers\Retry\" />
+  </ItemGroup>
+
+</Project>

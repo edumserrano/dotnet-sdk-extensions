@@ -11,7 +11,7 @@ using Xunit;
 
 namespace DotNet.Sdk.Extensions.Testing.Demos.HostedServices
 {
-    public class HostedServicesDemoTests : IClassFixture<HostedServicesWebApplicationFactory>, IDisposable
+    public sealed class HostedServicesDemoTests : IClassFixture<HostedServicesWebApplicationFactory>, IDisposable
     {
         private readonly HostedServicesWebApplicationFactory _webApplicationFactory;
 

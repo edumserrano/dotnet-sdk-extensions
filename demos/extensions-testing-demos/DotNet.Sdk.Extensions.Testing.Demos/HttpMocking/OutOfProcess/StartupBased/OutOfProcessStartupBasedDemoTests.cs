@@ -32,7 +32,7 @@ namespace DotNet.Sdk.Extensions.Testing.Demos.HttpMocking.OutOfProcess.StartupBa
      * what the HttpMockServer will return when receiving the calls from the HttpClients used by the real app.
      *
      */
-    public class OutOfProcessStartupBasedDemoTests : IClassFixture<OutOfProcessHttpResponseMockingWebApplicationFactory>, IDisposable
+    public sealed class OutOfProcessStartupBasedDemoTests : IClassFixture<OutOfProcessHttpResponseMockingWebApplicationFactory>, IDisposable
     {
         private readonly OutOfProcessHttpResponseMockingWebApplicationFactory _webApplicationFactory;
 

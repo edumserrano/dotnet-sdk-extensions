@@ -27,13 +27,13 @@ namespace DotNet.Sdk.Extensions.Polly.Policies
         /// </remarks>
         /// <typeparam name="T">The type returned by the delegate to which the policy is applied to.</typeparam>
         /// <param name="circuitBreakerPolicy">The circuit breaker policy whose state will be checked.</param>
-        /// <param name="factory">A delegate to create a valid return type if the circuit's state is open or isolated.</param>
+        /// <param name="fallbackValueFactory">A delegate to create a valid return type if the circuit's state is open or isolated.</param>
         /// <returns>The circuit breaker checker policy</returns>
         public static CircuitBreakerCheckerAsyncPolicy<T> Create<T>(
             ICircuitBreakerPolicy circuitBreakerPolicy,
-            Func<CircuitBreakerState, Context, CancellationToken, Task<T>> factory)
+            Func<CircuitBreakerState, Context, CancellationToken, Task<T>> fallbackValueFactory)
         {
-            return CircuitBreakerCheckerAsyncPolicy<T>.Create(circuitBreakerPolicy, factory);
+            return CircuitBreakerCheckerAsyncPolicy<T>.Create(circuitBreakerPolicy, fallbackValueFactory);
         }
     }
 
@@ -44,20 +44,20 @@ namespace DotNet.Sdk.Extensions.Polly.Policies
     public class CircuitBreakerCheckerAsyncPolicy<T> : AsyncPolicy<T>
     {
         private readonly ICircuitBreakerPolicy _circuitBreakerPolicy;
-        private readonly Func<CircuitBreakerState, Context, CancellationToken, Task<T>> _factory;
+        private readonly Func<CircuitBreakerState, Context, CancellationToken, Task<T>> _fallbackValueFactory;
         
         internal static CircuitBreakerCheckerAsyncPolicy<T> Create(
             ICircuitBreakerPolicy circuitBreakerPolicy,
-            Func<CircuitBreakerState, Context, CancellationToken, Task<T>> factory)
+            Func<CircuitBreakerState, Context, CancellationToken, Task<T>> fallbackValueFactory)
         {
             // factory method following Polly's guidelines for custom policies: http://www.thepollyproject.org/2019/02/13/authoring-a-proactive-polly-policy-custom-policies-part-ii/
-            return new CircuitBreakerCheckerAsyncPolicy<T>(circuitBreakerPolicy, factory);
+            return new CircuitBreakerCheckerAsyncPolicy<T>(circuitBreakerPolicy, fallbackValueFactory);
         }
 
-        private CircuitBreakerCheckerAsyncPolicy(ICircuitBreakerPolicy circuitBreakerPolicy, Func<CircuitBreakerState, Context, CancellationToken, Task<T>> factory)
+        private CircuitBreakerCheckerAsyncPolicy(ICircuitBreakerPolicy circuitBreakerPolicy, Func<CircuitBreakerState, Context, CancellationToken, Task<T>> fallbackValueFactory)
         {
             _circuitBreakerPolicy = circuitBreakerPolicy ?? throw new ArgumentNullException(nameof(circuitBreakerPolicy));
-            _factory = factory ?? throw new ArgumentNullException(nameof(factory));
+            _fallbackValueFactory = fallbackValueFactory ?? throw new ArgumentNullException(nameof(fallbackValueFactory));
         }
 
         /// <inheritdoc />
@@ -71,8 +71,8 @@ namespace DotNet.Sdk.Extensions.Polly.Policies
             // Avoid exception as indicated by https://github.com/App-vNext/Polly/wiki/Circuit-Breaker#reducing-thrown-exceptions-when-the-circuit-is-broken
             return _circuitBreakerPolicy.CircuitState switch
             {
-                CircuitState.Isolated => await _factory(CircuitBreakerState.Isolated, context, cancellationToken).ConfigureAwait(continueOnCapturedContext),
-                CircuitState.Open => await _factory(CircuitBreakerState.Open, context, cancellationToken).ConfigureAwait(continueOnCapturedContext),
+                CircuitState.Isolated => await _fallbackValueFactory(CircuitBreakerState.Isolated, context, cancellationToken).ConfigureAwait(continueOnCapturedContext),
+                CircuitState.Open => await _fallbackValueFactory(CircuitBreakerState.Open, context, cancellationToken).ConfigureAwait(continueOnCapturedContext),
                 _ => await action(context, cancellationToken).ConfigureAwait(continueOnCapturedContext),
             };
         }
