@@ -28,6 +28,10 @@ Imagine that you want to configure a base address or a timeout for the `HttpClie
 
 As another example, if you use the [Polly library](https://github.com/App-vNext/Polly) to add resilience and transient-fault-handling to the `HttpClient` then those policies will also not take effect on your tests leaving a gap in testing.
 
+## Requirements
+
+You will have to add the [DotNet-Sdk-Extensions-Testing](https://www.nuget.org/packages/DotNet-Sdk-Extensions-Testing) nuget to your test project.
+
 ## How to use
 
 Start by creating an integration test as shown in [introduction to integration tests](https://docs.microsoft.com/en-us/aspnet/core/test/integration-tests?#introduction-to-integration-tests).

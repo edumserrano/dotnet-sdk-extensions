@@ -16,6 +16,10 @@ There are for sure many examples of situations where the lack of eager options v
 
 * You do a change to the code and update the appsettings values in the appsettings file for environment A but forget to update it for environment B. In this case, you might end up deploying the app in environment B and not find out you have a problem until a later time. It would be preferable that the app fails to deploy because it fails to start.
 
+## Requirements
+
+You will have to add the [DotNet-Sdk-Extensions](https://www.nuget.org/packages/DotNet-Sdk-Extensions) nuget to your project.
+
 ## How to use
 
 Imagine that you have an appsettings file with the following:

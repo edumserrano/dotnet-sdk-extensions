@@ -14,6 +14,10 @@ When doing these types of tests you need to be able to [inject mock services](ht
 
 An alternative solution to mocking http calls in-process is to start an http server and make sure the `HttpClient(s)` are configured to send the calls to that server.
 
+## Requirements
+
+You will have to add the [DotNet-Sdk-Extensions-Testing](https://www.nuget.org/packages/DotNet-Sdk-Extensions-Testing) nuget to your test project.
+
 ## How to use
 
 Start by creating an integration test as shown in [introduction to integration tests](https://docs.microsoft.com/en-us/aspnet/core/test/integration-tests?#introduction-to-integration-tests).

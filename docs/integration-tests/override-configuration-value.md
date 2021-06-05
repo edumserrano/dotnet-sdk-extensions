@@ -8,6 +8,10 @@ I want to be able to do integration tests as defined in [introduction to integra
 
 In [Providing test appsettings files to the test server](./configuring-webhost.md) we show a way to provide entire appsettings values to the configuration of the test server. However, in some cases you might want to provide only some configuration values or provide the full appsettings but override some values.
 
+## Requirements
+
+You will have to add the [DotNet-Sdk-Extensions-Testing](https://www.nuget.org/packages/DotNet-Sdk-Extensions-Testing) nuget to your test project.
+
 ## How to use
 
 Start by creating an integration test as shown in [introduction to integration tests](https://docs.microsoft.com/en-us/aspnet/core/test/integration-tests?#introduction-to-integration-tests). After you can set configuration values as follows:

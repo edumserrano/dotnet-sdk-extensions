@@ -6,6 +6,10 @@ I want to be able inject the options type `T` as a dependency instead of `IOptio
 
 The [docs for the options pattern](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/options) used in asp.net core apps explains how you can read configuration values and use them through your app. However, there might be cases where you do not require the advantages provided by `IOptions` and want just to use an instance of the typed configuration.
 
+## Requirements
+
+You will have to add the [DotNet-Sdk-Extensions](https://www.nuget.org/packages/DotNet-Sdk-Extensions) nuget to your project.
+
 ## How to use
 
 Imagine that you have an appsettings file with the following:

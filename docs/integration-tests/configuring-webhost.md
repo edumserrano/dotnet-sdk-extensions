@@ -8,6 +8,10 @@ I want to be able to do integration tests as defined in [introduction to integra
 
 The main configuration values I want to be able to control are the ones read from the appsettings files.
 
+## Requirements
+
+You will have to add the [DotNet-Sdk-Extensions-Testing](https://www.nuget.org/packages/DotNet-Sdk-Extensions-Testing) nuget to your test project.
+
 ## How to use
 
 Start by creating an integration test as shown in [introduction to integration tests](https://docs.microsoft.com/en-us/aspnet/core/test/integration-tests?#introduction-to-integration-tests).

@@ -27,7 +27,7 @@ For me the biggest problem is lack of documentation on how WebApplicationFactory
 
 As soon as you need to step outside the [basic use case](#basic-use-case) you start running into problems. The ones I faced were around:
 
-- How to define the startup class to be used ?
+- How to define the startup class to be used ? This is specially relevant if you have more than one `Startup` type class in the same assembly.
 - Issues caused by how the content root is specified by default.
 
 To deal with the points above you have to implement a [custom WebApplicationFactory\<T>](https://docs.microsoft.com/en-us/aspnet/core/test/integration-tests?#customize-webapplicationfactory) and override some of it's methods:

@@ -75,6 +75,10 @@ Out of the box there is no way for you to know when the Hosted Service has finis
 
 The provided solution will let you do this on a custom condition or as well as on time based condition if that's what you actually require.
 
+## Requirements
+
+You will have to add the [DotNet-Sdk-Extensions-Testing](https://www.nuget.org/packages/DotNet-Sdk-Extensions-Testing) nuget to your test project.
+
 ## How to use
 
 Start by creating an integration test as shown in [introduction to integration tests](https://docs.microsoft.com/en-us/aspnet/core/test/integration-tests?#introduction-to-integration-tests).
