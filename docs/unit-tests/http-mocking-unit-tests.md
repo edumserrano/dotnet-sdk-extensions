@@ -218,12 +218,3 @@ var httpResponseMessage = await httpClient.GetAsync("https://test.com");
 * only the first mock is executed
 */
 ```
-
-## How to run the demo
-
-The demo for this extension is represented by a test class.
-
-* In Visual Studio go to the `DotNet.Sdk.Extensions.Testing.Demos project`.
-* Run the tests for the [TestHttpMessageHandlerDemoTests class](/demos/extensions-testing-demos/DotNet.Sdk.Extensions.Testing.Demos/HttpMocking/HttpMessageHandlers/TestHttpMessageHandlerDemoTests.cs).
-
-Analyse the [TestHttpMessageHandlerDemoTests class](/demos/extensions-testing-demos/DotNet.Sdk.Extensions.Testing.Demos/HttpMocking/HttpMessageHandlers/TestHttpMessageHandlerDemoTests.cs) for more information on how this extension works.

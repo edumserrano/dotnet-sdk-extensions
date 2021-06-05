@@ -209,12 +209,3 @@ Setting the `RunUntilOptions.PredicateCheckInterval` to high values might mean y
 So if for your test it will take X time to meet the condition and the `RunUntilOptions.PredicateCheckInterval` is represented by Y than in the worst case scenario the time to run your test will be close to X + Y.
 
 **Note**: when debugging it might be useful to set this to a larger period to allow you to step through your code more easily before the check for the condition kicks in and potentially shuts down the test server.
-
-## How to run the demo
-
-The demo for this extension is represented by a test class.
-
-* In Visual Studio go to the `DotNet.Sdk.Extensions.Testing.Demos project`.
-* Run the tests for the [HostedServicesDemoTests class](/demos/extensions-testing-demos/DotNet.Sdk.Extensions.Testing.Demos/HostedServices/HostedServicesDemoTests.cs).
-
-Analyse the [HostedServicesDemoTests class](/demos/extensions-testing-demos/DotNet.Sdk.Extensions.Testing.Demos/HostedServices/HostedServicesDemoTests.cs) for more information on how this extension works.

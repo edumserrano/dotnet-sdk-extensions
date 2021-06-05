@@ -43,12 +43,3 @@ public class ConfigurationDemoTests : IClassFixture<WebApplicationFactory<Startu
 ```
 
 Alternatively you can set the log level to `LogLevel.Critical` which will hide all logs except critical ones which you might be interested in seeing in the log output.
-
-## How to run the demo
-
-The demo for this extension is represented by a test class.
-
-* In Visual Studio go to the `DotNet.Sdk.Extensions.Testing.Demos project`.
-* Run the test [UseDefaultLogLevelDemoTests.UseDefaultLogLevelDemoTest test](/demos/extensions-testing-demos/DotNet.Sdk.Extensions.Testing.Demos/Configuration/UseDefaultLogLevelDemoTests.cs).
-
-Analyse the [UseDefaultLogLevelDemoTests.UseDefaultLogLevelDemoTest test](/demos/extensions-testing-demos/DotNet.Sdk.Extensions.Testing.Demos/Configuration/UseDefaultLogLevelDemoTests.cs) for more information on how this extension works.

@@ -30,7 +30,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Policies
                     circuitBreakerPolicy: Substitute.For<ICircuitBreakerPolicy>(),
                     fallbackValueFactory: null!);
             });
-            exception2.Message.ShouldBe("Value cannot be null. (Parameter 'factory')");
+            exception2.Message.ShouldBe("Value cannot be null. (Parameter 'fallbackValueFactory')");
         }
 
         [Fact]

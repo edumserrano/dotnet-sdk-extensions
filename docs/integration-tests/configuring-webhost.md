@@ -88,12 +88,3 @@ Both the `appsettings.json` and `appsettings.Default.json` are loaded as configu
 ## Notes
 
 This extension method works for both `IWebHostBuilder` and `IHostBuilder`.
-
-## How to run the demo
-
-The demo for this extension is represented by a test class.
-
-* In Visual Studio go to the `DotNet.Sdk.Extensions.Testing.Demos project`.
-* Run the test [ConfiguringWebHostDemoTests.ConfiguringWebHostDemoTest test](/demos/extensions-testing-demos/DotNet.Sdk.Extensions.Testing.Demos/Configuration/ConfiguringWebHostDemoTests.cs).
-
-Analyse the [ConfiguringWebHostDemoTests.ConfiguringWebHostDemoTest test](/demos/extensions-testing-demos/DotNet.Sdk.Extensions.Testing.Demos/Configuration/ConfiguringWebHostDemoTests.cs) for more information on how this extension works.
