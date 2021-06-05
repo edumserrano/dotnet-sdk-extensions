@@ -45,6 +45,8 @@ runs:
       run: |
         Write-Host "Pushing the following nuget packages and symbols:"
         ls ./*.*nupkg # show the nuget package(s) and symbol(s) that will be pushed
+
+        Write-Host "Pushing the nuget packages"
         $nugetResponse = dotnet nuget push ./*.nupkg --api-key ${{ inputs.api-key }} --source ${{ inputs.source }} --no-symbols true
         $nugetPushExitCode = $LastExitCode
 
@@ -59,6 +61,7 @@ runs:
           exit $nugetPushExitCode
         }
         else {
+          $nugetResponse # this will print out the output from the 'dotnet nuget push' command
           Write-Host "Pushing nuget symbols"
           dotnet nuget push ./*.snupkg --api-key ${{ inputs.api-key }} --source ${{ inputs.source }}
         }
