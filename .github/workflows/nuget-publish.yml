@@ -7,13 +7,13 @@ on:
     paths:
     - 'src/**'
     - 'tests/**'
-    - '.github/workflows/nuget-publish.yml'
+    - '.github/**'
   pull_request:
     branches: [ main ]
     paths:
     - 'src/**'
     - 'tests/**'
-    - '.github/workflows/nuget-publish.yml'
+    - '.github/**'
 
 env:
   SLN_FILEPATH : ${{github.workspace}}/DotNet.Sdk.Extensions.sln
