@@ -8,20 +8,6 @@
 
 For more information about the GitHub actions configured for this repo go [here](/docs/dev-notes/github-workflows.md).
 
-## Installing
-
-This repo provides two NuGet packages:
-
-- [DotNet-Sdk-Extensions](https://www.nuget.org/packages/DotNet-Sdk-Extensions)
-- [DotNet-Sdk-Extensions-Testing](https://www.nuget.org/packages/DotNet-Sdk-Extensions-Testing)
-
-Installation is performed via NuGet and you can do it using the following commands:
-
-```
-dotnet add package DotNet-Sdk-Extensions
-dotnet add package DotNet-Sdk-Extensions-Testing
-```
-
 ## Building
 
 ### Using Visual Studio

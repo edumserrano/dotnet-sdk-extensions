@@ -6,6 +6,20 @@ This repo contains extensions to use with .NET applications, using .net core 3.1
 |---------------------------|:-------------------------:|
 | [nuget-publish](https://github.com/edumserrano/dot-net-sdk-extensions/blob/main/.github/workflows/nuget-publish.yml)             |  ![Build Status](https://github.com/edumserrano/dot-net-sdk-extensions/workflows/Publish%20Nuget%20packages/badge.svg) |
 
+## Installing
+
+This repo provides two NuGet packages:
+
+- [DotNet-Sdk-Extensions](https://www.nuget.org/packages/DotNet-Sdk-Extensions)
+- [DotNet-Sdk-Extensions-Testing](https://www.nuget.org/packages/DotNet-Sdk-Extensions-Testing)
+
+Installation is performed via NuGet and you can do it using the following commands:
+
+```
+dotnet add package DotNet-Sdk-Extensions
+dotnet add package DotNet-Sdk-Extensions-Testing
+```
+
 ## Extensions list
 
 The extensions available are split into two groups:
