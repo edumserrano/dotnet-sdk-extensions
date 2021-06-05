@@ -6,7 +6,7 @@
 |---------------------------|:-------------------------:|
 | [nuget-publish](https://github.com/edumserrano/dot-net-sdk-extensions/blob/main/.github/workflows/nuget-publish.yml)             |  ![Build Status](https://github.com/edumserrano/dot-net-sdk-extensions/workflows/Publish%20Nuget%20packages/badge.svg) |
 
-For more information about the GitHub actions configured for this repo go [here](/docs/github-workflows/github-workflows.md).
+For more information about the GitHub actions configured for this repo go [here](/docs/dev-notes/github-workflows.md).
 
 ## Installing
 
@@ -43,6 +43,10 @@ For more information on how to debug the NuGet packages code from your applicati
 - [Exploring .NET Core's SourceLink - Stepping into the Source Code of NuGet packages you don't own](https://www.hanselman.com/blog/exploring-net-cores-sourcelink-stepping-into-the-source-code-of-nuget-packages-you-dont-own)
 - [How to Configure Visual Studio to Use SourceLink to Step into NuGet Package Source](https://aaronstannard.com/visual-studio-sourcelink-setup/)
 - [Source Link - microsoft docs](https://docs.microsoft.com/en-us/dotnet/standard/library-guidance/sourcelink)
+
+## Nullable reference types
+
+Because of the [Directory.Build.props](/Directory.Build.props) that exists at the root of the repo the [nullable referece types](https://docs.microsoft.com/en-us/dotnet/csharp/nullable-migration-strategies) are enabled for all projects in the repo.
 
 ## Other notes
 
