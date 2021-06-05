@@ -57,7 +57,7 @@ runs:
         if($nugetAlreadyExists) {
           Write-Host "nuget package already exists at ${{ inputs.source }}"
         }
-        else if($nugetPushExitCode -ne 0) {
+        elseif($nugetPushExitCode -ne 0) {
           Write-Host "Nuget push failed. The output from nuget push was:"
           $nugetResponse # this will print out the output from the 'dotnet nuget push' command
         }
