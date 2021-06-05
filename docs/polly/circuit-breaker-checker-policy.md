@@ -6,6 +6,10 @@ I want to use a [Polly circuit breaker policy](https://github.com/App-vNext/Poll
 
 The idea came after reading [Reducing thrown exceptions when the circuit is broken](https://github.com/App-vNext/Polly/wiki/Circuit-Breaker#reducing-thrown-exceptions-when-the-circuit-is-broken).
 
+## Requirements
+
+You will have to add the [DotNet-Sdk-Extensions](https://www.nuget.org/packages/DotNet-Sdk-Extensions) nuget to your project.
+
 ## How to use
 
 ### Simple example

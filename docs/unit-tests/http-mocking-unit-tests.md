@@ -12,6 +12,10 @@ Although you could create another layer of abstraction over the `HttpClient` and
 
 Another solution is to take control of the `HttpMessageHandler` used by the `HttpClient` so that you can chose how the `HttpClient` responds.  The rest of this document will show an implementation of this.
 
+## Requirements
+
+You will have to add the [DotNet-Sdk-Extensions-Testing](https://www.nuget.org/packages/DotNet-Sdk-Extensions-Testing) nuget to your test project.
+
 ## How to use
 
 Let's assume that the class that you want to unit test is a class called `MyAwesomeOutboundDependency`. The `MyAwesomeOutboundDependency` takes in an `HttpClient` as a dependency on its constructor and then uses that `HttpClient` to make some http calls.
@@ -154,7 +158,6 @@ expectedException.InnerException!.GetType().ShouldBe(typeof(TimeoutException));
 expectedException.Message.ShouldBe("The request was canceled due to the configured HttpClient.Timeout of 0.001 seconds elapsing.");
 expectedException.InnerException.Message.ShouldBe("A task was canceled.");
 ```
-
 
 ## Notes
 

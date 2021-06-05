@@ -21,6 +21,12 @@ For more information about each extension check its docs. You can find the link 
 * [Using `T` options classes instead of `IOptions<T>`](/docs/configuration/options-without-IOptions.md)
 * Extending [Polly](https://github.com/App-vNext/Polly)
   * [Circuit breaker checker policy](/docs/polly/circuit-breaker-checker-policy.md)
+  * [Add a timeout policy to an HttpClient](/docs/polly/httpclient-with-timeout-policy.md)
+  * [Add a retry policy to an HttpClient](/docs/polly/httpclient-with-retry-policy.md)
+  * [Add a circuit breaker policy to an HttpClient](/docs/polly/httpclient-with-circuit-breaker-policy.md)
+  * [Add a fallback policy to an HttpClient](/docs/polly/httpclient-with-fallback-policy.md)
+  * [Add a set of resilience policies to an HttpClient](/docs/polly/httpclient-with-resilience-policies.md)
+  * [Extending the policy options validation](/docs/polly/extending-policy-options-validation.md)
 
 ### For integration tests
 

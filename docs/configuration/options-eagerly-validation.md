@@ -24,7 +24,7 @@ You will have to add the [DotNet-Sdk-Extensions](https://www.nuget.org/packages/
 
 Imagine that you have an appsettings file with the following:
 
-```csharp
+```json
 "MyOptionsSection": {
     "SomeOption": ""
 }
