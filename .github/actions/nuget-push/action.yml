@@ -46,13 +46,21 @@ runs:
         Write-Host "Pushing the following nuget packages and symbols:"
         ls ./*.*nupkg # show the nuget package(s) and symbol(s) that will be pushed
 
-        Write-Host "Pushing the nuget packages"
+        Write-Host "Pushing the nuget package"
         $nugetResponse = dotnet nuget push ./*.nupkg --api-key ${{ inputs.api-key }} --source ${{ inputs.source }} --no-symbols true
         $nugetPushExitCode = $LastExitCode
 
+        # If there is more than 1 .nupkg corresponding .snupgk in this directory the action will not work as expected 
+        # because of how the check for 'does the package already exist?' is done.
+        # The check for 'does the package already exist?' is done by checking if any part of the response of the nuget push command 
+        # for *.nupkg returned a 409. So if there are for instance 2 .nupkg packages and only 1 resulted in 409 then the way this action
+        # is coded NONE of the symbol packages (*.snupkg) will be pushed. This action could be improved to either:
+        # - accept the .nupgk and .snupgk filenames and push just those
+        # - understand which .nupgk succeeded and push the corresponding symbols packages (.snupkg).
+
         $nugetAlreadyExists = ($nugetResponse | ?{$_.Contains("Response status code does not indicate success: 409")}).Length -gt 0
         if($nugetAlreadyExists) {
-          Write-Host "nuget package already exists at ${{ inputs.source }}"
+          Write-Host "The nuget package already exist at ${{ inputs.source }}"
           exit 0
         }
         elseif($nugetPushExitCode -ne 0) {
@@ -62,6 +70,6 @@ runs:
         }
         else {
           $nugetResponse # this will print out the output from the 'dotnet nuget push' command
-          Write-Host "Pushing nuget symbols"
+          Write-Host "Pushing nuget symbols package"
           dotnet nuget push ./*.snupkg --api-key ${{ inputs.api-key }} --source ${{ inputs.source }}
         }
