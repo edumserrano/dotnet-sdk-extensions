@@ -2,64 +2,47 @@
 
 This repo contains extensions to use with .NET applications, using .net core 3.1 and higher, as well as extensions for unit and [integration tests](https://docs.microsoft.com/en-us/aspnet/core/test/integration-tests?#introduction-to-integration-tests).
 
-## Extensions list
-
-For documentation about the available extensions go [here](/docs/docs-main.md).
-
-## GitHub Workflows
-
 | Worflow                   |      Status and link      |
 |---------------------------|:-------------------------:|
 | [nuget-publish](https://github.com/edumserrano/dot-net-sdk-extensions/blob/main/.github/workflows/nuget-publish.yml)             |  ![Build Status](https://github.com/edumserrano/dot-net-sdk-extensions/workflows/Publish%20Nuget%20packages/badge.svg) |
 
-For more information about the GitHub actions go [here](/docs/github-workflows/github-workflows.md).
+## Extensions list
 
-## Installing
+The extensions available are split into two groups:
 
-This repo provides two NuGet packages:
+* Extensions to use on app code.
+* Extensions to use when doing integration and unit tests.
 
-- [DotNet-Sdk-Extensions](https://www.nuget.org/packages/DotNet-Sdk-Extensions)
-- [DotNet-Sdk-Extensions-Testing](https://www.nuget.org/packages/DotNet-Sdk-Extensions-Testing)
+For more information about each extension check its docs. You can find the link to each extension's documentation below.
 
-Installation is performed via NuGet and you can do it using the following commands:
+### For apps
 
-```
-dotnet add package DotNet-Sdk-Extensions
-dotnet add package DotNet-Sdk-Extensions-Testing
-```
+* [Eagerly validating options](/docs/configuration/options-eagerly-validation.md)
+* [Using `T` options classes instead of `IOptions<T>`](/docs/configuration/options-without-IOptions.md)
+* Extending [Polly](https://github.com/App-vNext/Polly)
+  * [Circuit breaker checker policy](/docs/polly/circuit-breaker-checker-policy.md)
 
-## Building
+### For integration tests
 
-### Using Visual Studio
+* [Providing test appsettings files to the test server](/docs/integration-tests/configuring-webhost.md)
+* [Override configuration values on the test server](/docs/integration-tests/override-configuration-value.md)
+* [Disable logs when doing integration tests](/docs/integration-tests/disable-logs-integration-tests.md)
+* [Mocking HttpClient's responses in-process](/docs/integration-tests/http-mocking-in-process.md)
+* [Mocking HttpClient's responses out-of-process](/docs/integration-tests/http-mocking-out-of-process.md)
+* [Integration tests for HostedServices (Background Services)](/docs/integration-tests/hosted-services.md)
 
-1) Clone the repo and open the **DotNet.Sdk.Extensions.sln:** solution file at the root.
-2) Press build on Visual Studio.
+### For unit tests
 
-### Using dotnet CLI
+* [Mocking HttpClient's responses for unit testing](/docs/unit-tests/http-mocking-unit-tests.md)
 
-1) Clone the repo and browse to the directory using your favorite shell.
-2) Run **`dotnet build DotNet.Sdk.Extensions.sln`** to build the source for the extensions.
+### Other
 
-## Debugging
+* [Notes on WebApplicationFactory regarding asp.net integration tests](/docs/integration-tests/web-application-factory.md)
 
-The NuGet packages published include symbols generated with [sourcelink](https://github.com/dotnet/sourcelink).
+## Dev notes
 
-For more information on how to debug the NuGet packages code from your application see:
-
-- [Exploring .NET Core's SourceLink - Stepping into the Source Code of NuGet packages you don't own](https://www.hanselman.com/blog/exploring-net-cores-sourcelink-stepping-into-the-source-code-of-nuget-packages-you-dont-own)
-- [How to Configure Visual Studio to Use SourceLink to Step into NuGet Package Source](https://aaronstannard.com/visual-studio-sourcelink-setup/)
-- [Source Link - microsoft docs](https://docs.microsoft.com/en-us/dotnet/standard/library-guidance/sourcelink)
+For notes aimed at developers working on this repo or just trying to understand it go [here](/docs/dev-notes/dev-notes-main.md). It will show you how to build and run the solution amongst other things.
 
 ## License
 
 This project is licensed under the [MIT license](./LICENSE).
-
-## Notes
-
-If you have problems with SSL certificates when running the tests then make sure you have trusted dev certificates by executing the following command
-
-```
-dotnet dev-certs https --trust
-```
-
-For more info see [Generate self-signed certificates with the .NET CLI](https://docs.microsoft.com/en-us/dotnet/core/additional-tools/self-signed-certificates-guide).
