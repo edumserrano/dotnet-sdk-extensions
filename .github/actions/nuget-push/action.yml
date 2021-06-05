@@ -49,17 +49,19 @@ runs:
       working-directory: ${{ inputs.working-directory }}
       run: |
         Write-Host "Pushing nuget package"
-        ls # show the nuget package that will be pushed
+        ls ./*.*nupkg # show the nuget package(s) and symbol(s) that will be pushed
         $nugetResponse = dotnet nuget push ./*.nupkg --api-key ${{ inputs.api-key }} --source ${{ inputs.source }} --no-symbols true
         $nugetPushExitCode = $LastExitCode
 
         $nugetAlreadyExists = ($nugetResponse | ?{$_.Contains("Response status code does not indicate success: 409")}).Length -gt 0
         if($nugetAlreadyExists) {
           Write-Host "nuget package already exists at ${{ inputs.source }}"
+          exit 0
         }
         elseif($nugetPushExitCode -ne 0) {
           Write-Host "Nuget push failed. The output from nuget push was:"
           $nugetResponse # this will print out the output from the 'dotnet nuget push' command
+          exit $nugetPushExitCode
         }
         else {
           Write-Host "Pushing nuget package symbols"
