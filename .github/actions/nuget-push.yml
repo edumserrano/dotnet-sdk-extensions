@@ -1,0 +1,67 @@
+# Why
+#
+# I was using the following command:
+# 'dotnet nuget push ./*.nupkg --api-key <api-key> --source https://api.nuget.org/v3/index.json --skip-duplicate'
+# to push a nuget package and its symbols to NuGet.org
+#
+# The problem was that even if the nuget package already existed the '--skip-duplicate' flag only makes it so that
+# the nuget push command doesn't fail due to the returned 409 from the server but it still tries to push the
+# symbols package after. 
+#
+# The above doesn't fail but it makes NuGet.org send emails to the owner of the package with the following:
+# 
+# 'Symbols package publishing failed. The associated symbols package could not be published due to the following reason(s):
+# The uploaded symbols package contains pdb(s) for a corresponding dll(s) not found in the nuget package.
+# Once you've fixed the issue with your symbols package, you can re-upload it.
+# 
+# Please note: The last successfully published symbols package is still available for debugging and download.'
+# 
+# The above error message is also displayed on the nuget's package page even though it's only visible to the owner of the package.
+# 
+# To avoid this happening the action below will attempt to do a push first only of the nuget package and only if it succeeds 
+# attempts to do a following push of the symbols package.
+# If the nuget push returns a 409 because the package exists that is outputed by the action and the symbols push is skipped.
+# If the nuget push fails because of any other reason the output from nuget push is outputed by the action and the symbols push is skipped.
+# 
+
+name: 'NuGet push'
+description: 'Pushes a nuget package and symbols'
+inputs:
+  step-name:
+    description: 'Name for the action step'
+    required: true
+    default: 'Publish NuGet and Symbols'
+  api-key:
+    description: 'The API key for the NuGet server'
+    required: true
+  source:
+    description: 'Specifies the NuGet server URL'
+    required: true
+  working-directory:
+    description: 'The directory that will be used to push nuget packages. It will push all *.nupkg and corresponding symbol packages present in the directory.'
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: ${{ inputs.step-name }}
+      shell: pwsh
+      working-directory: ${{ inputs.working-directory }}
+      run: |
+        Write-Host "Pushing nuget package"
+        ls # show the nuget package that will be pushed
+        $nugetResponse = dotnet nuget push ./*.nupkg --api-key ${{ inputs.api-key }} --source ${{ inputs.source }} --no-symbols true
+        $nugetPushExitCode = $LastExitCode
+
+        $nugetAlreadyExists = ($nugetResponse | ?{$_.Contains("Response status code does not indicate success: 409")}).Length -gt 0
+        if($nugetAlreadyExists) {
+          Write-Host "nuget package already exists at ${{ inputs.source }}"
+        }
+        else if($nugetPushExitCode -ne 0) {
+          Write-Host "Nuget push failed. The output from nuget push was:"
+          $nugetResponse # this will print out the output from the 'dotnet nuget push' command
+        }
+        else {
+          Write-Host "Pushing nuget package symbols"
+          dotnet nuget push ./*.snupkg --api-key ${{ inputs.api-key }} --source ${{ inputs.source }}
+        }
