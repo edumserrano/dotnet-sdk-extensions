@@ -90,24 +90,24 @@ jobs:
     - name: Pack DotNet.Sdk.Extensions.Testing
       shell: pwsh
       run: dotnet pack ${{env.TESTING_EXTENSIONS_CSPROJ_FILEPATH}} -c Release
-    - uses: ./.github/actions/nuget-push
+    - name: 'Publish DotNet.Sdk.Extensions nuget and symbols'
+      uses: ./.github/actions/nuget-push
       if: ${{ github.event_name != 'pull_request' }}
+      env:
+        NUGET_PUSH_API_KEY: ${{ secrets.NUGET_PUSH_API_KEY }}
       with:
-        step-name: 'Publish DotNet.Sdk.Extensions nuget and symbols'
         api-key: '$env:NUGET_PUSH_API_KEY'
         source: 'https://api.nuget.org/v3/index.json'
         working-directory: ${{env.EXTENSIONS_BIN_FOLDER}}
+    - name: 'Publish DotNet.Sdk.Extensions.Testing nuget and symbols'
+      uses: ./.github/actions/nuget-push
+      if: ${{ github.event_name != 'pull_request' }}
       env:
         NUGET_PUSH_API_KEY: ${{ secrets.NUGET_PUSH_API_KEY }}
-    - uses: ./.github/actions/nuget-push
-      if: ${{ github.event_name != 'pull_request' }}
       with:
-        step-name: 'Publish DotNet.Sdk.Extensions.Testing nuget and symbols'
         api-key: '$env:NUGET_PUSH_API_KEY'
         source: 'https://api.nuget.org/v3/index.json'
         working-directory: ${{env.TESTING_EXTENSIONS_BIN_FOLDER}}
-      env:
-        NUGET_PUSH_API_KEY: ${{ secrets.NUGET_PUSH_API_KEY }}
     - name: Upload nugets and symbols to artifacts
       uses: actions/upload-artifact@v2
       with:

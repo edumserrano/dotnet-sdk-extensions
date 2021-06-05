@@ -20,17 +20,13 @@
 # 
 # To avoid this happening the action below will attempt to do a push first only of the nuget package and only if it succeeds 
 # attempts to do a following push of the symbols package.
-# If the nuget push returns a 409 because the package exists that is outputed by the action and the symbols push is skipped.
-# If the nuget push fails because of any other reason the output from nuget push is outputed by the action and the symbols push is skipped.
+# If the nuget push returns a 409 because the package exists that is outputted by the action and the symbols push is skipped.
+# If the nuget push fails because of any other reason the output from nuget push is outputted by the action and the symbols push is skipped.
 # 
 
 name: 'NuGet push'
 description: 'Pushes a nuget package and symbols'
 inputs:
-  step-name:
-    description: 'Name for the action step'
-    required: true
-    default: 'Publish NuGet and Symbols'
   api-key:
     description: 'The API key for the NuGet server'
     required: true
@@ -44,8 +40,7 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: ${{ inputs.step-name }}
-      shell: pwsh
+    - shell: pwsh
       working-directory: ${{ inputs.working-directory }}
       run: |
         Write-Host "Pushing nuget package"
