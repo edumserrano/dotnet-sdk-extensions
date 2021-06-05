@@ -10,7 +10,6 @@ For documentation about the available extensions go [here](/docs/docs-main.md).
 
 | Worflow                   |      Status and link      |
 |---------------------------|:-------------------------:|
-| [build-demos](https://github.com/edumserrano/dot-net-sdk-extensions/blob/main/.github/workflows/build-demos.yml)             |  ![Build Status](https://github.com/edumserrano/dot-net-sdk-extensions/workflows/Build%20demos/badge.svg) |
 | [nuget-publish](https://github.com/edumserrano/dot-net-sdk-extensions/blob/main/.github/workflows/nuget-publish.yml)             |  ![Build Status](https://github.com/edumserrano/dot-net-sdk-extensions/workflows/Publish%20Nuget%20packages/badge.svg) |
 
 For more information about the GitHub actions go [here](/docs/github-workflows/github-workflows.md).
@@ -33,19 +32,13 @@ dotnet add package DotNet-Sdk-Extensions-Testing
 
 ### Using Visual Studio
 
-1) Clone the repo and open one of the solution files:
-   - **DotNet.Sdk.Extensions.sln:** source for the extensions.
-   - **DotNet.Sdk.Extensions.Demos.sln:** demo projects for the extensions.
-
+1) Clone the repo and open the **DotNet.Sdk.Extensions.sln:** solution file at the root.
 2) Press build on Visual Studio.
 
 ### Using dotnet CLI
 
 1) Clone the repo and browse to the directory using your favorite shell.
-
-2) Run:
-   - **`dotnet build DotNet.Sdk.Extensions.sln`:** to build the source for the extensions.
-   - **`dotnet build DotNet.Sdk.Extensions.Demos.sln`:** to build the demos for the extensions.
+2) Run **`dotnet build DotNet.Sdk.Extensions.sln`** to build the source for the extensions.
 
 ## Debugging
 
@@ -63,7 +56,7 @@ This project is licensed under the [MIT license](./LICENSE).
 
 ## Notes
 
-If you have problems with SSL certificates when running the demos or tests then make sure you have trusted dev certificates by executing the following command
+If you have problems with SSL certificates when running the tests then make sure you have trusted dev certificates by executing the following command
 
 ```
 dotnet dev-certs https --trust

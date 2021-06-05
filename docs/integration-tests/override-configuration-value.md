@@ -183,12 +183,3 @@ public class ConfigurationDemoTests : IClassFixture<WebApplicationFactory<Startu
 ## Notes
 
 This extension method works for both `IWebHostBuilder` and `IHostBuilder`.
-
-## How to run the demo
-
-The demo for this extension is represented by a test class.
-
-* In Visual Studio go to the `DotNet.Sdk.Extensions.Testing.Demos project`.
-* Run the test [UseConfigurationValueDemoTests.UseConfigurationValueDemoTest test](/demos/extensions-testing-demos/DotNet.Sdk.Extensions.Testing.Demos/Configuration/UseConfigurationValueDemoTests.cs).
-
-Analyse the [UseConfigurationValueDemoTests.UseConfigurationValueDemoTest test](/demos/extensions-testing-demos/DotNet.Sdk.Extensions.Testing.Demos/Configuration/UseConfigurationValueDemoTests.cs) for more information on how this extension works.

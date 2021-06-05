@@ -49,20 +49,3 @@ services
 The way the eager validation is enforced is by creating all the instances of `T` for any `IOptions<T>` present in the `IServiceCollection` at app startup. This forces existing validation to be executed.
 
 Note that `OptionsBuilder.ValidateEagerly` works in conjunction with dotnet's validation. In the above example we are using the `OptionsBuilder.ValidateDataAnnotations`. You could also use the `IValidateOptions` interface or implement validation at the `Startup` level with the `OptionsBuilder.Validate`. For more information see [Options Validation](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/options?#options-validation) and [IValidateOptions for complex validation](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/options?#ivalidateoptions-for-complex-validation).
-
-## How to run the demo
-
-The demo for this extension is represented by a web app.
-
-* From Visual Studio, set the `demos\extensions-demos\options\EagerOptionsValidation\EagerOptionsValidation.csproj` project as the Startup Project.
-* Run the project.
-* You should get an exception message as follows:
-  
-```
-Microsoft.Extensions.Options.OptionsValidationException: 
-'DataAnnotation validation failed for members: 'SomeOption' with the error: 'The SomeOption field is required.'.'
-```
-
-* The web app fails to start and the process exits due to the above unhandled exception
-
-Analyse the [Startup class](/demos/extensions-demos/options/EagerOptionsValidation/Startup.cs) for more information on how this extension works.

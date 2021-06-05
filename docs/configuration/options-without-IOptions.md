@@ -61,17 +61,3 @@ services
 ```
 
 Also note that this extension method just added the ability to take a dependency on `SomeOption`, it didn't remove the ability to take a dependency on `IOptions<SomeOption>`.
-
-## How to run the demo
-
-The demo for this extension is represented by a web app.
-
-* From Visual Studio, set the `demos\extensions-demos\options\OptionsValue\OptionsValue.csproj` project as the Startup Project.
-* Run the project.
-* Your browser should open at https://localhost:5001/ and the following message should be displayed:
-  
-```
-appsettings says: Hello from typed configuration
-```
-
-Analyse the [Startup class](/demos/extensions-demos/options/OptionsValue/Startup.cs) for more information on how this extension works.

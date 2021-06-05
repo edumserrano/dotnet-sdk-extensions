@@ -5,7 +5,7 @@ The extensions available are split into two groups:
 * Extensions to use on app code.
 * Extensions to use when doing integration and unit tests.
 
-For more information about each extension check its docs and demo. You can find the link to each extension's documentation below.
+For more information about each extension check its docs. You can find the link to each extension's documentation below.
 
 ### For apps
 

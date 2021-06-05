@@ -404,12 +404,3 @@ public class HttpMocksDemoTests : IClassFixture<WebApplicationFactory<Startup>>
 In the above example we are retrieving the configuration value for the key `SomeOption` from the `IConfiguration` instance that we got from the `IServiceProvider` and setting it as the value of the header `some-header` for the mocked response.
 
 The above code is just for example. In reality you will probably want to retrieve some data from the `IServiceProvider` that was added to the `IServiceCollection` by the `Startup` class that is used by the `WebApplicationFactory<Startup>`.
-
-## How to run the demo
-
-The demo for this extension is represented by a test class.
-
-* In Visual Studio go to the `DotNet.Sdk.Extensions.Testing.Demos project`.
-* Run the tests for the [InProcessHttpResponseMockingDemoTests class](/demos/extensions-testing-demos/DotNet.Sdk.Extensions.Testing.Demos/HttpMocking/InProcess/InProcessHttpResponseMockingDemoTests.cs).
-
-Analyse the [InProcessHttpResponseMockingDemoTests class](/demos/extensions-testing-demos/DotNet.Sdk.Extensions.Testing.Demos/HttpMocking/InProcess/InProcessHttpResponseMockingDemoTests.cs) for more information on how this extension works.

@@ -4,7 +4,6 @@ There are two workflows setup on this repo:
 
 | Worflow                   |      Status and link      |
 |---------------------------|:-------------------------:|
-| [build-demos](https://github.com/edumserrano/dot-net-sdk-extensions/blob/main/.github/workflows/build-demos.yml)             |  ![Build Status](https://github.com/edumserrano/dot-net-sdk-extensions/workflows/Build%20demos/badge.svg) |
 | [nuget-publish](https://github.com/edumserrano/dot-net-sdk-extensions/blob/main/.github/workflows/nuget-publish.yml)             |  ![Build Status](https://github.com/edumserrano/dot-net-sdk-extensions/workflows/Publish%20Nuget%20packages/badge.svg) |
 
 
