@@ -60,7 +60,8 @@ runs:
 
         $nugetAlreadyExists = ($nugetResponse | ?{$_.Contains("Response status code does not indicate success: 409")}).Length -gt 0
         if($nugetAlreadyExists) {
-          Write-Host "The nuget package already exist at ${{ inputs.source }}"
+          Write-Host "The nuget package already exists. The output from nuget push was:"
+          $nugetResponse # this will print out the output from the 'dotnet nuget push' command
           exit 0
         }
         elseif($nugetPushExitCode -ne 0) {
@@ -69,6 +70,7 @@ runs:
           exit $nugetPushExitCode
         }
         else {
+          Write-Host "Nuget push was successful. The output from nuget push was:"
           $nugetResponse # this will print out the output from the 'dotnet nuget push' command
           Write-Host "Pushing nuget symbols package"
           dotnet nuget push ./*.snupkg --api-key ${{ inputs.api-key }} --source ${{ inputs.source }}
