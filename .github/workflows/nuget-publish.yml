@@ -120,6 +120,16 @@ jobs:
           ${{env.TESTING_EXTENSIONS_BIN_FOLDER}}/*.nupkg
           ${{env.TESTING_EXTENSIONS_BIN_FOLDER}}/*.snupkg
 
+  debug:    
+    needs: [nuget-publish]
+    runs-on: ubuntu-latest
+    steps:
+    - name: Package DotNet.Sdk.Extensions
+      shell: pwsh
+      run: |
+        Write-Host "github.actor ${{ github.actor }}"
+        Write-Host "github.event_name ${{ github.event_name }}"
+
   auto-approve-and-merge:
     needs: [nuget-publish]
     runs-on: ubuntu-latest
