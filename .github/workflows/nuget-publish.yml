@@ -23,6 +23,7 @@ env:
   TESTING_EXTENSIONS_BIN_FOLDER : ${{github.workspace}}/src/DotNet.Sdk.Extensions.Testing/bin/Release
 
 jobs:
+
   build:
     strategy:
       matrix: 
@@ -75,6 +76,7 @@ jobs:
       with:
         name: code-coverage-report
         path: tests/test-results/coverage-results/report/
+
   nuget-publish:
     needs: [build]
     runs-on: ubuntu-latest
@@ -117,3 +119,22 @@ jobs:
           ${{env.EXTENSIONS_BIN_FOLDER}}/*.snupkg
           ${{env.TESTING_EXTENSIONS_BIN_FOLDER}}/*.nupkg
           ${{env.TESTING_EXTENSIONS_BIN_FOLDER}}/*.snupkg
+
+  auto-approve-and-merge:
+    needs: [nuget-publish]
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'pull_request' && github.actor == 'dependabot[bot]' }}
+    steps:
+    - name: Fetch Dependabot metadata
+      id: dependabot-metadata
+      uses: dependabot/fetch-metadata@v1.1.0
+      with:
+        github-token: '${{ secrets.GITHUB_TOKEN }}'
+    - name: Auto approve and merge the PR
+      run: |
+        gh pr review --approve "$PR_URL"
+        gh pr merge --merge --auto --delete-branch "$PR_URL"
+      env:
+        PR_URL: '${{ github.event.pull_request.html_url }}'
+        GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
+      
