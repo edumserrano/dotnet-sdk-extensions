@@ -144,7 +144,7 @@ jobs:
     - name: Auto approve and merge the PR
       run: |
         gh pr review --approve "$PR_URL"
-        gh pr merge --merge --auto --delete-branch "$PR_URL"
+        gh pr merge --auto --merge --rebase --squash --delete-branch "$PR_URL"
       env:
         PR_URL: '${{ github.event.pull_request.html_url }}'
         GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
