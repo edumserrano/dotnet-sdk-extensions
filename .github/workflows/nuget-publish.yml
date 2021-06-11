@@ -131,6 +131,7 @@ jobs:
       with:
         github-token: '${{ secrets.GITHUB_TOKEN }}'
     - name: Auto approve and merge the PR
+      shell: pwsh
       run: |
         Write-Host "gh auth status"
         gh auth status
