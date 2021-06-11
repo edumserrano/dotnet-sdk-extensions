@@ -139,14 +139,14 @@ jobs:
         github-token: '${{ secrets.GITHUB_TOKEN }}'
     - name: Auto approve and merge the PR
       run: |
-        echo "gh auth status"
-        gh auth status
-        echo "gh auth status --show-token"
-        gh auth status --show-token
-        echo "gh pr review --approve"
-        gh pr review --approve "$PR_URL"
+        # echo "gh auth status"
+        # gh auth status
+        # echo "gh auth status --show-token"
+        # gh auth status --show-token
         echo "gh pr merge --auto --rebase --delete-branch"
         gh pr merge --auto --rebase --delete-branch "$PR_URL"
+        echo "gh pr review --approve"
+        gh pr review --approve "$PR_URL"
       env:
         PR_URL: '${{ github.event.pull_request.html_url }}'
         # Depending on branch protection rules, a  manually populated
