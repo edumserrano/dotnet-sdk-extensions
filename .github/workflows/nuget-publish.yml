@@ -143,8 +143,8 @@ jobs:
         # gh auth status
         # echo "gh auth status --show-token"
         # gh auth status --show-token
-        echo "gh pr merge --auto --rebase --delete-branch"
-        gh pr merge --auto --rebase --delete-branch "$PR_URL"
+        echo "gh pr merge --auto --squash --delete-branch"
+        gh pr merge --auto --squash --delete-branch "$PR_URL"
         echo "gh pr review --approve"
         gh pr review --approve "$PR_URL"
       env:
