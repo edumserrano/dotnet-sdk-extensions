@@ -143,7 +143,7 @@ jobs:
       env:
         PR_URL: '${{ github.event.pull_request.html_url }}'
         # Depending on branch protection rules, a  manually populated
-        # `GITHUB_DEPENDABOT_TOKEN` secret with permissions to push to
+        # `GITHUB_TOKEN_WORKAROUND` secret with permissions to push to
         # a protected branch must be used.
         #
         # When using a custom token, it is recommended to leave the following
@@ -151,5 +151,5 @@ jobs:
         #
         # This must be used as GitHub Actions token does not support pushing
         # to protected branches.
-        GITHUB_TOKEN: '${{ secrets.GITHUB_DEPENDABOT_TOKEN }}'
+        GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
       
