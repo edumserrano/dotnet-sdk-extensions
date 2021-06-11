@@ -14,6 +14,12 @@ on:
     - 'src/**'
     - 'tests/**'
     - '.github/**'
+  pull_request_target:
+    branches: [ main ]
+    paths:
+    - 'src/**'
+    - 'tests/**'
+    - '.github/**'
 
 env:
   SLN_FILEPATH : ${{github.workspace}}/DotNet.Sdk.Extensions.sln
@@ -123,7 +129,7 @@ jobs:
   auto-approve-and-merge:
     needs: [nuget-publish]
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'pull_request' && github.actor == 'dependabot[bot]' }}
+    if: ${{ github.event_name == 'pull_request_target' && github.actor == 'dependabot[bot]' }}
     steps:
     - name: Fetch Dependabot metadata
       id: dependabot-metadata
