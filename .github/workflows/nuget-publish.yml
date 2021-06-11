@@ -8,12 +8,12 @@ on:
     - 'src/**'
     - 'tests/**'
     - '.github/**'
-  pull_request:
-    branches: [ main ]
-    paths:
-    - 'src/**'
-    - 'tests/**'
-    - '.github/**'
+  # pull_request:
+  #   branches: [ main ]
+  #   paths:
+  #   - 'src/**'
+  #   - 'tests/**'
+  #   - '.github/**'
   pull_request_target:
     branches: [ main ]
     paths:
