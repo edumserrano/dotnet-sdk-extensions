@@ -7,3 +7,9 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
+    ignore:
+    # Ignored because the csproj using this supports 2 different target frameworks and dependabot
+    # does not know that for target framework netcoreapp3.1 the Microsoft.AspNetCore.Mvc.Testing 
+    # nuget cannot be higher than 3.x.x
+    # This NuGet needs to be manually updated for the other target framework
+    - dependency-name: "Microsoft.AspNetCore.Mvc.Testing" 

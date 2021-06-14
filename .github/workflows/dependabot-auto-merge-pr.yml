@@ -49,41 +49,6 @@ jobs:
         $prUrl = "${{ steps.dependabot-pr-check.outputs.PR_URL }}"
         gh pr merge --auto --squash --delete-branch "$prUrl"
         gh pr review --approve "$prUrl"
+        gh pr close "$prUrl"
       env:
         GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
-
-
-
-  # auto-approve-and-merge:
-  #   needs: [nuget-publish]
-  #   runs-on: ubuntu-latest
-  #   if: ${{ github.event_name == 'pull_request_target' && github.actor == 'dependabot[bot]' }}
-  #   steps:
-  #   - name: Fetch Dependabot metadata
-  #     id: dependabot-metadata
-  #     uses: dependabot/fetch-metadata@v1.1.0
-  #     with:
-  #       github-token: '${{ secrets.GITHUB_TOKEN }}'
-  #   - name: Auto approve and merge the PR
-  #     run: |
-  #       # echo "gh auth status"
-  #       # gh auth status
-  #       # echo "gh auth status --show-token"
-  #       # gh auth status --show-token
-  #       echo "gh pr merge --auto --squash --delete-branch"
-  #       # gh pr merge --auto --squash --delete-branch "$PR_URL"
-  #       # echo "gh pr review --approve"
-  #       # gh pr review --approve "$PR_URL"
-  #     env:
-  #       PR_URL: '${{ github.event.pull_request.html_url }}'
-  #       # Depending on branch protection rules, a  manually populated
-  #       # `GITHUB_TOKEN_WORKAROUND` secret with permissions to push to
-  #       # a protected branch must be used.
-  #       #
-  #       # When using a custom token, it is recommended to leave the following
-  #       # comment for other developers to be aware of the reasoning behind it:
-  #       #
-  #       # This must be used as GitHub Actions token does not support pushing
-  #       # to protected branches.
-  #       GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
-      
