@@ -8,18 +8,16 @@ on:
     - 'src/**'
     - 'tests/**'
     - '.github/**'
-  # pull_request:
-  #   branches: [ main ]
-  #   paths:
-  #   - 'src/**'
-  #   - 'tests/**'
-  #   - '.github/**'
-  pull_request_target:
+  pull_request:
     branches: [ main ]
     paths:
     - 'src/**'
     - 'tests/**'
     - '.github/**'
+
+defaults:
+  run:
+    shell: pwsh
 
 env:
   SLN_FILEPATH : ${{github.workspace}}/DotNet.Sdk.Extensions.sln
@@ -31,6 +29,7 @@ env:
 jobs:
 
   build:
+    name: Build and test
     strategy:
       matrix: 
         os: [ubuntu-latest, windows-latest]
@@ -42,20 +41,15 @@ jobs:
       with:
         dotnet-version: 5.0.x
     - name: Install reportgenerator dotnet tool
-      shell: pwsh
       run:  dotnet tool install --global dotnet-reportgenerator-globaltool
     - name: Clears local NuGet resources 
       if: matrix.os == 'windows-latest' # required due to bug when using dotnet cli on windows-latest. See https://github.com/dotnet/core/issues/5881 and https://github.com/actions/setup-dotnet/issues/155
-      shell: pwsh
       run: dotnet nuget locals all --clear
     - name: Restore dependencies
-      shell: pwsh
       run: dotnet restore ${{env.SLN_FILEPATH}}
     - name: Build
-      shell: pwsh
       run: dotnet build ${{env.SLN_FILEPATH}} -c Release --no-restore
     - name: Test and code coverage
-      shell: pwsh
       run: |
         dotnet test ${{env.SLN_FILEPATH}} `
           -c Release `
@@ -69,8 +63,7 @@ jobs:
           /p:CoverletOutputFormat="json%2copencover" `
           -m:1
     - name: Generate code coverage report
-      shell: pwsh
-      if: matrix.os == 'ubuntu-latest'
+      if: matrix.os == 'ubuntu-latest' # this is on a matrix run and we only need code coverage generated and uploaded once, choosing to upload from the matrix run on ubuntu-latest
       run: |
         reportgenerator `
           "-reports:$(Join-Path -Path (Get-Location) -ChildPath "tests/test-results/coverage-results/coverage.opencover.xml")" `
@@ -84,6 +77,7 @@ jobs:
         path: tests/test-results/coverage-results/report/
 
   nuget-publish:
+    name: Publish NuGet packages and symbols
     needs: [build]
     runs-on: ubuntu-latest
     steps:
@@ -93,23 +87,21 @@ jobs:
       with:
         dotnet-version: 5.0.x
     - name: Package DotNet.Sdk.Extensions
-      shell: pwsh
       run: dotnet pack ${{env.EXTENSIONS_CSPROJ_FILEPATH}} -c Release
     - name: Pack DotNet.Sdk.Extensions.Testing
-      shell: pwsh
       run: dotnet pack ${{env.TESTING_EXTENSIONS_CSPROJ_FILEPATH}} -c Release
-    - name: 'Publish DotNet.Sdk.Extensions nuget and symbols'
+    - name: Publish DotNet.Sdk.Extensions nuget and symbols
       uses: ./.github/actions/nuget-push
-      if: ${{ github.event_name != 'pull_request' }}
+      if: ${{ github.event_name != 'pull_request' }} # don't push nugets to nuget.org on pull requests
       env:
         NUGET_PUSH_API_KEY: ${{ secrets.NUGET_PUSH_API_KEY }}
       with:
         api-key: '$env:NUGET_PUSH_API_KEY'
         source: 'https://api.nuget.org/v3/index.json'
         working-directory: ${{env.EXTENSIONS_BIN_FOLDER}}
-    - name: 'Publish DotNet.Sdk.Extensions.Testing nuget and symbols'
+    - name: Publish DotNet.Sdk.Extensions.Testing nuget and symbols
       uses: ./.github/actions/nuget-push
-      if: ${{ github.event_name != 'pull_request' }}
+      if: ${{ github.event_name != 'pull_request' }} # don't push nugets to nuget.org on pull requests
       env:
         NUGET_PUSH_API_KEY: ${{ secrets.NUGET_PUSH_API_KEY }}
       with:
@@ -126,71 +118,25 @@ jobs:
           ${{env.TESTING_EXTENSIONS_BIN_FOLDER}}/*.nupkg
           ${{env.TESTING_EXTENSIONS_BIN_FOLDER}}/*.snupkg
 
-  test-upload:
-    name: test upload
+  pr-url-upload:
+    name: Save PR URL
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'pull_request_target' }}
+    if: ${{ github.event_name == 'pull_request' && github.actor == 'dependabot[bot]' }} # only create PR URL artifact for auto merge if the PR comes from dependabot
+    env:
+      PR_URL_ARTIFACT_NAME: pr-url
+      PR_URL_FILE_NAME: pr-url.txt
+      PR_URL: '${{ github.event.pull_request.html_url }}'
     steps:
-    - shell: pwsh
+    - name: Save PR URL to file
       run: |
-        "${{env.PR_URL}}" | Out-File -FilePath pr-url.txt
-        $prUrl = Get-Content ./pr-url.txt
-        Write-Host "Saved PR URL: $prUrl" 
-      env:
-        PR_URL: '${{ github.event.pull_request.html_url }}'
-    - name: upload PR URL
+        $env:PR_URL | Out-File -FilePath ./$env:PR_URL_FILE_NAME
+    - name: Save PR URL as artifact
       uses: actions/upload-artifact@v2
       with:
-        name: pr-url
-        path: pr-url.txt
-
-  test-download:
-    name: test download
-    needs: [test-upload]
-    runs-on: ubuntu-latest  
-    if: ${{ github.event_name == 'pull_request_target' }}
-    steps:
-    - name: Download PR URL artifact
-      uses: actions/download-artifact@v2
+        name: ${{env.PR_URL_ARTIFACT_NAME}}
+        path: ${{env.PR_URL_FILE_NAME}}
+    - name: Save PR Actor as artifact
+      uses: actions/upload-artifact@v2
       with:
-        name: pr-url
-    - name: Print it
-      shell: pwsh
-      run: Get-Content ./pr-url.txt
-    - name: Print github data
-      shell: pwsh
-      run: Write-Host "${{ github }}"
-
-  auto-approve-and-merge:
-    needs: [nuget-publish]
-    runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'pull_request_target' && github.actor == 'dependabot[bot]' }}
-    steps:
-    - name: Fetch Dependabot metadata
-      id: dependabot-metadata
-      uses: dependabot/fetch-metadata@v1.1.0
-      with:
-        github-token: '${{ secrets.GITHUB_TOKEN }}'
-    - name: Auto approve and merge the PR
-      run: |
-        # echo "gh auth status"
-        # gh auth status
-        # echo "gh auth status --show-token"
-        # gh auth status --show-token
-        echo "gh pr merge --auto --squash --delete-branch"
-        # gh pr merge --auto --squash --delete-branch "$PR_URL"
-        # echo "gh pr review --approve"
-        # gh pr review --approve "$PR_URL"
-      env:
-        PR_URL: '${{ github.event.pull_request.html_url }}'
-        # Depending on branch protection rules, a  manually populated
-        # `GITHUB_TOKEN_WORKAROUND` secret with permissions to push to
-        # a protected branch must be used.
-        #
-        # When using a custom token, it is recommended to leave the following
-        # comment for other developers to be aware of the reasoning behind it:
-        #
-        # This must be used as GitHub Actions token does not support pushing
-        # to protected branches.
-        GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
-      
+        name: ${{env.PR_URL_ARTIFACT_NAME}}
+        path: ${{env.PR_URL_FILE_NAME}}

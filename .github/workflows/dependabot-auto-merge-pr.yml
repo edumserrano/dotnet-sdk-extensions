@@ -8,9 +8,10 @@ on:
 
 jobs:
 
-  test-download:
+  auto-merge-pr:
     name: test download
     runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
     - name: Download artifact
       uses: dawidd6/action-download-artifact@v2
@@ -18,18 +19,18 @@ jobs:
         workflow: nuget-publish.yml
         workflow_conclusion: success
         name: pr-url
-    - name: Print it
-      shell: pwsh
-      run: Get-Content ./pr-url.txt
-    - name: Print github payload
-      shell: pwsh
-      run: Write-Host "${{ github.payload }}"
-    - name: Print github actor
-      shell: pwsh
-      run: Write-Host "${{ github.actor }}"
-    - name: Print github actor url
-      shell: pwsh
-      run: Write-Host "${{ github.actor.url }}"
+  #   - name: Print it
+  #     shell: pwsh
+  #     run: Get-Content ./pr-url.txt
+  #   - name: Print github payload
+  #     shell: pwsh
+  #     run: Write-Host "${{ github.payload }}"
+  #   - name: Print github actor
+  #     shell: pwsh
+  #     run: Write-Host "${{ github.actor }}"
+  #   - name: Print github actor url
+  #     shell: pwsh
+  #     run: Write-Host "${{ github.actor.url }}"
 
   # auto-approve-and-merge:
   #   needs: [nuget-publish]
