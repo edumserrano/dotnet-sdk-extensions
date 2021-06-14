@@ -21,7 +21,9 @@ jobs:
     - name: Print it
       shell: pwsh
       run: Get-Content ./pr-url.txt
-
+    - name: Print github data
+      shell: pwsh
+      run: Write-Host "${{ github }}"
   # auto-approve-and-merge:
   #   needs: [nuget-publish]
   #   runs-on: ubuntu-latest
