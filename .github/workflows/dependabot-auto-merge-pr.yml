@@ -42,28 +42,16 @@ jobs:
           Write-Host "::set-output name=TRIGGERED_FROM_DEPENDABOT_PR::false"
           Write-Host "Set output variable TRIGGERED_FROM_DEPENDABOT_PR to false"
         }
-    - name: Test outputs
-      run: |
-        Write-Host "TRIGGERED_FROM_DEPENDABOT_PR ${{ steps.dependabot-pr-check.outputs.TRIGGERED_FROM_DEPENDABOT_PR }}"
-        Write-Host "PR_URL ${{ steps.dependabot-pr-check.outputs.PR_URL }}"
-    - name: Test if express
+    - name: Auto approve and merge dependabot PR
       if: steps.dependabot-pr-check.outputs.TRIGGERED_FROM_DEPENDABOT_PR == 'true'
       run: |
-        Write-Host "wtf"
-    # - name: Fetch Dependabot metadata
-    #   uses: dependabot/fetch-metadata@v1.1.0
-    #   if: ${{ steps.dependabot-pr-check.outputs.TRIGGERED_FROM_DEPENDABOT_PR }} == 'true'
-    #   with:
-    #     github-token: '${{ secrets.GITHUB_TOKEN }}'
-    - name: Auto approve and merge the PR
-      if: steps.dependabot-pr-check.outputs.TRIGGERED_FROM_DEPENDABOT_PR == 'true'
-      run: |
+        gh auth login --with-token ${{env.GITHUB_TOKEN}}
         $prUrl = "${{ steps.dependabot-pr-check.outputs.PR_URL }}"
-        # Write-Host "gh pr merge --auto --squash --delete-branch"
         gh pr merge --auto --squash --delete-branch "$prUrl"
-        # Write-Host "gh pr review --approve"
         gh pr review --approve "$prUrl"
-      
+      env:
+        GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
+
 
   # auto-approve-and-merge:
   #   needs: [nuget-publish]
