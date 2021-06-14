@@ -152,7 +152,7 @@ jobs:
         name: pr-url
     - name: Print it
       shell: pwsh
-      run: Get-Content .\pr.txt
+      run: Get-Content .\pr-url.txt
 
   auto-approve-and-merge:
     needs: [nuget-publish]
