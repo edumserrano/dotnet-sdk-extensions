@@ -45,10 +45,14 @@ jobs:
     - name: Auto approve and merge dependabot PR
       if: steps.dependabot-pr-check.outputs.TRIGGERED_FROM_DEPENDABOT_PR == 'true'
       run: |
+        Write-Host "gh auth login --with-token ${{env.GITHUB_TOKEN}}"
         gh auth login --with-token ${{env.GITHUB_TOKEN}}
         $prUrl = "${{ steps.dependabot-pr-check.outputs.PR_URL }}"
+        Write-Host "gh pr review --approve $prUrl"
         gh pr review --approve "$prUrl"
+        Write-Host "gh pr merge --squash --delete-branch $prUrl"
         gh pr merge --squash --delete-branch "$prUrl"
-        # gh pr close "$prUrl"
+        Write-Host "gh pr close $prUrl"
+        gh pr close "$prUrl"
       env:
         GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
