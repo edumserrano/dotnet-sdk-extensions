@@ -10,7 +10,6 @@ jobs:
 
   test-download:
     name: test download
-    needs: [test-upload]
     runs-on: ubuntu-latest
     if: ${{ github.event_name == 'pull_request_target' }}
     steps:
