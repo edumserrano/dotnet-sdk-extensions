@@ -36,9 +36,16 @@ jobs:
           $prUrl = Get-Content ./${{env.PR_URL_FILE_NAME}}
           Write-Host "::set-output name=PR_URL::$prUrl"
           Write-Host "Set output variable PR_URL to $prUrl"
-          exit 0;
         }
-        Write-Host "::warning::This workflow was triggered from a PR that wasn't created by dependabot. Nothing to do."
+        else{
+          Write-Host "::warning::This workflow was triggered from a PR that wasn't created by dependabot. Nothing to do."
+          Write-Host "::set-output name=TRIGGERED_FROM_DEPENDABOT_PR::false"
+          Write-Host "Set output variable TRIGGERED_FROM_DEPENDABOT_PR to false"
+        }
+    - name: Test outputs
+      run: |
+        Write-Host "TRIGGERED_FROM_DEPENDABOT_PR ${{ steps.dependabot-pr-check.outputs.TRIGGERED_FROM_DEPENDABOT_PR }}"
+        Write-Host "PR_URL ${{ steps.dependabot-pr-check.outputs.PR_URL }}"        
     - name: Fetch Dependabot metadata
       uses: dependabot/fetch-metadata@v1.1.0
       if: ${{ steps.dependabot-pr-check.outputs.TRIGGERED_FROM_DEPENDABOT_PR }} == 'true'
