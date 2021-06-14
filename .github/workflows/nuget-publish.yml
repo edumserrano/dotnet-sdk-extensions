@@ -129,10 +129,13 @@ jobs:
   test-upload:
     name: test upload
     runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'pull_request_target' }}
     steps:
     - shell: pwsh
       run: |
-        ${{env.PR_URL}} | Out-File -FilePath pr-url.txt
+        "${{env.PR_URL}}" | Out-File -FilePath pr-url.txt
+        $prUrl = Get-Content ./pr-url.txt
+        Write-Host "Saved PR URL: $prUrl" 
       env:
         PR_URL: '${{ github.event.pull_request.html_url }}'
     - name: upload PR URL
@@ -144,7 +147,8 @@ jobs:
   test-download:
     name: test download
     needs: [test-upload]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest  
+    if: ${{ github.event_name == 'pull_request_target' }}
     steps:
     - name: Download PR URL artifact
       uses: actions/download-artifact@v2
@@ -152,7 +156,7 @@ jobs:
         name: pr-url
     - name: Print it
       shell: pwsh
-      run: Get-Content .\pr-url.txt
+      run: Get-Content ./pr-url.txt
 
   auto-approve-and-merge:
     needs: [nuget-publish]
