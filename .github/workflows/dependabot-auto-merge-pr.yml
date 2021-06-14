@@ -47,7 +47,7 @@ jobs:
         Write-Host "TRIGGERED_FROM_DEPENDABOT_PR ${{ steps.dependabot-pr-check.outputs.TRIGGERED_FROM_DEPENDABOT_PR }}"
         Write-Host "PR_URL ${{ steps.dependabot-pr-check.outputs.PR_URL }}"
     - name: Test if express
-      if: steps.dependabot-pr-check.outputs.TRIGGERED_FROM_DEPENDABOT_PR
+      if: steps.dependabot-pr-check.outputs.TRIGGERED_FROM_DEPENDABOT_PR == 'true'
       run: |
         Write-Host "wtf"
     # - name: Fetch Dependabot metadata
@@ -56,7 +56,7 @@ jobs:
     #   with:
     #     github-token: '${{ secrets.GITHUB_TOKEN }}'
     - name: Auto approve and merge the PR
-      if: steps.dependabot-pr-check.outputs.TRIGGERED_FROM_DEPENDABOT_PR
+      if: steps.dependabot-pr-check.outputs.TRIGGERED_FROM_DEPENDABOT_PR == 'true'
       run: |
         $prUrl = "${{ steps.dependabot-pr-check.outputs.PR_URL }}"
         # Write-Host "gh pr merge --auto --squash --delete-branch"
