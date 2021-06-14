@@ -13,9 +13,12 @@ defaults:
 jobs:
 
   auto-merge-pr:
-    name: test download
+    name: Auto merge dependabot PR
     runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    env:
+      PR_URL_ARTIFACT_NAME: pr-url
+      PR_URL_FILE_NAME: pr-url.txt
     steps:
     - name: Download artifact
       uses: dawidd6/action-download-artifact@v2
@@ -23,27 +26,33 @@ jobs:
       with:
         workflow: nuget-publish.yml
         workflow_conclusion: success
-        name: pr-url
-    - name: Build
+        name:  ${{env.PR_URL_ARTIFACT_NAME}}
+    - name: Check if PR was triggered by dependabot
+      id: dependabot-pr-check
       run: |
-        if(Test-Path -Path ./pr.txt -PathType Leaf){
-          Write-Host "OK"
+        if(Test-Path -Path ./${{env.PR_URL_FILE_NAME}} -PathType Leaf){
+          Write-Host "::set-output name=TRIGGERED_FROM_DEPENDABOT_PR::true"
+          Write-Host "Set output variable TRIGGERED_FROM_DEPENDABOT_PR to true"
+          $prUrl = Get-Content ./${{env.PR_URL_FILE_NAME}}
+          Write-Host "::set-output name=PR_URL::$prUrl"
+          Write-Host "Set output variable PR_URL to $prUrl"
           exit 0;
         }
-        Write-Host "Not Found"
-
-  #   - name: Print it
-  #     shell: pwsh
-  #     run: Get-Content ./pr-url.txt
-  #   - name: Print github payload
-  #     shell: pwsh
-  #     run: Write-Host "${{ github.payload }}"
-  #   - name: Print github actor
-  #     shell: pwsh
-  #     run: Write-Host "${{ github.actor }}"
-  #   - name: Print github actor url
-  #     shell: pwsh
-  #     run: Write-Host "${{ github.actor.url }}"
+        Write-Host "::warning::This workflow was triggered from a PR that wasn't created by dependabot. Nothing to do."
+    - name: Fetch Dependabot metadata
+      uses: dependabot/fetch-metadata@v1.1.0
+      if: ${{ steps.dependabot-pr-check.outputs.TRIGGERED_FROM_DEPENDABOT_PR }} == 'true'
+      with:
+        github-token: '${{ secrets.GITHUB_TOKEN }}'
+    - name: Auto approve and merge the PR
+      if: ${{ steps.dependabot-pr-check.outputs.TRIGGERED_FROM_DEPENDABOT_PR }} == 'true'
+      run: |
+        $prUrl = "${{ steps.dependabot-pr-check.outputs.PR_URL }}"
+        # Write-Host "gh pr merge --auto --squash --delete-branch"
+        gh pr merge --auto --squash --delete-branch "$prUrl"
+        # Write-Host "gh pr review --approve"
+        gh pr review --approve "$prUrl"
+      
 
   # auto-approve-and-merge:
   #   needs: [nuget-publish]
