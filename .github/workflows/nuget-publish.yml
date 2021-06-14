@@ -171,9 +171,9 @@ jobs:
         # echo "gh auth status --show-token"
         # gh auth status --show-token
         echo "gh pr merge --auto --squash --delete-branch"
-        gh pr merge --auto --squash --delete-branch "$PR_URL"
-        echo "gh pr review --approve"
-        gh pr review --approve "$PR_URL"
+        # gh pr merge --auto --squash --delete-branch "$PR_URL"
+        # echo "gh pr review --approve"
+        # gh pr review --approve "$PR_URL"
       env:
         PR_URL: '${{ github.event.pull_request.html_url }}'
         # Depending on branch protection rules, a  manually populated
