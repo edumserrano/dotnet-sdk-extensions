@@ -143,6 +143,7 @@ jobs:
 
   test-download:
     name: test download
+    needs: [test-upload]
     runs-on: ubuntu-latest
     steps:
     - name: Download PR URL artifact
