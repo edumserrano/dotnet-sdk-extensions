@@ -149,7 +149,7 @@ jobs:
     - name: Download PR URL artifact
       uses: actions/download-artifact@v2
       with:
-        name: homework
+        name: pr-url
     - name: Print it
       shell: pwsh
       run: Get-Content .\pr.txt
