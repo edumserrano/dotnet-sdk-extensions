@@ -1,6 +1,6 @@
 name: Publish Nuget packages
 
-on:  
+on:
   workflow_dispatch:
   push:
     branches: [ main ]
@@ -126,6 +126,32 @@ jobs:
           ${{env.TESTING_EXTENSIONS_BIN_FOLDER}}/*.nupkg
           ${{env.TESTING_EXTENSIONS_BIN_FOLDER}}/*.snupkg
 
+  test-upload:
+    name: test upload
+    runs-on: ubuntu-latest
+    steps:
+    - shell: pwsh
+      run: |
+        ${{env.PR_URL}} | Out-File -FilePath pr-url.txt
+      env:
+        PR_URL: '${{ github.event.pull_request.html_url }}'
+    - name: upload PR URL
+      uses: actions/upload-artifact@v2
+      with:
+        name: pr-url
+        path: pr-url.txt
+
+  test-download:
+    name: test download
+    runs-on: ubuntu-latest
+    steps:
+    - name: Download PR URL artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: homework
+    - name: Print it
+      shell: pwsh
+      run: Get-Content .\pr.txt
 
   auto-approve-and-merge:
     needs: [nuget-publish]
