@@ -42,7 +42,7 @@ jobs:
           Write-Host "::set-output name=TRIGGERED_FROM_DEPENDABOT_PR::false"
           Write-Host "Set output variable TRIGGERED_FROM_DEPENDABOT_PR to false"
         }
-    - name: Auto approve and merge dependabot PR
+    - name: Approve and merge dependabot PR
       if: steps.dependabot-pr-check.outputs.TRIGGERED_FROM_DEPENDABOT_PR == 'true'
       run: |
         Write-Host "gh auth login --with-token ${{env.GITHUB_TOKEN}}"

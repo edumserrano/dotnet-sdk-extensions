@@ -136,8 +136,3 @@ jobs:
       with:
         name: ${{env.PR_URL_ARTIFACT_NAME}}
         path: ${{env.PR_URL_FILE_NAME}}
-    - name: Save PR Actor as artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: ${{env.PR_URL_ARTIFACT_NAME}}
-        path: ${{env.PR_URL_FILE_NAME}}
