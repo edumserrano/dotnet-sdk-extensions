@@ -6,6 +6,10 @@ on:
     types:
     - completed
 
+defaults:
+  run:
+    shell: pwsh
+
 jobs:
 
   auto-merge-pr:
@@ -15,12 +19,19 @@ jobs:
     steps:
     - name: Download artifact
       uses: dawidd6/action-download-artifact@v2
+      continue-on-error: true
       with:
         workflow: nuget-publish.yml
         workflow_conclusion: success
         name: pr-url
+    - name: Build
+      run: |
+        if(Test-Path -Path ./pr.txt -PathType Leaf){
+          Write-Host "OK"
+          exit 0;
+        }
+        Write-Host "Not Found"
 
-        
   #   - name: Print it
   #     shell: pwsh
   #     run: Get-Content ./pr-url.txt

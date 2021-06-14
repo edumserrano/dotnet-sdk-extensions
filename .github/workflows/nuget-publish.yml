@@ -120,6 +120,7 @@ jobs:
 
   pr-url-upload:
     name: Save PR URL
+    needs: [nuget-publish]
     runs-on: ubuntu-latest
     if: ${{ github.event_name == 'pull_request' && github.actor == 'dependabot[bot]' }} # only create PR URL artifact for auto merge if the PR comes from dependabot
     env:
