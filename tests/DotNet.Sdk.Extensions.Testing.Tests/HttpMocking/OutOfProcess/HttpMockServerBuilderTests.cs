@@ -59,19 +59,19 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
         {
             await using var mock = new HttpMockServerBuilder()
                 .UseDefaultLogLevel(LogLevel.Critical)
-                .UseUrl(HttpScheme.Http, 8811)
-                .UseUrl(HttpScheme.Http, 8822)
-                .UseUrl(HttpScheme.Https, 9911)
-                .UseUrl(HttpScheme.Https, 9922)
+                .UseUrl(HttpScheme.Http, 6011)
+                .UseUrl(HttpScheme.Http, 6022)
+                .UseUrl(HttpScheme.Https, 7011)
+                .UseUrl(HttpScheme.Https, 7012)
                 .UseHttpResponseMocks()
                 .Build();
             var urls = await mock.StartAsync();
 
             urls.Count.ShouldBe(4);
-            urls[0].ToString().ShouldBe("http://localhost:8811");
-            urls[1].ToString().ShouldBe("http://localhost:8822");
-            urls[2].ToString().ShouldBe("https://localhost:9911");
-            urls[3].ToString().ShouldBe("https://localhost:9922");
+            urls[0].ToString().ShouldBe("http://localhost:6011");
+            urls[1].ToString().ShouldBe("http://localhost:6022");
+            urls[2].ToString().ShouldBe("https://localhost:7011");
+            urls[3].ToString().ShouldBe("https://localhost:7012");
         }
 
         /// <summary>
@@ -85,14 +85,14 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
         {
             await using var mock = new HttpMockServerBuilder()
                 .UseDefaultLogLevel(LogLevel.Critical)
-                .UseHostArgs("--urls", "http://*:8811;https://*:9911")
+                .UseHostArgs("--urls", "http://*:5011;https://*:6011")
                 .UseHttpResponseMocks()
                 .Build();
             var urls = await mock.StartAsync();
 
             urls.Count.ShouldBe(2);
-            urls[0].ToString().ShouldBe("http://localhost:8811");
-            urls[1].ToString().ShouldBe("https://localhost:9911");
+            urls[0].ToString().ShouldBe("http://localhost:5011");
+            urls[1].ToString().ShouldBe("https://localhost:6011");
         }
 
         /// <summary>
