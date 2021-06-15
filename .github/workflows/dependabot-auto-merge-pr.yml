@@ -55,7 +55,7 @@ jobs:
       run: |
         gh auth login --with-token ${{env.GITHUB_TOKEN}}
         # $prUrl = "${{ steps.dependabot-pr-check.outputs.PR_URL }}"
-        $prNumber = "${{github.event.workflow_run.pull_requests[0].url}}"
+        $prNumber = "${{github.event.workflow_run.pull_requests[0].number}}"
         $prUrl = "https://github.com/edumserrano/dot-net-sdk-extensions/pull/$prNumber"
         gh pr review --approve "$prUrl"
         # repo option for 'Automatically delete head branches' is enabled
