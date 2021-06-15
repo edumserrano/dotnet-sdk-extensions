@@ -11,57 +11,17 @@ defaults:
     shell: pwsh
 
 jobs:
-
   auto-merge-pr:
     name: Auto merge dependabot PR
     runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.conclusion == 'success' && github.actor == 'dependabot[bot]' }}
-    env:
-      PR_URL_ARTIFACT_NAME: pr-url
-      PR_URL_FILE_NAME: pr-url.txt
     steps:
-    - name: test
-      run: |
-        $a = '${{toJSON(github)}}'
-        Write-Host $a
-        Write-Host "=========="
-        Write-Host "${{github.event.workflow_run.pull_requests[0].number}}"
-
-
-    - name: Download artifact
-      uses: dawidd6/action-download-artifact@v2
-      continue-on-error: true
-      with:
-        workflow: nuget-publish.yml
-        workflow_conclusion: success
-        name:  ${{env.PR_URL_ARTIFACT_NAME}}
-    - name: Check if PR was triggered by dependabot
-      id: dependabot-pr-check
-      run: |
-        if(Test-Path -Path ./${{env.PR_URL_FILE_NAME}} -PathType Leaf){
-          Write-Host "::set-output name=TRIGGERED_FROM_DEPENDABOT_PR::true"
-          Write-Host "Set output variable TRIGGERED_FROM_DEPENDABOT_PR to true"
-          $prUrl = Get-Content ./${{env.PR_URL_FILE_NAME}}
-          Write-Host "::set-output name=PR_URL::$prUrl"
-          Write-Host "Set output variable PR_URL to $prUrl"
-        }
-        else{
-          Write-Host "::warning::This workflow was triggered from a PR that wasn't created by dependabot. Nothing to do."
-          Write-Host "::set-output name=TRIGGERED_FROM_DEPENDABOT_PR::false"
-          Write-Host "Set output variable TRIGGERED_FROM_DEPENDABOT_PR to false"
-        }
     - name: Approve and merge dependabot PR
-      if: steps.dependabot-pr-check.outputs.TRIGGERED_FROM_DEPENDABOT_PR == 'true'
       run: |
         gh auth login --with-token ${{env.GITHUB_TOKEN}}
-        # $prUrl = "${{ steps.dependabot-pr-check.outputs.PR_URL }}"
         $prNumber = "${{github.event.workflow_run.pull_requests[0].number}}"
         $prUrl = "https://github.com/edumserrano/dot-net-sdk-extensions/pull/$prNumber"
         gh pr review --approve "$prUrl"
-        # repo option for 'Automatically delete head branches' is enabled
-        # if not I could use the --delete-branch option but would have to 
-        # deal with the fact the it errors out when trying to delete the local
-        # branch because the current dir is not a git repo
         gh pr merge --squash "$prUrl" 
       env:
         GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'

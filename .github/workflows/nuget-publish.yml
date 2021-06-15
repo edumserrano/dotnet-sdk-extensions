@@ -117,22 +117,3 @@ jobs:
           ${{env.EXTENSIONS_BIN_FOLDER}}/*.snupkg
           ${{env.TESTING_EXTENSIONS_BIN_FOLDER}}/*.nupkg
           ${{env.TESTING_EXTENSIONS_BIN_FOLDER}}/*.snupkg
-
-  pr-url-upload:
-    name: Prepare dependabot auto merge
-    needs: [nuget-publish]
-    runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'pull_request' && github.actor == 'dependabot[bot]' }} # only create PR URL artifact for auto merge if the PR comes from dependabot
-    env:
-      PR_URL_ARTIFACT_NAME: pr-url
-      PR_URL_FILE_NAME: pr-url.txt
-      PR_URL: '${{ github.event.pull_request.html_url }}'
-    steps:
-    - name: Save PR URL to file
-      run: |
-        $env:PR_URL | Out-File -FilePath ./$env:PR_URL_FILE_NAME
-    - name: Save PR URL as artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: ${{env.PR_URL_ARTIFACT_NAME}}
-        path: ${{env.PR_URL_FILE_NAME}}
