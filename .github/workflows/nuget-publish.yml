@@ -118,21 +118,56 @@ jobs:
           ${{env.TESTING_EXTENSIONS_BIN_FOLDER}}/*.nupkg
           ${{env.TESTING_EXTENSIONS_BIN_FOLDER}}/*.snupkg
 
-  pr-url-upload:
-    name: Save PR URL
+  # pr-url-upload:
+  #   name: Save PR URL
+  #   needs: [nuget-publish]
+  #   runs-on: ubuntu-latest
+  #   if: ${{ github.event_name == 'pull_request' && github.actor == 'dependabot[bot]' }} # only create PR URL artifact for auto merge if the PR comes from dependabot
+  #   env:
+  #     PR_URL_ARTIFACT_NAME: pr-url
+  #     PR_URL_FILE_NAME: pr-url.txt
+  #     PR_URL: '${{ github.event.pull_request.html_url }}'
+  #   steps:
+  #   - name: Save PR URL to file
+  #     run: |
+  #       $env:PR_URL | Out-File -FilePath ./$env:PR_URL_FILE_NAME
+  #   - name: Save PR URL as artifact
+  #     uses: actions/upload-artifact@v2
+  #     with:
+  #       name: ${{env.PR_URL_ARTIFACT_NAME}}
+  #       path: ${{env.PR_URL_FILE_NAME}}
+
+  auto-approve-and-merge:
+    name: Auto merge dependabot PR
     needs: [nuget-publish]
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'pull_request' && github.actor == 'dependabot[bot]' }} # only create PR URL artifact for auto merge if the PR comes from dependabot
-    env:
-      PR_URL_ARTIFACT_NAME: pr-url
-      PR_URL_FILE_NAME: pr-url.txt
-      PR_URL: '${{ github.event.pull_request.html_url }}'
+    if: ${{ github.event_name == 'pull_request' && github.actor == 'dependabot[bot]' }}
     steps:
-    - name: Save PR URL to file
-      run: |
-        $env:PR_URL | Out-File -FilePath ./$env:PR_URL_FILE_NAME
-    - name: Save PR URL as artifact
-      uses: actions/upload-artifact@v2
+    - name: Fetch Dependabot metadata
+      id: dependabot-metadata
+      uses: dependabot/fetch-metadata@v1.1.0
       with:
-        name: ${{env.PR_URL_ARTIFACT_NAME}}
-        path: ${{env.PR_URL_FILE_NAME}}
+        github-token: '${{ secrets.GITHUB_TOKEN }}'
+    - name: Auto approve and merge the PR
+      run: |
+        echo "gh auth status"
+        gh auth status
+        echo "gh auth status --show-token"
+        gh auth status --show-token
+        echo "gh pr merge --auto --squash --delete-branch"
+        gh pr merge --auto --squash --delete-branch "$PR_URL"
+        echo "gh pr review --approve"
+        gh pr review --approve "$PR_URL"
+      env:
+        PR_URL: '${{ github.event.pull_request.html_url }}'
+        # Depending on branch protection rules, a  manually populated
+        # `GH_TOKEN_FOR_DEPENDABOT` secret with permissions to push to
+        # a protected branch must be used.
+        #
+        # When using a custom token, it is recommended to leave the following
+        # comment for other developers to be aware of the reasoning behind it:
+        #
+        # This must be used as GitHub Actions token does not support pushing
+        # to protected branches.
+        GITHUB_TOKEN: '${{ secrets.GH_TOKEN_FOR_DEPENDABOT }}'
+      
