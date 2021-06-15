@@ -119,7 +119,7 @@ jobs:
           ${{env.TESTING_EXTENSIONS_BIN_FOLDER}}/*.snupkg
 
   pr-url-upload:
-    name: Save PR URL
+    name: Prepare dependabot auto merge
     needs: [nuget-publish]
     runs-on: ubuntu-latest
     if: ${{ github.event_name == 'pull_request' && github.actor == 'dependabot[bot]' }} # only create PR URL artifact for auto merge if the PR comes from dependabot
