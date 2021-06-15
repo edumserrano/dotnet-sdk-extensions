@@ -20,6 +20,11 @@ jobs:
       PR_URL_ARTIFACT_NAME: pr-url
       PR_URL_FILE_NAME: pr-url.txt
     steps:
+    - name: test
+      run: |
+        Write-Host "${{toJSON(github)}}"
+        Write-Host "${{github.action}}"
+        Write-Host "${{toJSON(github.action)}}"
     - name: Download artifact
       uses: dawidd6/action-download-artifact@v2
       continue-on-error: true

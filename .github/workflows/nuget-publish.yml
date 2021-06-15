@@ -118,79 +118,21 @@ jobs:
           ${{env.TESTING_EXTENSIONS_BIN_FOLDER}}/*.nupkg
           ${{env.TESTING_EXTENSIONS_BIN_FOLDER}}/*.snupkg
 
-  # pr-url-upload:
-  #   name: Save PR URL
-  #   needs: [nuget-publish]
-  #   runs-on: ubuntu-latest
-  #   if: ${{ github.event_name == 'pull_request' && github.actor == 'dependabot[bot]' }} # only create PR URL artifact for auto merge if the PR comes from dependabot
-  #   env:
-  #     PR_URL_ARTIFACT_NAME: pr-url
-  #     PR_URL_FILE_NAME: pr-url.txt
-  #     PR_URL: '${{ github.event.pull_request.html_url }}'
-  #   steps:
-  #   - name: Save PR URL to file
-  #     run: |
-  #       $env:PR_URL | Out-File -FilePath ./$env:PR_URL_FILE_NAME
-  #   - name: Save PR URL as artifact
-  #     uses: actions/upload-artifact@v2
-  #     with:
-  #       name: ${{env.PR_URL_ARTIFACT_NAME}}
-  #       path: ${{env.PR_URL_FILE_NAME}}
-
-  test:
-    runs-on: ubuntu-latest
-    permissions:
-      actions: write 
-    steps:
-    - name: Test secret
-      run: |
-        echo "token is ${{env.MY_TOKEN}}"
-        echo "MY_NUGET_PUSH_API_KEY is ${{env.MY_NUGET_PUSH_API_KEY}}"
-      env:
-        MY_TOKEN: '${{ secrets.GH_TOKEN_FOR_DEPENDABOT }}'
-        MY_NUGET_PUSH_API_KEY: '${{ secrets.NUGET_PUSH_API_KEY }}'
-
-
-  auto-approve-and-merge:
-    name: Auto merge dependabot PR
+  pr-url-upload:
+    name: Save PR URL
     needs: [nuget-publish]
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'pull_request' && github.actor == 'dependabot[bot]' }}
+    if: ${{ github.event_name == 'pull_request' && github.actor == 'dependabot[bot]' }} # only create PR URL artifact for auto merge if the PR comes from dependabot
+    env:
+      PR_URL_ARTIFACT_NAME: pr-url
+      PR_URL_FILE_NAME: pr-url.txt
+      PR_URL: '${{ github.event.pull_request.html_url }}'
     steps:
-    - name: Fetch Dependabot metadata
-      id: dependabot-metadata
-      uses: dependabot/fetch-metadata@v1.1.0
+    - name: Save PR URL to file
+      run: |
+        $env:PR_URL | Out-File -FilePath ./$env:PR_URL_FILE_NAME
+    - name: Save PR URL as artifact
+      uses: actions/upload-artifact@v2
       with:
-        github-token: '${{ secrets.GITHUB_TOKEN }}'
-    - name: Test secret
-      run: |
-        echo "token is ${{env.MY_TOKEN}}"
-        echo "MY_NUGET_PUSH_API_KEY is ${{env.MY_NUGET_PUSH_API_KEY}}"
-      env:
-        MY_TOKEN: '${{ secrets.GH_TOKEN_FOR_DEPENDABOT }}'
-        MY_NUGET_PUSH_API_KEY: '${{ secrets.NUGET_PUSH_API_KEY }}'
-    - name: Auto approve and merge the PR
-      run: |
-        echo "gh auth login --with-token ${{env.GH_TOKEN_FOR_DEPENDABOT}}"
-        gh auth login --with-token ${{env.GH_TOKEN_FOR_DEPENDABOT}}
-        echo "gh auth status"
-        gh auth status
-        echo "gh auth status --show-token"
-        gh auth status --show-token
-        echo "gh pr merge --auto --squash --delete-branch"
-        gh pr merge --auto --squash --delete-branch "$PR_URL"
-        echo "gh pr review --approve"
-        gh pr review --approve "$PR_URL"
-      env:
-        PR_URL: '${{ github.event.pull_request.html_url }}'
-        # Depending on branch protection rules, a  manually populated
-        # `GH_TOKEN_FOR_DEPENDABOT` secret with permissions to push to
-        # a protected branch must be used.
-        #
-        # When using a custom token, it is recommended to leave the following
-        # comment for other developers to be aware of the reasoning behind it:
-        #
-        # This must be used as GitHub Actions token does not support pushing
-        # to protected branches.
-        GH_TOKEN_FOR_DEPENDABOT: '${{ secrets.GH_TOKEN_FOR_DEPENDABOT }}'
-      
+        name: ${{env.PR_URL_ARTIFACT_NAME}}
+        path: ${{env.PR_URL_FILE_NAME}}
