@@ -48,6 +48,10 @@ jobs:
         gh auth login --with-token ${{env.GITHUB_TOKEN}}
         $prUrl = "${{ steps.dependabot-pr-check.outputs.PR_URL }}"
         gh pr review --approve "$prUrl"
-        gh pr merge --squash --delete-branch "$prUrl"
+        # repo option for 'Automatically delete head branches' is enabled
+        # if not I could use the --delete-branch option but would have to 
+        # deal with the fact the it errors out when trying to delete the local
+        # branch because the current dir is not a git repo
+        gh pr merge --squash "$prUrl" 
       env:
         GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
