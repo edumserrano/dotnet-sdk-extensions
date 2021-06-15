@@ -148,10 +148,15 @@ jobs:
       uses: dependabot/fetch-metadata@v1.1.0
       with:
         github-token: '${{ secrets.GITHUB_TOKEN }}'
+    - name: Test secret
+      run: |
+        echo token is ${{env.MY_TOKEN}}"
+      env:
+        MY_TOKEN: '${{ secrets.GH_TOKEN_FOR_DEPENDABOT }}'
     - name: Auto approve and merge the PR
       run: |
-        echo "gh auth login --with-token ${{env.GITHUB_TOKEN}}"
-        gh auth login --with-token ${{env.GITHUB_TOKEN}}
+        echo "gh auth login --with-token ${{env.GH_TOKEN_FOR_DEPENDABOT}}"
+        gh auth login --with-token ${{env.GH_TOKEN_FOR_DEPENDABOT}}
         echo "gh auth status"
         gh auth status
         echo "gh auth status --show-token"
@@ -171,5 +176,5 @@ jobs:
         #
         # This must be used as GitHub Actions token does not support pushing
         # to protected branches.
-        GITHUB_TOKEN: '${{ secrets.GH_TOKEN_FOR_DEPENDABOT }}'
+        GH_TOKEN_FOR_DEPENDABOT: '${{ secrets.GH_TOKEN_FOR_DEPENDABOT }}'
       
