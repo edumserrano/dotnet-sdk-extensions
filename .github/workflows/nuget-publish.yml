@@ -137,6 +137,18 @@ jobs:
   #       name: ${{env.PR_URL_ARTIFACT_NAME}}
   #       path: ${{env.PR_URL_FILE_NAME}}
 
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Test secret
+      run: |
+        echo "token is ${{env.MY_TOKEN}}"
+        echo "MY_NUGET_PUSH_API_KEY is ${{env.MY_NUGET_PUSH_API_KEY}}"
+      env:
+        MY_TOKEN: '${{ secrets.GH_TOKEN_FOR_DEPENDABOT }}'
+        MY_NUGET_PUSH_API_KEY: '${{ secrets.NUGET_PUSH_API_KEY }}'
+
+
   auto-approve-and-merge:
     name: Auto merge dependabot PR
     needs: [nuget-publish]
@@ -151,8 +163,10 @@ jobs:
     - name: Test secret
       run: |
         echo "token is ${{env.MY_TOKEN}}"
+        echo "MY_NUGET_PUSH_API_KEY is ${{env.MY_NUGET_PUSH_API_KEY}}"
       env:
         MY_TOKEN: '${{ secrets.GH_TOKEN_FOR_DEPENDABOT }}'
+        MY_NUGET_PUSH_API_KEY: '${{ secrets.NUGET_PUSH_API_KEY }}'
     - name: Auto approve and merge the PR
       run: |
         echo "gh auth login --with-token ${{env.GH_TOKEN_FOR_DEPENDABOT}}"
