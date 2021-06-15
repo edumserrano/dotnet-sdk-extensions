@@ -22,9 +22,8 @@ jobs:
     steps:
     - name: test
       run: |
-        Write-Host "${{toJSON(github)}}"
-        Write-Host "${{github.action}}"
-        Write-Host "${{toJSON(github.action)}}"
+        $a = '${{toJSON(github)}}'
+        Write-Host $a
     - name: Download artifact
       uses: dawidd6/action-download-artifact@v2
       continue-on-error: true
