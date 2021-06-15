@@ -150,7 +150,7 @@ jobs:
         github-token: '${{ secrets.GITHUB_TOKEN }}'
     - name: Test secret
       run: |
-        echo token is ${{env.MY_TOKEN}}"
+        echo "token is ${{env.MY_TOKEN}}"
       env:
         MY_TOKEN: '${{ secrets.GH_TOKEN_FOR_DEPENDABOT }}'
     - name: Auto approve and merge the PR
