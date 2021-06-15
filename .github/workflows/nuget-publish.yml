@@ -42,9 +42,6 @@ jobs:
         dotnet-version: 5.0.x
     - name: Install reportgenerator dotnet tool
       run:  dotnet tool install --global dotnet-reportgenerator-globaltool
-    - name: Clears local NuGet resources 
-      if: matrix.os == 'windows-latest' # required due to bug when using dotnet cli on windows-latest. See https://github.com/dotnet/core/issues/5881 and https://github.com/actions/setup-dotnet/issues/155
-      run: dotnet nuget locals all --clear
     - name: Restore dependencies
       run: dotnet restore ${{env.SLN_FILEPATH}}
     - name: Build
