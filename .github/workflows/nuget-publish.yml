@@ -150,6 +150,8 @@ jobs:
         github-token: '${{ secrets.GITHUB_TOKEN }}'
     - name: Auto approve and merge the PR
       run: |
+        echo "gh auth login --with-token ${{env.GITHUB_TOKEN}}"
+        gh auth login --with-token ${{env.GITHUB_TOKEN}}
         echo "gh auth status"
         gh auth status
         echo "gh auth status --show-token"
