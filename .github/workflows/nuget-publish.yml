@@ -139,6 +139,8 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
+    permissions:
+      actions: write 
     steps:
     - name: Test secret
       run: |
