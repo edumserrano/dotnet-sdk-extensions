@@ -1,13 +1,5 @@
 # Dev notes
 
-## GitHub Workflows
-
-| Worflow                   |      Status and link      |
-|---------------------------|:-------------------------:|
-| [nuget-publish](https://github.com/edumserrano/dot-net-sdk-extensions/blob/main/.github/workflows/nuget-publish.yml)             |  ![Build Status](https://github.com/edumserrano/dot-net-sdk-extensions/workflows/Publish%20Nuget%20packages/badge.svg) |
-
-For more information about the GitHub actions configured for this repo go [here](/docs/dev-notes/github-workflows.md).
-
 ## Building
 
 ### Using Visual Studio
@@ -30,9 +22,29 @@ For more information on how to debug the NuGet packages code from your applicati
 - [How to Configure Visual Studio to Use SourceLink to Step into NuGet Package Source](https://aaronstannard.com/visual-studio-sourcelink-setup/)
 - [Source Link - microsoft docs](https://docs.microsoft.com/en-us/dotnet/standard/library-guidance/sourcelink)
 
-## Nullable reference types
+## Projects wide configuration
 
-Because of the [Directory.Build.props](/Directory.Build.props) that exists at the root of the repo the [nullable referece types](https://docs.microsoft.com/en-us/dotnet/csharp/nullable-migration-strategies) are enabled for all projects in the repo.
+The [Directory.Build.props](/Directory.Build.props) at the root of the repo enables for all projects:
+
+- [Nullable referece types](https://docs.microsoft.com/en-us/dotnet/csharp/nullable-migration-strategies) are enabled.
+- [Repeatable NuGet package restore using lockfile](https://docs.microsoft.com/en-us/nuget/consume-packages/package-references-in-project-files#locking-dependencies) are enabled. For more info read the blog post [Enable repeatable package restores using a lock file](https://devblogs.microsoft.com/nuget/enable-repeatable-package-restores-using-a-lock-file/) and the wiki [Enable repeatable package restore using lock file
+](https://github.com/NuGet/Home/wiki/Enable-repeatable-package-restore-using-lock-file)
+- [Deterministic builds](https://github.com/clairernovotny/DeterministicBuilds) are enabled.
+
+## Repository configuration
+
+From all the GitHub repository settings the configurations worth mentioning are:
+
+- **Automatically delete head branches** is enabled: after pull requests are merged, head branches are deleted automatically.
+- **Branch protection rules**. There is a branch protection rule for the the `main` branch that will enforce the following:
+  - Require status checks to pass before merging. The required status checks configured are the ones produced by the [main workflow](/docs/dev-notes/github-workflows.md).
+  - Require branches to be up to date before merging;
+  - Require linear history.
+
+## GitHub Workflows
+
+For more information about the GitHub workflows configured for this repo go [here](/docs/dev-notes/github-workflows.md).
+
 
 ## Other notes
 

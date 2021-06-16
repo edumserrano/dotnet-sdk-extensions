@@ -55,6 +55,12 @@ Also note that the filename for the custom action must be `action.yml`.
 
 ## Dependabot
 
+### Deleting branches from Dependabot pull requests
+
+The [dependabot-auto-merge-pr](/.github/workflows/dependabot-auto-merge-pr.yml) workflow does not delete the merged branch explicitly because when I tried to use the flag `--delete-branch` from [gh pr merge](https://cli.github.com/manual/gh_pr_merge), GitHub's CLI tries to delete both the remote and local branch. Although it successfully deletes the remote branch, it **fails to delete the local branch** because the workflow does not execute the `gh pr merge` command in a git directory, in fact the workflow does not even checkout the repo.
+
+Although there could have been other ways to deal with this I decided to use a GitHub [repository configuration](/docs/dev-notes/dev-notes-main.md#repository-configuration) that will automatically delete branches once PRs are merged.
+
 ### Ignored NuGets
 
 On the [dependabot configuration file](/.github/dependabot.yml) the NuGet `Microsoft.AspNetCore.Mvc.Testing` is ignored because at the moment the `DotNet.Sdk.Extensions.Testing` project where the NuGet is used targets two target frameworks  and has an `if condition` to use different NuGet versions depending on the target framework.
