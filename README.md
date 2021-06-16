@@ -13,7 +13,6 @@ This repo provides two NuGet packages:
 | NuGet                   |      Version    |
 |-------------------------|:---------------:|
 | [DotNet-Sdk-Extensions](https://www.nuget.org/packages/DotNet-Sdk-Extensions) | [![Nuget DotNet-Sdk-Extensions](https://img.shields.io/nuget/v/DotNet-Sdk-Extensions)](https://www.nuget.org/packages/DotNet-Sdk-Extensions)
-|
 | [DotNet-Sdk-Extensions-Testing](https://www.nuget.org/packages/DotNet-Sdk-Extensions-Testing) | [![Nuget DotNet-Sdk-Extensions-Testing](https://img.shields.io/nuget/v/DotNet-Sdk-Extensions-Testing)](https://www.nuget.org/packages/DotNet-Sdk-Extensions-Testing)
 
 Installation is performed via NuGet and you can do it using the following commands:
