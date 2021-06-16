@@ -1,17 +1,20 @@
 # Extensions for .NET SDK
 
-This repo contains extensions to use with .NET applications, using .net core 3.1 and higher, as well as extensions for unit and [integration tests](https://docs.microsoft.com/en-us/aspnet/core/test/integration-tests?#introduction-to-integration-tests).
+[![Build Status](https://github.com/edumserrano/dot-net-sdk-extensions/workflows/Publish%20Nuget%20packages/badge.svg)](https://github.com/edumserrano/dot-net-sdk-extensions/actions/workflows/nuget-publish.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./License)
+![GitHub Sponsors](https://img.shields.io/github/sponsors/edumserrano)
 
-| Worflow                   |      Status and link      |
-|---------------------------|:-------------------------:|
-| [nuget-publish](https://github.com/edumserrano/dot-net-sdk-extensions/blob/main/.github/workflows/nuget-publish.yml)             |  ![Build Status](https://github.com/edumserrano/dot-net-sdk-extensions/workflows/Publish%20Nuget%20packages/badge.svg) |
+This repo contains extensions to use with .NET applications, using .net core 3.1 and higher, as well as extensions for unit and [integration tests](https://docs.microsoft.com/en-us/aspnet/core/test/integration-tests?#introduction-to-integration-tests).
 
 ## Installing
 
 This repo provides two NuGet packages:
 
-- [DotNet-Sdk-Extensions](https://www.nuget.org/packages/DotNet-Sdk-Extensions)
-- [DotNet-Sdk-Extensions-Testing](https://www.nuget.org/packages/DotNet-Sdk-Extensions-Testing)
+| NuGet                   |      Version    |
+|-------------------------|:---------------:|
+| [DotNet-Sdk-Extensions](https://www.nuget.org/packages/DotNet-Sdk-Extensions) | [![Nuget DotNet-Sdk-Extensions](https://img.shields.io/nuget/v/DotNet-Sdk-Extensions)](https://www.nuget.org/packages/DotNet-Sdk-Extensions)
+|
+| [DotNet-Sdk-Extensions-Testing](https://www.nuget.org/packages/DotNet-Sdk-Extensions-Testing) | [![Nuget DotNet-Sdk-Extensions-Testing](https://img.shields.io/nuget/v/DotNet-Sdk-Extensions-Testing)](https://www.nuget.org/packages/DotNet-Sdk-Extensions-Testing)
 
 Installation is performed via NuGet and you can do it using the following commands:
 
@@ -61,8 +64,4 @@ For more information about each extension check its docs. You can find the link 
 
 ## Dev notes
 
-For notes aimed at developers working on this repo or just trying to understand it go [here](/docs/dev-notes/dev-notes-main.md). It will show you how to build and run the solution amongst other things.
-
-## License
-
-This project is licensed under the [MIT license](./LICENSE).
+For notes aimed at developers working on this repo or just trying to understand it go [here](/docs/dev-notes/dev-notes-main.md). It will show you how to build and run the solution among other things.
