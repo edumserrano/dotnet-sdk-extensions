@@ -99,7 +99,7 @@ jobs:
       run: dotnet pack ${{env.TESTING_EXTENSIONS_CSPROJ_FILEPATH}} -c Release
     - name: Publish DotNet.Sdk.Extensions nuget and symbols
       uses: ./.github/actions/nuget-push
-      if: ${{ github.event_name != 'pull_request' }} # don't push nugets to nuget.org on pull requests
+      if: ${{ github.event_name != 'pull_request' }} # don't push nugets on pull requests
       env:
         NUGET_PUSH_API_KEY: ${{ secrets.NUGET_PUSH_API_KEY }}
       with:
@@ -108,7 +108,7 @@ jobs:
         working-directory: ${{env.EXTENSIONS_BIN_FOLDER}}
     - name: Publish DotNet.Sdk.Extensions.Testing nuget and symbols
       uses: ./.github/actions/nuget-push
-      if: ${{ github.event_name != 'pull_request' }} # don't push nugets to nuget.org on pull requests
+      if: ${{ github.event_name != 'pull_request' }} # don't push nugets on pull requests
       env:
         NUGET_PUSH_API_KEY: ${{ secrets.NUGET_PUSH_API_KEY }}
       with:
