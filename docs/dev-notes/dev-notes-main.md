@@ -39,6 +39,7 @@ From all the GitHub repository settings the configurations worth mentioning are:
 - **Branch protection rules**. There is a branch protection rule for the the `main` branch that will enforce the following:
   - Require status checks to pass before merging. The required status checks configured are the ones produced by the [main workflow](/docs/dev-notes/github-workflows.md).
   - Require branches to be up to date before merging;
+  - Require signed commits;
   - Require linear history.
 
 ## GitHub Workflows
