@@ -26,11 +26,6 @@
     <!--nuget package info-->
   </PropertyGroup>
 
-  <!-- enable deterministic builds as per https://github.com/clairernovotny/DeterministicBuilds. Recommended when using sourcelink -->
-  <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
-    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
-  </PropertyGroup>
-
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0">
