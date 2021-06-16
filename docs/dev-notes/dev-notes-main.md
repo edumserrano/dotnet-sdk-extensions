@@ -56,4 +56,3 @@ dotnet dev-certs https --trust
 ```
 
 For more info see [Generate self-signed certificates with the .NET CLI](https://docs.microsoft.com/en-us/dotnet/core/additional-tools/self-signed-certificates-guide).
-
