@@ -48,7 +48,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 EnableTimeoutPolicy = false,
                 CircuitBreaker = new CircuitBreakerOptions
                 {
-                    DurationOfBreakInSecs = 0.01,
+                    DurationOfBreakInSecs = 0.05,
                     SamplingDurationInSecs = 0.1,
                     FailureThreshold = 0.6,
                     MinimumThroughput = 10
@@ -94,7 +94,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 EnableTimeoutPolicy = false,
                 CircuitBreaker = new CircuitBreakerOptions
                 {
-                    DurationOfBreakInSecs = 0.01,
+                    DurationOfBreakInSecs = 0.05,
                     SamplingDurationInSecs = 0.1,
                     FailureThreshold = 0.6,
                     MinimumThroughput = 10
@@ -147,7 +147,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 EnableTimeoutPolicy = false,
                 CircuitBreaker = new CircuitBreakerOptions
                 {
-                    DurationOfBreakInSecs = 0.01,
+                    DurationOfBreakInSecs = 0.05,
                     SamplingDurationInSecs = 0.1,
                     FailureThreshold = 0.6,
                     MinimumThroughput = 10
@@ -199,7 +199,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 EnableTimeoutPolicy = false,
                 CircuitBreaker = new CircuitBreakerOptions
                 {
-                    DurationOfBreakInSecs = 0.01,
+                    DurationOfBreakInSecs = 0.05,
                     SamplingDurationInSecs = 0.1,
                     FailureThreshold = 0.6,
                     MinimumThroughput = 10
@@ -256,7 +256,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 EnableTimeoutPolicy = false,
                 CircuitBreaker = new CircuitBreakerOptions
                 {
-                    DurationOfBreakInSecs = 0.01,
+                    DurationOfBreakInSecs = 0.05,
                     SamplingDurationInSecs = 0.1,
                     FailureThreshold = 0.6,
                     MinimumThroughput = 10
@@ -315,7 +315,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 EnableTimeoutPolicy = false,
                 CircuitBreaker = new CircuitBreakerOptions
                 {
-                    DurationOfBreakInSecs = 0.01,
+                    DurationOfBreakInSecs = 0.05,
                     SamplingDurationInSecs = 0.1,
                     FailureThreshold = 0.6,
                     MinimumThroughput = 10
@@ -369,7 +369,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 EnableTimeoutPolicy = false,
                 CircuitBreaker = new CircuitBreakerOptions
                 {
-                    DurationOfBreakInSecs = 0.01,
+                    DurationOfBreakInSecs = 0.05,
                     SamplingDurationInSecs = 0.1,
                     FailureThreshold = 0.6,
                     MinimumThroughput = 10
