@@ -14,17 +14,12 @@ on:
     - 'src/**'
     - 'tests/**'
     - '.github/**'
+  schedule:
+    - cron: '0 5 * * *' # daily at 5am
 
 defaults:
   run:
     shell: pwsh
-
-env:
-  SLN_FILEPATH : ${{github.workspace}}/DotNet.Sdk.Extensions.sln
-  EXTENSIONS_CSPROJ_FILEPATH : ${{github.workspace}}/src/DotNet.Sdk.Extensions/DotNet.Sdk.Extensions.csproj
-  TESTING_EXTENSIONS_CSPROJ_FILEPATH : ${{github.workspace}}/src/DotNet.Sdk.Extensions.Testing/DotNet.Sdk.Extensions.Testing.csproj
-  EXTENSIONS_BIN_FOLDER : ${{github.workspace}}/src/DotNet.Sdk.Extensions/bin/Release
-  TESTING_EXTENSIONS_BIN_FOLDER : ${{github.workspace}}/src/DotNet.Sdk.Extensions.Testing/bin/Release
 
 jobs:
 
@@ -34,6 +29,8 @@ jobs:
       matrix: 
         os: [ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.os }}
+    env:
+      SLN_FILEPATH : ${{github.workspace}}/DotNet.Sdk.Extensions.sln
     steps:
     - uses: actions/checkout@v2
     - name: Setup .NET
@@ -77,6 +74,11 @@ jobs:
     name: Publish NuGet packages and symbols
     needs: [build]
     runs-on: ubuntu-latest
+    env:
+      EXTENSIONS_CSPROJ_FILEPATH : ${{github.workspace}}/src/DotNet.Sdk.Extensions/DotNet.Sdk.Extensions.csproj
+      TESTING_EXTENSIONS_CSPROJ_FILEPATH : ${{github.workspace}}/src/DotNet.Sdk.Extensions.Testing/DotNet.Sdk.Extensions.Testing.csproj
+      EXTENSIONS_BIN_FOLDER : ${{github.workspace}}/src/DotNet.Sdk.Extensions/bin/Release
+      TESTING_EXTENSIONS_BIN_FOLDER : ${{github.workspace}}/src/DotNet.Sdk.Extensions.Testing/bin/Release
     steps:
     - uses: actions/checkout@v2
     - name: Setup .NET
