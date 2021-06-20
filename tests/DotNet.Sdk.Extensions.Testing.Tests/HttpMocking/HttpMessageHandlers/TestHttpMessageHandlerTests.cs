@@ -186,7 +186,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers
         {
             var handler = new TestHttpMessageHandler()
                 .MockHttpResponse(builder => builder.TimesOut(TimeSpan.FromMilliseconds(50)));
-            var httpMessageInvoker = new HttpMessageInvoker(handler);
+            using var httpMessageInvoker = new HttpMessageInvoker(handler);
             using var request = new HttpRequestMessage(HttpMethod.Get, "https://google.com");
 
             // for some reason the exception returned by Should.ThrowAsync is missing the InnerException so
