@@ -6,6 +6,7 @@ There are two workflows setup on this repo:
 |---------------------------|:-------------------------:|:-----------------:|
 | [nuget-publish](/.github/workflows/nuget-publish.yml)             |  [![Publish Nuget packages](https://github.com/edumserrano/dot-net-sdk-extensions/actions/workflows/nuget-publish.yml/badge.svg)](https://github.com/edumserrano/dot-net-sdk-extensions/actions/workflows/nuget-publish.yml) | Main workflow to build the code, run tests and publish NuGets |
 | [dependabot-auto-merge-pr](/.github/workflows/dependabot-auto-merge-pr.yml)             |  [![Dependabot auto merge PR](https://github.com/edumserrano/dot-net-sdk-extensions/actions/workflows/dependabot-auto-merge-pr.yml/badge.svg)](https://github.com/edumserrano/dot-net-sdk-extensions/actions/workflows/dependabot-auto-merge-pr.yml) | Used to auto merge dependabot PRs |
+| [codeql](/.github/workflows/codeql.yml)             |  [![CodeQL](https://github.com/edumserrano/dot-net-sdk-extensions/actions/workflows/codeql.yml/badge.svg)](https://github.com/edumserrano/dot-net-sdk-extensions/actions/workflows/codeql.yml) | Analyses code quality with the [CodeQL tool](https://github.com/github/codeql) |
 
 ## Debugging workflows
 
