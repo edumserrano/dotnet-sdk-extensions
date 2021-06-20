@@ -30,7 +30,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
                 .UseHostArgs("--Logging:LogLevel:Microsoft.Hosting.Lifetime", LogLevel.None.ToString())
                 .UseHttpResponseMocks()
                 .Build();
-            var urls = await mock.StartAsync();
+            _ = await mock.StartAsync();
 
             var configuration = mock.Host!.Services.GetRequiredService<IConfiguration>();
             configuration["Logging:LogLevel:Default"].ShouldBe(null);
@@ -47,7 +47,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
                 .UseDefaultLogLevel(LogLevel.Critical)
                 .UseHttpResponseMocks()
                 .Build();
-            var urls = await mock.StartAsync();
+            _ = await mock.StartAsync();
 
             var configuration = mock.Host!.Services.GetRequiredService<IConfiguration>();
             configuration["Logging:LogLevel:Default"].ShouldBe("Critical");
