@@ -1,0 +1,55 @@
+name: "CodeQL"
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+    paths:
+    - 'src/**'
+    - 'tests/**'
+    - '.github/codeql.yml'
+  pull_request:
+    branches: [ main ]
+    paths:
+    - 'src/**'
+    - 'tests/**'
+    - '.github/codeql.yml'
+  schedule:
+    - cron: '0 0 * * 0' # Once a week: "At 00:00 on Sunday."
+
+jobs:
+  analyze:
+    name: Analyze
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    env:
+      SLN_FILEPATH : ${{github.workspace}}/DotNet.Sdk.Extensions.sln
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.x
+    - name: Cache/Restore NuGets
+      uses: actions/cache@v2
+      with:
+        path:
+          ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-5.0.x-${{ hashFiles('**/packages.lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget-
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v1
+      with:
+        languages: csharp
+        queries: security-and-quality
+    - name: Restore dependencies
+      run: dotnet restore ${{env.SLN_FILEPATH}}
+    - name: Build
+      run: dotnet build ${{env.SLN_FILEPATH}} -c Release --no-restore
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v1
