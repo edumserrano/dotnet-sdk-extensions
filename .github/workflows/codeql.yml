@@ -25,6 +25,10 @@ jobs:
       actions: read
       contents: read
       security-events: write
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ 'csharp' ]
     env:
       SLN_FILEPATH : ${{github.workspace}}/DotNet.Sdk.Extensions.sln
     steps:
@@ -45,7 +49,7 @@ jobs:
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v1
       with:
-        languages: csharp
+        languages: ${{ matrix.language }}
         queries: security-and-quality
     - name: Restore dependencies
       run: dotnet restore ${{env.SLN_FILEPATH}}
