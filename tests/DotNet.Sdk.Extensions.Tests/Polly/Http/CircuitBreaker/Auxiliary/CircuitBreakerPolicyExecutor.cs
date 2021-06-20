@@ -33,11 +33,12 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
             _transientHttpStatusCodes = HttpStatusCodesExtensions.GetTransientHttpStatusCodes().ToList();
         }
 
-        public async Task TriggerFromExceptionAsync(Exception exception)
+        public async Task TriggerFromExceptionAsync<TException>(Exception exception) where TException : Exception
         {
             var requestPath = $"/circuit-breaker/exception/{exception.GetType().Name}";
             _testHttpMessageHandler.HandleException(requestPath, exception);
-            await TriggerCircuitBreakerFromExceptionAsync(requestPath);
+
+            await TriggerCircuitBreakerFromExceptionAsync<TException>(requestPath);
         }
 
         public async Task TriggerFromTransientHttpStatusCodeAsync(HttpStatusCode httpStatusCode)
@@ -47,7 +48,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
                 responseHttpStatusCode: httpStatusCode);
             await TriggerCircuitBreakerFromTransientStatusCodeAsync(handledRequestPath, httpStatusCode);
         }
-        
+
         public async Task WaitForResetAsync()
         {
             // wait for the duration of break so that the circuit goes into half open state
@@ -63,6 +64,15 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
             await Task.Delay(TimeSpan.FromSeconds(_circuitBreakerOptions.SamplingDurationInSecs + 0.05));
         }
 
+
+        /// <summary>
+        /// Asserts that the circuit breaker state is open/isolated by doing an HTTP request.
+        /// If the circuit breaker state is not open/isolated this will throw an <see cref="InvalidOperationException"/>.
+        /// </summary>
+        /// <param name="requestPath">The request path for the HTTP request.</param>
+        /// <returns>
+        /// A <see cref="Task"/> that represents the conclusion of the assertion for the circuit breaker state.
+        /// </returns>
         /// <remarks>
         /// The circuit breaker policy added is a wrapped policy which joins an
         /// <see cref="AsyncCircuitBreakerPolicy{TResult}"/> and a <see cref="CircuitBreakerCheckerAsyncPolicy{T}"/>.
@@ -117,7 +127,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
             }
         }
 
-        private async Task TriggerCircuitBreakerFromExceptionAsync(string requestPath)
+        private async Task TriggerCircuitBreakerFromExceptionAsync<TException>(string requestPath) where TException : Exception
         {
             for (var i = 0; i < _circuitBreakerOptions.MinimumThroughput; i++)
             {
@@ -125,14 +135,14 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
                 {
                     await _httpClient.GetAsync(requestPath);
                 }
-                catch (Exception)
+                catch (TException)
                 {
                     // avoids the exception being propagated in order to open the circuit once
                     // the CircuitBreakerOptions.MinimumThroughput number of requests is reached
                 }
             }
         }
-        
+
         public async ValueTask DisposeAsync()
         {
             await WaitForResetAsync();
