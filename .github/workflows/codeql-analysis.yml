@@ -2,12 +2,18 @@ name: "CodeQL"
 
 on:
   workflow_dispatch:
+  push:
+    branches: [ main ]
+    paths:
+    - 'src/**'
+    - 'tests/**'
+    - '.github/codeql-analysis.yml'
   pull_request:
     branches: [ main ]
     paths:
     - 'src/**'
     - 'tests/**'
-    - '.github/codeql.yml'
+    - '.github/codeql-analysis.yml'
   schedule:
     - cron: '0 0 * * 0' # Once a week: "At 00:00 on Sunday."
 
@@ -40,7 +46,7 @@ jobs:
       uses: github/codeql-action/init@v1
       with:
         languages: csharp
-        config-file: ./.github/codeql-config.yml
+        queries: security-and-quality
     - name: Restore dependencies
       run: dotnet restore ${{env.SLN_FILEPATH}}
     - name: Build
