@@ -15,7 +15,7 @@ on:
     - 'tests/**'
     - '.github/**'
   schedule:
-    - cron: '0 5 * * *' # daily at 5am
+    - cron: '0 0 * * 0' # Once a week: "At 00:00 on Sunday."
 
 defaults:
   run:
