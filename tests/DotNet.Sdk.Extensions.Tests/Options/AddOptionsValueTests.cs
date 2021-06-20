@@ -20,7 +20,7 @@ namespace DotNet.Sdk.Extensions.Tests.Options
         [Fact]
         public void AddsOptionsType1()
         {
-            var configuration = new ConfigurationRoot(new List<IConfigurationProvider>());
+            using var configuration = new ConfigurationRoot(new List<IConfigurationProvider>());
             var serviceCollection = new ServiceCollection();
             serviceCollection.AddOptionsValue<MyOptions>(configuration);
             using var serviceProvider = serviceCollection.BuildServiceProvider();
@@ -35,7 +35,7 @@ namespace DotNet.Sdk.Extensions.Tests.Options
         [Fact]
         public void ValidatesArguments1()
         {
-            var configuration = new ConfigurationRoot(new List<IConfigurationProvider>());
+            using var configuration = new ConfigurationRoot(new List<IConfigurationProvider>());
             var servicesArgumentNullException = Should.Throw<ArgumentNullException>(() =>
             {
                 OptionsBuilderExtensions.AddOptionsValue<MyOptions>(services: null!, configuration);
@@ -59,7 +59,7 @@ namespace DotNet.Sdk.Extensions.Tests.Options
             };
             var memoryConfigurationProvider = new MemoryConfigurationProvider(memoryConfigurationSource);
             var configurationProviders = new List<IConfigurationProvider> { memoryConfigurationProvider };
-            var configuration = new ConfigurationRoot(configurationProviders);
+            using var configuration = new ConfigurationRoot(configurationProviders);
 
             var serviceCollection = new ServiceCollection();
             serviceCollection.AddOptionsValue<MyOptions>(configuration, sectionName: "MyOptionsSection");
@@ -75,7 +75,7 @@ namespace DotNet.Sdk.Extensions.Tests.Options
         [Fact]
         public void ValidatesArguments2()
         {
-            var configuration = new ConfigurationRoot(new List<IConfigurationProvider>());
+            using var configuration = new ConfigurationRoot(new List<IConfigurationProvider>());
             var serviceCollection = new ServiceCollection();
             var servicesArgumentNullException = Should.Throw<ArgumentNullException>(() =>
             {
@@ -96,7 +96,7 @@ namespace DotNet.Sdk.Extensions.Tests.Options
         [Fact]
         public void AddsOptionsType3()
         {
-            var configuration = new ConfigurationRoot(new List<IConfigurationProvider>());
+            using var configuration = new ConfigurationRoot(new List<IConfigurationProvider>());
             var serviceCollection = new ServiceCollection();
             serviceCollection
                 .AddOptions<MyOptions>()

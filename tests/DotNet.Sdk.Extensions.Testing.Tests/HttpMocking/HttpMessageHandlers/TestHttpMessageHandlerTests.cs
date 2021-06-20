@@ -43,8 +43,8 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers
         public async Task NoMockDefined()
         {
             var handler = new TestHttpMessageHandler();
-            var request = new HttpRequestMessage(HttpMethod.Get, "https://test.com");
-            var httpMessageInvoker = new HttpMessageInvoker(handler);
+            using var request = new HttpRequestMessage(HttpMethod.Get, "https://test.com");
+            using var httpMessageInvoker = new HttpMessageInvoker(handler);
             var exception = await Should.ThrowAsync<InvalidOperationException>(httpMessageInvoker.SendAsync(request, CancellationToken.None));
             exception.Message.ShouldBe("No response mock defined for GET to https://test.com/.");
         }
@@ -66,8 +66,8 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers
                     .RespondWith(httpMockResponseMessage);
             });
 
-            var request = new HttpRequestMessage(HttpMethod.Get, "https://test.com");
-            var httpMessageInvoker = new HttpMessageInvoker(handler);
+            using var request = new HttpRequestMessage(HttpMethod.Get, "https://test.com");
+            using var httpMessageInvoker = new HttpMessageInvoker(handler);
             var exception = await Should.ThrowAsync<InvalidOperationException>(httpMessageInvoker.SendAsync(request, CancellationToken.None));
             exception.Message.ShouldBe("No response mock defined for GET to https://test.com/.");
         }
@@ -89,8 +89,8 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers
             var handler = new TestHttpMessageHandler();
             handler.MockHttpResponse(httpResponseMessageMock);
 
-            var request = new HttpRequestMessage(HttpMethod.Get, "https://test.com");
-            var httpMessageInvoker = new HttpMessageInvoker(handler);
+            using var request = new HttpRequestMessage(HttpMethod.Get, "https://test.com");
+            using var httpMessageInvoker = new HttpMessageInvoker(handler);
             var httpResponseMessage = await httpMessageInvoker.SendAsync(request, CancellationToken.None);
 
             httpResponseMessage.StatusCode.ShouldBe(HttpStatusCode.Created);
@@ -105,12 +105,11 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers
         [Fact]
         public async Task DefaultPredicate2()
         {
-            var httpMockResponseMessage = new HttpResponseMessage(HttpStatusCode.Created);
             var handler = new TestHttpMessageHandler();
-            handler.MockHttpResponse(builder => builder.RespondWith(httpMockResponseMessage));
+            handler.MockHttpResponse(builder => builder.RespondWith(new HttpResponseMessage(HttpStatusCode.Created)));
 
-            var request = new HttpRequestMessage(HttpMethod.Get, "https://test.com");
-            var httpMessageInvoker = new HttpMessageInvoker(handler);
+            using var request = new HttpRequestMessage(HttpMethod.Get, "https://test.com");
+            using var httpMessageInvoker = new HttpMessageInvoker(handler);
             var httpResponseMessage = await httpMessageInvoker.SendAsync(request, CancellationToken.None);
 
             httpResponseMessage.StatusCode.ShouldBe(HttpStatusCode.Created);
@@ -137,8 +136,8 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers
                         .RespondWith(new HttpResponseMessage(HttpStatusCode.InternalServerError));
                 });
 
-            var request = new HttpRequestMessage(HttpMethod.Get, "https://test.com");
-            var httpMessageInvoker = new HttpMessageInvoker(handler);
+            using var request = new HttpRequestMessage(HttpMethod.Get, "https://test.com");
+            using var httpMessageInvoker = new HttpMessageInvoker(handler);
             var httpResponseMessage = await httpMessageInvoker.SendAsync(request, CancellationToken.None);
 
             httpResponseMessage.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
@@ -165,13 +164,13 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers
                         .RespondWith(new HttpResponseMessage(HttpStatusCode.InternalServerError));
                 });
 
-            var httpMessageInvoker = new HttpMessageInvoker(handler);
+            using var httpMessageInvoker = new HttpMessageInvoker(handler);
 
-            var request1 = new HttpRequestMessage(HttpMethod.Get, "https://google.com");
+            using var request1 = new HttpRequestMessage(HttpMethod.Get, "https://google.com");
             var httpResponseMessage1 = await httpMessageInvoker.SendAsync(request1, CancellationToken.None);
             httpResponseMessage1.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
 
-            var request2 = new HttpRequestMessage(HttpMethod.Get, "https://microsoft.com");
+            using var request2 = new HttpRequestMessage(HttpMethod.Get, "https://microsoft.com");
             var httpResponseMessage2 = await httpMessageInvoker.SendAsync(request2, CancellationToken.None);
             httpResponseMessage2.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
         }
