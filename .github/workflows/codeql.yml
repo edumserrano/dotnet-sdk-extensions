@@ -61,4 +61,4 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: csharp-sarif
-        path: ${{github.workspace}}/results/csharp.sarif
+        path: ${{runner.workspace}}/results/csharp.sarif
