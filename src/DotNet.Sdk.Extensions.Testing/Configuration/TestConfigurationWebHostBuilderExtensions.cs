@@ -156,9 +156,9 @@ namespace DotNet.Sdk.Extensions.Testing.Configuration
                 .ToList()
                 .ForEach(source => config.Sources.Remove(source));
             var appsettingsFilenames = new[] { appSettingsFilename }.Concat(otherAppsettingsFilenames);
-            foreach (var appSettingFilename in appsettingsFilenames)
+            var configPaths = appsettingsFilenames.Select(x => Path.Combine(projectDir, x));
+            foreach (var configPath in configPaths)
             {
-                var configPath = Path.Combine(projectDir, appSettingFilename);
                 config.AddJsonFile(configPath, optional: false);
             }
 
