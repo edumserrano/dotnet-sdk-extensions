@@ -19,7 +19,7 @@ on:
 
 jobs:
   analyze:
-    name: Analyze
+    name: CodeQL analyze
     runs-on: ubuntu-latest
     permissions:
       actions: read
@@ -57,3 +57,8 @@ jobs:
       run: dotnet build ${{env.SLN_FILEPATH}} -c Release --no-restore
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1
+    - name: Upload SARIF file
+      uses: actions/upload-artifact@v2
+      with:
+        name: csharp-sarif
+        path: ${{github.workspace}}/results/csharp.sarif

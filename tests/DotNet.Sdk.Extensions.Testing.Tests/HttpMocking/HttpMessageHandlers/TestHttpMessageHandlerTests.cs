@@ -187,7 +187,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers
             var handler = new TestHttpMessageHandler()
                 .MockHttpResponse(builder => builder.TimesOut(TimeSpan.FromMilliseconds(50)));
             var httpMessageInvoker = new HttpMessageInvoker(handler);
-            var request = new HttpRequestMessage(HttpMethod.Get, "https://google.com");
+            using var request = new HttpRequestMessage(HttpMethod.Get, "https://google.com");
 
             // for some reason the exception returned by Should.ThrowAsync is missing the InnerException so
             // we are using the try/catch code as a workaround
@@ -207,7 +207,6 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers
             expectedException.InnerException.ShouldBeOfType<TimeoutException>();
             expectedException.Message.ShouldBe("The request was canceled due to the configured HttpClient.Timeout of 0.05 seconds elapsing.");
             expectedException.InnerException.Message.ShouldBe("A task was canceled.");
-            
         }
     }
 }
