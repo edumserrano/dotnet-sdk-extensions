@@ -323,7 +323,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             await using var serviceProvider = services.BuildServiceProvider();
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
 
-            var response = await httpClient
+            _ = await httpClient
                 .RetryExecutor(testHttpMessageHandler)
                 .TriggerFromTransientHttpStatusCodeAsync(HttpStatusCode.InternalServerError);
             numberOfCallsDelegatingHandler.NumberOfHttpRequests.ShouldBe(1); // no retries means only 1 http request done even if it failed with a transient http status code
