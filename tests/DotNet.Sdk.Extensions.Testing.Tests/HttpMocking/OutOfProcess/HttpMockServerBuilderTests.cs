@@ -131,11 +131,11 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
         {
             await using var mock = new HttpMockServerBuilder()
                 .UseDefaultLogLevel(LogLevel.Critical)
-                .UseHostArgs("--config1","value1")
-                .UseHostArgs("--config2","value2")                                      
+                .UseHostArgs("--config1", "value1")
+                .UseHostArgs("--config2", "value2")
                 .UseHttpResponseMocks()
                 .Build();
-            var urls = await mock.StartAsync();
+            _ = await mock.StartAsync();
 
             var configuration = mock.Host!.Services.GetRequiredService<IConfiguration>();
             configuration["config1"].ShouldBe("value1");
