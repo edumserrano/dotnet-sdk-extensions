@@ -329,50 +329,5 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             numberOfCallsDelegatingHandler.NumberOfHttpRequests.ShouldBe(1); // no retries means only 1 http request done even if it failed with a transient http status code
             resilienceOptions.Retry.RetryCount.ShouldNotBe(0); // fail the test if retry is set to zero because it could result in a false positive
         }
-        
-        [Fact]
-        public async Task AddResiliencePoliciesAddsRetryPolicy8()
-        {
-            var numberOfCallsDelegatingHandler = new NumberOfCallsDelegatingHandler();
-            var testHttpMessageHandler = new TestHttpMessageHandler();
-            var httpClientName = "GitHub";
-            var resilienceOptions = new ResilienceOptions
-            {
-                EnableFallbackPolicy = false,
-                EnableRetryPolicy = false,
-                EnableCircuitBreakerPolicy = false,
-                EnableTimeoutPolicy = false,
-                Retry = new RetryOptions
-                {
-                    RetryCount = 2,
-                    MedianFirstRetryDelayInSecs = 0.01
-                }
-            };
-            var services = new ServiceCollection();
-            services
-                .AddHttpClient(httpClientName)
-                .ConfigureHttpClient(client => client.BaseAddress = new Uri("https://github.com"))
-                .AddResiliencePolicies(options =>
-                {
-                    options.EnableFallbackPolicy = resilienceOptions.EnableFallbackPolicy;
-                    options.EnableRetryPolicy = resilienceOptions.EnableRetryPolicy;
-                    options.EnableCircuitBreakerPolicy = resilienceOptions.EnableCircuitBreakerPolicy;
-                    options.EnableTimeoutPolicy = resilienceOptions.EnableTimeoutPolicy;
-                    options.Retry.MedianFirstRetryDelayInSecs = resilienceOptions.Retry.MedianFirstRetryDelayInSecs;
-                    options.Retry.RetryCount = resilienceOptions.Retry.RetryCount;
-                })
-                .AddHttpMessageHandler(() => numberOfCallsDelegatingHandler)
-                .ConfigurePrimaryHttpMessageHandler(() => testHttpMessageHandler);
-
-            await using var serviceProvider = services.BuildServiceProvider();
-            var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
-
-            var response = await httpClient
-                .RetryExecutor(testHttpMessageHandler)
-                .TriggerFromTransientHttpStatusCodeAsync(HttpStatusCode.InternalServerError);
-            numberOfCallsDelegatingHandler.NumberOfHttpRequests.ShouldBe(1); // no retries means only 1 http request done even if it failed with a transient http status code
-            resilienceOptions.Retry.RetryCount.ShouldNotBe(0); // fail the test if retry is set to zero because it could result in a false positive
-        }
-
     }
 }
