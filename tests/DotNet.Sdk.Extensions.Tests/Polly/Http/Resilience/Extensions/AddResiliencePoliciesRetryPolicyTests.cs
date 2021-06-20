@@ -373,5 +373,6 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             numberOfCallsDelegatingHandler.NumberOfHttpRequests.ShouldBe(1); // no retries means only 1 http request done even if it failed with a transient http status code
             resilienceOptions.Retry.RetryCount.ShouldNotBe(0); // fail the test if retry is set to zero because it could result in a false positive
         }
+
     }
 }
