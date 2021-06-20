@@ -73,7 +73,6 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
                 .Build();
             var urls = await mock.StartAsync();
             var httpUrl = urls.First(x => x.Scheme == HttpScheme.Http);
-            var httpsUrl = urls.First(x => x.Scheme == HttpScheme.Https); 
 
             var httpClient = new HttpClient();
             var defaultHttpResponse = await httpClient.GetAsync($"{httpUrl}/default");
