@@ -26,6 +26,7 @@ jobs:
       uses: actions/checkout@v2
       with:
         ref: ${{github.event.workflow_run.head_branch}}
+        token: ${{ secrets.DEPENDABOT_PUSH_TOKEN }}
     # - name: Checkout repository
     #   uses: actions/checkout@v2
     #   with:
@@ -36,8 +37,8 @@ jobs:
     #     gh auth login --with-token ${{env.GITHUB_TOKEN}}
     #     $prNumber = "${{github.event.workflow_run.pull_requests[0].number}}"
     #     gh pr checkout $prNumber
-      env:
-        GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
+      # env:
+      #   GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
