@@ -19,7 +19,7 @@ The NuGet packages published include symbols generated with [sourcelink](https:/
 For more information on how to debug the NuGet packages code from your application see:
 
 - [Exploring .NET Core's SourceLink - Stepping into the Source Code of NuGet packages you don't own](https://www.hanselman.com/blog/exploring-net-cores-sourcelink-stepping-into-the-source-code-of-nuget-packages-you-dont-own)
-- [How to Configure Visual Studio to Use SourceLink to Step into NuGet Package Source](https://aaronstannard.com/visual-studio-sourcelink-setup/)
+- [How to Configure Visual Studio to Use SourceLink to Step into NuGet Package Source](https://aaronstannard.com/visual-studio-sourcelink-setup/).
 - [Source Link - microsoft docs](https://docs.microsoft.com/en-us/dotnet/standard/library-guidance/sourcelink)
 
 ## Projects wide configuration
@@ -27,7 +27,6 @@ For more information on how to debug the NuGet packages code from your applicati
 The [Directory.Build.props](/Directory.Build.props) at the root of the repo enables for all projects:
 
 - [Nullable referece types](https://docs.microsoft.com/en-us/dotnet/csharp/nullable-migration-strategies) are enabled.
-- [Repeatable NuGet package restore using lockfile](https://docs.microsoft.com/en-us/nuget/consume-packages/package-references-in-project-files#locking-dependencies) are enabled. For more info read the blog post [Enable repeatable package restores using a lock file](https://devblogs.microsoft.com/nuget/enable-repeatable-package-restores-using-a-lock-file/) and the wiki [Enable repeatable package restore using lock file
 ](https://github.com/NuGet/Home/wiki/Enable-repeatable-package-restore-using-lock-file)
 - [Deterministic builds](https://github.com/clairernovotny/DeterministicBuilds) are enabled.
 
