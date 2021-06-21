@@ -19,7 +19,7 @@ jobs:
     - name: Approve and merge dependabot PR
       run: |
         $prNumber = "${{github.event.workflow_run.pull_requests[0].number}}"
-        gh pr review --approve "$prUrl"
+        gh pr review --approve $prNumber
         gh pr merge --auto --squash $prNumber
       env:
         GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
