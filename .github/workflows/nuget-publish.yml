@@ -88,7 +88,8 @@ jobs:
       EXTENSIONS_BIN_FOLDER : ${{github.workspace}}/src/DotNet.Sdk.Extensions/bin/Release
       TESTING_EXTENSIONS_BIN_FOLDER : ${{github.workspace}}/src/DotNet.Sdk.Extensions.Testing/bin/Release
     steps:
-    - uses: actions/checkout@v2
+    - name: Checkout repository
+      uses: actions/checkout@v2
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
