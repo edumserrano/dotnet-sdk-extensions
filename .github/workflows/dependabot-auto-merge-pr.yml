@@ -21,11 +21,11 @@ jobs:
     - name: debug
       run: |
         $githubContext = '${{toJSON(github)}}'
-        Write-Host githubContext
+        Write-Host $githubContext
     - name: Checkout repository
       uses: actions/checkout@v2
       with:
-        ref: ${{github.event.pull_request.head.ref}}
+        ref: ${{github.event.workflow_run.head_commit.id}}
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:

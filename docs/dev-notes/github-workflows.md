@@ -16,7 +16,7 @@ Powershell example:
 
 ```powershell
 $githubContext = '${{toJSON(github)}}'
-Write-Host githubContext
+Write-Host $githubContext
 ```
 
 It is also useful to look at the [workflow run logs](https://docs.github.com/en/actions/managing-workflow-runs/using-workflow-run-logs), specially at the `set up job` section which is were you can find for example the permissions assigned to the `GITHUB_TOKEN` that the job will use.
