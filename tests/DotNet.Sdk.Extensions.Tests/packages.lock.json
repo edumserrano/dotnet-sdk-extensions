@@ -80,6 +80,31 @@
           "System.Xml.XmlDocument": "4.3.0"
         }
       },
+      "Dapper": {
+        "type": "Transitive",
+        "resolved": "1.50.0",
+        "contentHash": "noa0iPw/FLnHJl28S+tTDs3yvIiOA+XGc7MjszobMqUFxUNxN7edW46Ddy4aB2n98VE3506ezSc1TIwv2jTHog==",
+        "dependencies": {
+          "System.Collections": "4.0.11",
+          "System.Collections.Concurrent": "4.0.12",
+          "System.Collections.NonGeneric": "4.0.1",
+          "System.Data.SqlClient": "4.1.0",
+          "System.Dynamic.Runtime": "4.0.11",
+          "System.Linq": "4.1.0",
+          "System.Reflection": "4.1.0",
+          "System.Reflection.Emit": "4.0.1",
+          "System.Reflection.Emit.Lightweight": "4.0.1",
+          "System.Reflection.Extensions": "4.0.1",
+          "System.Reflection.TypeExtensions": "4.1.0",
+          "System.Runtime": "4.1.0",
+          "System.Runtime.Extensions": "4.1.0",
+          "System.Runtime.InteropServices": "4.1.0",
+          "System.Text.RegularExpressions": "4.1.0",
+          "System.Threading": "4.0.11",
+          "System.Xml.XDocument": "4.0.11",
+          "System.Xml.XmlDocument": "4.0.1"
+        }
+      },
       "DiffEngine": {
         "type": "Transitive",
         "resolved": "6.4.9",
@@ -1998,6 +2023,7 @@
       "DotNet-Sdk-Extensions": {
         "type": "Project",
         "dependencies": {
+          "Dapper": "1.50.0",
           "Microsoft.Extensions.Http.Polly": "5.0.1",
           "Polly": "7.2.2",
           "Polly.Contrib.WaitAndRetry": "1.1.1"
