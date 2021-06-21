@@ -11,47 +11,6 @@ defaults:
     shell: pwsh
 
 jobs:
-  debug:
-    name: Debug
-    runs-on: ubuntu-latest
-    steps:
-    - name: Debug
-      run: |
-        $githubContext = '${{toJSON(github)}}'
-        Write-Host $githubContext
-  update-lock-files:
-    name: Update NuGet packages.lock.json files
-    runs-on: ubuntu-latest
-    if: ${{ github.actor == 'dependabot[bot]' && github.event.workflow_run.conclusion != 'success'}}
-    env:
-      SLN_FILEPATH : ${{github.workspace}}/DotNet.Sdk.Extensions.sln
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
-      with:
-        ref: ${{github.event.workflow_run.head_branch}}
-        token: ${{ secrets.DEPENDABOT_PUSH_TOKEN }}
-    # - name: Checkout repository
-    #   uses: actions/checkout@v2
-    #   with:
-    #     ref: ${{github.event.workflow_run.head_commit.id}}
-    # - name: Checkout repository
-    #   run: |
-    #     gh auth status
-    #     gh auth login --with-token ${{env.GITHUB_TOKEN}}
-    #     $prNumber = "${{github.event.workflow_run.pull_requests[0].number}}"
-    #     gh pr checkout $prNumber
-      # env:
-      #   GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 5.0.x
-    - name: Restore dependencies
-      run: dotnet restore ${{env.SLN_FILEPATH}} --force-evaluate
-    - uses: stefanzweifel/git-auto-commit-action@v4
-      with:
-        commit_message: Update NuGet lockfiles
   auto-merge-pr:
     name: Auto merge dependabot PR
     needs: [update-lock-files]
@@ -60,7 +19,6 @@ jobs:
     steps:
     - name: Approve and merge dependabot PR
       run: |
-        # gh auth login --with-token ${{env.GITHUB_TOKEN}}
         $prNumber = "${{github.event.workflow_run.pull_requests[0].number}}"
         gh pr review --approve "$prUrl"
         gh pr merge --auto --squash $prNumber
