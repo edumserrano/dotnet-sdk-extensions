@@ -21,9 +21,9 @@ jobs:
         # gh auth status 
         gh auth login --with-token ${{env.GITHUB_TOKEN}}
         $prNumber = "${{github.event.workflow_run.pull_requests[0].number}}"
-        Write-Host "before gh pr review --approve $prNumber"
-        gh pr review --approve $prNumber
-        Write-Host "after gh pr review --approve $prNumber"
+        Write-Host "before gh pr review $prNumber --approve"
+        gh pr review $prNumber --approve 
+        Write-Host "after gh pr review  $prNumber --approve"
         # gh pr merge --auto --squash $prNumber
       env:
         GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
