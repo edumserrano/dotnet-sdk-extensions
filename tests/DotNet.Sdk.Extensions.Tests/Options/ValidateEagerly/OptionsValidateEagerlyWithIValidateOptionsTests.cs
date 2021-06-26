@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Testing.Configuration;
+using DotNet.Sdk.Extensions.Tests.Options.ValidateEagerly.Auxiliary;
 using DotNet.Sdk.Extensions.Tests.Options.ValidateEagerly.Auxiliary.IValidateOptions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration.Memory;
@@ -12,8 +13,6 @@ using Xunit;
 
 namespace DotNet.Sdk.Extensions.Tests.Options.ValidateEagerly
 {
-    // Note: the UseUrls method calls makes sure a random port is selected or it might fail
-    // when running with other tests that also start a host because the port is already in use
     [Trait("Category", XUnitCategories.Options)]
     public class OptionsValidateEagerlyWithIValidateOptionsTests
     {
@@ -30,7 +29,7 @@ namespace DotNet.Sdk.Extensions.Tests.Options.ValidateEagerly
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder
-                        .UseUrls("http://*:0;https://*:0")
+                        .UseLocalhostWithRandomPort()
                         .UseStartup<StartupMyOptions1ValidateEargerly>();
                 })
                 .Build();
@@ -62,7 +61,7 @@ namespace DotNet.Sdk.Extensions.Tests.Options.ValidateEagerly
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder
-                        .UseUrls("http://*:0;https://*:0")
+                        .UseLocalhostWithRandomPort()
                         .UseStartup<StartupMyOptions1ValidateEargerly>();
                 })
                 .Build();
