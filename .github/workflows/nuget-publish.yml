@@ -74,7 +74,6 @@ jobs:
       with:
         files: ${{env.TEST_COVERAGE_FILE}}
         fail_ci_if_error: true
-        verbose: true
     - name: Generate code coverage report
       if: matrix.os == 'ubuntu-latest' # this is on a matrix run and we only need code coverage report generated and uploaded once, choosing to upload from the matrix run on ubuntu-latest
       run: |
