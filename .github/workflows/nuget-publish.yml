@@ -68,13 +68,15 @@ jobs:
           /p:MergeWith="$(Join-Path -Path (Get-Location) -ChildPath "${{env.TEST_COVERAGE_DIR}}/coverage.json")" `
           /p:CoverletOutputFormat="json%2copencover" `
           -m:1
-    - uses: codecov/codecov-action@v1
+    - name: Upload test coverage to Codecov
+      uses: codecov/codecov-action@v1
+      if: matrix.os == 'ubuntu-latest' # this is on a matrix run and we only need code coverage uploaded to Codecov once, choosing to upload from the matrix run on ubuntu-latest
       with:
         files: ${{env.TEST_COVERAGE_FILE}}
         fail_ci_if_error: true
         verbose: true
     - name: Generate code coverage report
-      if: matrix.os == 'ubuntu-latest' # this is on a matrix run and we only need code coverage generated and uploaded once, choosing to upload from the matrix run on ubuntu-latest
+      if: matrix.os == 'ubuntu-latest' # this is on a matrix run and we only need code coverage report generated and uploaded once, choosing to upload from the matrix run on ubuntu-latest
       run: |
         reportgenerator `
           "-reports:${{env.TEST_COVERAGE_FILE}}" `
