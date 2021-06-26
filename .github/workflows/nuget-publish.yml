@@ -32,8 +32,9 @@ jobs:
     env:
       SLN_FILEPATH : ${{github.workspace}}/DotNet.Sdk.Extensions.sln
       TEST_RESULTS_DIR : tests/test-results
-      TEST_COVERAGE_DIR : ${{env.TEST_RESULTS_DIR}}/coverage-results
-      TEST_COVERAGE_REPORT_DIR : ${{env.TEST_COVERAGE_REPORT_DIR}}/report
+      TEST_COVERAGE_DIR : tests/test-results/coverage-results
+      TEST_COVERAGE_FILE : tests/test-results/coverage-results/coverage.opencover.xml
+      TEST_COVERAGE_REPORT_DIR : tests/test-results/coverage-results/report
     steps:
     - uses: actions/checkout@v2
     - name: Setup .NET
@@ -69,14 +70,14 @@ jobs:
           -m:1
     - uses: codecov/codecov-action@v1
       with:
-        files: ${{env.TEST_COVERAGE_DIR}}/coverage.opencover.xml
+        files: ${{env.TEST_COVERAGE_FILE}}
         fail_ci_if_error: true
         verbose: true
     - name: Generate code coverage report
       if: matrix.os == 'ubuntu-latest' # this is on a matrix run and we only need code coverage generated and uploaded once, choosing to upload from the matrix run on ubuntu-latest
       run: |
         reportgenerator `
-          "-reports:${{env.TEST_COVERAGE_DIR}}/coverage.opencover.xml" `
+          "-reports:${{env.TEST_COVERAGE_FILE}}" `
           "-targetdir:${{env.TEST_COVERAGE_REPORT_DIR}}" `
           -reportTypes:htmlInline
     - name: Upload code coverage report to artifacts
