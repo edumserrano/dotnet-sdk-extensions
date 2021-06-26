@@ -63,7 +63,7 @@ jobs:
           --logger trx `
           --results-directory "$(Join-Path -Path (Get-Location) -ChildPath "${{env.TEST_RESULTS_DIR}}")" `
           /p:CollectCoverage=true `
-          /p:CoverletOutput="$(Join-Path -Path (Get-Location) -ChildPath "${{env.TEST_COVERAGE_DIR}}")" `
+          /p:CoverletOutput="$(Join-Path -Path (Get-Location) -ChildPath "${{env.TEST_COVERAGE_DIR}}/")" `
           /p:MergeWith="$(Join-Path -Path (Get-Location) -ChildPath "${{env.TEST_COVERAGE_DIR}}/coverage.json")" `
           /p:CoverletOutputFormat="json%2copencover" `
           -m:1
