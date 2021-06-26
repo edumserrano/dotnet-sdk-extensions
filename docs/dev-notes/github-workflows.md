@@ -140,3 +140,11 @@ As per [Github Actions and the threat of malicious pull requests](https://nathan
 The [dependabot/fetch-metadata](https://github.com/dependabot/fetch-metadata) can be used to extract information about the dependencies being updated by a Dependabot generated PR.
 
 This output from that action could be stored as artifacts if the information is required by a priviliged workflow. One could use the [actions/upload-artifact@v2](https://github.com/actions/upload-artifact) action to upload artifacts from the non provoliged workflow and the [dawidd6/action-download-artifact@v2](https://github.com/dawidd6/action-download-artifact) to download artifacts on the priviliged workflow context. For an example see commit [cleanup workflows](https://github.com/edumserrano/dot-net-sdk-extensions/commit/fffb5dea150f5cbc94fc413f559f47eda2886329) which shows how these were being used in an earlier version of the workflow for auto merge of dependabot PRs.
+
+## codeql workflow
+
+This workflow performs [code scanning with CodeQL](https://docs.github.com/en/code-security/secure-coding/automatically-scanning-your-code-for-vulnerabilities-and-errors/about-code-scanning).
+
+The results are uploaded to the repo and visible on [code scanning alerts](https://github.com/edumserrano/dot-net-sdk-extensions/security/code-scanning). The resulting [`SARIF`](https://sarifweb.azurewebsites.net/) file is also uploaded as a workflow artifact.
+
+When doing pull requests the alerts detected will be visible on via [file annotations](https://docs.github.com/en/code-security/secure-coding/automatically-scanning-your-code-for-vulnerabilities-and-errors/triaging-code-scanning-alerts-in-pull-requests).
