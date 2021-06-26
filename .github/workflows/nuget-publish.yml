@@ -31,6 +31,9 @@ jobs:
     runs-on: ${{ matrix.os }}
     env:
       SLN_FILEPATH : ${{github.workspace}}/DotNet.Sdk.Extensions.sln
+      TEST_RESULTS_DIR : ./tests/test-results
+      TEST_COVERAGE_DIR : ./tests/test-results/coverage-results
+      TEST_COVERAGE_REPORT_DIR : ./tests/test-results/coverage-results/report
     steps:
     - uses: actions/checkout@v2
     - name: Setup .NET
@@ -58,25 +61,25 @@ jobs:
           --no-build `
           --verbosity normal `
           --logger trx `
-          --results-directory "$(Join-Path -Path (Get-Location) -ChildPath "tests/test-results")" `
+          --results-directory "$(Join-Path -Path (Get-Location) -ChildPath "${{env.TEST_RESULTS_DIR}}")" `
           /p:CollectCoverage=true `
-          /p:CoverletOutput="$(Join-Path -Path (Get-Location) -ChildPath "tests/test-results/coverage-results/")" `
-          /p:MergeWith="$(Join-Path -Path (Get-Location) -ChildPath "tests/test-results/coverage-results/coverage.json")" `
+          /p:CoverletOutput="$(Join-Path -Path (Get-Location) -ChildPath "${{env.TEST_COVERAGE_DIR}}")" `
+          /p:MergeWith="$(Join-Path -Path (Get-Location) -ChildPath "${{env.TEST_COVERAGE_DIR}}/coverage.json")" `
           /p:CoverletOutputFormat="json%2copencover" `
           -m:1
     - name: Generate code coverage report
       if: matrix.os == 'ubuntu-latest' # this is on a matrix run and we only need code coverage generated and uploaded once, choosing to upload from the matrix run on ubuntu-latest
       run: |
         reportgenerator `
-          "-reports:$(Join-Path -Path (Get-Location) -ChildPath "tests/test-results/coverage-results/coverage.opencover.xml")" `
-          "-targetdir:$(Join-Path -Path (Get-Location) -ChildPath "tests/test-results/coverage-results/report")" `
+          "-reports:${{env.TEST_COVERAGE_DIR}}/coverage.opencover.xml" `
+          "-targetdir:${{env.TEST_COVERAGE_REPORT_DIR}}" `
           -reportTypes:htmlInline
     - name: Upload code coverage report to artifacts
       if: matrix.os == 'ubuntu-latest'
       uses: actions/upload-artifact@v2
       with:
         name: code-coverage-report
-        path: tests/test-results/coverage-results/report/
+        path: ${{env.TEST_COVERAGE_REPORT_DIR}}
 
   nuget-publish:
     name: Publish NuGet packages and symbols
