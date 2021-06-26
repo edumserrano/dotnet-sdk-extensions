@@ -12,10 +12,10 @@ This repo contains extensions to help build .NET applications, using .net core 3
 
 This repo provides two NuGet packages:
 
-| NuGet                   |      Version    |
-|-------------------------|:---------------:|
-| [DotNet-Sdk-Extensions](https://www.nuget.org/packages/DotNet-Sdk-Extensions) | [![Nuget DotNet-Sdk-Extensions](https://img.shields.io/nuget/v/DotNet-Sdk-Extensions)](https://www.nuget.org/packages/DotNet-Sdk-Extensions)
-| [DotNet-Sdk-Extensions-Testing](https://www.nuget.org/packages/DotNet-Sdk-Extensions-Testing) | [![Nuget DotNet-Sdk-Extensions-Testing](https://img.shields.io/nuget/v/DotNet-Sdk-Extensions-Testing)](https://www.nuget.org/packages/DotNet-Sdk-Extensions-Testing)
+| NuGet                   |      Version    | Downloads
+|-------------------------|:---------------:|:---------------:|
+| [DotNet-Sdk-Extensions](https://www.nuget.org/packages/DotNet-Sdk-Extensions) | [![Nuget DotNet-Sdk-Extensions](https://img.shields.io/nuget/v/DotNet-Sdk-Extensions)](https://www.nuget.org/packages/DotNet-Sdk-Extensions) | ![Nuget](https://img.shields.io/nuget/dt/DotNet-Sdk-Extensions)
+| [DotNet-Sdk-Extensions-Testing](https://www.nuget.org/packages/DotNet-Sdk-Extensions-Testing) | [![Nuget DotNet-Sdk-Extensions-Testing](https://img.shields.io/nuget/v/DotNet-Sdk-Extensions-Testing)](https://www.nuget.org/packages/DotNet-Sdk-Extensions-Testing) | ![Nuget](https://img.shields.io/nuget/dt/DotNet-Sdk-Extensions-Testing)
 
 Installation is performed via NuGet and you can do it using the following commands:
 
