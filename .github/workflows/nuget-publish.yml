@@ -7,13 +7,11 @@ on:
     paths:
     - 'src/**'
     - 'tests/**'
-    - '.github/**'
   pull_request:
     branches: [ main ]
     paths:
     - 'src/**'
     - 'tests/**'
-    - '.github/**'
   schedule:
     - cron: '0 0 * * 0' # Once a week: "At 00:00 on Sunday."
 
