@@ -41,7 +41,7 @@ jobs:
       with:
         path:
           ~/.nuget/packages
-        key: ${{ runner.os }}-nuget-5.0.x-${{ hashFiles('**/packages.lock.json') }}
+        key: ${{ runner.os }}-nuget-5.0.x
         restore-keys: |
           ${{ runner.os }}-nuget-
     - name: Initialize CodeQL
