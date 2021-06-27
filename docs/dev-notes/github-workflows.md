@@ -40,11 +40,13 @@ This API key will expire on  and will have to be renewed before 5th February 202
 
 Codecov integration does not require any secret, it was done via the [Codecov GitHub app](https://github.com/apps/codecov).
 
-Besides the information available on the [Codecov web app](https://app.codecov.io/gh/edumserrano/dot-net-sdk-extensions), this integration enables Codecov information to be displayed for:
+Besides the information available on the [Codecov web app](https://app.codecov.io/gh/edumserrano/dot-net-sdk-extensions), this integration enables Codecov to:
 
-- [status checks on pull requests](https://docs.codecov.com/docs/commit-status)
-- [coverage displayed on pull requests via comments](https://docs.codecov.com/docs/pull-request-comments)
-- [line-by-line coverage on pull requests via file annotations](https://docs.codecov.com/docs/github-checks)
+- [add status checks on pull requests](https://docs.codecov.com/docs/commit-status)
+- [display coverage on pull requests via comments](https://docs.codecov.com/docs/pull-request-comments)
+- [add line-by-line coverage on pull requests via file annotations](https://docs.codecov.com/docs/github-checks)
+
+The [codecov.yml configuration file](/.github/codecov.yml) contains additional configuration for Codecov.
 
 ### NuGet push action
 
@@ -100,6 +102,8 @@ This workflow is triggered once the `nuget-publish` workflow completes but will 
 Note that when the `dependabot-auto-merge-pr` is triggered, its actor will be the actor that triggered the `nuget-publish` workflow. So if a pull request is triggered by some other actor the `dependabot-auto-merge-pr` will not execute.
 
 With this configuration the `dependabot-auto-merge-pr` workflow will only auto merge pull requests once the build has completed successfully and tests have passed. This is guaranteed by the `nuget-publish` workflow.
+
+The [dependabot configuration file](/.github/dependabot.yml) contains additional configuration for Dependabot.
 
 ### Deleting branches from Dependabot pull requests
 
