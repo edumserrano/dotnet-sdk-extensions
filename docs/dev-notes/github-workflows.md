@@ -5,7 +5,7 @@ There are two workflows setup on this repo:
 | Worflow                   |      Status and link      |  Description      |
 |---------------------------|:-------------------------:|:-----------------:|
 | [nuget-publish](/.github/workflows/nuget-publish.yml)             |  [![Publish Nuget packages](https://github.com/edumserrano/dot-net-sdk-extensions/actions/workflows/nuget-publish.yml/badge.svg)](https://github.com/edumserrano/dot-net-sdk-extensions/actions/workflows/nuget-publish.yml) | Main workflow to build the code, run tests and publish NuGets |
-| [dependabot-auto-merge-pr](/.github/workflows/dependabot-auto-merge-pr.yml)             |  [![Dependabot auto merge PR](https://github.com/edumserrano/dot-net-sdk-extensions/actions/workflows/dependabot-auto-merge-pr.yml/badge.svg)](https://github.com/edumserrano/dot-net-sdk-extensions/actions/workflows/dependabot-auto-merge-pr.yml) | Used to auto merge dependabot PRs |
+| [dependabot-auto-merge-pr](/.github/workflows/dependabot-auto-merge-pr.yml)             |  [![Dependabot auto merge PR](https://github.com/edumserrano/dot-net-sdk-extensions/actions/workflows/dependabot-auto-merge-pr.yml/badge.svg)](https://github.com/edumserrano/dot-net-sdk-extensions/actions/workflows/dependabot-auto-merge-pr.yml) | Used to auto merge Dependabot PRs |
 | [codeql](/.github/workflows/codeql.yml)             |  [![CodeQL](https://github.com/edumserrano/dot-net-sdk-extensions/actions/workflows/codeql.yml/badge.svg)](https://github.com/edumserrano/dot-net-sdk-extensions/actions/workflows/codeql.yml) | Analyses code quality with the [CodeQL tool](https://github.com/github/codeql) |
 
 ## Debugging workflows
@@ -46,7 +46,7 @@ Besides the information available on the [Codecov web app](https://app.codecov.i
 - [display coverage on pull requests via comments](https://docs.codecov.com/docs/pull-request-comments)
 - [add line-by-line coverage on pull requests via file annotations](https://docs.codecov.com/docs/github-checks)
 
-The [codecov.yml configuration file](/.github/codecov.yml) contains additional configuration for Codecov.
+The [Codecov configuration file](/.github/codecov.yml) contains additional configuration for Codecov.
 
 ### NuGet push action
 
@@ -103,7 +103,7 @@ Note that when the `dependabot-auto-merge-pr` is triggered, its actor will be th
 
 With this configuration the `dependabot-auto-merge-pr` workflow will only auto merge pull requests once the build has completed successfully and tests have passed. This is guaranteed by the `nuget-publish` workflow.
 
-The [dependabot configuration file](/.github/dependabot.yml) contains additional configuration for Dependabot.
+The [Dependabot configuration file](/.github/dependabot.yml) contains additional configuration for Dependabot.
 
 ### Deleting branches from Dependabot pull requests
 
@@ -113,21 +113,21 @@ Although there could have been other ways to deal with this I decided to use a G
 
 ### Ignored NuGets
 
-On the [dependabot configuration file](/.github/dependabot.yml) the NuGet `Microsoft.AspNetCore.Mvc.Testing` is ignored because at the moment the `DotNet.Sdk.Extensions.Testing` project where the NuGet is used targets two target frameworks  and has an `if condition` to use different NuGet versions depending on the target framework.
+On the [Dependabot configuration file](/.github/dependabot.yml) the NuGet `Microsoft.AspNetCore.Mvc.Testing` is ignored because at the moment the `DotNet.Sdk.Extensions.Testing` project where the NuGet is used targets two target frameworks  and has an `if condition` to use different NuGet versions depending on the target framework.
 
 Dependabot does not know that for target framework netcoreapp3.1 the Microsoft.AspNetCore.Mvc.Testing NuGet cannot be higher than 3.x.x. This NuGet needs to be manually updated for the other target framework.
 
-### Security considerations when setting up auto merge for dependabot PRs
+### Security considerations when setting up auto merge for Dependabot PRs
 
 When a pull request is triggered the `GITHUB_TOKEN` will have [different permissions depending if the pull request came from a forked repo or not](https://docs.github.com/en/actions/reference/authentication-in-a-workflow#how-the-permissions-are-calculated-for-a-workflow-job).
 
 When it comes from a forked repo the `GITHUB_TOKEN` will only have read permissions and won't be able to access any action secrets. This is true at least for public repos, for private repos there are [settings that allow you to control this](https://github.blog/2020-08-03-github-actions-improvements-for-fork-and-pull-request-workflows/).
 
-This plus the fact that a [dependabot pull request is treated as if it was opened from a repository fork](https://github.blog/changelog/2021-02-19-github-actions-workflows-triggered-by-dependabot-prs-will-run-with-read-only-permissions/) means that the action to auto merge dependabot PRs couldn't be done as part of the main `nuget-publish` workflow without potentially introducing security vulnerabilities.
+This plus the fact that a [Dependabot pull request is treated as if it was opened from a repository fork](https://github.blog/changelog/2021-02-19-github-actions-workflows-triggered-by-dependabot-prs-will-run-with-read-only-permissions/) means that the action to auto merge Dependabot PRs couldn't be done as part of the main `nuget-publish` workflow without potentially introducing security vulnerabilities.
 
 GitHub has all these limitations in place for security reasons. For more information and alternatives read [Keeping your GitHub Actions and workflows secure: Preventing pwn requests](https://securitylab.github.com/research/github-actions-preventing-pwn-requests/).
 
-As a result, the `dependabot-auto-merge-pr` workflow, which is responsible for merging a dependabot PR, is a separate workflow that is [triggered from the completion of the main workflow](https://docs.github.com/en/actions/reference/events-that-trigger-workflows#workflow_run). **This workflow runs in a privileged workflow context which means that the `GITHUB_TOKEN` will have write permissions and be able to approve and merge the PR**.
+As a result, the `dependabot-auto-merge-pr` workflow, which is responsible for merging a Dependabot PR, is a separate workflow that is [triggered from the completion of the main workflow](https://docs.github.com/en/actions/reference/events-that-trigger-workflows#workflow_run). **This workflow runs in a privileged workflow context which means that the `GITHUB_TOKEN` will have write permissions and be able to approve and merge the PR**.
 
 As explained by [Keeping your GitHub Actions and workflows secure: Preventing pwn requests](https://securitylab.github.com/research/github-actions-preventing-pwn-requests/), anything that is used on a privileged workflow context must be trusted data. For example, binaries built from an untrusted PR, would be a security vulnerability if executed in the privileged workflow_run workflow context. **Since the `dependabot-auto-merge-pr` workflow does not use any data from the workflow that triggered it, apart from the PR number, there is no security risk**.
 
@@ -143,7 +143,7 @@ As per [Github Actions and the threat of malicious pull requests](https://nathan
 
 The [dependabot/fetch-metadata](https://github.com/dependabot/fetch-metadata) can be used to extract information about the dependencies being updated by a Dependabot generated PR.
 
-This output from that action could be stored as artifacts if the information is required by a priviliged workflow. One could use the [actions/upload-artifact@v2](https://github.com/actions/upload-artifact) action to upload artifacts from the non provoliged workflow and the [dawidd6/action-download-artifact@v2](https://github.com/dawidd6/action-download-artifact) to download artifacts on the priviliged workflow context. For an example see commit [cleanup workflows](https://github.com/edumserrano/dot-net-sdk-extensions/commit/fffb5dea150f5cbc94fc413f559f47eda2886329) which shows how these were being used in an earlier version of the workflow for auto merge of dependabot PRs.
+This output from that action could be stored as artifacts if the information is required by a priviliged workflow. One could use the [actions/upload-artifact@v2](https://github.com/actions/upload-artifact) action to upload artifacts from the non provoliged workflow and the [dawidd6/action-download-artifact@v2](https://github.com/dawidd6/action-download-artifact) to download artifacts on the priviliged workflow context. For an example see commit [cleanup workflows](https://github.com/edumserrano/dot-net-sdk-extensions/commit/fffb5dea150f5cbc94fc413f559f47eda2886329) which shows how these were being used in an earlier version of the workflow for auto merge of Dependabot PRs.
 
 ## codeql workflow
 
