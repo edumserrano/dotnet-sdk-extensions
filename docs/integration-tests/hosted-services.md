@@ -181,7 +181,7 @@ await _webApplicationFactory
 
 The above changes the default 5 seconds timeout to 100 milliseconds.
 
-**Note that when debugging** the default timeout will not be 5 seconds, it will instead be 1 day. This is done so that you can take your time when debugging tests and not have the timeout being triggered and abort the test server in the middle of debugging.
+**Note that when debugging** (`Debugger.IsAttached` is true) the default timeout will not be 5 seconds, it will instead be 1 day. This is done so that you can take your time when debugging tests and not have the timeout being triggered and abort the test server in the middle of debugging.
 
 The above is only true for the default timeout. Meaning that any timeout that you set is honored **even when debugging**.
 
@@ -212,4 +212,4 @@ Setting the `RunUntilOptions.PredicateCheckInterval` to high values might mean y
 
 So if for your test it will take X time to meet the condition and the `RunUntilOptions.PredicateCheckInterval` is represented by Y than in the worst case scenario the time to run your test will be close to X + Y.
 
-**Note**: when debugging it might be useful to set this to a larger period to allow you to step through your code more easily before the check for the condition kicks in and potentially shuts down the test server.
+**Note**: when debugging it might be useful to set the `RunUntilOptions.PredicateCheckInterval` to a larger period to allow you to step through your code more easily before the check for the condition kicks in and, if evaluates to true, shuts down the test server and ends the test.
