@@ -63,5 +63,6 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers
             }
             throw new InvalidOperationException($"No response mock defined for {request.Method} to {request.RequestUri}.");
         }
+
     }
 }
