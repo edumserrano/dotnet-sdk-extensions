@@ -215,9 +215,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         /// <summary>
         /// Tests that the <see cref="TestConfigurationBuilderExtensions.AddTestAppSettings(IWebHostBuilder, string, string[])"/>
         /// preserves the expected order for configuration sources and therefore the expected loading configuration behavior.
-        /// Meaning that configuration is taken from command line first, then environment variables, then appsettings files. For this to happen
-        /// the <see cref="CommandLineConfigurationProvider"/> must be the last provider in <see cref="IConfiguration"/> and the
-        /// <see cref="EnvironmentVariablesConfigurationProvider"/> the one before that.
+        /// Meaning that configuration is taken from command line first, then environment variables, then appsettings files.
         /// </summary>
         [Fact]
         public void PreservesExpectedConfigurationSourcesOrder()
@@ -239,8 +237,121 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
                 .Build();
             var configuration = (ConfigurationRoot)webHost.Services.GetRequiredService<IConfiguration>();
             var configurationProviders = configuration.Providers.ToList();
-            configurationProviders[^1].ShouldBeOfType<CommandLineConfigurationProvider>();
-            configurationProviders[^2].ShouldBeOfType<EnvironmentVariablesConfigurationProvider>();
+            configurationProviders[1].ShouldBeOfType<JsonConfigurationProvider>();
+            configurationProviders[2].ShouldBeOfType<JsonConfigurationProvider>();
+            configurationProviders[3].ShouldBeOfType<JsonConfigurationProvider>();
+            configurationProviders[4].ShouldBeOfType<EnvironmentVariablesConfigurationProvider>();
+            configurationProviders[5].ShouldBeOfType<CommandLineConfigurationProvider>();
+        }
+
+        /// <summary>
+        /// Similar to <see cref="PreservesExpectedConfigurationSourcesOrder"/> but tests when no <see cref="JsonConfigurationSource"/>
+        /// exists. In this case the test appsettings should still be added before the <see cref="EnvironmentVariablesConfigurationSource"/>
+        /// and if none exists, before the <see cref="CommandLineConfigurationSource"/>.
+        /// </summary>
+        [Fact]
+        public void PreservesExpectedConfigurationSourcesOrder2()
+        {
+            using var webHost = WebHost
+                .CreateDefaultBuilder()
+                .ConfigureAppConfiguration((context, builder) =>
+                {
+                    // The default builder will add an EnvironmentVariablesConfigurationProvider.
+                    // For this test I also need to have a CommandLineConfigurationProvider so the next line takes care of that.
+                    builder.AddCommandLine(Array.Empty<string>());
+                    builder.Sources
+                        .OfType<JsonConfigurationSource>()
+                        .ToList()
+                        .ForEach(source => builder.Sources.Remove(source));
+                })
+                .Configure((context, applicationBuilder) =>
+                {
+                    // this is required just to provide a configuration for the webhost
+                    // or else it fails when calling webHostBuilder.Build()
+                })
+                .AddTestAppSettings("appsettings.test.json", "appsettings.test2.json", "appsettings.test3.json")
+                .Build();
+            var configuration = (ConfigurationRoot)webHost.Services.GetRequiredService<IConfiguration>();
+            var configurationProviders = configuration.Providers.ToList();
+            configurationProviders[1].ShouldBeOfType<JsonConfigurationProvider>();
+            configurationProviders[2].ShouldBeOfType<JsonConfigurationProvider>();
+            configurationProviders[3].ShouldBeOfType<JsonConfigurationProvider>();
+            configurationProviders[4].ShouldBeOfType<EnvironmentVariablesConfigurationProvider>();
+            configurationProviders[5].ShouldBeOfType<CommandLineConfigurationProvider>();
+        }
+
+        /// <summary>
+        /// Similar to <see cref="PreservesExpectedConfigurationSourcesOrder"/> but tests when no <see cref="JsonConfigurationSource"/>
+        /// and no <see cref="EnvironmentVariablesConfigurationSource"/> exist. In this case the test appsettings should still be added
+        /// before the the <see cref="CommandLineConfigurationSource"/>.
+        /// </summary>
+        [Fact]
+        public void PreservesExpectedConfigurationSourcesOrder3()
+        {
+            using var webHost = WebHost
+                .CreateDefaultBuilder()
+                .ConfigureAppConfiguration((context, builder) =>
+                {
+                    // The default builder will add an EnvironmentVariablesConfigurationProvider.
+                    // For this test I also need to have a CommandLineConfigurationProvider so the next line takes care of that.
+                    builder.AddCommandLine(Array.Empty<string>());
+                    builder.Sources
+                        .OfType<JsonConfigurationSource>()
+                        .ToList()
+                        .ForEach(source => builder.Sources.Remove(source));
+                    builder.Sources
+                        .OfType<EnvironmentVariablesConfigurationSource>()
+                        .ToList()
+                        .ForEach(source => builder.Sources.Remove(source));
+                })
+                .Configure((context, applicationBuilder) =>
+                {
+                    // this is required just to provide a configuration for the webhost
+                    // or else it fails when calling webHostBuilder.Build()
+                })
+                .AddTestAppSettings("appsettings.test.json", "appsettings.test2.json", "appsettings.test3.json")
+                .Build();
+            var configuration = (ConfigurationRoot)webHost.Services.GetRequiredService<IConfiguration>();
+            var configurationProviders = configuration.Providers.ToList();
+            configurationProviders[1].ShouldBeOfType<JsonConfigurationProvider>();
+            configurationProviders[2].ShouldBeOfType<JsonConfigurationProvider>();
+            configurationProviders[3].ShouldBeOfType<JsonConfigurationProvider>();
+            configurationProviders[4].ShouldBeOfType<CommandLineConfigurationProvider>();
+        }
+
+        /// <summary>
+        /// Similar to <see cref="PreservesExpectedConfigurationSourcesOrder"/> but tests when no <see cref="JsonConfigurationSource"/>,
+        /// no <see cref="EnvironmentVariablesConfigurationSource"/> and no <see cref="CommandLineConfigurationSource"/> exist.
+        /// In this case the test appsettings should be added at the end of the list of configuration sources.
+        /// </summary>
+        [Fact]
+        public void PreservesExpectedConfigurationSourcesOrder4()
+        {
+            using var webHost = WebHost
+                .CreateDefaultBuilder()
+                .ConfigureAppConfiguration((context, builder) =>
+                {
+                    builder.Sources
+                        .OfType<JsonConfigurationSource>()
+                        .ToList()
+                        .ForEach(source => builder.Sources.Remove(source));
+                    builder.Sources
+                        .OfType<EnvironmentVariablesConfigurationSource>()
+                        .ToList()
+                        .ForEach(source => builder.Sources.Remove(source));
+                })
+                .Configure((context, applicationBuilder) =>
+                {
+                    // this is required just to provide a configuration for the webhost
+                    // or else it fails when calling webHostBuilder.Build()
+                })
+                .AddTestAppSettings("appsettings.test.json", "appsettings.test2.json", "appsettings.test3.json")
+                .Build();
+            var configuration = (ConfigurationRoot)webHost.Services.GetRequiredService<IConfiguration>();
+            var configurationProviders = configuration.Providers.ToList();
+            configurationProviders[1].ShouldBeOfType<JsonConfigurationProvider>();
+            configurationProviders[2].ShouldBeOfType<JsonConfigurationProvider>();
+            configurationProviders[3].ShouldBeOfType<JsonConfigurationProvider>();
         }
     }
 }
