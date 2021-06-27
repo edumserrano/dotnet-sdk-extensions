@@ -45,15 +45,6 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers
             return this;
         }
 
-        public TestHttpMessageHandler MockHttpResponse2(HttpResponseMessageMock httpResponseMock)
-        {
-            if (httpResponseMock is null) throw new ArgumentNullException(nameof(httpResponseMock));
-
-            _httpResponseMocks.Add(httpResponseMock);
-            return this;
-        }
-
-
         /// <summary>
         /// Executes the configured mock behavior for the http request instead of actually doing the http request.
         /// </summary>
