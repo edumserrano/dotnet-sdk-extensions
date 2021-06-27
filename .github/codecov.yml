@@ -1,0 +1,20 @@
+
+# see docs at https://docs.codecov.com/docs/codecovyml-reference
+
+# The setting 'allow_coverage_offsets=true' is to avoid errors that sometimes occur when trying to 
+# view coverage on codecov.io for pull requests
+#
+# What might happen is that the commit from the base branch of the pull request does not have 
+# code coverage information because currently the pipelines that generate code coverage only
+# run for specific folders. Eg: 
+#
+# Do some documentation changes on the existing .md files will not trigger the pipeline which
+# generates code coverage. In this case, Codecov tries to use pseudo comparison to find an 
+# appropriate substitute to the pull request base commit which has code coverage information. 
+# However, sometimes the pseudo base chosen is not good enough and the option allow_coverage_offsets
+# helps resolve this.
+#
+# For more info read https://docs.codecov.com/docs/comparing-commits#pseudo-comparison.
+#
+codecov:
+  allow_coverage_offsets: True
