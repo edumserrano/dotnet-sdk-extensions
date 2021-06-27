@@ -28,7 +28,8 @@ The [Directory.Build.props](/Directory.Build.props) at the root of the repo enab
 
 - [Nullable referece types](https://docs.microsoft.com/en-us/dotnet/csharp/nullable-migration-strategies) are enabled.
 ](https://github.com/NuGet/Home/wiki/Enable-repeatable-package-restore-using-lock-file)
-- [Deterministic builds](https://github.com/clairernovotny/DeterministicBuilds) are enabled.
+- [Deterministic build](https://github.com/clairernovotny/DeterministicBuilds) is enabled for builds executed on GitHub.
+- [TreatWarningsAsErrors](https://github.com/clairernovotny/DeterministicBuilds) is enabled for builds executed on GitHub.
 
 ## Repository configuration
 
