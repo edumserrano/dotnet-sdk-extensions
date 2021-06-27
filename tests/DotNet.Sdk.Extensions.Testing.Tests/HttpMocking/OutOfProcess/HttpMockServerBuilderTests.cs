@@ -153,7 +153,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
             {
                 new HttpMockServerBuilder()
                     .UseUrl(HttpScheme.Http, 7777)
-                    .UseHostArgs("--urls", "http://*:8811;https://*:9911")
+                    .UseHostArgs("--urls", "http://*:6011;https://*:7011")
                     .UseHttpResponseMocks()
                     .Build();
             });

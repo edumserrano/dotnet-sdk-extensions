@@ -159,7 +159,7 @@ So let's say that you want to set the environment configuration value for the `H
 
 ```csharp
 await using var httpMockServer = new HttpMockServerBuilder()
-    .UseHostArgs("--environment", "http://*:8811;https://*:9911")
+    .UseHostArgs("--environment", "http://*:6011;https://*:7011")
     .UseHttpResponseMocks() // or use the HttpMockServerBuilder.UseStartup<T> method
     .Build();
 ```
@@ -172,7 +172,7 @@ One of the most obvious configuration values you want to define for the `HttpMoc
 
 ```csharp
 await using var httpMockServer = new HttpMockServerBuilder()
-    .UseHostArgs("--urls", "http://*:8811;https://*:9911")
+    .UseHostArgs("--urls", "http://*:6011;https://*:7011")
     .UseHttpResponseMocks() // or use the HttpMockServerBuilder.UseStartup<T> method
     .Build();
 ```
@@ -181,10 +181,10 @@ for convinience we also provide the the `HttpMockServerBuilder.UseUrl` method wh
 
 ```csharp
 await using var httpMockServer = new HttpMockServerBuilder()
-    .UseUrl(HttpScheme.Http, 8811)
-    .UseUrl(HttpScheme.Http, 8822)
-    .UseUrl(HttpScheme.Https, 9911)
-    .UseUrl(HttpScheme.Https, 9922)
+    .UseUrl(HttpScheme.Http, 6011)
+    .UseUrl(HttpScheme.Http, 6012)
+    .UseUrl(HttpScheme.Https, 7011)
+    .UseUrl(HttpScheme.Https, 7012)
     .UseHttpResponseMocks() // or use the HttpMockServerBuilder.UseStartup<T> method
     .Build();
 ```
