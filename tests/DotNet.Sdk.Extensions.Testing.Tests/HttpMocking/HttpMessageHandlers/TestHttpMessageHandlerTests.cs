@@ -96,6 +96,24 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers
             httpResponseMessage.StatusCode.ShouldBe(HttpStatusCode.Created);
         }
 
+        [Fact]
+        public async Task DefaultPredicate11()
+        {
+            var httpMockResponseMessage = new HttpResponseMessage(HttpStatusCode.Created);
+            var builder = new HttpResponseMessageMockBuilder();
+            var httpResponseMessageMock = builder
+                .RespondWith(httpMockResponseMessage)
+                .Build();
+            var handler = new TestHttpMessageHandler();
+            handler.MockHttpResponse(httpResponseMessageMock);
+
+            using var request = new HttpRequestMessage(HttpMethod.Get, "https://test.com");
+            using var httpMessageInvoker = new HttpMessageInvoker(handler);
+            var httpResponseMessage = await httpMessageInvoker.SendAsync(request, CancellationToken.None);
+
+            httpResponseMessage.StatusCode.ShouldBe(HttpStatusCode.Created);
+        }
+
         /// <summary>
         /// Tests that the <seealso cref="TestHttpMessageHandler"/> returns the mocked HttpResponseMessage.
         /// In this test no predicate is defined which means the default "always true" predicate takes effect

@@ -287,32 +287,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         [Fact]
         public void PreservesExpectedConfigurationSourcesOrder4()
         {
-            var host = Host
-                .CreateDefaultBuilder()
-                .ConfigureAppConfiguration((context, builder) =>
-                {
-                    builder.Sources
-                        .OfType<JsonConfigurationSource>()
-                        .ToList()
-                        .ForEach(source => builder.Sources.Remove(source));
-                    builder.Sources
-                        .OfType<EnvironmentVariablesConfigurationSource>()
-                        .ToList()
-                        .ForEach(source => builder.Sources.Remove(source));
-                })
-                .AddTestAppSettings("appsettings.test.json", "appsettings.test2.json", "appsettings.test3.json")
-                .Build();
-            var configuration = (ConfigurationRoot)host.Services.GetRequiredService<IConfiguration>();
-            var configurationProviders = configuration.Providers.ToList();
-            configurationProviders[1].ShouldBeOfType<JsonConfigurationProvider>();
-            configurationProviders[2].ShouldBeOfType<JsonConfigurationProvider>();
-            configurationProviders[3].ShouldBeOfType<JsonConfigurationProvider>();
-        }
-        
-        [Fact]
-        public void PreservesExpectedConfigurationSourcesOrder5()
-        {
-            var host = Host
+            using var host = Host
                 .CreateDefaultBuilder()
                 .ConfigureAppConfiguration((context, builder) =>
                 {
