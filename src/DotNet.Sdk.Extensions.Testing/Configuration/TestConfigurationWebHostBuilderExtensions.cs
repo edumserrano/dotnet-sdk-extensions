@@ -148,38 +148,70 @@ namespace DotNet.Sdk.Extensions.Testing.Configuration
                 : options.AppSettingsDir;
 
             /*
+             * Get the index where the test appsettings JsonConfigurationSource should be added to.
+             *
+             * The idea is to add the test appsettings:
+             * - in the same position where the existing appsettings configuration sources are.
+             * - if no appsettings configuration sources exist then add before the environment variables.
+             * - if no environment variables configuration sources exist then add before the command line arguments.
+             *
+             * This is important because I want to retain the expected configuration loading behavior. Meaning:
+             * - configuration taken from command line first.
+             * - then environment variables.
+             * - then appsettings files.
+             *
+             * Note: This might not work exactly as expected if there are other configuration sources of type JsonConfigurationSource
+             * other than the ones for appsettings files because the index for the test appsettings JsonConfigurationSource
+             * could be incorrectly calculated.
+             *
+             */
+            var testAppSettingsJsonConfigurationSourceIndex = config.Sources
+                .IndexOf(config.Sources.OfType<JsonConfigurationSource>().FirstOrDefault());
+            if (testAppSettingsJsonConfigurationSourceIndex == -1)
+            {
+                testAppSettingsJsonConfigurationSourceIndex = config.Sources
+                    .IndexOf(config.Sources.OfType<EnvironmentVariablesConfigurationSource>().FirstOrDefault());
+            }
+            if (testAppSettingsJsonConfigurationSourceIndex == -1)
+            {
+                testAppSettingsJsonConfigurationSourceIndex = config.Sources
+                    .IndexOf(config.Sources.OfType<CommandLineConfigurationSource>().FirstOrDefault());
+            }
+            if (testAppSettingsJsonConfigurationSourceIndex == -1)
+            {
+                testAppSettingsJsonConfigurationSourceIndex = config.Sources.Count;
+            }
+
+            /*
              * Remove existing json sources. Without doing this the configuration files loaded
              * normally during the app might interfere with the tests.
+             *
+             * Note: This might have unwanted side effects on apps that add custom JsonConfigurationSource for other things
+             * other than for json files configuration (appsettings). Not sure how much of a problem this might actually be.
+             *
              */
             config.Sources
                 .OfType<JsonConfigurationSource>()
                 .ToList()
                 .ForEach(source => config.Sources.Remove(source));
-            var appsettingsFilenames = new[] { appSettingsFilename }.Concat(otherAppsettingsFilenames);
-            var configPaths = appsettingsFilenames.Select(x => Path.Combine(projectDir, x));
-            foreach (var configPath in configPaths)
+            var testAppSettingsJsonConfigurationSources = new[] { appSettingsFilename }
+                .Concat(otherAppsettingsFilenames)
+                .Select(filename => Path.Combine(projectDir, filename))
+                .Select(configPath =>
+                {
+                    var configSource = new JsonConfigurationSource
+                    {
+                        Path = configPath, 
+                        Optional = false
+                    };
+                    configSource.ResolveFileProvider(); // this is needed because no file provider is explicitly set on the JsonConfigurationSource
+                    return configSource;
+                });
+            foreach (var testAppSettingsJsonConfigurationSource in testAppSettingsJsonConfigurationSources)
             {
-                config.AddJsonFile(configPath, optional: false);
+                config.Sources.Insert(testAppSettingsJsonConfigurationSourceIndex++, testAppSettingsJsonConfigurationSource);
             }
 
-            /*
-             * After adding test appsettings files, those sources will be last in the configuration which means that
-             * even if you have an EnvironmentVariablesConfigurationSource the test appsettings source would take precedence.
-             * This changes the expected loading configuration behavior.
-             * To correct this we will clear all EnvironmentVariablesConfigurationSource and CommandLineConfigurationSource
-             * and add then last. This way the expected loading configuraiton behavior is preserved:
-             * - configuration taken from command line first, then environment variables, then appsettings files.
-             */
-            var environmentVariablesConfigurationSources = config.Sources
-                .OfType<EnvironmentVariablesConfigurationSource>()
-                .ToList();
-            var commandLineConfigurationSources = config.Sources
-                .OfType<CommandLineConfigurationSource>()
-                .ToList();
-            environmentVariablesConfigurationSources.ForEach(source => config.Sources.Remove(source));
-            commandLineConfigurationSources.ForEach(source => config.Sources.Remove(source));
-            environmentVariablesConfigurationSources.ForEach(source => config.Sources.Add(source));
-            commandLineConfigurationSources.ForEach(source => config.Sources.Add(source));
             return config;
         }
     }
