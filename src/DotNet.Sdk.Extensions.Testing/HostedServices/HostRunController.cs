@@ -46,7 +46,7 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
             {
                 try
                 {
-                    var cts = new CancellationTokenSource(_options.Timeout);
+                    using var cts = new CancellationTokenSource(_options.Timeout);
                     do
                     {
                         // before checking the predicate, wait RunUntilOptions.PredicateLoopPeriod or abort if the RunUntilOptions.Timeout elapses
