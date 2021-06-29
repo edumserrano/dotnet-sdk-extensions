@@ -37,5 +37,30 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
             });
             return runUntilResult;
         }
+
+        public async Task<RunUntilResult> RunUntilAsync2(RunUntilPredicateAsync predicateAsync)
+        {
+            if (predicateAsync is null) throw new ArgumentNullException(nameof(predicateAsync));
+
+            var runUntilResult = await Task.Run(async () =>
+            {
+                try
+                {
+                    var cts = new CancellationTokenSource(_options.Timeout);
+                    do
+                    {
+                        // before checking the predicate, wait RunUntilOptions.PredicateLoopPeriod or abort if the RunUntilOptions.Timeout elapses
+                        await Task.Delay(_options.PredicateCheckInterval, cts.Token);
+                    } while (!await predicateAsync());
+
+                    return RunUntilResult.PredicateReturnedTrue;
+                }
+                catch (TaskCanceledException)
+                {
+                    return RunUntilResult.TimedOut;
+                }
+            });
+            return runUntilResult;
+        }
     }
 }
