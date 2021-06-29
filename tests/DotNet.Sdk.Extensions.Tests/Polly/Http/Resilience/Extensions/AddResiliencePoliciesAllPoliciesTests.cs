@@ -122,7 +122,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
 
             // the circuit breaker is opened once
             resiliencePoliciesEventHandlerCalls.CircuitBreaker.OnBreakAsyncCalls
-                .Count()
+                .Count
                 .ShouldBe(1);
             // all requests fail and each request will do actually 3 requests because of the retry count is set to 2
             // after the minimum throughput for the circuit breaker is hit at 10 requests, the requests aren't even
@@ -136,7 +136,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             // plus 0 retry = the second retry does NOT happen because the circuit breaker returned a CircuitBrokenHttpResponseMessage which is not retried
             // Summing all retries = 7
             resiliencePoliciesEventHandlerCalls.Retry.OnRetryAsyncCalls
-                .Count()
+                .Count
                 .ShouldBe(7);
             // even though there are 13 total requests made once the circuit breaker is open the remaining
             // requests don't actually get made, they don't pass through the the circuit breaker
@@ -239,7 +239,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
 
             // the circuit breaker is opened once
             resiliencePoliciesEventHandlerCalls.CircuitBreaker.OnBreakAsyncCalls
-                .Count()
+                .Count
                 .ShouldBe(1);
             // all requests fail and each request will do actually 3 requests because of the retry count is set to 2
             // after the minimum throughput for the circuit breaker is hit at 10 requests, the requests aren't even
@@ -253,7 +253,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             // plus 0 retry = the second retry does NOT happen because the circuit breaker returned a CircuitBrokenHttpResponseMessage which is not retried
             // Summing all retries = 7
             resiliencePoliciesEventHandlerCalls.Retry.OnRetryAsyncCalls
-                .Count()
+                .Count
                 .ShouldBe(7);
             // even though there are 13 total requests made once the circuit breaker is open the remaining
             // requests don't actually get made, they don't pass through the the circuit breaker
