@@ -30,7 +30,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
         {
             var httpClientName = "GitHub";
             var services = new ServiceCollection();
-            _ = services
+            services
                 .AddHttpClient(httpClientName)
                 .AddCircuitBreakerPolicy(options =>
                 {
@@ -43,7 +43,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
             using var serviceProvider = services.BuildServiceProvider();
             var exception = Should.Throw<OptionsValidationException>(() =>
             {
-                _ = serviceProvider.InstantiateNamedHttpClient(httpClientName);
+                serviceProvider.InstantiateNamedHttpClient(httpClientName);
             });
             exception.Message.ShouldBe($"DataAnnotation validation failed for members: 'DurationOfBreakInSecs' with the error: 'The field DurationOfBreakInSecs must be between {double.Epsilon} and {double.MaxValue}.'.");
         }
@@ -63,7 +63,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
         {
             var httpClientName = "GitHub";
             var services = new ServiceCollection();
-            _ = services
+            services
                 .AddHttpClient(httpClientName)
                 .AddCircuitBreakerPolicy(options =>
                 {
@@ -76,7 +76,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
             using var serviceProvider = services.BuildServiceProvider();
             var exception = Should.Throw<OptionsValidationException>(() =>
             {
-                _ = serviceProvider.InstantiateNamedHttpClient(httpClientName);
+                serviceProvider.InstantiateNamedHttpClient(httpClientName);
             });
             exception.Message.ShouldBe($"DataAnnotation validation failed for members: 'SamplingDurationInSecs' with the error: 'The field SamplingDurationInSecs must be between {double.Epsilon} and {double.MaxValue}.'.");
         }
@@ -98,7 +98,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
         {
             var httpClientName = "GitHub";
             var services = new ServiceCollection();
-            _ = services
+            services
                 .AddHttpClient(httpClientName)
                 .AddCircuitBreakerPolicy(options =>
                 {
@@ -111,7 +111,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
             using var serviceProvider = services.BuildServiceProvider();
             var exception = Should.Throw<OptionsValidationException>(() =>
             {
-                _ = serviceProvider.InstantiateNamedHttpClient(httpClientName);
+                serviceProvider.InstantiateNamedHttpClient(httpClientName);
             });
             exception.Message.ShouldBe($"DataAnnotation validation failed for members: 'FailureThreshold' with the error: 'The field FailureThreshold must be between {double.Epsilon} and {1}.'.");
         }
@@ -130,7 +130,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
         {
             var httpClientName = "GitHub";
             var services = new ServiceCollection();
-            _ = services
+            services
                 .AddHttpClient(httpClientName)
                 .AddCircuitBreakerPolicy(options =>
                 {
@@ -143,7 +143,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
             using var serviceProvider = services.BuildServiceProvider();
             var exception = Should.Throw<OptionsValidationException>(() =>
             {
-                _ = serviceProvider.InstantiateNamedHttpClient(httpClientName);
+                serviceProvider.InstantiateNamedHttpClient(httpClientName);
             });
             exception.Message.ShouldBe($"DataAnnotation validation failed for members: 'MinimumThroughput' with the error: 'The field MinimumThroughput must be between {2} and {int.MaxValue}.'.");
         }
@@ -164,7 +164,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
             var httpClientName = "GitHub";
             var optionsName = "GitHubOptions";
             var services = new ServiceCollection();
-            _ = services
+            services
                 .AddHttpClientCircuitBreakerOptions(optionsName)
                 .Configure(options =>
                 {
@@ -177,14 +177,14 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
                 {
                     return options.DurationOfBreakInSecs > 3;
                 });
-            _ = services
+            services
                 .AddHttpClient(httpClientName)
                 .AddCircuitBreakerPolicy(optionsName);
 
             using var serviceProvider = services.BuildServiceProvider();
             var exception = Should.Throw<OptionsValidationException>(() =>
             {
-                _ = serviceProvider.InstantiateNamedHttpClient(httpClientName);
+                serviceProvider.InstantiateNamedHttpClient(httpClientName);
             });
             exception.Message.ShouldBe("A validation error has occurred.");
         }
@@ -204,7 +204,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
             var httpClientName = "GitHub";
             var optionsName = "GitHubOptions";
             var services = new ServiceCollection();
-            _ = services
+            services
                 .AddHttpClientCircuitBreakerOptions(optionsName)
                 .Configure(options =>
                 {
@@ -217,14 +217,14 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
                 {
                     return options.DurationOfBreakInSecs > 3;
                 });
-            _ = services
+            services
                 .AddHttpClient(httpClientName)
                 .AddCircuitBreakerPolicy(optionsName);
 
             using var serviceProvider = services.BuildServiceProvider();
             var exception = Should.Throw<OptionsValidationException>(() =>
             {
-                _ = serviceProvider.InstantiateNamedHttpClient(httpClientName);
+                serviceProvider.InstantiateNamedHttpClient(httpClientName);
             });
             exception.Message.ShouldBe($"A validation error has occurred.; DataAnnotation validation failed for members: 'DurationOfBreakInSecs' with the error: 'The field DurationOfBreakInSecs must be between {double.Epsilon} and {double.MaxValue}.'.");
         }

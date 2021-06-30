@@ -66,8 +66,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 }
             };
             var services = new ServiceCollection();
-            _ = services.AddSingleton(resiliencePoliciesEventHandlerCalls);
-            _ = services
+            services.AddSingleton(resiliencePoliciesEventHandlerCalls);
+            services
                 .AddHttpClient(httpClientName)
                 .ConfigureHttpClient(client => client.BaseAddress = new Uri("https://github.com"))
                 .AddResiliencePolicies<TestResiliencePoliciesEventHandler>(options =>
@@ -183,8 +183,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 }
             };
             var services = new ServiceCollection();
-            _ = services.AddSingleton(resiliencePoliciesEventHandlerCalls);
-            _ = services
+            services.AddSingleton(resiliencePoliciesEventHandlerCalls);
+            services
                 .AddHttpClient(httpClientName)
                 .ConfigureHttpClient(client => client.BaseAddress = new Uri("https://github.com"))
                 .AddResiliencePolicies<TestResiliencePoliciesEventHandler>(options =>

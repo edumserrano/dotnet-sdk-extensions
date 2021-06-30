@@ -29,7 +29,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
         {
             var httpClientName = "GitHub";
             var services = new ServiceCollection();
-            _ = services
+            services
                 .AddHttpClient(httpClientName)
                 .AddTimeoutPolicy(options =>
                 {
@@ -39,7 +39,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
             using var serviceProvider = services.BuildServiceProvider();
             var exception = Should.Throw<OptionsValidationException>(() =>
             {
-                _ = serviceProvider.InstantiateNamedHttpClient(httpClientName);
+                serviceProvider.InstantiateNamedHttpClient(httpClientName);
             });
             exception.Message.ShouldBe($"DataAnnotation validation failed for members: 'TimeoutInSecs' with the error: 'The field TimeoutInSecs must be between {double.Epsilon} and {double.MaxValue}.'.");
         }
@@ -60,21 +60,21 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
             var httpClientName = "GitHub";
             var optionsName = "GitHubOptions";
             var services = new ServiceCollection();
-            _ = services
+            services
                 .AddHttpClientTimeoutOptions(optionsName)
                 .Configure(options => options.TimeoutInSecs = 1)
                 .Validate(options =>
                 {
                     return options.TimeoutInSecs > 3;
                 });
-            _ = services
+            services
                 .AddHttpClient(httpClientName)
                 .AddTimeoutPolicy(optionsName);
 
             using var serviceProvider = services.BuildServiceProvider();
             var exception = Should.Throw<OptionsValidationException>(() =>
             {
-                _ = serviceProvider.InstantiateNamedHttpClient(httpClientName);
+                serviceProvider.InstantiateNamedHttpClient(httpClientName);
             });
             exception.Message.ShouldBe("A validation error has occurred.");
         }
@@ -94,21 +94,21 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
             var httpClientName = "GitHub";
             var optionsName = "GitHubOptions";
             var services = new ServiceCollection();
-            _ = services
+            services
                 .AddHttpClientTimeoutOptions(optionsName)
                 .Configure(options => options.TimeoutInSecs = -1)
                 .Validate(options =>
                 {
                     return options.TimeoutInSecs > 3;
                 });
-            _ = services
+            services
                 .AddHttpClient(httpClientName)
                 .AddTimeoutPolicy(optionsName);
 
             using var serviceProvider = services.BuildServiceProvider();
             var exception = Should.Throw<OptionsValidationException>(() =>
             {
-                _ = serviceProvider.InstantiateNamedHttpClient(httpClientName);
+                serviceProvider.InstantiateNamedHttpClient(httpClientName);
             });
             exception.Message.ShouldBe($"A validation error has occurred.; DataAnnotation validation failed for members: 'TimeoutInSecs' with the error: 'The field TimeoutInSecs must be between {double.Epsilon} and {double.MaxValue}.'.");
         }

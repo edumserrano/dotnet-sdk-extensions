@@ -32,7 +32,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
         {
             var policyHttpMessageHandlers = new List<PolicyHttpMessageHandler>();
             var services = new ServiceCollection();
-            _ = services
+            services
                 .AddHttpClient("GitHub")
                 .AddResiliencePolicies(options =>
                 {
@@ -53,23 +53,23 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 });
 
             using var serviceProvider = services.BuildServiceProvider();
-            _ = serviceProvider.InstantiateNamedHttpClient("GitHub");
+            serviceProvider.InstantiateNamedHttpClient("GitHub");
 
             policyHttpMessageHandlers.Count.ShouldBe(4);
             // fallback policy
-            _ = policyHttpMessageHandlers[0]
+            policyHttpMessageHandlers[0]
                 .GetPolicy<AsyncPolicyWrap<HttpResponseMessage>>()
                 .ShouldNotBeNull();
             // retry policy
-            _ = policyHttpMessageHandlers[1]
+            policyHttpMessageHandlers[1]
                 .GetPolicy<AsyncRetryPolicy<HttpResponseMessage>>()
                 .ShouldNotBeNull();
             // circuit breaker policy 
-            _ = policyHttpMessageHandlers[2]
+            policyHttpMessageHandlers[2]
                 .GetPolicy<AsyncPolicyWrap<HttpResponseMessage>>()
                 .ShouldNotBeNull();
             // timeout policy
-            _ = policyHttpMessageHandlers[3]
+            policyHttpMessageHandlers[3]
                 .GetPolicy<AsyncTimeoutPolicy<HttpResponseMessage>>()
                 .ShouldNotBeNull();
         }
@@ -84,7 +84,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             var policyHttpMessageHandlers = new List<PolicyHttpMessageHandler>();
             var optionsName = "GitHubOptions";
             var services = new ServiceCollection();
-            _ = services
+            services
                 .AddHttpClientResilienceOptions(optionsName)
                 .Configure(options =>
                 {
@@ -96,7 +96,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                     options.CircuitBreaker.SamplingDurationInSecs = 60;
                     options.CircuitBreaker.MinimumThroughput = 4;
                 });
-            _ = services
+            services
                 .AddHttpClient("GitHub")
                 .AddResiliencePolicies(optionsName)
                 .ConfigureHttpMessageHandlerBuilder(httpMessageHandlerBuilder =>
@@ -108,23 +108,23 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 });
 
             using var serviceProvider = services.BuildServiceProvider();
-            _ = serviceProvider.InstantiateNamedHttpClient("GitHub");
+            serviceProvider.InstantiateNamedHttpClient("GitHub");
 
             policyHttpMessageHandlers.Count.ShouldBe(4);
             // fallback policy
-            _ = policyHttpMessageHandlers[0]
+            policyHttpMessageHandlers[0]
                 .GetPolicy<AsyncPolicyWrap<HttpResponseMessage>>()
                 .ShouldNotBeNull();
             // retry policy
-            _ = policyHttpMessageHandlers[1]
+            policyHttpMessageHandlers[1]
                 .GetPolicy<AsyncRetryPolicy<HttpResponseMessage>>()
                 .ShouldNotBeNull();
             // circuit breaker policy 
-            _ = policyHttpMessageHandlers[2]
+            policyHttpMessageHandlers[2]
                 .GetPolicy<AsyncPolicyWrap<HttpResponseMessage>>()
                 .ShouldNotBeNull();
             // timeout policy
-            _ = policyHttpMessageHandlers[3]
+            policyHttpMessageHandlers[3]
                 .GetPolicy<AsyncTimeoutPolicy<HttpResponseMessage>>()
                 .ShouldNotBeNull();
         }
@@ -139,8 +139,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             var resiliencePoliciesEventHandlerCalls = new ResiliencePoliciesEventHandlerCalls();
             var policyHttpMessageHandlers = new List<PolicyHttpMessageHandler>();
             var services = new ServiceCollection();
-            _ = services.AddSingleton(resiliencePoliciesEventHandlerCalls);
-            _ = services
+            services.AddSingleton(resiliencePoliciesEventHandlerCalls);
+            services
                 .AddHttpClient("GitHub")
                 .AddResiliencePolicies<TestResiliencePoliciesEventHandler>(options =>
                 {
@@ -161,23 +161,23 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 });
 
             using var serviceProvider = services.BuildServiceProvider();
-            _ = serviceProvider.InstantiateNamedHttpClient("GitHub");
+            serviceProvider.InstantiateNamedHttpClient("GitHub");
 
             policyHttpMessageHandlers.Count.ShouldBe(4);
             // fallback policy
-            _ = policyHttpMessageHandlers[0]
+            policyHttpMessageHandlers[0]
                 .GetPolicy<AsyncPolicyWrap<HttpResponseMessage>>()
                 .ShouldNotBeNull();
             // retry policy
-            _ = policyHttpMessageHandlers[1]
+            policyHttpMessageHandlers[1]
                 .GetPolicy<AsyncRetryPolicy<HttpResponseMessage>>()
                 .ShouldNotBeNull();
             // circuit breaker policy 
-            _ = policyHttpMessageHandlers[2]
+            policyHttpMessageHandlers[2]
                 .GetPolicy<AsyncPolicyWrap<HttpResponseMessage>>()
                 .ShouldNotBeNull();
             // timeout policy
-            _ = policyHttpMessageHandlers[3]
+            policyHttpMessageHandlers[3]
                 .GetPolicy<AsyncTimeoutPolicy<HttpResponseMessage>>()
                 .ShouldNotBeNull();
         }
@@ -193,8 +193,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             var policyHttpMessageHandlers = new List<PolicyHttpMessageHandler>();
             var optionsName = "GitHubOptions";
             var services = new ServiceCollection();
-            _ = services.AddSingleton(resiliencePoliciesEventHandlerCalls);
-            _ = services
+            services.AddSingleton(resiliencePoliciesEventHandlerCalls);
+            services
                 .AddHttpClientResilienceOptions(optionsName)
                 .Configure(options =>
                 {
@@ -206,7 +206,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                     options.CircuitBreaker.SamplingDurationInSecs = 60;
                     options.CircuitBreaker.MinimumThroughput = 4;
                 });
-            _ = services
+            services
                 .AddHttpClient("GitHub")
                 .AddResiliencePolicies<TestResiliencePoliciesEventHandler>(optionsName)
                 .ConfigureHttpMessageHandlerBuilder(httpMessageHandlerBuilder =>
@@ -218,23 +218,23 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 });
 
             using var serviceProvider = services.BuildServiceProvider();
-            _ = serviceProvider.InstantiateNamedHttpClient("GitHub");
+            serviceProvider.InstantiateNamedHttpClient("GitHub");
 
             policyHttpMessageHandlers.Count.ShouldBe(4);
             // fallback policy
-            _ = policyHttpMessageHandlers[0]
+            policyHttpMessageHandlers[0]
                 .GetPolicy<AsyncPolicyWrap<HttpResponseMessage>>()
                 .ShouldNotBeNull();
             // retry policy
-            _ = policyHttpMessageHandlers[1]
+            policyHttpMessageHandlers[1]
                 .GetPolicy<AsyncRetryPolicy<HttpResponseMessage>>()
                 .ShouldNotBeNull();
             // circuit breaker policy 
-            _ = policyHttpMessageHandlers[2]
+            policyHttpMessageHandlers[2]
                 .GetPolicy<AsyncPolicyWrap<HttpResponseMessage>>()
                 .ShouldNotBeNull();
             // timeout policy
-            _ = policyHttpMessageHandlers[3]
+            policyHttpMessageHandlers[3]
                 .GetPolicy<AsyncTimeoutPolicy<HttpResponseMessage>>()
                 .ShouldNotBeNull();
         }
@@ -250,7 +250,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             var policyHttpMessageHandlers = new List<PolicyHttpMessageHandler>();
             var optionsName = "GitHubOptions";
             var services = new ServiceCollection();
-            _ = services
+            services
                 .AddHttpClientResilienceOptions(optionsName)
                 .Configure(options =>
                 {
@@ -262,7 +262,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                     options.CircuitBreaker.SamplingDurationInSecs = 60;
                     options.CircuitBreaker.MinimumThroughput = 4;
                 });
-            _ = services
+            services
                 .AddHttpClient("GitHub")
                 .AddResiliencePolicies(optionsName, provider =>
                 {
@@ -277,23 +277,23 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 });
 
             using var serviceProvider = services.BuildServiceProvider();
-            _ = serviceProvider.InstantiateNamedHttpClient("GitHub");
+            serviceProvider.InstantiateNamedHttpClient("GitHub");
 
             policyHttpMessageHandlers.Count.ShouldBe(4);
             // fallback policy
-            _ = policyHttpMessageHandlers[0]
+            policyHttpMessageHandlers[0]
                 .GetPolicy<AsyncPolicyWrap<HttpResponseMessage>>()
                 .ShouldNotBeNull();
             // retry policy
-            _ = policyHttpMessageHandlers[1]
+            policyHttpMessageHandlers[1]
                 .GetPolicy<AsyncRetryPolicy<HttpResponseMessage>>()
                 .ShouldNotBeNull();
             // circuit breaker policy 
-            _ = policyHttpMessageHandlers[2]
+            policyHttpMessageHandlers[2]
                 .GetPolicy<AsyncPolicyWrap<HttpResponseMessage>>()
                 .ShouldNotBeNull();
             // timeout policy
-            _ = policyHttpMessageHandlers[3]
+            policyHttpMessageHandlers[3]
                 .GetPolicy<AsyncTimeoutPolicy<HttpResponseMessage>>()
                 .ShouldNotBeNull();
         }
@@ -308,7 +308,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             var resiliencePoliciesEventHandlerCalls = new ResiliencePoliciesEventHandlerCalls();
             var policyHttpMessageHandlers = new List<PolicyHttpMessageHandler>();
             var services = new ServiceCollection();
-            _ = services
+            services
                 .AddHttpClient("GitHub")
                 .AddResiliencePolicies(
                     configureOptions: options =>
@@ -334,23 +334,23 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 });
 
             using var serviceProvider = services.BuildServiceProvider();
-            _ = serviceProvider.InstantiateNamedHttpClient("GitHub");
+            serviceProvider.InstantiateNamedHttpClient("GitHub");
 
             policyHttpMessageHandlers.Count.ShouldBe(4);
             // fallback policy
-            _ = policyHttpMessageHandlers[0]
+            policyHttpMessageHandlers[0]
                 .GetPolicy<AsyncPolicyWrap<HttpResponseMessage>>()
                 .ShouldNotBeNull();
             // retry policy
-            _ = policyHttpMessageHandlers[1]
+            policyHttpMessageHandlers[1]
                 .GetPolicy<AsyncRetryPolicy<HttpResponseMessage>>()
                 .ShouldNotBeNull();
             // circuit breaker policy 
-            _ = policyHttpMessageHandlers[2]
+            policyHttpMessageHandlers[2]
                 .GetPolicy<AsyncPolicyWrap<HttpResponseMessage>>()
                 .ShouldNotBeNull();
             // timeout policy
-            _ = policyHttpMessageHandlers[3]
+            policyHttpMessageHandlers[3]
                 .GetPolicy<AsyncTimeoutPolicy<HttpResponseMessage>>()
                 .ShouldNotBeNull();
         }
@@ -368,7 +368,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             var policyHttpMessageHandlers1 = new List<PolicyHttpMessageHandler>();
             var policyHttpMessageHandlers2 = new List<PolicyHttpMessageHandler>();
             var services = new ServiceCollection();
-            _ = services
+            services
                 .AddHttpClient("GitHub")
                 .AddResiliencePolicies(options =>
                 {
@@ -387,7 +387,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                         .OfType<PolicyHttpMessageHandler>()
                         .ToList();
                 });
-            _ = services
+            services
                 .AddHttpClient("Microsoft")
                 .AddResiliencePolicies(options =>
                 {
@@ -408,20 +408,20 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 });
 
             using var serviceProvider = services.BuildServiceProvider();
-            _ = serviceProvider.InstantiateNamedHttpClient("GitHub");
-            _ = serviceProvider.InstantiateNamedHttpClient("Microsoft");
+            serviceProvider.InstantiateNamedHttpClient("GitHub");
+            serviceProvider.InstantiateNamedHttpClient("Microsoft");
 
             var resiliencePolicies1 = new ResiliencePolicies(policyHttpMessageHandlers1);
-            _ = resiliencePolicies1.TimeoutPolicy.ShouldNotBeNull();
-            _ = resiliencePolicies1.RetryPolicy.ShouldNotBeNull();
-            _ = resiliencePolicies1.CircuitBreakerPolicy.ShouldNotBeNull();
-            _ = resiliencePolicies1.FallbackPolicy.ShouldNotBeNull();
+            resiliencePolicies1.TimeoutPolicy.ShouldNotBeNull();
+            resiliencePolicies1.RetryPolicy.ShouldNotBeNull();
+            resiliencePolicies1.CircuitBreakerPolicy.ShouldNotBeNull();
+            resiliencePolicies1.FallbackPolicy.ShouldNotBeNull();
 
             var resiliencePolicies2 = new ResiliencePolicies(policyHttpMessageHandlers2);
-            _ = resiliencePolicies2.TimeoutPolicy.ShouldNotBeNull();
-            _ = resiliencePolicies2.RetryPolicy.ShouldNotBeNull();
-            _ = resiliencePolicies2.CircuitBreakerPolicy.ShouldNotBeNull();
-            _ = resiliencePolicies2.FallbackPolicy.ShouldNotBeNull();
+            resiliencePolicies2.TimeoutPolicy.ShouldNotBeNull();
+            resiliencePolicies2.RetryPolicy.ShouldNotBeNull();
+            resiliencePolicies2.CircuitBreakerPolicy.ShouldNotBeNull();
+            resiliencePolicies2.FallbackPolicy.ShouldNotBeNull();
 
             ReferenceEquals(resiliencePolicies1.TimeoutPolicy, resiliencePolicies2.TimeoutPolicy).ShouldBeFalse();
             resiliencePolicies1.TimeoutPolicy.PolicyKey.ShouldNotBe(resiliencePolicies2.TimeoutPolicy.PolicyKey);

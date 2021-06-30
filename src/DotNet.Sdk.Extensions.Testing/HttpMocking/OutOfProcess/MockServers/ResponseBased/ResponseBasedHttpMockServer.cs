@@ -21,11 +21,11 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers.Res
                 .CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    _ = webBuilder.ConfigureServices(services =>
-                      {
-                          _ = services.AddSingleton(_httpResponseMocksProvider);
-                      });
-                    _ = webBuilder.UseStartup<HttpMockServerStartup>();
+                    webBuilder.ConfigureServices(services =>
+                    {
+                        services.AddSingleton(_httpResponseMocksProvider);
+                    });
+                    webBuilder.UseStartup<HttpMockServerStartup>();
                 });
         }
     }

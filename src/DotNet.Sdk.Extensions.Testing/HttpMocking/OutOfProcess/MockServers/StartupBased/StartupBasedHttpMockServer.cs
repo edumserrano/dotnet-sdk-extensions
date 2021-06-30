@@ -15,8 +15,8 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers.Sta
                 .CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    _ = webBuilder.UseStartup(typeof(T));
-                    _ = webBuilder.UseStartup<T>();
+                    webBuilder.UseStartup(typeof(T));
+                    webBuilder.UseStartup<T>();
                 });
         }
     }

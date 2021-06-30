@@ -95,13 +95,13 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.InProcess
                  * By doing this we take control of how the PrimaryHandler is build for the HttpClient by the IHttpClientFactory
                  *
                  */
-                _ = _services.Configure<HttpClientFactoryOptions>(testHttpMessageHandlerDescriptor.HttpClientName, options =>
-                  {
-                      options.HttpMessageHandlerBuilderActions.Add(b =>
-                      {
-                          b.PrimaryHandler = testHttpMessageHandlerDescriptor.HttpMessageHandler;
-                      });
-                  });
+                _services.Configure<HttpClientFactoryOptions>(testHttpMessageHandlerDescriptor.HttpClientName, options =>
+                {
+                    options.HttpMessageHandlerBuilderActions.Add(b =>
+                    {
+                        b.PrimaryHandler = testHttpMessageHandlerDescriptor.HttpMessageHandler;
+                    });
+                });
             }
         }
 
@@ -114,7 +114,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.InProcess
             var testHttpMessageHandler = new TestHttpMessageHandler();
             foreach (var httpResponseMockDescriptor in httpResponseMockDescriptors)
             {
-                _ = testHttpMessageHandler.MockHttpResponse(httpResponseMockDescriptor.HttpResponseMock);
+                testHttpMessageHandler.MockHttpResponse(httpResponseMockDescriptor.HttpResponseMock);
             }
             return new TestHttpMessageHandlerDescriptor(httpClientName, testHttpMessageHandler);
         }

@@ -19,7 +19,7 @@ namespace DotNet.Sdk.Extensions.Tests.Options.ValidateEagerly.Auxiliary.IValidat
 
         public void ConfigureServices(IServiceCollection services)
         {
-            _ = services
+            services
                 .AddSingleton<IValidateOptions<MyOptions1>, MyOptions1Validation>()
                 .AddOptions<MyOptions1>()
                 .Bind(_configuration)
@@ -28,15 +28,15 @@ namespace DotNet.Sdk.Extensions.Tests.Options.ValidateEagerly.Auxiliary.IValidat
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            _ = app
+            app
                 .UseRouting()
                 .UseEndpoints(endpoints =>
                 {
-                    _ = endpoints.MapGet("/", async context =>
-                      {
-                          var myOptions = context.RequestServices.GetRequiredService<MyOptions1>();
-                          await context.Response.WriteAsync(myOptions.SomeOption);
-                      });
+                    endpoints.MapGet("/", async context =>
+                    {
+                        var myOptions = context.RequestServices.GetRequiredService<MyOptions1>();
+                        await context.Response.WriteAsync(myOptions.SomeOption);
+                    });
                 });
         }
     }

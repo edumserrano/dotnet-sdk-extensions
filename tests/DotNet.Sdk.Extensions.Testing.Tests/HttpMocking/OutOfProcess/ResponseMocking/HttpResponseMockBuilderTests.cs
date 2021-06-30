@@ -71,7 +71,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess.ResponseM
         public void WhereCanOnlyBeDefinedOnce()
         {
             var builder = new HttpResponseMockBuilder();
-            _ = builder.Where(message => false);
+            builder.Where(message => false);
             var exception = Should.Throw<InvalidOperationException>(() => builder.Where(message => true));
             exception.Message.ShouldBe("HttpResponseMockBuilder.Where condition already configured.");
         }
@@ -83,7 +83,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess.ResponseM
         public void RespondWithCanOnlyBeDefinedOnce()
         {
             var builder = new HttpResponseMockBuilder();
-            _ = builder.RespondWith(httpResponse => httpResponse.StatusCode = StatusCodes.Status200OK);
+            builder.RespondWith(httpResponse => httpResponse.StatusCode = StatusCodes.Status200OK);
             var exception = Should.Throw<InvalidOperationException>(() => builder.RespondWith(httpResponse => httpResponse.StatusCode = StatusCodes.Status200OK));
             exception.Message.ShouldBe("HttpResponseMockBuilder.RespondWith already configured.");
         }

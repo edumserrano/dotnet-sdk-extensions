@@ -48,7 +48,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Fallback.Auxiliary
             var httpRequestException = new HttpRequestException();
             var response = await FallbackPolicyHandlesException(httpRequestException);
             var exceptionHttpResponseMessage = response as ExceptionHttpResponseMessage;
-            _ = exceptionHttpResponseMessage.ShouldNotBeNull();
+            exceptionHttpResponseMessage.ShouldNotBeNull();
             exceptionHttpResponseMessage.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
             exceptionHttpResponseMessage.Exception.ShouldBe(httpRequestException);
         }
@@ -58,7 +58,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Fallback.Auxiliary
             var taskCanceledException = new TaskCanceledException();
             var response = await FallbackPolicyHandlesException(taskCanceledException);
             var abortedHttpResponseMessage = response as AbortedHttpResponseMessage;
-            _ = abortedHttpResponseMessage.ShouldNotBeNull();
+            abortedHttpResponseMessage.ShouldNotBeNull();
             abortedHttpResponseMessage.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
             abortedHttpResponseMessage.Exception.ShouldBe(taskCanceledException);
         }
@@ -69,7 +69,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Fallback.Auxiliary
             var taskCanceledException = new TaskCanceledException("some msg", timeoutException);
             var response = await FallbackPolicyHandlesException(taskCanceledException);
             var timeoutHttpResponseMessage = response as TimeoutHttpResponseMessage;
-            _ = timeoutHttpResponseMessage.ShouldNotBeNull();
+            timeoutHttpResponseMessage.ShouldNotBeNull();
             timeoutHttpResponseMessage.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
             timeoutHttpResponseMessage.Exception.ShouldBe(taskCanceledException);
             timeoutHttpResponseMessage.Exception.InnerException.ShouldBe(timeoutException);
@@ -80,7 +80,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Fallback.Auxiliary
             var isolatedCircuitException = new IsolatedCircuitException(message: string.Empty);
             var response = await FallbackPolicyHandlesException(isolatedCircuitException);
             var circuitBrokenHttpResponseMessage = response as CircuitBrokenHttpResponseMessage;
-            _ = circuitBrokenHttpResponseMessage.ShouldNotBeNull();
+            circuitBrokenHttpResponseMessage.ShouldNotBeNull();
             circuitBrokenHttpResponseMessage.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
             circuitBrokenHttpResponseMessage.CircuitBreakerState.ShouldBe(CircuitBreakerState.Isolated);
             circuitBrokenHttpResponseMessage.Exception.ShouldBe(isolatedCircuitException);
@@ -91,7 +91,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Fallback.Auxiliary
             var brokenCircuitException = new BrokenCircuitException();
             var response = await FallbackPolicyHandlesException(brokenCircuitException);
             var circuitBrokenHttpResponseMessage = response as CircuitBrokenHttpResponseMessage;
-            _ = circuitBrokenHttpResponseMessage.ShouldNotBeNull();
+            circuitBrokenHttpResponseMessage.ShouldNotBeNull();
             circuitBrokenHttpResponseMessage.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
             circuitBrokenHttpResponseMessage.CircuitBreakerState.ShouldBe(CircuitBreakerState.Open);
             circuitBrokenHttpResponseMessage.Exception.ShouldBe(brokenCircuitException);
@@ -102,7 +102,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Fallback.Auxiliary
             var timeoutRejectedException = new TimeoutRejectedException();
             var response = await FallbackPolicyHandlesException(timeoutRejectedException);
             var timeoutHttpResponseMessage = response as TimeoutHttpResponseMessage;
-            _ = timeoutHttpResponseMessage.ShouldNotBeNull();
+            timeoutHttpResponseMessage.ShouldNotBeNull();
             timeoutHttpResponseMessage.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
             timeoutHttpResponseMessage.Exception.ShouldBe(timeoutRejectedException);
         }

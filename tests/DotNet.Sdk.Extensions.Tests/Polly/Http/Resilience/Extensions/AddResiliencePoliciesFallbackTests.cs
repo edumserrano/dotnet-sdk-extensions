@@ -41,7 +41,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 EnableTimeoutPolicy = false
             };
             var services = new ServiceCollection();
-            _ = services
+            services
                 .AddHttpClient(httpClientName)
                 .ConfigureHttpClient(client => client.BaseAddress = new Uri("https://github.com"))
                 .AddResiliencePolicies(options =>
@@ -77,7 +77,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             };
             var optionsName = "GitHubOptions";
             var services = new ServiceCollection();
-            _ = services
+            services
                 .AddHttpClientResilienceOptions(optionsName)
                 .Configure(options =>
                 {
@@ -85,7 +85,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                     options.EnableCircuitBreakerPolicy = resilienceOptions.EnableCircuitBreakerPolicy;
                     options.EnableTimeoutPolicy = resilienceOptions.EnableTimeoutPolicy;
                 });
-            _ = services
+            services
                 .AddHttpClient(httpClientName)
                 .ConfigureHttpClient(client => client.BaseAddress = new Uri("https://github.com"))
                 .AddResiliencePolicies(optionsName)
@@ -118,8 +118,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 EnableTimeoutPolicy = false
             };
             var services = new ServiceCollection();
-            _ = services.AddSingleton(resiliencePoliciesEventHandlerCalls);
-            _ = services
+            services.AddSingleton(resiliencePoliciesEventHandlerCalls);
+            services
                 .AddHttpClient(httpClientName)
                 .ConfigureHttpClient(client => client.BaseAddress = new Uri("https://github.com"))
                 .AddResiliencePolicies<TestResiliencePoliciesEventHandler>(options =>
@@ -164,8 +164,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             };
             var optionsName = "GitHubOptions";
             var services = new ServiceCollection();
-            _ = services.AddSingleton(resiliencePoliciesEventHandlerCalls);
-            _ = services
+            services.AddSingleton(resiliencePoliciesEventHandlerCalls);
+            services
                 .AddHttpClientResilienceOptions(optionsName)
                 .Configure(options =>
                 {
@@ -173,14 +173,14 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                     options.EnableCircuitBreakerPolicy = resilienceOptions.EnableCircuitBreakerPolicy;
                     options.EnableTimeoutPolicy = resilienceOptions.EnableTimeoutPolicy;
                 });
-            _ = services
+            services
                 .AddHttpClient(httpClientName)
                 .ConfigureHttpClient(client => client.BaseAddress = new Uri("https://github.com"))
                 .AddResiliencePolicies<TestResiliencePoliciesEventHandler>(optionsName)
                 .ConfigurePrimaryHttpMessageHandler(() => testHttpMessageHandler);
 
             await using var serviceProvider = services.BuildServiceProvider();
-            _ = serviceProvider.InstantiateNamedHttpClient(httpClientName);
+            serviceProvider.InstantiateNamedHttpClient(httpClientName);
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
             var resiliencePoliciesAsserter = httpClient.ResiliencePoliciesAsserter(resilienceOptions, testHttpMessageHandler);
             await resiliencePoliciesAsserter.Fallback.HttpClientShouldContainFallbackPolicyAsync();
@@ -214,7 +214,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             };
             var optionsName = "GitHubOptions";
             var services = new ServiceCollection();
-            _ = services
+            services
                 .AddHttpClientResilienceOptions(optionsName)
                 .Configure(options =>
                 {
@@ -222,7 +222,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                     options.EnableCircuitBreakerPolicy = resilienceOptions.EnableCircuitBreakerPolicy;
                     options.EnableTimeoutPolicy = resilienceOptions.EnableTimeoutPolicy;
                 });
-            _ = services
+            services
                 .AddHttpClient(httpClientName)
                 .ConfigureHttpClient(client => client.BaseAddress = new Uri("https://github.com"))
                 .AddResiliencePolicies(optionsName, provider =>
@@ -232,7 +232,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 .ConfigurePrimaryHttpMessageHandler(() => testHttpMessageHandler);
 
             await using var serviceProvider = services.BuildServiceProvider();
-            _ = serviceProvider.InstantiateNamedHttpClient(httpClientName);
+            serviceProvider.InstantiateNamedHttpClient(httpClientName);
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
             var resiliencePoliciesAsserter = httpClient.ResiliencePoliciesAsserter(resilienceOptions, testHttpMessageHandler);
             await resiliencePoliciesAsserter.Fallback.HttpClientShouldContainFallbackPolicyAsync();
@@ -265,7 +265,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 EnableTimeoutPolicy = false
             };
             var services = new ServiceCollection();
-            _ = services
+            services
                 .AddHttpClient(httpClientName)
                 .ConfigureHttpClient(client => client.BaseAddress = new Uri("https://github.com"))
                 .AddResiliencePolicies(
@@ -321,8 +321,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 },
             };
             var services = new ServiceCollection();
-            _ = services.AddSingleton(resiliencePoliciesEventHandlerCalls);
-            _ = services
+            services.AddSingleton(resiliencePoliciesEventHandlerCalls);
+            services
                 .AddHttpClient(httpClientName)
                 .ConfigureHttpClient(client => client.BaseAddress = new Uri("https://github.com"))
                 .AddResiliencePolicies<TestResiliencePoliciesEventHandler>(options =>
@@ -341,7 +341,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             var timeout = TimeSpan.FromSeconds(resilienceOptions.Timeout.TimeoutInSecs + 1);
             testHttpMessageHandler.HandleTimeout(triggerTimeoutPath, timeout);
 
-            _ = await Should.ThrowAsync<TimeoutRejectedException>(() => httpClient.GetAsync(triggerTimeoutPath));
+            await Should.ThrowAsync<TimeoutRejectedException>(() => httpClient.GetAsync(triggerTimeoutPath));
         }
     }
 }

@@ -131,7 +131,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Timeout.Extensions
             var httpClientName = httpClientBuilder.Name;
             optionsName ??= $"{httpClientName}_timeout_{Guid.NewGuid()}";
             configureOptions ??= _ => { };
-            _ = httpClientBuilder.Services
+            httpClientBuilder.Services
                 .AddHttpClientTimeoutOptions(optionsName)
                 .ValidateDataAnnotations()
                 .Configure(configureOptions);

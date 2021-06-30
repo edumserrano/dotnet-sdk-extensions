@@ -135,7 +135,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Retry.Extensions
             var httpClientName = httpClientBuilder.Name;
             optionsName ??= $"{httpClientName}_retry_{Guid.NewGuid()}";
             configureOptions ??= _ => { };
-            _ = httpClientBuilder.Services
+            httpClientBuilder.Services
                 .AddHttpClientRetryOptions(optionsName)
                 .ValidateDataAnnotations()
                 .Configure(configureOptions);

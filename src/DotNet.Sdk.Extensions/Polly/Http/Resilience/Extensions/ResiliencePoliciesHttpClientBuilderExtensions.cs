@@ -142,7 +142,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Resilience.Extensions
             var httpClientName = httpClientBuilder.Name;
             optionsName ??= $"{httpClientName}_resilience_{Guid.NewGuid()}";
             configureOptions ??= _ => { };
-            _ = httpClientBuilder.Services
+            httpClientBuilder.Services
                 .AddSingleton<IValidateOptions<ResilienceOptions>, ResilienceOptionsValidation>()
                 .AddHttpClientResilienceOptions(optionsName)
                 .ValidateDataAnnotations()

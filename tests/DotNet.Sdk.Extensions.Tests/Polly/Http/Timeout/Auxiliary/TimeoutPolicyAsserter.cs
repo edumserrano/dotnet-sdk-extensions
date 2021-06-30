@@ -55,12 +55,12 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Auxiliary
 
         private async Task TimeoutPolicyTriggersOnTimeout()
         {
-            _ = await Should.ThrowAsync<TimeoutRejectedException>(() =>
-              {
-                  return _httpClient
-                      .TimeoutExecutor(_options, _testHttpMessageHandler)
-                      .TriggerTimeoutPolicyAsync();
-              });
+            await Should.ThrowAsync<TimeoutRejectedException>(() =>
+            {
+                return _httpClient
+                    .TimeoutExecutor(_options, _testHttpMessageHandler)
+                    .TriggerTimeoutPolicyAsync();
+            });
         }
     }
 }

@@ -82,7 +82,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
         {
             var callCount = 0;
             var calculator = Substitute.For<ICalculator>();
-            _ = calculator
+            calculator
                 .Sum(Arg.Any<int>(), Arg.Any<int>())
                 .Returns(1)
                 .AndDoes(info => ++callCount);
@@ -91,10 +91,10 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
             await webApplicationFactory
                 .WithWebHostBuilder(builder =>
                 {
-                    _ = builder.ConfigureTestServices(services =>
-                      {
-                          _ = services.AddSingleton(calculator);
-                      });
+                    builder.ConfigureTestServices(services =>
+                    {
+                        services.AddSingleton(calculator);
+                    });
                 })
                 .RunUntilAsync(() => callCount >= 3);
 
@@ -112,7 +112,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
         {
             var callCount = 0;
             var calculator = Substitute.For<ICalculator>();
-            _ = calculator
+            calculator
                 .Sum(Arg.Any<int>(), Arg.Any<int>())
                 .Returns(1)
                 .AndDoes(info => ++callCount);
@@ -120,10 +120,10 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
             using var webApplicationFactory = new HostedServicesWebApplicationFactory()
                 .WithWebHostBuilder(builder =>
                 {
-                    _ = builder.ConfigureTestServices(services =>
-                      {
-                          _ = services.AddSingleton(calculator);
-                      });
+                    builder.ConfigureTestServices(services =>
+                    {
+                        services.AddSingleton(calculator);
+                    });
                 });
 
             var runUntilTask = webApplicationFactory.RunUntilAsync(() => callCount >= 4, options => options.Timeout = TimeSpan.FromSeconds(1));
@@ -145,7 +145,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
         {
             var callCount = 0;
             var calculator = Substitute.For<ICalculator>();
-            _ = calculator
+            calculator
                 .Sum(Arg.Any<int>(), Arg.Any<int>())
                 .Returns(1)
                 .AndDoes(info => ++callCount);
@@ -153,10 +153,10 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
             using var webApplicationFactory = new HostedServicesWebApplicationFactory()
                 .WithWebHostBuilder(builder =>
                 {
-                    _ = builder.ConfigureTestServices(services =>
-                      {
-                          _ = services.AddSingleton(calculator);
-                      });
+                    builder.ConfigureTestServices(services =>
+                    {
+                        services.AddSingleton(calculator);
+                    });
                 });
 
             var runUntilTask = webApplicationFactory.RunUntilAsync(() => callCount >= 1, options =>

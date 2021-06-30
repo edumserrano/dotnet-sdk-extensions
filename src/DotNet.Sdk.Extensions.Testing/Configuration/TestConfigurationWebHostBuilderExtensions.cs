@@ -46,7 +46,7 @@ namespace DotNet.Sdk.Extensions.Testing.Configuration
                         new KeyValuePair<string, string>(key, value)
                     }
                 };
-                _ = builder.Add(memoryConfigurationSource);
+                builder.Add(memoryConfigurationSource);
             });
         }
 
@@ -133,7 +133,7 @@ namespace DotNet.Sdk.Extensions.Testing.Configuration
 
             return builder.ConfigureAppConfiguration((context, config) =>
             {
-                _ = config.AddTestAppSettings(options, appSettingsFilename, otherAppsettingsFilenames);
+                config.AddTestAppSettings(options, appSettingsFilename, otherAppsettingsFilenames);
             });
         }
 

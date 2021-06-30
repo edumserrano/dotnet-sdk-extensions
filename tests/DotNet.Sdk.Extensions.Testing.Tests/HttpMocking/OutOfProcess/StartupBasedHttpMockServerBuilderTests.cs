@@ -51,17 +51,17 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
 
             public void Configure(IApplicationBuilder app)
             {
-                _ = app.Use(async (httpContext, next) =>
-                  {
-                      if (!httpContext.Request.Path.Equals("/hello"))
-                      {
-                          await next();
-                          return;
-                      }
+                app.Use(async (httpContext, next) =>
+                {
+                    if (!httpContext.Request.Path.Equals("/hello"))
+                    {
+                        await next();
+                        return;
+                    }
 
-                      httpContext.Response.StatusCode = StatusCodes.Status201Created;
-                      await httpContext.Response.WriteAsync("hello");
-                  });
+                    httpContext.Response.StatusCode = StatusCodes.Status201Created;
+                    await httpContext.Response.WriteAsync("hello");
+                });
                 app.Run(httpContext =>
                 {
                     httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;

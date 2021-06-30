@@ -28,7 +28,7 @@ namespace DotNet.Sdk.Extensions.Tests.Options.ValidateEagerly
                 .UseDefaultLogLevel(LogLevel.None) //expect critical error log so disabling all logs
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    _ = webBuilder
+                    webBuilder
                         .UseLocalhostWithRandomPort()
                         .UseStartup<StartupMyOptions3ValidateEargerly>();
                 })
@@ -56,11 +56,11 @@ namespace DotNet.Sdk.Extensions.Tests.Options.ValidateEagerly
                                 new KeyValuePair<string, string>("SomeOption", "2")
                             }
                     };
-                    _ = builder.Add(memoryConfigurationSource);
+                    builder.Add(memoryConfigurationSource);
                 })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    _ = webBuilder
+                    webBuilder
                         .UseLocalhostWithRandomPort()
                         .UseStartup<StartupMyOptions3ValidateEargerly>();
                 })

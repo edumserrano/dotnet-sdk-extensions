@@ -23,7 +23,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly
         {
             var exception1 = Should.Throw<ArgumentNullException>(() =>
             {
-                _ = Extensions.Polly.PollyServiceCollectionExtensions.AddPolicyRegistry(
+                Extensions.Polly.PollyServiceCollectionExtensions.AddPolicyRegistry(
                     services: null!,
                     configureRegistry: (provider, pairs) => { });
             });
@@ -31,7 +31,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly
 
             var exception2 = Should.Throw<ArgumentNullException>(() =>
             {
-                _ = Extensions.Polly.PollyServiceCollectionExtensions.AddPolicyRegistry(
+                Extensions.Polly.PollyServiceCollectionExtensions.AddPolicyRegistry(
                     services: new ServiceCollection(),
                     configureRegistry: null!);
             });
@@ -46,12 +46,12 @@ namespace DotNet.Sdk.Extensions.Tests.Polly
         public void AddsRequiredPollyRegistryToContainer()
         {
             var services = new ServiceCollection();
-            _ = services.AddPolicyRegistry((provider, policyRegistry) => { });
+            services.AddPolicyRegistry((provider, policyRegistry) => { });
             using var serviceProvider = services.BuildServiceProvider();
             var registry = serviceProvider.GetService<IPolicyRegistry<string>>();
             var readOnlyRegistry = serviceProvider.GetService<IReadOnlyPolicyRegistry<string>>();
-            _ = registry.ShouldNotBeNull();
-            _ = readOnlyRegistry.ShouldNotBeNull();
+            registry.ShouldNotBeNull();
+            readOnlyRegistry.ShouldNotBeNull();
             ReferenceEquals(registry, readOnlyRegistry).ShouldBeTrue();
         }
 
@@ -65,10 +65,10 @@ namespace DotNet.Sdk.Extensions.Tests.Polly
             var policyKey = "testPolicy";
             var expectedPolicy = Policy.NoOp();
             var services = new ServiceCollection();
-            _ = services.AddPolicyRegistry((provider, policyRegistry) =>
-              {
-                  policyRegistry.Add(key: policyKey, expectedPolicy);
-              });
+            services.AddPolicyRegistry((provider, policyRegistry) =>
+            {
+                policyRegistry.Add(key: policyKey, expectedPolicy);
+            });
 
             using var serviceProvider = services.BuildServiceProvider();
             var registry = serviceProvider.GetRequiredService<IReadOnlyPolicyRegistry<string>>();

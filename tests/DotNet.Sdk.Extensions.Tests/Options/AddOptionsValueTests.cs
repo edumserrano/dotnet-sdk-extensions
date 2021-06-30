@@ -22,10 +22,10 @@ namespace DotNet.Sdk.Extensions.Tests.Options
         {
             using var configuration = new ConfigurationRoot(new List<IConfigurationProvider>());
             var serviceCollection = new ServiceCollection();
-            _ = serviceCollection.AddOptionsValue<MyOptions>(configuration);
+            serviceCollection.AddOptionsValue<MyOptions>(configuration);
             using var serviceProvider = serviceCollection.BuildServiceProvider();
             var myOptions = serviceProvider.GetRequiredService<MyOptions>();
-            _ = myOptions.ShouldNotBeNull();
+            myOptions.ShouldNotBeNull();
         }
 
         /// <summary>
@@ -38,7 +38,7 @@ namespace DotNet.Sdk.Extensions.Tests.Options
             using var configuration = new ConfigurationRoot(new List<IConfigurationProvider>());
             var servicesArgumentNullException = Should.Throw<ArgumentNullException>(() =>
             {
-                _ = OptionsBuilderExtensions.AddOptionsValue<MyOptions>(services: null!, configuration);
+                OptionsBuilderExtensions.AddOptionsValue<MyOptions>(services: null!, configuration);
             });
             servicesArgumentNullException.Message.ShouldBe("Value cannot be null. (Parameter 'services')");
         }
@@ -62,7 +62,7 @@ namespace DotNet.Sdk.Extensions.Tests.Options
             using var configuration = new ConfigurationRoot(configurationProviders);
 
             var serviceCollection = new ServiceCollection();
-            _ = serviceCollection.AddOptionsValue<MyOptions>(configuration, sectionName: "MyOptionsSection");
+            serviceCollection.AddOptionsValue<MyOptions>(configuration, sectionName: "MyOptionsSection");
             using var serviceProvider = serviceCollection.BuildServiceProvider();
             var myOptions = serviceProvider.GetRequiredService<MyOptions>();
             myOptions.SomeOption.ShouldBe("some value");
@@ -79,12 +79,12 @@ namespace DotNet.Sdk.Extensions.Tests.Options
             var serviceCollection = new ServiceCollection();
             var servicesArgumentNullException = Should.Throw<ArgumentNullException>(() =>
             {
-                _ = OptionsBuilderExtensions.AddOptionsValue<MyOptions>(services: null!, configuration, sectionName: "MyOptionsSection");
+                OptionsBuilderExtensions.AddOptionsValue<MyOptions>(services: null!, configuration, sectionName: "MyOptionsSection");
             });
             servicesArgumentNullException.Message.ShouldBe("Value cannot be null. (Parameter 'services')");
             var configurationArgumentNullException = Should.Throw<ArgumentNullException>(() =>
             {
-                _ = serviceCollection.AddOptionsValue<MyOptions>(configuration: null!, sectionName: "MyOptionsSection");
+                serviceCollection.AddOptionsValue<MyOptions>(configuration: null!, sectionName: "MyOptionsSection");
             });
             configurationArgumentNullException.Message.ShouldBe("Value cannot be null. (Parameter 'configuration')");
         }
@@ -98,13 +98,13 @@ namespace DotNet.Sdk.Extensions.Tests.Options
         {
             using var configuration = new ConfigurationRoot(new List<IConfigurationProvider>());
             var serviceCollection = new ServiceCollection();
-            _ = serviceCollection
+            serviceCollection
                 .AddOptions<MyOptions>()
                 .Bind(configuration)
                 .AddOptionsValue();
             using var serviceProvider = serviceCollection.BuildServiceProvider();
             var myOptions = serviceProvider.GetRequiredService<MyOptions>();
-            _ = myOptions.ShouldNotBeNull();
+            myOptions.ShouldNotBeNull();
         }
 
         /// <summary>
@@ -116,7 +116,7 @@ namespace DotNet.Sdk.Extensions.Tests.Options
         {
             var optionsBuilderArgumentNullException = Should.Throw<ArgumentNullException>(() =>
             {
-                _ = OptionsBuilderExtensions.AddOptionsValue<MyOptions>(optionsBuilder: null!);
+                OptionsBuilderExtensions.AddOptionsValue<MyOptions>(optionsBuilder: null!);
             });
             optionsBuilderArgumentNullException.Message.ShouldBe("Value cannot be null. (Parameter 'optionsBuilder')");
         }

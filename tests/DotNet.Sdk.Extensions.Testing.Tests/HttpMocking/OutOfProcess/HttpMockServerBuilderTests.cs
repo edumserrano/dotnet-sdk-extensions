@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers;
@@ -45,7 +45,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
                 .UseDefaultLogLevel(LogLevel.Critical)
                 .UseHttpResponseMocks()
                 .Build();
-            _ = await mock.StartAsync();
+            await mock.StartAsync();
             var exception = await Should.ThrowAsync<InvalidOperationException>(mock.StartAsync());
             exception.Message.ShouldBe("The HttpMockServer has already been started.");
         }
@@ -103,7 +103,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
         {
             var exception = Should.Throw<ArgumentNullException>(() =>
             {
-                _ = new HttpMockServerBuilder()
+                new HttpMockServerBuilder()
                     .UseHostArgs(null!);
             });
             exception.Message.ShouldBe("Value cannot be null. (Parameter 'hostArgs')");
@@ -117,7 +117,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
         {
             var exception = Should.Throw<ArgumentException>(() =>
             {
-                _ = new HttpMockServerBuilder()
+                new HttpMockServerBuilder()
                     .UseHostArgs();
             });
             exception.Message.ShouldBe("Must have a value. (Parameter 'hostArgs')");
@@ -151,7 +151,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
         {
             var exception = Should.Throw<InvalidOperationException>(() =>
             {
-                _ = new HttpMockServerBuilder()
+                new HttpMockServerBuilder()
                     .UseUrl(HttpScheme.Http, 7777)
                     .UseHostArgs("--urls", "http://*:6011;https://*:7011")
                     .UseHttpResponseMocks()
