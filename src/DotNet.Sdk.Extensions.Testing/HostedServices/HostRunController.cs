@@ -15,10 +15,7 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
 
         public async Task<RunUntilResult> RunUntilAsync(RunUntilPredicateAsync predicateAsync)
         {
-            if (predicateAsync is null)
-            {
-                throw new ArgumentNullException(nameof(predicateAsync));
-            }
+            if (predicateAsync is null) throw new ArgumentNullException(nameof(predicateAsync));
 
             var runUntilResult = await Task.Run(async () =>
             {

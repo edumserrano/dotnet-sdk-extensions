@@ -21,10 +21,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.Response
         /// <returns>The <see cref="HttpResponseMessageMockBuilder"/> for chaining.</returns>
         public HttpResponseMessageMockBuilder Where(Func<HttpRequestMessage, bool> predicate)
         {
-            if (predicate is null)
-            {
-                throw new ArgumentNullException(nameof(predicate));
-            }
+            if (predicate is null) throw new ArgumentNullException(nameof(predicate));
             // convert to 'async' predicate
             return Where((httpRequestMessage, cancellationToken) => Task.FromResult(predicate(httpRequestMessage)));
         }
@@ -51,11 +48,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.Response
         /// <returns>The <see cref="HttpResponseMessageMockBuilder"/> for chaining.</returns>
         public HttpResponseMessageMockBuilder RespondWith(HttpResponseMessage httpResponseMessage)
         {
-            if (httpResponseMessage is null)
-            {
-                throw new ArgumentNullException(nameof(httpResponseMessage));
-            }
-
+            if (httpResponseMessage is null) throw new ArgumentNullException(nameof(httpResponseMessage));
             return RespondWith(httpRequestMessage => httpResponseMessage);
         }
 
@@ -66,10 +59,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.Response
         /// <returns>The <see cref="HttpResponseMessageMockBuilder"/> for chaining.</returns>
         public HttpResponseMessageMockBuilder RespondWith(Func<HttpRequestMessage, HttpResponseMessage> handler)
         {
-            if (handler is null)
-            {
-                throw new ArgumentNullException(nameof(handler));
-            }
+            if (handler is null) throw new ArgumentNullException(nameof(handler));
             // convert to 'async' handler
             return RespondWith((httpRequestMessage, cancellationToken) => Task.FromResult(handler(httpRequestMessage)));
         }

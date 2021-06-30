@@ -19,10 +19,7 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
             this WebApplicationFactory<T> webApplicationFactory,
             RunUntilPredicateAsync predicateAsync) where T : class
         {
-            if (webApplicationFactory is null)
-            {
-                throw new ArgumentNullException(nameof(webApplicationFactory));
-            }
+            if (webApplicationFactory is null) throw new ArgumentNullException(nameof(webApplicationFactory));
 
             var configureOptionsAction = new Action<RunUntilOptions>(DefaultConfigureOptionsDelegate);
             return webApplicationFactory.RunUntilAsync(predicateAsync, configureOptionsAction);
@@ -47,15 +44,8 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
             RunUntilPredicateAsync predicateAsync,
             Action<RunUntilOptions> configureOptions) where T : class
         {
-            if (webApplicationFactory is null)
-            {
-                throw new ArgumentNullException(nameof(webApplicationFactory));
-            }
-
-            if (configureOptions is null)
-            {
-                throw new ArgumentNullException(nameof(configureOptions));
-            }
+            if (webApplicationFactory is null) throw new ArgumentNullException(nameof(webApplicationFactory));
+            if (configureOptions is null) throw new ArgumentNullException(nameof(configureOptions));
 
             var defaultOptions = new RunUntilOptions();
             configureOptions(defaultOptions);

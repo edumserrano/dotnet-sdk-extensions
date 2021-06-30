@@ -10,11 +10,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers.Res
     {
         public static IApplicationBuilder UseResponseMocks(this IApplicationBuilder builder)
         {
-            if (builder is null)
-            {
-                throw new ArgumentNullException(nameof(builder));
-            }
-
+            if (builder is null) throw new ArgumentNullException(nameof(builder));
             return builder.UseMiddleware<ResponseMocksMiddleware>();
         }
     }
