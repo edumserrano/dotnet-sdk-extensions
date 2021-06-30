@@ -18,7 +18,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers
 
         public string[] HostArgs { get; }
 
-        private string[] CreateHostArgs(List<string> hostArgs, List<HttpMockServerUrlDescriptor> urlDescriptors)
+        private static string[] CreateHostArgs(List<string> hostArgs, List<HttpMockServerUrlDescriptor> urlDescriptors)
         {
             if (hostArgs.Contains("--urls") && urlDescriptors.Any())
             {
