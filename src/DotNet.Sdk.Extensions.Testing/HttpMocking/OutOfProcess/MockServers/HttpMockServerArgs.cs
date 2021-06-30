@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -48,7 +48,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers
             foreach (var url in urlDescriptors.Select(x => x.ToString()))
             {
                 sb.Append(url);
-                sb.Append(";");
+                sb.Append(';');
             }
 
             return sb.ToString();
