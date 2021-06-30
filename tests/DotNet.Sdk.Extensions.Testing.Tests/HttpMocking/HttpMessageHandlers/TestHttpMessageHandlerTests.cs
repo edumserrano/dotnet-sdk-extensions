@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
@@ -62,7 +62,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers
             handler.MockHttpResponse(builder =>
             {
                 builder
-                    .Where(httpRequestMessage => httpRequestMessage.RequestUri!.Host.Equals("microsoft"))
+                    .Where(httpRequestMessage => httpRequestMessage.RequestUri!.Host.Equals("microsoft", StringComparison.Ordinal))
                     .RespondWith(httpMockResponseMessage);
             });
 
@@ -126,13 +126,13 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers
                 .MockHttpResponse(builder =>
                 {
                     builder
-                        .Where(httpRequestMessage => httpRequestMessage.RequestUri!.Host.Equals("test.com"))
+                        .Where(httpRequestMessage => httpRequestMessage.RequestUri!.Host.Equals("test.com", StringComparison.Ordinal))
                         .RespondWith(new HttpResponseMessage(HttpStatusCode.BadRequest));
                 })
                 .MockHttpResponse(builder =>
                 {
                     builder
-                        .Where(httpRequestMessage => httpRequestMessage.RequestUri!.Host.Equals("test.com"))
+                        .Where(httpRequestMessage => httpRequestMessage.RequestUri!.Host.Equals("test.com", StringComparison.Ordinal))
                         .RespondWith(new HttpResponseMessage(HttpStatusCode.InternalServerError));
                 });
 
@@ -154,13 +154,13 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers
                 .MockHttpResponse(builder =>
                 {
                     builder
-                        .Where(httpRequestMessage => httpRequestMessage.RequestUri!.Host.Equals("google.com"))
+                        .Where(httpRequestMessage => httpRequestMessage.RequestUri!.Host.Equals("google.com", StringComparison.Ordinal))
                         .RespondWith(new HttpResponseMessage(HttpStatusCode.BadRequest));
                 })
                 .MockHttpResponse(builder =>
                 {
                     builder
-                        .Where(httpRequestMessage => httpRequestMessage.RequestUri!.Host.Equals("microsoft.com"))
+                        .Where(httpRequestMessage => httpRequestMessage.RequestUri!.Host.Equals("microsoft.com", StringComparison.Ordinal))
                         .RespondWith(new HttpResponseMessage(HttpStatusCode.InternalServerError));
                 });
 
