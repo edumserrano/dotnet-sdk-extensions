@@ -1,13 +1,14 @@
 <Project>
     <PropertyGroup>
         <Nullable>enable</Nullable>
+        <LangVersion>latest</LangVersion>
 
-        <!-- enable deterministic builds as per https://github.com/clairernovotny/DeterministicBuilds. 
-        Recommended when using sourcelink
-        -->
+        <!-- Enable deterministic builds as per https://github.com/clairernovotny/DeterministicBuilds.Recommended when using sourcelink -->
         <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
         <TreatWarningsAsErrors Condition="'$(GITHUB_ACTIONS)' == 'true'">true</TreatWarningsAsErrors>
+        <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+        <!-- <EnableNETAnalyzers>true</EnableNETAnalyzers>
+        <AnalysisMode>AllEnabledByDefault</AnalysisMode>
+        <AnalysisLevel>latest</AnalysisLevel> -->
     </PropertyGroup>
-
-    
 </Project>
