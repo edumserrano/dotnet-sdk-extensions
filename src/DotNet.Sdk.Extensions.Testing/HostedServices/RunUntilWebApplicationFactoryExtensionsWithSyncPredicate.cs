@@ -26,7 +26,7 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
             RunUntilPredicateAsync predicateAsync = () => Task.FromResult(predicate());
             return webApplicationFactory.RunUntilAsync(predicateAsync);
         }
-        
+
         /// <summary>
         /// Executes the host until the predicate or a timeout is met.
         /// </summary>

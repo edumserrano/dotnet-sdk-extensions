@@ -121,7 +121,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Timeout.Extensions
                 configureOptions: configureOptions,
                 eventHandlerFactory: eventHandlerFactory);
         }
-        
+
         private static IHttpClientBuilder AddTimeoutPolicyCore(
             this IHttpClientBuilder httpClientBuilder,
             string? optionsName,

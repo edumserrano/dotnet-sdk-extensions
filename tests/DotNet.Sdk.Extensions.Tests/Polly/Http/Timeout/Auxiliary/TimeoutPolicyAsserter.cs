@@ -18,7 +18,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Auxiliary
             return new TimeoutPolicyAsserter(httpClient, options, testHttpMessageHandler);
         }
     }
-    
+
     internal class TimeoutPolicyAsserter
     {
         private readonly HttpClient _httpClient;
@@ -39,7 +39,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Auxiliary
         {
             await TimeoutPolicyTriggersOnTimeout();
         }
-        
+
         public void EventHandlerShouldReceiveExpectedEvents(
             int count,
             string httpClientName,

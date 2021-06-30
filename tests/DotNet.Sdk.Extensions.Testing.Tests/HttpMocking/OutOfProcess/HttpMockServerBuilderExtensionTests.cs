@@ -25,7 +25,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
             // a control test for the log level I'm only setting the log level for the source 'Microsoft.Hosting.Lifetime'
             // which is the source that outputs some logs on this test
             // LogLevel.None.ToString()
-            
+
             await using var mock = new HttpMockServerBuilder()
                 .UseHostArgs("--Logging:LogLevel:Microsoft.Hosting.Lifetime", LogLevel.None.ToString())
                 .UseHttpResponseMocks()

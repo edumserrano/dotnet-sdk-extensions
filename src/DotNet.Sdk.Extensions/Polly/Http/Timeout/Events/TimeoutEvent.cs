@@ -13,8 +13,8 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Timeout.Events
             string httpClientName,
             TimeoutOptions timeoutOptions,
             Context context,
-            TimeSpan requestTimeout, 
-            Task timedOutTask, 
+            TimeSpan requestTimeout,
+            Task timedOutTask,
             Exception exception)
         {
             HttpClientName = httpClientName;
@@ -39,7 +39,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Timeout.Events
         /// The Polly Context.
         /// </summary>
         public Context Context { get; }
-        
+
         /// <summary>
         /// The timeout applied.
         /// </summary>
@@ -52,7 +52,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Timeout.Events
         /// This will be null if the executed action responded cooperatively to cancellation before the policy timed it out.
         /// </remarks>
         public Task? TimedOutTask { get; }
-        
+
         /// <summary>
         /// The captured exception.
         /// </summary>

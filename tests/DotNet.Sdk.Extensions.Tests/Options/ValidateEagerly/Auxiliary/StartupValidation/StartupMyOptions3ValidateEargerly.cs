@@ -18,7 +18,7 @@ namespace DotNet.Sdk.Extensions.Tests.Options.ValidateEagerly.Auxiliary.StartupV
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services                                                                               
+            services
                 .AddOptions<MyOptions3>()
                 .Bind(_configuration)
                 .Validate(options =>

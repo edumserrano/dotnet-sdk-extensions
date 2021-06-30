@@ -95,8 +95,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             resilienceOptions.CircuitBreaker.FailureThreshold.ShouldBe(failureThreshold);
             resilienceOptions.CircuitBreaker.SamplingDurationInSecs.ShouldBe(samplingDurationInSecs);
             resilienceOptions.CircuitBreaker.MinimumThroughput.ShouldBe(minimumThroughput);
-        } 
-        
+        }
+
         /// <summary>
         /// Tests default values for <see cref="ResilienceOptions"/>.
         /// </summary>

@@ -45,7 +45,7 @@ namespace DotNet.Sdk.Extensions.Polly.Policies
     {
         private readonly ICircuitBreakerPolicy _circuitBreakerPolicy;
         private readonly Func<CircuitBreakerState, Context, CancellationToken, Task<T>> _fallbackValueFactory;
-        
+
         internal static CircuitBreakerCheckerAsyncPolicy<T> Create(
             ICircuitBreakerPolicy circuitBreakerPolicy,
             Func<CircuitBreakerState, Context, CancellationToken, Task<T>> fallbackValueFactory)

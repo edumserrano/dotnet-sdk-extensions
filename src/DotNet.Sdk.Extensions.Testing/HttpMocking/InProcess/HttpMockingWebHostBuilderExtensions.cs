@@ -21,7 +21,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.InProcess
         {
             if (webHostBuilder is null) throw new ArgumentNullException(nameof(webHostBuilder));
             if (configure is null) throw new ArgumentNullException(nameof(configure));
-            
+
             webHostBuilder.ConfigureTestServices(services =>
             {
                 var httpMessageHandlersReplacer = new HttpMessageHandlersReplacer(services);

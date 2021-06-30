@@ -16,7 +16,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Fallback.Auxiliary
             _httpClient = httpClient;
             _testHttpMessageHandler = testHttpMessageHandler;
         }
-        
+
         public Task<HttpResponseMessage> TriggerFromExceptionAsync(Exception exception)
         {
             var requestPath = $"/fallback/exception/{exception.GetHashCode()}";

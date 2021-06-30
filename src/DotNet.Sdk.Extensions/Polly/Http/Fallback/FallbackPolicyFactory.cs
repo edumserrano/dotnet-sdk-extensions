@@ -90,8 +90,8 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Fallback
                     });
 
             var policy = Policy.WrapAsync(httpRequestExceptionFallback,
-                timeoutFallback, 
-                brokenCircuitFallback, 
+                timeoutFallback,
+                brokenCircuitFallback,
                 abortedFallback);
             return policy;
         }

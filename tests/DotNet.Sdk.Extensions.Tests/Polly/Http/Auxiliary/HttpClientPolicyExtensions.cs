@@ -33,7 +33,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary
         {
             return new CircuitBreakerPolicyExecutor(httpClient, options, testHttpMessageHandler);
         }
-        
+
         public static FallbackPolicyExecutor FallbackExecutor(
             this HttpClient httpClient,
             TestHttpMessageHandler testHttpMessageHandler)

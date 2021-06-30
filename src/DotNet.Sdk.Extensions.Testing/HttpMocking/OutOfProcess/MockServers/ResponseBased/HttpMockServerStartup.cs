@@ -11,7 +11,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers.Res
             services
                 .AddSingleton<DefaultResponseMiddleware>()
                 .AddSingleton<ResponseMocksMiddleware>();
-            
+
         }
 
         public void Configure(IApplicationBuilder app)

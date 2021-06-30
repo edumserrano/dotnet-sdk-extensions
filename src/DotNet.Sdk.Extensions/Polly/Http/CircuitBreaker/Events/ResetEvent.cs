@@ -1,4 +1,4 @@
-﻿using Polly;
+using Polly;
 using Polly.CircuitBreaker;
 
 namespace DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker.Events
@@ -9,7 +9,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker.Events
     public class ResetEvent
     {
         internal ResetEvent(
-            string httpClientName, 
+            string httpClientName,
             CircuitBreakerOptions circuitBreakerOptions,
             Context context)
         {

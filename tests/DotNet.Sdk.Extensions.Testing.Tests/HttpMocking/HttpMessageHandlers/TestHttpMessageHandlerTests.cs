@@ -95,7 +95,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers
 
             httpResponseMessage.StatusCode.ShouldBe(HttpStatusCode.Created);
         }
-        
+
         /// <summary>
         /// Tests that the <seealso cref="TestHttpMessageHandler"/> returns the mocked HttpResponseMessage.
         /// In this test no predicate is defined which means the default "always true" predicate takes effect

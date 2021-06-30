@@ -16,11 +16,11 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Auxiliary
         }
 
         public TimeoutPolicyEventHandlerCalls Timeout { get; }
-       
+
         public RetryPolicyEventHandlerCalls Retry { get; }
-        
+
         public CircuitBreakerPolicyEventHandlerCalls CircuitBreaker { get; }
-        
+
         public FallbackPolicyEventHandlerCalls Fallback { get; }
     }
 }

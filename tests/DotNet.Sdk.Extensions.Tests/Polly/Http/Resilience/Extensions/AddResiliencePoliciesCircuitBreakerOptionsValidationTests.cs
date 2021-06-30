@@ -79,7 +79,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             });
             exception.Message.ShouldBe($"The field DurationOfBreakInSecs must be between {double.Epsilon} and {double.MaxValue}.");
         }
-        
+
         /// <summary>
         /// Tests that the ResiliencePoliciesHttpClientBuilderExtensions.AddResiliencePolicies methods
         /// validate the <see cref="ResilienceOptions.CircuitBreaker"/> with the built in data annotations.

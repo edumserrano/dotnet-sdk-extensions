@@ -18,7 +18,7 @@ namespace DotNet.Sdk.Extensions.Tests.Options.ValidateEagerly.Auxiliary.DataAnno
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services                                                                               
+            services
                 .AddOptions<MyOptions2>()
                 .Bind(_configuration)
                 .ValidateDataAnnotations()

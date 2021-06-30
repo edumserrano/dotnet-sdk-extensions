@@ -29,7 +29,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess.Auxiliary.Ti
                     return new PolicyHttpMessageHandler(timeoutPolicy);
                 });
         }
-        
+
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app
@@ -43,7 +43,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess.Auxiliary.Ti
                         var namedClient = httpClientFactory.CreateClient("named-client");
                         var response = await namedClient.GetAsync("https://named-client.com");
                         await context.Response.WriteAsync($"Named http client (named-client) returned: {response.IsSuccessStatusCode}");
-                    }); 
+                    });
                     endpoints.MapGet("/named-client-with-timeout", async context =>
                     {
                         var httpClientFactory = context.RequestServices.GetRequiredService<IHttpClientFactory>();

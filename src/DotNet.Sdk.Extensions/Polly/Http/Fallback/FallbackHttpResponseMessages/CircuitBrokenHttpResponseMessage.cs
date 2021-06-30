@@ -49,7 +49,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Fallback.FallbackHttpResponseMessages
         {
             Exception = exception;
         }
-        
+
         /// <summary>
         /// The state of the circuit breaker when the fallback response was generated.
         /// </summary>

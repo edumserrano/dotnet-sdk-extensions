@@ -52,7 +52,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Fallback.Auxiliary
             exceptionHttpResponseMessage.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
             exceptionHttpResponseMessage.Exception.ShouldBe(httpRequestException);
         }
-        
+
         private async Task FallbackPolicyHandlesTaskCancelledException()
         {
             var taskCanceledException = new TaskCanceledException();

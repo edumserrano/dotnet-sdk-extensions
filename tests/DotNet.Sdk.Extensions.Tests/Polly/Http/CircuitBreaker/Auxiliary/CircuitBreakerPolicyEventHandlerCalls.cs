@@ -6,11 +6,11 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
     public class CircuitBreakerPolicyEventHandlerCalls
     {
         public IList<BreakEvent> OnBreakAsyncCalls { get; } = new List<BreakEvent>();
-        
+
         public IList<HalfOpenEvent> OnHalfOpenAsyncCalls { get; } = new List<HalfOpenEvent>();
-        
+
         public IList<ResetEvent> OnResetAsyncCalls { get; } = new List<ResetEvent>();
-        
+
         public void AddOnBreakAsync(BreakEvent breakEvent)
         {
             OnBreakAsyncCalls.Add(breakEvent);

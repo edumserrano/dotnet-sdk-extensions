@@ -51,7 +51,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Auxiliary
         }
 
         public FallbackPolicyAsserter Fallback { get; }
-        
+
         public TimeoutPolicyAsserter Timeout { get; }
 
         public RetryPolicyAsserter Retry { get; }

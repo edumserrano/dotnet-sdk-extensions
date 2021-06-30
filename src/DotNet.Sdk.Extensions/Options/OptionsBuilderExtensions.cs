@@ -73,7 +73,7 @@ namespace DotNet.Sdk.Extensions.Options
             optionsBuilder.Services.AddOptionsValue<T>();
             return optionsBuilder;
         }
-        
+
         /// <summary>
         /// Force options validation at application startup.
         /// </summary>

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Net.Http;
 using Polly;
 using Polly.CircuitBreaker;
@@ -11,10 +11,10 @@ namespace DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker.Events
     public class BreakEvent
     {
         internal BreakEvent(
-            string httpClientName, 
+            string httpClientName,
             CircuitBreakerOptions circuitBreakerOptions,
             DelegateResult<HttpResponseMessage> lastOutcome,
-            CircuitState previousState, 
+            CircuitState previousState,
             TimeSpan durationOfBreak,
             Context context)
         {
@@ -40,7 +40,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker.Events
         /// Result from the last HttpClient execution before the circuit state changed to open/isolated.
         /// </summary>
         public DelegateResult<HttpResponseMessage> LastOutcome { get; }
-        
+
         /// <summary>
         /// The circuit's previous state.
         /// </summary>

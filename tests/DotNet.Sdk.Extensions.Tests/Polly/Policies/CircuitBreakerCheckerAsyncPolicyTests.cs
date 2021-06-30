@@ -23,7 +23,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Policies
                     fallbackValueFactory: (circuitBreakerState, context, token) => Task.FromResult(1));
             });
             exception1.Message.ShouldBe("Value cannot be null. (Parameter 'circuitBreakerPolicy')");
-            
+
             var exception2 = Should.Throw<ArgumentNullException>(() =>
             {
                 CircuitBreakerCheckerAsyncPolicy.Create<int>(

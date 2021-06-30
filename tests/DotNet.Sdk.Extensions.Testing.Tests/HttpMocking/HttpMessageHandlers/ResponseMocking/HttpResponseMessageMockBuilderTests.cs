@@ -64,7 +64,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers.Re
             var exception = Should.Throw<ArgumentNullException>(() => builder.RespondWith((HttpResponseMessageMockHandlerDelegate)null!));
             exception.Message.ShouldBe("Value cannot be null. (Parameter 'handler')");
         }
-        
+
         /// <summary>
         /// Validates that the predicate can only be set once.
         /// </summary>
@@ -76,7 +76,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers.Re
             var exception = Should.Throw<InvalidOperationException>(() => builder.Where(message => true));
             exception.Message.ShouldBe("HttpResponseMessageMockBuilder.Where condition already configured.");
         }
-        
+
         /// <summary>
         /// Validates that the <seealso cref="HttpResponseMessage"/> to be returned can only be set once.
         /// </summary>

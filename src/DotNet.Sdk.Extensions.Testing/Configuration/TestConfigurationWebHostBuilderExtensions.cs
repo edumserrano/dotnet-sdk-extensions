@@ -201,7 +201,7 @@ namespace DotNet.Sdk.Extensions.Testing.Configuration
                 {
                     var configSource = new JsonConfigurationSource
                     {
-                        Path = configPath, 
+                        Path = configPath,
                         Optional = false
                     };
                     configSource.ResolveFileProvider(); // this is needed because no file provider is explicitly set on the JsonConfigurationSource

@@ -31,12 +31,12 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers
 
             var split1 = address.Split("://");
             var schemeAsEnum = Enum.Parse<HttpScheme>(split1[0], ignoreCase: true);
-            var split2 = split1[1].Replace("[::]","localhost").Split(":");
+            var split2 = split1[1].Replace("[::]", "localhost").Split(":");
             var host = split2[0];
-            var port = split2.Length > 1 
-                ? int.Parse(split2[1]) 
-                : schemeAsEnum  == HttpScheme.Http 
-                    ? 80 
+            var port = split2.Length > 1
+                ? int.Parse(split2[1])
+                : schemeAsEnum == HttpScheme.Http
+                    ? 80
                     : 443;
             return new HttpMockServerUrl(schemeAsEnum, host, port);
         }

@@ -37,7 +37,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers
         /// </summary>
         /// <returns></returns>
         public override string ToString() => _url;
-        
+
         /// <summary>
         /// Implicitly calls ToString().
         /// </summary>

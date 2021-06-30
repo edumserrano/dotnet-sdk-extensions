@@ -13,7 +13,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices.Auxiliary
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
             builder
-                .UseContentRoot(".") 
+                .UseContentRoot(".")
                 .UseStartup<StartupHostedService>();
         }
 

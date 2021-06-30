@@ -11,7 +11,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Auxiliary
         {
             _retryPolicyEventHandlerCalls = retryPolicyEventHandlerCalls;
         }
-        
+
         public Task OnRetryAsync(RetryEvent retryEvent)
         {
             _retryPolicyEventHandlerCalls.AddOnRetryAsync(retryEvent);

@@ -201,7 +201,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
                     services.AddSingleton(calculator);
                 })
                 .Build();
-            
+
             var runUntilTask = host.RunUntilAsync(() => callCount >= 1, options =>
             {
                 options.PredicateCheckInterval = TimeSpan.FromSeconds(2);

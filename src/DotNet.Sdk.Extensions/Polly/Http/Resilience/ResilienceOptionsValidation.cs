@@ -8,7 +8,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Resilience
         public ValidateOptionsResult Validate(string name, ResilienceOptions options)
         {
             Validator.ValidateObject(options, new ValidationContext(options), validateAllProperties: true);
-            
+
             if (options.EnableRetryPolicy)
             {
                 Validator.ValidateObject(options.Retry, new ValidationContext(options.Retry), validateAllProperties: true);

@@ -36,7 +36,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers
                 .Concat(new List<string> { "--urls", urls })
                 .ToArray();
         }
-        
+
         private string BuildUrls(List<HttpMockServerUrlDescriptor> urlDescriptors)
         {
             if (urlDescriptors is null || !urlDescriptors.Any())

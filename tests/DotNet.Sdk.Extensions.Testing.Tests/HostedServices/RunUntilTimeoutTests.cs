@@ -68,7 +68,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
                 {
                     ++callCount;
                 });
-            
+
             using var webApplicationFactory = new HostedServicesWebApplicationFactory();
             var sw = Stopwatch.StartNew();
             await webApplicationFactory

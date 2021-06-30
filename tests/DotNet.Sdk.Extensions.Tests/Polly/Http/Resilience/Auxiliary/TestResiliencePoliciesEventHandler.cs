@@ -21,7 +21,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Auxiliary
             _resiliencePoliciesEventHandlerCalls.Timeout.AddOnTimeoutAsync(timeoutEvent);
             return Task.CompletedTask;
         }
-       
+
         public Task OnRetryAsync(RetryEvent retryEvent)
         {
             _resiliencePoliciesEventHandlerCalls.Retry.AddOnRetryAsync(retryEvent);

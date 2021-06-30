@@ -34,17 +34,17 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Retry.Events
         /// The retry options applied to the HttpClient that triggered this event.
         /// </summary>
         public RetryOptions RetryOptions { get; }
-        
+
         /// <summary>
         /// Result from the HttpClient execution.
         /// </summary>
         public DelegateResult<HttpResponseMessage> Outcome { get; }
-        
+
         /// <summary>
         /// The amount of time before the retry was executed.
         /// </summary>
         public TimeSpan RetryDelay { get; }
-        
+
         /// <summary>
         /// The number of the retry.
         /// </summary>

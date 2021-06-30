@@ -42,7 +42,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Auxiliary
                 responseHttpStatusCode: httpStatusCode);
             return await _httpClient.GetAsync(requestPath);
         }
-        
+
         public async Task<HttpResponseMessage> ExecuteCircuitBrokenHttpResponseMessageAsync()
         {
             var response = new CircuitBrokenHttpResponseMessage(CircuitBreakerState.Open);

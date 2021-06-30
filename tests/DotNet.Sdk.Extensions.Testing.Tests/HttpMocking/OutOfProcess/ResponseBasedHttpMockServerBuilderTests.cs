@@ -90,7 +90,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
             // because dev certificate does not exist
             // Trying to set up the dev certificate with `dotnet dev-certs https --trust` does not work on linux
             // See https://docs.microsoft.com/en-us/aspnet/core/security/enforcing-ssl?view=aspnetcore-5.0&tabs=visual-studio#ssl-linux
-            
+
             //var defaultHttpsResponse = await httpClient.GetAsync($"{httpsUrl}/default");
             //defaultHttpsResponse.StatusCode.ShouldBe(HttpStatusCode.NotFound);
             //defaultHttpsResponse.Content.Headers.ContentLength.ShouldBe(0);
@@ -188,7 +188,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
             {
                 new HttpMockServerBuilder()
                     .UseHttpResponseMocks()
-                    .MockHttpResponse((HttpResponseMock) null!);
+                    .MockHttpResponse((HttpResponseMock)null!);
             });
             exception1.Message.ShouldBe("Value cannot be null. (Parameter 'httpResponseMock')");
 
