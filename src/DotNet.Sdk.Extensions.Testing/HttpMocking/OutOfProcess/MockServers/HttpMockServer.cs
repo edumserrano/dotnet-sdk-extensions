@@ -64,8 +64,6 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers
                 default:
                     break;
             }
-
-            GC.SuppressFinalize(this);
         }
     }
 }

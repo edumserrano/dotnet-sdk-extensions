@@ -146,7 +146,6 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
         public async ValueTask DisposeAsync()
         {
             await WaitForResetAsync();
-            GC.SuppressFinalize(this);
         }
     }
 }
