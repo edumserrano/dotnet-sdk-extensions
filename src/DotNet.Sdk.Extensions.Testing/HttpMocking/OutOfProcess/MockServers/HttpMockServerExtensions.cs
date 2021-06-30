@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.Globalization;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http;
@@ -34,7 +35,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers
             var split2 = split1[1].Replace("[::]", "localhost").Split(":");
             var host = split2[0];
             var port = split2.Length > 1
-                ? int.Parse(split2[1])
+                ? int.Parse(split2[1], CultureInfo.InvariantCulture)
                 : schemeAsEnum == HttpScheme.Http
                     ? 80
                     : 443;
