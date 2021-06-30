@@ -22,7 +22,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker.Extensions
             this IHttpClientBuilder httpClientBuilder,
             string optionsName)
         {
-            Func<IServiceProvider, ICircuitBreakerPolicyEventHandler> eventHandlerFactory = _ => new DefaultCircuitBreakerPolicyEventHandler();
+            static ICircuitBreakerPolicyEventHandler eventHandlerFactory(IServiceProvider _) => new DefaultCircuitBreakerPolicyEventHandler();
             return httpClientBuilder.AddCircuitBreakerPolicyCore(
                 optionsName: optionsName,
                 configureOptions: null,
@@ -39,7 +39,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker.Extensions
             this IHttpClientBuilder httpClientBuilder,
             Action<CircuitBreakerOptions> configureOptions)
         {
-            Func<IServiceProvider, ICircuitBreakerPolicyEventHandler> eventHandlerFactory = _ => new DefaultCircuitBreakerPolicyEventHandler();
+            static ICircuitBreakerPolicyEventHandler eventHandlerFactory(IServiceProvider _) => new DefaultCircuitBreakerPolicyEventHandler();
             return httpClientBuilder.AddCircuitBreakerPolicyCore(
                 optionsName: null,
                 configureOptions: configureOptions,
@@ -59,7 +59,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker.Extensions
             where TPolicyEventHandler : class, ICircuitBreakerPolicyEventHandler
         {
             httpClientBuilder.Services.TryAddSingleton<TPolicyEventHandler>();
-            Func<IServiceProvider, ICircuitBreakerPolicyEventHandler> eventHandlerFactory = provider => provider.GetRequiredService<TPolicyEventHandler>();
+            static ICircuitBreakerPolicyEventHandler eventHandlerFactory(IServiceProvider provider) => provider.GetRequiredService<TPolicyEventHandler>();
             return httpClientBuilder.AddCircuitBreakerPolicyCore(
                 optionsName: optionsName,
                 configureOptions: null,
@@ -79,7 +79,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker.Extensions
             where TPolicyEventHandler : class, ICircuitBreakerPolicyEventHandler
         {
             httpClientBuilder.Services.TryAddSingleton<TPolicyEventHandler>();
-            Func<IServiceProvider, ICircuitBreakerPolicyEventHandler> eventHandlerFactory = provider => provider.GetRequiredService<TPolicyEventHandler>();
+            static ICircuitBreakerPolicyEventHandler eventHandlerFactory(IServiceProvider provider) => provider.GetRequiredService<TPolicyEventHandler>();
             return httpClientBuilder.AddCircuitBreakerPolicyCore(
                 optionsName: null,
                 configureOptions: configureOptions,
