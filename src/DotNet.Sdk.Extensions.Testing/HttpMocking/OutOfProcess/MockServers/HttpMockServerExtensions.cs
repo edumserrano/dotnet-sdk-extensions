@@ -12,7 +12,10 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers
     {
         public static ICollection<string> GetServerAddresses(this IHost host)
         {
-            if (host is null) throw new ArgumentNullException(nameof(host));
+            if (host is null)
+            {
+                throw new ArgumentNullException(nameof(host));
+            }
 
             var server = host.Services.GetRequiredService<IServer>();
             var addressFeature = server.Features.Get<IServerAddressesFeature>();
@@ -27,7 +30,10 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers
              * - https://[::]
              *
              */
-            if (address is null) throw new ArgumentNullException(nameof(address));
+            if (address is null)
+            {
+                throw new ArgumentNullException(nameof(address));
+            }
 
             var split1 = address.Split("://");
             var schemeAsEnum = Enum.Parse<HttpScheme>(split1[0], ignoreCase: true);

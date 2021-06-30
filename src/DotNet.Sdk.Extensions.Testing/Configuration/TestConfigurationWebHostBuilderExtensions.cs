@@ -82,7 +82,10 @@ namespace DotNet.Sdk.Extensions.Testing.Configuration
             string appSettingsFilename,
             params string[] otherAppsettingsFilenames)
         {
-            if (builder is null) throw new ArgumentNullException(nameof(builder));
+            if (builder is null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
 
             var options = new TestConfigurationOptions();
             return builder.AddTestAppSettings(options, appSettingsFilename, otherAppsettingsFilenames);
@@ -111,8 +114,15 @@ namespace DotNet.Sdk.Extensions.Testing.Configuration
             string appSettingsFilename,
             params string[] otherAppsettingsFilenames)
         {
-            if (builder is null) throw new ArgumentNullException(nameof(builder));
-            if (configureOptions is null) throw new ArgumentNullException(nameof(configureOptions));
+            if (builder is null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
+
+            if (configureOptions is null)
+            {
+                throw new ArgumentNullException(nameof(configureOptions));
+            }
 
             var options = new TestConfigurationOptions();
             configureOptions(options);
@@ -125,11 +135,30 @@ namespace DotNet.Sdk.Extensions.Testing.Configuration
             string appSettingsFilename,
             params string[] otherAppsettingsFilenames)
         {
-            if (builder is null) throw new ArgumentNullException(nameof(builder));
-            if (options is null) throw new ArgumentNullException(nameof(options));
-            if (string.IsNullOrWhiteSpace(appSettingsFilename)) throw new ArgumentException("Cannot be null or white space.", nameof(appSettingsFilename));
-            if (otherAppsettingsFilenames is null) throw new ArgumentNullException(nameof(otherAppsettingsFilenames));
-            if (otherAppsettingsFilenames.Any(string.IsNullOrWhiteSpace)) throw new ArgumentException("Cannot have an element that is null or white space.", nameof(otherAppsettingsFilenames));
+            if (builder is null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
+
+            if (options is null)
+            {
+                throw new ArgumentNullException(nameof(options));
+            }
+
+            if (string.IsNullOrWhiteSpace(appSettingsFilename))
+            {
+                throw new ArgumentException("Cannot be null or white space.", nameof(appSettingsFilename));
+            }
+
+            if (otherAppsettingsFilenames is null)
+            {
+                throw new ArgumentNullException(nameof(otherAppsettingsFilenames));
+            }
+
+            if (otherAppsettingsFilenames.Any(string.IsNullOrWhiteSpace))
+            {
+                throw new ArgumentException("Cannot have an element that is null or white space.", nameof(otherAppsettingsFilenames));
+            }
 
             return builder.ConfigureAppConfiguration((context, config) =>
             {

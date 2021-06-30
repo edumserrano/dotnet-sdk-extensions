@@ -22,7 +22,10 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers
         /// <returns>The <see cref="TestHttpMessageHandler"/> for chaining.</returns>
         public TestHttpMessageHandler MockHttpResponse(Action<HttpResponseMessageMockBuilder> configure)
         {
-            if (configure is null) throw new ArgumentNullException(nameof(configure));
+            if (configure is null)
+            {
+                throw new ArgumentNullException(nameof(configure));
+            }
 
             var httpResponseMockBuilder = new HttpResponseMessageMockBuilder();
             configure(httpResponseMockBuilder);
@@ -39,7 +42,10 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers
         /// <returns>The <see cref="TestHttpMessageHandler"/> for chaining.</returns>
         public TestHttpMessageHandler MockHttpResponse(HttpResponseMessageMock httpResponseMock)
         {
-            if (httpResponseMock is null) throw new ArgumentNullException(nameof(httpResponseMock));
+            if (httpResponseMock is null)
+            {
+                throw new ArgumentNullException(nameof(httpResponseMock));
+            }
 
             _httpResponseMocks.Add(httpResponseMock);
             return this;
