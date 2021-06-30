@@ -1,4 +1,4 @@
-﻿using System.Net;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess;
@@ -45,7 +45,9 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
         /// </summary>
         public class MyMockStartup
         {
+#pragma warning disable IDE0060 // Remove unused parameter
             public static void ConfigureServices(IServiceCollection services)
+#pragma warning restore IDE0060 // Remove unused parameter
             {
             }
 
