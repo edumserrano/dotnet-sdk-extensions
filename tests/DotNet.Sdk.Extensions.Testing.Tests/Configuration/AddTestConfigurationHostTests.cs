@@ -118,7 +118,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
             var jsonConfigurationProviders = configuration.Providers
                 .OfType<JsonConfigurationProvider>()
                 .ToList();
-            jsonConfigurationProviders.Count().ShouldBe(1);
+            jsonConfigurationProviders.Count.ShouldBe(1);
             jsonConfigurationProviders[0].Source.Path.ShouldBe("appsettings.test.json");
         }
 
@@ -138,7 +138,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
             var jsonConfigurationProviders = configuration.Providers
                 .OfType<JsonConfigurationProvider>()
                 .ToList();
-            jsonConfigurationProviders.Count().ShouldBe(3);
+            jsonConfigurationProviders.Count.ShouldBe(3);
             jsonConfigurationProviders[0].Source.Path.ShouldBe("appsettings.test.json");
             jsonConfigurationProviders[1].Source.Path.ShouldBe("appsettings.test2.json");
             jsonConfigurationProviders[2].Source.Path.ShouldBe("appsettings.test3.json");
@@ -160,7 +160,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
             var jsonConfigurationProviders = configuration.Providers
                 .OfType<JsonConfigurationProvider>()
                 .ToList();
-            jsonConfigurationProviders.Count().ShouldBe(1);
+            jsonConfigurationProviders.Count.ShouldBe(1);
             jsonConfigurationProviders[0].Source.Path.ShouldBe("appsettings.test.json");
         }
 
@@ -184,7 +184,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
             var jsonConfigurationProviders = configuration.Providers
                 .OfType<JsonConfigurationProvider>()
                 .ToList();
-            jsonConfigurationProviders.Count().ShouldBe(1);
+            jsonConfigurationProviders.Count.ShouldBe(1);
             jsonConfigurationProviders[0].Source.Path.ShouldBe("appsettings.test.json");
         }
 
