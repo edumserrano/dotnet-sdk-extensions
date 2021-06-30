@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -33,8 +33,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Retry
                         return false;
                     }
 
-                    return response.StatusCode >= HttpStatusCode.InternalServerError
-                           || response.StatusCode == HttpStatusCode.RequestTimeout;
+                    return response.StatusCode is >= HttpStatusCode.InternalServerError or HttpStatusCode.RequestTimeout;
                 })
                 .WaitAndRetryAsync(
                     sleepDurations: retryDelays,
