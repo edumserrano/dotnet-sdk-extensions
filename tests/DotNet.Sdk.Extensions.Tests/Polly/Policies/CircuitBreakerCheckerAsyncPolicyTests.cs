@@ -98,7 +98,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Policies
 
             for (var i = 0; i < exceptionsAllowedBeforeBreaking; i++)
             {
-                await circuitBreakerPolicy.ExecuteAndCaptureAsync(() => throw new Exception("test"));
+                await circuitBreakerPolicy.ExecuteAndCaptureAsync(() => throw new InvalidOperationException("test"));
             }
             await Should.ThrowAsync<BrokenCircuitException>(() =>
             {
