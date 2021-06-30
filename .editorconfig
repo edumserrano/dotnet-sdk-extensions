@@ -9,6 +9,10 @@
 # See https://github.com/RehanSaeed/EditorConfig/releases for release notes.
 # See https://github.com/RehanSaeed/EditorConfig for updates to this file.
 #
+# Be **careful** editing this because some of the rules don't support adding a severity level
+# For instance if you change to `dotnet_sort_system_directives_first = true:warning` (adding `:warning`)
+# then the rule will be silently ignored. Always test when making changes to this file
+#
 
 ##########################################
 # Common Settings
