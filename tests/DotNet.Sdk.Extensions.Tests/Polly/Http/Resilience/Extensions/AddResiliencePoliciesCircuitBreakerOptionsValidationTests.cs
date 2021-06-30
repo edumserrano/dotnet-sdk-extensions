@@ -28,7 +28,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
         {
             var httpClientName = "GitHub";
             var services = new ServiceCollection();
-            services
+            _ = services
                 .AddHttpClient(httpClientName)
                 .AddResiliencePolicies(options =>
                 {
@@ -40,7 +40,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             using var serviceProvider = services.BuildServiceProvider();
             var exception = Should.Throw<ValidationException>(() =>
             {
-                serviceProvider.InstantiateNamedHttpClient(httpClientName);
+                _ = serviceProvider.InstantiateNamedHttpClient(httpClientName);
             });
             exception.Message.ShouldBe("The CircuitBreaker field is required.");
         }
@@ -60,7 +60,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
         {
             var httpClientName = "GitHub";
             var services = new ServiceCollection();
-            services
+            _ = services
                 .AddHttpClient(httpClientName)
                 .AddResiliencePolicies(options =>
                 {
@@ -75,7 +75,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             using var serviceProvider = services.BuildServiceProvider();
             var exception = Should.Throw<ValidationException>(() =>
             {
-                serviceProvider.InstantiateNamedHttpClient(httpClientName);
+                _ = serviceProvider.InstantiateNamedHttpClient(httpClientName);
             });
             exception.Message.ShouldBe($"The field DurationOfBreakInSecs must be between {double.Epsilon} and {double.MaxValue}.");
         }
@@ -95,7 +95,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
         {
             var httpClientName = "GitHub";
             var services = new ServiceCollection();
-            services
+            _ = services
                 .AddHttpClient(httpClientName)
                 .AddResiliencePolicies(options =>
                 {
@@ -110,7 +110,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             using var serviceProvider = services.BuildServiceProvider();
             var exception = Should.Throw<ValidationException>(() =>
             {
-                serviceProvider.InstantiateNamedHttpClient(httpClientName);
+                _ = serviceProvider.InstantiateNamedHttpClient(httpClientName);
             });
             exception.Message.ShouldBe($"The field SamplingDurationInSecs must be between {double.Epsilon} and {double.MaxValue}.");
         }
@@ -132,7 +132,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
         {
             var httpClientName = "GitHub";
             var services = new ServiceCollection();
-            services
+            _ = services
                 .AddHttpClient(httpClientName)
                 .AddResiliencePolicies(options =>
                 {
@@ -147,7 +147,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             using var serviceProvider = services.BuildServiceProvider();
             var exception = Should.Throw<ValidationException>(() =>
             {
-                serviceProvider.InstantiateNamedHttpClient(httpClientName);
+                _ = serviceProvider.InstantiateNamedHttpClient(httpClientName);
             });
             exception.Message.ShouldBe($"The field FailureThreshold must be between {double.Epsilon} and {1}.");
         }
@@ -166,7 +166,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
         {
             var httpClientName = "GitHub";
             var services = new ServiceCollection();
-            services
+            _ = services
                 .AddHttpClient(httpClientName)
                 .AddResiliencePolicies(options =>
                 {
@@ -181,7 +181,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             using var serviceProvider = services.BuildServiceProvider();
             var exception = Should.Throw<ValidationException>(() =>
             {
-                serviceProvider.InstantiateNamedHttpClient(httpClientName);
+                _ = serviceProvider.InstantiateNamedHttpClient(httpClientName);
             });
             exception.Message.ShouldBe($"The field MinimumThroughput must be between {2} and {int.MaxValue}.");
         }
@@ -202,7 +202,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             var httpClientName = "GitHub";
             var optionsName = "GitHubOptions";
             var services = new ServiceCollection();
-            services
+            _ = services
                 .AddHttpClientResilienceOptions(optionsName)
                 .Configure(options =>
                 {
@@ -217,14 +217,14 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 {
                     return options.CircuitBreaker.DurationOfBreakInSecs > 3;
                 });
-            services
+            _ = services
                 .AddHttpClient(httpClientName)
                 .AddResiliencePolicies(optionsName);
 
             using var serviceProvider = services.BuildServiceProvider();
             var exception = Should.Throw<OptionsValidationException>(() =>
             {
-                serviceProvider.InstantiateNamedHttpClient(httpClientName);
+                _ = serviceProvider.InstantiateNamedHttpClient(httpClientName);
             });
             exception.Message.ShouldBe("A validation error has occurred.");
         }
@@ -244,7 +244,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             var httpClientName = "GitHub";
             var optionsName = "GitHubOptions";
             var services = new ServiceCollection();
-            services
+            _ = services
                 .AddHttpClientResilienceOptions(optionsName)
                 .Configure(options =>
                 {
@@ -259,14 +259,14 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 {
                     return options.CircuitBreaker.DurationOfBreakInSecs > 3;
                 });
-            services
+            _ = services
                 .AddHttpClient(httpClientName)
                 .AddResiliencePolicies(optionsName);
 
             using var serviceProvider = services.BuildServiceProvider();
             var exception = Should.Throw<ValidationException>(() =>
             {
-                serviceProvider.InstantiateNamedHttpClient(httpClientName);
+                _ = serviceProvider.InstantiateNamedHttpClient(httpClientName);
             });
             exception.Message.ShouldBe($"The field DurationOfBreakInSecs must be between {double.Epsilon} and {double.MaxValue}.");
         }
@@ -281,7 +281,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
         {
             var httpClientName = "GitHub";
             var services = new ServiceCollection();
-            services
+            _ = services
                 .AddHttpClient(httpClientName)
                 .AddResiliencePolicies(options =>
                 {
@@ -295,7 +295,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 });
 
             using var serviceProvider = services.BuildServiceProvider();
-            Should.NotThrow(() => serviceProvider.InstantiateNamedHttpClient(httpClientName));
+            _ = Should.NotThrow(() => serviceProvider.InstantiateNamedHttpClient(httpClientName));
         }
     }
 }

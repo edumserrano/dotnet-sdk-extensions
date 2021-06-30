@@ -29,7 +29,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
         {
             var httpClientName = "GitHub";
             var services = new ServiceCollection();
-            services
+            _ = services
                 .AddHttpClient(httpClientName)
                 .AddRetryPolicy(options =>
                 {
@@ -40,7 +40,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
             using var serviceProvider = services.BuildServiceProvider();
             var exception = Should.Throw<OptionsValidationException>(() =>
             {
-                serviceProvider.InstantiateNamedHttpClient(httpClientName);
+                _ = serviceProvider.InstantiateNamedHttpClient(httpClientName);
             });
             exception.Message.ShouldBe($"DataAnnotation validation failed for members: 'RetryCount' with the error: 'The field RetryCount must be between {0} and {int.MaxValue}.'.");
         }
@@ -56,7 +56,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
         {
             var httpClientName = "GitHub";
             var services = new ServiceCollection();
-            services
+            _ = services
                 .AddHttpClient(httpClientName)
                 .AddRetryPolicy(options =>
                 {
@@ -65,7 +65,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
                 });
 
             using var serviceProvider = services.BuildServiceProvider();
-            Should.NotThrow(() => serviceProvider.InstantiateNamedHttpClient(httpClientName));
+            _ = Should.NotThrow(() => serviceProvider.InstantiateNamedHttpClient(httpClientName));
         }
 
         /// <summary>
@@ -83,7 +83,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
         {
             var httpClientName = "GitHub";
             var services = new ServiceCollection();
-            services
+            _ = services
                 .AddHttpClient(httpClientName)
                 .AddRetryPolicy(options =>
                 {
@@ -94,7 +94,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
             using var serviceProvider = services.BuildServiceProvider();
             var exception = Should.Throw<OptionsValidationException>(() =>
             {
-                serviceProvider.InstantiateNamedHttpClient(httpClientName);
+                _ = serviceProvider.InstantiateNamedHttpClient(httpClientName);
             });
             exception.Message.ShouldBe($"DataAnnotation validation failed for members: 'MedianFirstRetryDelayInSecs' with the error: 'The field MedianFirstRetryDelayInSecs must be between {double.Epsilon} and {double.MaxValue}.'.");
         }
@@ -115,7 +115,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
             var httpClientName = "GitHub";
             var optionsName = "GitHubOptions";
             var services = new ServiceCollection();
-            services
+            _ = services
                 .AddHttpClientRetryOptions(optionsName)
                 .Configure(options =>
                 {
@@ -126,14 +126,14 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
                 {
                     return options.RetryCount > 3;
                 });
-            services
+            _ = services
                 .AddHttpClient(httpClientName)
                 .AddRetryPolicy(optionsName);
 
             using var serviceProvider = services.BuildServiceProvider();
             var exception = Should.Throw<OptionsValidationException>(() =>
             {
-                serviceProvider.InstantiateNamedHttpClient(httpClientName);
+                _ = serviceProvider.InstantiateNamedHttpClient(httpClientName);
             });
             exception.Message.ShouldBe("A validation error has occurred.");
         }
@@ -153,7 +153,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
             var httpClientName = "GitHub";
             var optionsName = "GitHubOptions";
             var services = new ServiceCollection();
-            services
+            _ = services
                 .AddHttpClientRetryOptions(optionsName)
                 .Configure(options =>
                 {
@@ -164,14 +164,14 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
                 {
                     return options.RetryCount > 3;
                 });
-            services
+            _ = services
                 .AddHttpClient(httpClientName)
                 .AddRetryPolicy(optionsName);
 
             using var serviceProvider = services.BuildServiceProvider();
             var exception = Should.Throw<OptionsValidationException>(() =>
             {
-                serviceProvider.InstantiateNamedHttpClient(httpClientName);
+                _ = serviceProvider.InstantiateNamedHttpClient(httpClientName);
             });
             exception.Message.ShouldBe($"A validation error has occurred.; DataAnnotation validation failed for members: 'RetryCount' with the error: 'The field RetryCount must be between {0} and {int.MaxValue}.'.");
         }

@@ -31,7 +31,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
         {
             var webApplicationFactoryArgumentNullException = Should.Throw<ArgumentNullException>(() =>
             {
-                RunUntilExtensions.RunUntilTimeoutAsync<StartupHostedService>(webApplicationFactory: null!, TimeSpan.FromSeconds(1));
+                _ = RunUntilExtensions.RunUntilTimeoutAsync<StartupHostedService>(webApplicationFactory: null!, TimeSpan.FromSeconds(1));
             });
             webApplicationFactoryArgumentNullException.Message.ShouldBe("Value cannot be null. (Parameter 'webApplicationFactory')");
         }
@@ -45,7 +45,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
         {
             var hostArgumentNullException = Should.Throw<ArgumentNullException>(() =>
             {
-                RunUntilExtensions.RunUntilTimeoutAsync(host: null!, TimeSpan.FromSeconds(1));
+                _ = RunUntilExtensions.RunUntilTimeoutAsync(host: null!, TimeSpan.FromSeconds(1));
             });
             hostArgumentNullException.Message.ShouldBe("Value cannot be null. (Parameter 'host')");
         }
@@ -61,7 +61,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
         {
             var callCount = 0;
             var calculator = Substitute.For<ICalculator>();
-            calculator
+            _ = calculator
                 .Sum(Arg.Any<int>(), Arg.Any<int>())
                 .Returns(1)
                 .AndDoes(info =>
@@ -74,10 +74,10 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
             await webApplicationFactory
                 .WithWebHostBuilder(builder =>
                 {
-                    builder
+                    _ = builder
                         .ConfigureTestServices(services =>
                         {
-                            services.AddSingleton(calculator);
+                            _ = services.AddSingleton(calculator);
                         });
                 })
                 .RunUntilTimeoutAsync(TimeSpan.FromSeconds(2));
@@ -98,7 +98,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
         {
             var callCount = 0;
             var calculator = Substitute.For<ICalculator>();
-            calculator
+            _ = calculator
                 .Sum(Arg.Any<int>(), Arg.Any<int>())
                 .Returns(1)
                 .AndDoes(info =>
@@ -114,15 +114,15 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
                 .UseDefaultLogLevel(LogLevel.Critical)
                 .ConfigureServices((hostContext, services) =>
                 {
-                    services.AddSingleton<ICalculator, Calculator>();
-                    services.AddHostedService<MyBackgroundService>();
+                    _ = services.AddSingleton<ICalculator, Calculator>();
+                    _ = services.AddHostedService<MyBackgroundService>();
                 });
 
             // This is for overriding services for test purposes.
             using var host = hostBuilder
                 .ConfigureServices((hostContext, services) =>
                  {
-                     services.AddSingleton(calculator);
+                     _ = services.AddSingleton(calculator);
                  })
                 .Build();
 

@@ -131,7 +131,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker.Extensions
             var httpClientName = httpClientBuilder.Name;
             optionsName ??= $"{httpClientName}_circuit_breaker_{Guid.NewGuid()}";
             configureOptions ??= _ => { };
-            httpClientBuilder.Services
+            _ = httpClientBuilder.Services
                 .AddHttpClientCircuitBreakerOptions(optionsName)
                 .ValidateDataAnnotations()
                 .Configure(configureOptions);

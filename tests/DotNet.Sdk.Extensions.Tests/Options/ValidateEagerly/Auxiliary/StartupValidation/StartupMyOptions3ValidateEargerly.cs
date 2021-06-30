@@ -18,7 +18,7 @@ namespace DotNet.Sdk.Extensions.Tests.Options.ValidateEagerly.Auxiliary.StartupV
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services
+            _ = services
                 .AddOptions<MyOptions3>()
                 .Bind(_configuration)
                 .Validate(options =>
@@ -34,15 +34,15 @@ namespace DotNet.Sdk.Extensions.Tests.Options.ValidateEagerly.Auxiliary.StartupV
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app
+            _ = app
                 .UseRouting()
                 .UseEndpoints(endpoints =>
                 {
-                    endpoints.MapGet("/", async context =>
-                    {
-                        var myOptions = context.RequestServices.GetRequiredService<MyOptions3>();
-                        await context.Response.WriteAsync($"{myOptions.SomeOption}");
-                    });
+                    _ = endpoints.MapGet("/", async context =>
+                      {
+                          var myOptions = context.RequestServices.GetRequiredService<MyOptions3>();
+                          await context.Response.WriteAsync($"{myOptions.SomeOption}");
+                      });
                 });
         }
     }

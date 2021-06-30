@@ -30,7 +30,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
             var minimumThroughput = 2;
             var samplingDurationInSecs = 60;
             var services = new ServiceCollection();
-            services
+            _ = services
                 .AddHttpClientCircuitBreakerOptions(optionsName)
                 .Configure(options =>
                 {

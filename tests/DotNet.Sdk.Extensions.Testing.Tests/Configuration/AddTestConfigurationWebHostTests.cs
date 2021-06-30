@@ -69,7 +69,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         {
             var exception = Should.Throw(() =>
             {
-                webHostBuilder.AddTestAppSettings(appSettingsFilename, otherAppSettingsFilenames);
+                _ = webHostBuilder.AddTestAppSettings(appSettingsFilename, otherAppSettingsFilenames);
             }, exceptionType);
             exception.Message.ShouldBe(exceptionMessage);
         }
@@ -101,7 +101,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         {
             var exception = Should.Throw(() =>
             {
-                webHostBuilder.AddTestAppSettings(configureOptions, appSettingsFilename, otherAppSettingsFilenames);
+                _ = webHostBuilder.AddTestAppSettings(configureOptions, appSettingsFilename, otherAppSettingsFilenames);
             }, exceptionType);
             exception.Message.ShouldBe(exceptionMessage);
         }
@@ -226,7 +226,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
                 {
                     // The default builder will add an EnvironmentVariablesConfigurationProvider.
                     // For this test I also need to have a CommandLineConfigurationProvider so the next line takes care of that.
-                    builder.AddCommandLine(Array.Empty<string>());
+                    _ = builder.AddCommandLine(Array.Empty<string>());
                 })
                 .Configure((context, applicationBuilder) =>
                 {
@@ -237,11 +237,11 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
                 .Build();
             var configuration = (ConfigurationRoot)webHost.Services.GetRequiredService<IConfiguration>();
             var configurationProviders = configuration.Providers.ToList();
-            configurationProviders[1].ShouldBeOfType<JsonConfigurationProvider>();
-            configurationProviders[2].ShouldBeOfType<JsonConfigurationProvider>();
-            configurationProviders[3].ShouldBeOfType<JsonConfigurationProvider>();
-            configurationProviders[4].ShouldBeOfType<EnvironmentVariablesConfigurationProvider>();
-            configurationProviders[5].ShouldBeOfType<CommandLineConfigurationProvider>();
+            _ = configurationProviders[1].ShouldBeOfType<JsonConfigurationProvider>();
+            _ = configurationProviders[2].ShouldBeOfType<JsonConfigurationProvider>();
+            _ = configurationProviders[3].ShouldBeOfType<JsonConfigurationProvider>();
+            _ = configurationProviders[4].ShouldBeOfType<EnvironmentVariablesConfigurationProvider>();
+            _ = configurationProviders[5].ShouldBeOfType<CommandLineConfigurationProvider>();
         }
 
         /// <summary>
@@ -258,7 +258,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
                 {
                     // The default builder will add an EnvironmentVariablesConfigurationProvider.
                     // For this test I also need to have a CommandLineConfigurationProvider so the next line takes care of that.
-                    builder.AddCommandLine(Array.Empty<string>());
+                    _ = builder.AddCommandLine(Array.Empty<string>());
                     builder.Sources
                         .OfType<JsonConfigurationSource>()
                         .ToList()
@@ -273,11 +273,11 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
                 .Build();
             var configuration = (ConfigurationRoot)webHost.Services.GetRequiredService<IConfiguration>();
             var configurationProviders = configuration.Providers.ToList();
-            configurationProviders[1].ShouldBeOfType<JsonConfigurationProvider>();
-            configurationProviders[2].ShouldBeOfType<JsonConfigurationProvider>();
-            configurationProviders[3].ShouldBeOfType<JsonConfigurationProvider>();
-            configurationProviders[4].ShouldBeOfType<EnvironmentVariablesConfigurationProvider>();
-            configurationProviders[5].ShouldBeOfType<CommandLineConfigurationProvider>();
+            _ = configurationProviders[1].ShouldBeOfType<JsonConfigurationProvider>();
+            _ = configurationProviders[2].ShouldBeOfType<JsonConfigurationProvider>();
+            _ = configurationProviders[3].ShouldBeOfType<JsonConfigurationProvider>();
+            _ = configurationProviders[4].ShouldBeOfType<EnvironmentVariablesConfigurationProvider>();
+            _ = configurationProviders[5].ShouldBeOfType<CommandLineConfigurationProvider>();
         }
 
         /// <summary>
@@ -294,7 +294,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
                 {
                     // The default builder will add an EnvironmentVariablesConfigurationProvider.
                     // For this test I also need to have a CommandLineConfigurationProvider so the next line takes care of that.
-                    builder.AddCommandLine(Array.Empty<string>());
+                    _ = builder.AddCommandLine(Array.Empty<string>());
                     builder.Sources
                         .OfType<JsonConfigurationSource>()
                         .ToList()
@@ -313,10 +313,10 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
                 .Build();
             var configuration = (ConfigurationRoot)webHost.Services.GetRequiredService<IConfiguration>();
             var configurationProviders = configuration.Providers.ToList();
-            configurationProviders[1].ShouldBeOfType<JsonConfigurationProvider>();
-            configurationProviders[2].ShouldBeOfType<JsonConfigurationProvider>();
-            configurationProviders[3].ShouldBeOfType<JsonConfigurationProvider>();
-            configurationProviders[4].ShouldBeOfType<CommandLineConfigurationProvider>();
+            _ = configurationProviders[1].ShouldBeOfType<JsonConfigurationProvider>();
+            _ = configurationProviders[2].ShouldBeOfType<JsonConfigurationProvider>();
+            _ = configurationProviders[3].ShouldBeOfType<JsonConfigurationProvider>();
+            _ = configurationProviders[4].ShouldBeOfType<CommandLineConfigurationProvider>();
         }
 
         /// <summary>
@@ -349,9 +349,9 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
                 .Build();
             var configuration = (ConfigurationRoot)webHost.Services.GetRequiredService<IConfiguration>();
             var configurationProviders = configuration.Providers.ToList();
-            configurationProviders[1].ShouldBeOfType<JsonConfigurationProvider>();
-            configurationProviders[2].ShouldBeOfType<JsonConfigurationProvider>();
-            configurationProviders[3].ShouldBeOfType<JsonConfigurationProvider>();
+            _ = configurationProviders[1].ShouldBeOfType<JsonConfigurationProvider>();
+            _ = configurationProviders[2].ShouldBeOfType<JsonConfigurationProvider>();
+            _ = configurationProviders[3].ShouldBeOfType<JsonConfigurationProvider>();
         }
     }
 }

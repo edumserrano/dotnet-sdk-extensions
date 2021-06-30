@@ -55,7 +55,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 }
             };
             var services = new ServiceCollection();
-            services
+            _ = services
                 .AddHttpClient(httpClientName)
                 .ConfigureHttpClient(client => client.BaseAddress = new Uri("https://github.com"))
                 .AddResiliencePolicies(options =>
@@ -102,7 +102,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             };
             var optionsName = "GitHubOptions";
             var services = new ServiceCollection();
-            services
+            _ = services
                 .AddHttpClientResilienceOptions(optionsName)
                 .Configure(options =>
                 {
@@ -114,7 +114,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                     options.CircuitBreaker.SamplingDurationInSecs = resilienceOptions.CircuitBreaker.SamplingDurationInSecs;
                     options.CircuitBreaker.MinimumThroughput = resilienceOptions.CircuitBreaker.MinimumThroughput;
                 });
-            services
+            _ = services
                 .AddHttpClient(httpClientName)
                 .ConfigureHttpClient(client => client.BaseAddress = new Uri("https://github.com"))
                 .AddResiliencePolicies(optionsName)
@@ -154,8 +154,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 }
             };
             var services = new ServiceCollection();
-            services.AddSingleton(resiliencePoliciesEventHandlerCalls);
-            services
+            _ = services.AddSingleton(resiliencePoliciesEventHandlerCalls);
+            _ = services
                 .AddHttpClient(httpClientName)
                 .ConfigureHttpClient(client => client.BaseAddress = new Uri("https://github.com"))
                 .AddResiliencePolicies<TestResiliencePoliciesEventHandler>(options =>
@@ -208,8 +208,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             var optionsName = "GitHubOptions";
 
             var services = new ServiceCollection();
-            services.AddSingleton(resiliencePoliciesEventHandlerCalls);
-            services
+            _ = services.AddSingleton(resiliencePoliciesEventHandlerCalls);
+            _ = services
                 .AddHttpClientResilienceOptions(optionsName)
                 .Configure(options =>
                 {
@@ -221,7 +221,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                     options.CircuitBreaker.SamplingDurationInSecs = resilienceOptions.CircuitBreaker.SamplingDurationInSecs;
                     options.CircuitBreaker.MinimumThroughput = resilienceOptions.CircuitBreaker.MinimumThroughput;
                 });
-            services
+            _ = services
                 .AddHttpClient(httpClientName)
                 .ConfigureHttpClient(client => client.BaseAddress = new Uri("https://github.com"))
                 .AddResiliencePolicies<TestResiliencePoliciesEventHandler>(optionsName)
@@ -265,7 +265,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             var optionsName = "GitHubOptions";
 
             var services = new ServiceCollection();
-            services
+            _ = services
                 .AddHttpClientResilienceOptions(optionsName)
                 .Configure(options =>
                 {
@@ -277,7 +277,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                     options.CircuitBreaker.SamplingDurationInSecs = resilienceOptions.CircuitBreaker.SamplingDurationInSecs;
                     options.CircuitBreaker.MinimumThroughput = resilienceOptions.CircuitBreaker.MinimumThroughput;
                 });
-            services
+            _ = services
                 .AddHttpClient(httpClientName)
                 .ConfigureHttpClient(client => client.BaseAddress = new Uri("https://github.com"))
                 .AddResiliencePolicies(optionsName, provider =>
@@ -322,7 +322,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 }
             };
             var services = new ServiceCollection();
-            services
+            _ = services
                 .AddHttpClient(httpClientName)
                 .ConfigureHttpClient(client => client.BaseAddress = new Uri("https://github.com"))
                 .AddResiliencePolicies(
@@ -376,7 +376,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 }
             };
             var services = new ServiceCollection();
-            services
+            _ = services
                 .AddHttpClient(httpClientName)
                 .ConfigureHttpClient(client => client.BaseAddress = new Uri("https://github.com"))
                 .AddResiliencePolicies(options =>

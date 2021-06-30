@@ -30,7 +30,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Fallback.Extensions
             var testHttpMessageHandler = new TestHttpMessageHandler();
             var httpClientName = "GitHub";
             var services = new ServiceCollection();
-            services
+            _ = services
                 .AddHttpClient(httpClientName)
                 .ConfigureHttpClient(client => client.BaseAddress = new Uri("https://github.com"))
                 .AddFallbackPolicy()
@@ -56,8 +56,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Fallback.Extensions
             var testHttpMessageHandler = new TestHttpMessageHandler();
             var httpClientName = "GitHub";
             var services = new ServiceCollection();
-            services.AddSingleton(fallbackPolicyEventHandlerCalls);
-            services
+            _ = services.AddSingleton(fallbackPolicyEventHandlerCalls);
+            _ = services
                 .AddHttpClient(httpClientName)
                 .ConfigureHttpClient(client => client.BaseAddress = new Uri("https://github.com"))
                 .AddFallbackPolicy<TestFallbackPolicyEventHandler>()
@@ -90,7 +90,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Fallback.Extensions
             var testHttpMessageHandler = new TestHttpMessageHandler();
             var httpClientName = "GitHub";
             var services = new ServiceCollection();
-            services
+            _ = services
                 .AddHttpClient(httpClientName)
                 .ConfigureHttpClient(client => client.BaseAddress = new Uri("https://github.com"))
                 .AddFallbackPolicy(provider =>
@@ -126,7 +126,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Fallback.Extensions
             AsyncPolicyWrap<HttpResponseMessage>? fallbackPolicy1 = null;
             AsyncPolicyWrap<HttpResponseMessage>? fallbackPolicy2 = null;
             var services = new ServiceCollection();
-            services
+            _ = services
                 .AddHttpClient("GitHub")
                 .AddFallbackPolicy()
                 .ConfigureHttpMessageHandlerBuilder(httpMessageHandlerBuilder =>
@@ -135,7 +135,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Fallback.Extensions
                         .GetPolicies<AsyncPolicyWrap<HttpResponseMessage>>()
                         .FirstOrDefault();
                 });
-            services
+            _ = services
                 .AddHttpClient("Microsoft")
                 .AddFallbackPolicy()
                 .ConfigureHttpMessageHandlerBuilder(httpMessageHandlerBuilder =>
@@ -146,11 +146,11 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Fallback.Extensions
                 });
 
             using var serviceProvider = services.BuildServiceProvider();
-            serviceProvider.InstantiateNamedHttpClient("GitHub");
-            serviceProvider.InstantiateNamedHttpClient("Microsoft");
+            _ = serviceProvider.InstantiateNamedHttpClient("GitHub");
+            _ = serviceProvider.InstantiateNamedHttpClient("Microsoft");
 
-            fallbackPolicy1.ShouldNotBeNull();
-            fallbackPolicy2.ShouldNotBeNull();
+            _ = fallbackPolicy1.ShouldNotBeNull();
+            _ = fallbackPolicy2.ShouldNotBeNull();
             ReferenceEquals(fallbackPolicy1, fallbackPolicy2).ShouldBeFalse();
             fallbackPolicy1.PolicyKey.ShouldNotBe(fallbackPolicy2.PolicyKey);
         }

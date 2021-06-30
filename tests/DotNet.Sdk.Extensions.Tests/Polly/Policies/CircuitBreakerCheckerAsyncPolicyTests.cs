@@ -18,7 +18,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Policies
         {
             var exception1 = Should.Throw<ArgumentNullException>(() =>
             {
-                CircuitBreakerCheckerAsyncPolicy.Create(
+                _ = CircuitBreakerCheckerAsyncPolicy.Create(
                     circuitBreakerPolicy: null!,
                     fallbackValueFactory: (circuitBreakerState, context, token) => Task.FromResult(1));
             });
@@ -26,7 +26,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Policies
 
             var exception2 = Should.Throw<ArgumentNullException>(() =>
             {
-                CircuitBreakerCheckerAsyncPolicy.Create<int>(
+                _ = CircuitBreakerCheckerAsyncPolicy.Create<int>(
                     circuitBreakerPolicy: Substitute.For<ICircuitBreakerPolicy>(),
                     fallbackValueFactory: null!);
             });
@@ -71,10 +71,10 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Policies
             // note that without the checker what should happen is that the circuit breaker
             // policy would throw an exception if the circuit is open/isolated.
             circuitBreakerPolicy.Isolate();
-            await Should.ThrowAsync<IsolatedCircuitException>(() =>
-            {
-                return circuitBreakerPolicy.ExecuteAsync(() => Task.FromResult(2));
-            });
+            _ = await Should.ThrowAsync<IsolatedCircuitException>(() =>
+              {
+                  return circuitBreakerPolicy.ExecuteAsync(() => Task.FromResult(2));
+              });
             var policyResult = await circuitBreakerCheckerPolicy.ExecuteAsync(() => Task.FromResult(2));
             policyResult.ShouldBe(1);
             circuitBreakerState.ShouldBe(CircuitBreakerState.Isolated);
@@ -98,12 +98,12 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Policies
 
             for (var i = 0; i < exceptionsAllowedBeforeBreaking; i++)
             {
-                await circuitBreakerPolicy.ExecuteAndCaptureAsync(() => throw new Exception("test"));
+                _ = await circuitBreakerPolicy.ExecuteAndCaptureAsync(() => throw new Exception("test"));
             }
-            await Should.ThrowAsync<BrokenCircuitException>(() =>
-            {
-                return circuitBreakerPolicy.ExecuteAsync(() => Task.FromResult(2));
-            });
+            _ = await Should.ThrowAsync<BrokenCircuitException>(() =>
+              {
+                  return circuitBreakerPolicy.ExecuteAsync(() => Task.FromResult(2));
+              });
             var policyResult = await circuitBreakerCheckerPolicy.ExecuteAsync(() => Task.FromResult(2));
             policyResult.ShouldBe(1);
             circuitBreakerState.ShouldBe(CircuitBreakerState.Open);

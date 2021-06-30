@@ -13,12 +13,12 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary
             HttpStatusCode responseHttpStatusCode)
         {
             var handledRequestPath = $"{requestPath}/{responseHttpStatusCode}";
-            testHttpMessageHandler.MockHttpResponse(builder =>
-            {
-                builder
-                    .Where(httpRequestMessage => httpRequestMessage.RequestUri!.ToString().Contains(handledRequestPath))
-                    .RespondWith(new HttpResponseMessage(responseHttpStatusCode));
-            });
+            _ = testHttpMessageHandler.MockHttpResponse(builder =>
+              {
+                  _ = builder
+                      .Where(httpRequestMessage => httpRequestMessage.RequestUri!.ToString().Contains(handledRequestPath))
+                      .RespondWith(new HttpResponseMessage(responseHttpStatusCode));
+              });
             return handledRequestPath;
         }
 
@@ -27,12 +27,12 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary
             string requestPath,
             Exception exception)
         {
-            testHttpMessageHandler.MockHttpResponse(builder =>
-            {
-                builder
-                    .Where(httpRequestMessage => httpRequestMessage.RequestUri!.ToString().Contains(requestPath))
-                    .RespondWith(httpRequestMessage => throw exception);
-            });
+            _ = testHttpMessageHandler.MockHttpResponse(builder =>
+              {
+                  _ = builder
+                      .Where(httpRequestMessage => httpRequestMessage.RequestUri!.ToString().Contains(requestPath))
+                      .RespondWith(httpRequestMessage => throw exception);
+              });
         }
 
         public static void HandleTimeout(
@@ -40,14 +40,14 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary
             string requestPath,
             TimeSpan timeout)
         {
-            testHttpMessageHandler.MockHttpResponse(builder =>
-            {
+            _ = testHttpMessageHandler.MockHttpResponse(builder =>
+              {
                 // this timeout is a max timeout before aborting but the polly timeout policy
                 // will timeout before this happens
-                builder
-                    .Where(httpRequestMessage => httpRequestMessage.RequestUri!.ToString().Contains(requestPath))
-                    .TimesOut(timeout);
-            });
+                _ = builder
+                      .Where(httpRequestMessage => httpRequestMessage.RequestUri!.ToString().Contains(requestPath))
+                      .TimesOut(timeout);
+              });
         }
     }
 }

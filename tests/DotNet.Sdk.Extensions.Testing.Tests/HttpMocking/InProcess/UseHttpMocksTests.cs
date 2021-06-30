@@ -58,15 +58,15 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess
             var httpClient = _webApplicationFactory
                 .WithWebHostBuilder(webHostBuilder =>
                 {
-                    webHostBuilder.UseHttpMocks(handlers =>
-                    {
-                        handlers.MockHttpResponse(httpResponseMessageBuilder =>
-                        {
-                            httpResponseMessageBuilder
-                                .ForBasicClient()
-                                .RespondWith(httpRequestMessage => new HttpResponseMessage(HttpStatusCode.OK));
-                        });
-                    });
+                    _ = webHostBuilder.UseHttpMocks(handlers =>
+                      {
+                          _ = handlers.MockHttpResponse(httpResponseMessageBuilder =>
+                          {
+                              _ = httpResponseMessageBuilder
+                                  .ForBasicClient()
+                                  .RespondWith(httpRequestMessage => new HttpResponseMessage(HttpStatusCode.OK));
+                          });
+                      });
                 })
                 .CreateClient();
 
@@ -85,15 +85,15 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess
             var httpClient = _webApplicationFactory
                 .WithWebHostBuilder(builder =>
                 {
-                    builder.UseHttpMocks(handlers =>
-                    {
-                        handlers.MockHttpResponse(httpResponseMessageBuilder =>
-                        {
-                            httpResponseMessageBuilder
-                                .ForNamedClient("my-named-client")
-                                .RespondWith(httpRequestMessage => new HttpResponseMessage(HttpStatusCode.OK));
-                        });
-                    });
+                    _ = builder.UseHttpMocks(handlers =>
+                      {
+                          _ = handlers.MockHttpResponse(httpResponseMessageBuilder =>
+                          {
+                              _ = httpResponseMessageBuilder
+                                  .ForNamedClient("my-named-client")
+                                  .RespondWith(httpRequestMessage => new HttpResponseMessage(HttpStatusCode.OK));
+                          });
+                      });
                 })
                 .CreateClient();
 
@@ -112,15 +112,15 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess
             var httpClient = _webApplicationFactory
                 .WithWebHostBuilder(builder =>
                 {
-                    builder.UseHttpMocks(handlers =>
-                    {
-                        handlers.MockHttpResponse(httpResponseMessageBuilder =>
-                        {
-                            httpResponseMessageBuilder
-                                .ForTypedClient<MyApiClient>()
-                                .RespondWith(httpRequestMessage => new HttpResponseMessage(HttpStatusCode.OK));
-                        });
-                    });
+                    _ = builder.UseHttpMocks(handlers =>
+                      {
+                          _ = handlers.MockHttpResponse(httpResponseMessageBuilder =>
+                          {
+                              _ = httpResponseMessageBuilder
+                                  .ForTypedClient<MyApiClient>()
+                                  .RespondWith(httpRequestMessage => new HttpResponseMessage(HttpStatusCode.OK));
+                          });
+                      });
                 })
                 .CreateClient();
 
@@ -143,15 +143,15 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess
             var httpClient = _webApplicationFactory
                 .WithWebHostBuilder(builder =>
                 {
-                    builder.UseHttpMocks(handlers =>
-                    {
-                        handlers.MockHttpResponse(httpResponseMessageBuilder =>
-                        {
-                            httpResponseMessageBuilder
-                                .ForTypedClient<MyApiClient>("my-typed-client")
-                                .RespondWith(httpRequestMessage => new HttpResponseMessage(HttpStatusCode.OK));
-                        });
-                    });
+                    _ = builder.UseHttpMocks(handlers =>
+                      {
+                          _ = handlers.MockHttpResponse(httpResponseMessageBuilder =>
+                          {
+                              _ = httpResponseMessageBuilder
+                                  .ForTypedClient<MyApiClient>("my-typed-client")
+                                  .RespondWith(httpRequestMessage => new HttpResponseMessage(HttpStatusCode.OK));
+                          });
+                      });
                 })
                 .CreateClient();
 
@@ -176,15 +176,15 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess
             var httpClient = _webApplicationFactory
                 .WithWebHostBuilder(builder =>
                 {
-                    builder
+                    _ = builder
                         .UseHttpMocks(handlers =>
                         {
-                            handlers.MockHttpResponse(httpResponseMessageBuilder =>
-                            {
-                                httpResponseMessageBuilder
-                                    .ForTypedClient<MyApiClient>("my-typed-client-2")
-                                    .RespondWith(httpRequestMessage => new HttpResponseMessage(HttpStatusCode.OK));
-                            });
+                            _ = handlers.MockHttpResponse(httpResponseMessageBuilder =>
+                              {
+                                  _ = httpResponseMessageBuilder
+                                      .ForTypedClient<MyApiClient>("my-typed-client-2")
+                                      .RespondWith(httpRequestMessage => new HttpResponseMessage(HttpStatusCode.OK));
+                              });
                         });
                 })
                 .CreateClient();
@@ -202,22 +202,22 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess
         public async Task MockHttpResponseNonInlineMocking()
         {
             var httpResponseMock1 = new HttpResponseMessageMockDescriptorBuilder();
-            httpResponseMock1
+            _ = httpResponseMock1
                     .ForBasicClient()
                     .RespondWith(httpRequestMessage => new HttpResponseMessage(HttpStatusCode.OK));
             var httpResponseMock2 = new HttpResponseMessageMockDescriptorBuilder();
-            httpResponseMock2
+            _ = httpResponseMock2
                 .ForNamedClient("my-named-client")
                 .RespondWith(httpRequestMessage => new HttpResponseMessage(HttpStatusCode.OK));
 
             var httpClient = _webApplicationFactory
                 .WithWebHostBuilder(webHostBuilder =>
                 {
-                    webHostBuilder.UseHttpMocks(handlers =>
-                    {
-                        handlers.MockHttpResponse(httpResponseMock1);
-                        handlers.MockHttpResponse(httpResponseMock2);
-                    });
+                    _ = webHostBuilder.UseHttpMocks(handlers =>
+                      {
+                          _ = handlers.MockHttpResponse(httpResponseMock1);
+                          _ = handlers.MockHttpResponse(httpResponseMock2);
+                      });
                 })
                 .CreateClient();
 
@@ -238,18 +238,18 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess
         public async Task UseHttpMocksNonInlineMocking()
         {
             var httpResponseMock1 = new HttpResponseMessageMockDescriptorBuilder();
-            httpResponseMock1
+            _ = httpResponseMock1
                 .ForBasicClient()
                 .RespondWith(httpRequestMessage => new HttpResponseMessage(HttpStatusCode.OK));
             var httpResponseMock2 = new HttpResponseMessageMockDescriptorBuilder();
-            httpResponseMock2
+            _ = httpResponseMock2
                 .ForNamedClient("my-named-client")
                 .RespondWith(httpRequestMessage => new HttpResponseMessage(HttpStatusCode.OK));
 
             var httpClient = _webApplicationFactory
                 .WithWebHostBuilder(webHostBuilder =>
                 {
-                    webHostBuilder.UseHttpMocks(httpResponseMock1, httpResponseMock2);
+                    _ = webHostBuilder.UseHttpMocks(httpResponseMock1, httpResponseMock2);
                 })
                 .CreateClient();
 
@@ -282,23 +282,23 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess
                     // Add a test setting to have something to retrieve from the service provider below.
                     // This could be anything present on the service provider that you require to help
                     // create a mock for the HttpResponseMessage.
-                    webHostBuilder.UseSetting("SomeOption", "my-option-value");
-                    webHostBuilder.UseHttpMocks(handlers =>
-                    {
-                        handlers.MockHttpResponse((serviceProvider, httpResponseMessageBuilder) =>
-                        {
-                            var configuration = serviceProvider.GetRequiredService<IConfiguration>();
-                            var valueFromConfiguration = configuration.GetValue<string>("SomeOption");
-                            httpResponseMessageBuilder
-                                .ForBasicClient()
-                                .RespondWith(httpRequestMessage =>
-                                {
-                                    return valueFromConfiguration.Equals("my-option-value", StringComparison.OrdinalIgnoreCase)
-                                        ? new HttpResponseMessage(HttpStatusCode.OK)
-                                        : new HttpResponseMessage(HttpStatusCode.InternalServerError);
-                                });
-                        });
-                    });
+                    _ = webHostBuilder.UseSetting("SomeOption", "my-option-value");
+                    _ = webHostBuilder.UseHttpMocks(handlers =>
+                      {
+                          _ = handlers.MockHttpResponse((serviceProvider, httpResponseMessageBuilder) =>
+                          {
+                              var configuration = serviceProvider.GetRequiredService<IConfiguration>();
+                              var valueFromConfiguration = configuration.GetValue<string>("SomeOption");
+                              _ = httpResponseMessageBuilder
+                                  .ForBasicClient()
+                                  .RespondWith(httpRequestMessage =>
+                                  {
+                                      return valueFromConfiguration.Equals("my-option-value", StringComparison.OrdinalIgnoreCase)
+                                          ? new HttpResponseMessage(HttpStatusCode.OK)
+                                          : new HttpResponseMessage(HttpStatusCode.InternalServerError);
+                                  });
+                          });
+                      });
                 })
                 .CreateClient();
 

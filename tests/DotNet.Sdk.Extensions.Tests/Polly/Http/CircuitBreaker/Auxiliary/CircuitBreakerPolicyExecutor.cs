@@ -98,12 +98,12 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
         private string HandleResetRequest()
         {
             var handledRequestPath = "/circuit-breaker/reset";
-            _testHttpMessageHandler.MockHttpResponse(builder =>
-            {
-                builder
-                    .Where(httpRequestMessage => httpRequestMessage.RequestUri!.ToString().Contains(handledRequestPath))
-                    .RespondWith(new HttpResponseMessage(HttpStatusCode.OK));
-            });
+            _ = _testHttpMessageHandler.MockHttpResponse(builder =>
+              {
+                  _ = builder
+                      .Where(httpRequestMessage => httpRequestMessage.RequestUri!.ToString().Contains(handledRequestPath))
+                      .RespondWith(new HttpResponseMessage(HttpStatusCode.OK));
+              });
             return handledRequestPath;
         }
 
@@ -133,7 +133,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
             {
                 try
                 {
-                    await _httpClient.GetAsync(requestPath);
+                    _ = await _httpClient.GetAsync(requestPath);
                 }
                 catch (TException)
                 {

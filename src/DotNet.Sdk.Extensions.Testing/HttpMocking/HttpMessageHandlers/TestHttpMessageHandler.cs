@@ -27,7 +27,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers
             var httpResponseMockBuilder = new HttpResponseMessageMockBuilder();
             configure(httpResponseMockBuilder);
             var httpResponseMock = httpResponseMockBuilder.Build();
-            MockHttpResponse(httpResponseMock);
+            _ = MockHttpResponse(httpResponseMock);
             return this;
         }
 

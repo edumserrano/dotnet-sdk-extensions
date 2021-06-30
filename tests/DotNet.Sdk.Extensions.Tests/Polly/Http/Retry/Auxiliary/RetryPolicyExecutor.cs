@@ -47,12 +47,12 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Auxiliary
         {
             var response = new CircuitBrokenHttpResponseMessage(CircuitBreakerState.Open);
             var requestPath = $"/retry/circuit-broken-response/{response.GetHashCode()}";
-            _testHttpMessageHandler.MockHttpResponse(builder =>
-            {
-                builder
-                    .Where(httpRequestMessage => httpRequestMessage.RequestUri!.ToString().Contains(requestPath))
-                    .RespondWith(response);
-            });
+            _ = _testHttpMessageHandler.MockHttpResponse(builder =>
+              {
+                  _ = builder
+                      .Where(httpRequestMessage => httpRequestMessage.RequestUri!.ToString().Contains(requestPath))
+                      .RespondWith(response);
+              });
             return await _httpClient.GetAsync(requestPath);
         }
     }

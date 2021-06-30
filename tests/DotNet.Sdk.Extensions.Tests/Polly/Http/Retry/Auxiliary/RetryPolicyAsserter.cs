@@ -64,7 +64,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Auxiliary
             var retryExecutor = _httpClient.RetryExecutor(_testHttpMessageHandler);
             foreach (var transientHttpStatusCode in HttpStatusCodesExtensions.GetTransientHttpStatusCodes())
             {
-                await retryExecutor.TriggerFromTransientHttpStatusCodeAsync(transientHttpStatusCode);
+                _ = await retryExecutor.TriggerFromTransientHttpStatusCodeAsync(transientHttpStatusCode);
                 numberOfCallsDelegatingHandler.NumberOfHttpRequests.ShouldBe(_options.RetryCount + 1, $"{(int)transientHttpStatusCode}");
                 numberOfCallsDelegatingHandler.Reset();
             }
@@ -73,7 +73,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Auxiliary
         private async Task RetryPolicyDoesNotHandleCircuitBrokenHttpResponseMessage(NumberOfCallsDelegatingHandler numberOfCallsDelegatingHandler)
         {
             var retryExecutor = _httpClient.RetryExecutor(_testHttpMessageHandler);
-            await retryExecutor.ExecuteCircuitBrokenHttpResponseMessageAsync();
+            _ = await retryExecutor.ExecuteCircuitBrokenHttpResponseMessageAsync();
             numberOfCallsDelegatingHandler.NumberOfHttpRequests.ShouldBe(1); // no retries when a CircuitBrokenHttpResponseMessage is returned
             numberOfCallsDelegatingHandler.Reset();
         }
@@ -87,12 +87,12 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Auxiliary
 
         private async Task RetryPolicyHandlesException(Exception exception, NumberOfCallsDelegatingHandler numberOfCallsDelegatingHandler)
         {
-            await Should.ThrowAsync<Exception>(() =>
-            {
-                return _httpClient
-                    .RetryExecutor(_testHttpMessageHandler)
-                    .TriggerFromExceptionAsync(exception);
-            });
+            _ = await Should.ThrowAsync<Exception>(() =>
+              {
+                  return _httpClient
+                      .RetryExecutor(_testHttpMessageHandler)
+                      .TriggerFromExceptionAsync(exception);
+              });
             numberOfCallsDelegatingHandler.NumberOfHttpRequests.ShouldBe(_options.RetryCount + 1);
             numberOfCallsDelegatingHandler.Reset();
         }

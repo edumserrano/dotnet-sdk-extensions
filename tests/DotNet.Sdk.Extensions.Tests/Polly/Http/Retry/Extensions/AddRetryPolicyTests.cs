@@ -37,7 +37,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
                 MedianFirstRetryDelayInSecs = 0.01
             };
             var services = new ServiceCollection();
-            services
+            _ = services
                 .AddHttpClient(httpClientName)
                 .ConfigureHttpClient(client => client.BaseAddress = new Uri("https://github.com"))
                 .AddRetryPolicy(options =>
@@ -49,7 +49,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
                 .ConfigurePrimaryHttpMessageHandler(() => testHttpMessageHandler);
 
             await using var serviceProvider = services.BuildServiceProvider();
-            serviceProvider.InstantiateNamedHttpClient(httpClientName);
+            _ = serviceProvider.InstantiateNamedHttpClient(httpClientName);
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
             await httpClient
                 .RetryPolicyAsserter(retryOptions, testHttpMessageHandler)
@@ -73,14 +73,14 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
             };
             var optionsName = "GitHubOptions";
             var services = new ServiceCollection();
-            services
+            _ = services
                 .AddHttpClientRetryOptions(optionsName)
                 .Configure(options =>
                 {
                     options.RetryCount = retryOptions.RetryCount;
                     options.MedianFirstRetryDelayInSecs = retryOptions.MedianFirstRetryDelayInSecs;
                 });
-            services
+            _ = services
                 .AddHttpClient(httpClientName)
                 .ConfigureHttpClient(client => client.BaseAddress = new Uri("https://github.com"))
                 .AddRetryPolicy(optionsName)
@@ -113,8 +113,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
                 MedianFirstRetryDelayInSecs = 0.01
             };
             var services = new ServiceCollection();
-            services.AddSingleton(retryPolicyEventHandlerCalls);
-            services
+            _ = services.AddSingleton(retryPolicyEventHandlerCalls);
+            _ = services
                 .AddHttpClient(httpClientName)
                 .ConfigureHttpClient(client => client.BaseAddress = new Uri("https://github.com"))
                 .AddRetryPolicy<TestRetryPolicyEventHandler>(options =>
@@ -155,15 +155,15 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
             };
             var optionsName = "GitHubOptions";
             var services = new ServiceCollection();
-            services.AddSingleton(retryPolicyEventHandlerCalls);
-            services
+            _ = services.AddSingleton(retryPolicyEventHandlerCalls);
+            _ = services
                 .AddHttpClientRetryOptions(optionsName)
                 .Configure(options =>
                 {
                     options.RetryCount = retryOptions.RetryCount;
                     options.MedianFirstRetryDelayInSecs = retryOptions.MedianFirstRetryDelayInSecs;
                 });
-            services
+            _ = services
                 .AddHttpClient(httpClientName)
                 .ConfigureHttpClient(client => client.BaseAddress = new Uri("https://github.com"))
                 .AddRetryPolicy<TestRetryPolicyEventHandler>(optionsName)
@@ -200,14 +200,14 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
             };
             var optionsName = "GitHubOptions";
             var services = new ServiceCollection();
-            services
+            _ = services
                 .AddHttpClientRetryOptions(optionsName)
                 .Configure(options =>
                 {
                     options.RetryCount = retryOptions.RetryCount;
                     options.MedianFirstRetryDelayInSecs = retryOptions.MedianFirstRetryDelayInSecs;
                 });
-            services
+            _ = services
                 .AddHttpClient(httpClientName)
                 .ConfigureHttpClient(client => client.BaseAddress = new Uri("https://github.com"))
                 .AddRetryPolicy(optionsName, provider =>
@@ -246,7 +246,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
                 MedianFirstRetryDelayInSecs = 0.01
             };
             var services = new ServiceCollection();
-            services
+            _ = services
                 .AddHttpClient(httpClientName)
                 .ConfigureHttpClient(client => client.BaseAddress = new Uri("https://github.com"))
                 .AddRetryPolicy(
@@ -285,7 +285,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
             AsyncRetryPolicy<HttpResponseMessage>? retryPolicy1 = null;
             AsyncRetryPolicy<HttpResponseMessage>? retryPolicy2 = null;
             var services = new ServiceCollection();
-            services
+            _ = services
                 .AddHttpClient("GitHub")
                 .AddRetryPolicy(options =>
                 {
@@ -298,7 +298,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
                         .GetPolicies<AsyncRetryPolicy<HttpResponseMessage>>()
                         .FirstOrDefault();
                 });
-            services
+            _ = services
                 .AddHttpClient("Microsoft")
                 .AddRetryPolicy(options =>
                 {
@@ -313,11 +313,11 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
                 });
 
             using var serviceProvider = services.BuildServiceProvider();
-            serviceProvider.InstantiateNamedHttpClient("GitHub");
-            serviceProvider.InstantiateNamedHttpClient("Microsoft");
+            _ = serviceProvider.InstantiateNamedHttpClient("GitHub");
+            _ = serviceProvider.InstantiateNamedHttpClient("Microsoft");
 
-            retryPolicy1.ShouldNotBeNull();
-            retryPolicy2.ShouldNotBeNull();
+            _ = retryPolicy1.ShouldNotBeNull();
+            _ = retryPolicy2.ShouldNotBeNull();
             ReferenceEquals(retryPolicy1, retryPolicy2).ShouldBeFalse();
             retryPolicy1.PolicyKey.ShouldNotBe(retryPolicy2.PolicyKey);
         }

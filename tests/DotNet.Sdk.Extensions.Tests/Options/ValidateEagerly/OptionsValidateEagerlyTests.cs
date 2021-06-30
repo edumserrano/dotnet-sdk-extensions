@@ -16,7 +16,7 @@ namespace DotNet.Sdk.Extensions.Tests.Options.ValidateEagerly
         {
             var optionsBuilderArgumentNullException = Should.Throw<ArgumentNullException>(() =>
             {
-                OptionsBuilderExtensions.ValidateEagerly<SomeOptions>(optionsBuilder: null!);
+                _ = OptionsBuilderExtensions.ValidateEagerly<SomeOptions>(optionsBuilder: null!);
             });
             optionsBuilderArgumentNullException.Message.ShouldBe("Value cannot be null. (Parameter 'optionsBuilder')");
         }

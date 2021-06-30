@@ -33,7 +33,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             var samplingDurationInSecs = 60;
             var minimumThroughput = 5;
             var services = new ServiceCollection();
-            services
+            _ = services
                 .AddHttpClientResilienceOptions(optionsName)
                 .Configure(options =>
                 {
@@ -74,7 +74,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             var samplingDurationInSecs = 60;
             var minimumThroughput = 5;
             var services = new ServiceCollection();
-            services
+            _ = services
                 .AddHttpClientResilienceOptions(optionsName)
                 .Configure(options =>
                 {
@@ -108,9 +108,9 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             options.EnableCircuitBreakerPolicy.ShouldBeTrue();
             options.EnableRetryPolicy.ShouldBeTrue();
             options.EnableTimeoutPolicy.ShouldBeTrue();
-            options.CircuitBreaker.ShouldNotBeNull();
-            options.Retry.ShouldNotBeNull();
-            options.Timeout.ShouldNotBeNull();
+            _ = options.CircuitBreaker.ShouldNotBeNull();
+            _ = options.Retry.ShouldNotBeNull();
+            _ = options.Timeout.ShouldNotBeNull();
         }
     }
 }

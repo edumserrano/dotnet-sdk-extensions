@@ -8,7 +8,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers.Res
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            services
+            _ = services
                 .AddSingleton<DefaultResponseMiddleware>()
                 .AddSingleton<ResponseMocksMiddleware>();
 
@@ -16,7 +16,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers.Res
 
         public void Configure(IApplicationBuilder app)
         {
-            app
+            _ = app
                 .UseResponseMocks()
                 .RunDefaultResponse();
         }

@@ -28,15 +28,15 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess
             var httpClient = _webApplicationFactory
                 .WithWebHostBuilder(webHostBuilder =>
                 {
-                    webHostBuilder.UseHttpMocks(handlers =>
-                    {
-                        handlers.MockHttpResponse(httpResponseMessageBuilder =>
-                        {
-                            httpResponseMessageBuilder
-                                .ForNamedClient("named-client")
-                                .TimesOut(TimeSpan.FromMilliseconds(50));
-                        });
-                    });
+                    _ = webHostBuilder.UseHttpMocks(handlers =>
+                      {
+                          _ = handlers.MockHttpResponse(httpResponseMessageBuilder =>
+                          {
+                              _ = httpResponseMessageBuilder
+                                  .ForNamedClient("named-client")
+                                  .TimesOut(TimeSpan.FromMilliseconds(50));
+                          });
+                      });
                 })
                 .CreateClient();
 
@@ -46,16 +46,16 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess
             TaskCanceledException? expectedException = null;
             try
             {
-                await httpClient.GetAsync("/named-client");
+                _ = await httpClient.GetAsync("/named-client");
             }
             catch (TaskCanceledException exception)
             {
                 expectedException = exception;
             }
 
-            expectedException.ShouldNotBeNull("Expected TaskCanceledException but didn't get any.");
-            expectedException.ShouldBeOfType<TaskCanceledException>();
-            expectedException.InnerException.ShouldBeOfType<TimeoutException>();
+            _ = expectedException.ShouldNotBeNull("Expected TaskCanceledException but didn't get any.");
+            _ = expectedException.ShouldBeOfType<TaskCanceledException>();
+            _ = expectedException.InnerException.ShouldBeOfType<TimeoutException>();
             expectedException.Message.ShouldBe("The request was canceled due to the configured HttpClient.Timeout of 0.05 seconds elapsing.");
             expectedException.InnerException.Message.ShouldBe("A task was canceled.");
         }
@@ -74,15 +74,15 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess
             var httpClient = _webApplicationFactory
                 .WithWebHostBuilder(webHostBuilder =>
                 {
-                    webHostBuilder.UseHttpMocks(handlers =>
-                    {
-                        handlers.MockHttpResponse(httpResponseMessageBuilder =>
-                        {
-                            httpResponseMessageBuilder
-                                .ForNamedClient("named-client-with-timeout")
-                                .TimesOut(TimeSpan.FromSeconds(1));
-                        });
-                    });
+                    _ = webHostBuilder.UseHttpMocks(handlers =>
+                      {
+                          _ = handlers.MockHttpResponse(httpResponseMessageBuilder =>
+                          {
+                              _ = httpResponseMessageBuilder
+                                  .ForNamedClient("named-client-with-timeout")
+                                  .TimesOut(TimeSpan.FromSeconds(1));
+                          });
+                      });
                 })
                 .CreateClient();
 
@@ -92,16 +92,16 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess
             TaskCanceledException? expectedException = null;
             try
             {
-                await httpClient.GetAsync("/named-client-with-timeout");
+                _ = await httpClient.GetAsync("/named-client-with-timeout");
             }
             catch (TaskCanceledException exception)
             {
                 expectedException = exception;
             }
 
-            expectedException.ShouldNotBeNull("Expected TaskCanceledException but didn't get any.");
-            expectedException.ShouldBeOfType<TaskCanceledException>();
-            expectedException.InnerException.ShouldBeOfType<TimeoutException>();
+            _ = expectedException.ShouldNotBeNull("Expected TaskCanceledException but didn't get any.");
+            _ = expectedException.ShouldBeOfType<TaskCanceledException>();
+            _ = expectedException.InnerException.ShouldBeOfType<TimeoutException>();
             expectedException.Message.ShouldBe("The request was canceled due to the configured HttpClient.Timeout of 0.2 seconds elapsing.");
             expectedException.InnerException.Message.ShouldBe("A task was canceled.");
         }
@@ -120,15 +120,15 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess
             var httpClient = _webApplicationFactory
                 .WithWebHostBuilder(webHostBuilder =>
                 {
-                    webHostBuilder.UseHttpMocks(handlers =>
-                    {
-                        handlers.MockHttpResponse(httpResponseMessageBuilder =>
-                        {
-                            httpResponseMessageBuilder
-                                .ForNamedClient("named-client-with-timeout")
-                                .TimesOut(TimeSpan.FromMilliseconds(1));
-                        });
-                    });
+                    _ = webHostBuilder.UseHttpMocks(handlers =>
+                      {
+                          _ = handlers.MockHttpResponse(httpResponseMessageBuilder =>
+                          {
+                              _ = httpResponseMessageBuilder
+                                  .ForNamedClient("named-client-with-timeout")
+                                  .TimesOut(TimeSpan.FromMilliseconds(1));
+                          });
+                      });
                 })
                 .CreateClient();
 
@@ -138,16 +138,16 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess
             TaskCanceledException? expectedException = null;
             try
             {
-                await httpClient.GetAsync("/named-client-with-timeout");
+                _ = await httpClient.GetAsync("/named-client-with-timeout");
             }
             catch (TaskCanceledException exception)
             {
                 expectedException = exception;
             }
 
-            expectedException.ShouldNotBeNull("Expected TaskCanceledException but didn't get any.");
-            expectedException.ShouldBeOfType<TaskCanceledException>();
-            expectedException.InnerException.ShouldBeOfType<TimeoutException>();
+            _ = expectedException.ShouldNotBeNull("Expected TaskCanceledException but didn't get any.");
+            _ = expectedException.ShouldBeOfType<TaskCanceledException>();
+            _ = expectedException.InnerException.ShouldBeOfType<TimeoutException>();
             expectedException.Message.ShouldBe("The request was canceled due to the configured HttpClient.Timeout of 0.001 seconds elapsing.");
             expectedException.InnerException.Message.ShouldBe("A task was canceled.");
         }
@@ -169,15 +169,15 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess
             var httpClient = _webApplicationFactory
                 .WithWebHostBuilder(webHostBuilder =>
                 {
-                    webHostBuilder.UseHttpMocks(handlers =>
-                    {
-                        handlers.MockHttpResponse(httpResponseMessageBuilder =>
-                        {
-                            httpResponseMessageBuilder
-                                .ForNamedClient("polly-named-client")
-                                .TimesOut(TimeSpan.FromSeconds(1));
-                        });
-                    });
+                    _ = webHostBuilder.UseHttpMocks(handlers =>
+                      {
+                          _ = handlers.MockHttpResponse(httpResponseMessageBuilder =>
+                          {
+                              _ = httpResponseMessageBuilder
+                                  .ForNamedClient("polly-named-client")
+                                  .TimesOut(TimeSpan.FromSeconds(1));
+                          });
+                      });
                 })
                 .CreateClient();
 
@@ -201,15 +201,15 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess
             var httpClient = _webApplicationFactory
                 .WithWebHostBuilder(webHostBuilder =>
                 {
-                    webHostBuilder.UseHttpMocks(handlers =>
-                    {
-                        handlers.MockHttpResponse(httpResponseMessageBuilder =>
-                        {
-                            httpResponseMessageBuilder
-                                .ForNamedClient("polly-named-client")
-                                .TimesOut(TimeSpan.FromMilliseconds(1));
-                        });
-                    });
+                    _ = webHostBuilder.UseHttpMocks(handlers =>
+                      {
+                          _ = handlers.MockHttpResponse(httpResponseMessageBuilder =>
+                          {
+                              _ = httpResponseMessageBuilder
+                                  .ForNamedClient("polly-named-client")
+                                  .TimesOut(TimeSpan.FromMilliseconds(1));
+                          });
+                      });
                 })
                 .CreateClient();
 
@@ -219,16 +219,16 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess
             TaskCanceledException? expectedException = null;
             try
             {
-                await httpClient.GetAsync("/polly-named-client");
+                _ = await httpClient.GetAsync("/polly-named-client");
             }
             catch (TaskCanceledException exception)
             {
                 expectedException = exception;
             }
 
-            expectedException.ShouldNotBeNull("Expected TaskCanceledException but didn't get any.");
-            expectedException.ShouldBeOfType<TaskCanceledException>();
-            expectedException.InnerException.ShouldBeOfType<TimeoutException>();
+            _ = expectedException.ShouldNotBeNull("Expected TaskCanceledException but didn't get any.");
+            _ = expectedException.ShouldBeOfType<TaskCanceledException>();
+            _ = expectedException.InnerException.ShouldBeOfType<TimeoutException>();
             expectedException.Message.ShouldBe("The request was canceled due to the configured HttpClient.Timeout of 0.001 seconds elapsing.");
             expectedException.InnerException.Message.ShouldBe("A task was canceled.");
         }

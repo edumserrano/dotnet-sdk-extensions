@@ -52,7 +52,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers
         /// <inheritdoc />
         public async ValueTask DisposeAsync()
         {
-            Host?.StopAsync();
+            _ = (Host?.StopAsync());
             switch (Host)
             {
                 case IAsyncDisposable asyncDisposable:

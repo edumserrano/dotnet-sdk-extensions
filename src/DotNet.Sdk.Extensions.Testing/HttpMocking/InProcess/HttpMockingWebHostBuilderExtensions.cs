@@ -22,12 +22,12 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.InProcess
             if (webHostBuilder is null) throw new ArgumentNullException(nameof(webHostBuilder));
             if (configure is null) throw new ArgumentNullException(nameof(configure));
 
-            webHostBuilder.ConfigureTestServices(services =>
-            {
-                var httpMessageHandlersReplacer = new HttpMessageHandlersReplacer(services);
-                configure(httpMessageHandlersReplacer);
-                httpMessageHandlersReplacer.ApplyHttpResponseMocks();
-            });
+            _ = webHostBuilder.ConfigureTestServices(services =>
+              {
+                  var httpMessageHandlersReplacer = new HttpMessageHandlersReplacer(services);
+                  configure(httpMessageHandlersReplacer);
+                  httpMessageHandlersReplacer.ApplyHttpResponseMocks();
+              });
             return webHostBuilder;
         }
 
@@ -42,15 +42,15 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.InProcess
             if (webHostBuilder is null) throw new ArgumentNullException(nameof(webHostBuilder));
             if (httpResponseMessageMockDescriptorBuilders is null) throw new ArgumentNullException(nameof(httpResponseMessageMockDescriptorBuilders));
 
-            webHostBuilder.ConfigureTestServices(services =>
-            {
-                var httpMessageHandlersReplacer = new HttpMessageHandlersReplacer(services);
-                foreach (var httpResponseMessageMockDescriptorBuilder in httpResponseMessageMockDescriptorBuilders)
-                {
-                    httpMessageHandlersReplacer.MockHttpResponse(httpResponseMessageMockDescriptorBuilder);
-                }
-                httpMessageHandlersReplacer.ApplyHttpResponseMocks();
-            });
+            _ = webHostBuilder.ConfigureTestServices(services =>
+              {
+                  var httpMessageHandlersReplacer = new HttpMessageHandlersReplacer(services);
+                  foreach (var httpResponseMessageMockDescriptorBuilder in httpResponseMessageMockDescriptorBuilders)
+                  {
+                      _ = httpMessageHandlersReplacer.MockHttpResponse(httpResponseMessageMockDescriptorBuilder);
+                  }
+                  httpMessageHandlersReplacer.ApplyHttpResponseMocks();
+              });
             return webHostBuilder;
         }
     }

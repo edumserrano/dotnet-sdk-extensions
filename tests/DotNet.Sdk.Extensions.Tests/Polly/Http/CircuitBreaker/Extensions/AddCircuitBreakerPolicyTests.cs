@@ -50,7 +50,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
                 MinimumThroughput = 10
             };
             var services = new ServiceCollection();
-            services
+            _ = services
                 .AddHttpClient(httpClientName)
                 .ConfigureHttpClient(client => client.BaseAddress = new Uri("https://github.com"))
                 .AddCircuitBreakerPolicy(options =>
@@ -87,7 +87,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
             };
             var optionsName = "GitHubOptions";
             var services = new ServiceCollection();
-            services
+            _ = services
                 .AddHttpClientCircuitBreakerOptions(optionsName)
                 .Configure(options =>
                 {
@@ -96,7 +96,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
                     options.FailureThreshold = circuitBreakerOptions.FailureThreshold;
                     options.MinimumThroughput = circuitBreakerOptions.MinimumThroughput;
                 });
-            services
+            _ = services
                 .AddHttpClient(httpClientName)
                 .ConfigureHttpClient(client => client.BaseAddress = new Uri("https://github.com"))
                 .AddCircuitBreakerPolicy(optionsName)
@@ -129,8 +129,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
                 MinimumThroughput = 10
             };
             var services = new ServiceCollection();
-            services.AddSingleton(circuitBreakerPolicyEventHandlerCalls);
-            services
+            _ = services.AddSingleton(circuitBreakerPolicyEventHandlerCalls);
+            _ = services
                 .AddHttpClient(httpClientName)
                 .ConfigureHttpClient(client => client.BaseAddress = new Uri("https://github.com"))
                 .AddCircuitBreakerPolicy<TestCircuitBreakerPolicyEventHandler>(options =>
@@ -174,8 +174,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
             var optionsName = "GitHubOptions";
 
             var services = new ServiceCollection();
-            services.AddSingleton(circuitBreakerPolicyEventHandlerCalls);
-            services
+            _ = services.AddSingleton(circuitBreakerPolicyEventHandlerCalls);
+            _ = services
                 .AddHttpClientCircuitBreakerOptions(optionsName)
                 .Configure(options =>
                 {
@@ -184,7 +184,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
                     options.FailureThreshold = circuitBreakerOptions.FailureThreshold;
                     options.MinimumThroughput = circuitBreakerOptions.MinimumThroughput;
                 });
-            services
+            _ = services
                 .AddHttpClient(httpClientName)
                 .ConfigureHttpClient(client => client.BaseAddress = new Uri("https://github.com"))
                 .AddCircuitBreakerPolicy<TestCircuitBreakerPolicyEventHandler>(optionsName)
@@ -222,7 +222,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
             var optionsName = "GitHubOptions";
 
             var services = new ServiceCollection();
-            services
+            _ = services
                 .AddHttpClientCircuitBreakerOptions(optionsName)
                 .Configure(options =>
                 {
@@ -231,7 +231,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
                     options.FailureThreshold = circuitBreakerOptions.FailureThreshold;
                     options.MinimumThroughput = circuitBreakerOptions.MinimumThroughput;
                 });
-            services
+            _ = services
                 .AddHttpClient(httpClientName)
                 .ConfigureHttpClient(client => client.BaseAddress = new Uri("https://github.com"))
                 .AddCircuitBreakerPolicy(optionsName, provider =>
@@ -270,7 +270,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
                 MinimumThroughput = 10
             };
             var services = new ServiceCollection();
-            services
+            _ = services
                 .AddHttpClient(httpClientName)
                 .ConfigureHttpClient(client => client.BaseAddress = new Uri("https://github.com"))
                 .AddCircuitBreakerPolicy(
@@ -317,7 +317,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
                 MinimumThroughput = 10
             };
             var services = new ServiceCollection();
-            services
+            _ = services
                 .AddHttpClient("GitHub")
                 .AddCircuitBreakerPolicy(options =>
                 {
@@ -332,7 +332,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
                         .GetPolicies<AsyncPolicyWrap<HttpResponseMessage>>()
                         .FirstOrDefault();
                 });
-            services
+            _ = services
                 .AddHttpClient("Microsoft")
                 .AddCircuitBreakerPolicy(options =>
                 {
@@ -349,10 +349,10 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
                 });
 
             using var serviceProvider = services.BuildServiceProvider();
-            serviceProvider.InstantiateNamedHttpClient("GitHub");
-            serviceProvider.InstantiateNamedHttpClient("Microsoft");
-            circuitBreakerPolicy1.ShouldNotBeNull();
-            circuitBreakerPolicy2.ShouldNotBeNull();
+            _ = serviceProvider.InstantiateNamedHttpClient("GitHub");
+            _ = serviceProvider.InstantiateNamedHttpClient("Microsoft");
+            _ = circuitBreakerPolicy1.ShouldNotBeNull();
+            _ = circuitBreakerPolicy2.ShouldNotBeNull();
             ReferenceEquals(circuitBreakerPolicy1, circuitBreakerPolicy2).ShouldBeFalse();
             circuitBreakerPolicy1.PolicyKey.ShouldNotBe(circuitBreakerPolicy2.PolicyKey);
         }
@@ -383,7 +383,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
                 MinimumThroughput = 10
             };
             var services = new ServiceCollection();
-            services
+            _ = services
                 .AddHttpClient("GitHub")
                 .ConfigureHttpClient(client => client.BaseAddress = new Uri("https://github.com"))
                 .AddCircuitBreakerPolicy(options =>
@@ -405,7 +405,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
             // instead is a CircuitBrokenHttpResponseMessage instance
             var response = await httpClient.GetAsync($"/circuit-breaker/transient-http-status-code/{HttpStatusCode.ServiceUnavailable}");
             var circuitBrokenHttpResponseMessage = response as CircuitBrokenHttpResponseMessage;
-            circuitBrokenHttpResponseMessage.ShouldNotBeNull();
+            _ = circuitBrokenHttpResponseMessage.ShouldNotBeNull();
             circuitBrokenHttpResponseMessage.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
             circuitBrokenHttpResponseMessage.CircuitBreakerState.ShouldBe(CircuitBreakerState.Open);
             // the Exception property should be null because the circuit breaker should NOT be throwing an exception.

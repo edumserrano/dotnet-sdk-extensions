@@ -59,12 +59,12 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers
         {
             var httpMockResponseMessage = new HttpResponseMessage(HttpStatusCode.OK);
             var handler = new TestHttpMessageHandler();
-            handler.MockHttpResponse(builder =>
-            {
-                builder
-                    .Where(httpRequestMessage => httpRequestMessage.RequestUri!.Host.Equals("microsoft"))
-                    .RespondWith(httpMockResponseMessage);
-            });
+            _ = handler.MockHttpResponse(builder =>
+              {
+                  _ = builder
+                      .Where(httpRequestMessage => httpRequestMessage.RequestUri!.Host.Equals("microsoft"))
+                      .RespondWith(httpMockResponseMessage);
+              });
 
             using var request = new HttpRequestMessage(HttpMethod.Get, "https://test.com");
             using var httpMessageInvoker = new HttpMessageInvoker(handler);
@@ -87,7 +87,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers
                 .RespondWith(httpMockResponseMessage)
                 .Build();
             var handler = new TestHttpMessageHandler();
-            handler.MockHttpResponse(httpResponseMessageMock);
+            _ = handler.MockHttpResponse(httpResponseMessageMock);
 
             using var request = new HttpRequestMessage(HttpMethod.Get, "https://test.com");
             using var httpMessageInvoker = new HttpMessageInvoker(handler);
@@ -106,7 +106,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers
         public async Task DefaultPredicate2()
         {
             var handler = new TestHttpMessageHandler();
-            handler.MockHttpResponse(builder => builder.RespondWith(new HttpResponseMessage(HttpStatusCode.Created)));
+            _ = handler.MockHttpResponse(builder => builder.RespondWith(new HttpResponseMessage(HttpStatusCode.Created)));
 
             using var request = new HttpRequestMessage(HttpMethod.Get, "https://test.com");
             using var httpMessageInvoker = new HttpMessageInvoker(handler);
@@ -125,13 +125,13 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers
             var handler = new TestHttpMessageHandler()
                 .MockHttpResponse(builder =>
                 {
-                    builder
+                    _ = builder
                         .Where(httpRequestMessage => httpRequestMessage.RequestUri!.Host.Equals("test.com"))
                         .RespondWith(new HttpResponseMessage(HttpStatusCode.BadRequest));
                 })
                 .MockHttpResponse(builder =>
                 {
-                    builder
+                    _ = builder
                         .Where(httpRequestMessage => httpRequestMessage.RequestUri!.Host.Equals("test.com"))
                         .RespondWith(new HttpResponseMessage(HttpStatusCode.InternalServerError));
                 });
@@ -153,13 +153,13 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers
             var handler = new TestHttpMessageHandler()
                 .MockHttpResponse(builder =>
                 {
-                    builder
+                    _ = builder
                         .Where(httpRequestMessage => httpRequestMessage.RequestUri!.Host.Equals("google.com"))
                         .RespondWith(new HttpResponseMessage(HttpStatusCode.BadRequest));
                 })
                 .MockHttpResponse(builder =>
                 {
-                    builder
+                    _ = builder
                         .Where(httpRequestMessage => httpRequestMessage.RequestUri!.Host.Equals("microsoft.com"))
                         .RespondWith(new HttpResponseMessage(HttpStatusCode.InternalServerError));
                 });
@@ -194,16 +194,16 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers
             TaskCanceledException? expectedException = null;
             try
             {
-                await httpMessageInvoker.SendAsync(request, CancellationToken.None);
+                _ = await httpMessageInvoker.SendAsync(request, CancellationToken.None);
             }
             catch (TaskCanceledException exception)
             {
                 expectedException = exception;
             }
 
-            expectedException.ShouldNotBeNull("Expected TaskCanceledException but didn't get any.");
-            expectedException.ShouldBeOfType<TaskCanceledException>();
-            expectedException.InnerException.ShouldBeOfType<TimeoutException>();
+            _ = expectedException.ShouldNotBeNull("Expected TaskCanceledException but didn't get any.");
+            _ = expectedException.ShouldBeOfType<TaskCanceledException>();
+            _ = expectedException.InnerException.ShouldBeOfType<TimeoutException>();
             expectedException.Message.ShouldBe("The request was canceled due to the configured HttpClient.Timeout of 0.05 seconds elapsing.");
             expectedException.InnerException.Message.ShouldBe("A task was canceled.");
         }

@@ -87,7 +87,7 @@ namespace DotNet.Sdk.Extensions.Options
         public static OptionsBuilder<T> ValidateEagerly<T>(this OptionsBuilder<T> optionsBuilder) where T : class
         {
             if (optionsBuilder is null) throw new ArgumentNullException(nameof(optionsBuilder));
-            optionsBuilder.Services.AddTransient<IStartupFilter, StartupOptionsValidation<T>>();
+            _ = optionsBuilder.Services.AddTransient<IStartupFilter, StartupOptionsValidation<T>>();
             return optionsBuilder;
         }
 
@@ -95,11 +95,11 @@ namespace DotNet.Sdk.Extensions.Options
         {
             if (services is null) throw new ArgumentNullException(nameof(services));
 
-            services.AddSingleton(serviceProvider =>
-            {
-                var options = serviceProvider.GetRequiredService<IOptions<T>>();
-                return options.Value;
-            });
+            _ = services.AddSingleton(serviceProvider =>
+              {
+                  var options = serviceProvider.GetRequiredService<IOptions<T>>();
+                  return options.Value;
+              });
         }
     }
 }

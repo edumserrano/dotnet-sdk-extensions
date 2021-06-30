@@ -19,7 +19,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers.Res
         public Task InvokeAsync(HttpContext httpContext, RequestDelegate next)
         {
             httpContext.Response.StatusCode = StatusCodes.Status501NotImplemented;
-            httpContext.Response.WriteAsync("Request did not match any of the provided mocks.");
+            _ = httpContext.Response.WriteAsync("Request did not match any of the provided mocks.");
             return Task.CompletedTask;
         }
     }

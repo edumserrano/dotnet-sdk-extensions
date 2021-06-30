@@ -47,8 +47,8 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers
             var sb = new StringBuilder();
             foreach (var url in urlDescriptors.Select(x => x.ToString()))
             {
-                sb.Append(url);
-                sb.Append(";");
+                _ = sb.Append(url);
+                _ = sb.Append(";");
             }
 
             return sb.ToString();

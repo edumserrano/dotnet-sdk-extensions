@@ -68,7 +68,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
                 .MockHttpResponse(helloHttpResponseMock)
                 .MockHttpResponse(mockBuilder =>
                 {
-                    mockBuilder.RespondWith((request, response) => response.StatusCode = StatusCodes.Status404NotFound);
+                    _ = mockBuilder.RespondWith((request, response) => response.StatusCode = StatusCodes.Status404NotFound);
                 })
                 .Build();
             var urls = await mock.StartAsync();
@@ -186,7 +186,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
         {
             var exception1 = Should.Throw<ArgumentNullException>(() =>
             {
-                new HttpMockServerBuilder()
+                _ = new HttpMockServerBuilder()
                     .UseHttpResponseMocks()
                     .MockHttpResponse((HttpResponseMock)null!);
             });
@@ -194,7 +194,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
 
             var exception2 = Should.Throw<ArgumentNullException>(() =>
             {
-                new HttpMockServerBuilder()
+                _ = new HttpMockServerBuilder()
                     .UseHttpResponseMocks()
                     .MockHttpResponse((Action<HttpResponseMockBuilder>)null!);
             });

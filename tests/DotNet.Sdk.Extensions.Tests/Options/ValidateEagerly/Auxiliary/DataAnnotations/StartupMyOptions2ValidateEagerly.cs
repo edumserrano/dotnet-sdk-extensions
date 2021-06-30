@@ -18,7 +18,7 @@ namespace DotNet.Sdk.Extensions.Tests.Options.ValidateEagerly.Auxiliary.DataAnno
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services
+            _ = services
                 .AddOptions<MyOptions2>()
                 .Bind(_configuration)
                 .ValidateDataAnnotations()
@@ -27,15 +27,15 @@ namespace DotNet.Sdk.Extensions.Tests.Options.ValidateEagerly.Auxiliary.DataAnno
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app
+            _ = app
                 .UseRouting()
                 .UseEndpoints(endpoints =>
                 {
-                    endpoints.MapGet("/", async context =>
-                    {
-                        var myOptions = context.RequestServices.GetRequiredService<MyOptions2>();
-                        await context.Response.WriteAsync(myOptions.SomeOption);
-                    });
+                    _ = endpoints.MapGet("/", async context =>
+                      {
+                          var myOptions = context.RequestServices.GetRequiredService<MyOptions2>();
+                          await context.Response.WriteAsync(myOptions.SomeOption);
+                      });
                 });
         }
     }

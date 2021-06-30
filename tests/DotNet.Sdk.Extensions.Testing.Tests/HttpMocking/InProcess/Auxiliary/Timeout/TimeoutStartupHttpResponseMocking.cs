@@ -14,14 +14,14 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess.Auxiliary.Ti
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddHttpClient("named-client");
-            services
+            _ = services.AddHttpClient("named-client");
+            _ = services
                 .AddHttpClient("named-client-with-timeout")
                 .ConfigureHttpClient(client =>
                 {
                     client.Timeout = TimeSpan.FromMilliseconds(200);
                 });
-            services
+            _ = services
                 .AddHttpClient("polly-named-client")
                 .AddHttpMessageHandler(provider =>
                 {
@@ -32,32 +32,32 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess.Auxiliary.Ti
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app
+            _ = app
                 .UseWhen(x => env.IsDevelopment(), appBuilder => appBuilder.UseDeveloperExceptionPage())
                 .UseRouting()
                 .UseEndpoints(endpoints =>
                 {
-                    endpoints.MapGet("/named-client", async context =>
-                    {
-                        var httpClientFactory = context.RequestServices.GetRequiredService<IHttpClientFactory>();
-                        var namedClient = httpClientFactory.CreateClient("named-client");
-                        var response = await namedClient.GetAsync("https://named-client.com");
-                        await context.Response.WriteAsync($"Named http client (named-client) returned: {response.IsSuccessStatusCode}");
-                    });
-                    endpoints.MapGet("/named-client-with-timeout", async context =>
-                    {
-                        var httpClientFactory = context.RequestServices.GetRequiredService<IHttpClientFactory>();
-                        var namedClient = httpClientFactory.CreateClient("named-client-with-timeout");
-                        var response = await namedClient.GetAsync("https://named-client-with-timeout.com");
-                        await context.Response.WriteAsync($"Named http client (named-client-with-timeout) returned: {response.IsSuccessStatusCode}");
-                    });
-                    endpoints.MapGet("/polly-named-client", async context =>
-                    {
-                        var httpClientFactory = context.RequestServices.GetRequiredService<IHttpClientFactory>();
-                        var namedClient = httpClientFactory.CreateClient("polly-named-client");
-                        var response = await namedClient.GetAsync("https://polly-named-client.com");
-                        await context.Response.WriteAsync($"Named http client (polly-named-client) returned: {response.IsSuccessStatusCode}");
-                    });
+                    _ = endpoints.MapGet("/named-client", async context =>
+                      {
+                          var httpClientFactory = context.RequestServices.GetRequiredService<IHttpClientFactory>();
+                          var namedClient = httpClientFactory.CreateClient("named-client");
+                          var response = await namedClient.GetAsync("https://named-client.com");
+                          await context.Response.WriteAsync($"Named http client (named-client) returned: {response.IsSuccessStatusCode}");
+                      });
+                    _ = endpoints.MapGet("/named-client-with-timeout", async context =>
+                      {
+                          var httpClientFactory = context.RequestServices.GetRequiredService<IHttpClientFactory>();
+                          var namedClient = httpClientFactory.CreateClient("named-client-with-timeout");
+                          var response = await namedClient.GetAsync("https://named-client-with-timeout.com");
+                          await context.Response.WriteAsync($"Named http client (named-client-with-timeout) returned: {response.IsSuccessStatusCode}");
+                      });
+                    _ = endpoints.MapGet("/polly-named-client", async context =>
+                      {
+                          var httpClientFactory = context.RequestServices.GetRequiredService<IHttpClientFactory>();
+                          var namedClient = httpClientFactory.CreateClient("polly-named-client");
+                          var response = await namedClient.GetAsync("https://polly-named-client.com");
+                          await context.Response.WriteAsync($"Named http client (polly-named-client) returned: {response.IsSuccessStatusCode}");
+                      });
                 });
         }
     }

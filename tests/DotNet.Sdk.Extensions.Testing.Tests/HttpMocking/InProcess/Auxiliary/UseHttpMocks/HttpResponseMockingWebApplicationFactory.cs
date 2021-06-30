@@ -12,7 +12,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess.Auxiliary.Us
     {
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
-            builder
+            _ = builder
                 .UseContentRoot(".")
                 .UseStartup<StartupHttpResponseMocking>();
         }

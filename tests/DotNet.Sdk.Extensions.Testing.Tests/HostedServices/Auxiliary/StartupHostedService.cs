@@ -10,21 +10,21 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices.Auxiliary
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<ICalculator, Calculator>();
-            services.AddHostedService<MyBackgroundService>();
+            _ = services.AddSingleton<ICalculator, Calculator>();
+            _ = services.AddHostedService<MyBackgroundService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app
+            _ = app
                 .UseWhen(x => env.IsDevelopment(), appBuilder => appBuilder.UseDeveloperExceptionPage())
                 .UseRouting()
                 .UseEndpoints(endpoints =>
                 {
-                    endpoints.MapGet("/", async context =>
-                    {
-                        await context.Response.WriteAsync("hi from asp.net core app with background service");
-                    });
+                    _ = endpoints.MapGet("/", async context =>
+                      {
+                          await context.Response.WriteAsync("hi from asp.net core app with background service");
+                      });
                 });
         }
     }
