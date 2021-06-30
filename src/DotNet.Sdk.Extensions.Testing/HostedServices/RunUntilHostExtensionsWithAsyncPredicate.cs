@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 
@@ -24,7 +24,7 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
             var configureOptionsAction = new Action<RunUntilOptions>(DefaultConfigureOptionsDelegate);
             return host.RunUntilAsync(predicateAsync, configureOptionsAction);
 
-            void DefaultConfigureOptionsDelegate(RunUntilOptions obj)
+            static void DefaultConfigureOptionsDelegate(RunUntilOptions obj)
             {
                 // default configure options delegate == do nothing
                 // use default values of the RunUntilOptions
