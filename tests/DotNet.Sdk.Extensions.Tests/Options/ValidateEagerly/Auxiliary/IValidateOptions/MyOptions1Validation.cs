@@ -5,10 +5,10 @@ namespace DotNet.Sdk.Extensions.Tests.Options.ValidateEagerly.Auxiliary.IValidat
 {
     public class MyOptions1Validation : IValidateOptions<MyOptions1>
     {
-        public ValidateOptionsResult Validate(string name, MyOptions1 options1)
+        public ValidateOptionsResult Validate(string name, MyOptions1 options)
         {
             //this is doing data annotation validation but you can implement the validation however you like
-            Validator.ValidateObject(options1, new ValidationContext(options1), validateAllProperties: true);
+            Validator.ValidateObject(options, new ValidationContext(options), validateAllProperties: true);
             return ValidateOptionsResult.Success;
         }
     }

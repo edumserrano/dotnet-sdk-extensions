@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker.Events;
 using DotNet.Sdk.Extensions.Polly.Http.Fallback.Events;
 using DotNet.Sdk.Extensions.Polly.Http.Resilience.Events;
@@ -52,21 +52,21 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Auxiliary
             return Task.CompletedTask;
         }
 
-        public Task OnTimeoutFallbackAsync(FallbackEvent timeoutFallbackEvent)
+        public Task OnTimeoutFallbackAsync(FallbackEvent fallbackEvent)
         {
-            _resiliencePoliciesEventHandlerCalls.Fallback.AddOnTimeoutFallback(timeoutFallbackEvent);
+            _resiliencePoliciesEventHandlerCalls.Fallback.AddOnTimeoutFallback(fallbackEvent);
             return Task.CompletedTask;
         }
 
-        public Task OnBrokenCircuitFallbackAsync(FallbackEvent brokenCircuitFallbackEvent)
+        public Task OnBrokenCircuitFallbackAsync(FallbackEvent fallbackEvent)
         {
-            _resiliencePoliciesEventHandlerCalls.Fallback.AddOnBrokenCircuitFallback(brokenCircuitFallbackEvent);
+            _resiliencePoliciesEventHandlerCalls.Fallback.AddOnBrokenCircuitFallback(fallbackEvent);
             return Task.CompletedTask;
         }
 
-        public Task OnTaskCancelledFallbackAsync(FallbackEvent taskCancelledFallbackEvent)
+        public Task OnTaskCancelledFallbackAsync(FallbackEvent fallbackEvent)
         {
-            _resiliencePoliciesEventHandlerCalls.Fallback.AddOnTaskCancelledFallback(taskCancelledFallbackEvent);
+            _resiliencePoliciesEventHandlerCalls.Fallback.AddOnTaskCancelledFallback(fallbackEvent);
             return Task.CompletedTask;
         }
     }
