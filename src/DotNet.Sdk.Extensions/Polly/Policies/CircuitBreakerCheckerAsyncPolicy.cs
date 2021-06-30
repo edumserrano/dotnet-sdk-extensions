@@ -14,7 +14,7 @@ namespace DotNet.Sdk.Extensions.Polly.Policies
     /// <remarks>
     /// It allows keeping the same syntax between extension and non-extension methods because
     /// instead of doing <see cref="CircuitBreakerCheckerAsyncPolicy{T}.Create"/> it allows doing
-    /// <see cref="CircuitBreakerCheckerAsyncPolicy.Create{T}"/>
+    /// <see cref="Create{T}"/>
     /// </remarks>
     public class CircuitBreakerCheckerAsyncPolicy
     {
