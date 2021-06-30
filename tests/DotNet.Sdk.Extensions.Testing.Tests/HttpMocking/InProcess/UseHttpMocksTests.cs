@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -310,6 +310,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess
         public void Dispose()
         {
             _webApplicationFactory.Dispose();
+            GC.SuppressFinalize(this);
         }
     }
 }

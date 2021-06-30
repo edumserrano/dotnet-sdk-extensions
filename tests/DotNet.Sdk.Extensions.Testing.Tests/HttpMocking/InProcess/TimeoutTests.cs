@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.InProcess;
 using DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess.Auxiliary.Timeout;
@@ -236,6 +236,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess
         public void Dispose()
         {
             _webApplicationFactory.Dispose();
+            GC.SuppressFinalize(this);
         }
     }
 }
