@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http;
+using System.Globalization;
+using Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http;
 
 namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers
 {
@@ -14,7 +15,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers
             Scheme = scheme;
             Host = host;
             Port = port;
-            _url = $"{scheme.ToString().ToLower()}://{host}:{port}";
+            _url = $"{scheme.ToString().ToLower(CultureInfo.InvariantCulture)}://{host}:{port}";
         }
 
         /// <summary>
