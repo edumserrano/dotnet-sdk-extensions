@@ -134,7 +134,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
             var resiliencePoliciesAsserter = httpClient.ResiliencePoliciesAsserter(resilienceOptions, testHttpMessageHandler);
             await resiliencePoliciesAsserter.Fallback.HttpClientShouldContainFallbackPolicyAsync();
-            resiliencePoliciesAsserter.Fallback.EventHandlerShouldReceiveExpectedEvents(
+            Fallback.Auxiliary.FallbackPolicyAsserter.EventHandlerShouldReceiveExpectedEvents(
                 onHttpRequestExceptionCount: 1,
                 onTimeoutCallsCount: 1,
                 onBrokenCircuitCallsCount: 1,
@@ -184,7 +184,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
             var resiliencePoliciesAsserter = httpClient.ResiliencePoliciesAsserter(resilienceOptions, testHttpMessageHandler);
             await resiliencePoliciesAsserter.Fallback.HttpClientShouldContainFallbackPolicyAsync();
-            resiliencePoliciesAsserter.Fallback.EventHandlerShouldReceiveExpectedEvents(
+            Fallback.Auxiliary.FallbackPolicyAsserter.EventHandlerShouldReceiveExpectedEvents(
                 onHttpRequestExceptionCount: 1,
                 onTimeoutCallsCount: 1,
                 onBrokenCircuitCallsCount: 1,
@@ -236,7 +236,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
             var resiliencePoliciesAsserter = httpClient.ResiliencePoliciesAsserter(resilienceOptions, testHttpMessageHandler);
             await resiliencePoliciesAsserter.Fallback.HttpClientShouldContainFallbackPolicyAsync();
-            resiliencePoliciesAsserter.Fallback.EventHandlerShouldReceiveExpectedEvents(
+            Fallback.Auxiliary.FallbackPolicyAsserter.EventHandlerShouldReceiveExpectedEvents(
                 onHttpRequestExceptionCount: 1,
                 onTimeoutCallsCount: 1,
                 onBrokenCircuitCallsCount: 1,
@@ -285,7 +285,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
             var resiliencePoliciesAsserter = httpClient.ResiliencePoliciesAsserter(resilienceOptions, testHttpMessageHandler);
             await resiliencePoliciesAsserter.Fallback.HttpClientShouldContainFallbackPolicyAsync();
-            resiliencePoliciesAsserter.Fallback.EventHandlerShouldReceiveExpectedEvents(
+            Fallback.Auxiliary.FallbackPolicyAsserter.EventHandlerShouldReceiveExpectedEvents(
                 onHttpRequestExceptionCount: 1,
                 onTimeoutCallsCount: 1,
                 onBrokenCircuitCallsCount: 1,

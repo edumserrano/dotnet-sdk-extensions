@@ -8,13 +8,13 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices.Auxiliary
 {
     public class StartupHostedService
     {
-        public void ConfigureServices(IServiceCollection services)
+        public static void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<ICalculator, Calculator>();
             services.AddHostedService<MyBackgroundService>();
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app
                 .UseWhen(x => env.IsDevelopment(), appBuilder => appBuilder.UseDeveloperExceptionPage())

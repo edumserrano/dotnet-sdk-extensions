@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -114,7 +114,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Fallback.Auxiliary
                 .TriggerFromExceptionAsync(exception);
         }
 
-        public void EventHandlerShouldReceiveExpectedEvents(
+        public static void EventHandlerShouldReceiveExpectedEvents(
             int onHttpRequestExceptionCount,
             int onTimeoutCallsCount,
             int onBrokenCircuitCallsCount,

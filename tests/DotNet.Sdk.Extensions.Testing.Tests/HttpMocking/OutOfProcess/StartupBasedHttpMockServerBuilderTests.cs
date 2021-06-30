@@ -45,11 +45,11 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
         /// </summary>
         public class MyMockStartup
         {
-            public void ConfigureServices(IServiceCollection services)
+            public static void ConfigureServices(IServiceCollection services)
             {
             }
 
-            public void Configure(IApplicationBuilder app)
+            public static void Configure(IApplicationBuilder app)
             {
                 app.Use(async (httpContext, next) =>
                 {
