@@ -18,10 +18,10 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
         {
             if (webApplicationFactory is null) throw new ArgumentNullException(nameof(webApplicationFactory));
 
-            static Task<bool> noOpPredicateAsync() => Task.FromResult(false);
+            static Task<bool> NoOpPredicateAsync() => Task.FromResult(false);
             var options = new RunUntilOptions { Timeout = timeout };
             var hostRunner = new WebApplicationFactoryHostRunner<T>(webApplicationFactory);
-            return hostRunner.RunUntilTimeoutAsync(noOpPredicateAsync, options);
+            return hostRunner.RunUntilTimeoutAsync(NoOpPredicateAsync, options);
         }
 
         /// <summary>
@@ -34,10 +34,10 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
         {
             if (host is null) throw new ArgumentNullException(nameof(host));
 
-            static Task<bool> noOpPredicateAsync() => Task.FromResult(false);
+            static Task<bool> NoOpPredicateAsync() => Task.FromResult(false);
             var options = new RunUntilOptions { Timeout = timeout };
             var hostRunner = new DefaultHostRunner(host);
-            return hostRunner.RunUntilTimeoutAsync(noOpPredicateAsync, options);
+            return hostRunner.RunUntilTimeoutAsync(NoOpPredicateAsync, options);
         }
 
         internal static async Task RunUntilTimeoutAsync(

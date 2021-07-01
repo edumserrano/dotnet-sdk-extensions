@@ -22,11 +22,11 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Timeout.Extensions
             this IHttpClientBuilder httpClientBuilder,
             string optionsName)
         {
-            static ITimeoutPolicyEventHandler eventHandlerFactory(IServiceProvider _) => new DefaultTimeoutPolicyEventHandler();
+            static ITimeoutPolicyEventHandler EventHandlerFactory(IServiceProvider _) => new DefaultTimeoutPolicyEventHandler();
             return httpClientBuilder.AddTimeoutPolicyCore(
                 optionsName: optionsName,
                 configureOptions: null,
-                eventHandlerFactory: eventHandlerFactory);
+                eventHandlerFactory: EventHandlerFactory);
         }
 
         /// <summary>
@@ -39,11 +39,11 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Timeout.Extensions
             this IHttpClientBuilder httpClientBuilder,
             Action<TimeoutOptions> configureOptions)
         {
-            static ITimeoutPolicyEventHandler eventHandlerFactory(IServiceProvider _) => new DefaultTimeoutPolicyEventHandler();
+            static ITimeoutPolicyEventHandler EventHandlerFactory(IServiceProvider _) => new DefaultTimeoutPolicyEventHandler();
             return httpClientBuilder.AddTimeoutPolicyCore(
                 optionsName: null,
                 configureOptions: configureOptions,
-                eventHandlerFactory: eventHandlerFactory);
+                eventHandlerFactory: EventHandlerFactory);
         }
 
         /// <summary>
@@ -59,11 +59,11 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Timeout.Extensions
             where TPolicyEventHandler : class, ITimeoutPolicyEventHandler
         {
             httpClientBuilder.Services.TryAddSingleton<TPolicyEventHandler>();
-            static ITimeoutPolicyEventHandler eventHandlerFactory(IServiceProvider provider) => provider.GetRequiredService<TPolicyEventHandler>();
+            static ITimeoutPolicyEventHandler EventHandlerFactory(IServiceProvider provider) => provider.GetRequiredService<TPolicyEventHandler>();
             return httpClientBuilder.AddTimeoutPolicyCore(
                 optionsName: optionsName,
                 configureOptions: null,
-                eventHandlerFactory: eventHandlerFactory);
+                eventHandlerFactory: EventHandlerFactory);
         }
 
         /// <summary>
@@ -79,11 +79,11 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Timeout.Extensions
             where TPolicyEventHandler : class, ITimeoutPolicyEventHandler
         {
             httpClientBuilder.Services.TryAddSingleton<TPolicyEventHandler>();
-            static ITimeoutPolicyEventHandler eventHandlerFactory(IServiceProvider provider) => provider.GetRequiredService<TPolicyEventHandler>();
+            static ITimeoutPolicyEventHandler EventHandlerFactory(IServiceProvider provider) => provider.GetRequiredService<TPolicyEventHandler>();
             return httpClientBuilder.AddTimeoutPolicyCore(
                 optionsName: null,
                 configureOptions: configureOptions,
-                eventHandlerFactory: eventHandlerFactory);
+                eventHandlerFactory: EventHandlerFactory);
         }
 
         /// <summary>

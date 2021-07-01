@@ -23,8 +23,8 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
             if (webApplicationFactory is null) throw new ArgumentNullException(nameof(webApplicationFactory));
             if (predicate is null) throw new ArgumentNullException(nameof(predicate));
 
-            Task<bool> predicateAsync() => Task.FromResult(predicate());
-            return webApplicationFactory.RunUntilAsync(predicateAsync);
+            Task<bool> PredicateAsync() => Task.FromResult(predicate());
+            return webApplicationFactory.RunUntilAsync(PredicateAsync);
         }
 
         /// <summary>
@@ -43,8 +43,8 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
             if (webApplicationFactory is null) throw new ArgumentNullException(nameof(webApplicationFactory));
             if (predicate is null) throw new ArgumentNullException(nameof(predicate));
 
-            Task<bool> predicateAsync() => Task.FromResult(predicate());
-            return webApplicationFactory.RunUntilAsync(predicateAsync, configureOptions);
+            Task<bool> PredicateAsync() => Task.FromResult(predicate());
+            return webApplicationFactory.RunUntilAsync(PredicateAsync, configureOptions);
         }
     }
 }

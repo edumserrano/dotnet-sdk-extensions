@@ -22,8 +22,8 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
             if (host is null) throw new ArgumentNullException(nameof(host));
             if (predicate is null) throw new ArgumentNullException(nameof(predicate));
 
-            Task<bool> predicateAsync() => Task.FromResult(predicate());
-            return host.RunUntilAsync(predicateAsync);
+            Task<bool> PredicateAsync() => Task.FromResult(predicate());
+            return host.RunUntilAsync(PredicateAsync);
         }
 
         /// <summary>
@@ -41,8 +41,8 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
             if (host is null) throw new ArgumentNullException(nameof(host));
             if (predicate is null) throw new ArgumentNullException(nameof(predicate));
 
-            Task<bool> predicateAsync() => Task.FromResult(predicate());
-            return host.RunUntilAsync(predicateAsync, configureOptions);
+            Task<bool> PredicateAsync() => Task.FromResult(predicate());
+            return host.RunUntilAsync(PredicateAsync, configureOptions);
         }
     }
 }
