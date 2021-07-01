@@ -71,7 +71,8 @@ namespace DotNet.Sdk.Extensions.Polly.Policies
             // Avoid exception as indicated by https://github.com/App-vNext/Polly/wiki/Circuit-Breaker#reducing-thrown-exceptions-when-the-circuit-is-broken
             return _circuitBreakerPolicy.CircuitState switch
             {
-                CircuitState.Isolated or CircuitState.Open => await ExecuteFallbackValueFactoryAsync(CircuitBreakerState.Isolated),
+                CircuitState.Isolated => await ExecuteFallbackValueFactoryAsync(CircuitBreakerState.Isolated),
+                CircuitState.Open => await ExecuteFallbackValueFactoryAsync(CircuitBreakerState.Open),
                 CircuitState.Closed or CircuitState.HalfOpen => await ExecutePolicyActionAsync(),
                 _ => throw new NotImplementedException($"Unexpected circuit state: {_circuitBreakerPolicy.CircuitState}.")
             };
