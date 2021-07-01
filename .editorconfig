@@ -373,7 +373,7 @@ dotnet_naming_symbols.stylecop_local_fields_group.applicable_accessibilities = l
 dotnet_naming_symbols.stylecop_local_fields_group.applicable_kinds           = local
 dotnet_naming_rule.stylecop_local_fields_must_be_camel_case_rule.symbols     = stylecop_local_fields_group
 dotnet_naming_rule.stylecop_local_fields_must_be_camel_case_rule.style       = camel_case_style
-dotnet_naming_rule.stylecop_local_fields_must_be_camel_case_rule.severity    = silent
+dotnet_naming_rule.stylecop_local_fields_must_be_camel_case_rule.severity    = warning
 
 # This rule should never fire.  However, it's included for at least two purposes:
 # First, it helps to understand, reason about, and root-case certain types of issues, such as bugs in .editorconfig parsers.
@@ -398,9 +398,9 @@ dotnet_naming_rule.sanity_check_uncovered_field_case_rule.severity = error
 #   https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1300.md
 # - Delegates
 #   https://docs.microsoft.com/dotnet/standard/design-guidelines/names-of-classes-structs-and-interfaces#names-of-common-types
-# - Constructors, Properties, Events, Methods
+# - Constructors, Properties, Events, Methods, Local Functions
 #   https://docs.microsoft.com/dotnet/standard/design-guidelines/names-of-type-members
-dotnet_naming_symbols.element_group.applicable_kinds = namespace, class, enum, struct, delegate, event, method, property
+dotnet_naming_symbols.element_group.applicable_kinds = namespace, class, enum, struct, delegate, event, method, property, local_function
 dotnet_naming_rule.element_rule.symbols              = element_group
 dotnet_naming_rule.element_rule.style                = pascal_case_style
 dotnet_naming_rule.element_rule.severity             = warning
