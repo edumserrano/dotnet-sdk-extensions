@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Polly.Http.Fallback.FallbackHttpResponseMessages;
@@ -71,10 +71,22 @@ namespace DotNet.Sdk.Extensions.Polly.Policies
             // Avoid exception as indicated by https://github.com/App-vNext/Polly/wiki/Circuit-Breaker#reducing-thrown-exceptions-when-the-circuit-is-broken
             return _circuitBreakerPolicy.CircuitState switch
             {
-                CircuitState.Isolated => await _fallbackValueFactory(CircuitBreakerState.Isolated, context, cancellationToken).ConfigureAwait(continueOnCapturedContext),
-                CircuitState.Open => await _fallbackValueFactory(CircuitBreakerState.Open, context, cancellationToken).ConfigureAwait(continueOnCapturedContext),
-                _ => await action(context, cancellationToken).ConfigureAwait(continueOnCapturedContext),
+                CircuitState.Isolated or CircuitState.Open => await ExecuteFallbackValueFactoryAsync(CircuitBreakerState.Isolated),
+                CircuitState.Closed or CircuitState.HalfOpen => await ExecutePolicyActionAsync(),
+                _ => throw new NotImplementedException($"Unexpected circuit state: {_circuitBreakerPolicy.CircuitState}.")
             };
+
+            async Task<T> ExecuteFallbackValueFactoryAsync(CircuitBreakerState circuitBreakerState)
+            {
+                var result = await _fallbackValueFactory(circuitBreakerState, context, cancellationToken).ConfigureAwait(continueOnCapturedContext);
+                return result;
+            }
+
+            async Task<T> ExecutePolicyActionAsync()
+            {
+                var result = await action(context, cancellationToken).ConfigureAwait(continueOnCapturedContext);
+                return result;
+            }
         }
     }
 }
