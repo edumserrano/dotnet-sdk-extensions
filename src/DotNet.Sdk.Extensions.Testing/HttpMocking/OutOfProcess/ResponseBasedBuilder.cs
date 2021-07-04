@@ -31,7 +31,9 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess
         public ResponseBasedBuilder MockHttpResponse(HttpResponseMock httpResponseMock)
         {
             if (httpResponseMock is null)
+            {
                 throw new ArgumentNullException(nameof(httpResponseMock));
+            }
 
             _httpResponseMocks.Add(httpResponseMock);
             return this;
@@ -45,7 +47,9 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess
         public ResponseBasedBuilder MockHttpResponse(Action<HttpResponseMockBuilder> configureHttpResponseMock)
         {
             if (configureHttpResponseMock is null)
+            {
                 throw new ArgumentNullException(nameof(configureHttpResponseMock));
+            }
 
             var httpResponseMockBuilder = new HttpResponseMockBuilder();
             configureHttpResponseMock(httpResponseMockBuilder);

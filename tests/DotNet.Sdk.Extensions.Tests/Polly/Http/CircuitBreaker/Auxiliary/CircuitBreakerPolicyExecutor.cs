@@ -36,7 +36,9 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
         public async Task TriggerFromExceptionAsync<TException>(Exception exception) where TException : Exception
         {
             if (exception == null)
+            {
                 throw new ArgumentNullException(nameof(exception));
+            }
 
             var requestPath = $"/circuit-breaker/exception/{exception.GetType().Name}";
             _testHttpMessageHandler.HandleException(requestPath, exception);

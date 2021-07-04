@@ -17,7 +17,10 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess
         public static HttpMockServerBuilder UseDefaultLogLevel(this HttpMockServerBuilder httpMockServerBuilder, LogLevel logLevel)
         {
             if (httpMockServerBuilder == null)
+            {
                 throw new ArgumentNullException(nameof(httpMockServerBuilder));
+            }
+
             return httpMockServerBuilder.UseHostArgs("--Logging:LogLevel:Default", $"{logLevel}");
         }
     }

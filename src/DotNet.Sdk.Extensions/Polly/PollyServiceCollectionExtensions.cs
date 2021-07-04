@@ -28,9 +28,14 @@ namespace DotNet.Sdk.Extensions.Polly
             Action<IServiceProvider, IPolicyRegistry<string>> configureRegistry)
         {
             if (services is null)
+            {
                 throw new ArgumentNullException(nameof(services));
+            }
+
             if (configureRegistry == null)
+            {
                 throw new ArgumentNullException(nameof(configureRegistry));
+            }
 
             return services
                 .AddSingleton<IPolicyRegistry<string>>(serviceProvider =>

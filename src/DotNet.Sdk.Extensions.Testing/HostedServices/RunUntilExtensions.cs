@@ -17,7 +17,9 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
         public static Task RunUntilTimeoutAsync<T>(this WebApplicationFactory<T> webApplicationFactory, TimeSpan timeout) where T : class
         {
             if (webApplicationFactory is null)
+            {
                 throw new ArgumentNullException(nameof(webApplicationFactory));
+            }
 
             static Task<bool> NoOpPredicateAsync() => Task.FromResult(false);
             var options = new RunUntilOptions { Timeout = timeout };
@@ -34,7 +36,9 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
         public static Task RunUntilTimeoutAsync(this IHost host, TimeSpan timeout)
         {
             if (host is null)
+            {
                 throw new ArgumentNullException(nameof(host));
+            }
 
             static Task<bool> NoOpPredicateAsync() => Task.FromResult(false);
             var options = new RunUntilOptions { Timeout = timeout };
@@ -48,9 +52,14 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
             RunUntilOptions options)
         {
             if (hostRunner is null)
+            {
                 throw new ArgumentNullException(nameof(hostRunner));
+            }
+
             if (options is null)
+            {
                 throw new ArgumentNullException(nameof(options));
+            }
 
             await hostRunner.StartAsync();
             var hostRunController = new HostRunController(options);
@@ -69,9 +78,14 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
             RunUntilOptions options)
         {
             if (hostRunner is null)
+            {
                 throw new ArgumentNullException(nameof(hostRunner));
+            }
+
             if (options is null)
+            {
                 throw new ArgumentNullException(nameof(options));
+            }
 
             await hostRunner.StartAsync();
             var hostRunController = new HostRunController(options);

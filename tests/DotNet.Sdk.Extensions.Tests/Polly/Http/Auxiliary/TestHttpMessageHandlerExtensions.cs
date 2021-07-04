@@ -13,7 +13,9 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary
             HttpStatusCode responseHttpStatusCode)
         {
             if (testHttpMessageHandler == null)
+            {
                 throw new ArgumentNullException(nameof(testHttpMessageHandler));
+            }
 
             var handledRequestPath = $"{requestPath}/{responseHttpStatusCode}";
             testHttpMessageHandler.MockHttpResponse(builder =>
@@ -31,7 +33,9 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary
             Exception exception)
         {
             if (testHttpMessageHandler == null)
+            {
                 throw new ArgumentNullException(nameof(testHttpMessageHandler));
+            }
 
             testHttpMessageHandler.MockHttpResponse(builder =>
             {
@@ -47,7 +51,9 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary
             TimeSpan timeout)
         {
             if (testHttpMessageHandler == null)
+            {
                 throw new ArgumentNullException(nameof(testHttpMessageHandler));
+            }
 
             testHttpMessageHandler.MockHttpResponse(builder =>
             {

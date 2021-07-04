@@ -21,7 +21,10 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.ResponseMocking
         public HttpResponseMockBuilder Where(Func<HttpRequest, bool> predicate)
         {
             if (predicate is null)
+            {
                 throw new ArgumentNullException(nameof(predicate));
+            }
+
             // convert to 'async' predicate
             return Where((httpRequest, cancellationToken) => Task.FromResult(predicate(httpRequest)));
         }
@@ -49,7 +52,9 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.ResponseMocking
         public HttpResponseMockBuilder RespondWith(Action<HttpResponse> configureHttpResponse)
         {
             if (configureHttpResponse is null)
+            {
                 throw new ArgumentNullException(nameof(configureHttpResponse));
+            }
 
             return RespondWith((httpRequest, httpResponse) =>
             {
@@ -65,7 +70,10 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.ResponseMocking
         public HttpResponseMockBuilder RespondWith(Action<HttpRequest, HttpResponse> handler)
         {
             if (handler is null)
+            {
                 throw new ArgumentNullException(nameof(handler));
+            }
+
             // convert to 'async' handler
             return RespondWith((httpRequest, httpResponse, cancellationToken) =>
             {

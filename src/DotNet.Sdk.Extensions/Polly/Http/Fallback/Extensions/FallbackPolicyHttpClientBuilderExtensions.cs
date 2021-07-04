@@ -20,7 +20,9 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Fallback.Extensions
         public static IHttpClientBuilder AddFallbackPolicy(this IHttpClientBuilder httpClientBuilder)
         {
             if (httpClientBuilder is null)
+            {
                 throw new ArgumentNullException(nameof(httpClientBuilder));
+            }
 
             return httpClientBuilder.AddFallbackPolicy(EventHandlerFactory);
 
@@ -38,7 +40,9 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Fallback.Extensions
             where TPolicyEventHandler : class, IFallbackPolicyEventHandler
         {
             if (httpClientBuilder is null)
+            {
                 throw new ArgumentNullException(nameof(httpClientBuilder));
+            }
 
             httpClientBuilder.Services.TryAddSingleton<TPolicyEventHandler>();
             return httpClientBuilder.AddFallbackPolicy(EventHandlerFactory);
@@ -56,7 +60,9 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Fallback.Extensions
             Func<IServiceProvider, IFallbackPolicyEventHandler> eventHandlerFactory)
         {
             if (httpClientBuilder is null)
+            {
                 throw new ArgumentNullException(nameof(httpClientBuilder));
+            }
 
             var httpClientName = httpClientBuilder.Name;
             return httpClientBuilder.AddHttpMessageHandler(provider =>

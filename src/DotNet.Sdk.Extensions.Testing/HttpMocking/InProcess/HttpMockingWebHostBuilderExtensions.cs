@@ -20,9 +20,14 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.InProcess
         public static IWebHostBuilder UseHttpMocks(this IWebHostBuilder webHostBuilder, Action<HttpMessageHandlersReplacer> configure)
         {
             if (webHostBuilder is null)
+            {
                 throw new ArgumentNullException(nameof(webHostBuilder));
+            }
+
             if (configure is null)
+            {
                 throw new ArgumentNullException(nameof(configure));
+            }
 
             webHostBuilder.ConfigureTestServices(services =>
             {
@@ -42,9 +47,14 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.InProcess
         public static IWebHostBuilder UseHttpMocks(this IWebHostBuilder webHostBuilder, params HttpResponseMessageMockDescriptorBuilder[] httpResponseMessageMockDescriptorBuilders)
         {
             if (webHostBuilder is null)
+            {
                 throw new ArgumentNullException(nameof(webHostBuilder));
+            }
+
             if (httpResponseMessageMockDescriptorBuilders is null)
+            {
                 throw new ArgumentNullException(nameof(httpResponseMessageMockDescriptorBuilders));
+            }
 
             webHostBuilder.ConfigureTestServices(services =>
             {

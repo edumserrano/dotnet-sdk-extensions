@@ -20,9 +20,14 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
             RunUntilPredicate predicate)
         {
             if (host is null)
+            {
                 throw new ArgumentNullException(nameof(host));
+            }
+
             if (predicate is null)
+            {
                 throw new ArgumentNullException(nameof(predicate));
+            }
 
             Task<bool> PredicateAsync() => Task.FromResult(predicate());
             return host.RunUntilAsync(PredicateAsync);
@@ -41,9 +46,14 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
             Action<RunUntilOptions> configureOptions)
         {
             if (host is null)
+            {
                 throw new ArgumentNullException(nameof(host));
+            }
+
             if (predicate is null)
+            {
                 throw new ArgumentNullException(nameof(predicate));
+            }
 
             Task<bool> PredicateAsync() => Task.FromResult(predicate());
             return host.RunUntilAsync(PredicateAsync, configureOptions);

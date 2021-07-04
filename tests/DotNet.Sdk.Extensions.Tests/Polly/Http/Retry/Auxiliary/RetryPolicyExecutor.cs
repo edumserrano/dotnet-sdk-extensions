@@ -26,7 +26,9 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Auxiliary
         public Task<HttpResponseMessage> TriggerFromExceptionAsync(Exception exception)
         {
             if (exception == null)
+            {
                 throw new ArgumentNullException(nameof(exception));
+            }
 
             var requestPath = $"/retry/exception/{exception.GetType().Name}";
             _testHttpMessageHandler.HandleException(requestPath, exception);

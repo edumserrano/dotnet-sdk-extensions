@@ -20,7 +20,9 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Fallback.Auxiliary
         public Task<HttpResponseMessage> TriggerFromExceptionAsync(Exception exception)
         {
             if (exception == null)
+            {
                 throw new ArgumentNullException(nameof(exception));
+            }
 
             var requestPath = $"/fallback/exception/{exception.GetHashCode()}";
             _testHttpMessageHandler.HandleException(requestPath, exception);

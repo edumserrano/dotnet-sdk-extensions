@@ -23,7 +23,9 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers
         public TestHttpMessageHandler MockHttpResponse(Action<HttpResponseMessageMockBuilder> configure)
         {
             if (configure is null)
+            {
                 throw new ArgumentNullException(nameof(configure));
+            }
 
             var httpResponseMockBuilder = new HttpResponseMessageMockBuilder();
             configure(httpResponseMockBuilder);
@@ -41,7 +43,9 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers
         public TestHttpMessageHandler MockHttpResponse(HttpResponseMessageMock httpResponseMock)
         {
             if (httpResponseMock is null)
+            {
                 throw new ArgumentNullException(nameof(httpResponseMock));
+            }
 
             _httpResponseMocks.Add(httpResponseMock);
             return this;
@@ -56,7 +60,9 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             if (request is null)
+            {
                 throw new ArgumentNullException(nameof(request));
+            }
 
             foreach (var httpResponseMock in _httpResponseMocks)
             {

@@ -30,7 +30,9 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Resilience.Extensions
             string optionsName)
         {
             if (httpClientBuilder is null)
+            {
                 throw new ArgumentNullException(nameof(httpClientBuilder));
+            }
 
             return httpClientBuilder.AddResiliencePoliciesCore(
                 optionsName: optionsName,
@@ -51,7 +53,9 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Resilience.Extensions
             Action<ResilienceOptions> configureOptions)
         {
             if (httpClientBuilder is null)
+            {
                 throw new ArgumentNullException(nameof(httpClientBuilder));
+            }
 
             return httpClientBuilder.AddResiliencePoliciesCore(
                 optionsName: null,
@@ -74,7 +78,9 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Resilience.Extensions
             where TPolicyEventHandler : class, IResiliencePoliciesEventHandler
         {
             if (httpClientBuilder is null)
+            {
                 throw new ArgumentNullException(nameof(httpClientBuilder));
+            }
 
             httpClientBuilder.Services.TryAddSingleton<TPolicyEventHandler>();
             return httpClientBuilder.AddResiliencePoliciesCore(
@@ -98,7 +104,9 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Resilience.Extensions
             where TPolicyEventHandler : class, IResiliencePoliciesEventHandler
         {
             if (httpClientBuilder is null)
+            {
                 throw new ArgumentNullException(nameof(httpClientBuilder));
+            }
 
             httpClientBuilder.Services.TryAddSingleton<TPolicyEventHandler>();
             return httpClientBuilder.AddResiliencePoliciesCore(
@@ -122,7 +130,9 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Resilience.Extensions
             Func<IServiceProvider, IResiliencePoliciesEventHandler> eventHandlerFactory)
         {
             if (httpClientBuilder is null)
+            {
                 throw new ArgumentNullException(nameof(httpClientBuilder));
+            }
 
             return httpClientBuilder.AddResiliencePoliciesCore(
                 optionsName: optionsName,
@@ -143,7 +153,9 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Resilience.Extensions
             Func<IServiceProvider, IResiliencePoliciesEventHandler> eventHandlerFactory)
         {
             if (httpClientBuilder is null)
+            {
                 throw new ArgumentNullException(nameof(httpClientBuilder));
+            }
 
             return httpClientBuilder.AddResiliencePoliciesCore(
                 optionsName: null,

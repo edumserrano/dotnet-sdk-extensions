@@ -23,7 +23,9 @@ namespace DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker.Extensions
             string optionsName)
         {
             if (httpClientBuilder is null)
+            {
                 throw new ArgumentNullException(nameof(httpClientBuilder));
+            }
 
             static ICircuitBreakerPolicyEventHandler EventHandlerFactory(IServiceProvider _) => new DefaultCircuitBreakerPolicyEventHandler();
             return httpClientBuilder.AddCircuitBreakerPolicyCore(
@@ -43,7 +45,9 @@ namespace DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker.Extensions
             Action<CircuitBreakerOptions> configureOptions)
         {
             if (httpClientBuilder is null)
+            {
                 throw new ArgumentNullException(nameof(httpClientBuilder));
+            }
 
             static ICircuitBreakerPolicyEventHandler EventHandlerFactory(IServiceProvider _) => new DefaultCircuitBreakerPolicyEventHandler();
             return httpClientBuilder.AddCircuitBreakerPolicyCore(
@@ -65,7 +69,9 @@ namespace DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker.Extensions
             where TPolicyEventHandler : class, ICircuitBreakerPolicyEventHandler
         {
             if (httpClientBuilder is null)
+            {
                 throw new ArgumentNullException(nameof(httpClientBuilder));
+            }
 
             httpClientBuilder.Services.TryAddSingleton<TPolicyEventHandler>();
             static ICircuitBreakerPolicyEventHandler EventHandlerFactory(IServiceProvider provider) => provider.GetRequiredService<TPolicyEventHandler>();
@@ -88,7 +94,9 @@ namespace DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker.Extensions
             where TPolicyEventHandler : class, ICircuitBreakerPolicyEventHandler
         {
             if (httpClientBuilder is null)
+            {
                 throw new ArgumentNullException(nameof(httpClientBuilder));
+            }
 
             httpClientBuilder.Services.TryAddSingleton<TPolicyEventHandler>();
             static ICircuitBreakerPolicyEventHandler EventHandlerFactory(IServiceProvider provider) => provider.GetRequiredService<TPolicyEventHandler>();
@@ -111,7 +119,9 @@ namespace DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker.Extensions
             Func<IServiceProvider, ICircuitBreakerPolicyEventHandler> eventHandlerFactory)
         {
             if (httpClientBuilder is null)
+            {
                 throw new ArgumentNullException(nameof(httpClientBuilder));
+            }
 
             return httpClientBuilder.AddCircuitBreakerPolicyCore(
                 optionsName: optionsName,
@@ -132,7 +142,9 @@ namespace DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker.Extensions
             Func<IServiceProvider, ICircuitBreakerPolicyEventHandler> eventHandlerFactory)
         {
             if (httpClientBuilder is null)
+            {
                 throw new ArgumentNullException(nameof(httpClientBuilder));
+            }
 
             return httpClientBuilder.AddCircuitBreakerPolicyCore(
                 optionsName: null,
