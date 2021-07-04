@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker.Events;
@@ -27,6 +27,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker
                     samplingDuration: TimeSpan.FromSeconds(options.SamplingDurationInSecs),
                     minimumThroughput: options.MinimumThroughput,
                     durationOfBreak: TimeSpan.FromSeconds(options.DurationOfBreakInSecs),
+#pragma warning disable VSTHRD101 // Avoid unsupported async delegates
                     onBreak: async (lastOutcome, previousState, breakDuration, context) =>
                     {
                         var breakEvent = new BreakEvent(
@@ -48,6 +49,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker
                         var halfOpenEvent = new HalfOpenEvent(httpClientName, options);
                         await policyEventHandler.OnHalfOpenAsync(halfOpenEvent);
                     });
+#pragma warning restore VSTHRD101 // Avoid unsupported async delegates
             var circuitBreakerCheckerPolicy = CircuitBreakerCheckerAsyncPolicy.Create(
                 circuitBreakerPolicy: circuitBreakerPolicy,
                 fallbackValueFactory: (circuitBreakerState, context, cancellationToken) =>

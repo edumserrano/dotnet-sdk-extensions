@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -25,6 +25,9 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Auxiliary
 
         public Task<HttpResponseMessage> TriggerFromExceptionAsync(Exception exception)
         {
+            if (exception == null)
+                throw new ArgumentNullException(nameof(exception));
+
             var requestPath = $"/retry/exception/{exception.GetType().Name}";
             _testHttpMessageHandler.HandleException(requestPath, exception);
             return _httpClient.GetAsync(requestPath);
@@ -50,7 +53,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Auxiliary
             _testHttpMessageHandler.MockHttpResponse(builder =>
             {
                 builder
-                    .Where(httpRequestMessage => httpRequestMessage.RequestUri!.ToString().Contains(requestPath))
+                    .Where(httpRequestMessage => httpRequestMessage.RequestUri!.ToString().Contains(requestPath, StringComparison.OrdinalIgnoreCase))
                     .RespondWith(response);
             });
             return await _httpClient.GetAsync(requestPath);

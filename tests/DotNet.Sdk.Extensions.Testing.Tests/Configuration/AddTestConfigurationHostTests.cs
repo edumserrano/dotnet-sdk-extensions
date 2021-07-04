@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Linq;
 using DotNet.Sdk.Extensions.Testing.Configuration;

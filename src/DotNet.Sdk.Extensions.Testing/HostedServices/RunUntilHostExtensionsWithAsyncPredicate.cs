@@ -19,7 +19,8 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
             this IHost host,
             RunUntilPredicateAsync predicateAsync)
         {
-            if (host is null) throw new ArgumentNullException(nameof(host));
+            if (host is null)
+                throw new ArgumentNullException(nameof(host));
 
             var configureOptionsAction = new Action<RunUntilOptions>(DefaultConfigureOptionsDelegate);
             return host.RunUntilAsync(predicateAsync, configureOptionsAction);
@@ -43,8 +44,10 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
             RunUntilPredicateAsync predicateAsync,
             Action<RunUntilOptions> configureOptions)
         {
-            if (host is null) throw new ArgumentNullException(nameof(host));
-            if (configureOptions is null) throw new ArgumentNullException(nameof(configureOptions));
+            if (host is null)
+                throw new ArgumentNullException(nameof(host));
+            if (configureOptions is null)
+                throw new ArgumentNullException(nameof(configureOptions));
 
             var defaultOptions = new RunUntilOptions();
             configureOptions(defaultOptions);

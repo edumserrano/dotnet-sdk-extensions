@@ -1,4 +1,3 @@
-using System.Globalization;
 using Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http;
 
 namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers
@@ -17,7 +16,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers
 
         public override string ToString()
         {
-            var scheme = Scheme.ToString().ToLower(CultureInfo.InvariantCulture);
+            var scheme = Scheme.ToString().ToLowerInvariant();
             return $"{scheme}://*:{Port}";
         }
     }

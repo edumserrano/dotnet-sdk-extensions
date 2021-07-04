@@ -1,4 +1,3 @@
-using System.Globalization;
 using Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http;
 
 namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers
@@ -6,7 +5,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers
     /// <summary>
     /// Represents an URL where the HTTP mock server is listening.
     /// </summary>
-    public readonly struct HttpMockServerUrl
+    public record HttpMockServerUrl
     {
         private readonly string _url;
 
@@ -15,7 +14,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers
             Scheme = scheme;
             Host = host;
             Port = port;
-            _url = $"{scheme.ToString().ToLower(CultureInfo.InvariantCulture)}://{host}:{port}";
+            _url = $"{scheme.ToString().ToLowerInvariant()}://{host}:{port}";
         }
 
         /// <summary>
@@ -43,6 +42,9 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers
         /// Implicitly calls ToString().
         /// </summary>
         /// <param name="url">The <see cref="HttpMockServerUrl"/> to convert.</param>
-        public static implicit operator string(HttpMockServerUrl url) => url.ToString();
+        public static implicit operator string(HttpMockServerUrl url)
+        {
+            return url is null ? string.Empty : url.ToString();
+        }
     }
 }

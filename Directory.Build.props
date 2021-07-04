@@ -1,16 +1,64 @@
 <Project>
-    <PropertyGroup>
-        <Nullable>enable</Nullable>
-        <LangVersion>latest</LangVersion>
+  <PropertyGroup>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
 
-        <!-- Enable deterministic builds as per https://github.com/clairernovotny/DeterministicBuilds.Recommended when using sourcelink -->
-        <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
-        <TreatWarningsAsErrors Condition="'$(GITHUB_ACTIONS)' == 'true'">true</TreatWarningsAsErrors>
-        <!-- <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-        <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild> -->
-        <!-- <CodeAnalysisTreatWarningsAsErrors>true</CodeAnalysisTreatWarningsAsErrors> -->
-        <!-- <EnableNETAnalyzers>true</EnableNETAnalyzers> -->
-        <!-- <AnalysisMode>AllEnabledByDefault</AnalysisMode> -->
-        <!-- <AnalysisLevel>latest</AnalysisLevel> -->
-    </PropertyGroup>
+    <!-- Enable deterministic builds as per https://github.com/clairernovotny/DeterministicBuilds.Recommended when using sourcelink -->
+    <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
+    <!-- <TreatWarningsAsErrors Condition="'$(GITHUB_ACTIONS)' == 'true'">true</TreatWarningsAsErrors> -->
+
+    <!-- <WarningsAsErrors>nullable;</WarningsAsErrors> -->
+
+    <!-- <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild> -->
+    <!-- <TreatWarningsAsErrors>true</TreatWarningsAsErrors> -->
+
+    <!-- <CodeAnalysisTreatWarningsAsErrors>true</CodeAnalysisTreatWarningsAsErrors> -->
+    <!-- <EnableNETAnalyzers>true</EnableNETAnalyzers> -->
+    <!-- <AnalysisMode>AllEnabledByDefault</AnalysisMode> -->
+    <!-- <AnalysisLevel>latest</AnalysisLevel> -->
+
+    <AnalysisLevel>latest</AnalysisLevel>
+    <AnalysisMode>AllEnabledByDefault</AnalysisMode>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="5.0.3">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+
+    <!-- <PackageReference Include="AsyncFixer" Version="1.5.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="xunit.analyzers" Version="0.10.0" />
+    <PackageReference Include="NSubstitute.Analyzers.CSharp" Version="1.0.14" /> -->
+    <!-- <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="16.10.56">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference> -->
+    <!-- <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference> -->
+    <!-- <PackageReference Include="Roslynator.Analyzers" Version="3.2.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Roslynator.CodeAnalysis.Analyzers" Version="1.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Roslynator.Formatting.Analyzers" Version="1.2.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="SonarAnalyzer.CSharp" Version="8.25.0.33663">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="SecurityCodeScan.VS2019" Version="5.1.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference> -->
+  </ItemGroup>
 </Project>

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.ResponseMocking;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,6 +29,4 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers.Res
                 });
         }
     }
-
-
 }

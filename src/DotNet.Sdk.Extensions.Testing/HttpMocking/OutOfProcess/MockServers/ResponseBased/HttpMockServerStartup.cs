@@ -1,4 +1,4 @@
-﻿using DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers.ResponseBased.Middlewares;
+using DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers.ResponseBased.Middlewares;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -6,7 +6,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers.Res
 {
     internal class HttpMockServerStartup
     {
-        public static void ConfigureServices(IServiceCollection services)
+        public void ConfigureServices(IServiceCollection services)
         {
             services
                 .AddSingleton<DefaultResponseMiddleware>()
@@ -14,7 +14,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers.Res
 
         }
 
-        public static void Configure(IApplicationBuilder app)
+        public void Configure(IApplicationBuilder app)
         {
             app
                 .UseResponseMocks()

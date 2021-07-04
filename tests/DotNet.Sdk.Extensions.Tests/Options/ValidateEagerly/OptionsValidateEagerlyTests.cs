@@ -21,7 +21,7 @@ namespace DotNet.Sdk.Extensions.Tests.Options.ValidateEagerly
             optionsBuilderArgumentNullException.Message.ShouldBe("Value cannot be null. (Parameter 'optionsBuilder')");
         }
 
-        public class SomeOptions
+        private class SomeOptions
         {
             public string? Value { get; set; }
         }

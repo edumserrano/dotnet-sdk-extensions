@@ -31,6 +31,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers
         public void ValidateArguments2()
         {
             var handler = new TestHttpMessageHandler();
+            handler.Dispose();
             var exception = Should.Throw<ArgumentNullException>(() => handler.MockHttpResponse((Action<HttpResponseMessageMockBuilder>)null!));
             exception.Message.ShouldBe("Value cannot be null. (Parameter 'configure')");
         }
@@ -57,13 +58,13 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers
         [Fact]
         public async Task NoMockMatches()
         {
-            var httpMockResponseMessage = new HttpResponseMessage(HttpStatusCode.OK);
-            var handler = new TestHttpMessageHandler();
+            using var httpMockResponseMessage = new HttpResponseMessage(HttpStatusCode.OK);
+            using var handler = new TestHttpMessageHandler();
             handler.MockHttpResponse(builder =>
             {
                 builder
-                    .Where(httpRequestMessage => httpRequestMessage.RequestUri!.Host.Equals("microsoft", StringComparison.Ordinal))
-                    .RespondWith(httpMockResponseMessage);
+                .Where(httpRequestMessage => httpRequestMessage.RequestUri!.Host.Equals("microsoft", StringComparison.Ordinal))
+                .RespondWith(httpMockResponseMessage);
             });
 
             using var request = new HttpRequestMessage(HttpMethod.Get, "https://test.com");
@@ -135,7 +136,6 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers
                         .Where(httpRequestMessage => httpRequestMessage.RequestUri!.Host.Equals("test.com", StringComparison.Ordinal))
                         .RespondWith(new HttpResponseMessage(HttpStatusCode.InternalServerError));
                 });
-
             using var request = new HttpRequestMessage(HttpMethod.Get, "https://test.com");
             using var httpMessageInvoker = new HttpMessageInvoker(handler);
             var httpResponseMessage = await httpMessageInvoker.SendAsync(request, CancellationToken.None);
@@ -150,7 +150,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers
         [Fact]
         public async Task MultipleMocks()
         {
-            var handler = new TestHttpMessageHandler()
+            using var handler = new TestHttpMessageHandler()
                 .MockHttpResponse(builder =>
                 {
                     builder

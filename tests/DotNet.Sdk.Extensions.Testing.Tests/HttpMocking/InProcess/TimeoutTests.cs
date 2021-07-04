@@ -9,7 +9,7 @@ using Xunit;
 namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess
 {
     [Trait("Category", XUnitCategories.HttpMockingInProcess)]
-    public class TimeoutTests : IClassFixture<TimeoutHttpResponseMockingWebApplicationFactory>, IDisposable
+    public sealed class TimeoutTests : IClassFixture<TimeoutHttpResponseMockingWebApplicationFactory>, IDisposable
     {
         private readonly TimeoutHttpResponseMockingWebApplicationFactory _webApplicationFactory;
 
@@ -236,7 +236,6 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess
         public void Dispose()
         {
             _webApplicationFactory.Dispose();
-            GC.SuppressFinalize(this);
         }
     }
 }

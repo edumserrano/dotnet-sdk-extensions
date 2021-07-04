@@ -121,7 +121,7 @@ namespace DotNet.Sdk.Extensions.Tests.Options
             optionsBuilderArgumentNullException.Message.ShouldBe("Value cannot be null. (Parameter 'optionsBuilder')");
         }
 
-        public class MyOptions
+        private class MyOptions
         {
             public string? SomeOption { get; set; }
         }

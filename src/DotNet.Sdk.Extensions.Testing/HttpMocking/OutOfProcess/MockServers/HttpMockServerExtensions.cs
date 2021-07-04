@@ -13,7 +13,8 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers
     {
         public static ICollection<string> GetServerAddresses(this IHost host)
         {
-            if (host is null) throw new ArgumentNullException(nameof(host));
+            if (host is null)
+                throw new ArgumentNullException(nameof(host));
 
             var server = host.Services.GetRequiredService<IServer>();
             var addressFeature = server.Features.Get<IServerAddressesFeature>();
@@ -28,11 +29,14 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers
              * - https://[::]
              *
              */
-            if (address is null) throw new ArgumentNullException(nameof(address));
+            if (address is null)
+                throw new ArgumentNullException(nameof(address));
 
             var split1 = address.Split("://");
             var schemeAsEnum = Enum.Parse<HttpScheme>(split1[0], ignoreCase: true);
-            var split2 = split1[1].Replace("[::]", "localhost").Split(":");
+            var split2 = split1[1]
+                .Replace("[::]", "localhost", StringComparison.OrdinalIgnoreCase)
+                .Split(":");
             var host = split2[0];
             var port = split2.Length > 1
                 ? int.Parse(split2[1], CultureInfo.InvariantCulture)

@@ -16,7 +16,8 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
         /// <returns>The <see cref="Task"/> that will execute the host until it's terminated.</returns>
         public static Task RunUntilTimeoutAsync<T>(this WebApplicationFactory<T> webApplicationFactory, TimeSpan timeout) where T : class
         {
-            if (webApplicationFactory is null) throw new ArgumentNullException(nameof(webApplicationFactory));
+            if (webApplicationFactory is null)
+                throw new ArgumentNullException(nameof(webApplicationFactory));
 
             static Task<bool> NoOpPredicateAsync() => Task.FromResult(false);
             var options = new RunUntilOptions { Timeout = timeout };
@@ -32,7 +33,8 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
         /// <returns>The <see cref="Task"/> that will execute the host until it's terminated.</returns>
         public static Task RunUntilTimeoutAsync(this IHost host, TimeSpan timeout)
         {
-            if (host is null) throw new ArgumentNullException(nameof(host));
+            if (host is null)
+                throw new ArgumentNullException(nameof(host));
 
             static Task<bool> NoOpPredicateAsync() => Task.FromResult(false);
             var options = new RunUntilOptions { Timeout = timeout };
@@ -45,8 +47,10 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
             RunUntilPredicateAsync predicateAsync,
             RunUntilOptions options)
         {
-            if (hostRunner is null) throw new ArgumentNullException(nameof(hostRunner));
-            if (options is null) throw new ArgumentNullException(nameof(options));
+            if (hostRunner is null)
+                throw new ArgumentNullException(nameof(hostRunner));
+            if (options is null)
+                throw new ArgumentNullException(nameof(options));
 
             await hostRunner.StartAsync();
             var hostRunController = new HostRunController(options);
@@ -64,8 +68,10 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
             RunUntilPredicateAsync predicateAsync,
             RunUntilOptions options)
         {
-            if (hostRunner is null) throw new ArgumentNullException(nameof(hostRunner));
-            if (options is null) throw new ArgumentNullException(nameof(options));
+            if (hostRunner is null)
+                throw new ArgumentNullException(nameof(hostRunner));
+            if (options is null)
+                throw new ArgumentNullException(nameof(options));
 
             await hostRunner.StartAsync();
             var hostRunController = new HostRunController(options);

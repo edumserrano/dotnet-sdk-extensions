@@ -21,7 +21,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
         public async Task RepliesAsConfigured2()
         {
             var helloHttpResponseMock = new HttpResponseMockBuilder()
-                  .Where(httpRequest => httpRequest.Path.Equals("/hello"))
+                  .Where(httpRequest => httpRequest.Path.Equals("/hello", StringComparison.OrdinalIgnoreCase))
                   .RespondWith(async (request, response, cancellationToken) =>
                   {
                       response.StatusCode = StatusCodes.Status201Created;
@@ -54,7 +54,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
         public async Task RepliesAsConfigured()
         {
             var helloHttpResponseMock = new HttpResponseMockBuilder()
-                  .Where(httpRequest => httpRequest.Path.Equals("/hello"))
+                  .Where(httpRequest => httpRequest.Path.Equals("/hello", StringComparison.OrdinalIgnoreCase))
                   .RespondWith(async (request, response, cancellationToken) =>
                   {
                       response.StatusCode = StatusCodes.Status201Created;
@@ -110,11 +110,11 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
         public async Task OrderMatters()
         {
             var httpResponseMock1 = new HttpResponseMockBuilder()
-                .Where(httpRequest => httpRequest.Path.Equals("/hello"))
+                .Where(httpRequest => httpRequest.Path.Equals("/hello", StringComparison.OrdinalIgnoreCase))
                 .RespondWith((request, response) => response.StatusCode = StatusCodes.Status401Unauthorized)
                 .Build();
             var httpResponseMock2 = new HttpResponseMockBuilder()
-                .Where(httpRequest => httpRequest.Path.Equals("/hello"))
+                .Where(httpRequest => httpRequest.Path.Equals("/hello", StringComparison.OrdinalIgnoreCase))
                 .RespondWith((request, response) => response.StatusCode = StatusCodes.Status403Forbidden)
                 .Build();
 
@@ -153,11 +153,11 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
         public async Task NoMocksMatch()
         {
             var httpResponseMock1 = new HttpResponseMockBuilder()
-                .Where(httpRequest => httpRequest.Path.Equals("/hello"))
+                .Where(httpRequest => httpRequest.Path.Equals("/hello", StringComparison.OrdinalIgnoreCase))
                 .RespondWith((request, response) => response.StatusCode = StatusCodes.Status200OK)
                 .Build();
             var httpResponseMock2 = new HttpResponseMockBuilder()
-                .Where(httpRequest => httpRequest.Path.Equals("/bye"))
+                .Where(httpRequest => httpRequest.Path.Equals("/bye", StringComparison.OrdinalIgnoreCase))
                 .RespondWith((request, response) => response.StatusCode = StatusCodes.Status200OK)
                 .Build();
 

@@ -1,3 +1,4 @@
+using System;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -43,19 +44,21 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
         /// It's a very basic Startup class but you could use whatever asp.net core configuration
         /// you would like such as adding controllers.
         /// </summary>
-        public class MyMockStartup
+        private class MyMockStartup
         {
 #pragma warning disable IDE0060 // Remove unused parameter
+#pragma warning disable CA1801 // Review unused parameters
             public static void ConfigureServices(IServiceCollection services)
+#pragma warning restore CA1801 // Review unused parameters
 #pragma warning restore IDE0060 // Remove unused parameter
             {
             }
 
-            public static void Configure(IApplicationBuilder app)
+            public void Configure(IApplicationBuilder app)
             {
                 app.Use(async (httpContext, next) =>
                 {
-                    if (!httpContext.Request.Path.Equals("/hello"))
+                    if (!httpContext.Request.Path.Equals("/hello", StringComparison.OrdinalIgnoreCase))
                     {
                         await next();
                         return;

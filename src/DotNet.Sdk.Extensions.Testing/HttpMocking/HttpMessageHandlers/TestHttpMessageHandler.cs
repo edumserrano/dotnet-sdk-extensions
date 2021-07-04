@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
@@ -22,7 +22,8 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers
         /// <returns>The <see cref="TestHttpMessageHandler"/> for chaining.</returns>
         public TestHttpMessageHandler MockHttpResponse(Action<HttpResponseMessageMockBuilder> configure)
         {
-            if (configure is null) throw new ArgumentNullException(nameof(configure));
+            if (configure is null)
+                throw new ArgumentNullException(nameof(configure));
 
             var httpResponseMockBuilder = new HttpResponseMessageMockBuilder();
             configure(httpResponseMockBuilder);
@@ -39,7 +40,8 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers
         /// <returns>The <see cref="TestHttpMessageHandler"/> for chaining.</returns>
         public TestHttpMessageHandler MockHttpResponse(HttpResponseMessageMock httpResponseMock)
         {
-            if (httpResponseMock is null) throw new ArgumentNullException(nameof(httpResponseMock));
+            if (httpResponseMock is null)
+                throw new ArgumentNullException(nameof(httpResponseMock));
 
             _httpResponseMocks.Add(httpResponseMock);
             return this;
@@ -53,6 +55,9 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers
         /// <returns></returns>
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
+            if (request is null)
+                throw new ArgumentNullException(nameof(request));
+
             foreach (var httpResponseMock in _httpResponseMocks)
             {
                 var responseMockResult = await httpResponseMock.ExecuteAsync(request, cancellationToken);
@@ -61,6 +66,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers
                     return responseMockResult.HttpResponseMessage;
                 }
             }
+
             throw new InvalidOperationException($"No response mock defined for {request.Method} to {request.RequestUri}.");
         }
     }

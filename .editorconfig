@@ -78,11 +78,67 @@ indent_style = tab
 # https://docs.microsoft.com/dotnet/fundamentals/code-analysis/configuration-options#scope
 ##########################################
 
-[*.{cs,csx,cake,vb,vbx}]
+[*cs]
 # Default Severity for all .NET Code Style rules below
-dotnet_analyzer_diagnostic.severity = warning
-# CA1711: Identifiers should not have incorrect suffix
-dotnet_diagnostic.CA1711.severity = none
+# dotnet_analyzer_diagnostic.severity = warning
+
+
+
+# Rules for Microsoft.VisualStudio.Threading.Analyzers
+# See https://github.com/microsoft/vs-threading/blob/main/doc/analyzers/index.md
+[.cs]
+dotnet_diagnostic.VSTHRD111.severity = none         # VSTHRD111 Use .ConfigureAwait(bool)
+[tests/**/*.cs]
+dotnet_diagnostic.VSTHRD200.severity = suggestion   # VSTHRD200 Use Async suffix for async methods
+
+##########################################
+# Code quality rules https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/
+# .NET code analysis provides rules that aim to improve code quality. The rules are organized into areas
+# such as design, globalization, performance, and security. Certain rules are specific to .NET API usage,
+# while others are about generic code quality.
+#
+# The following is an opt out configuration for setting AnalysisMode to AllEnabledByDefault.
+# This is the most aggressive mode. All rules are enabled as build warnings. You can selectively opt out
+# of individual rules to disable them.#
+# https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/overview#enable-additional-rules
+##########################################
+[*.cs]
+# Design rules https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/design-warnings
+dotnet_diagnostic.CA1014.severity = none        # CA1014: Mark assemblies with CLSCompliantAttribute
+dotnet_diagnostic.CA1030.severity = silent      # CA1030: Use events where appropriate
+dotnet_diagnostic.CA1032.severity = none        # CA1032: Implement standard exception constructors
+dotnet_diagnostic.CA1052.severity = silent      # CA1052: Static holder types should be Static or NotInheritable
+
+# Documentation rules https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/documentation-warnings
+
+# Globalization rules https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/globalization-warnings
+dotnet_diagnostic.CA1308.severity = none        # CA1308: Normalize strings to uppercase
+
+# Portability and interoperability rules https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/interoperability-warnings
+
+# Maintainability rules https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/maintainability-warnings
+dotnet_diagnostic.CA1508.severity = none        # CA1508: Avoid dead conditional code # This one seems to be bugged in some cases
+
+# Naming rules https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/naming-warnings
+dotnet_diagnostic.CA1711.severity = none        # CA1711: Identifiers should not have incorrect suffix
+
+# Performance rules https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/performance-warnings
+dotnet_diagnostic.CA1812.severity = suggestion  # CA1812: Avoid uninstantiated internal classes
+dotnet_diagnostic.CA1822.severity = suggestion  # CA1822: Mark members as static
+
+# SingleFile rules https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/singlefile-warnings
+
+# Reliability rules https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/reliability-warnings
+[tests/**/*.cs]
+dotnet_diagnostic.CA2000.severity = suggestion  # CA2000: Dispose objects before losing scope
+[*.cs]
+dotnet_diagnostic.CA2007.severity = none        # CA2007: Do not directly await a Task
+
+# Security rules https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/security-warnings
+
+# Usage rules https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/usage-warnings
+dotnet_diagnostic.CA1816.severity = none        # CA1816: Call GC.SuppressFinalize correctly
+dotnet_diagnostic.CA2234.severity = none        # CA2234: Pass System.Uri objects instead of strings
 
 ##########################################
 # Language Rules
@@ -91,7 +147,7 @@ dotnet_diagnostic.CA1711.severity = none
 
 # .NET Style Rules
 # https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/language-rules#net-style-rules
-[*.{cs,csx,cake,vb,vbx}]
+[*.cs]
 # "this." and "Me." qualifiers
 dotnet_style_qualification_for_field = false:warning
 dotnet_style_qualification_for_property = false:warning
@@ -134,6 +190,7 @@ dotnet_style_operator_placement_when_wrapping = beginning_of_line
 # https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/language-rules#c-style-rules
 [*.{cs,csx,cake}]
 # 'var' preferences
+dotnet_diagnostic.IDE0008.severity = none # IDE0008: Use explicit type instead of 'var'
 csharp_style_var_for_built_in_types = true:warning
 csharp_style_var_when_type_is_apparent = true:warning
 csharp_style_var_elsewhere = true:warning
@@ -173,8 +230,7 @@ dotnet_diagnostic.IDE0090.severity = suggestion
 csharp_style_throw_expression = true:warning
 csharp_style_conditional_delegate_call = true:warning
 # Code block preferences
-csharp_prefer_braces = true:suggestion
-dotnet_diagnostic.IDE0011.severity = suggestion
+csharp_prefer_braces = true:warning
 csharp_prefer_simple_using_statement = true:warning
 # 'using' directive preferences
 csharp_using_directive_placement = outside_namespace:warning
@@ -256,7 +312,7 @@ csharp_space_between_empty_square_brackets = false
 csharp_space_between_square_brackets = false
 # Wrap options
 # https://docs.microsoft.com/visualstudio/ide/editorconfig-formatting-conventions#wrap-options
-csharp_preserve_single_line_statements = true
+csharp_preserve_single_line_statements = false
 csharp_preserve_single_line_blocks = true
 
 ##########################################
@@ -383,7 +439,6 @@ dotnet_naming_symbols.sanity_check_uncovered_field_case_group.applicable_kinds  
 dotnet_naming_rule.sanity_check_uncovered_field_case_rule.symbols  = sanity_check_uncovered_field_case_group
 dotnet_naming_rule.sanity_check_uncovered_field_case_rule.style    = internal_error_style
 dotnet_naming_rule.sanity_check_uncovered_field_case_rule.severity = error
-
 
 ##########################################
 # Other Naming Rules

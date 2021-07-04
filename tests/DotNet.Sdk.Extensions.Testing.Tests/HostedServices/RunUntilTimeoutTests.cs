@@ -27,11 +27,11 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
         /// extension method.
         /// </summary>
         [Fact]
-        public void WebApplicationFactoryRunUntilTimeoutValidatesArguments()
+        public async Task WebApplicationFactoryRunUntilTimeoutValidatesArguments()
         {
-            var webApplicationFactoryArgumentNullException = Should.Throw<ArgumentNullException>(() =>
+            var webApplicationFactoryArgumentNullException = await Should.ThrowAsync<ArgumentNullException>(() =>
             {
-                RunUntilExtensions.RunUntilTimeoutAsync<StartupHostedService>(webApplicationFactory: null!, TimeSpan.FromSeconds(1));
+                return RunUntilExtensions.RunUntilTimeoutAsync<StartupHostedService>(webApplicationFactory: null!, TimeSpan.FromSeconds(1));
             });
             webApplicationFactoryArgumentNullException.Message.ShouldBe("Value cannot be null. (Parameter 'webApplicationFactory')");
         }
@@ -41,11 +41,11 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
         /// extension method.
         /// </summary>
         [Fact]
-        public void HostRunUntilTimeoutValidatesArguments()
+        public async Task HostRunUntilTimeoutValidatesArguments()
         {
-            var hostArgumentNullException = Should.Throw<ArgumentNullException>(() =>
+            var hostArgumentNullException = await Should.ThrowAsync<ArgumentNullException>(() =>
             {
-                RunUntilExtensions.RunUntilTimeoutAsync(host: null!, TimeSpan.FromSeconds(1));
+                return RunUntilExtensions.RunUntilTimeoutAsync(host: null!, TimeSpan.FromSeconds(1));
             });
             hostArgumentNullException.Message.ShouldBe("Value cannot be null. (Parameter 'host')");
         }

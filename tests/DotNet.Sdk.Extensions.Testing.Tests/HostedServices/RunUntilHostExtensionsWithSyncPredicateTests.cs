@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Testing.Configuration;
 using DotNet.Sdk.Extensions.Testing.HostedServices;

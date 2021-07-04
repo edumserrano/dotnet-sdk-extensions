@@ -7,6 +7,9 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary
     {
         public static object? GetInstanceField(this object instance, string fieldName)
         {
+            if (instance == null)
+                throw new ArgumentNullException(nameof(instance));
+
             var type = instance.GetType();
             return instance.GetInstanceField(type, fieldName);
         }
@@ -20,6 +23,9 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary
 
         public static T? GetInstanceField<T>(this object instance, string fieldName)
         {
+            if (instance == null)
+                throw new ArgumentNullException(nameof(instance));
+
             var type = instance.GetType();
             return instance.GetInstanceField<T>(type, fieldName);
         }
@@ -28,11 +34,17 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary
         // but from the base/derived class for instance
         public static T? GetInstanceField<T>(this object instance, Type type, string fieldName)
         {
+            if (instance == null)
+                throw new ArgumentNullException(nameof(instance));
+
             return (T?)GetInstanceField(type, instance, fieldName);
         }
 
         public static object? GetInstanceField(Type type, object instance, string fieldName)
         {
+            if (type == null)
+                throw new ArgumentNullException(nameof(type));
+
             var bindFlags = BindingFlags.Instance
                             | BindingFlags.Public
                             | BindingFlags.NonPublic
@@ -47,6 +59,9 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary
 
         public static object? GetInstanceProperty(this object instance, string propertyName)
         {
+            if (instance == null)
+                throw new ArgumentNullException(nameof(instance));
+
             var type = instance.GetType();
             return instance.GetInstanceProperty(type, propertyName);
         }
@@ -60,6 +75,9 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary
 
         public static T? GetInstanceProperty<T>(this object instance, string propertyName)
         {
+            if (instance == null)
+                throw new ArgumentNullException(nameof(instance));
+
             var type = instance.GetType();
             return instance.GetInstanceProperty<T>(type, propertyName);
         }
@@ -73,6 +91,9 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary
 
         public static object? GetInstanceProperty(Type type, object instance, string propertyName)
         {
+            if (type == null)
+                throw new ArgumentNullException(nameof(type));
+
             var bindFlags = BindingFlags.Instance
                             | BindingFlags.Public
                             | BindingFlags.NonPublic

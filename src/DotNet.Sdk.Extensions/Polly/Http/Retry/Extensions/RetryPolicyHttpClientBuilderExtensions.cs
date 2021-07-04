@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Net.Http;
 using DotNet.Sdk.Extensions.Polly.Http.Retry.Events;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,6 +22,9 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Retry.Extensions
             this IHttpClientBuilder httpClientBuilder,
             string optionsName)
         {
+            if (httpClientBuilder is null)
+                throw new ArgumentNullException(nameof(httpClientBuilder));
+
             return httpClientBuilder.AddRetryPolicyCore(
                 optionsName: optionsName,
                 configureOptions: null,
@@ -40,6 +43,9 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Retry.Extensions
             this IHttpClientBuilder httpClientBuilder,
             Action<RetryOptions> configureOptions)
         {
+            if (httpClientBuilder is null)
+                throw new ArgumentNullException(nameof(httpClientBuilder));
+
             return httpClientBuilder.AddRetryPolicyCore(
                 optionsName: null,
                 configureOptions: configureOptions,
@@ -60,6 +66,9 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Retry.Extensions
             string optionsName)
             where TPolicyEventHandler : class, IRetryPolicyEventHandler
         {
+            if (httpClientBuilder is null)
+                throw new ArgumentNullException(nameof(httpClientBuilder));
+
             httpClientBuilder.Services.TryAddSingleton<TPolicyEventHandler>();
             return httpClientBuilder.AddRetryPolicyCore(
                 optionsName: optionsName,
@@ -81,6 +90,9 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Retry.Extensions
             Action<RetryOptions> configureOptions)
             where TPolicyEventHandler : class, IRetryPolicyEventHandler
         {
+            if (httpClientBuilder is null)
+                throw new ArgumentNullException(nameof(httpClientBuilder));
+
             httpClientBuilder.Services.TryAddSingleton<TPolicyEventHandler>();
             return httpClientBuilder.AddRetryPolicyCore(
                 optionsName: null,
@@ -102,6 +114,9 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Retry.Extensions
             string optionsName,
             Func<IServiceProvider, IRetryPolicyEventHandler> eventHandlerFactory)
         {
+            if (httpClientBuilder is null)
+                throw new ArgumentNullException(nameof(httpClientBuilder));
+
             return httpClientBuilder.AddRetryPolicyCore(
                 optionsName: optionsName,
                 configureOptions: null,
@@ -120,6 +135,9 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Retry.Extensions
             Action<RetryOptions> configureOptions,
             Func<IServiceProvider, IRetryPolicyEventHandler> eventHandlerFactory)
         {
+            if (httpClientBuilder == null)
+                throw new ArgumentNullException(nameof(httpClientBuilder));
+
             return httpClientBuilder.AddRetryPolicyCore(
                 optionsName: null,
                 configureOptions: configureOptions,

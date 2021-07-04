@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Testing.HostedServices;
 using DotNet.Sdk.Extensions.Testing.Tests.HostedServices.Auxiliary;
@@ -47,7 +47,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
         public static TheoryData<HostedServicesWebApplicationFactory, RunUntilPredicateAsync, Action<RunUntilOptions>, Type, string> ValidateArgumentsWithOptionsData =>
             new TheoryData<HostedServicesWebApplicationFactory, RunUntilPredicateAsync, Action<RunUntilOptions>, Type, string>
             {
-                { null!, ()=>Task.FromResult(true), options => {} , typeof(ArgumentNullException), "Value cannot be null. (Parameter 'webApplicationFactory')" },
+                { null!, ()=>Task.FromResult(true), options => {}, typeof(ArgumentNullException), "Value cannot be null. (Parameter 'webApplicationFactory')" },
                 { new HostedServicesWebApplicationFactory(), null!, options => {}, typeof(ArgumentNullException), "Value cannot be null. (Parameter 'predicateAsync')" },
                 { new HostedServicesWebApplicationFactory(), ()=>Task.FromResult(true), null!, typeof(ArgumentNullException), "Value cannot be null. (Parameter 'configureOptions')" },
             };

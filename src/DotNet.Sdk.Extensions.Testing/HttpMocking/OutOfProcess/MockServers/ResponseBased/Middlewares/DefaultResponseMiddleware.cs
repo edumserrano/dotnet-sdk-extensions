@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -9,18 +9,18 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers.Res
     {
         public static IApplicationBuilder RunDefaultResponse(this IApplicationBuilder builder)
         {
-            if (builder is null) throw new ArgumentNullException(nameof(builder));
+            if (builder is null)
+                throw new ArgumentNullException(nameof(builder));
             return builder.UseMiddleware<DefaultResponseMiddleware>();
         }
     }
 
     internal class DefaultResponseMiddleware : IMiddleware
     {
-        public Task InvokeAsync(HttpContext httpContext, RequestDelegate next)
+        public async Task InvokeAsync(HttpContext httpContext, RequestDelegate next)
         {
             httpContext.Response.StatusCode = StatusCodes.Status501NotImplemented;
-            httpContext.Response.WriteAsync("Request did not match any of the provided mocks.");
-            return Task.CompletedTask;
+            await httpContext.Response.WriteAsync("Request did not match any of the provided mocks.");
         }
     }
 }

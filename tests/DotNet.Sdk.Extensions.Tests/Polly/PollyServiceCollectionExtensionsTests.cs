@@ -1,10 +1,10 @@
 ﻿using System;
-using Xunit;
 using DotNet.Sdk.Extensions.Polly;
 using Microsoft.Extensions.DependencyInjection;
 using Polly;
 using Polly.Registry;
 using Shouldly;
+using Xunit;
 
 namespace DotNet.Sdk.Extensions.Tests.Polly
 {

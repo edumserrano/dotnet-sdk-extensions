@@ -13,7 +13,7 @@ using Polly.CircuitBreaker;
 
 namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
 {
-    public class CircuitBreakerPolicyExecutor : IAsyncDisposable
+    public sealed class CircuitBreakerPolicyExecutor : IAsyncDisposable
     {
         private readonly HttpClient _httpClient;
         private readonly CircuitBreakerOptions _circuitBreakerOptions;
@@ -35,6 +35,9 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
 
         public async Task TriggerFromExceptionAsync<TException>(Exception exception) where TException : Exception
         {
+            if (exception == null)
+                throw new ArgumentNullException(nameof(exception));
+
             var requestPath = $"/circuit-breaker/exception/{exception.GetType().Name}";
             _testHttpMessageHandler.HandleException(requestPath, exception);
 
@@ -101,7 +104,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
             _testHttpMessageHandler.MockHttpResponse(builder =>
             {
                 builder
-                    .Where(httpRequestMessage => httpRequestMessage.RequestUri!.ToString().Contains(handledRequestPath))
+                    .Where(httpRequestMessage => httpRequestMessage.RequestUri!.ToString().Contains(handledRequestPath, StringComparison.OrdinalIgnoreCase))
                     .RespondWith(new HttpResponseMessage(HttpStatusCode.OK));
             });
             return handledRequestPath;

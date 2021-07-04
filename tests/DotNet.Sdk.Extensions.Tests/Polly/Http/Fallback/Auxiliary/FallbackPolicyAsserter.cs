@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -8,7 +9,6 @@ using DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary;
 using Polly.CircuitBreaker;
 using Polly.Timeout;
 using Shouldly;
-using System.Linq;
 
 namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Fallback.Auxiliary
 {

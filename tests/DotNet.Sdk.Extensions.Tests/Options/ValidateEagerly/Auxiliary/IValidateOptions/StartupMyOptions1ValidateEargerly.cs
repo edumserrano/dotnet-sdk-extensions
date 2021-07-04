@@ -25,7 +25,7 @@ namespace DotNet.Sdk.Extensions.Tests.Options.ValidateEagerly.Auxiliary.IValidat
                 .ValidateEagerly();
         }
 
-        public static void Configure(IApplicationBuilder app)
+        public void Configure(IApplicationBuilder app)
         {
             app
                 .UseRouting()
