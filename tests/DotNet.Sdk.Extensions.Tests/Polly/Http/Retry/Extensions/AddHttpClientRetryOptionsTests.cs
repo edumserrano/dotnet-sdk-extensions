@@ -1,4 +1,4 @@
-﻿using DotNet.Sdk.Extensions.Polly.Http.Retry;
+using DotNet.Sdk.Extensions.Polly.Http.Retry;
 using DotNet.Sdk.Extensions.Polly.Http.Retry.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -35,7 +35,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
                     options.RetryCount = retryCount;
                     options.MedianFirstRetryDelayInSecs = medianFirstRetryDelayInSecs;
                 });
-            using var serviceProvider = services.BuildServiceProvider();
+            var serviceProvider = services.BuildServiceProvider();
             var retryOptions = serviceProvider.GetHttpClientRetryOptions(optionsName);
             retryOptions.RetryCount.ShouldBe(retryCount);
             retryOptions.MedianFirstRetryDelayInSecs.ShouldBe(medianFirstRetryDelayInSecs);

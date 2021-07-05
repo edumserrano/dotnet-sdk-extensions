@@ -30,7 +30,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
             services
                 .AddHttpClientTimeoutOptions(optionsName)
                 .Configure(options => options.TimeoutInSecs = timeoutInSecs);
-            using var serviceProvider = services.BuildServiceProvider();
+            var serviceProvider = services.BuildServiceProvider();
             var timeoutOptions = serviceProvider.GetHttpClientTimeoutOptions(optionsName);
             timeoutOptions.TimeoutInSecs.ShouldBe(timeoutInSecs);
         }

@@ -20,10 +20,10 @@ namespace DotNet.Sdk.Extensions.Tests.Options
         [Fact]
         public void AddsOptionsType1()
         {
-            using var configuration = new ConfigurationRoot(new List<IConfigurationProvider>());
+            var configuration = new ConfigurationRoot(new List<IConfigurationProvider>());
             var serviceCollection = new ServiceCollection();
             serviceCollection.AddOptionsValue<MyOptions>(configuration);
-            using var serviceProvider = serviceCollection.BuildServiceProvider();
+            var serviceProvider = serviceCollection.BuildServiceProvider();
             var myOptions = serviceProvider.GetRequiredService<MyOptions>();
             myOptions.ShouldNotBeNull();
         }
@@ -35,7 +35,7 @@ namespace DotNet.Sdk.Extensions.Tests.Options
         [Fact]
         public void ValidatesArguments1()
         {
-            using var configuration = new ConfigurationRoot(new List<IConfigurationProvider>());
+            var configuration = new ConfigurationRoot(new List<IConfigurationProvider>());
             var servicesArgumentNullException = Should.Throw<ArgumentNullException>(() =>
             {
                 OptionsBuilderExtensions.AddOptionsValue<MyOptions>(services: null!, configuration);
@@ -59,11 +59,11 @@ namespace DotNet.Sdk.Extensions.Tests.Options
             };
             var memoryConfigurationProvider = new MemoryConfigurationProvider(memoryConfigurationSource);
             var configurationProviders = new List<IConfigurationProvider> { memoryConfigurationProvider };
-            using var configuration = new ConfigurationRoot(configurationProviders);
+            var configuration = new ConfigurationRoot(configurationProviders);
 
             var serviceCollection = new ServiceCollection();
             serviceCollection.AddOptionsValue<MyOptions>(configuration, sectionName: "MyOptionsSection");
-            using var serviceProvider = serviceCollection.BuildServiceProvider();
+            var serviceProvider = serviceCollection.BuildServiceProvider();
             var myOptions = serviceProvider.GetRequiredService<MyOptions>();
             myOptions.SomeOption.ShouldBe("some value");
         }
@@ -75,7 +75,7 @@ namespace DotNet.Sdk.Extensions.Tests.Options
         [Fact]
         public void ValidatesArguments2()
         {
-            using var configuration = new ConfigurationRoot(new List<IConfigurationProvider>());
+            var configuration = new ConfigurationRoot(new List<IConfigurationProvider>());
             var serviceCollection = new ServiceCollection();
             var servicesArgumentNullException = Should.Throw<ArgumentNullException>(() =>
             {
@@ -96,13 +96,13 @@ namespace DotNet.Sdk.Extensions.Tests.Options
         [Fact]
         public void AddsOptionsType3()
         {
-            using var configuration = new ConfigurationRoot(new List<IConfigurationProvider>());
+            var configuration = new ConfigurationRoot(new List<IConfigurationProvider>());
             var serviceCollection = new ServiceCollection();
             serviceCollection
                 .AddOptions<MyOptions>()
                 .Bind(configuration)
                 .AddOptionsValue();
-            using var serviceProvider = serviceCollection.BuildServiceProvider();
+            var serviceProvider = serviceCollection.BuildServiceProvider();
             var myOptions = serviceProvider.GetRequiredService<MyOptions>();
             myOptions.ShouldNotBeNull();
         }

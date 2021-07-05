@@ -1,4 +1,4 @@
-﻿using DotNet.Sdk.Extensions.Polly.Http.Resilience;
+using DotNet.Sdk.Extensions.Polly.Http.Resilience;
 using DotNet.Sdk.Extensions.Polly.Http.Resilience.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -45,7 +45,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                     options.CircuitBreaker.SamplingDurationInSecs = samplingDurationInSecs;
                     options.CircuitBreaker.MinimumThroughput = minimumThroughput;
                 });
-            using var serviceProvider = services.BuildServiceProvider();
+            var serviceProvider = services.BuildServiceProvider();
             var resilienceOptions = serviceProvider.GetHttpClientResilienceOptions(optionsName);
             resilienceOptions.Timeout.TimeoutInSecs.ShouldBe(timeoutInSecs);
             resilienceOptions.Retry.RetryCount.ShouldBe(retryCount);
@@ -86,7 +86,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                     options.CircuitBreaker.SamplingDurationInSecs = samplingDurationInSecs;
                     options.CircuitBreaker.MinimumThroughput = minimumThroughput;
                 });
-            using var serviceProvider = services.BuildServiceProvider();
+            var serviceProvider = services.BuildServiceProvider();
             var resilienceOptions = serviceProvider.GetHttpClientResilienceOptions(optionsName);
             resilienceOptions.Timeout.TimeoutInSecs.ShouldBe(timeoutInSecs);
             resilienceOptions.Retry.RetryCount.ShouldBe(retryCount);

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers;
@@ -22,11 +22,11 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
         [Fact]
         public async Task ProvidesTwoUrlsByDefault()
         {
-            await using var mock = new HttpMockServerBuilder()
+            await using var httpMockServer = new HttpMockServerBuilder()
                 .UseDefaultLogLevel(LogLevel.Critical)
                 .UseHttpResponseMocks()
                 .Build();
-            var urls = await mock.StartAsync();
+            var urls = await httpMockServer.StartAsync();
 
             urls.Count.ShouldBe(2);
             urls[0].Scheme.ShouldBe(HttpScheme.Http);
@@ -41,12 +41,12 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
         [Fact]
         public async Task RepliesAsConfigured()
         {
-            await using var mock = new HttpMockServerBuilder()
+            await using var httpMockServer = new HttpMockServerBuilder()
                 .UseDefaultLogLevel(LogLevel.Critical)
                 .UseHttpResponseMocks()
                 .Build();
-            await mock.StartAsync();
-            var exception = await Should.ThrowAsync<InvalidOperationException>(mock.StartAsync());
+            await httpMockServer.StartAsync();
+            var exception = await Should.ThrowAsync<InvalidOperationException>(httpMockServer.StartAsync());
             exception.Message.ShouldBe("The HttpMockServer has already been started.");
         }
 
@@ -57,7 +57,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
         [Fact]
         public async Task AllowsMultipleUrlsToBeConfigured()
         {
-            await using var mock = new HttpMockServerBuilder()
+            await using var httpMockServer = new HttpMockServerBuilder()
                 .UseDefaultLogLevel(LogLevel.Critical)
                 .UseUrl(HttpScheme.Http, 6011)
                 .UseUrl(HttpScheme.Http, 6022)
@@ -65,7 +65,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
                 .UseUrl(HttpScheme.Https, 7012)
                 .UseHttpResponseMocks()
                 .Build();
-            var urls = await mock.StartAsync();
+            var urls = await httpMockServer.StartAsync();
 
             urls.Count.ShouldBe(4);
             urls[0].ToString().ShouldBe("http://localhost:6011");
@@ -83,12 +83,12 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
         [Fact]
         public async Task UsesHostArgs()
         {
-            await using var mock = new HttpMockServerBuilder()
+            await using var httpMockServer = new HttpMockServerBuilder()
                 .UseDefaultLogLevel(LogLevel.Critical)
                 .UseHostArgs("--urls", "http://*:5011;https://*:6011")
                 .UseHttpResponseMocks()
                 .Build();
-            var urls = await mock.StartAsync();
+            var urls = await httpMockServer.StartAsync();
 
             urls.Count.ShouldBe(2);
             urls[0].ToString().ShouldBe("http://localhost:5011");
@@ -129,15 +129,15 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
         [Fact]
         public async Task UsesHostArgsCanBeRepeated()
         {
-            await using var mock = new HttpMockServerBuilder()
+            await using var httpMockServer = new HttpMockServerBuilder()
                 .UseDefaultLogLevel(LogLevel.Critical)
                 .UseHostArgs("--config1", "value1")
                 .UseHostArgs("--config2", "value2")
                 .UseHttpResponseMocks()
                 .Build();
-            _ = await mock.StartAsync();
+            _ = await httpMockServer.StartAsync();
 
-            var configuration = mock.Host!.Services.GetRequiredService<IConfiguration>();
+            var configuration = httpMockServer.Host!.Services.GetRequiredService<IConfiguration>();
             configuration["config1"].ShouldBe("value1");
             configuration["config2"].ShouldBe("value2");
         }

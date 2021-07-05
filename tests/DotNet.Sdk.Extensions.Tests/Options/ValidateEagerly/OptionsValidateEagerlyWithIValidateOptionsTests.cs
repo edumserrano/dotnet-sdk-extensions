@@ -30,7 +30,7 @@ namespace DotNet.Sdk.Extensions.Tests.Options.ValidateEagerly
                 {
                     webBuilder
                         .UseLocalhostWithRandomPort()
-                        .UseStartup<StartupMyOptions1ValidateEargerly>();
+                        .UseStartup<StartupMyOptions1ValidateEagerly>();
                 })
                 .Build();
             var validationException = await Should.ThrowAsync<ValidationException>(host.StartAsync());
@@ -62,7 +62,7 @@ namespace DotNet.Sdk.Extensions.Tests.Options.ValidateEagerly
                 {
                     webBuilder
                         .UseLocalhostWithRandomPort()
-                        .UseStartup<StartupMyOptions1ValidateEargerly>();
+                        .UseStartup<StartupMyOptions1ValidateEagerly>();
                 })
                 .Build();
             Should.NotThrow(async () => await host.StartAsync());

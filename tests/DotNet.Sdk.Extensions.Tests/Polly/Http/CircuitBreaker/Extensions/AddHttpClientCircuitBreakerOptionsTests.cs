@@ -1,4 +1,4 @@
-﻿using DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker;
+using DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker;
 using DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -39,7 +39,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
                     options.MinimumThroughput = minimumThroughput;
                     options.SamplingDurationInSecs = samplingDurationInSecs;
                 });
-            using var serviceProvider = services.BuildServiceProvider();
+            var serviceProvider = services.BuildServiceProvider();
             var circuitBreakerOptions = serviceProvider.GetHttpClientCircuitBreakerOptions(optionsName);
             circuitBreakerOptions.DurationOfBreakInSecs.ShouldBe(durationOfBreakInSecs);
             circuitBreakerOptions.FailureThreshold.ShouldBe(failureThreshold);

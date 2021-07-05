@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Testing.HostedServices;
 using DotNet.Sdk.Extensions.Testing.Tests.HostedServices.Auxiliary;
@@ -87,7 +87,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
                 .Returns(1)
                 .AndDoes(info => ++callCount);
 
-            using var webApplicationFactory = new HostedServicesWebApplicationFactory();
+            var webApplicationFactory = new HostedServicesWebApplicationFactory();
             await webApplicationFactory
                 .WithWebHostBuilder(builder =>
                 {
@@ -117,7 +117,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
                 .Returns(1)
                 .AndDoes(info => ++callCount);
 
-            using var webApplicationFactory = new HostedServicesWebApplicationFactory()
+            var webApplicationFactory = new HostedServicesWebApplicationFactory()
                 .WithWebHostBuilder(builder =>
                 {
                     builder.ConfigureTestServices(services =>
@@ -150,7 +150,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
                 .Returns(1)
                 .AndDoes(info => ++callCount);
 
-            using var webApplicationFactory = new HostedServicesWebApplicationFactory()
+            var webApplicationFactory = new HostedServicesWebApplicationFactory()
                 .WithWebHostBuilder(builder =>
                 {
                     builder.ConfigureTestServices(services =>

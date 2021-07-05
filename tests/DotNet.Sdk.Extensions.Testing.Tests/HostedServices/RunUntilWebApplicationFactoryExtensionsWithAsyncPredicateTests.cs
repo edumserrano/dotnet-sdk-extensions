@@ -87,7 +87,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
                 .Returns(1)
                 .AndDoes(info => ++callCount);
 
-            using var webApplicationFactory = new HostedServicesWebApplicationFactory();
+            var webApplicationFactory = new HostedServicesWebApplicationFactory();
             await webApplicationFactory
                 .WithWebHostBuilder(builder =>
                 {
@@ -110,23 +110,8 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
         [Fact]
         public async Task TimeoutOption()
         {
-            var callCount = 0;
-            var calculator = Substitute.For<ICalculator>();
-            calculator
-                .Sum(Arg.Any<int>(), Arg.Any<int>())
-                .Returns(1)
-                .AndDoes(info => ++callCount);
-
-            using var webApplicationFactory = new HostedServicesWebApplicationFactory()
-                .WithWebHostBuilder(builder =>
-                {
-                    builder.ConfigureTestServices(services =>
-                    {
-                        services.AddSingleton(calculator);
-                    });
-                });
-
-            var runUntilTask = webApplicationFactory.RunUntilAsync(() => Task.FromResult(callCount >= 4), options => options.Timeout = TimeSpan.FromSeconds(1));
+            var webApplicationFactory = new HostedServicesWebApplicationFactory();
+            var runUntilTask = webApplicationFactory.RunUntilAsync(() => false /*run forever*/, options => options.Timeout = TimeSpan.FromSeconds(1));
             var exception = await Should.ThrowAsync<RunUntilException>(runUntilTask);
             exception.Message.ShouldBe("RunUntilExtensions.RunUntilAsync timed out after 00:00:01. This means the Host was shutdown before the RunUntilExtensions.RunUntilAsync predicate returned true. If that's what you intended, if you want to run the Host for a set period of time consider using RunUntilExtensions.RunUntilTimeoutAsync instead.");
         }
@@ -150,7 +135,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
                 .Returns(1)
                 .AndDoes(info => ++callCount);
 
-            using var webApplicationFactory = new HostedServicesWebApplicationFactory()
+            var webApplicationFactory = new HostedServicesWebApplicationFactory()
                 .WithWebHostBuilder(builder =>
                 {
                     builder.ConfigureTestServices(services =>

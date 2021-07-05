@@ -5,14 +5,14 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace DotNet.Sdk.Extensions.Tests.Options.ValidateEagerly.Auxiliary.DataAnnotations
+namespace DotNet.Sdk.Extensions.Tests.Options.ValidateEagerly.Auxiliary.StartupValidation
 {
     [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Ignore for Startup type classes.")]
-    public class StartupMyOptions2ValidateEagerly
+    public class StartupMyOptions3ValidateEagerly
     {
         private readonly IConfiguration _configuration;
 
-        public StartupMyOptions2ValidateEagerly(IConfiguration configuration)
+        public StartupMyOptions3ValidateEagerly(IConfiguration configuration)
         {
             _configuration = configuration;
         }
@@ -20,9 +20,16 @@ namespace DotNet.Sdk.Extensions.Tests.Options.ValidateEagerly.Auxiliary.DataAnno
         public void ConfigureServices(IServiceCollection services)
         {
             services
-                .AddOptions<MyOptions2>()
+                .AddOptions<MyOptions3>()
                 .Bind(_configuration)
-                .ValidateDataAnnotations()
+                .Validate(options =>
+                {
+                    if (options.SomeOption > 1)
+                    {
+                        return true;
+                    }
+                    return false;
+                })
                 .ValidateEagerly();
         }
 
@@ -34,8 +41,8 @@ namespace DotNet.Sdk.Extensions.Tests.Options.ValidateEagerly.Auxiliary.DataAnno
                 {
                     endpoints.MapGet("/", async context =>
                     {
-                        var myOptions = context.RequestServices.GetRequiredService<MyOptions2>();
-                        await context.Response.WriteAsync(myOptions.SomeOption);
+                        var myOptions = context.RequestServices.GetRequiredService<MyOptions3>();
+                        await context.Response.WriteAsync($"{myOptions.SomeOption}");
                     });
                 });
         }
