@@ -234,7 +234,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
             services
                 .AddHttpClient(httpClientName)
                 .ConfigureHttpClient(client => client.BaseAddress = new Uri("https://github.com"))
-                .AddCircuitBreakerPolicy(optionsName, provider =>
+                .AddCircuitBreakerPolicy(optionsName, _ =>
                 {
                     return new TestCircuitBreakerPolicyEventHandler(circuitBreakerPolicyEventHandlerCalls);
                 })
@@ -281,7 +281,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
                         options.FailureThreshold = circuitBreakerOptions.FailureThreshold;
                         options.MinimumThroughput = circuitBreakerOptions.MinimumThroughput;
                     },
-                    eventHandlerFactory: provider =>
+                    eventHandlerFactory: _ =>
                     {
                         return new TestCircuitBreakerPolicyEventHandler(circuitBreakerPolicyEventHandlerCalls);
                     })

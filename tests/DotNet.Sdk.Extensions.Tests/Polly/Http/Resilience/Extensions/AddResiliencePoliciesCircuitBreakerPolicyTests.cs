@@ -280,7 +280,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             services
                 .AddHttpClient(httpClientName)
                 .ConfigureHttpClient(client => client.BaseAddress = new Uri("https://github.com"))
-                .AddResiliencePolicies(optionsName, provider =>
+                .AddResiliencePolicies(optionsName, _ =>
                 {
                     return new TestResiliencePoliciesEventHandler(resiliencePoliciesEventHandlerCalls);
                 })
@@ -336,7 +336,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                         options.CircuitBreaker.SamplingDurationInSecs = resilienceOptions.CircuitBreaker.SamplingDurationInSecs;
                         options.CircuitBreaker.MinimumThroughput = resilienceOptions.CircuitBreaker.MinimumThroughput;
                     },
-                    eventHandlerFactory: provider =>
+                    eventHandlerFactory: _ =>
                     {
                         return new TestResiliencePoliciesEventHandler(resiliencePoliciesEventHandlerCalls);
                     })

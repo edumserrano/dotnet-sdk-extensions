@@ -21,7 +21,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices.Auxiliary
         {
             return Host.CreateDefaultBuilder()
                 .UseDefaultLogLevel(LogLevel.Critical)
-                .ConfigureWebHostDefaults(webBuilder =>
+                .ConfigureWebHostDefaults(_ =>
                 {
 
                 });

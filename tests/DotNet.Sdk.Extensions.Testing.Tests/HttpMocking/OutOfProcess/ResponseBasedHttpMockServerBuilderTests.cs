@@ -22,7 +22,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
         {
             var helloHttpResponseMock = new HttpResponseMockBuilder()
                   .Where(httpRequest => httpRequest.Path.Equals("/hello", StringComparison.OrdinalIgnoreCase))
-                  .RespondWith(async (request, response, cancellationToken) =>
+                  .RespondWith(async (_, response, cancellationToken) =>
                   {
                       response.StatusCode = StatusCodes.Status201Created;
                       await response.WriteAsync("hello", cancellationToken);
@@ -55,7 +55,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
         {
             var helloHttpResponseMock = new HttpResponseMockBuilder()
                   .Where(httpRequest => httpRequest.Path.Equals("/hello", StringComparison.OrdinalIgnoreCase))
-                  .RespondWith(async (request, response, cancellationToken) =>
+                  .RespondWith(async (_, response, cancellationToken) =>
                   {
                       response.StatusCode = StatusCodes.Status201Created;
                       await response.WriteAsync("hello", cancellationToken);
@@ -68,7 +68,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
                 .MockHttpResponse(helloHttpResponseMock)
                 .MockHttpResponse(mockBuilder =>
                 {
-                    mockBuilder.RespondWith((request, response) => response.StatusCode = StatusCodes.Status404NotFound);
+                    mockBuilder.RespondWith((_, response) => response.StatusCode = StatusCodes.Status404NotFound);
                 })
                 .Build();
             var urls = await httpMockServer.StartAsync();
@@ -111,11 +111,11 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
         {
             var httpResponseMock1 = new HttpResponseMockBuilder()
                 .Where(httpRequest => httpRequest.Path.Equals("/hello", StringComparison.OrdinalIgnoreCase))
-                .RespondWith((request, response) => response.StatusCode = StatusCodes.Status401Unauthorized)
+                .RespondWith((_, response) => response.StatusCode = StatusCodes.Status401Unauthorized)
                 .Build();
             var httpResponseMock2 = new HttpResponseMockBuilder()
                 .Where(httpRequest => httpRequest.Path.Equals("/hello", StringComparison.OrdinalIgnoreCase))
-                .RespondWith((request, response) => response.StatusCode = StatusCodes.Status403Forbidden)
+                .RespondWith((_, response) => response.StatusCode = StatusCodes.Status403Forbidden)
                 .Build();
 
             // because we add httpResponseMock1 before httpResponseMock2 and they both
@@ -154,11 +154,11 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
         {
             var httpResponseMock1 = new HttpResponseMockBuilder()
                 .Where(httpRequest => httpRequest.Path.Equals("/hello", StringComparison.OrdinalIgnoreCase))
-                .RespondWith((request, response) => response.StatusCode = StatusCodes.Status200OK)
+                .RespondWith((_, response) => response.StatusCode = StatusCodes.Status200OK)
                 .Build();
             var httpResponseMock2 = new HttpResponseMockBuilder()
                 .Where(httpRequest => httpRequest.Path.Equals("/bye", StringComparison.OrdinalIgnoreCase))
-                .RespondWith((request, response) => response.StatusCode = StatusCodes.Status200OK)
+                .RespondWith((_, response) => response.StatusCode = StatusCodes.Status200OK)
                 .Build();
 
             // because we add httpResponseMock1 before httpResponseMock2 and they both

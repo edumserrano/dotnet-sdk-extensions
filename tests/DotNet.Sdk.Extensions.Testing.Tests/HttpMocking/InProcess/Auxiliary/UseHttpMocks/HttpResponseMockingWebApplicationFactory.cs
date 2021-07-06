@@ -25,7 +25,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess.Auxiliary.Us
              */
             return Host.CreateDefaultBuilder()
                 .UseDefaultLogLevel(LogLevel.Critical)
-                .ConfigureWebHostDefaults(webBuilder =>
+                .ConfigureWebHostDefaults(_ =>
                 {
 
                 });

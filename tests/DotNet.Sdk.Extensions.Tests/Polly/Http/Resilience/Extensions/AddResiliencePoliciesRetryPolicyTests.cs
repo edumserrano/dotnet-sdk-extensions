@@ -211,7 +211,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             services
                 .AddHttpClient(httpClientName)
                 .ConfigureHttpClient(client => client.BaseAddress = new Uri("https://github.com"))
-                .AddResiliencePolicies(optionsName, provider =>
+                .AddResiliencePolicies(optionsName, _ =>
                 {
                     return new TestResiliencePoliciesEventHandler(resiliencePoliciesEventHandlerCalls);
                 })
@@ -265,7 +265,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                         options.Retry.MedianFirstRetryDelayInSecs = resilienceOptions.Retry.MedianFirstRetryDelayInSecs;
                         options.Retry.RetryCount = resilienceOptions.Retry.RetryCount;
                     },
-                    eventHandlerFactory: provider =>
+                    eventHandlerFactory: _ =>
                     {
                         return new TestResiliencePoliciesEventHandler(resiliencePoliciesEventHandlerCalls);
                     })

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -321,7 +321,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                         options.CircuitBreaker.SamplingDurationInSecs = 60;
                         options.CircuitBreaker.MinimumThroughput = 4;
                     },
-                    eventHandlerFactory: provider =>
+                    eventHandlerFactory: _ =>
                     {
                         return new TestResiliencePoliciesEventHandler(resiliencePoliciesEventHandlerCalls);
                     })

@@ -275,7 +275,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                         options.EnableCircuitBreakerPolicy = resilienceOptions.EnableCircuitBreakerPolicy;
                         options.EnableTimeoutPolicy = resilienceOptions.EnableTimeoutPolicy;
                     },
-                    eventHandlerFactory: provider =>
+                    eventHandlerFactory: _ =>
                     {
                         return new TestResiliencePoliciesEventHandler(resiliencePoliciesEventHandlerCalls);
                     })

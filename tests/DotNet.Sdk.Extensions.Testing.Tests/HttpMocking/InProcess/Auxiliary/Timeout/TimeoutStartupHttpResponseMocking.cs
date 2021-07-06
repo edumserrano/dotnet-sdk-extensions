@@ -25,7 +25,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess.Auxiliary.Ti
                 });
             services
                 .AddHttpClient("polly-named-client")
-                .AddHttpMessageHandler(provider =>
+                .AddHttpMessageHandler(_ =>
                 {
                     var timeoutPolicy = Policy.TimeoutAsync<HttpResponseMessage>(TimeSpan.FromMilliseconds(200));
                     return new PolicyHttpMessageHandler(timeoutPolicy);
@@ -35,7 +35,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess.Auxiliary.Ti
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app
-                .UseWhen(x => env.IsDevelopment(), appBuilder => appBuilder.UseDeveloperExceptionPage())
+                .UseWhen(_ => env.IsDevelopment(), appBuilder => appBuilder.UseDeveloperExceptionPage())
                 .UseRouting()
                 .UseEndpoints(endpoints =>
                 {

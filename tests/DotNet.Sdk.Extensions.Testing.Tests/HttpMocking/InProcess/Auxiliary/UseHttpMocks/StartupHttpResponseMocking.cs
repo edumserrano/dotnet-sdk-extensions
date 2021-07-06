@@ -37,7 +37,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess.Auxiliary.Us
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app
-                .UseWhen(x => env.IsDevelopment(), appBuilder => appBuilder.UseDeveloperExceptionPage())
+                .UseWhen(_ => env.IsDevelopment(), appBuilder => appBuilder.UseDeveloperExceptionPage())
                 .UseRouting()
                 .UseEndpoints(endpoints =>
                 {

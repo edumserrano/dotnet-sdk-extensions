@@ -20,7 +20,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Policies
             {
                 CircuitBreakerCheckerAsyncPolicy.Create(
                     circuitBreakerPolicy: null!,
-                    fallbackValueFactory: (circuitBreakerState, context, token) => Task.FromResult(1));
+                    fallbackValueFactory: (_, _, _) => Task.FromResult(1));
             });
             exception1.Message.ShouldBe("Value cannot be null. (Parameter 'circuitBreakerPolicy')");
 
@@ -58,7 +58,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Policies
                 .CircuitBreakerAsync(exceptionsAllowedBeforeBreaking: 2, durationOfBreak: TimeSpan.FromMinutes(1));
             var circuitBreakerCheckerPolicy = CircuitBreakerCheckerAsyncPolicy.Create(
                 circuitBreakerPolicy: circuitBreakerPolicy,
-                fallbackValueFactory: (state, context, token) =>
+                fallbackValueFactory: (state, _, _) =>
                 {
                     circuitBreakerState = state;
                     return Task.FromResult(1);
@@ -90,7 +90,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Policies
                 .CircuitBreakerAsync(exceptionsAllowedBeforeBreaking: exceptionsAllowedBeforeBreaking, durationOfBreak: TimeSpan.FromMinutes(1));
             var circuitBreakerCheckerPolicy = CircuitBreakerCheckerAsyncPolicy.Create(
                 circuitBreakerPolicy: circuitBreakerPolicy,
-                fallbackValueFactory: (state, context, token) =>
+                fallbackValueFactory: (state, _, _) =>
                 {
                     circuitBreakerState = state;
                     return Task.FromResult(1);

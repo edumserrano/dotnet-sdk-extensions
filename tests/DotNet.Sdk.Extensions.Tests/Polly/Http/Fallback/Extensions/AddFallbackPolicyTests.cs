@@ -93,7 +93,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Fallback.Extensions
             services
                 .AddHttpClient(httpClientName)
                 .ConfigureHttpClient(client => client.BaseAddress = new Uri("https://github.com"))
-                .AddFallbackPolicy(provider =>
+                .AddFallbackPolicy(_ =>
                 {
                     return new TestFallbackPolicyEventHandler(fallbackPolicyEventHandlerCalls);
                 })
