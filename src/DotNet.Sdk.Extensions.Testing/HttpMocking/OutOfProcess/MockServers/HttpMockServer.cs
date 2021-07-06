@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
@@ -42,6 +43,13 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers
                 .ToList();
         }
 
+        /// <inheritdoc />
+        public async ValueTask DisposeAsync()
+        {
+            await DisposeAsyncCore();
+            GC.SuppressFinalize(this);
+        }
+
         /// <summary>
         /// Creates the <see cref="IHostBuilder"/> used by the <see cref="HttpMockServer"/> to create the <see cref="Host"/> used.
         /// </summary>
@@ -49,8 +57,13 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers
         /// <returns>An instance of <see cref="IHostBuilder"/>.</returns>
         protected abstract IHostBuilder CreateHostBuilder(string[] args);
 
-        /// <inheritdoc />
-        public async ValueTask DisposeAsync()
+
+        /// <summary>
+        /// Stops the <see cref="IHost"/> and disposes it.
+        /// </summary>
+        /// <returns>A task that represents the asynchronous dispose operation.</returns>
+        [SuppressMessage("Style", "VSTHRD200:Use \"Async\" suffix for async methods", Justification = "Following guidance from https://docs.microsoft.com/en-us/dotnet/standard/garbage-collection/implementing-disposeasync")]
+        protected virtual async ValueTask DisposeAsyncCore()
         {
             Host?.StopAsync();
             switch (Host)

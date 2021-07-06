@@ -53,7 +53,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary
                 throw new ArgumentNullException(nameof(type));
             }
 
-            var bindFlags = BindingFlags.Instance
+            const BindingFlags bindFlags = BindingFlags.Instance
                             | BindingFlags.Public
                             | BindingFlags.NonPublic
                             | BindingFlags.Static;
@@ -108,7 +108,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary
                 throw new ArgumentNullException(nameof(type));
             }
 
-            var bindFlags = BindingFlags.Instance
+            const BindingFlags bindFlags = BindingFlags.Instance
                             | BindingFlags.Public
                             | BindingFlags.NonPublic
                             | BindingFlags.Static;

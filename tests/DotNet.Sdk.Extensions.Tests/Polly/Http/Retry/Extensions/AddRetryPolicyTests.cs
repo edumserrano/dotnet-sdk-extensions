@@ -30,7 +30,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
         {
             var numberOfCallsDelegatingHandler = new NumberOfCallsDelegatingHandler();
             var testHttpMessageHandler = new TestHttpMessageHandler();
-            var httpClientName = "GitHub";
+            const string httpClientName = "GitHub";
             var retryOptions = new RetryOptions
             {
                 RetryCount = 2,
@@ -65,13 +65,13 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
         {
             var numberOfCallsDelegatingHandler = new NumberOfCallsDelegatingHandler();
             var testHttpMessageHandler = new TestHttpMessageHandler();
-            var httpClientName = "GitHub";
+            const string httpClientName = "GitHub";
             var retryOptions = new RetryOptions
             {
                 RetryCount = 2,
                 MedianFirstRetryDelayInSecs = 0.01
             };
-            var optionsName = "GitHubOptions";
+            const string optionsName = "GitHubOptions";
             var services = new ServiceCollection();
             services
                 .AddHttpClientRetryOptions(optionsName)
@@ -106,7 +106,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
             var retryPolicyEventHandlerCalls = new RetryPolicyEventHandlerCalls();
             var numberOfCallsDelegatingHandler = new NumberOfCallsDelegatingHandler();
             var testHttpMessageHandler = new TestHttpMessageHandler();
-            var httpClientName = "GitHub";
+            const string httpClientName = "GitHub";
             var retryOptions = new RetryOptions
             {
                 RetryCount = 2,
@@ -147,13 +147,13 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
             var retryPolicyEventHandlerCalls = new RetryPolicyEventHandlerCalls();
             var numberOfCallsDelegatingHandler = new NumberOfCallsDelegatingHandler();
             var testHttpMessageHandler = new TestHttpMessageHandler();
-            var httpClientName = "GitHub";
+            const string httpClientName = "GitHub";
             var retryOptions = new RetryOptions
             {
                 RetryCount = 2,
                 MedianFirstRetryDelayInSecs = 0.01
             };
-            var optionsName = "GitHubOptions";
+            const string optionsName = "GitHubOptions";
             var services = new ServiceCollection();
             services.AddSingleton(retryPolicyEventHandlerCalls);
             services
@@ -192,13 +192,13 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
             var retryPolicyEventHandlerCalls = new RetryPolicyEventHandlerCalls();
             var numberOfCallsDelegatingHandler = new NumberOfCallsDelegatingHandler();
             var testHttpMessageHandler = new TestHttpMessageHandler();
-            var httpClientName = "GitHub";
+            const string httpClientName = "GitHub";
             var retryOptions = new RetryOptions
             {
                 RetryCount = 2,
                 MedianFirstRetryDelayInSecs = 0.01
             };
-            var optionsName = "GitHubOptions";
+            const string optionsName = "GitHubOptions";
             var services = new ServiceCollection();
             services
                 .AddHttpClientRetryOptions(optionsName)
@@ -239,7 +239,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
             var retryPolicyEventHandlerCalls = new RetryPolicyEventHandlerCalls();
             var numberOfCallsDelegatingHandler = new NumberOfCallsDelegatingHandler();
             var testHttpMessageHandler = new TestHttpMessageHandler();
-            var httpClientName = "GitHub";
+            const string httpClientName = "GitHub";
             var retryOptions = new RetryOptions
             {
                 RetryCount = 2,

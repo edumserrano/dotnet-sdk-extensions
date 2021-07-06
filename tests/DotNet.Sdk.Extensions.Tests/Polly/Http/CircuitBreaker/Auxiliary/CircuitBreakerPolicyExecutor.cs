@@ -33,7 +33,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
             _transientHttpStatusCodes = HttpStatusCodesExtensions.GetTransientHttpStatusCodes().ToList();
         }
 
-        public async Task TriggerFromExceptionAsync<TException>(Exception exception) where TException : Exception
+        public Task TriggerFromExceptionAsync<TException>(Exception exception) where TException : Exception
         {
             if (exception == null)
             {
@@ -43,18 +43,18 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
             var requestPath = $"/circuit-breaker/exception/{exception.GetType().Name}";
             _testHttpMessageHandler.HandleException(requestPath, exception);
 
-            await TriggerCircuitBreakerFromExceptionAsync<TException>(requestPath);
+            return TriggerCircuitBreakerFromExceptionAsync<TException>(requestPath);
         }
 
-        public async Task TriggerFromTransientHttpStatusCodeAsync(HttpStatusCode httpStatusCode)
+        public Task TriggerFromTransientHttpStatusCodeAsync(HttpStatusCode httpStatusCode)
         {
             var handledRequestPath = _testHttpMessageHandler.HandleTransientHttpStatusCode(
                 requestPath: "/circuit-breaker/transient-http-status-code",
                 responseHttpStatusCode: httpStatusCode);
-            await TriggerCircuitBreakerFromTransientStatusCodeAsync(handledRequestPath, httpStatusCode);
+            return TriggerCircuitBreakerFromTransientStatusCodeAsync(handledRequestPath, httpStatusCode);
         }
 
-        public async Task WaitForResetAsync()
+        public async ValueTask WaitForResetAsync()
         {
             // wait for the duration of break so that the circuit goes into half open state
             await Task.Delay(TimeSpan.FromSeconds(_circuitBreakerOptions.DurationOfBreakInSecs + 0.05));
@@ -102,7 +102,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
 
         private string HandleResetRequest()
         {
-            var handledRequestPath = "/circuit-breaker/reset";
+            const string handledRequestPath = "/circuit-breaker/reset";
             _testHttpMessageHandler.MockHttpResponse(builder =>
             {
                 builder
@@ -148,9 +148,9 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
             }
         }
 
-        public async ValueTask DisposeAsync()
+        public ValueTask DisposeAsync()
         {
-            await WaitForResetAsync();
+            return WaitForResetAsync();
         }
     }
 }

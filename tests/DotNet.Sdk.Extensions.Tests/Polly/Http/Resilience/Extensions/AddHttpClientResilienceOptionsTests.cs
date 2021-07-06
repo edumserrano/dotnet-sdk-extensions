@@ -24,14 +24,14 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
         [Fact]
         public void AddHttpClientResilienceOptions1()
         {
-            var optionsName = "resilienceOptions";
-            var timeoutInSecs = 2;
-            var medianFirstRetryDelayInSecs = 1;
-            var retryCount = 3;
-            var durationOfBreakInSecs = 4;
-            var failureThreshold = 0.5;
-            var samplingDurationInSecs = 60;
-            var minimumThroughput = 5;
+            const string optionsName = "resilienceOptions";
+            const int timeoutInSecs = 2;
+            const int medianFirstRetryDelayInSecs = 1;
+            const int retryCount = 3;
+            const int durationOfBreakInSecs = 4;
+            const double failureThreshold = 0.5;
+            const int samplingDurationInSecs = 60;
+            const int minimumThroughput = 5;
             var services = new ServiceCollection();
             services
                 .AddHttpClientResilienceOptions(optionsName)
@@ -65,14 +65,14 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
         [Fact]
         public void AddHttpClientResilienceOptions2()
         {
-            var optionsName = "resilienceOptions";
-            var timeoutInSecs = 2;
-            var medianFirstRetryDelayInSecs = 1;
-            var retryCount = 3;
-            var durationOfBreakInSecs = 4;
-            var failureThreshold = 0.5;
-            var samplingDurationInSecs = 60;
-            var minimumThroughput = 5;
+            const string optionsName = "resilienceOptions";
+            const int timeoutInSecs = 2;
+            const int medianFirstRetryDelayInSecs = 1;
+            const int retryCount = 3;
+            const int durationOfBreakInSecs = 4;
+            const double failureThreshold = 0.5;
+            const int samplingDurationInSecs = 60;
+            const int minimumThroughput = 5;
             var services = new ServiceCollection();
             services
                 .AddHttpClientResilienceOptions(optionsName)

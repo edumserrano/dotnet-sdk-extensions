@@ -1,4 +1,4 @@
-﻿using System.Net.Http;
+using System.Net.Http;
 using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Polly.Http.Timeout;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers;
@@ -35,9 +35,9 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Auxiliary
             _testHttpMessageHandler = testHttpMessageHandler;
         }
 
-        public async Task HttpClientShouldContainTimeoutPolicyAsync()
+        public Task HttpClientShouldContainTimeoutPolicyAsync()
         {
-            await TimeoutPolicyTriggersOnTimeout();
+            return TimeoutPolicyTriggersOnTimeout();
         }
 
         public void EventHandlerShouldReceiveExpectedEvents(
@@ -53,14 +53,14 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Auxiliary
             }
         }
 
-        private async Task TimeoutPolicyTriggersOnTimeout()
+        private Task TimeoutPolicyTriggersOnTimeout()
         {
-            await Should.ThrowAsync<TimeoutRejectedException>(() =>
-            {
-                return _httpClient
-                    .TimeoutExecutor(_options, _testHttpMessageHandler)
-                    .TriggerTimeoutPolicyAsync();
-            });
+            return Should.ThrowAsync<TimeoutRejectedException>(() =>
+             {
+                 return _httpClient
+                     .TimeoutExecutor(_options, _testHttpMessageHandler)
+                     .TriggerTimeoutPolicyAsync();
+             });
         }
     }
 }

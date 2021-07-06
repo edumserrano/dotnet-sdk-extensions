@@ -33,7 +33,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
         {
             var numberOfCallsDelegatingHandler = new NumberOfCallsDelegatingHandler();
             var testHttpMessageHandler = new TestHttpMessageHandler();
-            var httpClientName = "GitHub";
+            const string httpClientName = "GitHub";
             var resilienceOptions = new ResilienceOptions
             {
                 EnableFallbackPolicy = false,
@@ -80,7 +80,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             var resiliencePoliciesEventHandlerCalls = new ResiliencePoliciesEventHandlerCalls();
             var numberOfCallsDelegatingHandler = new NumberOfCallsDelegatingHandler();
             var testHttpMessageHandler = new TestHttpMessageHandler();
-            var httpClientName = "GitHub";
+            const string httpClientName = "GitHub";
             var resilienceOptions = new ResilienceOptions
             {
                 EnableFallbackPolicy = false,
@@ -130,7 +130,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             var resiliencePoliciesEventHandlerCalls = new ResiliencePoliciesEventHandlerCalls();
             var numberOfCallsDelegatingHandler = new NumberOfCallsDelegatingHandler();
             var testHttpMessageHandler = new TestHttpMessageHandler();
-            var httpClientName = "GitHub";
+            const string httpClientName = "GitHub";
             var resilienceOptions = new ResilienceOptions
             {
                 EnableFallbackPolicy = false,
@@ -142,7 +142,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                     MedianFirstRetryDelayInSecs = 0.01
                 }
             };
-            var optionsName = "GitHubOptions";
+            const string optionsName = "GitHubOptions";
             var services = new ServiceCollection();
             services.AddSingleton(resiliencePoliciesEventHandlerCalls);
             services
@@ -184,7 +184,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             var resiliencePoliciesEventHandlerCalls = new ResiliencePoliciesEventHandlerCalls();
             var numberOfCallsDelegatingHandler = new NumberOfCallsDelegatingHandler();
             var testHttpMessageHandler = new TestHttpMessageHandler();
-            var httpClientName = "GitHub";
+            const string httpClientName = "GitHub";
             var resilienceOptions = new ResilienceOptions
             {
                 EnableFallbackPolicy = false,
@@ -196,7 +196,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                     MedianFirstRetryDelayInSecs = 0.01
                 }
             };
-            var optionsName = "GitHubOptions";
+            const string optionsName = "GitHubOptions";
             var services = new ServiceCollection();
             services
                 .AddHttpClientResilienceOptions(optionsName)
@@ -240,7 +240,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             var resiliencePoliciesEventHandlerCalls = new ResiliencePoliciesEventHandlerCalls();
             var numberOfCallsDelegatingHandler = new NumberOfCallsDelegatingHandler();
             var testHttpMessageHandler = new TestHttpMessageHandler();
-            var httpClientName = "GitHub";
+            const string httpClientName = "GitHub";
             var resilienceOptions = new ResilienceOptions
             {
                 EnableFallbackPolicy = false,
@@ -291,7 +291,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
         {
             var numberOfCallsDelegatingHandler = new NumberOfCallsDelegatingHandler();
             var testHttpMessageHandler = new TestHttpMessageHandler();
-            var httpClientName = "GitHub";
+            const string httpClientName = "GitHub";
             var resilienceOptions = new ResilienceOptions
             {
                 EnableFallbackPolicy = false,

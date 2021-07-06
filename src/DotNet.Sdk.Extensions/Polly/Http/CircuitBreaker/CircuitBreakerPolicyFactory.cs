@@ -28,6 +28,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker
                     minimumThroughput: options.MinimumThroughput,
                     durationOfBreak: TimeSpan.FromSeconds(options.DurationOfBreakInSecs),
 #pragma warning disable VSTHRD101 // Avoid unsupported async delegates
+#pragma warning disable AsyncFixer03 // Fire-and-forget async-void methods or delegates
                     onBreak: async (lastOutcome, previousState, breakDuration, context) =>
                     {
                         var breakEvent = new BreakEvent(
@@ -49,6 +50,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker
                         var halfOpenEvent = new HalfOpenEvent(httpClientName, options);
                         await policyEventHandler.OnHalfOpenAsync(halfOpenEvent);
                     });
+#pragma warning restore AsyncFixer03 // Fire-and-forget async-void methods or delegates
 #pragma warning restore VSTHRD101 // Avoid unsupported async delegates
             var circuitBreakerCheckerPolicy = CircuitBreakerCheckerAsyncPolicy.Create(
                 circuitBreakerPolicy: circuitBreakerPolicy,

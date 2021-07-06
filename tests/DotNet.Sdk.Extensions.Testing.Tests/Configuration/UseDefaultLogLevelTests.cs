@@ -63,7 +63,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
                 .Build();
             var configuration = (ConfigurationRoot)host.Services.GetRequiredService<IConfiguration>();
             var logLevel = configuration.GetValue<string>(key: "Logging:LogLevel:Default");
-            logLevel.ShouldBe(LogLevel.None.ToString());
+            logLevel.ShouldBe(nameof(LogLevel.None));
         }
 
         /// <summary>
@@ -84,7 +84,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
                 .Build();
             var configuration = (ConfigurationRoot)webHost.Services.GetRequiredService<IConfiguration>();
             var logLevel = configuration.GetValue<string>(key: "Logging:LogLevel:Default");
-            logLevel.ShouldBe(LogLevel.None.ToString());
+            logLevel.ShouldBe(nameof(LogLevel.None));
         }
     }
 }

@@ -78,7 +78,7 @@ indent_style = tab
 # https://docs.microsoft.com/dotnet/fundamentals/code-analysis/configuration-options#scope
 ##########################################
 
-[*cs]
+[*.cs]
 # Default Severity for all .NET Code Style rules below
 # dotnet_analyzer_diagnostic.severity = warning
 
@@ -86,8 +86,17 @@ indent_style = tab
 
 # Rules for Microsoft.VisualStudio.Threading.Analyzers
 # See https://github.com/microsoft/vs-threading/blob/main/doc/analyzers/index.md
-[.cs]
+[*.cs]
 dotnet_diagnostic.VSTHRD111.severity = none         # VSTHRD111 Use .ConfigureAwait(bool)
+
+# Rules for Roslynator.Analyzers
+# See https://github.com/JosefPihrt/Roslynator/blob/master/src/Analyzers/README.md
+[*.cs]
+dotnet_diagnostic.RCS1021.severity = none         # RCS1021: Convert lambda expression body to expression-body
+dotnet_diagnostic.RCS1090.severity = none         # RCS1090: Add call to 'ConfigureAwait' (or vice versa)
+dotnet_diagnostic.RCS1194.severity = none         # RCS1194: Implement exception constructors
+
+
 
 ##########################################
 # Code quality rules https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/
@@ -105,7 +114,7 @@ dotnet_diagnostic.VSTHRD111.severity = none         # VSTHRD111 Use .ConfigureAw
 dotnet_diagnostic.CA1014.severity = none        # CA1014: Mark assemblies with CLSCompliantAttribute
 dotnet_diagnostic.CA1030.severity = silent      # CA1030: Use events where appropriate
 dotnet_diagnostic.CA1032.severity = none        # CA1032: Implement standard exception constructors
-dotnet_diagnostic.CA1052.severity = silent      # CA1052: Static holder types should be Static or NotInheritable
+dotnet_diagnostic.CA1052.severity = warning     # CA1052: Static holder types should be Static or NotInheritable
 
 # Documentation rules https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/documentation-warnings
 
@@ -134,8 +143,7 @@ dotnet_diagnostic.CA2007.severity = none        # CA2007: Do not directly await 
 # Security rules https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/security-warnings
 
 # Usage rules https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/usage-warnings
-# dotnet_diagnostic.CA1816.severity = none        # CA1816: Call GC.SuppressFinalize correctly
-dotnet_diagnostic.CA2234.severity = none        # CA2234: Pass System.Uri objects instead of strings
+dotnet_diagnostic.CA2234.severity = silent      # CA2234: Pass System.Uri objects instead of strings
 
 ##########################################
 # Language Rules
@@ -243,6 +251,7 @@ csharp_prefer_static_local_function = true:warning
 [*.{cs,csx,cake,vb,vbx}]
 dotnet_code_quality_unused_parameters = all:warning
 dotnet_remove_unnecessary_suppression_exclusions = none:warning
+dotnet_diagnostic.IDE0079.severity = warning
 
 # C# Unnecessary code rules
 [*.{cs,csx,cake}]
@@ -485,6 +494,13 @@ dotnet_naming_rule.parameters_rule.severity             = warning
 # needs to be in the end so default config applies but then for tests this is an override
 #############################################################
 [tests/**/*.cs]
-dotnet_diagnostic.VSTHRD200.severity = suggestion   # VSTHRD200 Use Async suffix for async methods
 # Reliability rules https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/reliability-warnings
 dotnet_diagnostic.CA2000.severity = silent          # CA2000: Dispose objects before losing scope
+
+
+dotnet_diagnostic.AsyncFixer01.severity = silent    # AsyncFixer01: Await is the last statement of the method so you can return Task and await in the caller method.
+
+dotnet_diagnostic.VSTHRD200.severity = silent       # VSTHRD200: Use Async suffix for async methods
+
+
+

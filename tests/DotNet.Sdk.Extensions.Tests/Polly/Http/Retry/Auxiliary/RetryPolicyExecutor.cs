@@ -35,7 +35,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Auxiliary
             return _httpClient.GetAsync(requestPath);
         }
 
-        public async Task<HttpResponseMessage> TriggerFromTransientHttpStatusCodeAsync(HttpStatusCode httpStatusCode)
+        public Task<HttpResponseMessage> TriggerFromTransientHttpStatusCodeAsync(HttpStatusCode httpStatusCode)
         {
             if (!_transientHttpStatusCodes.Contains(httpStatusCode))
             {
@@ -45,10 +45,10 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Auxiliary
             var requestPath = _testHttpMessageHandler.HandleTransientHttpStatusCode(
                 requestPath: "/retry/transient-http-status-code",
                 responseHttpStatusCode: httpStatusCode);
-            return await _httpClient.GetAsync(requestPath);
+            return _httpClient.GetAsync(requestPath);
         }
 
-        public async Task<HttpResponseMessage> ExecuteCircuitBrokenHttpResponseMessageAsync()
+        public Task<HttpResponseMessage> ExecuteCircuitBrokenHttpResponseMessageAsync()
         {
             var response = new CircuitBrokenHttpResponseMessage(CircuitBreakerState.Open);
             var requestPath = $"/retry/circuit-broken-response/{response.GetHashCode()}";
@@ -58,7 +58,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Auxiliary
                     .Where(httpRequestMessage => httpRequestMessage.RequestUri!.ToString().Contains(requestPath, StringComparison.OrdinalIgnoreCase))
                     .RespondWith(response);
             });
-            return await _httpClient.GetAsync(requestPath);
+            return _httpClient.GetAsync(requestPath);
         }
     }
 }

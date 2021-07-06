@@ -26,7 +26,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
         [Fact]
         public void AddResiliencePoliciesOptionsValidationForRetryOptions()
         {
-            var httpClientName = "GitHub";
+            const string httpClientName = "GitHub";
             var services = new ServiceCollection();
             services
                 .AddHttpClient(httpClientName)
@@ -57,7 +57,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
         [InlineData(-3)]
         public void AddResiliencePoliciesOptionsValidationForRetryCount(int retryCount)
         {
-            var httpClientName = "GitHub";
+            const string httpClientName = "GitHub";
             var services = new ServiceCollection();
             services
                 .AddHttpClient(httpClientName)
@@ -86,7 +86,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
         [Fact]
         public void AddResiliencePoliciesOptionsValidationForRetryCount2()
         {
-            var httpClientName = "GitHub";
+            const string httpClientName = "GitHub";
             var services = new ServiceCollection();
             services
                 .AddHttpClient(httpClientName)
@@ -119,7 +119,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
         [InlineData(-3.5)]
         public void AddResiliencePoliciesOptionsValidationForMedianFirstRetryDelayInSecs(int medianFirstRetryDelayInSecs)
         {
-            var httpClientName = "GitHub";
+            const string httpClientName = "GitHub";
             var services = new ServiceCollection();
             services
                 .AddHttpClient(httpClientName)
@@ -156,8 +156,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
         [Fact]
         public void AddResiliencePoliciesOptionsValidation2()
         {
-            var httpClientName = "GitHub";
-            var optionsName = "GitHubOptions";
+            const string httpClientName = "GitHub";
+            const string optionsName = "GitHubOptions";
             var services = new ServiceCollection();
             services
                 .AddHttpClientResilienceOptions(optionsName)
@@ -196,8 +196,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
         [Fact]
         public void AddResiliencePoliciesOptionsValidation3()
         {
-            var httpClientName = "GitHub";
-            var optionsName = "GitHubOptions";
+            const string httpClientName = "GitHub";
+            const string optionsName = "GitHubOptions";
             var services = new ServiceCollection();
             services
                 .AddHttpClientResilienceOptions(optionsName)
@@ -232,7 +232,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
         [Fact]
         public void AddResiliencePoliciesOptionsValidation4()
         {
-            var httpClientName = "GitHub";
+            const string httpClientName = "GitHub";
             var services = new ServiceCollection();
             services
                 .AddHttpClient(httpClientName)

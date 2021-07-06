@@ -41,7 +41,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
         public async Task AddCircuitBreakerPolicy1()
         {
             var testHttpMessageHandler = new TestHttpMessageHandler();
-            var httpClientName = "GitHub";
+            const string httpClientName = "GitHub";
             var circuitBreakerOptions = new CircuitBreakerOptions
             {
                 DurationOfBreakInSecs = 0.05,
@@ -77,7 +77,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
         public async Task AddCircuitBreakerPolicy2()
         {
             var testHttpMessageHandler = new TestHttpMessageHandler();
-            var httpClientName = "GitHub";
+            const string httpClientName = "GitHub";
             var circuitBreakerOptions = new CircuitBreakerOptions
             {
                 DurationOfBreakInSecs = 0.05,
@@ -85,7 +85,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
                 FailureThreshold = 0.6,
                 MinimumThroughput = 10
             };
-            var optionsName = "GitHubOptions";
+            const string optionsName = "GitHubOptions";
             var services = new ServiceCollection();
             services
                 .AddHttpClientCircuitBreakerOptions(optionsName)
@@ -120,7 +120,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
         {
             var circuitBreakerPolicyEventHandlerCalls = new CircuitBreakerPolicyEventHandlerCalls();
             var testHttpMessageHandler = new TestHttpMessageHandler();
-            var httpClientName = "GitHub";
+            const string httpClientName = "GitHub";
             var circuitBreakerOptions = new CircuitBreakerOptions
             {
                 DurationOfBreakInSecs = 0.05,
@@ -163,7 +163,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
         {
             var circuitBreakerPolicyEventHandlerCalls = new CircuitBreakerPolicyEventHandlerCalls();
             var testHttpMessageHandler = new TestHttpMessageHandler();
-            var httpClientName = "GitHub";
+            const string httpClientName = "GitHub";
             var circuitBreakerOptions = new CircuitBreakerOptions
             {
                 DurationOfBreakInSecs = 0.05,
@@ -171,7 +171,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
                 FailureThreshold = 0.6,
                 MinimumThroughput = 10
             };
-            var optionsName = "GitHubOptions";
+            const string optionsName = "GitHubOptions";
 
             var services = new ServiceCollection();
             services.AddSingleton(circuitBreakerPolicyEventHandlerCalls);
@@ -211,7 +211,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
         {
             var circuitBreakerPolicyEventHandlerCalls = new CircuitBreakerPolicyEventHandlerCalls();
             var testHttpMessageHandler = new TestHttpMessageHandler();
-            var httpClientName = "GitHub";
+            const string httpClientName = "GitHub";
             var circuitBreakerOptions = new CircuitBreakerOptions
             {
                 DurationOfBreakInSecs = 0.05,
@@ -219,7 +219,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
                 FailureThreshold = 0.6,
                 MinimumThroughput = 10
             };
-            var optionsName = "GitHubOptions";
+            const string optionsName = "GitHubOptions";
 
             var services = new ServiceCollection();
             services
@@ -261,7 +261,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
         {
             var circuitBreakerPolicyEventHandlerCalls = new CircuitBreakerPolicyEventHandlerCalls();
             var testHttpMessageHandler = new TestHttpMessageHandler();
-            var httpClientName = "GitHub";
+            const string httpClientName = "GitHub";
             var circuitBreakerOptions = new CircuitBreakerOptions
             {
                 DurationOfBreakInSecs = 0.05,

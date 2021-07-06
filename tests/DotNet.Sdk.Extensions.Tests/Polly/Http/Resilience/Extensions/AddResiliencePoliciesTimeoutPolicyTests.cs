@@ -31,7 +31,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
         public async Task AddResiliencePoliciesAddsTimeoutPolicy1()
         {
             var testHttpMessageHandler = new TestHttpMessageHandler();
-            var httpClientName = "GitHub";
+            const string httpClientName = "GitHub";
             var resilienceOptions = new ResilienceOptions
             {
                 EnableFallbackPolicy = false,
@@ -71,7 +71,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
         public async Task AddResiliencePoliciesAddsTimeoutPolicy2()
         {
             var testHttpMessageHandler = new TestHttpMessageHandler();
-            var httpClientName = "GitHub";
+            const string httpClientName = "GitHub";
             var resilienceOptions = new ResilienceOptions
             {
                 EnableFallbackPolicy = false,
@@ -82,7 +82,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                     TimeoutInSecs = 0.05
                 }
             };
-            var optionsName = "GitHubOptions";
+            const string optionsName = "GitHubOptions";
             var services = new ServiceCollection();
             services
                 .AddHttpClientResilienceOptions(optionsName)
@@ -118,7 +118,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
         {
             var resiliencePoliciesEventHandlerCalls = new ResiliencePoliciesEventHandlerCalls();
             var testHttpMessageHandler = new TestHttpMessageHandler();
-            var httpClientName = "GitHub";
+            const string httpClientName = "GitHub";
             var resilienceOptions = new ResilienceOptions
             {
                 EnableFallbackPolicy = false,
@@ -164,7 +164,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
         {
             var resiliencePoliciesEventHandlerCalls = new ResiliencePoliciesEventHandlerCalls();
             var testHttpMessageHandler = new TestHttpMessageHandler();
-            var httpClientName = "GitHub";
+            const string httpClientName = "GitHub";
             var resilienceOptions = new ResilienceOptions
             {
                 EnableFallbackPolicy = false,
@@ -175,7 +175,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                     TimeoutInSecs = 0.05
                 }
             };
-            var optionsName = "GitHubOptions";
+            const string optionsName = "GitHubOptions";
             var services = new ServiceCollection();
             services.AddSingleton(resiliencePoliciesEventHandlerCalls);
             services
@@ -215,7 +215,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
         {
             var resiliencePoliciesEventHandlerCalls = new ResiliencePoliciesEventHandlerCalls();
             var testHttpMessageHandler = new TestHttpMessageHandler();
-            var httpClientName = "GitHub";
+            const string httpClientName = "GitHub";
             var resilienceOptions = new ResilienceOptions
             {
                 EnableFallbackPolicy = false,
@@ -226,7 +226,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                     TimeoutInSecs = 0.05
                 }
             };
-            var optionsName = "GitHubOptions";
+            const string optionsName = "GitHubOptions";
             var services = new ServiceCollection();
             services
                 .AddHttpClientResilienceOptions(optionsName)
@@ -268,7 +268,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
         {
             var resiliencePoliciesEventHandlerCalls = new ResiliencePoliciesEventHandlerCalls();
             var testHttpMessageHandler = new TestHttpMessageHandler();
-            var httpClientName = "GitHub";
+            const string httpClientName = "GitHub";
             var resilienceOptions = new ResilienceOptions
             {
                 EnableFallbackPolicy = false,
@@ -315,7 +315,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
         public async Task AddResiliencePoliciesAddsTimeoutPolicy7()
         {
             var testHttpMessageHandler = new TestHttpMessageHandler();
-            var httpClientName = "GitHub";
+            const string httpClientName = "GitHub";
             var resilienceOptions = new ResilienceOptions
             {
                 EnableFallbackPolicy = false,

@@ -24,9 +24,9 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
         [Fact]
         public void AddHttpClientRetryOptions()
         {
-            var optionsName = "retryOptions";
-            var retryCount = 3;
-            var medianFirstRetryDelayInSecs = 1;
+            const string optionsName = "retryOptions";
+            const int retryCount = 3;
+            const int medianFirstRetryDelayInSecs = 1;
             var services = new ServiceCollection();
             services
                 .AddHttpClientRetryOptions(optionsName)

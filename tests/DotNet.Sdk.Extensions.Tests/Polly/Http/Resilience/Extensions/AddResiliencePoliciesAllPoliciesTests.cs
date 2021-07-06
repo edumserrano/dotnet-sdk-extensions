@@ -44,7 +44,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             var numberOfCallsDelegatingHandler = new NumberOfCallsDelegatingHandler();
             var resiliencePoliciesEventHandlerCalls = new ResiliencePoliciesEventHandlerCalls();
             var testHttpMessageHandler = new TestHttpMessageHandler();
-            var httpClientName = "GitHub";
+            const string httpClientName = "GitHub";
             var resilienceOptions = new ResilienceOptions
             {
                 Timeout = new TimeoutOptions
@@ -161,7 +161,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             var numberOfCallsDelegatingHandler = new NumberOfCallsDelegatingHandler();
             var resiliencePoliciesEventHandlerCalls = new ResiliencePoliciesEventHandlerCalls();
             var testHttpMessageHandler = new TestHttpMessageHandler();
-            var httpClientName = "GitHub";
+            const string httpClientName = "GitHub";
             var resilienceOptions = new ResilienceOptions
             {
                 Timeout = new TimeoutOptions
@@ -201,7 +201,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
 
             var serviceProvider = services.BuildServiceProvider();
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
-            var triggerTimeoutPath = "/timeout";
+            const string triggerTimeoutPath = "/timeout";
             var timeout = TimeSpan.FromSeconds(resilienceOptions.Timeout.TimeoutInSecs + 1);
             testHttpMessageHandler.HandleTimeout(triggerTimeoutPath, timeout);
             var httpResponses = new List<HttpResponseMessage>();

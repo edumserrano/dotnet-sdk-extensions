@@ -41,7 +41,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Policies
                 .CircuitBreakerAsync(exceptionsAllowedBeforeBreaking: 2, durationOfBreak: TimeSpan.FromMinutes(1));
             var circuitBreakerCheckerPolicy = CircuitBreakerCheckerAsyncPolicy.Create(
                 circuitBreakerPolicy: circuitBreakerPolicy,
-                fallbackValueFactory: (circuitBreakerState, context, token) => Task.FromResult(1));
+                fallbackValueFactory: (_, _, _) => Task.FromResult(1));
 
             // when the circuit breaker of the circuit breaker policy is not open
             // the circuit breaker checker policy will not do anything
@@ -84,7 +84,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Policies
         public async Task CircuitBreakerCheckerWhenCircuitIsOpen()
         {
             CircuitBreakerState? circuitBreakerState = null;
-            var exceptionsAllowedBeforeBreaking = 2;
+            const int exceptionsAllowedBeforeBreaking = 2;
             var circuitBreakerPolicy = Policy
                 .Handle<Exception>()
                 .CircuitBreakerAsync(exceptionsAllowedBeforeBreaking: exceptionsAllowedBeforeBreaking, durationOfBreak: TimeSpan.FromMinutes(1));

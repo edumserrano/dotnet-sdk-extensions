@@ -49,11 +49,11 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
         [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Ignore for Startup type classes.")]
         private class MyMockStartup
         {
-#pragma warning disable IDE0060 // Remove unused parameter
 #pragma warning disable CA1801 // Review unused parameters
+#pragma warning disable IDE0060 // Remove unused parameter
             public static void ConfigureServices(IServiceCollection services)
-#pragma warning restore CA1801 // Review unused parameters
 #pragma warning restore IDE0060 // Remove unused parameter
+#pragma warning restore CA1801 // Review unused parameters
             {
             }
 

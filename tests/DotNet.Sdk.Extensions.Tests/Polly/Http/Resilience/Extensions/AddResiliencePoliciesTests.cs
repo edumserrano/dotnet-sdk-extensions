@@ -82,7 +82,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
         public void AddResiliencePoliciesAddsPoliciesInOrder2()
         {
             var policyHttpMessageHandlers = new List<PolicyHttpMessageHandler>();
-            var optionsName = "GitHubOptions";
+            const string optionsName = "GitHubOptions";
             var services = new ServiceCollection();
             services
                 .AddHttpClientResilienceOptions(optionsName)
@@ -191,7 +191,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
         {
             var resiliencePoliciesEventHandlerCalls = new ResiliencePoliciesEventHandlerCalls();
             var policyHttpMessageHandlers = new List<PolicyHttpMessageHandler>();
-            var optionsName = "GitHubOptions";
+            const string optionsName = "GitHubOptions";
             var services = new ServiceCollection();
             services.AddSingleton(resiliencePoliciesEventHandlerCalls);
             services
@@ -248,7 +248,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
         {
             var resiliencePoliciesEventHandlerCalls = new ResiliencePoliciesEventHandlerCalls();
             var policyHttpMessageHandlers = new List<PolicyHttpMessageHandler>();
-            var optionsName = "GitHubOptions";
+            const string optionsName = "GitHubOptions";
             var services = new ServiceCollection();
             services
                 .AddHttpClientResilienceOptions(optionsName)

@@ -28,7 +28,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Fallback.Extensions
         public async Task AddFallbackPolicy1()
         {
             var testHttpMessageHandler = new TestHttpMessageHandler();
-            var httpClientName = "GitHub";
+            const string httpClientName = "GitHub";
             var services = new ServiceCollection();
             services
                 .AddHttpClient(httpClientName)
@@ -54,7 +54,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Fallback.Extensions
         {
             var fallbackPolicyEventHandlerCalls = new FallbackPolicyEventHandlerCalls();
             var testHttpMessageHandler = new TestHttpMessageHandler();
-            var httpClientName = "GitHub";
+            const string httpClientName = "GitHub";
             var services = new ServiceCollection();
             services.AddSingleton(fallbackPolicyEventHandlerCalls);
             services
@@ -88,7 +88,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Fallback.Extensions
         {
             var fallbackPolicyEventHandlerCalls = new FallbackPolicyEventHandlerCalls();
             var testHttpMessageHandler = new TestHttpMessageHandler();
-            var httpClientName = "GitHub";
+            const string httpClientName = "GitHub";
             var services = new ServiceCollection();
             services
                 .AddHttpClient(httpClientName)

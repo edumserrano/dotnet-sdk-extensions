@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.ResponseMocking;
@@ -10,7 +10,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.Response
     /// </summary>
     public class HttpResponseMessageMockBuilder
     {
-        private readonly HttpResponseMessageMockPredicateDelegate _defaultPredicate = (httpRequestMessage, cancellationToken) => Task.FromResult(true);
+        private readonly HttpResponseMessageMockPredicateDelegate _defaultPredicate = (_, _) => Task.FromResult(true);
         private HttpResponseMessageMockPredicateDelegate? _predicateAsync;
         private HttpResponseMessageMockHandlerDelegate? _handlerAsync;
 
@@ -57,7 +57,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.Response
                 throw new ArgumentNullException(nameof(httpResponseMessage));
             }
 
-            return RespondWith(httpRequestMessage => httpResponseMessage);
+            return RespondWith(_ => httpResponseMessage);
         }
 
         /// <summary>

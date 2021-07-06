@@ -62,7 +62,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly
         [Fact]
         public void ConfigureRegistry()
         {
-            var policyKey = "testPolicy";
+            const string policyKey = "testPolicy";
             var expectedPolicy = Policy.NoOp();
             var services = new ServiceCollection();
             services.AddPolicyRegistry((provider, policyRegistry) =>

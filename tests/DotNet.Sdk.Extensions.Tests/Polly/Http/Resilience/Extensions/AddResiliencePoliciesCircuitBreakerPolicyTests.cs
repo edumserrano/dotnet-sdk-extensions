@@ -40,7 +40,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
         public async Task AddResiliencePoliciesAddsCircuitBreakerPolicy1()
         {
             var testHttpMessageHandler = new TestHttpMessageHandler();
-            var httpClientName = "GitHub";
+            const string httpClientName = "GitHub";
             var resilienceOptions = new ResilienceOptions
             {
                 EnableFallbackPolicy = false,
@@ -86,7 +86,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
         public async Task AddResiliencePoliciesAddsCircuitBreakerPolicy2()
         {
             var testHttpMessageHandler = new TestHttpMessageHandler();
-            var httpClientName = "GitHub";
+            const string httpClientName = "GitHub";
             var resilienceOptions = new ResilienceOptions
             {
                 EnableFallbackPolicy = false,
@@ -100,7 +100,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                     MinimumThroughput = 10
                 }
             };
-            var optionsName = "GitHubOptions";
+            const string optionsName = "GitHubOptions";
             var services = new ServiceCollection();
             services
                 .AddHttpClientResilienceOptions(optionsName)
@@ -139,7 +139,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
         {
             var resiliencePoliciesEventHandlerCalls = new ResiliencePoliciesEventHandlerCalls();
             var testHttpMessageHandler = new TestHttpMessageHandler();
-            var httpClientName = "GitHub";
+            const string httpClientName = "GitHub";
             var resilienceOptions = new ResilienceOptions
             {
                 EnableFallbackPolicy = false,
@@ -191,7 +191,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
         {
             var resiliencePoliciesEventHandlerCalls = new ResiliencePoliciesEventHandlerCalls();
             var testHttpMessageHandler = new TestHttpMessageHandler();
-            var httpClientName = "GitHub";
+            const string httpClientName = "GitHub";
             var resilienceOptions = new ResilienceOptions
             {
                 EnableFallbackPolicy = false,
@@ -205,7 +205,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                     MinimumThroughput = 10
                 }
             };
-            var optionsName = "GitHubOptions";
+            const string optionsName = "GitHubOptions";
 
             var services = new ServiceCollection();
             services.AddSingleton(resiliencePoliciesEventHandlerCalls);
@@ -248,7 +248,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
         {
             var resiliencePoliciesEventHandlerCalls = new ResiliencePoliciesEventHandlerCalls();
             var testHttpMessageHandler = new TestHttpMessageHandler();
-            var httpClientName = "GitHub";
+            const string httpClientName = "GitHub";
             var resilienceOptions = new ResilienceOptions
             {
                 EnableFallbackPolicy = false,
@@ -262,7 +262,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                     MinimumThroughput = 10
                 }
             };
-            var optionsName = "GitHubOptions";
+            const string optionsName = "GitHubOptions";
 
             var services = new ServiceCollection();
             services
@@ -307,7 +307,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
         {
             var resiliencePoliciesEventHandlerCalls = new ResiliencePoliciesEventHandlerCalls();
             var testHttpMessageHandler = new TestHttpMessageHandler();
-            var httpClientName = "GitHub";
+            const string httpClientName = "GitHub";
             var resilienceOptions = new ResilienceOptions
             {
                 EnableFallbackPolicy = false,
@@ -360,7 +360,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
         public async Task AddResiliencePoliciesAddsCircuitBreakerPolicy7()
         {
             var testHttpMessageHandler = new TestHttpMessageHandler();
-            var httpClientName = "GitHub";
+            const string httpClientName = "GitHub";
             var resilienceOptions = new ResilienceOptions
             {
                 EnableCircuitBreakerPolicy = false,
@@ -395,7 +395,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             var serviceProvider = services.BuildServiceProvider();
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
             await using var circuitBreaker = httpClient.CircuitBreakerExecutor(resilienceOptions.CircuitBreaker, testHttpMessageHandler);
-            var transientHttpStatusCode = HttpStatusCode.ServiceUnavailable;
+            const HttpStatusCode transientHttpStatusCode = HttpStatusCode.ServiceUnavailable;
             await circuitBreaker.TriggerFromTransientHttpStatusCodeAsync(transientHttpStatusCode);
             var response = await httpClient.GetAsync($"/circuit-breaker/transient-http-status-code/{transientHttpStatusCode}");
             response.ShouldNotBeOfType<CircuitBrokenHttpResponseMessage>(); // if circuit breaker policy is added a CircuitBrokenHttpResponseMessage is returned when the circuit is open

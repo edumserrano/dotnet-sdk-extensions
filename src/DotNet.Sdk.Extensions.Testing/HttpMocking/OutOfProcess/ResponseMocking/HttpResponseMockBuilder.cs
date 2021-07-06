@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 
@@ -9,7 +9,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.ResponseMocking
     /// </summary>
     public class HttpResponseMockBuilder
     {
-        private readonly HttpResponseMockPredicateAsyncDelegate _defaultPredicateAsync = (httpRequest, cancellationToken) => Task.FromResult(true);
+        private readonly HttpResponseMockPredicateAsyncDelegate _defaultPredicateAsync = (_, _) => Task.FromResult(true);
         private HttpResponseMockPredicateAsyncDelegate? _predicateAsync;
         private HttpResponseMockHandlerAsyncDelegate? _handlerAsync;
 
@@ -56,7 +56,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.ResponseMocking
                 throw new ArgumentNullException(nameof(configureHttpResponse));
             }
 
-            return RespondWith((httpRequest, httpResponse) =>
+            return RespondWith((_, httpResponse) =>
             {
                 configureHttpResponse(httpResponse);
             });

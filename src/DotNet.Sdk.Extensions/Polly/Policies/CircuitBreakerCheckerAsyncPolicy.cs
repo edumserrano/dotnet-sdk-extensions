@@ -16,7 +16,7 @@ namespace DotNet.Sdk.Extensions.Polly.Policies
     /// instead of doing <see cref="CircuitBreakerCheckerAsyncPolicy{T}.Create"/> it allows doing
     /// <see cref="Create{T}"/>
     /// </remarks>
-    public class CircuitBreakerCheckerAsyncPolicy
+    public static class CircuitBreakerCheckerAsyncPolicy
     {
         /// <summary>
         /// Create a policy to to check if a circuit breaker is opened and avoid throwing an exception if the circuit is open/isolated. 
