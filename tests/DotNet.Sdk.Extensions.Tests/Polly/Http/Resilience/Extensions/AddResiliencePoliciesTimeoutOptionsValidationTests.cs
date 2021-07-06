@@ -48,7 +48,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
         /// <summary>
         /// Tests that the ResiliencePoliciesHttpClientBuilderExtensions.AddResiliencePolicies methods
         /// validate the <see cref="ResilienceOptions.Timeout"/> with the built in data annotations.
-        /// 
+        ///
         /// Validates that the <see cref="TimeoutOptions.TimeoutInSecs"/> needs to be a double > 0.
         /// </summary>
         [Theory]

@@ -18,7 +18,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
         /// <summary>
         /// Tests that the TimeoutPolicyHttpClientBuilderExtensions.AddTimeoutPolicy methods
         /// validate the <see cref="TimeoutOptions"/> with the built in data annotations.
-        /// 
+        ///
         /// Validates that the <see cref="TimeoutOptions.TimeoutInSecs"/> needs to be a double > 0.
         /// </summary>
         [Theory]

@@ -43,7 +43,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers
 
         private static string BuildUrls(List<HttpMockServerUrlDescriptor> urlDescriptors)
         {
-            if (urlDescriptors is null || !urlDescriptors.Any())
+            if (urlDescriptors?.Any() != true)
             {
                 return _defaultUrls;
             }

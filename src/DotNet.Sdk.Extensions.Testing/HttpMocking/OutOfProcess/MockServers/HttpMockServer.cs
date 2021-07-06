@@ -57,7 +57,6 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers
         /// <returns>An instance of <see cref="IHostBuilder"/>.</returns>
         protected abstract IHostBuilder CreateHostBuilder(string[] args);
 
-
         /// <summary>
         /// Stops the <see cref="IHost"/> and disposes it.
         /// </summary>

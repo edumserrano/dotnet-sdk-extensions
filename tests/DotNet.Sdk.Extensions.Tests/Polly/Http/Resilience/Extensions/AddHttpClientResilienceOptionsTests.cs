@@ -60,7 +60,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
         /// Tests that the <see cref="ResilienceOptionsExtensions.AddHttpClientResilienceOptions"/> method
         /// validates the <see cref="ResilienceOptions"/> with the built in data annotations.
         ///
-        /// Validates that the <see cref="ResilienceOptions.Retry"/> cannot be null. 
+        /// Validates that the <see cref="ResilienceOptions.Retry"/> cannot be null.
         /// </summary>
         [Fact]
         public void AddHttpClientResilienceOptions2()

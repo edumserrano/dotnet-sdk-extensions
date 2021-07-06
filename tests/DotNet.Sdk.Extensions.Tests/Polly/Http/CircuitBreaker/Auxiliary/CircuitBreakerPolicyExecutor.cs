@@ -80,7 +80,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
         /// <remarks>
         /// The circuit breaker policy added is a wrapped policy which joins an
         /// <see cref="AsyncCircuitBreakerPolicy{TResult}"/> and a <see cref="CircuitBreakerCheckerAsyncPolicy{T}"/>.
-        /// 
+        ///
         /// The <see cref="CircuitBreakerCheckerAsyncPolicy{T}"/> will check if the circuit is open/isolated and
         /// if so it will return <see cref="CircuitBrokenHttpResponseMessage"/> which is an http response message
         /// with 500 status code and some extra properties.

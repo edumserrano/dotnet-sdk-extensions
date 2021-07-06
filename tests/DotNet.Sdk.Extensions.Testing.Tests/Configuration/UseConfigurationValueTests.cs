@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using DotNet.Sdk.Extensions.Testing.Configuration;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
@@ -46,7 +46,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
             {
                 return WebHost
                     .CreateDefaultBuilder()
-                    .Configure((context, applicationBuilder) =>
+                    .Configure((_, _) =>
                     {
                         // this is required just to provide a configuration for the webhost
                         // or else it fails when calling webHostBuilder.Build()
@@ -82,7 +82,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         {
             using var webHost = WebHost
                 .CreateDefaultBuilder()
-                .Configure((context, applicationBuilder) =>
+                .Configure((_, _) =>
                 {
                     // this is required just to provide a configuration for the webhost
                     // or else it fails when calling webHostBuilder.Build()
@@ -120,7 +120,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         {
             using var webHost = WebHost
                 .CreateDefaultBuilder()
-                .Configure((context, applicationBuilder) =>
+                .Configure((_, _) =>
                 {
                     // this is required just to provide a configuration for the webhost
                     // or else it fails when calling webHostBuilder.Build()

@@ -75,7 +75,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers
         /// <summary>
         /// Tests that the <seealso cref="TestHttpMessageHandler"/> returns the mocked HttpResponseMessage.
         /// In this test no predicate is defined which means the default "always true" predicate takes effect
-        /// and the mock is always returned. 
+        /// and the mock is always returned.
         /// Using <seealso cref="TestHttpMessageHandler.MockHttpResponse(HttpResponseMessageMock)"/>
         /// </summary>
         [Fact]

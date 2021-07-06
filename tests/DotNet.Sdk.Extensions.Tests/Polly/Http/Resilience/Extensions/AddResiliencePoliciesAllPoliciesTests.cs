@@ -149,7 +149,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
         /// - until the circuit breaker opens the response returned is a TimeoutHttpResponseMessage because of the fallback policy
         /// - once the circuit breaker opens requests fail fast, even when retried (it never even gets to the timeout policy)
         /// - once the circuit breaker opens the response returned is a CircuitBrokenHttpResponseMessage because of the circuit breaker policy
-        /// 
+        ///
         /// Be aware of the interaction between the retry policy and the circuit breaker policy in regards to
         /// how the retry count and median first retry delay interact with the circuit breaker's options.
         /// For instance, the circuit breaker might not get triggered as expected if the sampling duration

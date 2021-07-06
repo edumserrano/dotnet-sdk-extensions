@@ -112,7 +112,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
         /// <summary>
         /// Tests that the <see cref="CircuitBreakerPolicyHttpClientBuilderExtensions.AddCircuitBreakerPolicy{TPolicyEventHandler}(IHttpClientBuilder,Action{CircuitBreakerOptions})"/>
         /// overload method adds a <see cref="DelegatingHandler"/> with a circuit break to the <see cref="HttpClient"/>.
-        /// 
+        ///
         /// This also tests that the <see cref="ICircuitBreakerPolicyEventHandler"/> events are triggered with the correct values.
         /// </summary>
         [Fact]
@@ -253,7 +253,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
         /// <summary>
         /// Tests that the <see cref="CircuitBreakerPolicyHttpClientBuilderExtensions.AddCircuitBreakerPolicy(IHttpClientBuilder,Action{CircuitBreakerOptions},Func{IServiceProvider,ICircuitBreakerPolicyEventHandler})"/>
         /// overload method adds a <see cref="DelegatingHandler"/> with a circuit break to the <see cref="HttpClient"/>.
-        /// 
+        ///
         /// This also tests that the <see cref="ICircuitBreakerPolicyEventHandler"/> events are triggered with the correct values.
         /// </summary>
         [Fact]
@@ -369,7 +369,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
         /// with 500 status code and some extra properties.
         ///
         /// This is to optimize the performance of the code by reducing the exceptions thrown as indicated by
-        /// https://github.com/App-vNext/Polly/wiki/Circuit-Breaker#reducing-thrown-exceptions-when-the-circuit-is-broken 
+        /// https://github.com/App-vNext/Polly/wiki/Circuit-Breaker#reducing-thrown-exceptions-when-the-circuit-is-broken
         ///  </summary>
         [Fact]
         public async Task AddCircuitBreakerPolicyDoesNotThrowExceptionWhenCircuitIsOpen()

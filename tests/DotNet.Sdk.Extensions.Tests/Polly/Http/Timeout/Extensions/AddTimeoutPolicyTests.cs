@@ -17,7 +17,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
 {
     /// <summary>
     /// Tests for the <see cref="TimeoutPolicyHttpClientBuilderExtensions"/> class.
-    /// Specifically for the TimeoutPolicyHttpClientBuilderExtensions.AddTimeoutPolicy overloads. 
+    /// Specifically for the TimeoutPolicyHttpClientBuilderExtensions.AddTimeoutPolicy overloads.
     /// </summary>
     [Trait("Category", XUnitCategories.Polly)]
     public class AddTimeoutPolicyTests
@@ -86,7 +86,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
         /// <summary>
         /// Tests that the <see cref="TimeoutPolicyHttpClientBuilderExtensions.AddTimeoutPolicy{TPolicyEventHandler}(IHttpClientBuilder,Action{TimeoutOptions})"/>
         /// overload method adds a <see cref="DelegatingHandler"/> with a timeout policy to the <see cref="HttpClient"/>.
-        /// 
+        ///
         /// This also tests that the <see cref="ITimeoutPolicyEventHandler"/> events are triggered with the correct values.
         /// </summary>
         [Fact]
@@ -183,7 +183,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
             services
                 .AddHttpClient(httpClientName)
                 .ConfigureHttpClient(client => client.BaseAddress = new Uri("https://github.com"))
-                .AddTimeoutPolicy(optionsName, provider =>
+                .AddTimeoutPolicy(optionsName, _ =>
                 {
                     return new TestTimeoutPolicyEventHandler(timeoutPolicyEventHandlerCalls);
                 })
@@ -225,7 +225,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
                     {
                         options.TimeoutInSecs = timeoutOptions.TimeoutInSecs;
                     },
-                    eventHandlerFactory: provider =>
+                    eventHandlerFactory: _ =>
                     {
                         return new TestTimeoutPolicyEventHandler(timeoutPolicyEventHandlerCalls);
                     })

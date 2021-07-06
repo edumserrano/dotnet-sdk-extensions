@@ -27,7 +27,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
             // LogLevel.None.ToString()
 
             await using var httpMockServer = new HttpMockServerBuilder()
-                .UseHostArgs("--Logging:LogLevel:Microsoft.Hosting.Lifetime", LogLevel.None.ToString())
+                .UseHostArgs("--Logging:LogLevel:Microsoft.Hosting.Lifetime", nameof(LogLevel.None))
                 .UseHttpResponseMocks()
                 .Build();
             _ = await httpMockServer.StartAsync();

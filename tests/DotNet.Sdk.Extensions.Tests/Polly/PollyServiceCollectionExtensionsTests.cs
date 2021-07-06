@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using DotNet.Sdk.Extensions.Polly;
 using Microsoft.Extensions.DependencyInjection;
 using Polly;
@@ -25,7 +25,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly
             {
                 Extensions.Polly.PollyServiceCollectionExtensions.AddPolicyRegistry(
                     services: null!,
-                    configureRegistry: (provider, pairs) => { });
+                    configureRegistry: (_, pairs) => { });
             });
             exception1.Message.ShouldBe("Value cannot be null. (Parameter 'services')");
 
@@ -46,7 +46,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly
         public void AddsRequiredPollyRegistryToContainer()
         {
             var services = new ServiceCollection();
-            services.AddPolicyRegistry((provider, policyRegistry) => { });
+            services.AddPolicyRegistry((_, _) => { });
             var serviceProvider = services.BuildServiceProvider();
             var registry = serviceProvider.GetService<IPolicyRegistry<string>>();
             var readOnlyRegistry = serviceProvider.GetService<IReadOnlyPolicyRegistry<string>>();
@@ -65,7 +65,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly
             const string policyKey = "testPolicy";
             var expectedPolicy = Policy.NoOp();
             var services = new ServiceCollection();
-            services.AddPolicyRegistry((provider, policyRegistry) =>
+            services.AddPolicyRegistry((_, policyRegistry) =>
             {
                 policyRegistry.Add(key: policyKey, expectedPolicy);
             });

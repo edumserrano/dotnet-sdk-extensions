@@ -13,7 +13,7 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
         /// </summary>
         /// <remarks>
         /// When the debugger is attached (eg: debugging tests) the default timeout is set to be very large
-        /// (1 day) so that it doesn't affect the debugging experience: 
+        /// (1 day) so that it doesn't affect the debugging experience:
         /// eg: tests failing because the host was stopped due to timeout being reached whilst debugging.
         ///
         /// You can always set this timeout explicitly and override the default even when debugging.

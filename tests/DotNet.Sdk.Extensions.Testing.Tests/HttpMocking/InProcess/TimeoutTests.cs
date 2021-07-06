@@ -155,7 +155,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess
         /// <summary>
         /// The setup for this test uses Polly to define a timeout policy for the named HttpClient "polly-named-client".
         /// The timeout for the HttpClient is set to 200ms and the HttpClient is invoked when doing a GET to /polly-named-client.
-        /// 
+        ///
         /// This tests that if we define a mock to timeout for an HttpClient with an existing timeout configuration then
         /// the lowest timeout will be triggered first.
         ///

@@ -92,7 +92,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.Response
         }
 
         /// <summary>
-        /// Configures the mock to timeout. 
+        /// Configures the mock to timeout.
         /// </summary>
         /// <param name="timeout">The value for the timeout.</param>
         /// <returns>The <see cref="HttpResponseMessageMockBuilder"/> for chaining.</returns>
