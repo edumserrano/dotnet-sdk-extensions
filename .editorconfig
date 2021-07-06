@@ -497,12 +497,13 @@ dotnet_naming_rule.parameters_rule.severity             = warning
 #############################################################
 [tests/**/*.cs]
 # Reliability rules https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/reliability-warnings
-dotnet_diagnostic.CA2000.severity = silent          # CA2000: Dispose objects before losing scope
+dotnet_diagnostic.CA2000.severity = silent          # CA2000: Dispose objects before losing scope (in tests you might not need to care about disposing or in some tests it might be impractical.)
 
+dotnet_diagnostic.AsyncFixer01.severity = silent    # AsyncFixer01: Await is the last statement of the method so you can return Task and await in the caller method. (some asserts are async in nature and they must be awaited.)
 
-dotnet_diagnostic.AsyncFixer01.severity = silent    # AsyncFixer01: Await is the last statement of the method so you can return Task and await in the caller method.
+dotnet_diagnostic.VSTHRD200.severity = silent       # VSTHRD200: Use Async suffix for async methods (I don't want to rename my test methods to end with the Async suffix.)
 
-dotnet_diagnostic.VSTHRD200.severity = silent       # VSTHRD200: Use Async suffix for async methods
+dotnet_diagnostic.RCS1196.severity = silent         # RCS1196: Call extension method as instance method (sometimes I want to validate null params on the extension method.)
 
 
 
