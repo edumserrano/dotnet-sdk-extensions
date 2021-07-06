@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Polly.Http.Fallback.Events;
@@ -20,7 +20,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Fallback
             var httpRequestExceptionFallback = Policy<HttpResponseMessage>
                 .Handle<HttpRequestException>()
                 .FallbackAsync(
-                    fallbackAction: (delegateResult, pollyContext, cancellationToken) =>
+                    fallbackAction: (delegateResult, _, cancellationToken) =>
                     {
                         var response = new ExceptionHttpResponseMessage(delegateResult.Exception);
                         return Task.FromResult<HttpResponseMessage>(response);
@@ -35,7 +35,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Fallback
             var timeoutFallback = Policy<HttpResponseMessage>
                 .Handle<TimeoutRejectedException>()
                 .FallbackAsync(
-                    fallbackAction: (delegateResult, pollyContext, cancellationToken) =>
+                    fallbackAction: (delegateResult, _, _) =>
                     {
                         var response = new TimeoutHttpResponseMessage(delegateResult.Exception);
                         return Task.FromResult<HttpResponseMessage>(response);
@@ -51,7 +51,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Fallback
                 .Handle<BrokenCircuitException>()
                 .Or<IsolatedCircuitException>()
                 .FallbackAsync(
-                    fallbackAction: (delegateResult, pollyContext, cancellationToken) =>
+                    fallbackAction: (delegateResult, _, _) =>
                     {
                         var exception = delegateResult.Exception;
                         var response = exception switch
@@ -89,11 +89,10 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Fallback
                         return policyEventHandler.OnTaskCancelledFallbackAsync(fallbackEvent);
                     });
 
-            var policy = Policy.WrapAsync(httpRequestExceptionFallback,
+            return Policy.WrapAsync(httpRequestExceptionFallback,
                 timeoutFallback,
                 brokenCircuitFallback,
                 abortedFallback);
-            return policy;
         }
     }
 }

@@ -19,7 +19,7 @@ namespace DotNet.Sdk.Extensions.Polly.Policies
     public static class CircuitBreakerCheckerAsyncPolicy
     {
         /// <summary>
-        /// Create a policy to to check if a circuit breaker is opened and avoid throwing an exception if the circuit is open/isolated. 
+        /// Create a policy to to check if a circuit breaker is opened and avoid throwing an exception if the circuit is open/isolated.
         /// </summary>
         /// <remarks>
         /// If the state of the circuit breaker policy is open or isolated then the policy chain execution is short circuited and the
@@ -79,7 +79,7 @@ namespace DotNet.Sdk.Extensions.Polly.Policies
                 CircuitState.Isolated => await ExecuteFallbackValueFactoryAsync(CircuitBreakerState.Isolated),
                 CircuitState.Open => await ExecuteFallbackValueFactoryAsync(CircuitBreakerState.Open),
                 CircuitState.Closed or CircuitState.HalfOpen => await ExecutePolicyActionAsync(),
-                _ => throw new NotImplementedException($"Unexpected circuit state: {_circuitBreakerPolicy.CircuitState}.")
+                _ => throw new InvalidOperationException($"Unexpected circuit state: {_circuitBreakerPolicy.CircuitState}.")
             };
 
             async Task<T> ExecuteFallbackValueFactoryAsync(CircuitBreakerState circuitBreakerState)

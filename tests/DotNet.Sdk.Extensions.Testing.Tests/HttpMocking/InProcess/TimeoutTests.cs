@@ -152,7 +152,6 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess
             expectedException.InnerException.Message.ShouldBe("A task was canceled.");
         }
 
-
         /// <summary>
         /// The setup for this test uses Polly to define a timeout policy for the named HttpClient "polly-named-client".
         /// The timeout for the HttpClient is set to 200ms and the HttpClient is invoked when doing a GET to /polly-named-client.

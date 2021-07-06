@@ -94,7 +94,9 @@ dotnet_diagnostic.VSTHRD111.severity = none         # VSTHRD111 Use .ConfigureAw
 [*.cs]
 dotnet_diagnostic.RCS1021.severity = none         # RCS1021: Convert lambda expression body to expression-body
 dotnet_diagnostic.RCS1090.severity = none         # RCS1090: Add call to 'ConfigureAwait' (or vice versa)
+dotnet_diagnostic.RCS1224.severity = none         # RCS1224: Make method an extension method
 dotnet_diagnostic.RCS1194.severity = none         # RCS1194: Implement exception constructors
+
 
 
 

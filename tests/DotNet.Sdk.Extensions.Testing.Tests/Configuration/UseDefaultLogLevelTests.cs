@@ -1,4 +1,4 @@
-﻿using DotNet.Sdk.Extensions.Testing.Configuration;
+using DotNet.Sdk.Extensions.Testing.Configuration;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -16,7 +16,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         /// <summary>
         /// Tests that there is no default value set for the configuration key "Logging:LogLevel:Default".
         /// This is important because it serves as a control test for the following tests for the
-        /// <see cref="TestConfigurationBuilderExtensions.UseDefaultLogLevel"/> extension method.
+        /// other tests here.
         /// </summary>
         [Fact]
         public void HostDefaultLogLevelControlTest()
@@ -39,7 +39,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         {
             using var host = WebHost
                 .CreateDefaultBuilder()
-                .Configure((context, applicationBuilder) =>
+                .Configure((_, _) =>
                 {
                     // this is required just to provide a configuration for the webhost
                     // or else it fails when calling webHostBuilder.Build()
@@ -75,7 +75,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         {
             using var webHost = WebHost
                 .CreateDefaultBuilder()
-                .Configure((context, applicationBuilder) =>
+                .Configure((_, _) =>
                 {
                     // this is required just to provide a configuration for the webhost
                     // or else it fails when calling webHostBuilder.Build()

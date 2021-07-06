@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary;
@@ -15,11 +15,10 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Auxiliary
         {
             FallbackPolicy = policyHttpMessageHandlers[0].GetPolicy<AsyncPolicyWrap<HttpResponseMessage>>() ?? throw new ArgumentException("Missing fallback policy", nameof(policyHttpMessageHandlers));
             RetryPolicy = policyHttpMessageHandlers[1].GetPolicy<AsyncRetryPolicy<HttpResponseMessage>>() ?? throw new ArgumentException("Missing retry policy", nameof(policyHttpMessageHandlers));
-            ;
+
             CircuitBreakerPolicy = policyHttpMessageHandlers[2].GetPolicy<AsyncPolicyWrap<HttpResponseMessage>>() ?? throw new ArgumentException("Missing circuit breaker policy", nameof(policyHttpMessageHandlers));
-            ;
+
             TimeoutPolicy = policyHttpMessageHandlers[3].GetPolicy<AsyncTimeoutPolicy<HttpResponseMessage>>() ?? throw new ArgumentException("Missing timeout policy", nameof(policyHttpMessageHandlers));
-            ;
         }
 
         public AsyncPolicyWrap<HttpResponseMessage> CircuitBreakerPolicy { get; set; }

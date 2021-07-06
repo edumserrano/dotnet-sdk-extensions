@@ -69,7 +69,6 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
             await Task.Delay(TimeSpan.FromSeconds(_circuitBreakerOptions.SamplingDurationInSecs + 0.05));
         }
 
-
         /// <summary>
         /// Asserts that the circuit breaker state is open/isolated by doing an HTTP request.
         /// If the circuit breaker state is not open/isolated this will throw an <see cref="InvalidOperationException"/>.

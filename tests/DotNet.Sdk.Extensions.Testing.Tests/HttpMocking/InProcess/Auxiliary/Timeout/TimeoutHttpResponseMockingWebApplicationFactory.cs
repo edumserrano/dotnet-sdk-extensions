@@ -27,7 +27,6 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess.Auxiliary.Ti
                 .UseDefaultLogLevel(LogLevel.Critical)
                 .ConfigureWebHostDefaults(_ =>
                 {
-
                 });
         }
     }

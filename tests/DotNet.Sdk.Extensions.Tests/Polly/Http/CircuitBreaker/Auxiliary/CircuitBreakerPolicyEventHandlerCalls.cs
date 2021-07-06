@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker.Events;
 
 namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
@@ -11,17 +11,17 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
 
         public IList<ResetEvent> OnResetAsyncCalls { get; } = new List<ResetEvent>();
 
-        public void AddOnBreakAsync(BreakEvent breakEvent)
+        public void AddOnBreak(BreakEvent breakEvent)
         {
             OnBreakAsyncCalls.Add(breakEvent);
         }
 
-        public void AddOnHalfOpenAsync(HalfOpenEvent halfOpenEvent)
+        public void AddOnHalfOpen(HalfOpenEvent halfOpenEvent)
         {
             OnHalfOpenAsyncCalls.Add(halfOpenEvent);
         }
 
-        public void AddOnResetAsync(ResetEvent resetEvent)
+        public void AddOnReset(ResetEvent resetEvent)
         {
             OnResetAsyncCalls.Add(resetEvent);
         }

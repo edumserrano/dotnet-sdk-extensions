@@ -23,7 +23,6 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices.Auxiliary
                 .UseDefaultLogLevel(LogLevel.Critical)
                 .ConfigureWebHostDefaults(_ =>
                 {
-
                 });
         }
     }

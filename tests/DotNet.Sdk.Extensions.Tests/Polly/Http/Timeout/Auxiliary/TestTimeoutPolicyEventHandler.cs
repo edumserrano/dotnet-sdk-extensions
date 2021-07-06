@@ -14,7 +14,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Auxiliary
 
         public Task OnTimeoutAsync(TimeoutEvent timeoutEvent)
         {
-            _timeoutPolicyEventHandlerCalls.AddOnTimeoutAsync(timeoutEvent);
+            _timeoutPolicyEventHandlerCalls.AddOnTimeout(timeoutEvent);
             return Task.CompletedTask;
         }
     }

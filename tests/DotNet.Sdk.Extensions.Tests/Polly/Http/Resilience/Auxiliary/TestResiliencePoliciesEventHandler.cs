@@ -18,31 +18,31 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Auxiliary
 
         public Task OnTimeoutAsync(TimeoutEvent timeoutEvent)
         {
-            _resiliencePoliciesEventHandlerCalls.Timeout.AddOnTimeoutAsync(timeoutEvent);
+            _resiliencePoliciesEventHandlerCalls.Timeout.AddOnTimeout(timeoutEvent);
             return Task.CompletedTask;
         }
 
         public Task OnRetryAsync(RetryEvent retryEvent)
         {
-            _resiliencePoliciesEventHandlerCalls.Retry.AddOnRetryAsync(retryEvent);
+            _resiliencePoliciesEventHandlerCalls.Retry.AddOnRetry(retryEvent);
             return Task.CompletedTask;
         }
 
         public Task OnBreakAsync(BreakEvent breakEvent)
         {
-            _resiliencePoliciesEventHandlerCalls.CircuitBreaker.AddOnBreakAsync(breakEvent);
+            _resiliencePoliciesEventHandlerCalls.CircuitBreaker.AddOnBreak(breakEvent);
             return Task.CompletedTask;
         }
 
         public Task OnHalfOpenAsync(HalfOpenEvent halfOpenEvent)
         {
-            _resiliencePoliciesEventHandlerCalls.CircuitBreaker.AddOnHalfOpenAsync(halfOpenEvent);
+            _resiliencePoliciesEventHandlerCalls.CircuitBreaker.AddOnHalfOpen(halfOpenEvent);
             return Task.CompletedTask;
         }
 
         public Task OnResetAsync(ResetEvent resetEvent)
         {
-            _resiliencePoliciesEventHandlerCalls.CircuitBreaker.AddOnResetAsync(resetEvent);
+            _resiliencePoliciesEventHandlerCalls.CircuitBreaker.AddOnReset(resetEvent);
             return Task.CompletedTask;
         }
 

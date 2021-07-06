@@ -44,7 +44,6 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
             helloHttpContent.ShouldBe("hello");
         }
 
-
         /// <summary>
         /// Tests that the response based <see cref="HttpMockServer"/> responds to requests as configured.
         /// This also tests the two ways to provide mocks <seealso cref="ResponseBasedBuilder.MockHttpResponse(HttpResponseMock)"/>

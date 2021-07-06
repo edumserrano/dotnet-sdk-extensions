@@ -24,11 +24,7 @@ namespace DotNet.Sdk.Extensions.Tests.Options.ValidateEagerly.Auxiliary.StartupV
                 .Bind(_configuration)
                 .Validate(options =>
                 {
-                    if (options.SomeOption > 1)
-                    {
-                        return true;
-                    }
-                    return false;
+                    return options.SomeOption > 1;
                 })
                 .ValidateEagerly();
         }

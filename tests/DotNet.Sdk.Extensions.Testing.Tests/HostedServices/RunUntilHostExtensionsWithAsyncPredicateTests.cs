@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Testing.Configuration;
 using DotNet.Sdk.Extensions.Testing.HostedServices;
@@ -135,7 +135,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
             calculator
                 .Sum(Arg.Any<int>(), Arg.Any<int>())
                 .Returns(1)
-                .AndDoes(info => ++callCount);
+                .AndDoes(_ => ++callCount);
 
             // This code creating the Host would exist somewhere in app being tested.
             // In a real scenario we would call the function that creates the Host.
@@ -143,7 +143,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
             var hostBuilder = Host
                 .CreateDefaultBuilder()
                 .UseDefaultLogLevel(LogLevel.Critical)
-                .ConfigureServices((hostContext, services) =>
+                .ConfigureServices((_, services) =>
                 {
                     services.AddSingleton<ICalculator, Calculator>();
                     services.AddHostedService<MyBackgroundService>();
@@ -151,12 +151,11 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
 
             // This is for overriding services for test purposes.
             using var host = hostBuilder
-                .ConfigureServices((hostContext, services) =>
+                .ConfigureServices((_, services) =>
                 {
                     services.AddSingleton(calculator);
                 })
                 .Build();
-
 
             var runUntilTask = host.RunUntilAsync(() => Task.FromResult(callCount >= 4), options => options.Timeout = TimeSpan.FromSeconds(1));
             var exception = await Should.ThrowAsync<RunUntilException>(runUntilTask);
@@ -180,7 +179,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
             calculator
                 .Sum(Arg.Any<int>(), Arg.Any<int>())
                 .Returns(1)
-                .AndDoes(info => ++callCount);
+                .AndDoes(_ => ++callCount);
 
             // This code creating the Host would exist somewhere in app being tested.
             // In a real scenario we would call the function that creates the Host.
