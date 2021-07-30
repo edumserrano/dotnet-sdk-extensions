@@ -28,6 +28,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.Response
             {
                 return HttpResponseMessageMockResult.Skipped();
             }
+
             var httpResponseMessage = await _handler(request, cancellationToken);
             return HttpResponseMessageMockResult.Executed(httpResponseMessage);
         }

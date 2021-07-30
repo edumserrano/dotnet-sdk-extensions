@@ -129,6 +129,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.InProcess
             {
                 testHttpMessageHandler.MockHttpResponse(httpResponseMockDescriptor.HttpResponseMock);
             }
+
             return new TestHttpMessageHandlerDescriptor(httpClientName, testHttpMessageHandler);
         }
     }

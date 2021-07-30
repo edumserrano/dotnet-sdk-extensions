@@ -203,8 +203,8 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess
         {
             var httpResponseMock1 = new HttpResponseMessageMockDescriptorBuilder();
             httpResponseMock1
-                    .ForBasicClient()
-                    .RespondWith(new HttpResponseMessage(HttpStatusCode.OK));
+                .ForBasicClient()
+                .RespondWith(new HttpResponseMessage(HttpStatusCode.OK));
             var httpResponseMock2 = new HttpResponseMessageMockDescriptorBuilder();
             httpResponseMock2
                 .ForNamedClient("my-named-client")

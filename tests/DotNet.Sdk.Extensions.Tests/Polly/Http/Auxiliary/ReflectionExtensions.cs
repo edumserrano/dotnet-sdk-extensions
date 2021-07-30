@@ -54,14 +54,15 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary
             }
 
             const BindingFlags bindFlags = BindingFlags.Instance
-                            | BindingFlags.Public
-                            | BindingFlags.NonPublic
-                            | BindingFlags.Static;
+                | BindingFlags.Public
+                | BindingFlags.NonPublic
+                | BindingFlags.Static;
             var field = type.GetField(fieldName, bindFlags);
             if (field is null)
             {
                 throw new InvalidOperationException($"GetInstanceField: field {fieldName} does not exist.");
             }
+
             return field.GetValue(instance);
         }
 
@@ -109,14 +110,15 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary
             }
 
             const BindingFlags bindFlags = BindingFlags.Instance
-                            | BindingFlags.Public
-                            | BindingFlags.NonPublic
-                            | BindingFlags.Static;
+                | BindingFlags.Public
+                | BindingFlags.NonPublic
+                | BindingFlags.Static;
             var property = type.GetProperty(propertyName, bindFlags);
             if (property is null)
             {
                 throw new InvalidOperationException($"GetInstanceProperty: property {propertyName} does not exist.");
             }
+
             return property.GetValue(instance);
         }
     }

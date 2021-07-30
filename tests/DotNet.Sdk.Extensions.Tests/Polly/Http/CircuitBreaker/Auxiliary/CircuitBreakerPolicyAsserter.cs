@@ -53,26 +53,26 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
             eventHandlerCalls
                 .OnBreakAsyncCalls
                 .Count(x => x.HttpClientName.Equals(httpClientName, StringComparison.Ordinal)
-                            && x.CircuitBreakerOptions.DurationOfBreakInSecs.Equals(_options.DurationOfBreakInSecs)
-                            && x.CircuitBreakerOptions.FailureThreshold.Equals(_options.FailureThreshold)
-                            && x.CircuitBreakerOptions.MinimumThroughput.Equals(_options.MinimumThroughput)
-                            && x.CircuitBreakerOptions.SamplingDurationInSecs.Equals(_options.SamplingDurationInSecs))
+                    && x.CircuitBreakerOptions.DurationOfBreakInSecs.Equals(_options.DurationOfBreakInSecs)
+                    && x.CircuitBreakerOptions.FailureThreshold.Equals(_options.FailureThreshold)
+                    && x.CircuitBreakerOptions.MinimumThroughput.Equals(_options.MinimumThroughput)
+                    && x.CircuitBreakerOptions.SamplingDurationInSecs.Equals(_options.SamplingDurationInSecs))
                 .ShouldBe(count);
             eventHandlerCalls
                 .OnResetAsyncCalls
                 .Count(x => x.HttpClientName.Equals(httpClientName, StringComparison.Ordinal)
-                            && x.CircuitBreakerOptions.DurationOfBreakInSecs.Equals(_options.DurationOfBreakInSecs)
-                            && x.CircuitBreakerOptions.FailureThreshold.Equals(_options.FailureThreshold)
-                            && x.CircuitBreakerOptions.MinimumThroughput.Equals(_options.MinimumThroughput)
-                            && x.CircuitBreakerOptions.SamplingDurationInSecs.Equals(_options.SamplingDurationInSecs))
+                    && x.CircuitBreakerOptions.DurationOfBreakInSecs.Equals(_options.DurationOfBreakInSecs)
+                    && x.CircuitBreakerOptions.FailureThreshold.Equals(_options.FailureThreshold)
+                    && x.CircuitBreakerOptions.MinimumThroughput.Equals(_options.MinimumThroughput)
+                    && x.CircuitBreakerOptions.SamplingDurationInSecs.Equals(_options.SamplingDurationInSecs))
                 .ShouldBe(count);
             eventHandlerCalls
                 .OnHalfOpenAsyncCalls
                 .Count(x => x.HttpClientName.Equals(httpClientName, StringComparison.Ordinal)
-                            && x.CircuitBreakerOptions.DurationOfBreakInSecs.Equals(_options.DurationOfBreakInSecs)
-                            && x.CircuitBreakerOptions.FailureThreshold.Equals(_options.FailureThreshold)
-                            && x.CircuitBreakerOptions.MinimumThroughput.Equals(_options.MinimumThroughput)
-                            && x.CircuitBreakerOptions.SamplingDurationInSecs.Equals(_options.SamplingDurationInSecs))
+                    && x.CircuitBreakerOptions.DurationOfBreakInSecs.Equals(_options.DurationOfBreakInSecs)
+                    && x.CircuitBreakerOptions.FailureThreshold.Equals(_options.FailureThreshold)
+                    && x.CircuitBreakerOptions.MinimumThroughput.Equals(_options.MinimumThroughput)
+                    && x.CircuitBreakerOptions.SamplingDurationInSecs.Equals(_options.SamplingDurationInSecs))
                 .ShouldBe(count);
         }
 

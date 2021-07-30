@@ -40,6 +40,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.ResponseMocking
             {
                 throw new InvalidOperationException($"{nameof(HttpResponseMockBuilder)}.{nameof(Where)} condition already configured.");
             }
+
             _predicateAsync = predicate ?? throw new ArgumentNullException(nameof(predicate));
             return this;
         }
@@ -93,6 +94,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.ResponseMocking
             {
                 throw new InvalidOperationException($"{nameof(HttpResponseMockBuilder)}.{nameof(RespondWith)} already configured.");
             }
+
             _handlerAsync = handlerAsync ?? throw new ArgumentNullException(nameof(handlerAsync));
             return this;
         }

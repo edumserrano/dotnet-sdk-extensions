@@ -41,6 +41,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.Response
             {
                 throw new InvalidOperationException($"{nameof(HttpResponseMessageMockBuilder)}.{nameof(Where)} condition already configured.");
             }
+
             _predicateAsync = predicate ?? throw new ArgumentNullException(nameof(predicate));
             return this;
         }
@@ -87,6 +88,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.Response
             {
                 throw new InvalidOperationException("Response behavior already configured.");
             }
+
             _handlerAsync = handler ?? throw new ArgumentNullException(nameof(handler));
             return this;
         }

@@ -62,8 +62,8 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers
             handler.MockHttpResponse(builder =>
             {
                 builder
-                .Where(httpRequestMessage => httpRequestMessage.RequestUri!.Host.Equals("microsoft", StringComparison.Ordinal))
-                .RespondWith(httpMockResponseMessage);
+                    .Where(httpRequestMessage => httpRequestMessage.RequestUri!.Host.Equals("microsoft", StringComparison.Ordinal))
+                    .RespondWith(httpMockResponseMessage);
             });
 
             var request = new HttpRequestMessage(HttpMethod.Get, "https://test.com");

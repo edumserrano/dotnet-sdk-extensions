@@ -100,6 +100,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Policies
             {
                 await circuitBreakerPolicy.ExecuteAndCaptureAsync(() => throw new InvalidOperationException("test"));
             }
+
             await Should.ThrowAsync<BrokenCircuitException>(() =>
             {
                 return circuitBreakerPolicy.ExecuteAsync(() => Task.FromResult(2));

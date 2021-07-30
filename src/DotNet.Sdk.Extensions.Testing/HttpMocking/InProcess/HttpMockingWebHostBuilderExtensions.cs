@@ -63,6 +63,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.InProcess
                 {
                     httpMessageHandlersReplacer.MockHttpResponse(httpResponseMessageMockDescriptorBuilder);
                 }
+
                 httpMessageHandlersReplacer.ApplyHttpResponseMocks();
             });
             return webHostBuilder;

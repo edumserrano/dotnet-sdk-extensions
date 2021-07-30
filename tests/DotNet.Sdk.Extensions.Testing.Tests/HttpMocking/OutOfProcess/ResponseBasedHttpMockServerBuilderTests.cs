@@ -21,13 +21,13 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
         public async Task RepliesAsConfigured2()
         {
             var helloHttpResponseMock = new HttpResponseMockBuilder()
-                  .Where(httpRequest => httpRequest.Path.Equals("/hello", StringComparison.OrdinalIgnoreCase))
-                  .RespondWith(async (_, response, cancellationToken) =>
-                  {
-                      response.StatusCode = StatusCodes.Status201Created;
-                      await response.WriteAsync("hello", cancellationToken);
-                  })
-                  .Build();
+                .Where(httpRequest => httpRequest.Path.Equals("/hello", StringComparison.OrdinalIgnoreCase))
+                .RespondWith(async (_, response, cancellationToken) =>
+                    {
+                        response.StatusCode = StatusCodes.Status201Created;
+                        await response.WriteAsync("hello", cancellationToken);
+                    })
+                .Build();
 
             await using var httpMockServer = new HttpMockServerBuilder()
                 .UseDefaultLogLevel(LogLevel.Critical)
@@ -53,13 +53,13 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
         public async Task RepliesAsConfigured()
         {
             var helloHttpResponseMock = new HttpResponseMockBuilder()
-                  .Where(httpRequest => httpRequest.Path.Equals("/hello", StringComparison.OrdinalIgnoreCase))
-                  .RespondWith(async (_, response, cancellationToken) =>
-                  {
-                      response.StatusCode = StatusCodes.Status201Created;
-                      await response.WriteAsync("hello", cancellationToken);
-                  })
-                  .Build();
+                .Where(httpRequest => httpRequest.Path.Equals("/hello", StringComparison.OrdinalIgnoreCase))
+                .RespondWith(async (_, response, cancellationToken) =>
+                    {
+                        response.StatusCode = StatusCodes.Status201Created;
+                        await response.WriteAsync("hello", cancellationToken);
+                    })
+                .Build();
 
             await using var httpMockServer = new HttpMockServerBuilder()
                 .UseDefaultLogLevel(LogLevel.Critical)

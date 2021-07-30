@@ -17,7 +17,9 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Resilience.Extensions
     /// </summary>
     public static class ResiliencePoliciesHttpClientBuilderExtensions
     {
-        private class BlankHttpMessageHandler : DelegatingHandler { }
+        private class BlankHttpMessageHandler : DelegatingHandler
+        {
+        }
 
         /// <summary>
         /// Adds resilience policies to the <see cref="HttpClient"/>.
@@ -214,8 +216,8 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Resilience.Extensions
 
         private static IHttpClientBuilder AddResilienceRetryPolicy(
             this IHttpClientBuilder httpClientBuilder,
-            string optionsName, Func<IServiceProvider,
-                IResiliencePoliciesEventHandler> eventHandlerFactory)
+            string optionsName,
+            Func<IServiceProvider, IResiliencePoliciesEventHandler> eventHandlerFactory)
         {
             return httpClientBuilder.AddHttpMessageHandler(provider =>
             {

@@ -32,6 +32,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.ResponseMocking
             {
                 return HttpResponseMockResults.Skipped;
             }
+
             await _handlerAsync(httpContext.Request, httpContext.Response, httpContext.RequestAborted);
             return HttpResponseMockResults.Executed;
         }

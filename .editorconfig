@@ -101,6 +101,29 @@ dotnet_diagnostic.RCS1224.severity = none         # RCS1224: Make method an exte
 dotnet_diagnostic.RCS1226.severity = warning      # RCS1226: Add paragraph to documentation comment
 dotnet_diagnostic.RCS1243.severity = warning      # RCS1243: Duplicate word in a comment
 
+dotnet_diagnostic.RCS0001.severity = warning      # RCS0001: Add empty line after embedded statement
+dotnet_diagnostic.RCS0003.severity = warning      # RCS0003: Add empty line after using directive list
+dotnet_diagnostic.RCS0008.severity = warning      # RCS0008: Add empty line between block and statement
+dotnet_diagnostic.RCS0010.severity = warning      # RCS0010: Add empty line between declarations
+dotnet_diagnostic.RCS0021.severity = warning      # RCS0021: Add newline after opening brace of block
+dotnet_diagnostic.RCS0023.severity = warning      # RCS0023: Add newline after opening brace of type declaration
+dotnet_diagnostic.RCS0024.severity = warning      # RCS0024: Add newline after switch label
+dotnet_diagnostic.RCS0025.severity = warning      # RCS0025: Add newline before accessor of full property
+dotnet_diagnostic.RCS0027.severity = warning      # RCS0027: Add newline before binary operator instead of after it (or vice versa)
+dotnet_diagnostic.RCS0028.severity = warning      # RCS0028: Add newline before conditional operator instead of after it (or vice versa)
+dotnet_diagnostic.RCS0030.severity = warning      # RCS0030: Add newline before embedded statement
+dotnet_diagnostic.RCS0031.severity = warning      # RCS0031: Add newline before enum member
+dotnet_diagnostic.RCS0033.severity = warning      # RCS0033: Add newline before statement
+dotnet_diagnostic.RCS0034.severity = warning      # RCS0034: Add newline before type parameter constraint
+dotnet_diagnostic.RCS0039.severity = warning      # RCS0039: Remove newline before base list
+dotnet_diagnostic.RCS0041.severity = warning      # RCS0041: Remove newline between 'if' keyword and 'else' keyword
+dotnet_diagnostic.RCS0042.severity = warning      # RCS0042: Remove newlines from accessor list of auto-property
+dotnet_diagnostic.RCS0043.severity = warning      # RCS0043: Remove newlines from accessor with single-line expression
+dotnet_diagnostic.RCS0050.severity = warning      # RCS0050: Add empty line before top declaration
+dotnet_diagnostic.RCS0051.severity = warning      # RCS0051: Add newline between closing brace and 'while' keyword (or vice versa)
+dotnet_diagnostic.RCS0054.severity = warning      # RCS0054: Fix formatting of a call chain
+dotnet_diagnostic.RCS0055.severity = warning      # RCS0055: Fix formatting of a binary expression chain
+
 ##########################################
 # Code quality rules https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/
 # .NET code analysis provides rules that aim to improve code quality. The rules are organized into areas

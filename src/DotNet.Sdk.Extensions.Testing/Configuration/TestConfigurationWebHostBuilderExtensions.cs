@@ -206,11 +206,13 @@ namespace DotNet.Sdk.Extensions.Testing.Configuration
                 testAppSettingsJsonConfigurationSourceIndex = config.Sources
                     .IndexOf(config.Sources.OfType<EnvironmentVariablesConfigurationSource>().FirstOrDefault());
             }
+
             if (testAppSettingsJsonConfigurationSourceIndex == -1)
             {
                 testAppSettingsJsonConfigurationSourceIndex = config.Sources
                     .IndexOf(config.Sources.OfType<CommandLineConfigurationSource>().FirstOrDefault());
             }
+
             if (testAppSettingsJsonConfigurationSourceIndex == -1)
             {
                 testAppSettingsJsonConfigurationSourceIndex = config.Sources.Count;
