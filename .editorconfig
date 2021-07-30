@@ -98,6 +98,8 @@ dotnet_diagnostic.RCS1090.severity = none         # RCS1090: Add call to 'Config
 dotnet_diagnostic.RCS1194.severity = none         # RCS1194: Implement exception constructors
 dotnet_diagnostic.RCS1163.severity = warning      # RCS1163: Unused parameter
 dotnet_diagnostic.RCS1224.severity = none         # RCS1224: Make method an extension method
+dotnet_diagnostic.RCS1226.severity = warning      # RCS1226: Add paragraph to documentation comment
+dotnet_diagnostic.RCS1243.severity = warning      # RCS1243: Duplicate word in a comment
 
 ##########################################
 # Code quality rules https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/
@@ -503,6 +505,6 @@ dotnet_diagnostic.AsyncFixer01.severity = silent    # AsyncFixer01: Await is the
 dotnet_diagnostic.VSTHRD200.severity = silent       # VSTHRD200: Use Async suffix for async methods (I don't want to rename my test methods to end with the Async suffix.)
 
 dotnet_diagnostic.RCS1196.severity = silent         # RCS1196: Call extension method as instance method (sometimes I want to validate null params on the extension method.)
-
+dotnet_diagnostic.RCS1226.severity = none           # RCS1226: Add paragraph to documentation comment
 
 

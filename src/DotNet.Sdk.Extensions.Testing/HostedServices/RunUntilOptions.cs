@@ -12,11 +12,14 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
         /// Period after which the host executing the hosted service will be terminated. Defaults to 5 seconds.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// When the debugger is attached (eg: debugging tests) the default timeout is set to be very large
         /// (1 day) so that it doesn't affect the debugging experience:
         /// eg: tests failing because the host was stopped due to timeout being reached whilst debugging.
-        ///
+        /// </para>
+        /// <para>
         /// You can always set this timeout explicitly and override the default even when debugging.
+        /// </para>
         /// </remarks>
         public TimeSpan Timeout { get; set; } = Debugger.IsAttached ? TimeSpan.FromDays(1) : TimeSpan.FromSeconds(5);
 

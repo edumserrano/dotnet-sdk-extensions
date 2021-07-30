@@ -100,7 +100,7 @@ namespace DotNet.Sdk.Extensions.Testing.Configuration
         /// Clears loaded appsettings files by removing all <see cref="JsonConfigurationSource"/>
         /// from the <see cref="IWebHostBuilder"/> and adding instances of <see cref="JsonConfigurationSource"/> for
         /// the provided appsettings files.
-        /// </summary> 
+        /// </summary>
         /// <remarks>
         /// It also makes sure that the expected loading configuration behavior is preserved by having the
         /// <see cref="CommandLineConfigurationSource"/> last and the <see cref="EnvironmentVariablesConfigurationSource"/>

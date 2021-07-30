@@ -248,7 +248,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         /// <summary>
         /// Similar to <see cref="PreservesExpectedConfigurationSourcesOrder"/> but tests when no <see cref="JsonConfigurationSource"/>
         /// and no <see cref="EnvironmentVariablesConfigurationSource"/> exist. In this case the test appsettings should still be added
-        /// before the the <see cref="CommandLineConfigurationSource"/>.
+        /// before the <see cref="CommandLineConfigurationSource"/>.
         /// </summary>
         [Fact]
         public void PreservesExpectedConfigurationSourcesOrder3()

@@ -19,11 +19,11 @@ namespace DotNet.Sdk.Extensions.Polly.Policies
     public static class CircuitBreakerCheckerAsyncPolicy
     {
         /// <summary>
-        /// Create a policy to to check if a circuit breaker is opened and avoid throwing an exception if the circuit is open/isolated.
+        /// Create a policy to check if a circuit breaker is opened and avoid throwing an exception if the circuit is open/isolated.
         /// </summary>
         /// <remarks>
         /// If the state of the circuit breaker policy is open or isolated then the policy chain execution is short circuited and the
-        /// factory methods are invoked invoked to return a result.
+        /// factory methods are invoked to return a result.
         /// </remarks>
         /// <typeparam name="T">The type returned by the delegate to which the policy is applied to.</typeparam>
         /// <param name="circuitBreakerPolicy">The circuit breaker policy whose state will be checked.</param>

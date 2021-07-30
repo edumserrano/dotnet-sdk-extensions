@@ -46,7 +46,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Resilience.Extensions
         /// Adds resilience policies to the <see cref="HttpClient"/>.
         /// </summary>
         /// <param name="httpClientBuilder">The <see cref="IHttpClientBuilder"/> instance to add the resilience policies to.</param>
-        /// <param name="configureOptions">An action to define the the <see cref="RetryOptions"/> options to use to configure the resilience policies.</param>
+        /// <param name="configureOptions">An action to define the <see cref="RetryOptions"/> options to use to configure the resilience policies.</param>
         /// <returns>The <see cref="IHttpClientBuilder"/> for chaining.</returns>
         public static IHttpClientBuilder AddResiliencePolicies(
             this IHttpClientBuilder httpClientBuilder,
@@ -96,7 +96,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Resilience.Extensions
         /// </summary>
         /// <typeparam name="TPolicyEventHandler">The type that will handle resilience events.</typeparam>
         /// <param name="httpClientBuilder">The <see cref="IHttpClientBuilder"/> instance to add the resilience policies to.</param>
-        /// <param name="configureOptions">An action to define the the <see cref="RetryOptions"/> options to use to configure the resilience policies.</param>
+        /// <param name="configureOptions">An action to define the <see cref="RetryOptions"/> options to use to configure the resilience policies.</param>
         /// <returns>The <see cref="IHttpClientBuilder"/> for chaining.</returns>
         public static IHttpClientBuilder AddResiliencePolicies<TPolicyEventHandler>(
             this IHttpClientBuilder httpClientBuilder,
@@ -144,7 +144,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Resilience.Extensions
         /// Adds a resilience policies to the <see cref="HttpClient"/>.
         /// </summary>
         /// <param name="httpClientBuilder">The <see cref="IHttpClientBuilder"/> instance to add the resilience policies to.</param>
-        /// <param name="configureOptions">An action to define the the <see cref="RetryOptions"/> options to use to configure the resilience policies.</param>
+        /// <param name="configureOptions">An action to define the <see cref="RetryOptions"/> options to use to configure the resilience policies.</param>
         /// <param name="eventHandlerFactory">Delegate to create an instance that will handle resilience events.</param>
         /// <returns>The <see cref="IHttpClientBuilder"/> for chaining.</returns>
         public static IHttpClientBuilder AddResiliencePolicies(

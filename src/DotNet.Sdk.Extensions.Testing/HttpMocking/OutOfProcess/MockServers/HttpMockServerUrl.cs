@@ -33,7 +33,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers
         public int Port { get; }
 
         /// <summary>
-        /// Returns the string representation of the URL. 
+        /// Returns the string representation of the URL.
         /// </summary>
         /// <returns></returns>
         public override string ToString() => _url;

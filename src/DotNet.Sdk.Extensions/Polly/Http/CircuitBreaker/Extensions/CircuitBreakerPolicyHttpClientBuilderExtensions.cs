@@ -38,7 +38,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker.Extensions
         /// Adds a circuit breaker policy to the <see cref="HttpClient"/>.
         /// </summary>
         /// <param name="httpClientBuilder">The <see cref="IHttpClientBuilder"/> instance to add the circuit breaker policy to.</param>
-        /// <param name="configureOptions">An action to define the the <see cref="CircuitBreakerOptions"/> options to use to configure the circuit breaker policy.</param>
+        /// <param name="configureOptions">An action to define the <see cref="CircuitBreakerOptions"/> options to use to configure the circuit breaker policy.</param>
         /// <returns>The <see cref="IHttpClientBuilder"/> for chaining.</returns>
         public static IHttpClientBuilder AddCircuitBreakerPolicy(
             this IHttpClientBuilder httpClientBuilder,
@@ -86,7 +86,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker.Extensions
         /// </summary>
         /// <typeparam name="TPolicyEventHandler">The type that will handle circuit breaker  events.</typeparam>
         /// <param name="httpClientBuilder">The <see cref="IHttpClientBuilder"/> instance to add the circuit breaker  policy to.</param>
-        /// <param name="configureOptions">An action to define the the <see cref="CircuitBreakerOptions"/> options to use to configure the circuit breaker  policy.</param>
+        /// <param name="configureOptions">An action to define the <see cref="CircuitBreakerOptions"/> options to use to configure the circuit breaker  policy.</param>
         /// <returns>The <see cref="IHttpClientBuilder"/> for chaining.</returns>
         public static IHttpClientBuilder AddCircuitBreakerPolicy<TPolicyEventHandler>(
             this IHttpClientBuilder httpClientBuilder,
@@ -133,7 +133,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker.Extensions
         /// Adds a circuit breaker policy to the <see cref="HttpClient"/>.
         /// </summary>
         /// <param name="httpClientBuilder">The <see cref="IHttpClientBuilder"/> instance to add the circuit breaker policy to.</param>
-        /// <param name="configureOptions">An action to define the the <see cref="CircuitBreakerOptions"/> options to use to configure the circuit breaker policy.</param>
+        /// <param name="configureOptions">An action to define the <see cref="CircuitBreakerOptions"/> options to use to configure the circuit breaker policy.</param>
         /// <param name="eventHandlerFactory">Delegate to create an instance that will handle circuit breaker events.</param>
         /// <returns>The <see cref="IHttpClientBuilder"/> for chaining.</returns>
         public static IHttpClientBuilder AddCircuitBreakerPolicy(

@@ -29,7 +29,6 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Fallback.Extensions
             static IFallbackPolicyEventHandler EventHandlerFactory(IServiceProvider _) => new DefaultFallbackPolicyEventHandler();
         }
 
-
         /// <summary>
         /// Adds a fallback policy to the <see cref="HttpClient"/>.
         /// </summary>
