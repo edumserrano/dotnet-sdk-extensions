@@ -93,6 +93,7 @@ dotnet_diagnostic.VSTHRD111.severity = none         # VSTHRD111 Use .ConfigureAw
 # See https://github.com/JosefPihrt/Roslynator/blob/master/src/Analyzers/README.md
 [*.cs]
 dotnet_diagnostic.RCS1021.severity = none         # RCS1021: Convert lambda expression body to expression-body
+dotnet_diagnostic.RCS1070.severity = none         # RCS1070: Remove redundant default switch section
 dotnet_diagnostic.RCS1080.severity = warning      # RCS1080: Use 'Count/Length' property instead of 'Any' method
 dotnet_diagnostic.RCS1090.severity = none         # RCS1090: Add call to 'ConfigureAwait' (or vice versa)
 dotnet_diagnostic.RCS1194.severity = none         # RCS1194: Implement exception constructors
@@ -123,6 +124,22 @@ dotnet_diagnostic.RCS0050.severity = warning      # RCS0050: Add empty line befo
 dotnet_diagnostic.RCS0051.severity = warning      # RCS0051: Add newline between closing brace and 'while' keyword (or vice versa)
 dotnet_diagnostic.RCS0054.severity = warning      # RCS0054: Fix formatting of a call chain
 dotnet_diagnostic.RCS0055.severity = warning      # RCS0055: Fix formatting of a binary expression chain
+
+
+
+dotnet_diagnostic.RCS1139.severity = warning      # RCS1139: Add summary element to documentation comment
+dotnet_diagnostic.RCS1140.severity = none      # RCS1140: Add exception to documentation comment
+dotnet_diagnostic.RCS1141.severity = none      # RCS1141: Add 'param' element to documentation comment
+dotnet_diagnostic.RCS1142.severity = none      # RCS1142: Add 'typeparam' element to documentation comment
+dotnet_diagnostic.RCS1124.severity = none      # RCS1124: Inline local variable
+dotnet_diagnostic.RCS1228.severity = none      # RCS1228: Unused element in documentation comment
+dotnet_diagnostic.RCS1232.severity = none      # RCS1232: Order elements in documentation comment
+dotnet_diagnostic.RCS1168.severity = none      # RCS1168: Parameter name differs from base name
+
+
+
+
+
 
 ##########################################
 # Code quality rules https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/
@@ -275,9 +292,25 @@ csharp_prefer_static_local_function = true:warning
 
 # .NET Unnecessary code rules
 [*.{cs,csx,cake,vb,vbx}]
+dotnet_diagnostic.IDE0001.severity = warning                            # Simplify name (IDE0001)
+dotnet_diagnostic.IDE0002.severity = warning                            # Simplify name (IDE0002)
+dotnet_diagnostic.IDE0004.severity = warning                            # Remove unnecessary cast (IDE0004)
+dotnet_diagnostic.IDE0005.severity = warning                            # Remove unnecessary import (IDE0005)
+dotnet_diagnostic.IDE0035.severity = warning                            # Remove unreachable code (IDE0035)
+dotnet_diagnostic.IDE0051.severity = warning                            # Remove unused private member (IDE0051)
+dotnet_diagnostic.IDE0052.severity = warning                            # Remove unread private member (IDE0052)
+dotnet_diagnostic.IDE0058.severity = warning                            # Remove unnecessary expression value (IDE0058)
+dotnet_diagnostic.IDE0059.severity = warning                            # Remove unnecessary value assignment (IDE0059)
 dotnet_code_quality_unused_parameters = all:warning
+dotnet_diagnostic.IDE0060.severity = warning                            # Remove unused parameter (IDE0060)
 dotnet_remove_unnecessary_suppression_exclusions = none:warning
-dotnet_diagnostic.IDE0079.severity = warning
+dotnet_diagnostic.IDE0079.severity = warning                            # Remove unnecessary suppression (IDE0079)
+dotnet_diagnostic.IDE0080.severity = warning                            # Remove unnecessary suppression operator (IDE0080)
+dotnet_diagnostic.IDE0080.severity = warning                            # Remove unnecessary suppression operator (IDE0080)
+dotnet_diagnostic.IDE0100.severity = warning                            # Remove unnecessary equality operator (IDE0100)
+dotnet_diagnostic.IDE0110.severity = warning                            # Remove unnecessary discard (IDE0110)
+dotnet_diagnostic.IDE0110.severity = warning                            # Remove unnecessary discard (IDE0110)
+
 
 # C# Unnecessary code rules
 [*.{cs,csx,cake}]

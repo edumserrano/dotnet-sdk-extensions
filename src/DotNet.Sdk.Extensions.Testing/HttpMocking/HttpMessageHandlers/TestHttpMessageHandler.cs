@@ -51,12 +51,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers
             return this;
         }
 
-        /// <summary>
-        /// Executes the configured mock behavior for the http request instead of actually doing the http request.
-        /// </summary>
-        /// <param name="request">The <see cref="HttpRequestMessage"/> to be executed/</param>
-        /// <param name="cancellationToken">A cancellation token to cancel the operation</param>
-        /// <returns></returns>
+        /// <inheritdoc />
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             if (request is null)

@@ -53,6 +53,8 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers
                 case IDisposable disposable:
                     disposable.Dispose();
                     break;
+                default:
+                    break;
             }
         }
     }
