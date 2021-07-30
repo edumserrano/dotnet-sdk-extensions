@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Polly.Http.Retry.Events;
 
 namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Auxiliary
@@ -11,10 +11,10 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Auxiliary
         {
             _retryPolicyEventHandlerCalls = retryPolicyEventHandlerCalls;
         }
-        
+
         public Task OnRetryAsync(RetryEvent retryEvent)
         {
-            _retryPolicyEventHandlerCalls.AddOnRetryAsync(retryEvent);
+            _retryPolicyEventHandlerCalls.AddOnRetry(retryEvent);
             return Task.CompletedTask;
         }
     }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Net.Http;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.InProcess.ResponseMocking;
 using Microsoft.AspNetCore.Hosting;
@@ -19,9 +19,16 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.InProcess
         /// <returns>The <see cref="IWebHostBuilder"/> for chaining.</returns>
         public static IWebHostBuilder UseHttpMocks(this IWebHostBuilder webHostBuilder, Action<HttpMessageHandlersReplacer> configure)
         {
-            if (webHostBuilder is null) throw new ArgumentNullException(nameof(webHostBuilder));
-            if (configure is null) throw new ArgumentNullException(nameof(configure));
-            
+            if (webHostBuilder is null)
+            {
+                throw new ArgumentNullException(nameof(webHostBuilder));
+            }
+
+            if (configure is null)
+            {
+                throw new ArgumentNullException(nameof(configure));
+            }
+
             webHostBuilder.ConfigureTestServices(services =>
             {
                 var httpMessageHandlersReplacer = new HttpMessageHandlersReplacer(services);
@@ -39,8 +46,15 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.InProcess
         /// <returns>The <see cref="IWebHostBuilder"/> for chaining.</returns>
         public static IWebHostBuilder UseHttpMocks(this IWebHostBuilder webHostBuilder, params HttpResponseMessageMockDescriptorBuilder[] httpResponseMessageMockDescriptorBuilders)
         {
-            if (webHostBuilder is null) throw new ArgumentNullException(nameof(webHostBuilder));
-            if (httpResponseMessageMockDescriptorBuilders is null) throw new ArgumentNullException(nameof(httpResponseMessageMockDescriptorBuilders));
+            if (webHostBuilder is null)
+            {
+                throw new ArgumentNullException(nameof(webHostBuilder));
+            }
+
+            if (httpResponseMessageMockDescriptorBuilders is null)
+            {
+                throw new ArgumentNullException(nameof(httpResponseMessageMockDescriptorBuilders));
+            }
 
             webHostBuilder.ConfigureTestServices(services =>
             {
@@ -49,6 +63,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.InProcess
                 {
                     httpMessageHandlersReplacer.MockHttpResponse(httpResponseMessageMockDescriptorBuilder);
                 }
+
                 httpMessageHandlersReplacer.ApplyHttpResponseMocks();
             });
             return webHostBuilder;

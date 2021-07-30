@@ -30,7 +30,7 @@ namespace DotNet.Sdk.Extensions.Tests.Options.ValidateEagerly
                 {
                     webBuilder
                         .UseLocalhostWithRandomPort()
-                        .UseStartup<StartupMyOptions1ValidateEargerly>();
+                        .UseStartup<StartupMyOptions1ValidateEagerly>();
                 })
                 .Build();
             var validationException = await Should.ThrowAsync<ValidationException>(host.StartAsync());
@@ -47,14 +47,14 @@ namespace DotNet.Sdk.Extensions.Tests.Options.ValidateEagerly
             using var host = Host
                 .CreateDefaultBuilder()
                 .UseDefaultLogLevel(LogLevel.Critical)
-                .ConfigureAppConfiguration((context, builder) =>
+                .ConfigureAppConfiguration((_, builder) =>
                 {
                     var memoryConfigurationSource = new MemoryConfigurationSource
                     {
                         InitialData = new List<KeyValuePair<string, string>>
-                            {
-                                new KeyValuePair<string, string>("SomeOption", "some value")
-                            }
+                        {
+                            new KeyValuePair<string, string>("SomeOption", "some value")
+                        }
                     };
                     builder.Add(memoryConfigurationSource);
                 })
@@ -62,7 +62,7 @@ namespace DotNet.Sdk.Extensions.Tests.Options.ValidateEagerly
                 {
                     webBuilder
                         .UseLocalhostWithRandomPort()
-                        .UseStartup<StartupMyOptions1ValidateEargerly>();
+                        .UseStartup<StartupMyOptions1ValidateEagerly>();
                 })
                 .Build();
             Should.NotThrow(async () => await host.StartAsync());

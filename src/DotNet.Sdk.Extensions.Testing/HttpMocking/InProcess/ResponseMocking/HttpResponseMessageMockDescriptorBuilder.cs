@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Net.Http;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.ResponseMocking;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.ResponseMocking;
@@ -12,7 +12,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.InProcess.ResponseMocking
     /// or <seealso cref="HttpMockingWebHostBuilderExtensions.UseHttpMocks(IWebHostBuilder, HttpResponseMessageMockDescriptorBuilder[])"/>.
     /// </summary>
     /// <remarks>
-    /// This requires that the <see cref="HttpClient"/> used on the app has been resolved via the <see cref="IHttpClientFactory"/>. 
+    /// This requires that the <see cref="HttpClient"/> used on the app has been resolved via the <see cref="IHttpClientFactory"/>.
     /// </remarks>
     public class HttpResponseMessageMockDescriptorBuilder
     {
@@ -42,6 +42,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.InProcess.ResponseMocking
         /// Indicates that the <see cref="HttpResponseMessage"/> will be mocked for a typed instance of HttpClient.
         /// </summary>
         /// <typeparam name="TClient">The <see cref="Type"/> of the <see cref="HttpClient"/> produced via the <see cref="IHttpClientFactory"/>.</typeparam>
+        /// <param name="name">The name of the typed <see cref="HttpClient"/>.</param>
         /// <returns>An instance of <see cref="HttpResponseMessageMockBuilder"/> to customize the <see cref="HttpResponseMessage"/> to mock.</returns>
         public HttpResponseMessageMockBuilder ForTypedClient<TClient>(string name = "")
         {
@@ -89,7 +90,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.InProcess.ResponseMocking
                 HttpClientMockTypes.Typed => HttpResponseMessageMockDescriptor.Typed(_httpClientType!, _httpClientName!, _httpResponseMockBuilder),
                 HttpClientMockTypes.Named => HttpResponseMessageMockDescriptor.Named(_httpClientName!, _httpResponseMockBuilder),
                 HttpClientMockTypes.Basic => HttpResponseMessageMockDescriptor.Basic(_httpResponseMockBuilder),
-                _ => throw new ArgumentOutOfRangeException(nameof(_httpClientMockType))
+                _ => throw new InvalidOperationException($"Unexpected value for {typeof(HttpClientMockTypes)}: {_httpClientMockType}")
             };
         }
 

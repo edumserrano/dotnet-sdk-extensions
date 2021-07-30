@@ -1,6 +1,5 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -45,7 +44,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             var numberOfCallsDelegatingHandler = new NumberOfCallsDelegatingHandler();
             var resiliencePoliciesEventHandlerCalls = new ResiliencePoliciesEventHandlerCalls();
             var testHttpMessageHandler = new TestHttpMessageHandler();
-            var httpClientName = "GitHub";
+            const string httpClientName = "GitHub";
             var resilienceOptions = new ResilienceOptions
             {
                 Timeout = new TimeoutOptions
@@ -83,7 +82,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 .AddHttpMessageHandler(() => numberOfCallsDelegatingHandler)
                 .ConfigurePrimaryHttpMessageHandler(() => testHttpMessageHandler);
 
-            await using var serviceProvider = services.BuildServiceProvider();
+            var serviceProvider = services.BuildServiceProvider();
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
             var triggerCircuitBreakerPath = testHttpMessageHandler.HandleTransientHttpStatusCode(
                 requestPath: "/circuit-breaker/transient-http-status-code",
@@ -122,7 +121,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
 
             // the circuit breaker is opened once
             resiliencePoliciesEventHandlerCalls.CircuitBreaker.OnBreakAsyncCalls
-                .Count()
+                .Count
                 .ShouldBe(1);
             // all requests fail and each request will do actually 3 requests because of the retry count is set to 2
             // after the minimum throughput for the circuit breaker is hit at 10 requests, the requests aren't even
@@ -136,7 +135,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             // plus 0 retry = the second retry does NOT happen because the circuit breaker returned a CircuitBrokenHttpResponseMessage which is not retried
             // Summing all retries = 7
             resiliencePoliciesEventHandlerCalls.Retry.OnRetryAsyncCalls
-                .Count()
+                .Count
                 .ShouldBe(7);
             // even though there are 13 total requests made once the circuit breaker is open the remaining
             // requests don't actually get made, they don't pass through the the circuit breaker
@@ -150,7 +149,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
         /// - until the circuit breaker opens the response returned is a TimeoutHttpResponseMessage because of the fallback policy
         /// - once the circuit breaker opens requests fail fast, even when retried (it never even gets to the timeout policy)
         /// - once the circuit breaker opens the response returned is a CircuitBrokenHttpResponseMessage because of the circuit breaker policy
-        /// 
+        ///
         /// Be aware of the interaction between the retry policy and the circuit breaker policy in regards to
         /// how the retry count and median first retry delay interact with the circuit breaker's options.
         /// For instance, the circuit breaker might not get triggered as expected if the sampling duration
@@ -162,7 +161,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             var numberOfCallsDelegatingHandler = new NumberOfCallsDelegatingHandler();
             var resiliencePoliciesEventHandlerCalls = new ResiliencePoliciesEventHandlerCalls();
             var testHttpMessageHandler = new TestHttpMessageHandler();
-            var httpClientName = "GitHub";
+            const string httpClientName = "GitHub";
             var resilienceOptions = new ResilienceOptions
             {
                 Timeout = new TimeoutOptions
@@ -200,9 +199,9 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 .AddHttpMessageHandler(() => numberOfCallsDelegatingHandler)
                 .ConfigurePrimaryHttpMessageHandler(() => testHttpMessageHandler);
 
-            await using var serviceProvider = services.BuildServiceProvider();
+            var serviceProvider = services.BuildServiceProvider();
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
-            var triggerTimeoutPath = "/timeout";
+            const string triggerTimeoutPath = "/timeout";
             var timeout = TimeSpan.FromSeconds(resilienceOptions.Timeout.TimeoutInSecs + 1);
             testHttpMessageHandler.HandleTimeout(triggerTimeoutPath, timeout);
             var httpResponses = new List<HttpResponseMessage>();
@@ -239,7 +238,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
 
             // the circuit breaker is opened once
             resiliencePoliciesEventHandlerCalls.CircuitBreaker.OnBreakAsyncCalls
-                .Count()
+                .Count
                 .ShouldBe(1);
             // all requests fail and each request will do actually 3 requests because of the retry count is set to 2
             // after the minimum throughput for the circuit breaker is hit at 10 requests, the requests aren't even
@@ -253,7 +252,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             // plus 0 retry = the second retry does NOT happen because the circuit breaker returned a CircuitBrokenHttpResponseMessage which is not retried
             // Summing all retries = 7
             resiliencePoliciesEventHandlerCalls.Retry.OnRetryAsyncCalls
-                .Count()
+                .Count
                 .ShouldBe(7);
             // even though there are 13 total requests made once the circuit breaker is open the remaining
             // requests don't actually get made, they don't pass through the the circuit breaker

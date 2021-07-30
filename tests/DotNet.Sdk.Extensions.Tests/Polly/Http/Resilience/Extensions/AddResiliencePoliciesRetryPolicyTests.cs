@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -18,7 +18,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
     /// <summary>
     /// Tests for the <see cref="ResiliencePoliciesHttpClientBuilderExtensions"/> class.
     /// Specifically to test that the retry policy is added.
-    /// 
+    ///
     /// Disables other policies to avoid triggering them when testing the retry policy.
     /// </summary>
     [Trait("Category", XUnitCategories.Polly)]
@@ -33,7 +33,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
         {
             var numberOfCallsDelegatingHandler = new NumberOfCallsDelegatingHandler();
             var testHttpMessageHandler = new TestHttpMessageHandler();
-            var httpClientName = "GitHub";
+            const string httpClientName = "GitHub";
             var resilienceOptions = new ResilienceOptions
             {
                 EnableFallbackPolicy = false,
@@ -60,7 +60,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 .AddHttpMessageHandler(() => numberOfCallsDelegatingHandler)
                 .ConfigurePrimaryHttpMessageHandler(() => testHttpMessageHandler);
 
-            await using var serviceProvider = services.BuildServiceProvider();
+            var serviceProvider = services.BuildServiceProvider();
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
             await httpClient
                 .ResiliencePoliciesAsserter(resilienceOptions, testHttpMessageHandler)
@@ -71,7 +71,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
         /// <summary>
         /// Tests that the <see cref="ResiliencePoliciesHttpClientBuilderExtensions.AddResiliencePolicies{TPolicyEventHandler}(IHttpClientBuilder,Action{ResilienceOptions})"/>
         /// overload method adds a <see cref="DelegatingHandler"/> with a retry policy to the <see cref="HttpClient"/>.
-        /// 
+        ///
         /// This also tests that the <see cref="IResiliencePoliciesEventHandler.OnRetryAsync"/> is triggered with the correct values.
         /// </summary>
         [Fact]
@@ -80,7 +80,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             var resiliencePoliciesEventHandlerCalls = new ResiliencePoliciesEventHandlerCalls();
             var numberOfCallsDelegatingHandler = new NumberOfCallsDelegatingHandler();
             var testHttpMessageHandler = new TestHttpMessageHandler();
-            var httpClientName = "GitHub";
+            const string httpClientName = "GitHub";
             var resilienceOptions = new ResilienceOptions
             {
                 EnableFallbackPolicy = false,
@@ -108,7 +108,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 .AddHttpMessageHandler(() => numberOfCallsDelegatingHandler)
                 .ConfigurePrimaryHttpMessageHandler(() => testHttpMessageHandler);
 
-            await using var serviceProvider = services.BuildServiceProvider();
+            var serviceProvider = services.BuildServiceProvider();
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
             var resiliencePoliciesAsserter = httpClient.ResiliencePoliciesAsserter(resilienceOptions, testHttpMessageHandler);
             await resiliencePoliciesAsserter.Retry.HttpClientShouldContainRetryPolicyAsync(numberOfCallsDelegatingHandler);
@@ -130,7 +130,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             var resiliencePoliciesEventHandlerCalls = new ResiliencePoliciesEventHandlerCalls();
             var numberOfCallsDelegatingHandler = new NumberOfCallsDelegatingHandler();
             var testHttpMessageHandler = new TestHttpMessageHandler();
-            var httpClientName = "GitHub";
+            const string httpClientName = "GitHub";
             var resilienceOptions = new ResilienceOptions
             {
                 EnableFallbackPolicy = false,
@@ -142,7 +142,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                     MedianFirstRetryDelayInSecs = 0.01
                 }
             };
-            var optionsName = "GitHubOptions";
+            const string optionsName = "GitHubOptions";
             var services = new ServiceCollection();
             services.AddSingleton(resiliencePoliciesEventHandlerCalls);
             services
@@ -162,7 +162,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 .AddHttpMessageHandler(() => numberOfCallsDelegatingHandler)
                 .ConfigurePrimaryHttpMessageHandler(() => testHttpMessageHandler);
 
-            await using var serviceProvider = services.BuildServiceProvider();
+            var serviceProvider = services.BuildServiceProvider();
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
             var resiliencePoliciesAsserter = httpClient.ResiliencePoliciesAsserter(resilienceOptions, testHttpMessageHandler);
             await resiliencePoliciesAsserter.Retry.HttpClientShouldContainRetryPolicyAsync(numberOfCallsDelegatingHandler);
@@ -184,7 +184,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             var resiliencePoliciesEventHandlerCalls = new ResiliencePoliciesEventHandlerCalls();
             var numberOfCallsDelegatingHandler = new NumberOfCallsDelegatingHandler();
             var testHttpMessageHandler = new TestHttpMessageHandler();
-            var httpClientName = "GitHub";
+            const string httpClientName = "GitHub";
             var resilienceOptions = new ResilienceOptions
             {
                 EnableFallbackPolicy = false,
@@ -196,7 +196,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                     MedianFirstRetryDelayInSecs = 0.01
                 }
             };
-            var optionsName = "GitHubOptions";
+            const string optionsName = "GitHubOptions";
             var services = new ServiceCollection();
             services
                 .AddHttpClientResilienceOptions(optionsName)
@@ -211,14 +211,14 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             services
                 .AddHttpClient(httpClientName)
                 .ConfigureHttpClient(client => client.BaseAddress = new Uri("https://github.com"))
-                .AddResiliencePolicies(optionsName, provider =>
+                .AddResiliencePolicies(optionsName, _ =>
                 {
                     return new TestResiliencePoliciesEventHandler(resiliencePoliciesEventHandlerCalls);
                 })
                 .AddHttpMessageHandler(() => numberOfCallsDelegatingHandler)
                 .ConfigurePrimaryHttpMessageHandler(() => testHttpMessageHandler);
 
-            await using var serviceProvider = services.BuildServiceProvider();
+            var serviceProvider = services.BuildServiceProvider();
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
             var resiliencePoliciesAsserter = httpClient.ResiliencePoliciesAsserter(resilienceOptions, testHttpMessageHandler);
             await resiliencePoliciesAsserter.Retry.HttpClientShouldContainRetryPolicyAsync(numberOfCallsDelegatingHandler);
@@ -231,7 +231,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
         /// <summary>
         /// Tests that the <see cref="ResiliencePoliciesHttpClientBuilderExtensions.AddResiliencePolicies(IHttpClientBuilder,Action{ResilienceOptions},Func{IServiceProvider,IResiliencePoliciesEventHandler})"/>
         /// overload method adds a <see cref="DelegatingHandler"/> with a retry policy to the <see cref="HttpClient"/>.
-        /// 
+        ///
         /// This also tests that the  <see cref="IResiliencePoliciesEventHandler"/> events are triggered with the correct values.
         /// </summary>
         [Fact]
@@ -240,7 +240,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             var resiliencePoliciesEventHandlerCalls = new ResiliencePoliciesEventHandlerCalls();
             var numberOfCallsDelegatingHandler = new NumberOfCallsDelegatingHandler();
             var testHttpMessageHandler = new TestHttpMessageHandler();
-            var httpClientName = "GitHub";
+            const string httpClientName = "GitHub";
             var resilienceOptions = new ResilienceOptions
             {
                 EnableFallbackPolicy = false,
@@ -265,14 +265,14 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                         options.Retry.MedianFirstRetryDelayInSecs = resilienceOptions.Retry.MedianFirstRetryDelayInSecs;
                         options.Retry.RetryCount = resilienceOptions.Retry.RetryCount;
                     },
-                    eventHandlerFactory: provider =>
+                    eventHandlerFactory: _ =>
                     {
                         return new TestResiliencePoliciesEventHandler(resiliencePoliciesEventHandlerCalls);
                     })
                 .AddHttpMessageHandler(() => numberOfCallsDelegatingHandler)
                 .ConfigurePrimaryHttpMessageHandler(() => testHttpMessageHandler);
 
-            await using var serviceProvider = services.BuildServiceProvider();
+            var serviceProvider = services.BuildServiceProvider();
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
             var resiliencePoliciesAsserter = httpClient.ResiliencePoliciesAsserter(resilienceOptions, testHttpMessageHandler);
             await resiliencePoliciesAsserter.Retry.HttpClientShouldContainRetryPolicyAsync(numberOfCallsDelegatingHandler);
@@ -291,7 +291,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
         {
             var numberOfCallsDelegatingHandler = new NumberOfCallsDelegatingHandler();
             var testHttpMessageHandler = new TestHttpMessageHandler();
-            var httpClientName = "GitHub";
+            const string httpClientName = "GitHub";
             var resilienceOptions = new ResilienceOptions
             {
                 EnableFallbackPolicy = false,
@@ -320,7 +320,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 .AddHttpMessageHandler(() => numberOfCallsDelegatingHandler)
                 .ConfigurePrimaryHttpMessageHandler(() => testHttpMessageHandler);
 
-            await using var serviceProvider = services.BuildServiceProvider();
+            var serviceProvider = services.BuildServiceProvider();
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
 
             _ = await httpClient

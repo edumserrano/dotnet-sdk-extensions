@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 
@@ -9,7 +9,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.ResponseMocking
     /// </summary>
     public class HttpResponseMockBuilder
     {
-        private readonly HttpResponseMockPredicateAsyncDelegate _defaultPredicateAsync = (httpRequest, cancellationToken) => Task.FromResult(true);
+        private readonly HttpResponseMockPredicateAsyncDelegate _defaultPredicateAsync = (_, _) => Task.FromResult(true);
         private HttpResponseMockPredicateAsyncDelegate? _predicateAsync;
         private HttpResponseMockHandlerAsyncDelegate? _handlerAsync;
 
@@ -20,9 +20,13 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.ResponseMocking
         /// <returns>The <see cref="HttpResponseMockBuilder"/> for chaining.</returns>
         public HttpResponseMockBuilder Where(Func<HttpRequest, bool> predicate)
         {
-            if (predicate is null) throw new ArgumentNullException(nameof(predicate));
+            if (predicate is null)
+            {
+                throw new ArgumentNullException(nameof(predicate));
+            }
+
             // convert to 'async' predicate
-            return Where((httpRequest, cancellationToken) => Task.FromResult(predicate(httpRequest)));
+            return Where((httpRequest, _) => Task.FromResult(predicate(httpRequest)));
         }
 
         /// <summary>
@@ -36,6 +40,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.ResponseMocking
             {
                 throw new InvalidOperationException($"{nameof(HttpResponseMockBuilder)}.{nameof(Where)} condition already configured.");
             }
+
             _predicateAsync = predicate ?? throw new ArgumentNullException(nameof(predicate));
             return this;
         }
@@ -47,9 +52,12 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.ResponseMocking
         /// <returns>The <see cref="HttpResponseMockBuilder"/> for chaining.</returns>
         public HttpResponseMockBuilder RespondWith(Action<HttpResponse> configureHttpResponse)
         {
-            if (configureHttpResponse is null) throw new ArgumentNullException(nameof(configureHttpResponse));
+            if (configureHttpResponse is null)
+            {
+                throw new ArgumentNullException(nameof(configureHttpResponse));
+            }
 
-            return RespondWith((httpRequest, httpResponse) =>
+            return RespondWith((_, httpResponse) =>
             {
                 configureHttpResponse(httpResponse);
             });
@@ -62,9 +70,13 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.ResponseMocking
         /// <returns>The <see cref="HttpResponseMockBuilder"/> for chaining.</returns>
         public HttpResponseMockBuilder RespondWith(Action<HttpRequest, HttpResponse> handler)
         {
-            if (handler is null) throw new ArgumentNullException(nameof(handler));
+            if (handler is null)
+            {
+                throw new ArgumentNullException(nameof(handler));
+            }
+
             // convert to 'async' handler
-            return RespondWith((httpRequest, httpResponse, cancellationToken) =>
+            return RespondWith((httpRequest, httpResponse, _) =>
             {
                 handler(httpRequest, httpResponse);
                 return Task.CompletedTask;
@@ -82,6 +94,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.ResponseMocking
             {
                 throw new InvalidOperationException($"{nameof(HttpResponseMockBuilder)}.{nameof(RespondWith)} already configured.");
             }
+
             _handlerAsync = handlerAsync ?? throw new ArgumentNullException(nameof(handlerAsync));
             return this;
         }

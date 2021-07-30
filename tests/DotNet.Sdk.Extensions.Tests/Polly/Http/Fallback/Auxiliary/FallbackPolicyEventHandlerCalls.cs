@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using DotNet.Sdk.Extensions.Polly.Http.Fallback.Events;
 
 namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Fallback.Auxiliary
@@ -8,11 +8,11 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Fallback.Auxiliary
         public IList<FallbackEvent> OnHttpRequestExceptionFallbackAsyncCalls { get; } = new List<FallbackEvent>();
 
         public IList<FallbackEvent> OnTimeoutFallbackAsyncCalls { get; } = new List<FallbackEvent>();
-        
+
         public IList<FallbackEvent> OnBrokenCircuitFallbackAsyncCalls { get; } = new List<FallbackEvent>();
-        
+
         public IList<FallbackEvent> OnTaskCancelledFallbackAsyncCalls { get; } = new List<FallbackEvent>();
-        
+
         public void AddOnHttpRequestExceptionFallback(FallbackEvent fallbackEvent)
         {
             OnHttpRequestExceptionFallbackAsyncCalls.Add(fallbackEvent);

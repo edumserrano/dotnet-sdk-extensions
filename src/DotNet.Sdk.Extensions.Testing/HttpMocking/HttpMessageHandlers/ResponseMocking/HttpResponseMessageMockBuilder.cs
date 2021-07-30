@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.ResponseMocking;
@@ -10,7 +10,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.Response
     /// </summary>
     public class HttpResponseMessageMockBuilder
     {
-        private readonly HttpResponseMessageMockPredicateDelegate _defaultPredicate = (httpRequestMessage, cancellationToken) => Task.FromResult(true);
+        private readonly HttpResponseMessageMockPredicateDelegate _defaultPredicate = (_, _) => Task.FromResult(true);
         private HttpResponseMessageMockPredicateDelegate? _predicateAsync;
         private HttpResponseMessageMockHandlerDelegate? _handlerAsync;
 
@@ -21,9 +21,13 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.Response
         /// <returns>The <see cref="HttpResponseMessageMockBuilder"/> for chaining.</returns>
         public HttpResponseMessageMockBuilder Where(Func<HttpRequestMessage, bool> predicate)
         {
-            if (predicate is null) throw new ArgumentNullException(nameof(predicate));
+            if (predicate is null)
+            {
+                throw new ArgumentNullException(nameof(predicate));
+            }
+
             // convert to 'async' predicate
-            return Where((httpRequestMessage, cancellationToken) => Task.FromResult(predicate(httpRequestMessage)));
+            return Where((httpRequestMessage, _) => Task.FromResult(predicate(httpRequestMessage)));
         }
 
         /// <summary>
@@ -37,6 +41,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.Response
             {
                 throw new InvalidOperationException($"{nameof(HttpResponseMessageMockBuilder)}.{nameof(Where)} condition already configured.");
             }
+
             _predicateAsync = predicate ?? throw new ArgumentNullException(nameof(predicate));
             return this;
         }
@@ -48,8 +53,12 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.Response
         /// <returns>The <see cref="HttpResponseMessageMockBuilder"/> for chaining.</returns>
         public HttpResponseMessageMockBuilder RespondWith(HttpResponseMessage httpResponseMessage)
         {
-            if (httpResponseMessage is null) throw new ArgumentNullException(nameof(httpResponseMessage));
-            return RespondWith(httpRequestMessage => httpResponseMessage);
+            if (httpResponseMessage is null)
+            {
+                throw new ArgumentNullException(nameof(httpResponseMessage));
+            }
+
+            return RespondWith(_ => httpResponseMessage);
         }
 
         /// <summary>
@@ -59,9 +68,13 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.Response
         /// <returns>The <see cref="HttpResponseMessageMockBuilder"/> for chaining.</returns>
         public HttpResponseMessageMockBuilder RespondWith(Func<HttpRequestMessage, HttpResponseMessage> handler)
         {
-            if (handler is null) throw new ArgumentNullException(nameof(handler));
+            if (handler is null)
+            {
+                throw new ArgumentNullException(nameof(handler));
+            }
+
             // convert to 'async' handler
-            return RespondWith((httpRequestMessage, cancellationToken) => Task.FromResult(handler(httpRequestMessage)));
+            return RespondWith((httpRequestMessage, _) => Task.FromResult(handler(httpRequestMessage)));
         }
 
         /// <summary>
@@ -75,12 +88,13 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.Response
             {
                 throw new InvalidOperationException("Response behavior already configured.");
             }
+
             _handlerAsync = handler ?? throw new ArgumentNullException(nameof(handler));
             return this;
         }
 
         /// <summary>
-        /// Configures the mock to timeout. 
+        /// Configures the mock to timeout.
         /// </summary>
         /// <param name="timeout">The value for the timeout.</param>
         /// <returns>The <see cref="HttpResponseMessageMockBuilder"/> for chaining.</returns>
@@ -94,7 +108,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.Response
             // when simulating a timeout we need to do the same as what HttpClient
             // does in that situation which is to throw a TaskCanceledException with an inner
             // exception of TimeoutException
-            _handlerAsync = async (message, cancellationToken) =>
+            _handlerAsync = async (_, cancellationToken) =>
             {
                 await Task.Delay(timeout, cancellationToken);
                 var innerException = new TimeoutException("A task was canceled.");

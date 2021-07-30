@@ -1,12 +1,13 @@
-﻿using DotNet.Sdk.Extensions.Options;
+using System.Diagnostics.CodeAnalysis;
+using DotNet.Sdk.Extensions.Options;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace DotNet.Sdk.Extensions.Tests.Options.ValidateEagerly.Auxiliary.DataAnnotations
 {
+    [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Ignore for Startup type classes.")]
     public class StartupMyOptions2ValidateEagerly
     {
         private readonly IConfiguration _configuration;
@@ -18,14 +19,14 @@ namespace DotNet.Sdk.Extensions.Tests.Options.ValidateEagerly.Auxiliary.DataAnno
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services                                                                               
+            services
                 .AddOptions<MyOptions2>()
                 .Bind(_configuration)
                 .ValidateDataAnnotations()
                 .ValidateEagerly();
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app)
         {
             app
                 .UseRouting()

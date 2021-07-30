@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Polly.Http.Timeout;
@@ -25,7 +25,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Auxiliary
 
         public Task<HttpResponseMessage> TriggerTimeoutPolicyAsync()
         {
-            var requestPath = "/timeout";
+            const string requestPath = "/timeout";
             var timeout = TimeSpan.FromSeconds(_timeoutOptions.TimeoutInSecs + 1);
             _testHttpMessageHandler.HandleTimeout(requestPath, timeout);
             return _httpClient.GetAsync(requestPath);

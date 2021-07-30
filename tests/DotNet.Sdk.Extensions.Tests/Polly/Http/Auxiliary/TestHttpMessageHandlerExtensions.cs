@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Net;
 using System.Net.Http;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers;
@@ -12,11 +12,16 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary
             string requestPath,
             HttpStatusCode responseHttpStatusCode)
         {
+            if (testHttpMessageHandler == null)
+            {
+                throw new ArgumentNullException(nameof(testHttpMessageHandler));
+            }
+
             var handledRequestPath = $"{requestPath}/{responseHttpStatusCode}";
             testHttpMessageHandler.MockHttpResponse(builder =>
             {
                 builder
-                    .Where(httpRequestMessage => httpRequestMessage.RequestUri!.ToString().Contains(handledRequestPath))
+                    .Where(httpRequestMessage => httpRequestMessage.RequestUri!.ToString().Contains(handledRequestPath, StringComparison.OrdinalIgnoreCase))
                     .RespondWith(new HttpResponseMessage(responseHttpStatusCode));
             });
             return handledRequestPath;
@@ -27,11 +32,16 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary
             string requestPath,
             Exception exception)
         {
+            if (testHttpMessageHandler == null)
+            {
+                throw new ArgumentNullException(nameof(testHttpMessageHandler));
+            }
+
             testHttpMessageHandler.MockHttpResponse(builder =>
             {
                 builder
-                    .Where(httpRequestMessage => httpRequestMessage.RequestUri!.ToString().Contains(requestPath))
-                    .RespondWith(httpRequestMessage => throw exception);
+                    .Where(httpRequestMessage => httpRequestMessage.RequestUri!.ToString().Contains(requestPath, StringComparison.OrdinalIgnoreCase))
+                    .RespondWith(_ => throw exception);
             });
         }
 
@@ -40,12 +50,17 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary
             string requestPath,
             TimeSpan timeout)
         {
+            if (testHttpMessageHandler == null)
+            {
+                throw new ArgumentNullException(nameof(testHttpMessageHandler));
+            }
+
             testHttpMessageHandler.MockHttpResponse(builder =>
             {
                 // this timeout is a max timeout before aborting but the polly timeout policy
                 // will timeout before this happens
                 builder
-                    .Where(httpRequestMessage => httpRequestMessage.RequestUri!.ToString().Contains(requestPath))
+                    .Where(httpRequestMessage => httpRequestMessage.RequestUri!.ToString().Contains(requestPath, StringComparison.OrdinalIgnoreCase))
                     .TimesOut(timeout);
             });
         }

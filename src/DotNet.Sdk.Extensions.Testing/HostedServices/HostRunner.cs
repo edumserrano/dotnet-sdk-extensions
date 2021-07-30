@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Hosting;
@@ -22,7 +22,6 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
         {
             _host = host ?? throw new ArgumentNullException(nameof(host));
         }
-
 
         public override Task StartAsync()
         {

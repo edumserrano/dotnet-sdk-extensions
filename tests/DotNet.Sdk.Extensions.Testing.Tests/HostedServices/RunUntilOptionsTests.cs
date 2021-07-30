@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using DotNet.Sdk.Extensions.Testing.HostedServices;
 using Shouldly;
 using Xunit;

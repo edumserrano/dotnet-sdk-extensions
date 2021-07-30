@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Hosting;
@@ -16,12 +16,15 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
         /// <returns>The <see cref="Task"/> that will execute the host until it's terminated.</returns>
         public static Task RunUntilTimeoutAsync<T>(this WebApplicationFactory<T> webApplicationFactory, TimeSpan timeout) where T : class
         {
-            if (webApplicationFactory is null) throw new ArgumentNullException(nameof(webApplicationFactory));
+            if (webApplicationFactory is null)
+            {
+                throw new ArgumentNullException(nameof(webApplicationFactory));
+            }
 
-            RunUntilPredicateAsync noOpPredicateAsync = () => Task.FromResult(false);
+            static Task<bool> NoOpPredicateAsync() => Task.FromResult(false);
             var options = new RunUntilOptions { Timeout = timeout };
             var hostRunner = new WebApplicationFactoryHostRunner<T>(webApplicationFactory);
-            return hostRunner.RunUntilTimeoutAsync(noOpPredicateAsync, options);
+            return hostRunner.RunUntilTimeoutAsync(NoOpPredicateAsync, options);
         }
 
         /// <summary>
@@ -32,12 +35,15 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
         /// <returns>The <see cref="Task"/> that will execute the host until it's terminated.</returns>
         public static Task RunUntilTimeoutAsync(this IHost host, TimeSpan timeout)
         {
-            if (host is null) throw new ArgumentNullException(nameof(host));
+            if (host is null)
+            {
+                throw new ArgumentNullException(nameof(host));
+            }
 
-            RunUntilPredicateAsync noOpPredicateAsync = () => Task.FromResult(false);
+            static Task<bool> NoOpPredicateAsync() => Task.FromResult(false);
             var options = new RunUntilOptions { Timeout = timeout };
             var hostRunner = new DefaultHostRunner(host);
-            return hostRunner.RunUntilTimeoutAsync(noOpPredicateAsync, options);
+            return hostRunner.RunUntilTimeoutAsync(NoOpPredicateAsync, options);
         }
 
         internal static async Task RunUntilTimeoutAsync(
@@ -45,14 +51,21 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
             RunUntilPredicateAsync predicateAsync,
             RunUntilOptions options)
         {
-            if (hostRunner is null) throw new ArgumentNullException(nameof(hostRunner));
-            if (options is null) throw new ArgumentNullException(nameof(options));
+            if (hostRunner is null)
+            {
+                throw new ArgumentNullException(nameof(hostRunner));
+            }
+
+            if (options is null)
+            {
+                throw new ArgumentNullException(nameof(options));
+            }
 
             await hostRunner.StartAsync();
             var hostRunController = new HostRunController(options);
             var runUntilResult = await hostRunController.RunUntilAsync(predicateAsync);
             await hostRunner.StopAsync();
-            hostRunner.Dispose(); 
+            hostRunner.Dispose();
             if (runUntilResult != RunUntilResult.TimedOut)
             {
                 throw new RunUntilException($"{nameof(RunUntilExtensions)}.{nameof(RunUntilTimeoutAsync)} did NOT time out after {options.Timeout} as expected.");
@@ -64,14 +77,21 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
             RunUntilPredicateAsync predicateAsync,
             RunUntilOptions options)
         {
-            if (hostRunner is null) throw new ArgumentNullException(nameof(hostRunner));
-            if (options is null) throw new ArgumentNullException(nameof(options));
+            if (hostRunner is null)
+            {
+                throw new ArgumentNullException(nameof(hostRunner));
+            }
 
-            await hostRunner.StartAsync(); 
+            if (options is null)
+            {
+                throw new ArgumentNullException(nameof(options));
+            }
+
+            await hostRunner.StartAsync();
             var hostRunController = new HostRunController(options);
             var runUntilResult = await hostRunController.RunUntilAsync(predicateAsync);
             await hostRunner.StopAsync();
-            hostRunner.Dispose(); 
+            hostRunner.Dispose();
             if (runUntilResult == RunUntilResult.TimedOut)
             {
                 throw new RunUntilException($"{nameof(RunUntilExtensions)}.{nameof(RunUntilAsync)} timed out after {options.Timeout}. This means the Host was shutdown before the {nameof(RunUntilExtensions)}.{nameof(RunUntilAsync)} predicate returned true. If that's what you intended, if you want to run the Host for a set period of time consider using {nameof(RunUntilExtensions)}.{nameof(RunUntilTimeoutAsync)} instead.");

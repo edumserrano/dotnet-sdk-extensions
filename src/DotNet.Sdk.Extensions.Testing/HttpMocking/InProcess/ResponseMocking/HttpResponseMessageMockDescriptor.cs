@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.ResponseMocking;
 
 namespace DotNet.Sdk.Extensions.Testing.HttpMocking.InProcess.ResponseMocking
 {
-    internal class HttpResponseMessageMockDescriptor
+    internal sealed class HttpResponseMessageMockDescriptor
     {
         private HttpResponseMessageMockDescriptor(
             HttpResponseMessageMockTypes httpResponseMockType,

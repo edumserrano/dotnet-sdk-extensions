@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 
@@ -19,12 +19,15 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
             this IHost host,
             RunUntilPredicateAsync predicateAsync)
         {
-            if (host is null) throw new ArgumentNullException(nameof(host));
+            if (host is null)
+            {
+                throw new ArgumentNullException(nameof(host));
+            }
 
             var configureOptionsAction = new Action<RunUntilOptions>(DefaultConfigureOptionsDelegate);
             return host.RunUntilAsync(predicateAsync, configureOptionsAction);
 
-            void DefaultConfigureOptionsDelegate(RunUntilOptions obj)
+            static void DefaultConfigureOptionsDelegate(RunUntilOptions _)
             {
                 // default configure options delegate == do nothing
                 // use default values of the RunUntilOptions
@@ -43,8 +46,15 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
             RunUntilPredicateAsync predicateAsync,
             Action<RunUntilOptions> configureOptions)
         {
-            if (host is null) throw new ArgumentNullException(nameof(host));
-            if (configureOptions is null) throw new ArgumentNullException(nameof(configureOptions));
+            if (host is null)
+            {
+                throw new ArgumentNullException(nameof(host));
+            }
+
+            if (configureOptions is null)
+            {
+                throw new ArgumentNullException(nameof(configureOptions));
+            }
 
             var defaultOptions = new RunUntilOptions();
             configureOptions(defaultOptions);

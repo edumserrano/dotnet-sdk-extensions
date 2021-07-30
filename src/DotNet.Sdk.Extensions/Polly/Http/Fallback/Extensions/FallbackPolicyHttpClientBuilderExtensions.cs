@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Net.Http;
 using DotNet.Sdk.Extensions.Polly.Http.Fallback.Events;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,11 +19,15 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Fallback.Extensions
         /// <returns>The <see cref="IHttpClientBuilder"/> for chaining.</returns>
         public static IHttpClientBuilder AddFallbackPolicy(this IHttpClientBuilder httpClientBuilder)
         {
+            if (httpClientBuilder is null)
+            {
+                throw new ArgumentNullException(nameof(httpClientBuilder));
+            }
+
             return httpClientBuilder.AddFallbackPolicy(EventHandlerFactory);
 
             static IFallbackPolicyEventHandler EventHandlerFactory(IServiceProvider _) => new DefaultFallbackPolicyEventHandler();
         }
-
 
         /// <summary>
         /// Adds a fallback policy to the <see cref="HttpClient"/>.
@@ -34,6 +38,11 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Fallback.Extensions
         public static IHttpClientBuilder AddFallbackPolicy<TPolicyEventHandler>(this IHttpClientBuilder httpClientBuilder)
             where TPolicyEventHandler : class, IFallbackPolicyEventHandler
         {
+            if (httpClientBuilder is null)
+            {
+                throw new ArgumentNullException(nameof(httpClientBuilder));
+            }
+
             httpClientBuilder.Services.TryAddSingleton<TPolicyEventHandler>();
             return httpClientBuilder.AddFallbackPolicy(EventHandlerFactory);
 
@@ -49,6 +58,11 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Fallback.Extensions
             this IHttpClientBuilder httpClientBuilder,
             Func<IServiceProvider, IFallbackPolicyEventHandler> eventHandlerFactory)
         {
+            if (httpClientBuilder is null)
+            {
+                throw new ArgumentNullException(nameof(httpClientBuilder));
+            }
+
             var httpClientName = httpClientBuilder.Name;
             return httpClientBuilder.AddHttpMessageHandler(provider =>
             {

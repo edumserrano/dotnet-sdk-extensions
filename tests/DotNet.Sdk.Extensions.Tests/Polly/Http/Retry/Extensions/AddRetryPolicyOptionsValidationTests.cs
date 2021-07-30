@@ -1,4 +1,4 @@
-﻿using DotNet.Sdk.Extensions.Polly.Http.Retry;
+using DotNet.Sdk.Extensions.Polly.Http.Retry;
 using DotNet.Sdk.Extensions.Polly.Http.Retry.Extensions;
 using DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,7 +27,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
         [InlineData(-3)]
         public void AddRetryPolicyOptionsValidationForRetryCount(int retryCount)
         {
-            var httpClientName = "GitHub";
+            const string httpClientName = "GitHub";
             var services = new ServiceCollection();
             services
                 .AddHttpClient(httpClientName)
@@ -37,7 +37,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
                     options.MedianFirstRetryDelayInSecs = 1;
                 });
 
-            using var serviceProvider = services.BuildServiceProvider();
+            var serviceProvider = services.BuildServiceProvider();
             var exception = Should.Throw<OptionsValidationException>(() =>
             {
                 serviceProvider.InstantiateNamedHttpClient(httpClientName);
@@ -54,7 +54,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
         [Fact]
         public void AddRetryPolicyOptionsValidationForRetryCount2()
         {
-            var httpClientName = "GitHub";
+            const string httpClientName = "GitHub";
             var services = new ServiceCollection();
             services
                 .AddHttpClient(httpClientName)
@@ -64,7 +64,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
                     options.MedianFirstRetryDelayInSecs = 1;
                 });
 
-            using var serviceProvider = services.BuildServiceProvider();
+            var serviceProvider = services.BuildServiceProvider();
             Should.NotThrow(() => serviceProvider.InstantiateNamedHttpClient(httpClientName));
         }
 
@@ -81,7 +81,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
         [InlineData(-3.5)]
         public void AddRetryPolicyOptionsValidationForMedianFirstRetryDelayInSecs(int medianFirstRetryDelayInSecs)
         {
-            var httpClientName = "GitHub";
+            const string httpClientName = "GitHub";
             var services = new ServiceCollection();
             services
                 .AddHttpClient(httpClientName)
@@ -91,7 +91,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
                     options.MedianFirstRetryDelayInSecs = medianFirstRetryDelayInSecs;
                 });
 
-            using var serviceProvider = services.BuildServiceProvider();
+            var serviceProvider = services.BuildServiceProvider();
             var exception = Should.Throw<OptionsValidationException>(() =>
             {
                 serviceProvider.InstantiateNamedHttpClient(httpClientName);
@@ -112,8 +112,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
         [Fact]
         public void AddRetryPolicyOptionsValidation2()
         {
-            var httpClientName = "GitHub";
-            var optionsName = "GitHubOptions";
+            const string httpClientName = "GitHub";
+            const string optionsName = "GitHubOptions";
             var services = new ServiceCollection();
             services
                 .AddHttpClientRetryOptions(optionsName)
@@ -130,7 +130,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
                 .AddHttpClient(httpClientName)
                 .AddRetryPolicy(optionsName);
 
-            using var serviceProvider = services.BuildServiceProvider();
+            var serviceProvider = services.BuildServiceProvider();
             var exception = Should.Throw<OptionsValidationException>(() =>
             {
                 serviceProvider.InstantiateNamedHttpClient(httpClientName);
@@ -150,8 +150,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
         [Fact]
         public void AddRetryPolicyOptionsValidation3()
         {
-            var httpClientName = "GitHub";
-            var optionsName = "GitHubOptions";
+            const string httpClientName = "GitHub";
+            const string optionsName = "GitHubOptions";
             var services = new ServiceCollection();
             services
                 .AddHttpClientRetryOptions(optionsName)
@@ -168,7 +168,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
                 .AddHttpClient(httpClientName)
                 .AddRetryPolicy(optionsName);
 
-            using var serviceProvider = services.BuildServiceProvider();
+            var serviceProvider = services.BuildServiceProvider();
             var exception = Should.Throw<OptionsValidationException>(() =>
             {
                 serviceProvider.InstantiateNamedHttpClient(httpClientName);

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -30,7 +30,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
         {
             var numberOfCallsDelegatingHandler = new NumberOfCallsDelegatingHandler();
             var testHttpMessageHandler = new TestHttpMessageHandler();
-            var httpClientName = "GitHub";
+            const string httpClientName = "GitHub";
             var retryOptions = new RetryOptions
             {
                 RetryCount = 2,
@@ -48,7 +48,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
                 .AddHttpMessageHandler(() => numberOfCallsDelegatingHandler)
                 .ConfigurePrimaryHttpMessageHandler(() => testHttpMessageHandler);
 
-            await using var serviceProvider = services.BuildServiceProvider();
+            var serviceProvider = services.BuildServiceProvider();
             serviceProvider.InstantiateNamedHttpClient(httpClientName);
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
             await httpClient
@@ -58,20 +58,20 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
 
         /// <summary>
         /// Tests that the <see cref="RetryPolicyHttpClientBuilderExtensions.AddRetryPolicy(IHttpClientBuilder,string)"/>
-        /// overload method adds a <see cref="DelegatingHandler"/> with a retry policy to the <see cref="HttpClient"/>. 
+        /// overload method adds a <see cref="DelegatingHandler"/> with a retry policy to the <see cref="HttpClient"/>.
         /// </summary>
         [Fact]
         public async Task AddRetryPolicy2()
         {
             var numberOfCallsDelegatingHandler = new NumberOfCallsDelegatingHandler();
             var testHttpMessageHandler = new TestHttpMessageHandler();
-            var httpClientName = "GitHub";
+            const string httpClientName = "GitHub";
             var retryOptions = new RetryOptions
             {
                 RetryCount = 2,
                 MedianFirstRetryDelayInSecs = 0.01
             };
-            var optionsName = "GitHubOptions";
+            const string optionsName = "GitHubOptions";
             var services = new ServiceCollection();
             services
                 .AddHttpClientRetryOptions(optionsName)
@@ -87,7 +87,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
                 .AddHttpMessageHandler(() => numberOfCallsDelegatingHandler)
                 .ConfigurePrimaryHttpMessageHandler(() => testHttpMessageHandler);
 
-            await using var serviceProvider = services.BuildServiceProvider();
+            var serviceProvider = services.BuildServiceProvider();
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
             await httpClient
                 .RetryPolicyAsserter(retryOptions, testHttpMessageHandler)
@@ -97,7 +97,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
         /// <summary>
         /// Tests that the <see cref="RetryPolicyHttpClientBuilderExtensions.AddRetryPolicy{TPolicyEventHandler}(IHttpClientBuilder,Action{RetryOptions})"/>
         /// overload method adds a <see cref="DelegatingHandler"/> with a retry policy to the <see cref="HttpClient"/>.
-        /// 
+        ///
         /// This also tests that the <see cref="IRetryPolicyEventHandler"/> events are triggered with the correct values.
         /// </summary>
         [Fact]
@@ -106,7 +106,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
             var retryPolicyEventHandlerCalls = new RetryPolicyEventHandlerCalls();
             var numberOfCallsDelegatingHandler = new NumberOfCallsDelegatingHandler();
             var testHttpMessageHandler = new TestHttpMessageHandler();
-            var httpClientName = "GitHub";
+            const string httpClientName = "GitHub";
             var retryOptions = new RetryOptions
             {
                 RetryCount = 2,
@@ -125,7 +125,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
                 .AddHttpMessageHandler(() => numberOfCallsDelegatingHandler)
                 .ConfigurePrimaryHttpMessageHandler(() => testHttpMessageHandler);
 
-            await using var serviceProvider = services.BuildServiceProvider();
+            var serviceProvider = services.BuildServiceProvider();
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
             var retryPolicyAsserter = httpClient.RetryPolicyAsserter(retryOptions, testHttpMessageHandler);
             await retryPolicyAsserter.HttpClientShouldContainRetryPolicyAsync(numberOfCallsDelegatingHandler);
@@ -147,13 +147,13 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
             var retryPolicyEventHandlerCalls = new RetryPolicyEventHandlerCalls();
             var numberOfCallsDelegatingHandler = new NumberOfCallsDelegatingHandler();
             var testHttpMessageHandler = new TestHttpMessageHandler();
-            var httpClientName = "GitHub";
+            const string httpClientName = "GitHub";
             var retryOptions = new RetryOptions
             {
                 RetryCount = 2,
                 MedianFirstRetryDelayInSecs = 0.01
             };
-            var optionsName = "GitHubOptions";
+            const string optionsName = "GitHubOptions";
             var services = new ServiceCollection();
             services.AddSingleton(retryPolicyEventHandlerCalls);
             services
@@ -170,7 +170,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
                 .AddHttpMessageHandler(() => numberOfCallsDelegatingHandler)
                 .ConfigurePrimaryHttpMessageHandler(() => testHttpMessageHandler);
 
-            await using var serviceProvider = services.BuildServiceProvider();
+            var serviceProvider = services.BuildServiceProvider();
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
             var retryPolicyAsserter = httpClient.RetryPolicyAsserter(retryOptions, testHttpMessageHandler);
             await retryPolicyAsserter.HttpClientShouldContainRetryPolicyAsync(numberOfCallsDelegatingHandler);
@@ -192,13 +192,13 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
             var retryPolicyEventHandlerCalls = new RetryPolicyEventHandlerCalls();
             var numberOfCallsDelegatingHandler = new NumberOfCallsDelegatingHandler();
             var testHttpMessageHandler = new TestHttpMessageHandler();
-            var httpClientName = "GitHub";
+            const string httpClientName = "GitHub";
             var retryOptions = new RetryOptions
             {
                 RetryCount = 2,
                 MedianFirstRetryDelayInSecs = 0.01
             };
-            var optionsName = "GitHubOptions";
+            const string optionsName = "GitHubOptions";
             var services = new ServiceCollection();
             services
                 .AddHttpClientRetryOptions(optionsName)
@@ -210,14 +210,14 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
             services
                 .AddHttpClient(httpClientName)
                 .ConfigureHttpClient(client => client.BaseAddress = new Uri("https://github.com"))
-                .AddRetryPolicy(optionsName, provider =>
+                .AddRetryPolicy(optionsName, _ =>
                 {
                     return new TestRetryPolicyEventHandler(retryPolicyEventHandlerCalls);
                 })
                 .AddHttpMessageHandler(() => numberOfCallsDelegatingHandler)
                 .ConfigurePrimaryHttpMessageHandler(() => testHttpMessageHandler);
 
-            await using var serviceProvider = services.BuildServiceProvider();
+            var serviceProvider = services.BuildServiceProvider();
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
             var retryPolicyAsserter = httpClient.RetryPolicyAsserter(retryOptions, testHttpMessageHandler);
             await retryPolicyAsserter.HttpClientShouldContainRetryPolicyAsync(numberOfCallsDelegatingHandler);
@@ -230,7 +230,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
         /// <summary>
         /// Tests that the <see cref="RetryPolicyHttpClientBuilderExtensions.AddRetryPolicy(IHttpClientBuilder,Action{RetryOptions},Func{IServiceProvider,IRetryPolicyEventHandler})"/>
         /// overload method adds a <see cref="DelegatingHandler"/> with a retry policy to the <see cref="HttpClient"/>.
-        /// 
+        ///
         /// This also tests that the <see cref="IRetryPolicyEventHandler"/> events are triggered with the correct values.
         /// </summary>
         [Fact]
@@ -239,7 +239,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
             var retryPolicyEventHandlerCalls = new RetryPolicyEventHandlerCalls();
             var numberOfCallsDelegatingHandler = new NumberOfCallsDelegatingHandler();
             var testHttpMessageHandler = new TestHttpMessageHandler();
-            var httpClientName = "GitHub";
+            const string httpClientName = "GitHub";
             var retryOptions = new RetryOptions
             {
                 RetryCount = 2,
@@ -255,14 +255,14 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
                         options.RetryCount = retryOptions.RetryCount;
                         options.MedianFirstRetryDelayInSecs = retryOptions.MedianFirstRetryDelayInSecs;
                     },
-                    eventHandlerFactory: provider =>
+                    eventHandlerFactory: _ =>
                     {
                         return new TestRetryPolicyEventHandler(retryPolicyEventHandlerCalls);
                     })
                 .AddHttpMessageHandler(() => numberOfCallsDelegatingHandler)
                 .ConfigurePrimaryHttpMessageHandler(() => testHttpMessageHandler);
 
-            await using var serviceProvider = services.BuildServiceProvider();
+            var serviceProvider = services.BuildServiceProvider();
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
             var retryPolicyAsserter = httpClient.RetryPolicyAsserter(retryOptions, testHttpMessageHandler);
             await retryPolicyAsserter.HttpClientShouldContainRetryPolicyAsync(numberOfCallsDelegatingHandler);
@@ -312,7 +312,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
                         .FirstOrDefault();
                 });
 
-            using var serviceProvider = services.BuildServiceProvider();
+            var serviceProvider = services.BuildServiceProvider();
             serviceProvider.InstantiateNamedHttpClient("GitHub");
             serviceProvider.InstantiateNamedHttpClient("Microsoft");
 

@@ -1,4 +1,6 @@
-﻿using System.Net;
+using System;
+using System.Diagnostics.CodeAnalysis;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess;
@@ -21,13 +23,13 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
         [Fact]
         public async Task RepliesAsConfigured()
         {
-            await using var mock = new HttpMockServerBuilder()
+            await using var httpMockServer = new HttpMockServerBuilder()
                 .UseDefaultLogLevel(LogLevel.Critical)
                 .UseStartup<MyMockStartup>()
                 .Build();
-            var urls = await mock.StartAsync();
+            var urls = await httpMockServer.StartAsync();
 
-            using var httpClient = new HttpClient();
+            var httpClient = new HttpClient();
             var helloResponse = await httpClient.GetAsync($"{urls[0]}/hello");
             helloResponse.StatusCode.ShouldBe(HttpStatusCode.Created);
             var helloResponseBody = await helloResponse.Content.ReadAsStringAsync();
@@ -43,9 +45,17 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
         /// It's a very basic Startup class but you could use whatever asp.net core configuration
         /// you would like such as adding controllers.
         /// </summary>
-        public class MyMockStartup
+        [SuppressMessage("Performance", "CA1812:Avoid uninstantiated internal classes", Justification = "Ignore for Startup type classes. Used as generic type param.")]
+        [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Ignore for Startup type classes.")]
+        private class MyMockStartup
         {
-            public void ConfigureServices(IServiceCollection services)
+#pragma warning disable IDE0060 // Remove unused parameter
+#pragma warning disable CA1801  // Review unused parameters
+#pragma warning disable RCS1163 // Unused parameter
+            public static void ConfigureServices(IServiceCollection services)
+#pragma warning restore RCS1163 // Unused parameter
+#pragma warning restore CA1801  // Review unused parameters
+#pragma warning restore IDE0060 // Remove unused parameter
             {
             }
 
@@ -53,7 +63,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
             {
                 app.Use(async (httpContext, next) =>
                 {
-                    if (!httpContext.Request.Path.Equals("/hello"))
+                    if (!httpContext.Request.Path.Equals("/hello", StringComparison.OrdinalIgnoreCase))
                     {
                         await next();
                         return;

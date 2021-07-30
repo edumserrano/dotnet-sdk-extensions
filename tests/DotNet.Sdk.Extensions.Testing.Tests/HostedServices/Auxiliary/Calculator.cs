@@ -1,4 +1,4 @@
-﻿namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices.Auxiliary
+namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices.Auxiliary
 {
     public interface ICalculator
     {

@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker
 {
@@ -11,7 +11,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker
         /// The failure threshold at which the circuit will break, eg 0.5 represents breaking if 50% or more of actions result in a handled failure.
         /// </summary>
         /// <remarks>
-        /// Must be a value between <see cref="double.Epsilon"/> and 1. 
+        /// Must be a value between <see cref="double.Epsilon"/> and 1.
         /// </remarks>
         [Range(double.Epsilon, 1)]
         public double FailureThreshold { get; set; }

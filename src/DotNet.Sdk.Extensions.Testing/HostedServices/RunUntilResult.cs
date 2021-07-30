@@ -1,4 +1,4 @@
-﻿namespace DotNet.Sdk.Extensions.Testing.HostedServices
+namespace DotNet.Sdk.Extensions.Testing.HostedServices
 {
     internal enum RunUntilResult
     {

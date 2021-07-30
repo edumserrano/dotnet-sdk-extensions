@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -28,7 +28,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Fallback.Extensions
         public async Task AddFallbackPolicy1()
         {
             var testHttpMessageHandler = new TestHttpMessageHandler();
-            var httpClientName = "GitHub";
+            const string httpClientName = "GitHub";
             var services = new ServiceCollection();
             services
                 .AddHttpClient(httpClientName)
@@ -36,7 +36,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Fallback.Extensions
                 .AddFallbackPolicy()
                 .ConfigurePrimaryHttpMessageHandler(() => testHttpMessageHandler);
 
-            await using var serviceProvider = services.BuildServiceProvider();
+            var serviceProvider = services.BuildServiceProvider();
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
             await httpClient
                 .FallbackPolicyAsserter(testHttpMessageHandler)
@@ -54,7 +54,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Fallback.Extensions
         {
             var fallbackPolicyEventHandlerCalls = new FallbackPolicyEventHandlerCalls();
             var testHttpMessageHandler = new TestHttpMessageHandler();
-            var httpClientName = "GitHub";
+            const string httpClientName = "GitHub";
             var services = new ServiceCollection();
             services.AddSingleton(fallbackPolicyEventHandlerCalls);
             services
@@ -63,11 +63,11 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Fallback.Extensions
                 .AddFallbackPolicy<TestFallbackPolicyEventHandler>()
                 .ConfigurePrimaryHttpMessageHandler(() => testHttpMessageHandler);
 
-            await using var serviceProvider = services.BuildServiceProvider();
+            var serviceProvider = services.BuildServiceProvider();
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
             var fallbackPolicyAsserter = httpClient.FallbackPolicyAsserter(testHttpMessageHandler);
             await fallbackPolicyAsserter.HttpClientShouldContainFallbackPolicyAsync();
-            fallbackPolicyAsserter.EventHandlerShouldReceiveExpectedEvents(
+            FallbackPolicyAsserter.EventHandlerShouldReceiveExpectedEvents(
                 onHttpRequestExceptionCount: 1,
                 onTimeoutCallsCount: 1,
                 onBrokenCircuitCallsCount: 1,
@@ -88,22 +88,22 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Fallback.Extensions
         {
             var fallbackPolicyEventHandlerCalls = new FallbackPolicyEventHandlerCalls();
             var testHttpMessageHandler = new TestHttpMessageHandler();
-            var httpClientName = "GitHub";
+            const string httpClientName = "GitHub";
             var services = new ServiceCollection();
             services
                 .AddHttpClient(httpClientName)
                 .ConfigureHttpClient(client => client.BaseAddress = new Uri("https://github.com"))
-                .AddFallbackPolicy(provider =>
+                .AddFallbackPolicy(_ =>
                 {
                     return new TestFallbackPolicyEventHandler(fallbackPolicyEventHandlerCalls);
                 })
                 .ConfigurePrimaryHttpMessageHandler(() => testHttpMessageHandler);
 
-            await using var serviceProvider = services.BuildServiceProvider();
+            var serviceProvider = services.BuildServiceProvider();
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
             var fallbackPolicyAsserter = httpClient.FallbackPolicyAsserter(testHttpMessageHandler);
             await fallbackPolicyAsserter.HttpClientShouldContainFallbackPolicyAsync();
-            fallbackPolicyAsserter.EventHandlerShouldReceiveExpectedEvents(
+            FallbackPolicyAsserter.EventHandlerShouldReceiveExpectedEvents(
                 onHttpRequestExceptionCount: 1,
                 onTimeoutCallsCount: 1,
                 onBrokenCircuitCallsCount: 1,
@@ -145,7 +145,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Fallback.Extensions
                         .FirstOrDefault();
                 });
 
-            using var serviceProvider = services.BuildServiceProvider();
+            var serviceProvider = services.BuildServiceProvider();
             serviceProvider.InstantiateNamedHttpClient("GitHub");
             serviceProvider.InstantiateNamedHttpClient("Microsoft");
 

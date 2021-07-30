@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Net;
 using System.Net.Http;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.ResponseMocking;
@@ -64,7 +64,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers.Re
             var exception = Should.Throw<ArgumentNullException>(() => builder.RespondWith((HttpResponseMessageMockHandlerDelegate)null!));
             exception.Message.ShouldBe("Value cannot be null. (Parameter 'handler')");
         }
-        
+
         /// <summary>
         /// Validates that the predicate can only be set once.
         /// </summary>
@@ -72,11 +72,11 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers.Re
         public void WhereCanOnlyBeDefinedOnce()
         {
             var builder = new HttpResponseMessageMockBuilder();
-            builder.Where(message => false);
-            var exception = Should.Throw<InvalidOperationException>(() => builder.Where(message => true));
+            builder.Where(_ => false);
+            var exception = Should.Throw<InvalidOperationException>(() => builder.Where(_ => true));
             exception.Message.ShouldBe("HttpResponseMessageMockBuilder.Where condition already configured.");
         }
-        
+
         /// <summary>
         /// Validates that the <seealso cref="HttpResponseMessage"/> to be returned can only be set once.
         /// </summary>

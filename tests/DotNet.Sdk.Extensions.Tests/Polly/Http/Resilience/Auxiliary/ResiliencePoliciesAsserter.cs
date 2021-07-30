@@ -1,4 +1,4 @@
-﻿using System.Net.Http;
+using System.Net.Http;
 using DotNet.Sdk.Extensions.Polly.Http.Resilience;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers;
 using DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary;
@@ -51,7 +51,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Auxiliary
         }
 
         public FallbackPolicyAsserter Fallback { get; }
-        
+
         public TimeoutPolicyAsserter Timeout { get; }
 
         public RetryPolicyAsserter Retry { get; }

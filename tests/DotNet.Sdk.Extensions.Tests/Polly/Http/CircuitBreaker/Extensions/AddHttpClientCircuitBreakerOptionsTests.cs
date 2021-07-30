@@ -1,4 +1,4 @@
-﻿using DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker;
+using DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker;
 using DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -24,11 +24,11 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
         [Fact]
         public void AddHttpClientCircuitBreakerOptions()
         {
-            var optionsName = "circuitBreakerOptions";
-            var durationOfBreakInSecs = 1;
-            var failureThreshold = 0.8;
-            var minimumThroughput = 2;
-            var samplingDurationInSecs = 60;
+            const string optionsName = "circuitBreakerOptions";
+            const int durationOfBreakInSecs = 1;
+            const double failureThreshold = 0.8;
+            const int minimumThroughput = 2;
+            const int samplingDurationInSecs = 60;
             var services = new ServiceCollection();
             services
                 .AddHttpClientCircuitBreakerOptions(optionsName)
@@ -39,7 +39,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
                     options.MinimumThroughput = minimumThroughput;
                     options.SamplingDurationInSecs = samplingDurationInSecs;
                 });
-            using var serviceProvider = services.BuildServiceProvider();
+            var serviceProvider = services.BuildServiceProvider();
             var circuitBreakerOptions = serviceProvider.GetHttpClientCircuitBreakerOptions(optionsName);
             circuitBreakerOptions.DurationOfBreakInSecs.ShouldBe(durationOfBreakInSecs);
             circuitBreakerOptions.FailureThreshold.ShouldBe(failureThreshold);

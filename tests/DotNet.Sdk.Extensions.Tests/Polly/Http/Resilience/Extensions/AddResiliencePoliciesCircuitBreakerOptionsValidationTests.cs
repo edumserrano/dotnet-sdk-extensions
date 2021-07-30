@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker;
 using DotNet.Sdk.Extensions.Polly.Http.Resilience;
 using DotNet.Sdk.Extensions.Polly.Http.Resilience.Extensions;
@@ -21,12 +21,12 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
         /// Tests that the ResiliencePoliciesHttpClientBuilderExtensions.AddResiliencePolicies methods
         /// validate the <see cref="ResilienceOptions"/> with the built in data annotations.
         ///
-        /// Validates that the <see cref="ResilienceOptions.Retry"/> cannot be null.
+        /// Validates that the <see cref="ResilienceOptions.CircuitBreaker"/> cannot be null.
         /// </summary>
         [Fact]
         public void AddResiliencePoliciesOptionsValidationForRetryOptions()
         {
-            var httpClientName = "GitHub";
+            const string httpClientName = "GitHub";
             var services = new ServiceCollection();
             services
                 .AddHttpClient(httpClientName)
@@ -37,7 +37,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                     options.EnableTimeoutPolicy = false;
                 });
 
-            using var serviceProvider = services.BuildServiceProvider();
+            var serviceProvider = services.BuildServiceProvider();
             var exception = Should.Throw<ValidationException>(() =>
             {
                 serviceProvider.InstantiateNamedHttpClient(httpClientName);
@@ -58,7 +58,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
         [InlineData(-3.5)]
         public void AddResiliencePoliciesOptionsValidationForDurationOfBreakInSecs(double durationOfBreakInSecs)
         {
-            var httpClientName = "GitHub";
+            const string httpClientName = "GitHub";
             var services = new ServiceCollection();
             services
                 .AddHttpClient(httpClientName)
@@ -72,14 +72,14 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                     options.EnableTimeoutPolicy = false;
                 });
 
-            using var serviceProvider = services.BuildServiceProvider();
+            var serviceProvider = services.BuildServiceProvider();
             var exception = Should.Throw<ValidationException>(() =>
             {
                 serviceProvider.InstantiateNamedHttpClient(httpClientName);
             });
             exception.Message.ShouldBe($"The field DurationOfBreakInSecs must be between {double.Epsilon} and {double.MaxValue}.");
         }
-        
+
         /// <summary>
         /// Tests that the ResiliencePoliciesHttpClientBuilderExtensions.AddResiliencePolicies methods
         /// validate the <see cref="ResilienceOptions.CircuitBreaker"/> with the built in data annotations.
@@ -93,7 +93,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
         [InlineData(-3.5)]
         public void AddResiliencePoliciesOptionsValidationForSamplingDurationInSecs(double samplingDurationInSecs)
         {
-            var httpClientName = "GitHub";
+            const string httpClientName = "GitHub";
             var services = new ServiceCollection();
             services
                 .AddHttpClient(httpClientName)
@@ -107,7 +107,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                     options.EnableTimeoutPolicy = false;
                 });
 
-            using var serviceProvider = services.BuildServiceProvider();
+            var serviceProvider = services.BuildServiceProvider();
             var exception = Should.Throw<ValidationException>(() =>
             {
                 serviceProvider.InstantiateNamedHttpClient(httpClientName);
@@ -130,7 +130,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
         [InlineData(-2.2)]
         public void AddResiliencePoliciesOptionsValidationForFailureThreshold(double failureThreshold)
         {
-            var httpClientName = "GitHub";
+            const string httpClientName = "GitHub";
             var services = new ServiceCollection();
             services
                 .AddHttpClient(httpClientName)
@@ -144,7 +144,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                     options.EnableTimeoutPolicy = false;
                 });
 
-            using var serviceProvider = services.BuildServiceProvider();
+            var serviceProvider = services.BuildServiceProvider();
             var exception = Should.Throw<ValidationException>(() =>
             {
                 serviceProvider.InstantiateNamedHttpClient(httpClientName);
@@ -164,7 +164,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
         [InlineData(-1)]
         public void AddResiliencePoliciesOptionsValidationForMinimumThroughput(int minimumThroughput)
         {
-            var httpClientName = "GitHub";
+            const string httpClientName = "GitHub";
             var services = new ServiceCollection();
             services
                 .AddHttpClient(httpClientName)
@@ -178,7 +178,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                     options.EnableTimeoutPolicy = false;
                 });
 
-            using var serviceProvider = services.BuildServiceProvider();
+            var serviceProvider = services.BuildServiceProvider();
             var exception = Should.Throw<ValidationException>(() =>
             {
                 serviceProvider.InstantiateNamedHttpClient(httpClientName);
@@ -199,8 +199,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
         [Fact]
         public void AddResiliencePoliciesOptionsValidation2()
         {
-            var httpClientName = "GitHub";
-            var optionsName = "GitHubOptions";
+            const string httpClientName = "GitHub";
+            const string optionsName = "GitHubOptions";
             var services = new ServiceCollection();
             services
                 .AddHttpClientResilienceOptions(optionsName)
@@ -221,7 +221,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 .AddHttpClient(httpClientName)
                 .AddResiliencePolicies(optionsName);
 
-            using var serviceProvider = services.BuildServiceProvider();
+            var serviceProvider = services.BuildServiceProvider();
             var exception = Should.Throw<OptionsValidationException>(() =>
             {
                 serviceProvider.InstantiateNamedHttpClient(httpClientName);
@@ -241,8 +241,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
         [Fact]
         public void AddResiliencePoliciesOptionsValidation3()
         {
-            var httpClientName = "GitHub";
-            var optionsName = "GitHubOptions";
+            const string httpClientName = "GitHub";
+            const string optionsName = "GitHubOptions";
             var services = new ServiceCollection();
             services
                 .AddHttpClientResilienceOptions(optionsName)
@@ -263,7 +263,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 .AddHttpClient(httpClientName)
                 .AddResiliencePolicies(optionsName);
 
-            using var serviceProvider = services.BuildServiceProvider();
+            var serviceProvider = services.BuildServiceProvider();
             var exception = Should.Throw<ValidationException>(() =>
             {
                 serviceProvider.InstantiateNamedHttpClient(httpClientName);
@@ -279,7 +279,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
         [Fact]
         public void AddResiliencePoliciesOptionsValidation4()
         {
-            var httpClientName = "GitHub";
+            const string httpClientName = "GitHub";
             var services = new ServiceCollection();
             services
                 .AddHttpClient(httpClientName)
@@ -294,7 +294,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                     options.CircuitBreaker.MinimumThroughput = 10;
                 });
 
-            using var serviceProvider = services.BuildServiceProvider();
+            var serviceProvider = services.BuildServiceProvider();
             Should.NotThrow(() => serviceProvider.InstantiateNamedHttpClient(httpClientName));
         }
     }

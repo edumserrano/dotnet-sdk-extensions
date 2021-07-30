@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -25,12 +25,17 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Auxiliary
 
         public Task<HttpResponseMessage> TriggerFromExceptionAsync(Exception exception)
         {
+            if (exception == null)
+            {
+                throw new ArgumentNullException(nameof(exception));
+            }
+
             var requestPath = $"/retry/exception/{exception.GetType().Name}";
             _testHttpMessageHandler.HandleException(requestPath, exception);
             return _httpClient.GetAsync(requestPath);
         }
 
-        public async Task<HttpResponseMessage> TriggerFromTransientHttpStatusCodeAsync(HttpStatusCode httpStatusCode)
+        public Task<HttpResponseMessage> TriggerFromTransientHttpStatusCodeAsync(HttpStatusCode httpStatusCode)
         {
             if (!_transientHttpStatusCodes.Contains(httpStatusCode))
             {
@@ -40,20 +45,20 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Auxiliary
             var requestPath = _testHttpMessageHandler.HandleTransientHttpStatusCode(
                 requestPath: "/retry/transient-http-status-code",
                 responseHttpStatusCode: httpStatusCode);
-            return await _httpClient.GetAsync(requestPath);
+            return _httpClient.GetAsync(requestPath);
         }
-        
-        public async Task<HttpResponseMessage> ExecuteCircuitBrokenHttpResponseMessageAsync()
+
+        public Task<HttpResponseMessage> ExecuteCircuitBrokenHttpResponseMessageAsync()
         {
             var response = new CircuitBrokenHttpResponseMessage(CircuitBreakerState.Open);
             var requestPath = $"/retry/circuit-broken-response/{response.GetHashCode()}";
             _testHttpMessageHandler.MockHttpResponse(builder =>
             {
                 builder
-                    .Where(httpRequestMessage => httpRequestMessage.RequestUri!.ToString().Contains(requestPath))
+                    .Where(httpRequestMessage => httpRequestMessage.RequestUri!.ToString().Contains(requestPath, StringComparison.OrdinalIgnoreCase))
                     .RespondWith(response);
             });
-            return await _httpClient.GetAsync(requestPath);
+            return _httpClient.GetAsync(requestPath);
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -13,11 +13,14 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
             _options = options ?? throw new ArgumentNullException(nameof(options));
         }
 
-        public async Task<RunUntilResult> RunUntilAsync(RunUntilPredicateAsync predicateAsync)
+        public Task<RunUntilResult> RunUntilAsync(RunUntilPredicateAsync predicateAsync)
         {
-            if (predicateAsync is null) throw new ArgumentNullException(nameof(predicateAsync));
+            if (predicateAsync is null)
+            {
+                throw new ArgumentNullException(nameof(predicateAsync));
+            }
 
-            var runUntilResult = await Task.Run(async () =>
+            return Task.Run(async () =>
             {
                 try
                 {
@@ -26,7 +29,8 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
                     {
                         // before checking the predicate, wait RunUntilOptions.PredicateLoopPeriod or abort if the RunUntilOptions.Timeout elapses
                         await Task.Delay(_options.PredicateCheckInterval, cts.Token);
-                    } while (!await predicateAsync());
+                    }
+                    while (!await predicateAsync());
 
                     return RunUntilResult.PredicateReturnedTrue;
                 }
@@ -35,7 +39,6 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
                     return RunUntilResult.TimedOut;
                 }
             });
-            return runUntilResult;
         }
     }
 }

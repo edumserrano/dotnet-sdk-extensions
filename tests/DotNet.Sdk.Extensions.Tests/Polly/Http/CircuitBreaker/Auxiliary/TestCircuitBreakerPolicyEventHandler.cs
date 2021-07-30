@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker.Events;
 
 namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
@@ -14,19 +14,19 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
 
         public Task OnBreakAsync(BreakEvent breakEvent)
         {
-            _circuitBreakerPolicyEventHandlerCalls.AddOnBreakAsync(breakEvent);
+            _circuitBreakerPolicyEventHandlerCalls.AddOnBreak(breakEvent);
             return Task.CompletedTask;
         }
 
         public Task OnHalfOpenAsync(HalfOpenEvent halfOpenEvent)
         {
-            _circuitBreakerPolicyEventHandlerCalls.AddOnHalfOpenAsync(halfOpenEvent);
+            _circuitBreakerPolicyEventHandlerCalls.AddOnHalfOpen(halfOpenEvent);
             return Task.CompletedTask;
         }
 
         public Task OnResetAsync(ResetEvent resetEvent)
         {
-            _circuitBreakerPolicyEventHandlerCalls.AddOnResetAsync(resetEvent);
+            _circuitBreakerPolicyEventHandlerCalls.AddOnReset(resetEvent);
             return Task.CompletedTask;
         }
     }

@@ -1,4 +1,4 @@
-﻿using DotNet.Sdk.Extensions.Polly.Http.Timeout;
+using DotNet.Sdk.Extensions.Polly.Http.Timeout;
 using DotNet.Sdk.Extensions.Polly.Http.Timeout.Extensions;
 using DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,7 +18,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
         /// <summary>
         /// Tests that the TimeoutPolicyHttpClientBuilderExtensions.AddTimeoutPolicy methods
         /// validate the <see cref="TimeoutOptions"/> with the built in data annotations.
-        /// 
+        ///
         /// Validates that the <see cref="TimeoutOptions.TimeoutInSecs"/> needs to be a double > 0.
         /// </summary>
         [Theory]
@@ -27,7 +27,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
         [InlineData(-2.2)]
         public void AddTimeoutPolicyOptionsValidation1(int timeoutInSecs)
         {
-            var httpClientName = "GitHub";
+            const string httpClientName = "GitHub";
             var services = new ServiceCollection();
             services
                 .AddHttpClient(httpClientName)
@@ -36,7 +36,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
                     options.TimeoutInSecs = timeoutInSecs;
                 });
 
-            using var serviceProvider = services.BuildServiceProvider();
+            var serviceProvider = services.BuildServiceProvider();
             var exception = Should.Throw<OptionsValidationException>(() =>
             {
                 serviceProvider.InstantiateNamedHttpClient(httpClientName);
@@ -57,8 +57,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
         [Fact]
         public void AddTimeoutPolicyOptionsValidation2()
         {
-            var httpClientName = "GitHub";
-            var optionsName = "GitHubOptions";
+            const string httpClientName = "GitHub";
+            const string optionsName = "GitHubOptions";
             var services = new ServiceCollection();
             services
                 .AddHttpClientTimeoutOptions(optionsName)
@@ -71,7 +71,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
                 .AddHttpClient(httpClientName)
                 .AddTimeoutPolicy(optionsName);
 
-            using var serviceProvider = services.BuildServiceProvider();
+            var serviceProvider = services.BuildServiceProvider();
             var exception = Should.Throw<OptionsValidationException>(() =>
             {
                 serviceProvider.InstantiateNamedHttpClient(httpClientName);
@@ -91,8 +91,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
         [Fact]
         public void AddTimeoutPolicyOptionsValidation3()
         {
-            var httpClientName = "GitHub";
-            var optionsName = "GitHubOptions";
+            const string httpClientName = "GitHub";
+            const string optionsName = "GitHubOptions";
             var services = new ServiceCollection();
             services
                 .AddHttpClientTimeoutOptions(optionsName)
@@ -105,7 +105,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
                 .AddHttpClient(httpClientName)
                 .AddTimeoutPolicy(optionsName);
 
-            using var serviceProvider = services.BuildServiceProvider();
+            var serviceProvider = services.BuildServiceProvider();
             var exception = Should.Throw<OptionsValidationException>(() =>
             {
                 serviceProvider.InstantiateNamedHttpClient(httpClientName);

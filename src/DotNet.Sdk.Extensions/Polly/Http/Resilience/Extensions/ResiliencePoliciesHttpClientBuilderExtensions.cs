@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Net.Http;
 using DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker;
 using DotNet.Sdk.Extensions.Polly.Http.Fallback;
@@ -17,7 +17,9 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Resilience.Extensions
     /// </summary>
     public static class ResiliencePoliciesHttpClientBuilderExtensions
     {
-        private class BlankHttpMessageHandler : DelegatingHandler { }
+        private class BlankHttpMessageHandler : DelegatingHandler
+        {
+        }
 
         /// <summary>
         /// Adds resilience policies to the <see cref="HttpClient"/>.
@@ -29,6 +31,11 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Resilience.Extensions
             this IHttpClientBuilder httpClientBuilder,
             string optionsName)
         {
+            if (httpClientBuilder is null)
+            {
+                throw new ArgumentNullException(nameof(httpClientBuilder));
+            }
+
             return httpClientBuilder.AddResiliencePoliciesCore(
                 optionsName: optionsName,
                 configureOptions: null,
@@ -41,12 +48,17 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Resilience.Extensions
         /// Adds resilience policies to the <see cref="HttpClient"/>.
         /// </summary>
         /// <param name="httpClientBuilder">The <see cref="IHttpClientBuilder"/> instance to add the resilience policies to.</param>
-        /// <param name="configureOptions">An action to define the the <see cref="RetryOptions"/> options to use to configure the resilience policies.</param>
+        /// <param name="configureOptions">An action to define the <see cref="RetryOptions"/> options to use to configure the resilience policies.</param>
         /// <returns>The <see cref="IHttpClientBuilder"/> for chaining.</returns>
         public static IHttpClientBuilder AddResiliencePolicies(
             this IHttpClientBuilder httpClientBuilder,
             Action<ResilienceOptions> configureOptions)
         {
+            if (httpClientBuilder is null)
+            {
+                throw new ArgumentNullException(nameof(httpClientBuilder));
+            }
+
             return httpClientBuilder.AddResiliencePoliciesCore(
                 optionsName: null,
                 configureOptions: configureOptions,
@@ -67,6 +79,11 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Resilience.Extensions
             string optionsName)
             where TPolicyEventHandler : class, IResiliencePoliciesEventHandler
         {
+            if (httpClientBuilder is null)
+            {
+                throw new ArgumentNullException(nameof(httpClientBuilder));
+            }
+
             httpClientBuilder.Services.TryAddSingleton<TPolicyEventHandler>();
             return httpClientBuilder.AddResiliencePoliciesCore(
                 optionsName: optionsName,
@@ -81,13 +98,18 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Resilience.Extensions
         /// </summary>
         /// <typeparam name="TPolicyEventHandler">The type that will handle resilience events.</typeparam>
         /// <param name="httpClientBuilder">The <see cref="IHttpClientBuilder"/> instance to add the resilience policies to.</param>
-        /// <param name="configureOptions">An action to define the the <see cref="RetryOptions"/> options to use to configure the resilience policies.</param>
+        /// <param name="configureOptions">An action to define the <see cref="RetryOptions"/> options to use to configure the resilience policies.</param>
         /// <returns>The <see cref="IHttpClientBuilder"/> for chaining.</returns>
         public static IHttpClientBuilder AddResiliencePolicies<TPolicyEventHandler>(
             this IHttpClientBuilder httpClientBuilder,
             Action<ResilienceOptions> configureOptions)
             where TPolicyEventHandler : class, IResiliencePoliciesEventHandler
         {
+            if (httpClientBuilder is null)
+            {
+                throw new ArgumentNullException(nameof(httpClientBuilder));
+            }
+
             httpClientBuilder.Services.TryAddSingleton<TPolicyEventHandler>();
             return httpClientBuilder.AddResiliencePoliciesCore(
                 optionsName: null,
@@ -109,6 +131,11 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Resilience.Extensions
             string optionsName,
             Func<IServiceProvider, IResiliencePoliciesEventHandler> eventHandlerFactory)
         {
+            if (httpClientBuilder is null)
+            {
+                throw new ArgumentNullException(nameof(httpClientBuilder));
+            }
+
             return httpClientBuilder.AddResiliencePoliciesCore(
                 optionsName: optionsName,
                 configureOptions: null,
@@ -119,7 +146,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Resilience.Extensions
         /// Adds a resilience policies to the <see cref="HttpClient"/>.
         /// </summary>
         /// <param name="httpClientBuilder">The <see cref="IHttpClientBuilder"/> instance to add the resilience policies to.</param>
-        /// <param name="configureOptions">An action to define the the <see cref="RetryOptions"/> options to use to configure the resilience policies.</param>
+        /// <param name="configureOptions">An action to define the <see cref="RetryOptions"/> options to use to configure the resilience policies.</param>
         /// <param name="eventHandlerFactory">Delegate to create an instance that will handle resilience events.</param>
         /// <returns>The <see cref="IHttpClientBuilder"/> for chaining.</returns>
         public static IHttpClientBuilder AddResiliencePolicies(
@@ -127,6 +154,11 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Resilience.Extensions
             Action<ResilienceOptions> configureOptions,
             Func<IServiceProvider, IResiliencePoliciesEventHandler> eventHandlerFactory)
         {
+            if (httpClientBuilder is null)
+            {
+                throw new ArgumentNullException(nameof(httpClientBuilder));
+            }
+
             return httpClientBuilder.AddResiliencePoliciesCore(
                 optionsName: null,
                 configureOptions: configureOptions,
@@ -184,8 +216,8 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Resilience.Extensions
 
         private static IHttpClientBuilder AddResilienceRetryPolicy(
             this IHttpClientBuilder httpClientBuilder,
-            string optionsName, Func<IServiceProvider,
-                IResiliencePoliciesEventHandler> eventHandlerFactory)
+            string optionsName,
+            Func<IServiceProvider, IResiliencePoliciesEventHandler> eventHandlerFactory)
         {
             return httpClientBuilder.AddHttpMessageHandler(provider =>
             {

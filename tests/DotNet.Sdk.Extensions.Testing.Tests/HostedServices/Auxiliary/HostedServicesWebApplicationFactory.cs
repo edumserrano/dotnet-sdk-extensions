@@ -13,7 +13,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices.Auxiliary
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
             builder
-                .UseContentRoot(".") 
+                .UseContentRoot(".")
                 .UseStartup<StartupHostedService>();
         }
 
@@ -21,9 +21,8 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices.Auxiliary
         {
             return Host.CreateDefaultBuilder()
                 .UseDefaultLogLevel(LogLevel.Critical)
-                .ConfigureWebHostDefaults(webBuilder =>
+                .ConfigureWebHostDefaults(_ =>
                 {
-
                 });
         }
     }

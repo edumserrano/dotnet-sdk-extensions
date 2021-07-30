@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers.ResponseBased;
@@ -30,7 +30,10 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess
         /// <returns>The <see cref="ResponseBasedBuilder"/> for chaining.</returns>
         public ResponseBasedBuilder MockHttpResponse(HttpResponseMock httpResponseMock)
         {
-            if (httpResponseMock is null) throw new ArgumentNullException(nameof(httpResponseMock));
+            if (httpResponseMock is null)
+            {
+                throw new ArgumentNullException(nameof(httpResponseMock));
+            }
 
             _httpResponseMocks.Add(httpResponseMock);
             return this;
@@ -43,7 +46,10 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess
         /// <returns>The <see cref="ResponseBasedBuilder"/> for chaining.</returns>
         public ResponseBasedBuilder MockHttpResponse(Action<HttpResponseMockBuilder> configureHttpResponseMock)
         {
-            if (configureHttpResponseMock is null) throw new ArgumentNullException(nameof(configureHttpResponseMock));
+            if (configureHttpResponseMock is null)
+            {
+                throw new ArgumentNullException(nameof(configureHttpResponseMock));
+            }
 
             var httpResponseMockBuilder = new HttpResponseMockBuilder();
             configureHttpResponseMock(httpResponseMockBuilder);
@@ -56,7 +62,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess
         /// Creates an <see cref="HttpMockServer"/> instance.
         /// </summary>
         /// <returns>The <see cref="HttpMockServer"/> instance.</returns>
-        public HttpMockServer Build()
+        public IHttpMockServer Build()
         {
             return new ResponseBasedHttpMockServer(_mockServerArgs, _httpResponseMocks);
         }

@@ -1,4 +1,4 @@
-﻿using DotNet.Sdk.Extensions.Testing.Configuration;
+using DotNet.Sdk.Extensions.Testing.Configuration;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Hosting;
@@ -25,9 +25,8 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess.Auxiliary.Ti
              */
             return Host.CreateDefaultBuilder()
                 .UseDefaultLogLevel(LogLevel.Critical)
-                .ConfigureWebHostDefaults(webBuilder =>
+                .ConfigureWebHostDefaults(_ =>
                 {
-
                 });
         }
     }

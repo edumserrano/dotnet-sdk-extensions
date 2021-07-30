@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 
@@ -19,13 +19,20 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
             this IHost host,
             RunUntilPredicate predicate)
         {
-            if (host is null) throw new ArgumentNullException(nameof(host));
-            if (predicate is null) throw new ArgumentNullException(nameof(predicate));
+            if (host is null)
+            {
+                throw new ArgumentNullException(nameof(host));
+            }
 
-            RunUntilPredicateAsync predicateAsync = () => Task.FromResult(predicate());
-            return host.RunUntilAsync(predicateAsync);
+            if (predicate is null)
+            {
+                throw new ArgumentNullException(nameof(predicate));
+            }
+
+            Task<bool> PredicateAsync() => Task.FromResult(predicate());
+            return host.RunUntilAsync(PredicateAsync);
         }
-        
+
         /// <summary>
         /// Executes the host until the predicate or a timeout is met.
         /// </summary>
@@ -38,11 +45,18 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
             RunUntilPredicate predicate,
             Action<RunUntilOptions> configureOptions)
         {
-            if (host is null) throw new ArgumentNullException(nameof(host));
-            if (predicate is null) throw new ArgumentNullException(nameof(predicate));
+            if (host is null)
+            {
+                throw new ArgumentNullException(nameof(host));
+            }
 
-            RunUntilPredicateAsync predicateAsync = () => Task.FromResult(predicate());
-            return host.RunUntilAsync(predicateAsync, configureOptions);
+            if (predicate is null)
+            {
+                throw new ArgumentNullException(nameof(predicate));
+            }
+
+            Task<bool> PredicateAsync() => Task.FromResult(predicate());
+            return host.RunUntilAsync(PredicateAsync, configureOptions);
         }
     }
 }

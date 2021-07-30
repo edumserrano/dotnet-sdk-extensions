@@ -1,4 +1,4 @@
-﻿namespace DotNet.Sdk.Extensions.Tests
+namespace DotNet.Sdk.Extensions.Tests
 {
     public static class XUnitCategories
     {

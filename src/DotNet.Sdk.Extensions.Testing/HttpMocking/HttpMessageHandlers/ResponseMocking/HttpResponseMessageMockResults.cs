@@ -1,4 +1,4 @@
-﻿namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.ResponseMocking
+namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.ResponseMocking
 {
     /// <summary>
     /// Represents the possible outcomes from executing an <see cref="HttpResponseMessageMock"/>.

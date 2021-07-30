@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -28,6 +28,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.Response
             {
                 return HttpResponseMessageMockResult.Skipped();
             }
+
             var httpResponseMessage = await _handler(request, cancellationToken);
             return HttpResponseMessageMockResult.Executed(httpResponseMessage);
         }

@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -10,6 +11,7 @@ using Polly;
 
 namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess.Auxiliary.Timeout
 {
+    [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Ignore for Startup type classes.")]
     public class TimeoutStartupHttpResponseMocking
     {
         public void ConfigureServices(IServiceCollection services)
@@ -23,17 +25,17 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess.Auxiliary.Ti
                 });
             services
                 .AddHttpClient("polly-named-client")
-                .AddHttpMessageHandler(provider =>
+                .AddHttpMessageHandler(_ =>
                 {
                     var timeoutPolicy = Policy.TimeoutAsync<HttpResponseMessage>(TimeSpan.FromMilliseconds(200));
                     return new PolicyHttpMessageHandler(timeoutPolicy);
                 });
         }
-        
+
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app
-                .UseWhen(x => env.IsDevelopment(), appBuilder => appBuilder.UseDeveloperExceptionPage())
+                .UseWhen(_ => env.IsDevelopment(), appBuilder => appBuilder.UseDeveloperExceptionPage())
                 .UseRouting()
                 .UseEndpoints(endpoints =>
                 {
@@ -43,7 +45,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess.Auxiliary.Ti
                         var namedClient = httpClientFactory.CreateClient("named-client");
                         var response = await namedClient.GetAsync("https://named-client.com");
                         await context.Response.WriteAsync($"Named http client (named-client) returned: {response.IsSuccessStatusCode}");
-                    }); 
+                    });
                     endpoints.MapGet("/named-client-with-timeout", async context =>
                     {
                         var httpClientFactory = context.RequestServices.GetRequiredService<IHttpClientFactory>();

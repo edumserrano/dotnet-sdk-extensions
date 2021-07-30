@@ -1,4 +1,4 @@
-﻿using System.Net.Http;
+using System.Net.Http;
 using DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker;
 using DotNet.Sdk.Extensions.Polly.Http.Timeout;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers;
@@ -33,7 +33,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary
         {
             return new CircuitBreakerPolicyExecutor(httpClient, options, testHttpMessageHandler);
         }
-        
+
         public static FallbackPolicyExecutor FallbackExecutor(
             this HttpClient httpClient,
             TestHttpMessageHandler testHttpMessageHandler)

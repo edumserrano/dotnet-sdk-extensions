@@ -1,4 +1,4 @@
-﻿using System.Net.Http;
+using System.Net.Http;
 using Polly;
 
 namespace DotNet.Sdk.Extensions.Polly.Http.Fallback.Events

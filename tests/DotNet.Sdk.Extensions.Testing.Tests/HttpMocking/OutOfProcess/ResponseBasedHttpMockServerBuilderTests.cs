@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -21,29 +21,28 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
         public async Task RepliesAsConfigured2()
         {
             var helloHttpResponseMock = new HttpResponseMockBuilder()
-                  .Where(httpRequest => httpRequest.Path.Equals("/hello"))
-                  .RespondWith(async (request, response, cancellationToken) =>
-                  {
-                      response.StatusCode = StatusCodes.Status201Created;
-                      await response.WriteAsync("hello", cancellationToken);
-                  })
-                  .Build();
+                .Where(httpRequest => httpRequest.Path.Equals("/hello", StringComparison.OrdinalIgnoreCase))
+                .RespondWith(async (_, response, cancellationToken) =>
+                    {
+                        response.StatusCode = StatusCodes.Status201Created;
+                        await response.WriteAsync("hello", cancellationToken);
+                    })
+                .Build();
 
-            await using var mock = new HttpMockServerBuilder()
+            await using var httpMockServer = new HttpMockServerBuilder()
                 .UseDefaultLogLevel(LogLevel.Critical)
                 .UseHttpResponseMocks()
                 .MockHttpResponse(helloHttpResponseMock)
                 .Build();
-            var urls = await mock.StartAsync();
+            var urls = await httpMockServer.StartAsync();
             var httpUrl = urls.First(x => x.Scheme == HttpScheme.Http);
 
-            using var httpClient = new HttpClient();
+            var httpClient = new HttpClient();
             var helloHttpResponse = await httpClient.GetAsync($"{httpUrl}/hello");
             helloHttpResponse.StatusCode.ShouldBe(HttpStatusCode.Created);
             var helloHttpContent = await helloHttpResponse.Content.ReadAsStringAsync();
             helloHttpContent.ShouldBe("hello");
         }
-
 
         /// <summary>
         /// Tests that the response based <see cref="HttpMockServer"/> responds to requests as configured.
@@ -54,27 +53,27 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
         public async Task RepliesAsConfigured()
         {
             var helloHttpResponseMock = new HttpResponseMockBuilder()
-                  .Where(httpRequest => httpRequest.Path.Equals("/hello"))
-                  .RespondWith(async (request, response, cancellationToken) =>
-                  {
-                      response.StatusCode = StatusCodes.Status201Created;
-                      await response.WriteAsync("hello", cancellationToken);
-                  })
-                  .Build();
+                .Where(httpRequest => httpRequest.Path.Equals("/hello", StringComparison.OrdinalIgnoreCase))
+                .RespondWith(async (_, response, cancellationToken) =>
+                    {
+                        response.StatusCode = StatusCodes.Status201Created;
+                        await response.WriteAsync("hello", cancellationToken);
+                    })
+                .Build();
 
-            await using var mock = new HttpMockServerBuilder()
+            await using var httpMockServer = new HttpMockServerBuilder()
                 .UseDefaultLogLevel(LogLevel.Critical)
                 .UseHttpResponseMocks()
                 .MockHttpResponse(helloHttpResponseMock)
                 .MockHttpResponse(mockBuilder =>
                 {
-                    mockBuilder.RespondWith((request, response) => response.StatusCode = StatusCodes.Status404NotFound);
+                    mockBuilder.RespondWith((_, response) => response.StatusCode = StatusCodes.Status404NotFound);
                 })
                 .Build();
-            var urls = await mock.StartAsync();
+            var urls = await httpMockServer.StartAsync();
             var httpUrl = urls.First(x => x.Scheme == HttpScheme.Http);
 
-            using var httpClient = new HttpClient();
+            var httpClient = new HttpClient();
             var defaultHttpResponse = await httpClient.GetAsync($"{httpUrl}/default");
             defaultHttpResponse.StatusCode.ShouldBe(HttpStatusCode.NotFound);
             defaultHttpResponse.Content.Headers.ContentLength.ShouldBe(0);
@@ -90,7 +89,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
             // because dev certificate does not exist
             // Trying to set up the dev certificate with `dotnet dev-certs https --trust` does not work on linux
             // See https://docs.microsoft.com/en-us/aspnet/core/security/enforcing-ssl?view=aspnetcore-5.0&tabs=visual-studio#ssl-linux
-            
+
             //var defaultHttpsResponse = await httpClient.GetAsync($"{httpsUrl}/default");
             //defaultHttpsResponse.StatusCode.ShouldBe(HttpStatusCode.NotFound);
             //defaultHttpsResponse.Content.Headers.ContentLength.ShouldBe(0);
@@ -110,24 +109,24 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
         public async Task OrderMatters()
         {
             var httpResponseMock1 = new HttpResponseMockBuilder()
-                .Where(httpRequest => httpRequest.Path.Equals("/hello"))
-                .RespondWith((request, response) => response.StatusCode = StatusCodes.Status401Unauthorized)
+                .Where(httpRequest => httpRequest.Path.Equals("/hello", StringComparison.OrdinalIgnoreCase))
+                .RespondWith((_, response) => response.StatusCode = StatusCodes.Status401Unauthorized)
                 .Build();
             var httpResponseMock2 = new HttpResponseMockBuilder()
-                .Where(httpRequest => httpRequest.Path.Equals("/hello"))
-                .RespondWith((request, response) => response.StatusCode = StatusCodes.Status403Forbidden)
+                .Where(httpRequest => httpRequest.Path.Equals("/hello", StringComparison.OrdinalIgnoreCase))
+                .RespondWith((_, response) => response.StatusCode = StatusCodes.Status403Forbidden)
                 .Build();
 
             // because we add httpResponseMock1 before httpResponseMock2 and they both
             // have an equal predicate, the one that gets executed is the first one added
-            await using var mock = new HttpMockServerBuilder()
+            await using var httpMockServer = new HttpMockServerBuilder()
                 .UseDefaultLogLevel(LogLevel.Critical)
                 .UseHttpResponseMocks()
                 .MockHttpResponse(httpResponseMock1)
                 .MockHttpResponse(httpResponseMock2)
                 .Build();
-            var urls = await mock.StartAsync();
-            using var httpClient = new HttpClient();
+            var urls = await httpMockServer.StartAsync();
+            var httpClient = new HttpClient();
             var helloResponse = await httpClient.GetAsync($"{urls[0]}/hello");
             helloResponse.StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
 
@@ -140,7 +139,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
                 .MockHttpResponse(httpResponseMock1)
                 .Build();
             var urls2 = await mock2.StartAsync();
-            using var httpClient2 = new HttpClient();
+            var httpClient2 = new HttpClient();
             var helloResponse2 = await httpClient2.GetAsync($"{urls2[0]}/hello");
             helloResponse2.StatusCode.ShouldBe(HttpStatusCode.Forbidden);
         }
@@ -153,24 +152,24 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
         public async Task NoMocksMatch()
         {
             var httpResponseMock1 = new HttpResponseMockBuilder()
-                .Where(httpRequest => httpRequest.Path.Equals("/hello"))
-                .RespondWith((request, response) => response.StatusCode = StatusCodes.Status200OK)
+                .Where(httpRequest => httpRequest.Path.Equals("/hello", StringComparison.OrdinalIgnoreCase))
+                .RespondWith((_, response) => response.StatusCode = StatusCodes.Status200OK)
                 .Build();
             var httpResponseMock2 = new HttpResponseMockBuilder()
-                .Where(httpRequest => httpRequest.Path.Equals("/bye"))
-                .RespondWith((request, response) => response.StatusCode = StatusCodes.Status200OK)
+                .Where(httpRequest => httpRequest.Path.Equals("/bye", StringComparison.OrdinalIgnoreCase))
+                .RespondWith((_, response) => response.StatusCode = StatusCodes.Status200OK)
                 .Build();
 
             // because we add httpResponseMock1 before httpResponseMock2 and they both
             // have an equal predicate, the one that gets executed is the first one added
-            await using var mock = new HttpMockServerBuilder()
+            await using var httpMockServer = new HttpMockServerBuilder()
                 .UseDefaultLogLevel(LogLevel.Critical)
                 .UseHttpResponseMocks()
                 .MockHttpResponse(httpResponseMock1)
                 .MockHttpResponse(httpResponseMock2)
                 .Build();
-            var urls = await mock.StartAsync();
-            using var httpClient = new HttpClient();
+            var urls = await httpMockServer.StartAsync();
+            var httpClient = new HttpClient();
             var defaultResponse = await httpClient.GetAsync($"{urls[0]}/no-match");
             defaultResponse.StatusCode.ShouldBe(HttpStatusCode.NotImplemented);
             var defaultResponseBody = await defaultResponse.Content.ReadAsStringAsync();
@@ -188,7 +187,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
             {
                 new HttpMockServerBuilder()
                     .UseHttpResponseMocks()
-                    .MockHttpResponse((HttpResponseMock) null!);
+                    .MockHttpResponse((HttpResponseMock)null!);
             });
             exception1.Message.ShouldBe("Value cannot be null. (Parameter 'httpResponseMock')");
 

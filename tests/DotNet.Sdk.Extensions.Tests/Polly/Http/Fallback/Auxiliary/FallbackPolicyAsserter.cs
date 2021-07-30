@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -8,7 +9,6 @@ using DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary;
 using Polly.CircuitBreaker;
 using Polly.Timeout;
 using Shouldly;
-using System.Linq;
 
 namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Fallback.Auxiliary
 {
@@ -52,7 +52,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Fallback.Auxiliary
             exceptionHttpResponseMessage.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
             exceptionHttpResponseMessage.Exception.ShouldBe(httpRequestException);
         }
-        
+
         private async Task FallbackPolicyHandlesTaskCancelledException()
         {
             var taskCanceledException = new TaskCanceledException();
@@ -114,7 +114,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Fallback.Auxiliary
                 .TriggerFromExceptionAsync(exception);
         }
 
-        public void EventHandlerShouldReceiveExpectedEvents(
+        public static void EventHandlerShouldReceiveExpectedEvents(
             int onHttpRequestExceptionCount,
             int onTimeoutCallsCount,
             int onBrokenCircuitCallsCount,
@@ -125,23 +125,23 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Fallback.Auxiliary
         {
             eventHandlerCalls
                 .OnHttpRequestExceptionFallbackAsyncCalls
-                .Count(x => x.HttpClientName.Equals(httpClientName))
+                .Count(x => x.HttpClientName.Equals(httpClientName, StringComparison.Ordinal))
                 .ShouldBe(onHttpRequestExceptionCount);
             eventHandlerCalls
                 .OnTimeoutFallbackAsyncCalls
-                .Count(x => x.HttpClientName.Equals(httpClientName))
+                .Count(x => x.HttpClientName.Equals(httpClientName, StringComparison.Ordinal))
                 .ShouldBe(onTimeoutCallsCount);
             eventHandlerCalls
                 .OnBrokenCircuitFallbackAsyncCalls
-                .Count(x => x.HttpClientName.Equals(httpClientName) && x.Outcome.Exception is IsolatedCircuitException)
+                .Count(x => x.HttpClientName.Equals(httpClientName, StringComparison.Ordinal) && x.Outcome.Exception is IsolatedCircuitException)
                 .ShouldBe(onBrokenCircuitCallsCount);
             eventHandlerCalls
                 .OnBrokenCircuitFallbackAsyncCalls // check BrokenCircuitException calls. IsolatedCircuitException are derived from BrokenCircuitException so excluding those (x.Outcome.Exception is BrokenCircuitException would also count IsolatedCircuitException)
-                .Count(x => x.HttpClientName.Equals(httpClientName) && x.Outcome.Exception is not IsolatedCircuitException)
+                .Count(x => x.HttpClientName.Equals(httpClientName, StringComparison.Ordinal) && x.Outcome.Exception is not IsolatedCircuitException)
                 .ShouldBe(onIsolatedCircuitCallsCount);
             eventHandlerCalls
                 .OnTaskCancelledFallbackAsyncCalls
-                .Count(x => x.HttpClientName.Equals(httpClientName))
+                .Count(x => x.HttpClientName.Equals(httpClientName, StringComparison.Ordinal))
                 .ShouldBe(onTaskCancelledCallsCount);
         }
     }

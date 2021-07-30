@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 
@@ -22,13 +22,17 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.ResponseMocking
 
         internal async Task<HttpResponseMockResults> ExecuteAsync(HttpContext httpContext)
         {
-            if (httpContext is null) throw new ArgumentNullException(nameof(httpContext));
+            if (httpContext is null)
+            {
+                throw new ArgumentNullException(nameof(httpContext));
+            }
 
             var shouldExecute = await _predicateAsync(httpContext.Request, httpContext.RequestAborted);
             if (!shouldExecute)
             {
                 return HttpResponseMockResults.Skipped;
             }
+
             await _handlerAsync(httpContext.Request, httpContext.Response, httpContext.RequestAborted);
             return HttpResponseMockResults.Executed;
         }

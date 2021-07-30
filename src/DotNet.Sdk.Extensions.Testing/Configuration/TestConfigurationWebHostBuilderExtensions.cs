@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -27,6 +27,11 @@ namespace DotNet.Sdk.Extensions.Testing.Configuration
         /// <returns>The <see cref="IWebHostBuilder"/> for chaining.</returns>
         public static IWebHostBuilder UseConfigurationValue(this IWebHostBuilder builder, string key, string value)
         {
+            if (builder is null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
+
             if (string.IsNullOrEmpty(key))
             {
                 throw new ArgumentException("Cannot be null or empty.", nameof(key));
@@ -37,7 +42,7 @@ namespace DotNet.Sdk.Extensions.Testing.Configuration
                 throw new ArgumentException("Cannot be null or empty.", nameof(value));
             }
 
-            return builder.ConfigureAppConfiguration((context, builder) =>
+            return builder.ConfigureAppConfiguration((_, appConfigBuilder) =>
             {
                 var memoryConfigurationSource = new MemoryConfigurationSource
                 {
@@ -46,7 +51,7 @@ namespace DotNet.Sdk.Extensions.Testing.Configuration
                         new KeyValuePair<string, string>(key, value)
                     }
                 };
-                builder.Add(memoryConfigurationSource);
+                appConfigBuilder.Add(memoryConfigurationSource);
             });
         }
 
@@ -82,7 +87,10 @@ namespace DotNet.Sdk.Extensions.Testing.Configuration
             string appSettingsFilename,
             params string[] otherAppsettingsFilenames)
         {
-            if (builder is null) throw new ArgumentNullException(nameof(builder));
+            if (builder is null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
 
             var options = new TestConfigurationOptions();
             return builder.AddTestAppSettings(options, appSettingsFilename, otherAppsettingsFilenames);
@@ -92,7 +100,7 @@ namespace DotNet.Sdk.Extensions.Testing.Configuration
         /// Clears loaded appsettings files by removing all <see cref="JsonConfigurationSource"/>
         /// from the <see cref="IWebHostBuilder"/> and adding instances of <see cref="JsonConfigurationSource"/> for
         /// the provided appsettings files.
-        /// </summary> 
+        /// </summary>
         /// <remarks>
         /// It also makes sure that the expected loading configuration behavior is preserved by having the
         /// <see cref="CommandLineConfigurationSource"/> last and the <see cref="EnvironmentVariablesConfigurationSource"/>
@@ -111,8 +119,15 @@ namespace DotNet.Sdk.Extensions.Testing.Configuration
             string appSettingsFilename,
             params string[] otherAppsettingsFilenames)
         {
-            if (builder is null) throw new ArgumentNullException(nameof(builder));
-            if (configureOptions is null) throw new ArgumentNullException(nameof(configureOptions));
+            if (builder is null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
+
+            if (configureOptions is null)
+            {
+                throw new ArgumentNullException(nameof(configureOptions));
+            }
 
             var options = new TestConfigurationOptions();
             configureOptions(options);
@@ -125,13 +140,32 @@ namespace DotNet.Sdk.Extensions.Testing.Configuration
             string appSettingsFilename,
             params string[] otherAppsettingsFilenames)
         {
-            if (builder is null) throw new ArgumentNullException(nameof(builder));
-            if (options is null) throw new ArgumentNullException(nameof(options));
-            if (string.IsNullOrWhiteSpace(appSettingsFilename)) throw new ArgumentException("Cannot be null or white space.", nameof(appSettingsFilename));
-            if (otherAppsettingsFilenames is null) throw new ArgumentNullException(nameof(otherAppsettingsFilenames));
-            if (otherAppsettingsFilenames.Any(string.IsNullOrWhiteSpace)) throw new ArgumentException("Cannot have an element that is null or white space.", nameof(otherAppsettingsFilenames));
+            if (builder is null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
 
-            return builder.ConfigureAppConfiguration((context, config) =>
+            if (options is null)
+            {
+                throw new ArgumentNullException(nameof(options));
+            }
+
+            if (string.IsNullOrWhiteSpace(appSettingsFilename))
+            {
+                throw new ArgumentException("Cannot be null or white space.", nameof(appSettingsFilename));
+            }
+
+            if (otherAppsettingsFilenames is null)
+            {
+                throw new ArgumentNullException(nameof(otherAppsettingsFilenames));
+            }
+
+            if (otherAppsettingsFilenames.Any(string.IsNullOrWhiteSpace))
+            {
+                throw new ArgumentException("Cannot have an element that is null or white space.", nameof(otherAppsettingsFilenames));
+            }
+
+            return builder.ConfigureAppConfiguration((_, config) =>
             {
                 config.AddTestAppSettings(options, appSettingsFilename, otherAppsettingsFilenames);
             });
@@ -172,11 +206,13 @@ namespace DotNet.Sdk.Extensions.Testing.Configuration
                 testAppSettingsJsonConfigurationSourceIndex = config.Sources
                     .IndexOf(config.Sources.OfType<EnvironmentVariablesConfigurationSource>().FirstOrDefault());
             }
+
             if (testAppSettingsJsonConfigurationSourceIndex == -1)
             {
                 testAppSettingsJsonConfigurationSourceIndex = config.Sources
                     .IndexOf(config.Sources.OfType<CommandLineConfigurationSource>().FirstOrDefault());
             }
+
             if (testAppSettingsJsonConfigurationSourceIndex == -1)
             {
                 testAppSettingsJsonConfigurationSourceIndex = config.Sources.Count;
@@ -201,7 +237,7 @@ namespace DotNet.Sdk.Extensions.Testing.Configuration
                 {
                     var configSource = new JsonConfigurationSource
                     {
-                        Path = configPath, 
+                        Path = configPath,
                         Optional = false
                     };
                     configSource.ResolveFileProvider(); // this is needed because no file provider is explicitly set on the JsonConfigurationSource

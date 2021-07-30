@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Testing;
 
@@ -20,13 +20,20 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
             this WebApplicationFactory<T> webApplicationFactory,
             RunUntilPredicate predicate) where T : class
         {
-            if (webApplicationFactory is null) throw new ArgumentNullException(nameof(webApplicationFactory));
-            if (predicate is null) throw new ArgumentNullException(nameof(predicate));
+            if (webApplicationFactory is null)
+            {
+                throw new ArgumentNullException(nameof(webApplicationFactory));
+            }
 
-            RunUntilPredicateAsync predicateAsync = () => Task.FromResult(predicate());
-            return webApplicationFactory.RunUntilAsync(predicateAsync);
+            if (predicate is null)
+            {
+                throw new ArgumentNullException(nameof(predicate));
+            }
+
+            Task<bool> PredicateAsync() => Task.FromResult(predicate());
+            return webApplicationFactory.RunUntilAsync(PredicateAsync);
         }
-        
+
         /// <summary>
         /// Executes the host until the predicate or a timeout is met.
         /// </summary>
@@ -40,11 +47,18 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
             RunUntilPredicate predicate,
             Action<RunUntilOptions> configureOptions) where T : class
         {
-            if (webApplicationFactory is null) throw new ArgumentNullException(nameof(webApplicationFactory));
-            if (predicate is null) throw new ArgumentNullException(nameof(predicate));
+            if (webApplicationFactory is null)
+            {
+                throw new ArgumentNullException(nameof(webApplicationFactory));
+            }
 
-            RunUntilPredicateAsync predicateAsync = () => Task.FromResult(predicate());
-            return webApplicationFactory.RunUntilAsync(predicateAsync, configureOptions);
+            if (predicate is null)
+            {
+                throw new ArgumentNullException(nameof(predicate));
+            }
+
+            Task<bool> PredicateAsync() => Task.FromResult(predicate());
+            return webApplicationFactory.RunUntilAsync(PredicateAsync, configureOptions);
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 
 namespace DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker.Events
 {

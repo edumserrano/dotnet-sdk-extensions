@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
@@ -13,7 +13,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Retry.Extensions
         /// Adds an instance of <see cref="RetryOptions"/> to the <see cref="IServiceCollection"/>.
         /// </summary>
         /// <remarks>
-        /// Same as doing services.AddOptions for a type RetryOptions with a name where services is of type <see cref="IServiceCollection"/>. 
+        /// Same as doing services.AddOptions for a type RetryOptions with a name where services is of type <see cref="IServiceCollection"/>.
         /// This is an alias method to make it easier to add the options type required by the retry policy.
         /// </remarks>
         /// <param name="services">The <see cref="IServiceCollection"/> instance to add the options to.</param>
@@ -37,8 +37,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Retry.Extensions
             string name)
         {
             var optionsMonitor = serviceProvider.GetRequiredService<IOptionsMonitor<RetryOptions>>();
-            var options = optionsMonitor.Get(name);
-            return options;
+            return optionsMonitor.Get(name);
         }
     }
 }

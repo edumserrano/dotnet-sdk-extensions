@@ -1,4 +1,4 @@
-﻿using DotNet.Sdk.Extensions.Polly.Http.Timeout;
+using DotNet.Sdk.Extensions.Polly.Http.Timeout;
 using DotNet.Sdk.Extensions.Polly.Http.Timeout.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -24,13 +24,13 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
         [Fact]
         public void AddHttpClientTimeoutOptions()
         {
-            var optionsName = "timeoutOptions";
-            var timeoutInSecs = 3;
+            const string optionsName = "timeoutOptions";
+            const int timeoutInSecs = 3;
             var services = new ServiceCollection();
             services
                 .AddHttpClientTimeoutOptions(optionsName)
                 .Configure(options => options.TimeoutInSecs = timeoutInSecs);
-            using var serviceProvider = services.BuildServiceProvider();
+            var serviceProvider = services.BuildServiceProvider();
             var timeoutOptions = serviceProvider.GetHttpClientTimeoutOptions(optionsName);
             timeoutOptions.TimeoutInSecs.ShouldBe(timeoutInSecs);
         }

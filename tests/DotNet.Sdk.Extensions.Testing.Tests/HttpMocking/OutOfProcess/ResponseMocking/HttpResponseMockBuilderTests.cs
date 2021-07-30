@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.ResponseMocking;
 using Microsoft.AspNetCore.Http;
 using Shouldly;
@@ -60,7 +60,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess.ResponseM
         public void Respond3WithValidateArguments()
         {
             var builder = new HttpResponseMockBuilder();
-            var exception = Should.Throw<ArgumentNullException>(() => builder.RespondWith((HttpResponseMockHandlerAsyncDelegate)null!));
+            var exception = Should.Throw<ArgumentNullException>(() => builder.RespondWith(null!));
             exception.Message.ShouldBe("Value cannot be null. (Parameter 'handlerAsync')");
         }
 
@@ -71,8 +71,8 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess.ResponseM
         public void WhereCanOnlyBeDefinedOnce()
         {
             var builder = new HttpResponseMockBuilder();
-            builder.Where(message => false);
-            var exception = Should.Throw<InvalidOperationException>(() => builder.Where(message => true));
+            builder.Where(_ => false);
+            var exception = Should.Throw<InvalidOperationException>(() => builder.Where(_ => true));
             exception.Message.ShouldBe("HttpResponseMockBuilder.Where condition already configured.");
         }
 

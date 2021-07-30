@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Testing;
 
 namespace DotNet.Sdk.Extensions.Testing.HostedServices
 {    /// <summary>
-    /// Provides extension methods for the RunUntil method on WebApplicationFactory where the predicate is an async function.
-    /// </summary>
+     /// Provides extension methods for the RunUntil method on WebApplicationFactory where the predicate is an async function.
+     /// </summary>
     public static partial class RunUntilExtensions
     {
         /// <summary>
@@ -19,12 +19,15 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
             this WebApplicationFactory<T> webApplicationFactory,
             RunUntilPredicateAsync predicateAsync) where T : class
         {
-            if (webApplicationFactory is null) throw new ArgumentNullException(nameof(webApplicationFactory));
+            if (webApplicationFactory is null)
+            {
+                throw new ArgumentNullException(nameof(webApplicationFactory));
+            }
 
             var configureOptionsAction = new Action<RunUntilOptions>(DefaultConfigureOptionsDelegate);
             return webApplicationFactory.RunUntilAsync(predicateAsync, configureOptionsAction);
 
-            void DefaultConfigureOptionsDelegate(RunUntilOptions obj)
+            static void DefaultConfigureOptionsDelegate(RunUntilOptions _)
             {
                 // default configure options delegate == do nothing
                 // use default values of the RunUntilOptions
@@ -44,8 +47,15 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
             RunUntilPredicateAsync predicateAsync,
             Action<RunUntilOptions> configureOptions) where T : class
         {
-            if (webApplicationFactory is null) throw new ArgumentNullException(nameof(webApplicationFactory));
-            if (configureOptions is null) throw new ArgumentNullException(nameof(configureOptions));
+            if (webApplicationFactory is null)
+            {
+                throw new ArgumentNullException(nameof(webApplicationFactory));
+            }
+
+            if (configureOptions is null)
+            {
+                throw new ArgumentNullException(nameof(configureOptions));
+            }
 
             var defaultOptions = new RunUntilOptions();
             configureOptions(defaultOptions);

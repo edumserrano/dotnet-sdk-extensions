@@ -1,4 +1,4 @@
-﻿using DotNet.Sdk.Extensions.Testing.Configuration;
+using DotNet.Sdk.Extensions.Testing.Configuration;
 using Shouldly;
 using Xunit;
 

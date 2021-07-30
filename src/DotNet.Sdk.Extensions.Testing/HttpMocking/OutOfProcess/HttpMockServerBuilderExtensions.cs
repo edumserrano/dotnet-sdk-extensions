@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+using System;
+using Microsoft.Extensions.Logging;
 
 namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess
 {
@@ -15,6 +16,11 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess
         /// <returns>The <see cref="HttpMockServerBuilder"/> for chaining.</returns>
         public static HttpMockServerBuilder UseDefaultLogLevel(this HttpMockServerBuilder httpMockServerBuilder, LogLevel logLevel)
         {
+            if (httpMockServerBuilder == null)
+            {
+                throw new ArgumentNullException(nameof(httpMockServerBuilder));
+            }
+
             return httpMockServerBuilder.UseHostArgs("--Logging:LogLevel:Default", $"{logLevel}");
         }
     }

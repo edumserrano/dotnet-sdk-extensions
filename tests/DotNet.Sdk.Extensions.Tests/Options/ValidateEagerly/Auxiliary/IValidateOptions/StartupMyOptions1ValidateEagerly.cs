@@ -1,6 +1,6 @@
-﻿using DotNet.Sdk.Extensions.Options;
+using System.Diagnostics.CodeAnalysis;
+using DotNet.Sdk.Extensions.Options;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -8,11 +8,12 @@ using Microsoft.Extensions.Options;
 
 namespace DotNet.Sdk.Extensions.Tests.Options.ValidateEagerly.Auxiliary.IValidateOptions
 {
-    public class StartupMyOptions1ValidateEargerly
+    [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Ignore for Startup type classes.")]
+    public class StartupMyOptions1ValidateEagerly
     {
         private readonly IConfiguration _configuration;
 
-        public StartupMyOptions1ValidateEargerly(IConfiguration configuration)
+        public StartupMyOptions1ValidateEagerly(IConfiguration configuration)
         {
             _configuration = configuration;
         }
@@ -26,7 +27,7 @@ namespace DotNet.Sdk.Extensions.Tests.Options.ValidateEagerly.Auxiliary.IValidat
                 .ValidateEagerly();
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app)
         {
             app
                 .UseRouting()

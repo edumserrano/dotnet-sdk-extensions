@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
@@ -43,8 +43,8 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers
         public async Task NoMockDefined()
         {
             var handler = new TestHttpMessageHandler();
-            using var request = new HttpRequestMessage(HttpMethod.Get, "https://test.com");
-            using var httpMessageInvoker = new HttpMessageInvoker(handler);
+            var request = new HttpRequestMessage(HttpMethod.Get, "https://test.com");
+            var httpMessageInvoker = new HttpMessageInvoker(handler);
             var exception = await Should.ThrowAsync<InvalidOperationException>(httpMessageInvoker.SendAsync(request, CancellationToken.None));
             exception.Message.ShouldBe("No response mock defined for GET to https://test.com/.");
         }
@@ -53,7 +53,6 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers
         /// Tests that the <seealso cref="TestHttpMessageHandler"/> throws an exception if it gets executed
         /// but no mocks are executed because none match the HttpRequestMessage.
         /// </summary>
-        /// <returns></returns>
         [Fact]
         public async Task NoMockMatches()
         {
@@ -62,12 +61,12 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers
             handler.MockHttpResponse(builder =>
             {
                 builder
-                    .Where(httpRequestMessage => httpRequestMessage.RequestUri!.Host.Equals("microsoft"))
+                    .Where(httpRequestMessage => httpRequestMessage.RequestUri!.Host.Equals("microsoft", StringComparison.Ordinal))
                     .RespondWith(httpMockResponseMessage);
             });
 
-            using var request = new HttpRequestMessage(HttpMethod.Get, "https://test.com");
-            using var httpMessageInvoker = new HttpMessageInvoker(handler);
+            var request = new HttpRequestMessage(HttpMethod.Get, "https://test.com");
+            var httpMessageInvoker = new HttpMessageInvoker(handler);
             var exception = await Should.ThrowAsync<InvalidOperationException>(httpMessageInvoker.SendAsync(request, CancellationToken.None));
             exception.Message.ShouldBe("No response mock defined for GET to https://test.com/.");
         }
@@ -75,27 +74,26 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers
         /// <summary>
         /// Tests that the <seealso cref="TestHttpMessageHandler"/> returns the mocked HttpResponseMessage.
         /// In this test no predicate is defined which means the default "always true" predicate takes effect
-        /// and the mock is always returned. 
+        /// and the mock is always returned.
         /// Using <seealso cref="TestHttpMessageHandler.MockHttpResponse(HttpResponseMessageMock)"/>
         /// </summary>
         [Fact]
         public async Task DefaultPredicate1()
         {
-            using var httpMockResponseMessage = new HttpResponseMessage(HttpStatusCode.Created);
-            var builder = new HttpResponseMessageMockBuilder();
-            var httpResponseMessageMock = builder
+            var httpMockResponseMessage = new HttpResponseMessage(HttpStatusCode.Created);
+            var httpResponseMessageMock = new HttpResponseMessageMockBuilder()
                 .RespondWith(httpMockResponseMessage)
                 .Build();
             var handler = new TestHttpMessageHandler();
             handler.MockHttpResponse(httpResponseMessageMock);
 
-            using var request = new HttpRequestMessage(HttpMethod.Get, "https://test.com");
-            using var httpMessageInvoker = new HttpMessageInvoker(handler);
+            var request = new HttpRequestMessage(HttpMethod.Get, "https://test.com");
+            var httpMessageInvoker = new HttpMessageInvoker(handler);
             var httpResponseMessage = await httpMessageInvoker.SendAsync(request, CancellationToken.None);
 
             httpResponseMessage.StatusCode.ShouldBe(HttpStatusCode.Created);
         }
-        
+
         /// <summary>
         /// Tests that the <seealso cref="TestHttpMessageHandler"/> returns the mocked HttpResponseMessage.
         /// In this test no predicate is defined which means the default "always true" predicate takes effect
@@ -108,8 +106,8 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers
             var handler = new TestHttpMessageHandler();
             handler.MockHttpResponse(builder => builder.RespondWith(new HttpResponseMessage(HttpStatusCode.Created)));
 
-            using var request = new HttpRequestMessage(HttpMethod.Get, "https://test.com");
-            using var httpMessageInvoker = new HttpMessageInvoker(handler);
+            var request = new HttpRequestMessage(HttpMethod.Get, "https://test.com");
+            var httpMessageInvoker = new HttpMessageInvoker(handler);
             var httpResponseMessage = await httpMessageInvoker.SendAsync(request, CancellationToken.None);
 
             httpResponseMessage.StatusCode.ShouldBe(HttpStatusCode.Created);
@@ -122,22 +120,22 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers
         [Fact]
         public async Task FirstMatchWins()
         {
-            var handler = new TestHttpMessageHandler()
+            var handler = new TestHttpMessageHandler();
+            handler
                 .MockHttpResponse(builder =>
                 {
                     builder
-                        .Where(httpRequestMessage => httpRequestMessage.RequestUri!.Host.Equals("test.com"))
+                        .Where(httpRequestMessage => httpRequestMessage.RequestUri!.Host.Equals("test.com", StringComparison.Ordinal))
                         .RespondWith(new HttpResponseMessage(HttpStatusCode.BadRequest));
                 })
                 .MockHttpResponse(builder =>
                 {
                     builder
-                        .Where(httpRequestMessage => httpRequestMessage.RequestUri!.Host.Equals("test.com"))
+                        .Where(httpRequestMessage => httpRequestMessage.RequestUri!.Host.Equals("test.com", StringComparison.Ordinal))
                         .RespondWith(new HttpResponseMessage(HttpStatusCode.InternalServerError));
                 });
-
-            using var request = new HttpRequestMessage(HttpMethod.Get, "https://test.com");
-            using var httpMessageInvoker = new HttpMessageInvoker(handler);
+            var request = new HttpRequestMessage(HttpMethod.Get, "https://test.com");
+            var httpMessageInvoker = new HttpMessageInvoker(handler);
             var httpResponseMessage = await httpMessageInvoker.SendAsync(request, CancellationToken.None);
 
             httpResponseMessage.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
@@ -150,27 +148,28 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers
         [Fact]
         public async Task MultipleMocks()
         {
-            var handler = new TestHttpMessageHandler()
+            var handler = new TestHttpMessageHandler();
+            handler
                 .MockHttpResponse(builder =>
                 {
                     builder
-                        .Where(httpRequestMessage => httpRequestMessage.RequestUri!.Host.Equals("google.com"))
+                        .Where(httpRequestMessage => httpRequestMessage.RequestUri!.Host.Equals("google.com", StringComparison.Ordinal))
                         .RespondWith(new HttpResponseMessage(HttpStatusCode.BadRequest));
                 })
                 .MockHttpResponse(builder =>
                 {
                     builder
-                        .Where(httpRequestMessage => httpRequestMessage.RequestUri!.Host.Equals("microsoft.com"))
+                        .Where(httpRequestMessage => httpRequestMessage.RequestUri!.Host.Equals("microsoft.com", StringComparison.Ordinal))
                         .RespondWith(new HttpResponseMessage(HttpStatusCode.InternalServerError));
                 });
 
-            using var httpMessageInvoker = new HttpMessageInvoker(handler);
+            var httpMessageInvoker = new HttpMessageInvoker(handler);
 
-            using var request1 = new HttpRequestMessage(HttpMethod.Get, "https://google.com");
+            var request1 = new HttpRequestMessage(HttpMethod.Get, "https://google.com");
             var httpResponseMessage1 = await httpMessageInvoker.SendAsync(request1, CancellationToken.None);
             httpResponseMessage1.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
 
-            using var request2 = new HttpRequestMessage(HttpMethod.Get, "https://microsoft.com");
+            var request2 = new HttpRequestMessage(HttpMethod.Get, "https://microsoft.com");
             var httpResponseMessage2 = await httpMessageInvoker.SendAsync(request2, CancellationToken.None);
             httpResponseMessage2.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
         }
@@ -183,10 +182,10 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers
         [Fact]
         public async Task TimesOut()
         {
-            var handler = new TestHttpMessageHandler()
-                .MockHttpResponse(builder => builder.TimesOut(TimeSpan.FromMilliseconds(50)));
-            using var httpMessageInvoker = new HttpMessageInvoker(handler);
-            using var request = new HttpRequestMessage(HttpMethod.Get, "https://google.com");
+            var handler = new TestHttpMessageHandler();
+            handler.MockHttpResponse(builder => builder.TimesOut(TimeSpan.FromMilliseconds(50)));
+            var httpMessageInvoker = new HttpMessageInvoker(handler);
+            var request = new HttpRequestMessage(HttpMethod.Get, "https://google.com");
 
             // for some reason the exception returned by Should.ThrowAsync is missing the InnerException so
             // we are using the try/catch code as a workaround

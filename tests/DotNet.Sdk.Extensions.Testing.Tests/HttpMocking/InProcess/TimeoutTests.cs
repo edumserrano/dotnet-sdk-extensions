@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.InProcess;
 using DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess.Auxiliary.Timeout;
@@ -9,7 +9,7 @@ using Xunit;
 namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess
 {
     [Trait("Category", XUnitCategories.HttpMockingInProcess)]
-    public class TimeoutTests : IClassFixture<TimeoutHttpResponseMockingWebApplicationFactory>, IDisposable
+    public sealed class TimeoutTests : IClassFixture<TimeoutHttpResponseMockingWebApplicationFactory>, IDisposable
     {
         private readonly TimeoutHttpResponseMockingWebApplicationFactory _webApplicationFactory;
 
@@ -61,12 +61,15 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess
         }
 
         /// <summary>
+        /// <para>
         /// The setup for this sets up a named HttpClient "named-client-with-timeout" and with a configured timeout of 200ms.
         /// This tests that if we define a mock to timeout for an HttpClient with an existing timeout configuration then
         /// the lowest timeout will be triggered first.
-        ///
+        /// </para>
+        /// <para>
         /// In this test the timeout of 1 second defined on the mock is higher than the timeout of 200ms defined
         /// on the HttpClient.
+        /// </para>
         /// </summary>
         [Fact]
         public async Task TimeoutOnHttpClientWithTimeoutConfigured1()
@@ -107,12 +110,15 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess
         }
 
         /// <summary>
+        /// <para>
         /// The setup for this sets up a named HttpClient "named-client-with-timeout" and with a configured timeout of 200ms.
         /// This tests that if we define a mock to timeout for an HttpClient with an existing timeout configuration then
         /// the lowest timeout will be triggered first.
-        ///
+        /// </para>
+        /// <para>
         /// In this test the timeout of 1ms defined on the mock is lower than the timeout of 200ms defined
         /// on the HttpClient.
+        /// </para>
         /// </summary>
         [Fact]
         public async Task TimeoutOnHttpClientWithTimeoutConfigured2()
@@ -152,16 +158,19 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess
             expectedException.InnerException.Message.ShouldBe("A task was canceled.");
         }
 
-
         /// <summary>
+        /// <para>
         /// The setup for this test uses Polly to define a timeout policy for the named HttpClient "polly-named-client".
         /// The timeout for the HttpClient is set to 200ms and the HttpClient is invoked when doing a GET to /polly-named-client.
-        /// 
+        /// </para>
+        /// <para>
         /// This tests that if we define a mock to timeout for an HttpClient with an existing timeout configuration then
         /// the lowest timeout will be triggered first.
-        ///
+        /// </para>
+        /// <para>
         /// In this test the timeout of 1 second defined on the mock is higher than the timeout of 200ms defined
         /// on the HttpClient so Polly throws a TimeoutRejectedException when a timeout occurs.
+        /// </para>
         /// </summary>
         [Fact]
         public async Task TimeoutWithPolly()
@@ -186,14 +195,18 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess
         }
 
         /// <summary>
+        /// <para>
         /// The setup for this test uses Polly to define a timeout policy for the named HttpClient "polly-named-client".
         /// The timeout for the HttpClient is set to 200ms and the HttpClient is invoked when doing a GET to /polly-named-client.
-        ///
+        /// </para>
+        /// <para>
         /// This tests that if we define a mock to timeout for an HttpClient with an existing timeout configuration then
         /// the lowest timeout will be triggered first.
-        ///
+        /// </para>
+        /// <para>
         /// In this test the timeout of 1ms defined on the mock is lower than the timeout of 200ms defined
         /// on the HttpClient.
+        /// </para>
         /// </summary>
         [Fact]
         public async Task TimeoutWithPolly2()

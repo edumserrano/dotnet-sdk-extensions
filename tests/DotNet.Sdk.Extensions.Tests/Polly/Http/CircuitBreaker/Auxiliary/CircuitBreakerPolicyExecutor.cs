@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -13,7 +13,7 @@ using Polly.CircuitBreaker;
 
 namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
 {
-    public class CircuitBreakerPolicyExecutor : IAsyncDisposable
+    public sealed class CircuitBreakerPolicyExecutor : IAsyncDisposable
     {
         private readonly HttpClient _httpClient;
         private readonly CircuitBreakerOptions _circuitBreakerOptions;
@@ -33,23 +33,28 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
             _transientHttpStatusCodes = HttpStatusCodesExtensions.GetTransientHttpStatusCodes().ToList();
         }
 
-        public async Task TriggerFromExceptionAsync<TException>(Exception exception) where TException : Exception
+        public Task TriggerFromExceptionAsync<TException>(Exception exception) where TException : Exception
         {
+            if (exception == null)
+            {
+                throw new ArgumentNullException(nameof(exception));
+            }
+
             var requestPath = $"/circuit-breaker/exception/{exception.GetType().Name}";
             _testHttpMessageHandler.HandleException(requestPath, exception);
 
-            await TriggerCircuitBreakerFromExceptionAsync<TException>(requestPath);
+            return TriggerCircuitBreakerFromExceptionAsync<TException>(requestPath);
         }
 
-        public async Task TriggerFromTransientHttpStatusCodeAsync(HttpStatusCode httpStatusCode)
+        public Task TriggerFromTransientHttpStatusCodeAsync(HttpStatusCode httpStatusCode)
         {
             var handledRequestPath = _testHttpMessageHandler.HandleTransientHttpStatusCode(
                 requestPath: "/circuit-breaker/transient-http-status-code",
                 responseHttpStatusCode: httpStatusCode);
-            await TriggerCircuitBreakerFromTransientStatusCodeAsync(handledRequestPath, httpStatusCode);
+            return TriggerCircuitBreakerFromTransientStatusCodeAsync(handledRequestPath, httpStatusCode);
         }
 
-        public async Task WaitForResetAsync()
+        public async ValueTask WaitForResetAsync()
         {
             // wait for the duration of break so that the circuit goes into half open state
             await Task.Delay(TimeSpan.FromSeconds(_circuitBreakerOptions.DurationOfBreakInSecs + 0.05));
@@ -64,7 +69,6 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
             await Task.Delay(TimeSpan.FromSeconds(_circuitBreakerOptions.SamplingDurationInSecs + 0.05));
         }
 
-
         /// <summary>
         /// Asserts that the circuit breaker state is open/isolated by doing an HTTP request.
         /// If the circuit breaker state is not open/isolated this will throw an <see cref="InvalidOperationException"/>.
@@ -74,12 +78,15 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
         /// A <see cref="Task"/> that represents the conclusion of the assertion for the circuit breaker state.
         /// </returns>
         /// <remarks>
+        /// <para>
         /// The circuit breaker policy added is a wrapped policy which joins an
         /// <see cref="AsyncCircuitBreakerPolicy{TResult}"/> and a <see cref="CircuitBreakerCheckerAsyncPolicy{T}"/>.
-        /// 
+        /// </para>
+        /// <para>
         /// The <see cref="CircuitBreakerCheckerAsyncPolicy{T}"/> will check if the circuit is open/isolated and
         /// if so it will return <see cref="CircuitBrokenHttpResponseMessage"/> which is an http response message
         /// with 500 status code and some extra properties.
+        /// </para>
         /// </remarks>
         public async Task ShouldBeOpenAsync(string requestPath)
         {
@@ -97,11 +104,11 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
 
         private string HandleResetRequest()
         {
-            var handledRequestPath = "/circuit-breaker/reset";
+            const string handledRequestPath = "/circuit-breaker/reset";
             _testHttpMessageHandler.MockHttpResponse(builder =>
             {
                 builder
-                    .Where(httpRequestMessage => httpRequestMessage.RequestUri!.ToString().Contains(handledRequestPath))
+                    .Where(httpRequestMessage => httpRequestMessage.RequestUri!.ToString().Contains(handledRequestPath, StringComparison.OrdinalIgnoreCase))
                     .RespondWith(new HttpResponseMessage(HttpStatusCode.OK));
             });
             return handledRequestPath;
@@ -143,9 +150,9 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
             }
         }
 
-        public async ValueTask DisposeAsync()
+        public ValueTask DisposeAsync()
         {
-            await WaitForResetAsync();
+            return WaitForResetAsync();
         }
     }
 }

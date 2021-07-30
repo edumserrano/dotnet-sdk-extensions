@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Testing.HostedServices;
 using DotNet.Sdk.Extensions.Testing.Tests.HostedServices.Auxiliary;
@@ -47,8 +47,8 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
         public static TheoryData<HostedServicesWebApplicationFactory, RunUntilPredicateAsync, Action<RunUntilOptions>, Type, string> ValidateArgumentsWithOptionsData =>
             new TheoryData<HostedServicesWebApplicationFactory, RunUntilPredicateAsync, Action<RunUntilOptions>, Type, string>
             {
-                { null!, ()=>Task.FromResult(true), options => {} , typeof(ArgumentNullException), "Value cannot be null. (Parameter 'webApplicationFactory')" },
-                { new HostedServicesWebApplicationFactory(), null!, options => {}, typeof(ArgumentNullException), "Value cannot be null. (Parameter 'predicateAsync')" },
+                { null!, ()=>Task.FromResult(true), _ => {}, typeof(ArgumentNullException), "Value cannot be null. (Parameter 'webApplicationFactory')" },
+                { new HostedServicesWebApplicationFactory(), null!, _ => {}, typeof(ArgumentNullException), "Value cannot be null. (Parameter 'predicateAsync')" },
                 { new HostedServicesWebApplicationFactory(), ()=>Task.FromResult(true), null!, typeof(ArgumentNullException), "Value cannot be null. (Parameter 'configureOptions')" },
             };
 
@@ -85,9 +85,9 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
             calculator
                 .Sum(Arg.Any<int>(), Arg.Any<int>())
                 .Returns(1)
-                .AndDoes(info => ++callCount);
+                .AndDoes(_ => ++callCount);
 
-            using var webApplicationFactory = new HostedServicesWebApplicationFactory();
+            var webApplicationFactory = new HostedServicesWebApplicationFactory();
             await webApplicationFactory
                 .WithWebHostBuilder(builder =>
                 {
@@ -110,23 +110,8 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
         [Fact]
         public async Task TimeoutOption()
         {
-            var callCount = 0;
-            var calculator = Substitute.For<ICalculator>();
-            calculator
-                .Sum(Arg.Any<int>(), Arg.Any<int>())
-                .Returns(1)
-                .AndDoes(info => ++callCount);
-
-            using var webApplicationFactory = new HostedServicesWebApplicationFactory()
-                .WithWebHostBuilder(builder =>
-                {
-                    builder.ConfigureTestServices(services =>
-                    {
-                        services.AddSingleton(calculator);
-                    });
-                });
-
-            var runUntilTask = webApplicationFactory.RunUntilAsync(() => Task.FromResult(callCount >= 4), options => options.Timeout = TimeSpan.FromSeconds(1));
+            var webApplicationFactory = new HostedServicesWebApplicationFactory();
+            var runUntilTask = webApplicationFactory.RunUntilAsync(() => false /*run forever*/, options => options.Timeout = TimeSpan.FromSeconds(1));
             var exception = await Should.ThrowAsync<RunUntilException>(runUntilTask);
             exception.Message.ShouldBe("RunUntilExtensions.RunUntilAsync timed out after 00:00:01. This means the Host was shutdown before the RunUntilExtensions.RunUntilAsync predicate returned true. If that's what you intended, if you want to run the Host for a set period of time consider using RunUntilExtensions.RunUntilTimeoutAsync instead.");
         }
@@ -148,9 +133,9 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
             calculator
                 .Sum(Arg.Any<int>(), Arg.Any<int>())
                 .Returns(1)
-                .AndDoes(info => ++callCount);
+                .AndDoes(_ => ++callCount);
 
-            using var webApplicationFactory = new HostedServicesWebApplicationFactory()
+            var webApplicationFactory = new HostedServicesWebApplicationFactory()
                 .WithWebHostBuilder(builder =>
                 {
                     builder.ConfigureTestServices(services =>

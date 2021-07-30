@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -12,7 +12,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary
             return Enum
                 .GetValues(typeof(HttpStatusCode))
                 .Cast<HttpStatusCode>()
-                .Where(x=> x is>= HttpStatusCode.InternalServerError or HttpStatusCode.RequestTimeout);
+                .Where(x => x is >= HttpStatusCode.InternalServerError or HttpStatusCode.RequestTimeout);
         }
     }
 }

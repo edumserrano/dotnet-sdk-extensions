@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Hosting;
@@ -27,6 +27,11 @@ namespace DotNet.Sdk.Extensions.Testing.Configuration
         /// <returns>The <see cref="IHostBuilder"/> for chaining.</returns>
         public static IHostBuilder UseConfigurationValue(this IHostBuilder hostBuilder, string key, string value)
         {
+            if (hostBuilder is null)
+            {
+                throw new ArgumentNullException(nameof(hostBuilder));
+            }
+
             if (string.IsNullOrEmpty(key))
             {
                 throw new ArgumentException("Cannot be null or empty.", nameof(key));
@@ -37,7 +42,7 @@ namespace DotNet.Sdk.Extensions.Testing.Configuration
                 throw new ArgumentException("Cannot be null or empty.", nameof(value));
             }
 
-            return hostBuilder.ConfigureAppConfiguration((context, builder) =>
+            return hostBuilder.ConfigureAppConfiguration((_, builder) =>
             {
                 var memoryConfigurationSource = new MemoryConfigurationSource
                 {
@@ -82,7 +87,10 @@ namespace DotNet.Sdk.Extensions.Testing.Configuration
             string appSettingsFilename,
             params string[] otherAppsettingsFilenames)
         {
-            if (builder is null) throw new ArgumentNullException(nameof(builder));
+            if (builder is null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
 
             var options = new TestConfigurationOptions();
             return builder.AddTestAppSettings(options, appSettingsFilename, otherAppsettingsFilenames);
@@ -92,7 +100,7 @@ namespace DotNet.Sdk.Extensions.Testing.Configuration
         /// Clears loaded appsettings files by removing all <see cref="JsonConfigurationSource"/>
         /// from the <see cref="IHostBuilder"/> and adding instances of <see cref="JsonConfigurationSource"/> for
         /// the provided appsettings files.
-        /// </summary> 
+        /// </summary>
         /// <remarks>
         /// It also makes sure that the expected loading configuration behavior is preserved by having the
         /// <see cref="CommandLineConfigurationSource"/> last and the <see cref="EnvironmentVariablesConfigurationSource"/>
@@ -111,8 +119,15 @@ namespace DotNet.Sdk.Extensions.Testing.Configuration
             string appSettingsFilename,
             params string[] otherAppsettingsFilenames)
         {
-            if (builder is null) throw new ArgumentNullException(nameof(builder));
-            if (configureOptions is null) throw new ArgumentNullException(nameof(configureOptions));
+            if (builder is null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
+
+            if (configureOptions is null)
+            {
+                throw new ArgumentNullException(nameof(configureOptions));
+            }
 
             var options = new TestConfigurationOptions();
             configureOptions(options);
@@ -125,13 +140,32 @@ namespace DotNet.Sdk.Extensions.Testing.Configuration
             string appSettingsFilename,
             params string[] otherAppsettingsFilenames)
         {
-            if (builder is null) throw new ArgumentNullException(nameof(builder));
-            if (options is null) throw new ArgumentNullException(nameof(options));
-            if (string.IsNullOrWhiteSpace(appSettingsFilename)) throw new ArgumentException("Cannot be null or white space.", nameof(appSettingsFilename));
-            if (otherAppsettingsFilenames is null) throw new ArgumentNullException(nameof(otherAppsettingsFilenames));
-            if (otherAppsettingsFilenames.Any(string.IsNullOrWhiteSpace)) throw new ArgumentException("Cannot have an element that is null or white space.", nameof(otherAppsettingsFilenames));
+            if (builder is null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
 
-            return builder.ConfigureAppConfiguration((context, config) =>
+            if (options is null)
+            {
+                throw new ArgumentNullException(nameof(options));
+            }
+
+            if (string.IsNullOrWhiteSpace(appSettingsFilename))
+            {
+                throw new ArgumentException("Cannot be null or white space.", nameof(appSettingsFilename));
+            }
+
+            if (otherAppsettingsFilenames is null)
+            {
+                throw new ArgumentNullException(nameof(otherAppsettingsFilenames));
+            }
+
+            if (otherAppsettingsFilenames.Any(string.IsNullOrWhiteSpace))
+            {
+                throw new ArgumentException("Cannot have an element that is null or white space.", nameof(otherAppsettingsFilenames));
+            }
+
+            return builder.ConfigureAppConfiguration((_, config) =>
             {
                 config.AddTestAppSettings(options, appSettingsFilename, otherAppsettingsFilenames);
             });

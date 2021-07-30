@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -25,14 +25,14 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
             // a control test for the log level I'm only setting the log level for the source 'Microsoft.Hosting.Lifetime'
             // which is the source that outputs some logs on this test
             // LogLevel.None.ToString()
-            
-            await using var mock = new HttpMockServerBuilder()
-                .UseHostArgs("--Logging:LogLevel:Microsoft.Hosting.Lifetime", LogLevel.None.ToString())
+
+            await using var httpMockServer = new HttpMockServerBuilder()
+                .UseHostArgs("--Logging:LogLevel:Microsoft.Hosting.Lifetime", nameof(LogLevel.None))
                 .UseHttpResponseMocks()
                 .Build();
-            _ = await mock.StartAsync();
+            _ = await httpMockServer.StartAsync();
 
-            var configuration = mock.Host!.Services.GetRequiredService<IConfiguration>();
+            var configuration = httpMockServer.Host!.Services.GetRequiredService<IConfiguration>();
             configuration["Logging:LogLevel:Default"].ShouldBe(null);
         }
 
@@ -43,13 +43,13 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
         [Fact]
         public async Task UseDefaultLogLevel()
         {
-            await using var mock = new HttpMockServerBuilder()
+            await using var httpMockServer = new HttpMockServerBuilder()
                 .UseDefaultLogLevel(LogLevel.Critical)
                 .UseHttpResponseMocks()
                 .Build();
-            _ = await mock.StartAsync();
+            _ = await httpMockServer.StartAsync();
 
-            var configuration = mock.Host!.Services.GetRequiredService<IConfiguration>();
+            var configuration = httpMockServer.Host!.Services.GetRequiredService<IConfiguration>();
             configuration["Logging:LogLevel:Default"].ShouldBe("Critical");
         }
     }

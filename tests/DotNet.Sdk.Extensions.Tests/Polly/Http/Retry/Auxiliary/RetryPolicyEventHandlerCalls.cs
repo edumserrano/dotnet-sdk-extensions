@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using DotNet.Sdk.Extensions.Polly.Http.Retry.Events;
 
 namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Auxiliary
@@ -7,7 +7,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Auxiliary
     {
         public IList<RetryEvent> OnRetryAsyncCalls { get; } = new List<RetryEvent>();
 
-        public void AddOnRetryAsync(RetryEvent retryEvent)
+        public void AddOnRetry(RetryEvent retryEvent)
         {
             OnRetryAsyncCalls.Add(retryEvent);
         }

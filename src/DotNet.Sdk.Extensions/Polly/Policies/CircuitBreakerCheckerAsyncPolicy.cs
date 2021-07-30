@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Polly.Http.Fallback.FallbackHttpResponseMessages;
@@ -14,16 +14,16 @@ namespace DotNet.Sdk.Extensions.Polly.Policies
     /// <remarks>
     /// It allows keeping the same syntax between extension and non-extension methods because
     /// instead of doing <see cref="CircuitBreakerCheckerAsyncPolicy{T}.Create"/> it allows doing
-    /// <see cref="CircuitBreakerCheckerAsyncPolicy.Create{T}"/>
+    /// <see cref="Create{T}"/>
     /// </remarks>
-    public class CircuitBreakerCheckerAsyncPolicy
+    public static class CircuitBreakerCheckerAsyncPolicy
     {
         /// <summary>
-        /// Create a policy to to check if a circuit breaker is opened and avoid throwing an exception if the circuit is open/isolated. 
+        /// Create a policy to check if a circuit breaker is opened and avoid throwing an exception if the circuit is open/isolated.
         /// </summary>
         /// <remarks>
         /// If the state of the circuit breaker policy is open or isolated then the policy chain execution is short circuited and the
-        /// factory methods are invoked invoked to return a result.
+        /// factory methods are invoked to return a result.
         /// </remarks>
         /// <typeparam name="T">The type returned by the delegate to which the policy is applied to.</typeparam>
         /// <param name="circuitBreakerPolicy">The circuit breaker policy whose state will be checked.</param>
@@ -41,11 +41,11 @@ namespace DotNet.Sdk.Extensions.Polly.Policies
     /// Polly policy to check if a circuit breaker is opened and avoid throwing an exception if the circuit is open/isolated.
     /// </summary>
     /// <typeparam name="T">The return type of the delegate that the policy is applied to.</typeparam>
-    public class CircuitBreakerCheckerAsyncPolicy<T> : AsyncPolicy<T>
+    public sealed class CircuitBreakerCheckerAsyncPolicy<T> : AsyncPolicy<T>
     {
         private readonly ICircuitBreakerPolicy _circuitBreakerPolicy;
         private readonly Func<CircuitBreakerState, Context, CancellationToken, Task<T>> _fallbackValueFactory;
-        
+
         internal static CircuitBreakerCheckerAsyncPolicy<T> Create(
             ICircuitBreakerPolicy circuitBreakerPolicy,
             Func<CircuitBreakerState, Context, CancellationToken, Task<T>> fallbackValueFactory)
@@ -61,20 +61,36 @@ namespace DotNet.Sdk.Extensions.Polly.Policies
         }
 
         /// <inheritdoc />
-        protected override async Task<T> ImplementationAsync(
+        protected override Task<T> ImplementationAsync(
             Func<Context, CancellationToken, Task<T>> action,
             Context context,
             CancellationToken cancellationToken,
             bool continueOnCapturedContext)
         {
+            if (action is null)
+            {
+                throw new ArgumentNullException(nameof(action));
+            }
+
             // No point in trying to make the request because the circuit breaker will throw an exception.
             // Avoid exception as indicated by https://github.com/App-vNext/Polly/wiki/Circuit-Breaker#reducing-thrown-exceptions-when-the-circuit-is-broken
             return _circuitBreakerPolicy.CircuitState switch
             {
-                CircuitState.Isolated => await _fallbackValueFactory(CircuitBreakerState.Isolated, context, cancellationToken).ConfigureAwait(continueOnCapturedContext),
-                CircuitState.Open => await _fallbackValueFactory(CircuitBreakerState.Open, context, cancellationToken).ConfigureAwait(continueOnCapturedContext),
-                _ => await action(context, cancellationToken).ConfigureAwait(continueOnCapturedContext),
+                CircuitState.Isolated => ExecuteFallbackValueFactoryAsync(CircuitBreakerState.Isolated),
+                CircuitState.Open => ExecuteFallbackValueFactoryAsync(CircuitBreakerState.Open),
+                CircuitState.Closed or CircuitState.HalfOpen => ExecutePolicyActionAsync(),
+                _ => throw new InvalidOperationException($"Unexpected circuit state: {_circuitBreakerPolicy.CircuitState}.")
             };
+
+            async Task<T> ExecuteFallbackValueFactoryAsync(CircuitBreakerState circuitBreakerState)
+            {
+                return await _fallbackValueFactory(circuitBreakerState, context, cancellationToken).ConfigureAwait(continueOnCapturedContext);
+            }
+
+            async Task<T> ExecutePolicyActionAsync()
+            {
+                return await action(context, cancellationToken).ConfigureAwait(continueOnCapturedContext);
+            }
         }
     }
 }

@@ -1,32 +1,23 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 
 namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers
 {
-    /// <summary>
-    /// HTTP server to be used for tests when you want to mock out of process HTTP responses.
-    /// </summary>
-    public abstract class HttpMockServer : IAsyncDisposable
+    internal abstract class HttpMockServer : IHttpMockServer
     {
         private readonly HttpMockServerArgs _mockServerArgs;
 
-        internal HttpMockServer(HttpMockServerArgs mockServerArgs)
+        protected HttpMockServer(HttpMockServerArgs mockServerArgs)
         {
             _mockServerArgs = mockServerArgs ?? throw new ArgumentNullException(nameof(mockServerArgs));
         }
 
-        /// <summary>
-        /// The <see cref="IHost"/> used by the <see cref="HttpMockServer"/>
-        /// </summary>
         public IHost? Host { get; private set; }
 
-        /// <summary>
-        /// Starts the server.
-        /// </summary>
-        /// <returns>The URLs where the server is listening for requests.</returns>
         public async Task<List<HttpMockServerUrl>> StartAsync()
         {
             if (Host is not null)
@@ -42,15 +33,16 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers
                 .ToList();
         }
 
-        /// <summary>
-        /// Creates the <see cref="IHostBuilder"/> used by the <see cref="HttpMockServer"/> to create the <see cref="Host"/> used.
-        /// </summary>
-        /// <param name="args">The arguments passed in to the <see cref="IHostBuilder"/>.</param>
-        /// <returns>An instance of <see cref="IHostBuilder"/>.</returns>
+        public async ValueTask DisposeAsync()
+        {
+            await DisposeAsyncCore();
+            GC.SuppressFinalize(this);
+        }
+
         protected abstract IHostBuilder CreateHostBuilder(string[] args);
 
-        /// <inheritdoc />
-        public async ValueTask DisposeAsync()
+        [SuppressMessage("Style", "VSTHRD200:Use \"Async\" suffix for async methods", Justification = "Following guidance from https://docs.microsoft.com/en-us/dotnet/standard/garbage-collection/implementing-disposeasync")]
+        protected virtual async ValueTask DisposeAsyncCore()
         {
             Host?.StopAsync();
             switch (Host)
@@ -60,6 +52,8 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers
                     break;
                 case IDisposable disposable:
                     disposable.Dispose();
+                    break;
+                default:
                     break;
             }
         }

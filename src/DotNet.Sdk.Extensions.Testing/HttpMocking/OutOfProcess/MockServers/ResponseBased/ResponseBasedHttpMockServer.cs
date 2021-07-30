@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.ResponseMocking;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,7 +10,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers.Res
     {
         private readonly HttpResponseMocksProvider _httpResponseMocksProvider;
 
-        public ResponseBasedHttpMockServer(HttpMockServerArgs mockServerArgs, ICollection<HttpResponseMock> httpResponseMocks) : base(mockServerArgs)
+        public ResponseBasedHttpMockServer(HttpMockServerArgs mockServerArgs, IReadOnlyCollection<HttpResponseMock> httpResponseMocks) : base(mockServerArgs)
         {
             _httpResponseMocksProvider = new HttpResponseMocksProvider(httpResponseMocks);
         }
@@ -29,6 +29,4 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers.Res
                 });
         }
     }
-
-    
 }

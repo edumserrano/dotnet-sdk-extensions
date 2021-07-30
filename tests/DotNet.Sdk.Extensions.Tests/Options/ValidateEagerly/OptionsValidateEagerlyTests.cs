@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using DotNet.Sdk.Extensions.Options;
 using Shouldly;
 using Xunit;
@@ -21,7 +22,9 @@ namespace DotNet.Sdk.Extensions.Tests.Options.ValidateEagerly
             optionsBuilderArgumentNullException.Message.ShouldBe("Value cannot be null. (Parameter 'optionsBuilder')");
         }
 
-        public class SomeOptions
+        [SuppressMessage("Performance", "CA1812:Avoid uninstantiated internal classes", Justification = "Ignore for Options types. Used as generic type param.")]
+        // ReSharper disable once ClassNeverInstantiated.Local
+        private class SomeOptions
         {
             public string? Value { get; set; }
         }

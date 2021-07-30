@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,15 +12,19 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers
 
         public HttpMockServerArgs(List<HttpMockServerUrlDescriptor> urlDescriptors, List<string> hostArgs)
         {
-            if (hostArgs is null) throw new ArgumentNullException(nameof(hostArgs));
+            if (hostArgs is null)
+            {
+                throw new ArgumentNullException(nameof(hostArgs));
+            }
+
             HostArgs = CreateHostArgs(hostArgs, urlDescriptors);
         }
 
         public string[] HostArgs { get; }
 
-        private string[] CreateHostArgs(List<string> hostArgs, List<HttpMockServerUrlDescriptor> urlDescriptors)
+        private static string[] CreateHostArgs(List<string> hostArgs, List<HttpMockServerUrlDescriptor> urlDescriptors)
         {
-            if (hostArgs.Contains("--urls") && urlDescriptors.Any())
+            if (hostArgs.Contains("--urls") && urlDescriptors.Count > 0)
             {
                 throw new InvalidOperationException($"Competing URLs configuration. URls defined via both {nameof(HttpMockServerBuilder)}.{nameof(HttpMockServerBuilder.UseUrl)} method and by defining an '--urls' arg via {nameof(HttpMockServerBuilder)}.{nameof(HttpMockServerBuilder.UseHostArgs)}. Use only one of these methods to configure the URLs.");
             }
@@ -36,10 +40,10 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers
                 .Concat(new List<string> { "--urls", urls })
                 .ToArray();
         }
-        
-        private string BuildUrls(List<HttpMockServerUrlDescriptor> urlDescriptors)
+
+        private static string BuildUrls(List<HttpMockServerUrlDescriptor> urlDescriptors)
         {
-            if (urlDescriptors is null || !urlDescriptors.Any())
+            if (urlDescriptors?.Any() != true)
             {
                 return _defaultUrls;
             }
@@ -48,7 +52,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers
             foreach (var url in urlDescriptors.Select(x => x.ToString()))
             {
                 sb.Append(url);
-                sb.Append(";");
+                sb.Append(';');
             }
 
             return sb.ToString();

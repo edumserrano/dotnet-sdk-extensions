@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -15,7 +15,7 @@ using Xunit;
 namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess
 {
     [Trait("Category", XUnitCategories.HttpMockingInProcess)]
-    public class UseHttpMocksTests : IClassFixture<HttpResponseMockingWebApplicationFactory>, IDisposable
+    public sealed class UseHttpMocksTests : IClassFixture<HttpResponseMockingWebApplicationFactory>, IDisposable
     {
         private readonly HttpResponseMockingWebApplicationFactory _webApplicationFactory;
 
@@ -30,7 +30,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess
         [Fact]
         public void ValidateArguments()
         {
-            var webHostBuilderArgumentNullException = Should.Throw<ArgumentNullException>(() => HttpMockingWebHostBuilderExtensions.UseHttpMocks(null!, handlers => { }));
+            var webHostBuilderArgumentNullException = Should.Throw<ArgumentNullException>(() => HttpMockingWebHostBuilderExtensions.UseHttpMocks(null!, _ => { }));
             webHostBuilderArgumentNullException.Message.ShouldBe("Value cannot be null. (Parameter 'webHostBuilder')");
             var configureArgumentNullException = Should.Throw<ArgumentNullException>(() => new WebHostBuilder().UseHttpMocks((Action<HttpMessageHandlersReplacer>)null!));
             configureArgumentNullException.Message.ShouldBe("Value cannot be null. (Parameter 'configure')");
@@ -42,7 +42,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess
         [Fact]
         public void ValidateArguments2()
         {
-            var webHostBuilderArgumentNullException = Should.Throw<ArgumentNullException>(() => HttpMockingWebHostBuilderExtensions.UseHttpMocks(null!, handlers => { }));
+            var webHostBuilderArgumentNullException = Should.Throw<ArgumentNullException>(() => HttpMockingWebHostBuilderExtensions.UseHttpMocks(null!, _ => { }));
             webHostBuilderArgumentNullException.Message.ShouldBe("Value cannot be null. (Parameter 'webHostBuilder')");
             var configureArgumentNullException = Should.Throw<ArgumentNullException>(() => new WebHostBuilder().UseHttpMocks((HttpResponseMessageMockDescriptorBuilder[])null!));
             configureArgumentNullException.Message.ShouldBe("Value cannot be null. (Parameter 'httpResponseMessageMockDescriptorBuilders')");
@@ -64,7 +64,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess
                         {
                             httpResponseMessageBuilder
                                 .ForBasicClient()
-                                .RespondWith(httpRequestMessage => new HttpResponseMessage(HttpStatusCode.OK));
+                                .RespondWith(new HttpResponseMessage(HttpStatusCode.OK));
                         });
                     });
                 })
@@ -91,7 +91,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess
                         {
                             httpResponseMessageBuilder
                                 .ForNamedClient("my-named-client")
-                                .RespondWith(httpRequestMessage => new HttpResponseMessage(HttpStatusCode.OK));
+                                .RespondWith(new HttpResponseMessage(HttpStatusCode.OK));
                         });
                     });
                 })
@@ -118,7 +118,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess
                         {
                             httpResponseMessageBuilder
                                 .ForTypedClient<MyApiClient>()
-                                .RespondWith(httpRequestMessage => new HttpResponseMessage(HttpStatusCode.OK));
+                                .RespondWith(new HttpResponseMessage(HttpStatusCode.OK));
                         });
                     });
                 })
@@ -149,7 +149,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess
                         {
                             httpResponseMessageBuilder
                                 .ForTypedClient<MyApiClient>("my-typed-client")
-                                .RespondWith(httpRequestMessage => new HttpResponseMessage(HttpStatusCode.OK));
+                                .RespondWith(new HttpResponseMessage(HttpStatusCode.OK));
                         });
                     });
                 })
@@ -183,7 +183,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess
                             {
                                 httpResponseMessageBuilder
                                     .ForTypedClient<MyApiClient>("my-typed-client-2")
-                                    .RespondWith(httpRequestMessage => new HttpResponseMessage(HttpStatusCode.OK));
+                                    .RespondWith(new HttpResponseMessage(HttpStatusCode.OK));
                             });
                         });
                 })
@@ -203,12 +203,12 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess
         {
             var httpResponseMock1 = new HttpResponseMessageMockDescriptorBuilder();
             httpResponseMock1
-                    .ForBasicClient()
-                    .RespondWith(httpRequestMessage => new HttpResponseMessage(HttpStatusCode.OK));
+                .ForBasicClient()
+                .RespondWith(new HttpResponseMessage(HttpStatusCode.OK));
             var httpResponseMock2 = new HttpResponseMessageMockDescriptorBuilder();
             httpResponseMock2
                 .ForNamedClient("my-named-client")
-                .RespondWith(httpRequestMessage => new HttpResponseMessage(HttpStatusCode.OK));
+                .RespondWith(new HttpResponseMessage(HttpStatusCode.OK));
 
             var httpClient = _webApplicationFactory
                 .WithWebHostBuilder(webHostBuilder =>
@@ -240,11 +240,11 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess
             var httpResponseMock1 = new HttpResponseMessageMockDescriptorBuilder();
             httpResponseMock1
                 .ForBasicClient()
-                .RespondWith(httpRequestMessage => new HttpResponseMessage(HttpStatusCode.OK));
+                .RespondWith(new HttpResponseMessage(HttpStatusCode.OK));
             var httpResponseMock2 = new HttpResponseMessageMockDescriptorBuilder();
             httpResponseMock2
                 .ForNamedClient("my-named-client")
-                .RespondWith(httpRequestMessage => new HttpResponseMessage(HttpStatusCode.OK));
+                .RespondWith(new HttpResponseMessage(HttpStatusCode.OK));
 
             var httpClient = _webApplicationFactory
                 .WithWebHostBuilder(webHostBuilder =>
@@ -291,7 +291,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess
                             var valueFromConfiguration = configuration.GetValue<string>("SomeOption");
                             httpResponseMessageBuilder
                                 .ForBasicClient()
-                                .RespondWith(httpRequestMessage =>
+                                .RespondWith(_ =>
                                 {
                                     return valueFromConfiguration.Equals("my-option-value", StringComparison.OrdinalIgnoreCase)
                                         ? new HttpResponseMessage(HttpStatusCode.OK)

@@ -1,10 +1,10 @@
-﻿using System;
-using Xunit;
+using System;
 using DotNet.Sdk.Extensions.Polly;
 using Microsoft.Extensions.DependencyInjection;
 using Polly;
 using Polly.Registry;
 using Shouldly;
+using Xunit;
 
 namespace DotNet.Sdk.Extensions.Tests.Polly
 {
@@ -25,7 +25,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly
             {
                 Extensions.Polly.PollyServiceCollectionExtensions.AddPolicyRegistry(
                     services: null!,
-                    configureRegistry: (provider, pairs) => { });
+                    configureRegistry: (_, _) => { });
             });
             exception1.Message.ShouldBe("Value cannot be null. (Parameter 'services')");
 
@@ -46,8 +46,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly
         public void AddsRequiredPollyRegistryToContainer()
         {
             var services = new ServiceCollection();
-            services.AddPolicyRegistry((provider, policyRegistry) => { });
-            using var serviceProvider = services.BuildServiceProvider();
+            services.AddPolicyRegistry((_, _) => { });
+            var serviceProvider = services.BuildServiceProvider();
             var registry = serviceProvider.GetService<IPolicyRegistry<string>>();
             var readOnlyRegistry = serviceProvider.GetService<IReadOnlyPolicyRegistry<string>>();
             registry.ShouldNotBeNull();
@@ -62,15 +62,15 @@ namespace DotNet.Sdk.Extensions.Tests.Polly
         [Fact]
         public void ConfigureRegistry()
         {
-            var policyKey = "testPolicy";
+            const string policyKey = "testPolicy";
             var expectedPolicy = Policy.NoOp();
             var services = new ServiceCollection();
-            services.AddPolicyRegistry((provider, policyRegistry) =>
+            services.AddPolicyRegistry((_, policyRegistry) =>
             {
                 policyRegistry.Add(key: policyKey, expectedPolicy);
             });
 
-            using var serviceProvider = services.BuildServiceProvider();
+            var serviceProvider = services.BuildServiceProvider();
             var registry = serviceProvider.GetRequiredService<IReadOnlyPolicyRegistry<string>>();
             registry.TryGet<IsPolicy>(policyKey, out var policy).ShouldBeTrue();
             ReferenceEquals(expectedPolicy, policy).ShouldBeTrue();

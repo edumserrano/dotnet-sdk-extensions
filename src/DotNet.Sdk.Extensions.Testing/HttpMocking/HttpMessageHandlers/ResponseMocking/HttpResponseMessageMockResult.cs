@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Net.Http;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.ResponseMocking;
 
@@ -7,7 +7,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.Response
     /// <summary>
     /// Defines the properties that represent the outcome of executing a <see cref="HttpResponseMessageMock"/>.
     /// </summary>
-    public class HttpResponseMessageMockResult
+    public sealed class HttpResponseMessageMockResult
     {
         private HttpResponseMessage? _httpResponseMessage;
 
