@@ -7,6 +7,7 @@
     <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
     <!-- <TreatWarningsAsErrors Condition="'$(GITHUB_ACTIONS)' == 'true'">true</TreatWarningsAsErrors> -->
 
+    <!-- <TreatWarningsAsErrors>true</TreatWarningsAsErrors> -->
     <WarningsAsErrors>nullable;</WarningsAsErrors>
 
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
@@ -39,13 +40,13 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Roslynator.CodeAnalysis.Analyzers" Version="1.0.0">
+    <!-- <PackageReference Include="Roslynator.CodeAnalysis.Analyzers" Version="1.1.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Roslynator.Formatting.Analyzers" Version="1.2.0">
+    </PackageReference> -->
+    <!-- <PackageReference Include="Roslynator.Formatting.Analyzers" Version="1.2.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
+    </PackageReference> -->
   </ItemGroup>
 </Project>

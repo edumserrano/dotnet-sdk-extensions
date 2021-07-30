@@ -42,6 +42,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.InProcess.ResponseMocking
         /// Indicates that the <see cref="HttpResponseMessage"/> will be mocked for a typed instance of HttpClient.
         /// </summary>
         /// <typeparam name="TClient">The <see cref="Type"/> of the <see cref="HttpClient"/> produced via the <see cref="IHttpClientFactory"/>.</typeparam>
+        /// <param name="name">The name of the typed <see cref="HttpClient"/>.</param>
         /// <returns>An instance of <see cref="HttpResponseMessageMockBuilder"/> to customize the <see cref="HttpResponseMessage"/> to mock.</returns>
         public HttpResponseMessageMockBuilder ForTypedClient<TClient>(string name = "")
         {
