@@ -89,7 +89,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.InProcess.ResponseMocking
                 HttpClientMockTypes.Typed => HttpResponseMessageMockDescriptor.Typed(_httpClientType!, _httpClientName!, _httpResponseMockBuilder),
                 HttpClientMockTypes.Named => HttpResponseMessageMockDescriptor.Named(_httpClientName!, _httpResponseMockBuilder),
                 HttpClientMockTypes.Basic => HttpResponseMessageMockDescriptor.Basic(_httpResponseMockBuilder),
-                _ => throw new ArgumentOutOfRangeException(nameof(_httpClientMockType))
+                _ => throw new InvalidOperationException($"Unexpected value for {typeof(HttpClientMockTypes)}: {_httpClientMockType}")
             };
         }
 

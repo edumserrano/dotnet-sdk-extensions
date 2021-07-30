@@ -37,8 +37,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker.Extensions
             string name)
         {
             var optionsMonitor = serviceProvider.GetRequiredService<IOptionsMonitor<CircuitBreakerOptions>>();
-            var options = optionsMonitor.Get(name);
-            return options;
+            return optionsMonitor.Get(name);
         }
     }
 }

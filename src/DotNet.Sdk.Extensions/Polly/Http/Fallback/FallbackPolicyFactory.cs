@@ -58,7 +58,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Fallback
                         {
                             IsolatedCircuitException => new CircuitBrokenHttpResponseMessage(CircuitBreakerState.Isolated, exception),
                             BrokenCircuitException => new CircuitBrokenHttpResponseMessage(CircuitBreakerState.Open, exception),
-                            _ => throw new ArgumentOutOfRangeException(nameof(delegateResult), $"FallbackPolicyFactory: unexpected exception of type {delegateResult.Exception.GetType()}")
+                            _ => throw new InvalidOperationException($"Unexpected circuit breaker exception type: {delegateResult.Exception.GetType()}")
                         };
                         return Task.FromResult<HttpResponseMessage>(response);
                     },

@@ -9,7 +9,6 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.ResponseMocking
     /// </summary>
     /// <param name="httpRequest">The <see cref="HttpRequest"/> to be executed by the <see cref="HttpResponseMock"/>.</param>
     /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
-    /// <returns></returns>
     public delegate Task<bool> HttpResponseMockPredicateAsyncDelegate(HttpRequest httpRequest, CancellationToken cancellationToken);
 
     /// <summary>

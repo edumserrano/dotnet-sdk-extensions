@@ -61,7 +61,7 @@ namespace DotNet.Sdk.Extensions.Polly.Policies
         }
 
         /// <inheritdoc />
-        protected override async Task<T> ImplementationAsync(
+        protected override Task<T> ImplementationAsync(
             Func<Context, CancellationToken, Task<T>> action,
             Context context,
             CancellationToken cancellationToken,
@@ -76,22 +76,20 @@ namespace DotNet.Sdk.Extensions.Polly.Policies
             // Avoid exception as indicated by https://github.com/App-vNext/Polly/wiki/Circuit-Breaker#reducing-thrown-exceptions-when-the-circuit-is-broken
             return _circuitBreakerPolicy.CircuitState switch
             {
-                CircuitState.Isolated => await ExecuteFallbackValueFactoryAsync(CircuitBreakerState.Isolated),
-                CircuitState.Open => await ExecuteFallbackValueFactoryAsync(CircuitBreakerState.Open),
-                CircuitState.Closed or CircuitState.HalfOpen => await ExecutePolicyActionAsync(),
+                CircuitState.Isolated => ExecuteFallbackValueFactoryAsync(CircuitBreakerState.Isolated),
+                CircuitState.Open => ExecuteFallbackValueFactoryAsync(CircuitBreakerState.Open),
+                CircuitState.Closed or CircuitState.HalfOpen => ExecutePolicyActionAsync(),
                 _ => throw new InvalidOperationException($"Unexpected circuit state: {_circuitBreakerPolicy.CircuitState}.")
             };
 
             async Task<T> ExecuteFallbackValueFactoryAsync(CircuitBreakerState circuitBreakerState)
             {
-                var result = await _fallbackValueFactory(circuitBreakerState, context, cancellationToken).ConfigureAwait(continueOnCapturedContext);
-                return result;
+                return await _fallbackValueFactory(circuitBreakerState, context, cancellationToken).ConfigureAwait(continueOnCapturedContext);
             }
 
             async Task<T> ExecutePolicyActionAsync()
             {
-                var result = await action(context, cancellationToken).ConfigureAwait(continueOnCapturedContext);
-                return result;
+                return await action(context, cancellationToken).ConfigureAwait(continueOnCapturedContext);
             }
         }
     }

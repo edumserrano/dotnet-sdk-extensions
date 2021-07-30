@@ -37,8 +37,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Timeout.Extensions
             string name)
         {
             var optionsMonitor = serviceProvider.GetRequiredService<IOptionsMonitor<TimeoutOptions>>();
-            var options = optionsMonitor.Get(name);
-            return options;
+            return optionsMonitor.Get(name);
         }
     }
 }
