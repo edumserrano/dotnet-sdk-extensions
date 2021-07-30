@@ -96,10 +96,19 @@ dotnet_diagnostic.RCS1021.severity = none         # RCS1021: Convert lambda expr
 dotnet_diagnostic.RCS1070.severity = none         # RCS1070: Remove redundant default switch section
 dotnet_diagnostic.RCS1080.severity = warning      # RCS1080: Use 'Count/Length' property instead of 'Any' method
 dotnet_diagnostic.RCS1090.severity = none         # RCS1090: Add call to 'ConfigureAwait' (or vice versa)
+dotnet_diagnostic.RCS1139.severity = warning      # RCS1139: Add summary element to documentation comment
+
+dotnet_diagnostic.RCS1140.severity = none      # RCS1140: Add exception to documentation comment
+dotnet_diagnostic.RCS1141.severity = none      # RCS1141: Add 'param' element to documentation comment
+
+dotnet_diagnostic.RCS1142.severity = warning      # RCS1142: Add 'typeparam' element to documentation comment
 dotnet_diagnostic.RCS1194.severity = none         # RCS1194: Implement exception constructors
 dotnet_diagnostic.RCS1163.severity = warning      # RCS1163: Unused parameter
+dotnet_diagnostic.RCS1168.severity = warning      # RCS1168: Parameter name differs from base name
 dotnet_diagnostic.RCS1224.severity = none         # RCS1224: Make method an extension method
 dotnet_diagnostic.RCS1226.severity = warning      # RCS1226: Add paragraph to documentation comment
+dotnet_diagnostic.RCS1228.severity = warning      # RCS1228: Unused element in documentation comment
+dotnet_diagnostic.RCS1232.severity = warning      # RCS1232: Order elements in documentation comment
 dotnet_diagnostic.RCS1243.severity = warning      # RCS1243: Duplicate word in a comment
 
 dotnet_diagnostic.RCS0001.severity = warning      # RCS0001: Add empty line after embedded statement
@@ -127,14 +136,7 @@ dotnet_diagnostic.RCS0055.severity = warning      # RCS0055: Fix formatting of a
 
 
 
-dotnet_diagnostic.RCS1139.severity = warning      # RCS1139: Add summary element to documentation comment
-dotnet_diagnostic.RCS1140.severity = none      # RCS1140: Add exception to documentation comment
-dotnet_diagnostic.RCS1141.severity = none      # RCS1141: Add 'param' element to documentation comment
-dotnet_diagnostic.RCS1142.severity = none      # RCS1142: Add 'typeparam' element to documentation comment
 dotnet_diagnostic.RCS1124.severity = none      # RCS1124: Inline local variable
-dotnet_diagnostic.RCS1228.severity = none      # RCS1228: Unused element in documentation comment
-dotnet_diagnostic.RCS1232.severity = none      # RCS1232: Order elements in documentation comment
-dotnet_diagnostic.RCS1168.severity = none      # RCS1168: Parameter name differs from base name
 
 
 

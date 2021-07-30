@@ -53,7 +53,6 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers
         /// Tests that the <seealso cref="TestHttpMessageHandler"/> throws an exception if it gets executed
         /// but no mocks are executed because none match the HttpRequestMessage.
         /// </summary>
-        /// <returns></returns>
         [Fact]
         public async Task NoMockMatches()
         {

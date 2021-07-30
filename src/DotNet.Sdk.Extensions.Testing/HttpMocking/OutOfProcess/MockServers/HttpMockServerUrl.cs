@@ -18,24 +18,23 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers
         }
 
         /// <summary>
-        /// The <see cref="HttpScheme"/> part of the URL.
+        /// Gets the <see cref="HttpScheme"/> part of the URL.
         /// </summary>
         public HttpScheme Scheme { get; }
 
         /// <summary>
-        /// The host part of the URL.
+        /// Gets the host part of the URL.
         /// </summary>
         public string Host { get; }
 
         /// <summary>
-        /// The port part of the URL.
+        /// Gets the port part of the URL.
         /// </summary>
         public int Port { get; }
 
         /// <summary>
         /// Returns the string representation of the URL.
         /// </summary>
-        /// <returns></returns>
         public override string ToString() => _url;
 
         /// <summary>

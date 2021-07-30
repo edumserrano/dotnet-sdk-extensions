@@ -30,18 +30,18 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers.Res
             _httpResponseMocksProvider = httpResponseMocksProvider ?? throw new ArgumentNullException(nameof(httpResponseMocksProvider));
         }
 
-        public async Task InvokeAsync(HttpContext httpContext, RequestDelegate next)
+        public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
             foreach (var httpResponseMock in _httpResponseMocksProvider.HttpResponseMocks)
             {
-                var result = await httpResponseMock.ExecuteAsync(httpContext);
+                var result = await httpResponseMock.ExecuteAsync(context);
                 if (result == HttpResponseMockResults.Executed)
                 {
                     return;
                 }
             }
 
-            await next(httpContext);
+            await next(context);
         }
     }
 }

@@ -22,10 +22,10 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers.Res
     [SuppressMessage("Performance", "CA1812:Avoid uninstantiated internal classes", Justification = "Ignore for IMiddleware implementations. Used as generic type param.")]
     internal class DefaultResponseMiddleware : IMiddleware
     {
-        public Task InvokeAsync(HttpContext httpContext, RequestDelegate next)
+        public Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
-            httpContext.Response.StatusCode = StatusCodes.Status501NotImplemented;
-            return httpContext.Response.WriteAsync("Request did not match any of the provided mocks.");
+            context.Response.StatusCode = StatusCodes.Status501NotImplemented;
+            return context.Response.WriteAsync("Request did not match any of the provided mocks.");
         }
     }
 }
