@@ -93,11 +93,11 @@ dotnet_diagnostic.VSTHRD111.severity = none         # VSTHRD111 Use .ConfigureAw
 # See https://github.com/JosefPihrt/Roslynator/blob/master/src/Analyzers/README.md
 [*.cs]
 dotnet_diagnostic.RCS1021.severity = none         # RCS1021: Convert lambda expression body to expression-body
+dotnet_diagnostic.RCS1080.severity = warning      # RCS1080: Use 'Count/Length' property instead of 'Any' method
 dotnet_diagnostic.RCS1090.severity = none         # RCS1090: Add call to 'ConfigureAwait' (or vice versa)
 dotnet_diagnostic.RCS1224.severity = none         # RCS1224: Make method an extension method
 dotnet_diagnostic.RCS1194.severity = none         # RCS1194: Implement exception constructors
-
-
+dotnet_diagnostic.RCS1163.severity = warning      # RCS1163: Unused parameter
 
 
 ##########################################
@@ -258,9 +258,9 @@ dotnet_diagnostic.IDE0079.severity = warning
 # C# Unnecessary code rules
 [*.{cs,csx,cake}]
 csharp_style_unused_value_expression_statement_preference = discard_variable:silent
-dotnet_diagnostic.IDE0058.severity = silent
+dotnet_diagnostic.IDE0058.severity = silent     # Remove unnecessary expression value (IDE0058)
 csharp_style_unused_value_assignment_preference = discard_variable:silent
-dotnet_diagnostic.IDE0059.severity = silent
+dotnet_diagnostic.IDE0059.severity = silent     # Remove unnecessary value assignment (IDE0059)
 
 ##########################################
 # Formatting Rules

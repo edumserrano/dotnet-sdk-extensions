@@ -41,7 +41,7 @@ namespace DotNet.Sdk.Extensions.Polly.Policies
     /// Polly policy to check if a circuit breaker is opened and avoid throwing an exception if the circuit is open/isolated.
     /// </summary>
     /// <typeparam name="T">The return type of the delegate that the policy is applied to.</typeparam>
-    public class CircuitBreakerCheckerAsyncPolicy<T> : AsyncPolicy<T>
+    public sealed class CircuitBreakerCheckerAsyncPolicy<T> : AsyncPolicy<T>
     {
         private readonly ICircuitBreakerPolicy _circuitBreakerPolicy;
         private readonly Func<CircuitBreakerState, Context, CancellationToken, Task<T>> _fallbackValueFactory;
