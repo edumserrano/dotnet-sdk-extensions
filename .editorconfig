@@ -80,9 +80,7 @@ indent_style = tab
 
 [*.cs]
 # Default Severity for all .NET Code Style rules below
-dotnet_analyzer_diagnostic.severity = warning
-
-
+# dotnet_analyzer_diagnostic.severity = warning
 
 # Rules for Microsoft.VisualStudio.Threading.Analyzers
 # See https://github.com/microsoft/vs-threading/blob/main/doc/analyzers/index.md
