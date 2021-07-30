@@ -1,4 +1,4 @@
-﻿using System.Net.Http;
+using System.Net.Http;
 using DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker;
 using DotNet.Sdk.Extensions.Polly.Http.Timeout;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers;

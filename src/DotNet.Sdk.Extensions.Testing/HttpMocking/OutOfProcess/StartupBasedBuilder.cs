@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers.StartupBased;
 

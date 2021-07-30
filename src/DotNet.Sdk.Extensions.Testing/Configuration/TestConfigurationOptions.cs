@@ -1,4 +1,4 @@
-﻿namespace DotNet.Sdk.Extensions.Testing.Configuration
+namespace DotNet.Sdk.Extensions.Testing.Configuration
 {
     /// <summary>
     /// Options to configure the appsettings when using <see cref="TestConfigurationBuilderExtensions.AddTestAppSettings(Microsoft.AspNetCore.Hosting.IWebHostBuilder,string,string[])"/>

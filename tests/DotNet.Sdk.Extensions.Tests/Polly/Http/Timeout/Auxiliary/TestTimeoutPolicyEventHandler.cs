@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Polly.Http.Timeout.Events;
 
 namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Auxiliary

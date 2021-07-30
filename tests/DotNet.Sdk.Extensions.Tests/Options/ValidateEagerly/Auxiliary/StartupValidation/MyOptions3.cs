@@ -1,4 +1,4 @@
-﻿namespace DotNet.Sdk.Extensions.Tests.Options.ValidateEagerly.Auxiliary.StartupValidation
+namespace DotNet.Sdk.Extensions.Tests.Options.ValidateEagerly.Auxiliary.StartupValidation
 {
     public class MyOptions3
     {

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Net.Http;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.InProcess.ResponseMocking;
 using Microsoft.AspNetCore.Hosting;

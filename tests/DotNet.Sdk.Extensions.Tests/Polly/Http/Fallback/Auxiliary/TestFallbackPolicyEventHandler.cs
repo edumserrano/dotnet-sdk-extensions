@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Polly.Http.Fallback.Events;
 
 namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Fallback.Auxiliary

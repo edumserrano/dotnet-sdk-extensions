@@ -1,4 +1,4 @@
-﻿namespace DotNet.Sdk.Extensions.Testing.HttpMocking.InProcess.ResponseMocking
+namespace DotNet.Sdk.Extensions.Testing.HttpMocking.InProcess.ResponseMocking
 {
     internal enum HttpResponseMessageMockTypes
     {

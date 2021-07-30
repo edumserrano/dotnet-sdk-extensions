@@ -1,4 +1,4 @@
-﻿using DotNet.Sdk.Extensions.Polly.Http.Timeout;
+using DotNet.Sdk.Extensions.Polly.Http.Timeout;
 using DotNet.Sdk.Extensions.Polly.Http.Timeout.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;

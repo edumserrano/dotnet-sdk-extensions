@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers;
 
 namespace DotNet.Sdk.Extensions.Testing.HttpMocking.InProcess.ResponseMocking

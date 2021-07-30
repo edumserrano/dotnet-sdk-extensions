@@ -24,7 +24,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers
 
         private static string[] CreateHostArgs(List<string> hostArgs, List<HttpMockServerUrlDescriptor> urlDescriptors)
         {
-            if (hostArgs.Contains("--urls") && urlDescriptors.Any())
+            if (hostArgs.Contains("--urls") && urlDescriptors.Count > 0)
             {
                 throw new InvalidOperationException($"Competing URLs configuration. URls defined via both {nameof(HttpMockServerBuilder)}.{nameof(HttpMockServerBuilder.UseUrl)} method and by defining an '--urls' arg via {nameof(HttpMockServerBuilder)}.{nameof(HttpMockServerBuilder.UseHostArgs)}. Use only one of these methods to configure the URLs.");
             }

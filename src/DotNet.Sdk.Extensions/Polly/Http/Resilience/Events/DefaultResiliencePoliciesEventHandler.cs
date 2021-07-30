@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker.Events;
 using DotNet.Sdk.Extensions.Polly.Http.Fallback.Events;
 using DotNet.Sdk.Extensions.Polly.Http.Retry.Events;

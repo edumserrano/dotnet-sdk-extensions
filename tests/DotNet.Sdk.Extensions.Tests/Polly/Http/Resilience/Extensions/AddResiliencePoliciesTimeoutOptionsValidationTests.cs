@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using DotNet.Sdk.Extensions.Polly.Http.Resilience;
 using DotNet.Sdk.Extensions.Polly.Http.Resilience.Extensions;
 using DotNet.Sdk.Extensions.Polly.Http.Timeout;
