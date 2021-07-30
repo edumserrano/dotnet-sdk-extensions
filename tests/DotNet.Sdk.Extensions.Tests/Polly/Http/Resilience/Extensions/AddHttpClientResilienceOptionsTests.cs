@@ -1,4 +1,3 @@
-using System;
 using DotNet.Sdk.Extensions.Polly.Http.Resilience;
 using DotNet.Sdk.Extensions.Polly.Http.Resilience.Extensions;
 using Microsoft.Extensions.DependencyInjection;
@@ -63,11 +62,6 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
         [Fact]
         public void ResilienceOptionsTest1()
         {
-            var a = DateTime.UtcNow.Day;
-            if (a == 2)
-            {
-            }
-
             var options = new ResilienceOptions();
             options.EnableFallbackPolicy.ShouldBeTrue();
             options.EnableCircuitBreakerPolicy.ShouldBeTrue();

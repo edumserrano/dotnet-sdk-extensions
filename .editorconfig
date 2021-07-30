@@ -115,6 +115,7 @@ dotnet_diagnostic.RCS0003.severity = warning      # RCS0003: Add empty line afte
 dotnet_diagnostic.RCS0008.severity = warning      # RCS0008: Add empty line between block and statement
 dotnet_diagnostic.RCS0010.severity = warning      # RCS0010: Add empty line between declarations
 dotnet_diagnostic.RCS0021.severity = warning      # RCS0021: Add newline after opening brace of block
+dotnet_diagnostic.RCS0022.severity = warning      # RCS0022: Add newline after opening brace of empty block
 dotnet_diagnostic.RCS0023.severity = warning      # RCS0023: Add newline after opening brace of type declaration
 dotnet_diagnostic.RCS0024.severity = warning      # RCS0024: Add newline after switch label
 dotnet_diagnostic.RCS0025.severity = warning      # RCS0025: Add newline before accessor of full property

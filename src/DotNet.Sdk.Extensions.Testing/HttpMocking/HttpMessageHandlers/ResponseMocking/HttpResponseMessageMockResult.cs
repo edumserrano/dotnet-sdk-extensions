@@ -11,7 +11,9 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.Response
     {
         private HttpResponseMessage? _httpResponseMessage;
 
-        private HttpResponseMessageMockResult() { }
+        private HttpResponseMessageMockResult()
+        {
+        }
 
         /// <summary>
         /// The result of executing the <see cref="HttpResponseMessageMock"/>.
