@@ -62,7 +62,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess
         /// Creates an <see cref="HttpMockServer"/> instance.
         /// </summary>
         /// <returns>The <see cref="HttpMockServer"/> instance.</returns>
-        public HttpMockServer Build()
+        public IHttpMockServer Build()
         {
             return new ResponseBasedHttpMockServer(_mockServerArgs, _httpResponseMocks);
         }

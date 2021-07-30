@@ -10,7 +10,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers.Res
     {
         private readonly HttpResponseMocksProvider _httpResponseMocksProvider;
 
-        public ResponseBasedHttpMockServer(HttpMockServerArgs mockServerArgs, ICollection<HttpResponseMock> httpResponseMocks) : base(mockServerArgs)
+        public ResponseBasedHttpMockServer(HttpMockServerArgs mockServerArgs, IReadOnlyCollection<HttpResponseMock> httpResponseMocks) : base(mockServerArgs)
         {
             _httpResponseMocksProvider = new HttpResponseMocksProvider(httpResponseMocks);
         }
