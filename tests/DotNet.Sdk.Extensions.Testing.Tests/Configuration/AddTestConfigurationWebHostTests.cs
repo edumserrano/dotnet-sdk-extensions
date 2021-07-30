@@ -29,7 +29,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         {
             using var webHost = WebHost
                 .CreateDefaultBuilder()
-                .Configure((context, applicationBuilder) =>
+                .Configure((_, _) =>
                 {
                     // this is required just to provide a configuration for the webhost
                     // or else it fails when calling webHostBuilder.Build()
@@ -80,7 +80,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         public static TheoryData<IWebHostBuilder, Action<TestConfigurationOptions>, string, string[], Type, string> ValidateArguments2Data =>
             new TheoryData<IWebHostBuilder, Action<TestConfigurationOptions>, string, string[], Type, string>
             {
-                { null!, options => { }, "some-appsettings", Array.Empty<string>(), typeof(ArgumentNullException), "Value cannot be null. (Parameter 'builder')" },
+                { null!, _ => { }, "some-appsettings", Array.Empty<string>(), typeof(ArgumentNullException), "Value cannot be null. (Parameter 'builder')" },
                 { new WebHostBuilder(), null!, "some-appsettings", Array.Empty<string>(), typeof(ArgumentNullException), "Value cannot be null. (Parameter 'configureOptions')" }
             };
 
@@ -116,7 +116,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         {
             using var webHost = WebHost
                 .CreateDefaultBuilder()
-                .Configure((context, applicationBuilder) =>
+                .Configure((_, _) =>
                 {
                     // this is required just to provide a configuration for the webhost
                     // or else it fails when calling webHostBuilder.Build()
@@ -141,7 +141,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         {
             using var webHost = WebHost
                 .CreateDefaultBuilder()
-                .Configure((context, applicationBuilder) =>
+                .Configure((_, _) =>
                 {
                     // this is required just to provide a configuration for the webhost
                     // or else it fails when calling webHostBuilder.Build()
@@ -168,7 +168,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         {
             using var webHost = WebHost
                 .CreateDefaultBuilder()
-                .Configure((context, applicationBuilder) =>
+                .Configure((_, _) =>
                 {
                     // this is required just to provide a configuration for the webhost
                     // or else it fails when calling webHostBuilder.Build()
@@ -193,7 +193,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         {
             using var webHost = WebHost
                 .CreateDefaultBuilder()
-                .Configure((context, applicationBuilder) =>
+                .Configure((_, _) =>
                 {
                     // this is required just to provide a configuration for the webhost
                     // or else it fails when calling webHostBuilder.Build()
@@ -222,13 +222,13 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         {
             using var webHost = WebHost
                 .CreateDefaultBuilder()
-                .ConfigureAppConfiguration((context, builder) =>
+                .ConfigureAppConfiguration((_, builder) =>
                 {
                     // The default builder will add an EnvironmentVariablesConfigurationProvider.
                     // For this test I also need to have a CommandLineConfigurationProvider so the next line takes care of that.
                     builder.AddCommandLine(Array.Empty<string>());
                 })
-                .Configure((context, applicationBuilder) =>
+                .Configure((_, _) =>
                 {
                     // this is required just to provide a configuration for the webhost
                     // or else it fails when calling webHostBuilder.Build()
@@ -254,7 +254,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         {
             using var webHost = WebHost
                 .CreateDefaultBuilder()
-                .ConfigureAppConfiguration((context, builder) =>
+                .ConfigureAppConfiguration((_, builder) =>
                 {
                     // The default builder will add an EnvironmentVariablesConfigurationProvider.
                     // For this test I also need to have a CommandLineConfigurationProvider so the next line takes care of that.
@@ -264,7 +264,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
                         .ToList()
                         .ForEach(source => builder.Sources.Remove(source));
                 })
-                .Configure((context, applicationBuilder) =>
+                .Configure((_, _) =>
                 {
                     // this is required just to provide a configuration for the webhost
                     // or else it fails when calling webHostBuilder.Build()
@@ -290,7 +290,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         {
             using var webHost = WebHost
                 .CreateDefaultBuilder()
-                .ConfigureAppConfiguration((context, builder) =>
+                .ConfigureAppConfiguration((_, builder) =>
                 {
                     // The default builder will add an EnvironmentVariablesConfigurationProvider.
                     // For this test I also need to have a CommandLineConfigurationProvider so the next line takes care of that.
@@ -304,7 +304,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
                         .ToList()
                         .ForEach(source => builder.Sources.Remove(source));
                 })
-                .Configure((context, applicationBuilder) =>
+                .Configure((_, _) =>
                 {
                     // this is required just to provide a configuration for the webhost
                     // or else it fails when calling webHostBuilder.Build()
@@ -329,7 +329,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         {
             using var webHost = WebHost
                 .CreateDefaultBuilder()
-                .ConfigureAppConfiguration((context, builder) =>
+                .ConfigureAppConfiguration((_, builder) =>
                 {
                     builder.Sources
                         .OfType<JsonConfigurationSource>()
@@ -340,7 +340,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
                         .ToList()
                         .ForEach(source => builder.Sources.Remove(source));
                 })
-                .Configure((context, applicationBuilder) =>
+                .Configure((_, _) =>
                 {
                     // this is required just to provide a configuration for the webhost
                     // or else it fails when calling webHostBuilder.Build()

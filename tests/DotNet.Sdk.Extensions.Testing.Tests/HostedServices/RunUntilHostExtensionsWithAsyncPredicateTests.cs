@@ -56,8 +56,8 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
         public static TheoryData<IHost, RunUntilPredicateAsync, Action<RunUntilOptions>, Type, string> ValidateArgumentsWithOptionsData =>
             new TheoryData<IHost, RunUntilPredicateAsync, Action<RunUntilOptions>, Type, string>
             {
-                { null!, ()=>Task.FromResult(true), options => {} , typeof(ArgumentNullException), "Value cannot be null. (Parameter 'host')" },
-                { CreateHost(), null!, options => {}, typeof(ArgumentNullException), "Value cannot be null. (Parameter 'predicateAsync')" },
+                { null!, ()=>Task.FromResult(true), _ => {} , typeof(ArgumentNullException), "Value cannot be null. (Parameter 'host')" },
+                { CreateHost(), null!, _ => {}, typeof(ArgumentNullException), "Value cannot be null. (Parameter 'predicateAsync')" },
                 { CreateHost(), ()=>Task.FromResult(true), null!, typeof(ArgumentNullException), "Value cannot be null. (Parameter 'configureOptions')" },
             };
 
@@ -95,7 +95,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
             calculator
                 .Sum(Arg.Any<int>(), Arg.Any<int>())
                 .Returns(1)
-                .AndDoes(info => ++callCount);
+                .AndDoes(_ => ++callCount);
 
             // This code creating the Host would exist somewhere in app being tested.
             // In a real scenario we would call the function that creates the Host.
@@ -103,7 +103,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
             var hostBuilder = Host
                 .CreateDefaultBuilder()
                 .UseDefaultLogLevel(LogLevel.Critical)
-                .ConfigureServices((hostContext, services) =>
+                .ConfigureServices((_, services) =>
                 {
                     services.AddSingleton<ICalculator, Calculator>();
                     services.AddHostedService<MyBackgroundService>();
@@ -111,7 +111,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
 
             // This is for overriding services for test purposes.
             using var host = hostBuilder
-                .ConfigureServices((hostContext, services) =>
+                .ConfigureServices((_, services) =>
                 {
                     services.AddSingleton(calculator);
                 })
@@ -187,7 +187,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
             var hostBuilder = Host
                 .CreateDefaultBuilder()
                 .UseDefaultLogLevel(LogLevel.Critical)
-                .ConfigureServices((hostContext, services) =>
+                .ConfigureServices((_, services) =>
                 {
                     services.AddSingleton<ICalculator, Calculator>();
                     services.AddHostedService<MyBackgroundService>();
@@ -195,7 +195,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
 
             // This is for overriding services for test purposes.
             using var host = hostBuilder
-                .ConfigureServices((hostContext, services) =>
+                .ConfigureServices((_, services) =>
                 {
                     services.AddSingleton(calculator);
                 })

@@ -20,7 +20,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Fallback
             var httpRequestExceptionFallback = Policy<HttpResponseMessage>
                 .Handle<HttpRequestException>()
                 .FallbackAsync(
-                    fallbackAction: (delegateResult, _, cancellationToken) =>
+                    fallbackAction: (delegateResult, _, _) =>
                     {
                         var response = new ExceptionHttpResponseMessage(delegateResult.Exception);
                         return Task.FromResult<HttpResponseMessage>(response);
@@ -72,7 +72,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Fallback
             var abortedFallback = Policy<HttpResponseMessage>
                 .Handle<TaskCanceledException>()
                 .FallbackAsync(
-                    fallbackAction: (delegateResult, pollyContext, cancellationToken) =>
+                    fallbackAction: (delegateResult, _, _) =>
                     {
                         // on newer versions .NET still throws TaskCanceledException but the inner exception is of type System.TimeoutException.
                         // see https://devblogs.microsoft.com/dotnet/net-5-new-networking-improvements/#better-error-handling

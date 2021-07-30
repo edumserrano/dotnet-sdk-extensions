@@ -47,7 +47,7 @@ namespace DotNet.Sdk.Extensions.Tests.Options.ValidateEagerly
             using var host = Host
                 .CreateDefaultBuilder()
                 .UseDefaultLogLevel(LogLevel.Critical)
-                .ConfigureAppConfiguration((context, builder) =>
+                .ConfigureAppConfiguration((_, builder) =>
                 {
                     var memoryConfigurationSource = new MemoryConfigurationSource
                     {

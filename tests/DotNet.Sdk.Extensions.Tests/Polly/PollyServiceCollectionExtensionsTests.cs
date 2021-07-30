@@ -25,7 +25,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly
             {
                 Extensions.Polly.PollyServiceCollectionExtensions.AddPolicyRegistry(
                     services: null!,
-                    configureRegistry: (_, pairs) => { });
+                    configureRegistry: (_, _) => { });
             });
             exception1.Message.ShouldBe("Value cannot be null. (Parameter 'services')");
 

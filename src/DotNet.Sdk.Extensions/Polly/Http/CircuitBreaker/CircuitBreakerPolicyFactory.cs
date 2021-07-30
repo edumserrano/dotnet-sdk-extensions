@@ -54,7 +54,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker
 #pragma warning restore VSTHRD101 // Avoid unsupported async delegates
             var circuitBreakerCheckerPolicy = CircuitBreakerCheckerAsyncPolicy.Create(
                 circuitBreakerPolicy: circuitBreakerPolicy,
-                fallbackValueFactory: (circuitBreakerState, context, cancellationToken) =>
+                fallbackValueFactory: (circuitBreakerState, _, _) =>
                 {
                     return Task.FromResult<HttpResponseMessage>(new CircuitBrokenHttpResponseMessage(circuitBreakerState));
                 });

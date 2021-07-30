@@ -26,7 +26,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.ResponseMocking
             }
 
             // convert to 'async' predicate
-            return Where((httpRequest, cancellationToken) => Task.FromResult(predicate(httpRequest)));
+            return Where((httpRequest, _) => Task.FromResult(predicate(httpRequest)));
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.ResponseMocking
             }
 
             // convert to 'async' handler
-            return RespondWith((httpRequest, httpResponse, cancellationToken) =>
+            return RespondWith((httpRequest, httpResponse, _) =>
             {
                 handler(httpRequest, httpResponse);
                 return Task.CompletedTask;

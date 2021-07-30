@@ -76,7 +76,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         public static TheoryData<IHostBuilder, Action<TestConfigurationOptions>, string, string[], Type, string> ValidateArguments2Data =>
             new TheoryData<IHostBuilder, Action<TestConfigurationOptions>, string, string[], Type, string>
             {
-                { null!, options => { }, "some-appsettings", Array.Empty<string>(), typeof(ArgumentNullException), "Value cannot be null. (Parameter 'builder')" },
+                { null!, _ => { }, "some-appsettings", Array.Empty<string>(), typeof(ArgumentNullException), "Value cannot be null. (Parameter 'builder')" },
                 { new HostBuilder(), null!, "some-appsettings", Array.Empty<string>(), typeof(ArgumentNullException), "Value cannot be null. (Parameter 'configureOptions')" }
             };
 
@@ -198,7 +198,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         {
             using var host = Host
                 .CreateDefaultBuilder()
-                .ConfigureAppConfiguration((context, builder) =>
+                .ConfigureAppConfiguration((_, builder) =>
                 {
                     // The default builder will add an EnvironmentVariablesConfigurationProvider.
                     // For this test I also need to have a CommandLineConfigurationProvider so the next line takes care of that.
@@ -224,7 +224,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         {
             using var host = Host
                 .CreateDefaultBuilder()
-                .ConfigureAppConfiguration((context, builder) =>
+                .ConfigureAppConfiguration((_, builder) =>
                 {
                     // The default builder will add an EnvironmentVariablesConfigurationProvider.
                     // For this test I also need to have a CommandLineConfigurationProvider so the next line takes care of that.
@@ -255,7 +255,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         {
             using var host = Host
                 .CreateDefaultBuilder()
-                .ConfigureAppConfiguration((context, builder) =>
+                .ConfigureAppConfiguration((_, builder) =>
                 {
                     // The default builder will add an EnvironmentVariablesConfigurationProvider.
                     // For this test I also need to have a CommandLineConfigurationProvider so the next line takes care of that.
@@ -289,7 +289,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         {
             using var host = Host
                 .CreateDefaultBuilder()
-                .ConfigureAppConfiguration((context, builder) =>
+                .ConfigureAppConfiguration((_, builder) =>
                 {
                     builder.Sources
                         .OfType<JsonConfigurationSource>()

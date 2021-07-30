@@ -47,8 +47,8 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
         public static TheoryData<HostedServicesWebApplicationFactory, RunUntilPredicateAsync, Action<RunUntilOptions>, Type, string> ValidateArgumentsWithOptionsData =>
             new TheoryData<HostedServicesWebApplicationFactory, RunUntilPredicateAsync, Action<RunUntilOptions>, Type, string>
             {
-                { null!, ()=>Task.FromResult(true), options => {}, typeof(ArgumentNullException), "Value cannot be null. (Parameter 'webApplicationFactory')" },
-                { new HostedServicesWebApplicationFactory(), null!, options => {}, typeof(ArgumentNullException), "Value cannot be null. (Parameter 'predicateAsync')" },
+                { null!, ()=>Task.FromResult(true), _ => {}, typeof(ArgumentNullException), "Value cannot be null. (Parameter 'webApplicationFactory')" },
+                { new HostedServicesWebApplicationFactory(), null!, _ => {}, typeof(ArgumentNullException), "Value cannot be null. (Parameter 'predicateAsync')" },
                 { new HostedServicesWebApplicationFactory(), ()=>Task.FromResult(true), null!, typeof(ArgumentNullException), "Value cannot be null. (Parameter 'configureOptions')" },
             };
 
@@ -85,7 +85,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
             calculator
                 .Sum(Arg.Any<int>(), Arg.Any<int>())
                 .Returns(1)
-                .AndDoes(info => ++callCount);
+                .AndDoes(_ => ++callCount);
 
             var webApplicationFactory = new HostedServicesWebApplicationFactory();
             await webApplicationFactory
@@ -133,7 +133,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
             calculator
                 .Sum(Arg.Any<int>(), Arg.Any<int>())
                 .Returns(1)
-                .AndDoes(info => ++callCount);
+                .AndDoes(_ => ++callCount);
 
             var webApplicationFactory = new HostedServicesWebApplicationFactory()
                 .WithWebHostBuilder(builder =>

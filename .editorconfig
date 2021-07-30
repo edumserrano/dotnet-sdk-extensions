@@ -95,10 +95,9 @@ dotnet_diagnostic.VSTHRD111.severity = none         # VSTHRD111 Use .ConfigureAw
 dotnet_diagnostic.RCS1021.severity = none         # RCS1021: Convert lambda expression body to expression-body
 dotnet_diagnostic.RCS1080.severity = warning      # RCS1080: Use 'Count/Length' property instead of 'Any' method
 dotnet_diagnostic.RCS1090.severity = none         # RCS1090: Add call to 'ConfigureAwait' (or vice versa)
-dotnet_diagnostic.RCS1224.severity = none         # RCS1224: Make method an extension method
 dotnet_diagnostic.RCS1194.severity = none         # RCS1194: Implement exception constructors
 dotnet_diagnostic.RCS1163.severity = warning      # RCS1163: Unused parameter
-
+dotnet_diagnostic.RCS1224.severity = none         # RCS1224: Make method an extension method
 
 ##########################################
 # Code quality rules https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/

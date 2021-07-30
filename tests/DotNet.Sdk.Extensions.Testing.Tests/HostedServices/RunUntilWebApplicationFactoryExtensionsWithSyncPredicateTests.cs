@@ -47,8 +47,8 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
         public static TheoryData<HostedServicesWebApplicationFactory, RunUntilPredicate, Action<RunUntilOptions>, Type, string> ValidateArgumentsWithOptionsData =>
             new TheoryData<HostedServicesWebApplicationFactory, RunUntilPredicate, Action<RunUntilOptions>, Type, string>
             {
-                { null!, ()=>true, options => {} , typeof(ArgumentNullException), "Value cannot be null. (Parameter 'webApplicationFactory')" },
-                { new HostedServicesWebApplicationFactory(), null!, options => {}, typeof(ArgumentNullException), "Value cannot be null. (Parameter 'predicate')" },
+                { null!, ()=>true, _ => {} , typeof(ArgumentNullException), "Value cannot be null. (Parameter 'webApplicationFactory')" },
+                { new HostedServicesWebApplicationFactory(), null!, _ => {}, typeof(ArgumentNullException), "Value cannot be null. (Parameter 'predicate')" },
                 { new HostedServicesWebApplicationFactory(), ()=>true, null!, typeof(ArgumentNullException), "Value cannot be null. (Parameter 'configureOptions')" },
             };
 
@@ -85,7 +85,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
             calculator
                 .Sum(Arg.Any<int>(), Arg.Any<int>())
                 .Returns(1)
-                .AndDoes(info => ++callCount);
+                .AndDoes(_ => ++callCount);
 
             var webApplicationFactory = new HostedServicesWebApplicationFactory();
             await webApplicationFactory
@@ -115,7 +115,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
             calculator
                 .Sum(Arg.Any<int>(), Arg.Any<int>())
                 .Returns(1)
-                .AndDoes(info => ++callCount);
+                .AndDoes(_ => ++callCount);
 
             var webApplicationFactory = new HostedServicesWebApplicationFactory()
                 .WithWebHostBuilder(builder =>
@@ -148,7 +148,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
             calculator
                 .Sum(Arg.Any<int>(), Arg.Any<int>())
                 .Returns(1)
-                .AndDoes(info => ++callCount);
+                .AndDoes(_ => ++callCount);
 
             var webApplicationFactory = new HostedServicesWebApplicationFactory()
                 .WithWebHostBuilder(builder =>

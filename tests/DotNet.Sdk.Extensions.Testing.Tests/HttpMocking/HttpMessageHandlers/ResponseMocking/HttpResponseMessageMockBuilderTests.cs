@@ -72,8 +72,8 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers.Re
         public void WhereCanOnlyBeDefinedOnce()
         {
             var builder = new HttpResponseMessageMockBuilder();
-            builder.Where(message => false);
-            var exception = Should.Throw<InvalidOperationException>(() => builder.Where(message => true));
+            builder.Where(_ => false);
+            var exception = Should.Throw<InvalidOperationException>(() => builder.Where(_ => true));
             exception.Message.ShouldBe("HttpResponseMessageMockBuilder.Where condition already configured.");
         }
 

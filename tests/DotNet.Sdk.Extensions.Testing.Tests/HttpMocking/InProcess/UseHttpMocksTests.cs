@@ -30,7 +30,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess
         [Fact]
         public void ValidateArguments()
         {
-            var webHostBuilderArgumentNullException = Should.Throw<ArgumentNullException>(() => HttpMockingWebHostBuilderExtensions.UseHttpMocks(null!, handlers => { }));
+            var webHostBuilderArgumentNullException = Should.Throw<ArgumentNullException>(() => HttpMockingWebHostBuilderExtensions.UseHttpMocks(null!, _ => { }));
             webHostBuilderArgumentNullException.Message.ShouldBe("Value cannot be null. (Parameter 'webHostBuilder')");
             var configureArgumentNullException = Should.Throw<ArgumentNullException>(() => new WebHostBuilder().UseHttpMocks((Action<HttpMessageHandlersReplacer>)null!));
             configureArgumentNullException.Message.ShouldBe("Value cannot be null. (Parameter 'configure')");
@@ -42,7 +42,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess
         [Fact]
         public void ValidateArguments2()
         {
-            var webHostBuilderArgumentNullException = Should.Throw<ArgumentNullException>(() => HttpMockingWebHostBuilderExtensions.UseHttpMocks(null!, handlers => { }));
+            var webHostBuilderArgumentNullException = Should.Throw<ArgumentNullException>(() => HttpMockingWebHostBuilderExtensions.UseHttpMocks(null!, _ => { }));
             webHostBuilderArgumentNullException.Message.ShouldBe("Value cannot be null. (Parameter 'webHostBuilder')");
             var configureArgumentNullException = Should.Throw<ArgumentNullException>(() => new WebHostBuilder().UseHttpMocks((HttpResponseMessageMockDescriptorBuilder[])null!));
             configureArgumentNullException.Message.ShouldBe("Value cannot be null. (Parameter 'httpResponseMessageMockDescriptorBuilders')");

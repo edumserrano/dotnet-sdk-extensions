@@ -42,7 +42,7 @@ namespace DotNet.Sdk.Extensions.Testing.Configuration
                 throw new ArgumentException("Cannot be null or empty.", nameof(value));
             }
 
-            return builder.ConfigureAppConfiguration((context, builder) =>
+            return builder.ConfigureAppConfiguration((_, appConfigBuilder) =>
             {
                 var memoryConfigurationSource = new MemoryConfigurationSource
                 {
@@ -51,7 +51,7 @@ namespace DotNet.Sdk.Extensions.Testing.Configuration
                         new KeyValuePair<string, string>(key, value)
                     }
                 };
-                builder.Add(memoryConfigurationSource);
+                appConfigBuilder.Add(memoryConfigurationSource);
             });
         }
 
@@ -165,7 +165,7 @@ namespace DotNet.Sdk.Extensions.Testing.Configuration
                 throw new ArgumentException("Cannot have an element that is null or white space.", nameof(otherAppsettingsFilenames));
             }
 
-            return builder.ConfigureAppConfiguration((context, config) =>
+            return builder.ConfigureAppConfiguration((_, config) =>
             {
                 config.AddTestAppSettings(options, appSettingsFilename, otherAppsettingsFilenames);
             });

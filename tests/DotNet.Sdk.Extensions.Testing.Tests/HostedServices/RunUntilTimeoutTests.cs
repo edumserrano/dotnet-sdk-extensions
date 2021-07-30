@@ -64,7 +64,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
             calculator
                 .Sum(Arg.Any<int>(), Arg.Any<int>())
                 .Returns(1)
-                .AndDoes(info =>
+                .AndDoes(_ =>
                 {
                     ++callCount;
                 });
@@ -101,7 +101,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
             calculator
                 .Sum(Arg.Any<int>(), Arg.Any<int>())
                 .Returns(1)
-                .AndDoes(info =>
+                .AndDoes(_ =>
                 {
                     ++callCount;
                 });
@@ -112,7 +112,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
             var hostBuilder = Host
                 .CreateDefaultBuilder()
                 .UseDefaultLogLevel(LogLevel.Critical)
-                .ConfigureServices((hostContext, services) =>
+                .ConfigureServices((_, services) =>
                 {
                     services.AddSingleton<ICalculator, Calculator>();
                     services.AddHostedService<MyBackgroundService>();
@@ -120,7 +120,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
 
             // This is for overriding services for test purposes.
             using var host = hostBuilder
-                .ConfigureServices((hostContext, services) =>
+                .ConfigureServices((_, services) =>
                  {
                      services.AddSingleton(calculator);
                  })

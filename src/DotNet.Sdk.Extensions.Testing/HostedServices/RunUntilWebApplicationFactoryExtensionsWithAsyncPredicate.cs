@@ -27,7 +27,7 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
             var configureOptionsAction = new Action<RunUntilOptions>(DefaultConfigureOptionsDelegate);
             return webApplicationFactory.RunUntilAsync(predicateAsync, configureOptionsAction);
 
-            static void DefaultConfigureOptionsDelegate(RunUntilOptions obj)
+            static void DefaultConfigureOptionsDelegate(RunUntilOptions _)
             {
                 // default configure options delegate == do nothing
                 // use default values of the RunUntilOptions

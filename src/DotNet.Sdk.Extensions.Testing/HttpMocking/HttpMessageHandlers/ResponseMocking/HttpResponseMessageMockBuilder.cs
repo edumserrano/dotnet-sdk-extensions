@@ -27,7 +27,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.Response
             }
 
             // convert to 'async' predicate
-            return Where((httpRequestMessage, cancellationToken) => Task.FromResult(predicate(httpRequestMessage)));
+            return Where((httpRequestMessage, _) => Task.FromResult(predicate(httpRequestMessage)));
         }
 
         /// <summary>
@@ -73,7 +73,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.Response
             }
 
             // convert to 'async' handler
-            return RespondWith((httpRequestMessage, cancellationToken) => Task.FromResult(handler(httpRequestMessage)));
+            return RespondWith((httpRequestMessage, _) => Task.FromResult(handler(httpRequestMessage)));
         }
 
         /// <summary>
@@ -106,7 +106,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.Response
             // when simulating a timeout we need to do the same as what HttpClient
             // does in that situation which is to throw a TaskCanceledException with an inner
             // exception of TimeoutException
-            _handlerAsync = async (message, cancellationToken) =>
+            _handlerAsync = async (_, cancellationToken) =>
             {
                 await Task.Delay(timeout, cancellationToken);
                 var innerException = new TimeoutException("A task was canceled.");
