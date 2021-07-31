@@ -6,10 +6,8 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker;
 using DotNet.Sdk.Extensions.Polly.Http.Fallback.FallbackHttpResponseMessages;
-using DotNet.Sdk.Extensions.Polly.Policies;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers;
 using DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary;
-using Polly.CircuitBreaker;
 
 namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
 {
@@ -69,25 +67,6 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
             await Task.Delay(TimeSpan.FromSeconds(_circuitBreakerOptions.SamplingDurationInSecs + 0.05));
         }
 
-        /// <summary>
-        /// Asserts that the circuit breaker state is open/isolated by doing an HTTP request.
-        /// If the circuit breaker state is not open/isolated this will throw an <see cref="InvalidOperationException"/>.
-        /// </summary>
-        /// <param name="requestPath">The request path for the HTTP request.</param>
-        /// <returns>
-        /// A <see cref="Task"/> that represents the conclusion of the assertion for the circuit breaker state.
-        /// </returns>
-        /// <remarks>
-        /// <para>
-        /// The circuit breaker policy added is a wrapped policy which joins an
-        /// <see cref="AsyncCircuitBreakerPolicy{TResult}"/> and a <see cref="CircuitBreakerCheckerAsyncPolicy{T}"/>.
-        /// </para>
-        /// <para>
-        /// The <see cref="CircuitBreakerCheckerAsyncPolicy{T}"/> will check if the circuit is open/isolated and
-        /// if so it will return <see cref="CircuitBrokenHttpResponseMessage"/> which is an http response message
-        /// with 500 status code and some extra properties.
-        /// </para>
-        /// </remarks>
         public async Task ShouldBeOpenAsync(string requestPath)
         {
             var response = await _httpClient.GetAsync(requestPath);
