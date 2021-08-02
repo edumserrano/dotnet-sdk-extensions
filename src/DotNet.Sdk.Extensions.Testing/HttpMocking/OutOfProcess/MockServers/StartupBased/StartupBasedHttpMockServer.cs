@@ -6,7 +6,8 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers.Sta
     internal class StartupBasedHttpMockServer<T> : HttpMockServer
         where T : class
     {
-        public StartupBasedHttpMockServer(HttpMockServerArgs mockServerArgs) : base(mockServerArgs)
+        public StartupBasedHttpMockServer(HttpMockServerArgs mockServerArgs)
+            : base(mockServerArgs)
         {
         }
 
