@@ -14,7 +14,8 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
         /// <param name="webApplicationFactory">The <see cref="WebApplicationFactory{T}"/> that creates the Host to terminate after the timeout.</param>
         /// <param name="timeout">Timeout value.</param>
         /// <returns>The <see cref="Task"/> that will execute the host until it's terminated.</returns>
-        public static Task RunUntilTimeoutAsync<T>(this WebApplicationFactory<T> webApplicationFactory, TimeSpan timeout) where T : class
+        public static Task RunUntilTimeoutAsync<T>(this WebApplicationFactory<T> webApplicationFactory, TimeSpan timeout)
+            where T : class
         {
             if (webApplicationFactory is null)
             {

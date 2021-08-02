@@ -31,7 +31,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
             _transientHttpStatusCodes = HttpStatusCodesExtensions.GetTransientHttpStatusCodes().ToList();
         }
 
-        public Task TriggerFromExceptionAsync<TException>(Exception exception) where TException : Exception
+        public Task TriggerFromExceptionAsync<TException>(Exception exception)
+            where TException : Exception
         {
             if (exception == null)
             {
@@ -113,7 +114,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
             }
         }
 
-        private async Task TriggerCircuitBreakerFromExceptionAsync<TException>(string requestPath) where TException : Exception
+        private async Task TriggerCircuitBreakerFromExceptionAsync<TException>(string requestPath)
+            where TException : Exception
         {
             for (var i = 0; i < _circuitBreakerOptions.MinimumThroughput; i++)
             {

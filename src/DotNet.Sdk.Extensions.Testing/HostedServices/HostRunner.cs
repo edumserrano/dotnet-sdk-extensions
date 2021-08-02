@@ -39,7 +39,8 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
         }
     }
 
-    internal class WebApplicationFactoryHostRunner<T> : HostRunner where T : class
+    internal class WebApplicationFactoryHostRunner<T> : HostRunner
+        where T : class
     {
         private readonly WebApplicationFactory<T> _webApplicationFactory;
 

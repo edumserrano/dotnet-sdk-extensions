@@ -86,13 +86,15 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
             }
         }
 
-        private Task CircuitBreakerPolicyHandlesException<TException>() where TException : Exception
+        private Task CircuitBreakerPolicyHandlesException<TException>()
+            where TException : Exception
         {
             var exception = Activator.CreateInstance<TException>();
             return CircuitBreakerPolicyHandlesException(exception);
         }
 
-        private async Task CircuitBreakerPolicyHandlesException<TException>(TException exception) where TException : Exception
+        private async Task CircuitBreakerPolicyHandlesException<TException>(TException exception)
+            where TException : Exception
         {
             await using var circuitBreaker = _httpClient.CircuitBreakerExecutor(_options, _testHttpMessageHandler);
             await circuitBreaker.TriggerFromExceptionAsync<TException>(exception);

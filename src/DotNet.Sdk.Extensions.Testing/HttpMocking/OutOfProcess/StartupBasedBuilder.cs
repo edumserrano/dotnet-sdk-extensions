@@ -8,7 +8,8 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess
     /// Provides methods to configure and create an <see cref="HttpMockServer"/> when based on a Startup class.
     /// </summary>
     /// <typeparam name="T">The <see cref="Type"/> of the Startup class.</typeparam>
-    public class StartupBasedBuilder<T> where T : class
+    public class StartupBasedBuilder<T>
+        where T : class
     {
         private readonly HttpMockServerArgs _mockServerArgs;
 

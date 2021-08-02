@@ -19,9 +19,8 @@ namespace DotNet.Sdk.Extensions.Options
         /// <param name="services">The <see cref="IServiceCollection"/> to add the options value to.</param>
         /// <param name="configuration">The <see cref="IConfiguration"/> instance containing values to bind to the options type.</param>
         /// <returns>The <see cref="OptionsBuilder{T}"/> for chaining.</returns>
-        public static OptionsBuilder<T> AddOptionsValue<T>(
-            this IServiceCollection services,
-            IConfiguration configuration) where T : class, new()
+        public static OptionsBuilder<T> AddOptionsValue<T>(this IServiceCollection services, IConfiguration configuration)
+            where T : class, new()
         {
             if (services is null)
             {
@@ -46,7 +45,8 @@ namespace DotNet.Sdk.Extensions.Options
         public static OptionsBuilder<T> AddOptionsValue<T>(
             this IServiceCollection services,
             IConfiguration configuration,
-            string sectionName) where T : class, new()
+            string sectionName)
+            where T : class, new()
         {
             if (services is null)
             {
@@ -75,7 +75,8 @@ namespace DotNet.Sdk.Extensions.Options
         /// <typeparam name="T">The <see cref="Type"/>  of the options to be configured.</typeparam>
         /// <param name="optionsBuilder">The <see cref="OptionsBuilder{T}"/> to add the options value to.</param>
         /// <returns>The <see cref="OptionsBuilder{T}"/> for chaining.</returns>
-        public static OptionsBuilder<T> AddOptionsValue<T>(this OptionsBuilder<T> optionsBuilder) where T : class, new()
+        public static OptionsBuilder<T> AddOptionsValue<T>(this OptionsBuilder<T> optionsBuilder)
+            where T : class, new()
         {
             if (optionsBuilder is null)
             {
@@ -96,7 +97,8 @@ namespace DotNet.Sdk.Extensions.Options
         /// <typeparam name="T">The <see cref="Type"/>  of the options to be eagerly validated.</typeparam>
         /// <param name="optionsBuilder">The <see cref="OptionsBuilder{T}"/> for the options to add eager validation to.</param>
         /// <returns>The <see cref="OptionsBuilder{T}"/> for chaining.</returns>
-        public static OptionsBuilder<T> ValidateEagerly<T>(this OptionsBuilder<T> optionsBuilder) where T : class
+        public static OptionsBuilder<T> ValidateEagerly<T>(this OptionsBuilder<T> optionsBuilder)
+            where T : class
         {
             if (optionsBuilder is null)
             {
@@ -107,7 +109,8 @@ namespace DotNet.Sdk.Extensions.Options
             return optionsBuilder;
         }
 
-        private static void AddOptionsValue<T>(this IServiceCollection services) where T : class, new()
+        private static void AddOptionsValue<T>(this IServiceCollection services)
+            where T : class, new()
         {
             if (services is null)
             {

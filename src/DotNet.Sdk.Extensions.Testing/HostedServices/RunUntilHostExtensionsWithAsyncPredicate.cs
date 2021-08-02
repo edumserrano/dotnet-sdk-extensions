@@ -15,9 +15,7 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
         /// <param name="host">The <see cref="IHost"/> to execute.</param>
         /// <param name="predicateAsync">The async predicate to determine when the host should be terminated.</param>
         /// <returns>The <see cref="Task"/> that will execute the host until it's terminated.</returns>
-        public static Task RunUntilAsync(
-            this IHost host,
-            RunUntilPredicateAsync predicateAsync)
+        public static Task RunUntilAsync(this IHost host, RunUntilPredicateAsync predicateAsync)
         {
             if (host is null)
             {
