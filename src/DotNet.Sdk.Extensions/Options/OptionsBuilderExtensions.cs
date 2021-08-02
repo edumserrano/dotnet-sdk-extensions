@@ -11,6 +11,7 @@ namespace DotNet.Sdk.Extensions.Options
     /// </summary>
     public static class OptionsBuilderExtensions
     {
+
         /// <summary>
         /// Allows resolving the type of the options added to the <see cref="IServiceCollection"/> instead of having to resolve
         /// one of the Options interfaces: <see cref="IOptions{T}"/>, <see cref="IOptionsSnapshot{T}"/> or <see cref="IOptionsMonitor{T}"/>.
