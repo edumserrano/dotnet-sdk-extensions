@@ -37,17 +37,17 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers
             }
 
             var split1 = address.Split("://");
-            var schemeAsEnum = Enum.Parse<HttpScheme>(split1[0], ignoreCase: true);
+            var httpScheme = Enum.Parse<HttpScheme>(split1[0], ignoreCase: true);
             var split2 = split1[1]
                 .Replace("[::]", "localhost", StringComparison.OrdinalIgnoreCase)
                 .Split(":");
             var host = split2[0];
             var port = split2.Length > 1
                 ? int.Parse(split2[1], CultureInfo.InvariantCulture)
-                : schemeAsEnum == HttpScheme.Http
+                : httpScheme == HttpScheme.Http
                     ? 80
                     : 443;
-            return new HttpMockServerUrl(schemeAsEnum, host, port);
+            return new HttpMockServerUrl(httpScheme, host, port);
         }
     }
 }

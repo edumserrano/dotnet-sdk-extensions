@@ -1,7 +1,7 @@
 name: "CodeQL"
 
 # As per documentation at https://docs.github.com/en/code-security/secure-coding/automatically-scanning-your-code-for-vulnerabilities-and-errors/configuring-code-scanning#avoiding-unnecessary-scans-of-pull-requests
-# For CodeQL code scanning workflow files, don't use the paths-ignore or paths keywords with the on:push event 
+# For CodeQL code scanning workflow files, don't use the paths-ignore or paths keywords with the on:push event
 # as this is likely to cause missing analyses. For accurate results, CodeQL code scanning needs to be able to
 # compare new changes with the analysis of the previous commit.
 
@@ -54,7 +54,7 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore ${{env.SLN_FILEPATH}}
     - name: Build
-      run: dotnet build ${{env.SLN_FILEPATH}} -c Release --no-restore
+      run: dotnet build ${{env.SLN_FILEPATH}} -c Release -warnaserror --no-restore --no-incremental
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1
     - name: Upload SARIF file

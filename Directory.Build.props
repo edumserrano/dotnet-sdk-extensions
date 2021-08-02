@@ -2,30 +2,14 @@
   <PropertyGroup>
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
-
-    <!-- Enable deterministic builds as per https://github.com/clairernovotny/DeterministicBuilds.Recommended when using sourcelink -->
-    <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
-    <!-- <TreatWarningsAsErrors Condition="'$(GITHUB_ACTIONS)' == 'true'">true</TreatWarningsAsErrors> -->
-
-    <!-- <TreatWarningsAsErrors>true</TreatWarningsAsErrors> -->
-    <WarningsAsErrors>nullable;</WarningsAsErrors>
-
-    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-    <!-- <TreatWarningsAsErrors>true</TreatWarningsAsErrors> -->
-
-    <!-- <CodeAnalysisTreatWarningsAsErrors>true</CodeAnalysisTreatWarningsAsErrors> -->
-    <!-- <EnableNETAnalyzers>true</EnableNETAnalyzers> -->
-    <!-- <AnalysisMode>AllEnabledByDefault</AnalysisMode> -->
-    <!-- <AnalysisLevel>latest</AnalysisLevel> -->
-
-    <AnalysisLevel>latest</AnalysisLevel>
-    <AnalysisMode>AllEnabledByDefault</AnalysisMode>
+    <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>   <!-- Enable deterministic builds as per https://github.com/clairernovotny/DeterministicBuilds.Recommended when using sourcelink -->
+    <WarningsAsErrors>nullable;</WarningsAsErrors>                                                            <!-- treat all nullable reference warnings as errors -->
+    <AnalysisLevel>latest</AnalysisLevel>                                                                     <!-- Use the latest code analyzers that have been released are used. https://docs.microsoft.com/en-us/dotnet/core/project-sdk/msbuild-props#analysislevel -->
+    <AnalysisMode>AllEnabledByDefault</AnalysisMode>                                                          <!-- Aggressive or opt-out mode, where all rules are enabled by default as build warnings. https://docs.microsoft.com/en-us/dotnet/core/project-sdk/msbuild-props#analysismode -->
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>                                                   <!-- Force code analysis to run on build. If this starts to slow down the build or Visual Studio consider enabling it only in CI. https://docs.microsoft.com/en-us/dotnet/core/project-sdk/msbuild-props#enforcecodestyleinbuild -->
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>                                                             <!-- .NET code quality analysis is only enabled by default for projects that target .NET 5.0 or later. https://docs.microsoft.com/en-us/dotnet/core/project-sdk/msbuild-props#enablenetanalyzers -->
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="5.0.3">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="16.10.56">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -43,8 +27,8 @@
     <!-- <PackageReference Include="Roslynator.CodeAnalysis.Analyzers" Version="1.1.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference> -->
-    <!-- <PackageReference Include="Roslynator.Formatting.Analyzers" Version="1.2.1">
+    </PackageReference>
+    <PackageReference Include="Roslynator.Formatting.Analyzers" Version="1.2.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference> -->

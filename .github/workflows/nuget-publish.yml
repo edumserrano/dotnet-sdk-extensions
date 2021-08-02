@@ -24,7 +24,7 @@ jobs:
   build:
     name: Build and test
     strategy:
-      matrix: 
+      matrix:
         os: [ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     env:
@@ -52,7 +52,7 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore ${{env.SLN_FILEPATH}}
     - name: Build
-      run: dotnet build ${{env.SLN_FILEPATH}} -c Release --no-restore
+      run: dotnet build ${{env.SLN_FILEPATH}} -c Release -warnaserror --no-restore --no-incremental
     - name: Test and code coverage
       run: |
         dotnet test ${{env.SLN_FILEPATH}} `
