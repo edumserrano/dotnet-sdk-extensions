@@ -8,7 +8,7 @@ using Xunit;
 namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
 {
     /// <summary>
-    /// Tests for the <see cref="ResilienceOptionsExtensions.AddHttpClientResilienceOptions"/> method
+    /// Tests for the <see cref="ResilienceOptionsExtensions.AddHttpClientResilienceOptions"/> method.
     /// </summary>
     [Trait("Category", XUnitCategories.Polly)]
     public class AddHttpClientResilienceOptionsTests

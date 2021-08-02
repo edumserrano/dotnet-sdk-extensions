@@ -4,7 +4,7 @@ using Polly.CircuitBreaker;
 namespace DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker.Events
 {
     /// <summary>
-    /// Defines the events produced by the HttpClient's circuit breaker policy
+    /// Defines the events produced by the HttpClient's circuit breaker policy.
     /// </summary>
     public interface ICircuitBreakerPolicyEventHandler
     {

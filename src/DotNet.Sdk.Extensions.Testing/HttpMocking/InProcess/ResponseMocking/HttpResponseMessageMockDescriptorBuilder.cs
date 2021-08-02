@@ -30,7 +30,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.InProcess.ResponseMocking
         }
 
         /// <summary>
-        /// Creates an instance of the <see cref="HttpResponseMessageMockDescriptorBuilder"/>
+        /// Creates an instance of the <see cref="HttpResponseMessageMockDescriptorBuilder"/>.
         /// </summary>
         public HttpResponseMessageMockDescriptorBuilder()
         {

@@ -8,7 +8,7 @@ using Xunit;
 namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
 {
     /// <summary>
-    /// Tests for the <see cref="CircuitBreakerOptionsExtensions.AddHttpClientCircuitBreakerOptions"/> method
+    /// Tests for the <see cref="CircuitBreakerOptionsExtensions.AddHttpClientCircuitBreakerOptions"/> method.
     /// </summary>
     [Trait("Category", XUnitCategories.Polly)]
     public class AddHttpClientCircuitBreakerOptionsTests

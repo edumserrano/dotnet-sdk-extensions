@@ -14,7 +14,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Fallback.FallbackHttpResponseMessages
     public class TimeoutHttpResponseMessage : HttpResponseMessage
     {
         /// <summary>
-        /// Creates an instance of <see cref="TimeoutHttpResponseMessage"/>
+        /// Creates an instance of <see cref="TimeoutHttpResponseMessage"/>.
         /// </summary>
         /// <param name="exception">The exception that resulted in the fallback response.</param>
         public TimeoutHttpResponseMessage(Exception exception)

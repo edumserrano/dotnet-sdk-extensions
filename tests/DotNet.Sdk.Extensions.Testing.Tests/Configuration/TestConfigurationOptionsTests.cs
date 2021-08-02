@@ -8,7 +8,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
     public class TestConfigurationOptionsTests
     {
         /// <summary>
-        /// Tests the default values for <seealso cref="TestConfigurationOptions"/>
+        /// Tests the default values for <see cref="TestConfigurationOptions"/>.
         /// </summary>
         [Fact]
         public void DefaultValues()

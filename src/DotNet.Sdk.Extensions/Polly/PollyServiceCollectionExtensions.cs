@@ -21,7 +21,7 @@ namespace DotNet.Sdk.Extensions.Polly
         /// the service provider such as configuration values.
         /// </remarks>
         /// <param name="services">The <see cref="IServiceCollection"/>.</param>
-        /// <param name="configureRegistry">Action to setup the <see cref="IPolicyRegistry{String}"/></param>
+        /// <param name="configureRegistry">Action to setup the <see cref="IPolicyRegistry{String}"/>.</param>
         /// <returns>The <see cref="IServiceCollection"/> for chaining.</returns>
         public static IServiceCollection AddPolicyRegistry(
             this IServiceCollection services,

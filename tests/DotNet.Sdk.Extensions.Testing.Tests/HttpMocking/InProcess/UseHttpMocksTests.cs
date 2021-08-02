@@ -134,7 +134,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess
         /// mock for a typed http client with custom name mock.
         ///
         /// This tests typed clients with name registered on the Startup class such as:
-        /// 'services.AddHttpClient<MyApiClient>("some name");'
+        /// 'services.AddHttpClient{MyApiClient}("some name");'
         /// See <see cref="StartupHttpResponseMocking"/> for more information.
         /// </summary>
         [Fact]
@@ -167,7 +167,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess
         /// when compared with the <see cref="TypedHttpClientWithCustomName"/> test.
         ///
         /// This tests typed clients with name registered on the Startup class such as:
-        /// 'services.AddHttpClient("my-typed-client-2").AddTypedClient<MyApiClient>();'
+        /// 'services.AddHttpClient("my-typed-client-2").AddTypedClient{MyApiClient}();'
         /// See <see cref="StartupHttpResponseMocking"/> for more information.
         /// </summary>
         [Fact]

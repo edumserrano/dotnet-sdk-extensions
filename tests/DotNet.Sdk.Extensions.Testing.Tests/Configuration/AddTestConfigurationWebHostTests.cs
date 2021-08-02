@@ -55,7 +55,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
 
         /// <summary>
         /// Validates arguments for the <see cref="TestConfigurationBuilderExtensions.AddTestAppSettings(IWebHostBuilder, string, string[])"/>
-        /// extension method
+        /// extension method.
         /// The test appsettings are loaded from the default directory: AppSettings.
         /// </summary>
         [Theory]
@@ -75,7 +75,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         }
 
         /// <summary>
-        /// No need to test more scenarios because they're covered by <see cref="ValidateArguments1"/>
+        /// No need to test more scenarios because they're covered by <see cref="ValidateArguments1"/>.
         /// </summary>
         public static TheoryData<IWebHostBuilder, Action<TestConfigurationOptions>, string, string[], Type, string> ValidateArguments2Data =>
             new TheoryData<IWebHostBuilder, Action<TestConfigurationOptions>, string, string[], Type, string>
@@ -86,7 +86,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
 
         /// <summary>
         /// Validates arguments for the <see cref="TestConfigurationBuilderExtensions.AddTestAppSettings(IWebHostBuilder, Action{TestConfigurationOptions} , string, string[])"/>
-        /// extension method
+        /// extension method.
         /// The test appsettings are loaded from the default directory: AppSettings.
         /// </summary>
         [Theory]

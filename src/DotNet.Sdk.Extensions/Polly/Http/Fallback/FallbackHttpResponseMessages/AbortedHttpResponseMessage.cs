@@ -12,7 +12,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Fallback.FallbackHttpResponseMessages
     public class AbortedHttpResponseMessage : HttpResponseMessage
     {
         /// <summary>
-        /// Creates an instance of <see cref="AbortedHttpResponseMessage"/>
+        /// Creates an instance of <see cref="AbortedHttpResponseMessage"/>.
         /// </summary>
         /// <param name="exception">The exception that resulted in the fallback response.</param>
         public AbortedHttpResponseMessage(Exception exception)

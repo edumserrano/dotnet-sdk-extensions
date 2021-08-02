@@ -30,7 +30,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Fallback.FallbackHttpResponseMessages
     public class CircuitBrokenHttpResponseMessage : HttpResponseMessage
     {
         /// <summary>
-        /// Creates an instance of <see cref="CircuitBrokenHttpResponseMessage"/>
+        /// Creates an instance of <see cref="CircuitBrokenHttpResponseMessage"/>.
         /// </summary>
         /// <param name="circuitBreakerState">The state of the circuit breaker that resulted in the fallback response.</param>
         public CircuitBrokenHttpResponseMessage(CircuitBreakerState circuitBreakerState)
@@ -40,7 +40,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Fallback.FallbackHttpResponseMessages
         }
 
         /// <summary>
-        /// Creates an instance of <see cref="CircuitBrokenHttpResponseMessage"/>
+        /// Creates an instance of <see cref="CircuitBrokenHttpResponseMessage"/>.
         /// </summary>
         /// <param name="circuitBreakerState">The state of the circuit breaker when the exception occurred.</param>
         /// <param name="exception">The exception that resulted in the fallback response.</param>

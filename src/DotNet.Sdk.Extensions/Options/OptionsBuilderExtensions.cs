@@ -91,7 +91,7 @@ namespace DotNet.Sdk.Extensions.Options
         /// </summary>
         /// <remarks>
         /// At the moment there is no built-in mechanism to force eager validation on options so I've followed
-        /// the advice from https://github.com/dotnet/extensions/issues/459
+        /// the advice from https://github.com/dotnet/extensions/issues/459.
         /// </remarks>
         /// <typeparam name="T">The <see cref="Type"/>  of the options to be eagerly validated.</typeparam>
         /// <param name="optionsBuilder">The <see cref="OptionsBuilder{T}"/> for the options to add eager validation to.</param>

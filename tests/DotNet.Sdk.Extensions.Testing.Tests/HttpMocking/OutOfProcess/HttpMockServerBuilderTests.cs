@@ -16,7 +16,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
     public class HttpMockServerBuilderTests
     {
         /// <summary>
-        /// Tests that by default, if no URL is provided, <seealso cref="HttpMockServer.StartAsync"/>
+        /// Tests that by default, if no URL is provided, <see cref="HttpMockServer.StartAsync"/>
         /// starts the server in two URLs, one HTTP another HTTPS.
         /// </summary>
         [Fact]
@@ -51,8 +51,8 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
         }
 
         /// <summary>
-        /// Tests that the <seealso cref="HttpMockServer.StartAsync"/> starts the server using the provided URLs
-        /// by <seealso cref="HttpMockServerBuilder.UseUrl"/>
+        /// Tests that the <see cref="HttpMockServer.StartAsync"/> starts the server using the provided URLs
+        /// by <see cref="HttpMockServerBuilder.UseUrl"/>.
         /// </summary>
         [Fact]
         public async Task AllowsMultipleUrlsToBeConfigured()
@@ -75,9 +75,9 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
         }
 
         /// <summary>
-        /// Tests that the <seealso cref="HttpMockServer.StartAsync"/> starts the server using the provided
-        /// host args by <seealso cref="HttpMockServerBuilder.UseHostArgs"/>.
-        /// This is testing the --urls <seealso cref="IHost"/> command line argument but you can test with
+        /// Tests that the <see cref="HttpMockServer.StartAsync"/> starts the server using the provided
+        /// host args by <see cref="HttpMockServerBuilder.UseHostArgs"/>.
+        /// This is testing the --urls <see cref="IHost"/> command line argument but you can test with
         /// any other.
         /// </summary>
         [Fact]
@@ -96,7 +96,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
         }
 
         /// <summary>
-        /// Tests that <seealso cref="HttpMockServerBuilder.UseHostArgs"/> cannot be null.
+        /// Tests that <see cref="HttpMockServerBuilder.UseHostArgs"/> cannot be null.
         /// </summary>
         [Fact]
         public void UsesHostArgsCannotBeNull()
@@ -110,7 +110,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
         }
 
         /// <summary>
-        /// Tests that <seealso cref="HttpMockServerBuilder.UseHostArgs"/> must have a value.
+        /// Tests that <see cref="HttpMockServerBuilder.UseHostArgs"/> must have a value.
         /// </summary>
         [Fact]
         public void UsesHostArgsMustHaveAValue()
@@ -124,7 +124,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
         }
 
         /// <summary>
-        /// Tests that <seealso cref="HttpMockServerBuilder.UseHostArgs"/> can be defined multiple times.
+        /// Tests that <see cref="HttpMockServerBuilder.UseHostArgs"/> can be defined multiple times.
         /// </summary>
         [Fact]
         public async Task UsesHostArgsCanBeRepeated()
@@ -143,7 +143,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
         }
 
         /// <summary>
-        /// Tests that the <seealso cref="HttpMockServer.StartAsync"/> fails to start if there are
+        /// Tests that the <see cref="HttpMockServer.StartAsync"/> fails to start if there are
         /// competing URLs configurations.
         /// </summary>
         [Fact]

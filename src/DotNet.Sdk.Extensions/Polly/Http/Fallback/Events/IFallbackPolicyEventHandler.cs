@@ -7,7 +7,7 @@ using Polly.Timeout;
 namespace DotNet.Sdk.Extensions.Polly.Http.Fallback.Events
 {
     /// <summary>
-    /// Defines the events produced by the HttpClient's fallback policy
+    /// Defines the events produced by the HttpClient's fallback policy.
     /// </summary>
     public interface IFallbackPolicyEventHandler
     {

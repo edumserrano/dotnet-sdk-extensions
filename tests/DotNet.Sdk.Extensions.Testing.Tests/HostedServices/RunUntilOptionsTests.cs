@@ -9,7 +9,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
     public class RunUntilOptionsTests
     {
         /// <summary>
-        /// Tests the default values for <seealso cref="RunUntilOptions"/>
+        /// Tests the default values for <see cref="RunUntilOptions"/>.
         /// </summary>
         [Fact]
         public void DefaultValues()

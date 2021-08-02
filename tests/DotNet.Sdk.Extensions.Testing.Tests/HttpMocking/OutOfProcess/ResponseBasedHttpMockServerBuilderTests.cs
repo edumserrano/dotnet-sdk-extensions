@@ -46,8 +46,8 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
 
         /// <summary>
         /// Tests that the response based <see cref="HttpMockServer"/> responds to requests as configured.
-        /// This also tests the two ways to provide mocks <seealso cref="ResponseBasedBuilder.MockHttpResponse(HttpResponseMock)"/>
-        /// and <seealso cref="ResponseBasedBuilder.MockHttpResponse(Action{HttpResponseMockBuilder})"/>
+        /// This also tests the two ways to provide mocks <see cref="ResponseBasedBuilder.MockHttpResponse(HttpResponseMock)"/>
+        /// and <see cref="ResponseBasedBuilder.MockHttpResponse(Action{HttpResponseMockBuilder})"/>.
         /// </summary>
         [Fact]
         public async Task RepliesAsConfigured()
@@ -101,7 +101,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
         }
 
         /// <summary>
-        /// Tests that the response based <see cref="HttpMockServer"/> evaluates <seealso cref="HttpResponseMock"/>s
+        /// Tests that the response based <see cref="HttpMockServer"/> evaluates multiple <see cref="HttpResponseMock"/>
         /// in the order of which they are added.
         /// This means that if there are two competing predicates the first one wins.
         /// </summary>
@@ -177,8 +177,8 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
         }
 
         /// <summary>
-        /// Tests that you cannot provide null mocks to <seealso cref="ResponseBasedBuilder.MockHttpResponse(HttpResponseMock)"/>
-        /// and <seealso cref="ResponseBasedBuilder.MockHttpResponse(Action{HttpResponseMockBuilder})"/>
+        /// Tests that you cannot provide null mocks to <see cref="ResponseBasedBuilder.MockHttpResponse(HttpResponseMock)"/>
+        /// and <see cref="ResponseBasedBuilder.MockHttpResponse(Action{HttpResponseMockBuilder})"/>.
         /// </summary>
         [Fact]
         public void ValidateMocks()

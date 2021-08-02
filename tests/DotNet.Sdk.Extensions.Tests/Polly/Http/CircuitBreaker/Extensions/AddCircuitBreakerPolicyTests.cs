@@ -369,7 +369,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
         /// with 500 status code and some extra properties.
         ///
         /// This is to optimize the performance of the code by reducing the exceptions thrown as indicated by
-        /// https://github.com/App-vNext/Polly/wiki/Circuit-Breaker#reducing-thrown-exceptions-when-the-circuit-is-broken
+        /// https://github.com/App-vNext/Polly/wiki/Circuit-Breaker#reducing-thrown-exceptions-when-the-circuit-is-broken.
         ///  </summary>
         [Fact]
         public async Task AddCircuitBreakerPolicyDoesNotThrowExceptionWhenCircuitIsOpen()

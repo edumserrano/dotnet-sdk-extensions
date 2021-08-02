@@ -8,7 +8,7 @@ using Xunit;
 namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
 {
     /// <summary>
-    /// Tests for the <see cref="RetryOptionsExtensions.AddHttpClientRetryOptions"/> method
+    /// Tests for the <see cref="RetryOptionsExtensions.AddHttpClientRetryOptions"/> method.
     /// </summary>
     [Trait("Category", XUnitCategories.Polly)]
     public class AddHttpClientRetryOptionsTests

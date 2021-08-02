@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 namespace DotNet.Sdk.Extensions.Polly.Http.Retry.Events
 {
     /// <summary>
-    /// Defines the events produced by the HttpClient's retry policy
+    /// Defines the events produced by the HttpClient's retry policy.
     /// </summary>
     public interface IRetryPolicyEventHandler
     {
