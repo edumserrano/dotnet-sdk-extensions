@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess.Auxiliary.Timeout
 {
     // For more information on why this custom WebApplicationFactory<T> is configured as below
-    // please see the doc at /docs/integration-tests/web-application-factory.md 
+    // please see the doc at /docs/integration-tests/web-application-factory.md
     public class TimeoutHttpResponseMockingWebApplicationFactory : WebApplicationFactory<TimeoutStartupHttpResponseMocking>
     {
         protected override void ConfigureWebHost(IWebHostBuilder builder)

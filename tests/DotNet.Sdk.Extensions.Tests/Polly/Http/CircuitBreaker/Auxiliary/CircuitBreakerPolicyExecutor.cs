@@ -104,7 +104,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
             for (var i = 0; i < _circuitBreakerOptions.MinimumThroughput; i++)
             {
                 var response = await _httpClient.GetAsync(requestPath);
-                // the circuit should be closed during this loop which means it will be returning the 
+                // the circuit should be closed during this loop which means it will be returning the
                 // expected status code. Once the circuit is open it starts failing fast by returning
                 // a CircuitBrokenHttpResponseMessage instance whose status code is 500
                 if (response.StatusCode != httpStatusCode)

@@ -130,7 +130,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
             var helloResponse = await httpClient.GetAsync($"{urls[0]}/hello");
             helloResponse.StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
 
-            // now create another server where the mocks order is reversed to 
+            // now create another server where the mocks order is reversed to
             // show that we indeed get the result from the first registered mock
             await using var mock2 = new HttpMockServerBuilder()
                 .UseDefaultLogLevel(LogLevel.Critical)

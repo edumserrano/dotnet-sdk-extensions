@@ -64,7 +64,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             policyHttpMessageHandlers[1]
                 .GetPolicy<AsyncRetryPolicy<HttpResponseMessage>>()
                 .ShouldNotBeNull();
-            // circuit breaker policy 
+            // circuit breaker policy
             policyHttpMessageHandlers[2]
                 .GetPolicy<AsyncPolicyWrap<HttpResponseMessage>>()
                 .ShouldNotBeNull();
@@ -119,7 +119,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             policyHttpMessageHandlers[1]
                 .GetPolicy<AsyncRetryPolicy<HttpResponseMessage>>()
                 .ShouldNotBeNull();
-            // circuit breaker policy 
+            // circuit breaker policy
             policyHttpMessageHandlers[2]
                 .GetPolicy<AsyncPolicyWrap<HttpResponseMessage>>()
                 .ShouldNotBeNull();
@@ -172,7 +172,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             policyHttpMessageHandlers[1]
                 .GetPolicy<AsyncRetryPolicy<HttpResponseMessage>>()
                 .ShouldNotBeNull();
-            // circuit breaker policy 
+            // circuit breaker policy
             policyHttpMessageHandlers[2]
                 .GetPolicy<AsyncPolicyWrap<HttpResponseMessage>>()
                 .ShouldNotBeNull();
@@ -229,7 +229,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             policyHttpMessageHandlers[1]
                 .GetPolicy<AsyncRetryPolicy<HttpResponseMessage>>()
                 .ShouldNotBeNull();
-            // circuit breaker policy 
+            // circuit breaker policy
             policyHttpMessageHandlers[2]
                 .GetPolicy<AsyncPolicyWrap<HttpResponseMessage>>()
                 .ShouldNotBeNull();
@@ -288,7 +288,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             policyHttpMessageHandlers[1]
                 .GetPolicy<AsyncRetryPolicy<HttpResponseMessage>>()
                 .ShouldNotBeNull();
-            // circuit breaker policy 
+            // circuit breaker policy
             policyHttpMessageHandlers[2]
                 .GetPolicy<AsyncPolicyWrap<HttpResponseMessage>>()
                 .ShouldNotBeNull();
@@ -345,7 +345,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             policyHttpMessageHandlers[1]
                 .GetPolicy<AsyncRetryPolicy<HttpResponseMessage>>()
                 .ShouldNotBeNull();
-            // circuit breaker policy 
+            // circuit breaker policy
             policyHttpMessageHandlers[2]
                 .GetPolicy<AsyncPolicyWrap<HttpResponseMessage>>()
                 .ShouldNotBeNull();

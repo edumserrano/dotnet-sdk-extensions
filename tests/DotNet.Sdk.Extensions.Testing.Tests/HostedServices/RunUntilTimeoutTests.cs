@@ -108,7 +108,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
 
             // This code creating the Host would exist somewhere in app being tested.
             // In a real scenario we would call the function that creates the Host.
-            // For this test we incorporate the host creation in this test. 
+            // For this test we incorporate the host creation in this test.
             var hostBuilder = Host
                 .CreateDefaultBuilder()
                 .UseDefaultLogLevel(LogLevel.Critical)
