@@ -48,6 +48,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Fallback.Extensions
 
             static IFallbackPolicyEventHandler EventHandlerFactory(IServiceProvider provider) => provider.GetRequiredService<TPolicyEventHandler>();
         }
+
         /// <summary>
         /// Adds a fallback policy to the <see cref="HttpClient"/>.
         /// </summary>

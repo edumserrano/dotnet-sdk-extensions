@@ -213,6 +213,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
             configurationProviders[4].ShouldBeOfType<EnvironmentVariablesConfigurationProvider>();
             configurationProviders[5].ShouldBeOfType<CommandLineConfigurationProvider>();
         }
+
         /// <summary>
         /// Similar to <see cref="PreservesExpectedConfigurationSourcesOrder"/> but tests when no <see cref="JsonConfigurationSource"/>
         /// exists. In this case the test appsettings should still be added before the <see cref="EnvironmentVariablesConfigurationSource"/>
