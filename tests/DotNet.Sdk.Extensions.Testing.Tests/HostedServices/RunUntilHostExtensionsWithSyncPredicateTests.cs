@@ -22,7 +22,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
         public static TheoryData<IHost, RunUntilPredicate, Type, string> ValidateArgumentsData =>
             new TheoryData<IHost, RunUntilPredicate, Type, string>
             {
-                { null!, ()=>true, typeof(ArgumentNullException), "Value cannot be null. (Parameter 'host')" },
+                { null!, () => true, typeof(ArgumentNullException), "Value cannot be null. (Parameter 'host')" },
                 { CreateHost(), null!, typeof(ArgumentNullException), "Value cannot be null. (Parameter 'predicate')" },
             };
 
@@ -56,9 +56,9 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
         public static TheoryData<IHost, RunUntilPredicate, Action<RunUntilOptions>, Type, string> ValidateArgumentsWithOptionsData =>
             new TheoryData<IHost, RunUntilPredicate, Action<RunUntilOptions>, Type, string>
             {
-                { null!, ()=>true, _ => {} , typeof(ArgumentNullException), "Value cannot be null. (Parameter 'host')" },
-                { CreateHost(), null!, _ => {}, typeof(ArgumentNullException), "Value cannot be null. (Parameter 'predicate')" },
-                { CreateHost(), ()=>true, null!, typeof(ArgumentNullException), "Value cannot be null. (Parameter 'configureOptions')" },
+                { null!, () => true, _ => { }, typeof(ArgumentNullException), "Value cannot be null. (Parameter 'host')" },
+                { CreateHost(), null!, _ => { }, typeof(ArgumentNullException), "Value cannot be null. (Parameter 'predicate')" },
+                { CreateHost(), () => true, null!, typeof(ArgumentNullException), "Value cannot be null. (Parameter 'configureOptions')" },
             };
 
         /// <summary>

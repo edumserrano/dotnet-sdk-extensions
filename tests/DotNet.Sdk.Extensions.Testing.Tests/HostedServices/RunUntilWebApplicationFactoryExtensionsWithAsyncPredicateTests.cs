@@ -22,7 +22,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
         public static TheoryData<HostedServicesWebApplicationFactory, RunUntilPredicateAsync, Type, string> ValidateArgumentsData =>
             new TheoryData<HostedServicesWebApplicationFactory, RunUntilPredicateAsync, Type, string>
             {
-                { null!, ()=> Task.FromResult(true), typeof(ArgumentNullException), "Value cannot be null. (Parameter 'webApplicationFactory')" },
+                { null!, () => Task.FromResult(true), typeof(ArgumentNullException), "Value cannot be null. (Parameter 'webApplicationFactory')" },
                 { new HostedServicesWebApplicationFactory(), null!, typeof(ArgumentNullException), "Value cannot be null. (Parameter 'predicateAsync')" },
             };
 
@@ -47,9 +47,9 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
         public static TheoryData<HostedServicesWebApplicationFactory, RunUntilPredicateAsync, Action<RunUntilOptions>, Type, string> ValidateArgumentsWithOptionsData =>
             new TheoryData<HostedServicesWebApplicationFactory, RunUntilPredicateAsync, Action<RunUntilOptions>, Type, string>
             {
-                { null!, ()=>Task.FromResult(true), _ => {}, typeof(ArgumentNullException), "Value cannot be null. (Parameter 'webApplicationFactory')" },
-                { new HostedServicesWebApplicationFactory(), null!, _ => {}, typeof(ArgumentNullException), "Value cannot be null. (Parameter 'predicateAsync')" },
-                { new HostedServicesWebApplicationFactory(), ()=>Task.FromResult(true), null!, typeof(ArgumentNullException), "Value cannot be null. (Parameter 'configureOptions')" },
+                { null!, () => Task.FromResult(true), _ => { }, typeof(ArgumentNullException), "Value cannot be null. (Parameter 'webApplicationFactory')" },
+                { new HostedServicesWebApplicationFactory(), null!, _ => { }, typeof(ArgumentNullException), "Value cannot be null. (Parameter 'predicateAsync')" },
+                { new HostedServicesWebApplicationFactory(), () => Task.FromResult(true), null!, typeof(ArgumentNullException), "Value cannot be null. (Parameter 'configureOptions')" },
             };
 
         /// <summary>
