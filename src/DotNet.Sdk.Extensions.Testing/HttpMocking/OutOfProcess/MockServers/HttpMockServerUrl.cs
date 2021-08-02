@@ -35,6 +35,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers
         /// <summary>
         /// Returns the string representation of the URL.
         /// </summary>
+        /// <returns>The mock server's URL as a string.</returns>
         public override string ToString() => _url;
 
         /// <summary>
