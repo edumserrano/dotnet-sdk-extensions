@@ -27,32 +27,32 @@ namespace DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker.Events
         }
 
         /// <summary>
-        /// The name of the HttpClient that triggered this event.
+        /// Gets the name of the HttpClient that triggered this event.
         /// </summary>
         public string HttpClientName { get; }
 
         /// <summary>
-        /// The circuit breaker options applied to the HttpClient that triggered this event.
+        /// Gets the circuit breaker options applied to the HttpClient that triggered this event.
         /// </summary>
         public CircuitBreakerOptions CircuitBreakerOptions { get; }
 
         /// <summary>
-        /// Result from the last HttpClient execution before the circuit state changed to open/isolated.
+        /// Gets result from the last HttpClient execution before the circuit state changed to open/isolated.
         /// </summary>
         public DelegateResult<HttpResponseMessage> LastOutcome { get; }
 
         /// <summary>
-        /// The circuit's previous state.
+        /// Gets the circuit's previous state.
         /// </summary>
         public CircuitState PreviousState { get; }
 
         /// <summary>
-        /// The duration the circuit will stay open before resetting.
+        /// Gets the duration the circuit will stay open before resetting.
         /// </summary>
         public TimeSpan DurationOfBreak { get; }
 
         /// <summary>
-        /// The Polly Context.
+        /// Gets the Polly Context.
         /// </summary>
         public Context Context { get; }
     }

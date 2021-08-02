@@ -24,7 +24,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Fallback.FallbackHttpResponseMessages
         }
 
         /// <summary>
-        /// Exception that triggered the <see cref="TimeoutHttpResponseMessage"/> fallback response.
+        /// Gets exception that triggered the <see cref="TimeoutHttpResponseMessage"/> fallback response.
         /// </summary>
         public Exception Exception { get; }
     }

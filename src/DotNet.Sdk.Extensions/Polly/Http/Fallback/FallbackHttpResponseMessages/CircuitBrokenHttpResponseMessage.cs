@@ -51,12 +51,12 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Fallback.FallbackHttpResponseMessages
         }
 
         /// <summary>
-        /// The state of the circuit breaker when the fallback response was generated.
+        /// Gets the state of the circuit breaker when the fallback response was generated.
         /// </summary>
         public CircuitBreakerState CircuitBreakerState { get; }
 
         /// <summary>
-        /// If available, represents the exception that triggered the
+        /// Gets if available, represents the exception that triggered the
         /// <see cref="CircuitBrokenHttpResponseMessage"/> fallback response.
         /// </summary>
         public Exception? Exception { get; }

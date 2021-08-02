@@ -72,7 +72,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
         /// Tests that the <see cref="ResiliencePoliciesHttpClientBuilderExtensions.AddResiliencePolicies{TPolicyEventHandler}(IHttpClientBuilder,Action{ResilienceOptions})"/>
         /// overload method adds a <see cref="DelegatingHandler"/> with a retry policy to the <see cref="HttpClient"/>.
         ///
-        /// This also tests that the <see cref="IResiliencePoliciesEventHandler.OnRetryAsync"/> is triggered with the correct values.
+        /// This also tests that the retry event from <see cref="IResiliencePoliciesEventHandler"/> is triggered with the correct values.
         /// </summary>
         [Fact]
         public async Task AddResiliencePoliciesAddsRetryPolicy3()

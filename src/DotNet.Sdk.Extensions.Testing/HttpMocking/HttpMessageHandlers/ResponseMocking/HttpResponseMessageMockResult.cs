@@ -16,12 +16,12 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.Response
         }
 
         /// <summary>
-        /// The result of executing the <see cref="HttpResponseMessageMock"/>.
+        /// Gets the result of executing the <see cref="HttpResponseMessageMock"/>.
         /// </summary>
         public HttpResponseMessageMockResults Status { get; private set; }
 
         /// <summary>
-        /// The <see cref="HttpResponseMessage"/> produced by the <see cref="HttpResponseMessageMock"/>.
+        /// Gets the <see cref="HttpResponseMessage"/> produced by the <see cref="HttpResponseMessageMock"/>.
         /// </summary>
         public HttpResponseMessage HttpResponseMessage
         {

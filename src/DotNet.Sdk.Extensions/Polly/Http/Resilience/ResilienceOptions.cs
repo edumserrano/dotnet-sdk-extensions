@@ -26,40 +26,40 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Resilience
         }
 
         /// <summary>
-        /// Options to configure the circuit breaker policy.
+        /// Gets or sets options to configure the circuit breaker policy.
         /// </summary>
         [Required]
         public CircuitBreakerOptions CircuitBreaker { get; set; }
 
         /// <summary>
-        /// Options to configure the circuit timeout policy.
+        /// Gets or sets options to configure the circuit timeout policy.
         /// </summary>
         [Required]
         public TimeoutOptions Timeout { get; set; }
 
         /// <summary>
-        /// Options to configure the circuit retry policy.
+        /// Gets or sets options to configure the circuit retry policy.
         /// </summary>
         [Required]
         public RetryOptions Retry { get; set; }
 
         /// <summary>
-        /// Whether or not the fallback policy added to the <see cref="HttpClient"/>.
+        /// Gets or sets a value indicating whether or not the fallback policy added to the <see cref="HttpClient"/>.
         /// </summary>
         public bool EnableFallbackPolicy { get; set; }
 
         /// <summary>
-        /// Whether or not the retry policy added to the <see cref="HttpClient"/>.
+        /// Gets or sets a value indicating whether or not the retry policy added to the <see cref="HttpClient"/>.
         /// </summary>
         public bool EnableRetryPolicy { get; set; }
 
         /// <summary>
-        /// Whether or not the circuit breaker policy added to the <see cref="HttpClient"/>.
+        /// Gets or sets a value indicating whether or not the circuit breaker policy added to the <see cref="HttpClient"/>.
         /// </summary>
         public bool EnableCircuitBreakerPolicy { get; set; }
 
         /// <summary>
-        /// Whether or not the timeout policy added to the <see cref="HttpClient"/>.
+        /// Gets or sets a value indicating whether or not the timeout policy added to the <see cref="HttpClient"/>.
         /// </summary>
         public bool EnableTimeoutPolicy { get; set; }
     }

@@ -9,7 +9,7 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
     public class RunUntilOptions
     {
         /// <summary>
-        /// Period after which the host executing the hosted service will be terminated. Defaults to 5 seconds.
+        /// Gets or sets period after which the host executing the hosted service will be terminated. Defaults to 5 seconds.
         /// </summary>
         /// <remarks>
         /// <para>
@@ -24,7 +24,7 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
         public TimeSpan Timeout { get; set; } = Debugger.IsAttached ? TimeSpan.FromDays(1) : TimeSpan.FromSeconds(5);
 
         /// <summary>
-        /// Interval of time to check the predicate for the to determine if the host running the hosted service
+        /// Gets or sets interval of time to check the predicate for the to determine if the host running the hosted service
         /// should be terminated. Defaults to 5 ms.
         /// </summary>
         public TimeSpan PredicateCheckInterval { get; set; } = TimeSpan.FromMilliseconds(5);

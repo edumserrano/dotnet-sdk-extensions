@@ -11,7 +11,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers
     public interface IHttpMockServer : IAsyncDisposable
     {
         /// <summary>
-        /// The <see cref="IHost"/> used by the <see cref="HttpMockServer"/>.
+        /// Gets the <see cref="IHost"/> used by the <see cref="HttpMockServer"/>.
         /// </summary>
         public IHost? Host { get; }
 

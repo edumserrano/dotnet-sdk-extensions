@@ -26,27 +26,27 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Timeout.Events
         }
 
         /// <summary>
-        /// The name of the HttpClient that triggered this event.
+        /// Gets the name of the HttpClient that triggered this event.
         /// </summary>
         public string HttpClientName { get; }
 
         /// <summary>
-        /// The timeout options applied to the HttpClient that triggered this event.
+        /// Gets the timeout options applied to the HttpClient that triggered this event.
         /// </summary>
         public TimeoutOptions TimeoutOptions { get; }
 
         /// <summary>
-        /// The Polly Context.
+        /// Gets the Polly Context.
         /// </summary>
         public Context Context { get; }
 
         /// <summary>
-        /// The timeout applied.
+        /// Gets the timeout applied.
         /// </summary>
         public TimeSpan RequestTimeout { get; }
 
         /// <summary>
-        /// A <see cref="Task"/> capturing the abandoned, timed-out action.
+        /// Gets a <see cref="Task"/> capturing the abandoned, timed-out action.
         /// </summary>
         /// <remarks>
         /// This will be null if the executed action responded cooperatively to cancellation before the policy timed it out.
@@ -54,7 +54,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Timeout.Events
         public Task? TimedOutTask { get; }
 
         /// <summary>
-        /// The captured exception.
+        /// Gets the captured exception.
         /// </summary>
         public Exception Exception { get; }
     }

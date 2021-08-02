@@ -18,9 +18,9 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
     public class AddTestConfigurationWebHostTests
     {
         /// <summary>
-        /// Tests that <see cref="WebHost.CreateDefaultBuilder()"/> adds two <see cref="JsonConfigurationProvider"/>
+        /// Tests that <see cref="Microsoft.AspNetCore.WebHost.CreateDefaultBuilder()"/> adds two <see cref="JsonConfigurationProvider"/>
         /// to the app configuration.
-        /// This test serves as a control test because all the tests use the <see cref="WebHost.CreateDefaultBuilder()"/> as a way
+        /// This test serves as a control test because all the tests use the <see cref="Microsoft.AspNetCore.WebHost.CreateDefaultBuilder()"/> as a way
         /// to setup a <see cref="IWebHost"/> with several <see cref="ConfigurationProvider"/> and at least two <see cref="JsonConfigurationProvider"/>.
         /// If this changes in the future then I could start having false positives on the other tests.
         /// </summary>
@@ -75,7 +75,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         }
 
         /// <summary>
-        /// No need to test more scenarios because they're covered by <see cref="ValidateArguments1"/>.
+        /// Gets no need to test more scenarios because they're covered by <see cref="ValidateArguments1"/>.
         /// </summary>
         public static TheoryData<IWebHostBuilder, Action<TestConfigurationOptions>, string, string[], Type, string> ValidateArguments2Data =>
             new TheoryData<IWebHostBuilder, Action<TestConfigurationOptions>, string, string[], Type, string>
