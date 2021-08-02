@@ -90,14 +90,14 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
             // Trying to set up the dev certificate with `dotnet dev-certs https --trust` does not work on linux
             // See https://docs.microsoft.com/en-us/aspnet/core/security/enforcing-ssl?view=aspnetcore-5.0&tabs=visual-studio#ssl-linux
 
-            //var defaultHttpsResponse = await httpClient.GetAsync($"{httpsUrl}/default");
-            //defaultHttpsResponse.StatusCode.ShouldBe(HttpStatusCode.NotFound);
-            //defaultHttpsResponse.Content.Headers.ContentLength.ShouldBe(0);
+            // var defaultHttpsResponse = await httpClient.GetAsync($"{httpsUrl}/default");
+            // defaultHttpsResponse.StatusCode.ShouldBe(HttpStatusCode.NotFound);
+            // defaultHttpsResponse.Content.Headers.ContentLength.ShouldBe(0);
 
-            //var helloHttpsResponse = await httpClient.GetAsync($"{httpsUrl}/hello");
-            //helloHttpsResponse.StatusCode.ShouldBe(HttpStatusCode.Created);
-            //var helloHttpsContent = await helloHttpsResponse.Content.ReadAsStringAsync();
-            //helloHttpsContent.ShouldBe("hello");
+            // var helloHttpsResponse = await httpClient.GetAsync($"{httpsUrl}/hello");
+            // helloHttpsResponse.StatusCode.ShouldBe(HttpStatusCode.Created);
+            // var helloHttpsContent = await helloHttpsResponse.Content.ReadAsStringAsync();
+            // helloHttpsContent.ShouldBe("hello");
         }
 
         /// <summary>

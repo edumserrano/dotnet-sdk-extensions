@@ -7,7 +7,7 @@ namespace DotNet.Sdk.Extensions.Tests.Options.ValidateEagerly.Auxiliary.IValidat
     {
         public ValidateOptionsResult Validate(string name, MyOptions1 options)
         {
-            //this is doing data annotation validation but you can implement the validation however you like
+            // this is doing data annotation validation but you can implement the validation however you like
             Validator.ValidateObject(options, new ValidationContext(options), validateAllProperties: true);
             return ValidateOptionsResult.Success;
         }

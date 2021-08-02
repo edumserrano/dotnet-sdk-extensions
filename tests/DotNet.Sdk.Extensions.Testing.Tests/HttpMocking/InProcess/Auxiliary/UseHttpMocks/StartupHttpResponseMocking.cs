@@ -14,7 +14,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess.Auxiliary.Us
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddHttpClient(); //add basic client
+            services.AddHttpClient(); // add basic client
             services.AddHttpClient("my-named-client"); // add named client
             services.AddHttpClient<MyApiClient>("my-typed-client"); // add typed client with custom name
             services.AddHttpClient("my-typed-client-2").AddTypedClient<MyApiClient>(); // add typed client with custom name, equivalent to the line above
