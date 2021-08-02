@@ -17,7 +17,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker
         public double FailureThreshold { get; set; }
 
         /// <summary>
-        /// The duration of the timeslice over which failure ratios are assessed.
+        /// The duration of the time slice over which failure ratios are assessed.
         /// </summary>
         /// <remarks>
         /// Must be a value between <see cref="double.Epsilon"/> and <see cref="double.MaxValue"/>.
@@ -27,7 +27,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker
         public double SamplingDurationInSecs { get; set; }
 
         /// <summary>
-        /// The minimum throughput: this many actions or more must pass through the circuit in the timeslice,
+        /// The minimum throughput: this many actions or more must pass through the circuit in the time slice,
         /// for statistics to be considered significant and the circuit-breaker to come into action.
         /// </summary>
         /// <remarks>

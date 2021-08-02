@@ -1,17 +1,12 @@
-# You can learn more about code analysis here: https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/overview?view=vs-2019
-# See http://EditorConfig.org for more information about .editorconfig files.
-#
-# This file was tweaked based on:
-#
-# https://github.com/RehanSaeed/EditorConfig/blob/7b1927edffbe299873225026f61ac1ee7ae743e7/.editorconfig
-# Version: 2.1.0 (Using https://semver.org/)
-# Updated: 2021-03-03
-# See https://github.com/RehanSaeed/EditorConfig/releases for release notes.
-# See https://github.com/RehanSaeed/EditorConfig for updates to this file.
+# This .editorconfig file is configured in an opt-out fashion. This means that the default severity of diagnostic analyzers is set to warning
+# and for some diagnostics their severity is reduced.
 #
 # Be **careful** editing this because some of the rules don't support adding a severity level
 # For instance if you change to `dotnet_sort_system_directives_first = true:warning` (adding `:warning`)
 # then the rule will be silently ignored. Always test when making changes to this file
+#
+# You can learn more about code analysis here: https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/overview?view=vs-2019
+# See http://EditorConfig.org for more information about .editorconfig files.
 #
 
 ##########################################
@@ -77,70 +72,9 @@ indent_style = tab
 # Default .NET Code Style Severities
 # https://docs.microsoft.com/dotnet/fundamentals/code-analysis/configuration-options#scope
 ##########################################
-
 [*.cs]
 # Default Severity for all .NET Code Style rules below
-# dotnet_analyzer_diagnostic.severity = warning
-
-# Rules for Microsoft.VisualStudio.Threading.Analyzers
-# See https://github.com/microsoft/vs-threading/blob/main/doc/analyzers/index.md
-[*.cs]
-dotnet_diagnostic.VSTHRD111.severity = none         # VSTHRD111 Use .ConfigureAwait(bool)
-
-# Rules for Roslynator.Analyzers
-# See https://github.com/JosefPihrt/Roslynator/blob/master/src/Analyzers/README.md
-[*.cs]
-dotnet_diagnostic.RCS1021.severity = none         # RCS1021: Convert lambda expression body to expression-body
-dotnet_diagnostic.RCS1070.severity = none         # RCS1070: Remove redundant default switch section
-dotnet_diagnostic.RCS1080.severity = warning      # RCS1080: Use 'Count/Length' property instead of 'Any' method
-dotnet_diagnostic.RCS1090.severity = none         # RCS1090: Add call to 'ConfigureAwait' (or vice versa)
-dotnet_diagnostic.RCS1124.severity = warning      # RCS1124: Inline local variable
-dotnet_diagnostic.RCS1139.severity = warning      # RCS1139: Add summary element to documentation comment
-dotnet_diagnostic.RCS1140.severity = none         # RCS1140: Add exception to documentation comment
-dotnet_diagnostic.RCS1141.severity = warning      # RCS1141: Add 'param' element to documentation comment
-dotnet_diagnostic.RCS1142.severity = warning      # RCS1142: Add 'typeparam' element to documentation comment
-dotnet_diagnostic.RCS1194.severity = none         # RCS1194: Implement exception constructors
-dotnet_diagnostic.RCS1163.severity = warning      # RCS1163: Unused parameter
-dotnet_diagnostic.RCS1168.severity = warning      # RCS1168: Parameter name differs from base name
-dotnet_diagnostic.RCS1224.severity = none         # RCS1224: Make method an extension method
-dotnet_diagnostic.RCS1226.severity = warning      # RCS1226: Add paragraph to documentation comment
-dotnet_diagnostic.RCS1228.severity = warning      # RCS1228: Unused element in documentation comment
-dotnet_diagnostic.RCS1232.severity = warning      # RCS1232: Order elements in documentation comment
-dotnet_diagnostic.RCS1243.severity = warning      # RCS1243: Duplicate word in a comment
-
-# Rules for Roslynator.Formatting.Analyzers
-# See https://github.com/JosefPihrt/Roslynator/blob/master/src/Formatting.Analyzers/README.md
-dotnet_diagnostic.RCS0001.severity = warning      # RCS0001: Add empty line after embedded statement
-dotnet_diagnostic.RCS0003.severity = warning      # RCS0003: Add empty line after using directive list
-dotnet_diagnostic.RCS0008.severity = warning      # RCS0008: Add empty line between block and statement
-dotnet_diagnostic.RCS0010.severity = warning      # RCS0010: Add empty line between declarations
-dotnet_diagnostic.RCS0021.severity = warning      # RCS0021: Add newline after opening brace of block
-dotnet_diagnostic.RCS0022.severity = warning      # RCS0022: Add newline after opening brace of empty block
-dotnet_diagnostic.RCS0023.severity = warning      # RCS0023: Add newline after opening brace of type declaration
-dotnet_diagnostic.RCS0024.severity = warning      # RCS0024: Add newline after switch label
-dotnet_diagnostic.RCS0025.severity = warning      # RCS0025: Add newline before accessor of full property
-dotnet_diagnostic.RCS0027.severity = warning      # RCS0027: Add newline before binary operator instead of after it (or vice versa)
-dotnet_diagnostic.RCS0028.severity = warning      # RCS0028: Add newline before conditional operator instead of after it (or vice versa)
-dotnet_diagnostic.RCS0030.severity = warning      # RCS0030: Add newline before embedded statement
-dotnet_diagnostic.RCS0031.severity = warning      # RCS0031: Add newline before enum member
-dotnet_diagnostic.RCS0033.severity = warning      # RCS0033: Add newline before statement
-dotnet_diagnostic.RCS0034.severity = warning      # RCS0034: Add newline before type parameter constraint
-dotnet_diagnostic.RCS0039.severity = warning      # RCS0039: Remove newline before base list
-dotnet_diagnostic.RCS0041.severity = warning      # RCS0041: Remove newline between 'if' keyword and 'else' keyword
-dotnet_diagnostic.RCS0042.severity = warning      # RCS0042: Remove newlines from accessor list of auto-property
-dotnet_diagnostic.RCS0043.severity = warning      # RCS0043: Remove newlines from accessor with single-line expression
-dotnet_diagnostic.RCS0050.severity = warning      # RCS0050: Add empty line before top declaration
-dotnet_diagnostic.RCS0051.severity = warning      # RCS0051: Add newline between closing brace and 'while' keyword (or vice versa)
-dotnet_diagnostic.RCS0054.severity = warning      # RCS0054: Fix formatting of a call chain
-dotnet_diagnostic.RCS0055.severity = warning      # RCS0055: Fix formatting of a binary expression chain
-
-
-
-
-
-
-
-
+dotnet_analyzer_diagnostic.severity = warning
 
 ##########################################
 # Code quality rules https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/
@@ -158,34 +92,14 @@ dotnet_diagnostic.RCS0055.severity = warning      # RCS0055: Fix formatting of a
 dotnet_diagnostic.CA1014.severity = none        # CA1014: Mark assemblies with CLSCompliantAttribute
 dotnet_diagnostic.CA1030.severity = silent      # CA1030: Use events where appropriate
 dotnet_diagnostic.CA1032.severity = none        # CA1032: Implement standard exception constructors
-dotnet_diagnostic.CA1052.severity = warning     # CA1052: Static holder types should be Static or NotInheritable
-
-# Documentation rules https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/documentation-warnings
-
 # Globalization rules https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/globalization-warnings
 dotnet_diagnostic.CA1308.severity = none        # CA1308: Normalize strings to uppercase
-
-# Portability and interoperability rules https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/interoperability-warnings
-
 # Maintainability rules https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/maintainability-warnings
 dotnet_diagnostic.CA1508.severity = none        # CA1508: Avoid dead conditional code # This one seems to be bugged in some cases
-
 # Naming rules https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/naming-warnings
 dotnet_diagnostic.CA1711.severity = none        # CA1711: Identifiers should not have incorrect suffix
-
-# Performance rules https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/performance-warnings
-dotnet_diagnostic.CA1812.severity = warning      # CA1812: Avoid uninstantiated internal classes
-dotnet_diagnostic.CA1822.severity = warning      # CA1822: Mark members as static
-
-# SingleFile rules https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/singlefile-warnings
-
 # Reliability rules https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/reliability-warnings
-[*.cs]
-dotnet_diagnostic.CA2000.severity = warning     # CA2000: Dispose objects before losing scope
 dotnet_diagnostic.CA2007.severity = none        # CA2007: Do not directly await a Task
-
-# Security rules https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/security-warnings
-
 # Usage rules https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/usage-warnings
 dotnet_diagnostic.CA2234.severity = silent      # CA2234: Pass System.Uri objects instead of strings
 
@@ -193,132 +107,53 @@ dotnet_diagnostic.CA2234.severity = silent      # CA2234: Pass System.Uri object
 # Language Rules
 # https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/language-rules
 ##########################################
-
 # .NET Style Rules
 # https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/language-rules#net-style-rules
 [*.cs]
-# "this." and "Me." qualifiers
-dotnet_style_qualification_for_field = false:warning
-dotnet_style_qualification_for_property = false:warning
-dotnet_style_qualification_for_method = false:warning
-dotnet_style_qualification_for_event = false:warning
-# Language keywords instead of framework type names for type references
-dotnet_style_predefined_type_for_locals_parameters_members = true:warning
-dotnet_style_predefined_type_for_member_access = true:warning
-# Modifier preferences
-dotnet_style_require_accessibility_modifiers = for_non_interface_members:warning
-csharp_preferred_modifier_order = public,private,protected,internal,static,extern,new,virtual,abstract,sealed,override,readonly,unsafe,volatile,async:warning
-dotnet_style_readonly_field = true:warning
 # Parentheses preferences
-dotnet_style_parentheses_in_arithmetic_binary_operators = always_for_clarity:warning
-dotnet_style_parentheses_in_relational_binary_operators = always_for_clarity:warning
-dotnet_style_parentheses_in_other_binary_operators = always_for_clarity:warning
-dotnet_style_parentheses_in_other_operators = always_for_clarity:suggestion
+dotnet_style_parentheses_in_other_operators = never_if_unnecessary:suggestion
 # Expression-level preferences
-dotnet_style_object_initializer = true:warning
-dotnet_style_collection_initializer = true:warning
-dotnet_style_explicit_tuple_names = true:warning
-dotnet_style_prefer_inferred_tuple_names = true:warning
-dotnet_style_prefer_inferred_anonymous_type_member_names = true:warning
-dotnet_style_prefer_auto_properties = true:warning
 dotnet_style_prefer_conditional_expression_over_assignment = true:silent
-dotnet_diagnostic.IDE0045.severity = suggestion
+dotnet_diagnostic.IDE0045.severity = suggestion # Use conditional expression for assignment (IDE0045)
 dotnet_style_prefer_conditional_expression_over_return = true:silent
 dotnet_diagnostic.IDE0046.severity = silent     # Use conditional expression for return (IDE0046)
-dotnet_style_prefer_compound_assignment = true:warning
-dotnet_style_prefer_simplified_interpolation = true:warning
-dotnet_style_prefer_simplified_boolean_expressions = true:warning
-# Null-checking preferences
-dotnet_style_coalesce_expression = true:warning
-dotnet_style_null_propagation = true:warning
-dotnet_style_prefer_is_null_check_over_reference_equality_method = true:warning
 # Undocumented
 dotnet_style_operator_placement_when_wrapping = beginning_of_line
 
 # C# Style Rules
 # https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/language-rules#c-style-rules
-[*.{cs,csx,cake}]
+[*.cs]
 # 'var' preferences
-dotnet_diagnostic.IDE0008.severity = none # IDE0008: Use explicit type instead of 'var'
+dotnet_diagnostic.IDE0008.severity = none               # IDE0008: Use explicit type instead of 'var'
 csharp_style_var_for_built_in_types = true:warning
 csharp_style_var_when_type_is_apparent = true:warning
 csharp_style_var_elsewhere = true:warning
 # Expression-bodied members
 csharp_style_expression_bodied_methods = true:silent
-dotnet_diagnostic.IDE0022.severity = silent
-csharp_style_expression_bodied_constructors = true:silent
-dotnet_diagnostic.IDE0021.severity = silent
+dotnet_diagnostic.IDE0022.severity = silent             # Use expression body for methods (IDE0022)
 csharp_style_expression_bodied_operators = true:silent
-dotnet_diagnostic.IDE0023.severity = silent
+dotnet_diagnostic.IDE0023.severity = silent             # IDE0023: Use expression body for conversion operators
 csharp_style_expression_bodied_properties = true:silent
-dotnet_diagnostic.IDE0025.severity = silent
+dotnet_diagnostic.IDE0025.severity = silent             # Use expression body for properties (IDE0025)
 csharp_style_expression_bodied_indexers = true:silent
-dotnet_diagnostic.IDE0026.severity = silent
+dotnet_diagnostic.IDE0026.severity = silent             # Use expression body for indexers (IDE0026)
 csharp_style_expression_bodied_accessors = true:silent
-dotnet_diagnostic.IDE0027.severity = silent
+dotnet_diagnostic.IDE0027.severity = silent             # Use expression body for accessors (IDE0027)
 csharp_style_expression_bodied_lambdas = true:silent
-dotnet_diagnostic.IDE0053.severity = silent
+dotnet_diagnostic.IDE0053.severity = silent             # Use expression body for lambdas (IDE0053)
 csharp_style_expression_bodied_local_functions = true:silent
-dotnet_diagnostic.IDE0061.severity = silent
-# Pattern matching preferences
-csharp_style_pattern_matching_over_is_with_cast_check = true:warning
-csharp_style_pattern_matching_over_as_with_null_check = true:warning
-csharp_style_prefer_switch_expression = true:warning
-csharp_style_prefer_pattern_matching = true:warning
-csharp_style_prefer_not_pattern = true:warning
+dotnet_diagnostic.IDE0061.severity = silent             # Use expression body for local functions (IDE0061)
 # Expression-level preferences
-csharp_style_inlined_variable_declaration = true:warning
-csharp_prefer_simple_default_expression = true:warning
-csharp_style_pattern_local_over_anonymous_function = true:warning
-csharp_style_deconstructed_variable_declaration = true:warning
-csharp_style_prefer_index_operator = true:warning
-csharp_style_prefer_range_operator = true:warning
 csharp_style_implicit_object_creation_when_type_is_apparent = false:silent
 dotnet_diagnostic.IDE0090.severity = suggestion
-# "Null" checking preferences
-csharp_style_throw_expression = true:warning
-csharp_style_conditional_delegate_call = true:warning
-# Code block preferences
-csharp_prefer_braces = true:warning
-csharp_prefer_simple_using_statement = true:warning
-# 'using' directive preferences
-csharp_using_directive_placement = outside_namespace:warning
-# Modifier preferences
-csharp_prefer_static_local_function = true:warning
 
 ##########################################
 # Unnecessary Code Rules
 # https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/unnecessary-code-rules
 ##########################################
-
-# .NET Unnecessary code rules
-[*.{cs,csx,cake,vb,vbx}]
-dotnet_diagnostic.IDE0001.severity = warning                            # Simplify name (IDE0001)
-dotnet_diagnostic.IDE0002.severity = warning                            # Simplify name (IDE0002)
-dotnet_diagnostic.IDE0004.severity = warning                            # Remove unnecessary cast (IDE0004)
-dotnet_diagnostic.IDE0005.severity = warning                            # Remove unnecessary import (IDE0005)
-dotnet_diagnostic.IDE0035.severity = warning                            # Remove unreachable code (IDE0035)
-dotnet_diagnostic.IDE0051.severity = warning                            # Remove unused private member (IDE0051)
-dotnet_diagnostic.IDE0052.severity = warning                            # Remove unread private member (IDE0052)
-dotnet_diagnostic.IDE0058.severity = warning                            # Remove unnecessary expression value (IDE0058)
-dotnet_diagnostic.IDE0059.severity = warning                            # Remove unnecessary value assignment (IDE0059)
-dotnet_code_quality_unused_parameters = all:warning
-dotnet_diagnostic.IDE0060.severity = warning                            # Remove unused parameter (IDE0060)
-dotnet_remove_unnecessary_suppression_exclusions = none:warning
-dotnet_diagnostic.IDE0079.severity = warning                            # Remove unnecessary suppression (IDE0079)
-dotnet_diagnostic.IDE0080.severity = warning                            # Remove unnecessary suppression operator (IDE0080)
-dotnet_diagnostic.IDE0080.severity = warning                            # Remove unnecessary suppression operator (IDE0080)
-dotnet_diagnostic.IDE0100.severity = warning                            # Remove unnecessary equality operator (IDE0100)
-dotnet_diagnostic.IDE0110.severity = warning                            # Remove unnecessary discard (IDE0110)
-dotnet_diagnostic.IDE0110.severity = warning                            # Remove unnecessary discard (IDE0110)
-
-
-# C# Unnecessary code rules
-[*.{cs,csx,cake}]
+[*.cs]
 csharp_style_unused_value_expression_statement_preference = discard_variable:silent
 dotnet_diagnostic.IDE0058.severity = silent     # Remove unnecessary expression value (IDE0058)
-csharp_style_unused_value_assignment_preference = discard_variable:silent
-dotnet_diagnostic.IDE0059.severity = silent     # Remove unnecessary value assignment (IDE0059)
 
 ##########################################
 # Formatting Rules
@@ -327,7 +162,7 @@ dotnet_diagnostic.IDE0059.severity = silent     # Remove unnecessary value assig
 
 # .NET formatting rules
 # https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/formatting-rules#net-formatting-rules
-[*.{cs,csx,cake,vb,vbx}]
+[*.cs]
 dotnet_diagnostic.IDE0055.severity = warning    # Rule ID: "IDE0055" (Fix formatting)
 # Organize using directives
 dotnet_sort_system_directives_first = true
@@ -335,7 +170,7 @@ dotnet_separate_import_directive_groups = false
 
 # C# formatting rules
 # https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/formatting-rules#c-formatting-rules
-[*.{cs,csx,cake}]
+[*.cs]
 # Newline options
 # https://docs.microsoft.com/visualstudio/ide/editorconfig-formatting-conventions#new-line-options
 csharp_new_line_before_open_brace = all
@@ -385,14 +220,13 @@ csharp_preserve_single_line_blocks = true
 ##########################################
 # .NET Naming Rules
 # https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/naming-rules
+# Some of the naming rules as based on https://github.com/RehanSaeed/EditorConfig/blob/7b1927edffbe299873225026f61ac1ee7ae743e7/.editorconfig
 ##########################################
-
-[*.{cs,csx,cake,vb,vbx}]
+[*.cs]
 
 ##########################################
 # Styles
 ##########################################
-
 # camel_case_style_with_underscore_prefix
 dotnet_naming_style.camel_case_with_underscore_style.capitalization = camel_case
 dotnet_naming_style.camel_case_with_underscore_style.required_prefix = _
@@ -548,27 +382,83 @@ dotnet_naming_rule.parameters_rule.symbols              = parameters_group
 dotnet_naming_rule.parameters_rule.style                = camel_case_style
 dotnet_naming_rule.parameters_rule.severity             = warning
 
+##########################################
+# Third party analyzers
+##########################################
+# Rules for Microsoft.VisualStudio.Threading.Analyzers
+# See https://github.com/microsoft/vs-threading/blob/main/doc/analyzers/index.md
+[*.cs]
+dotnet_diagnostic.VSTHRD111.severity = none         # VSTHRD111 Use .ConfigureAwait(bool)
 
+# Rules for Roslynator.Analyzers
+# See https://github.com/JosefPihrt/Roslynator/blob/master/src/Analyzers/README.md
+[*.cs]
+dotnet_diagnostic.RCS1021.severity = none   # RCS1021: Convert lambda expression body to expression-body
+dotnet_diagnostic.RCS1070.severity = none   # RCS1070: Remove redundant default switch section
+dotnet_diagnostic.RCS1090.severity = none   # RCS1090: Add call to 'ConfigureAwait' (or vice versa)
+dotnet_diagnostic.RCS1140.severity = none   # RCS1140: Add exception to documentation comment
+dotnet_diagnostic.RCS1161.severity = none   # RCS1161: Enum should declare explicit values
+dotnet_diagnostic.RCS1181.severity = none   # RCS1181: Convert comment to documentation comment
+dotnet_diagnostic.RCS1194.severity = none   # RCS1194: Implement exception constructors
+dotnet_diagnostic.RCS1201.severity = none   # RCS1201: Use method chaining
+dotnet_diagnostic.RCS1224.severity = none   # RCS1224: Make method an extension method
+dotnet_diagnostic.RCS1238.severity = none   # RCS1238: Avoid nested ?: operators
 
-#############################################################
-# needs to be in the end so default config applies but then for tests this is an override
-#############################################################
+# Rules for Roslynator.Formatting.Analyzers
+# See https://github.com/JosefPihrt/Roslynator/blob/master/src/Formatting.Analyzers/README.md
+# Note: All analyzers in Roslynator.Formatting.Analyzers are disabled by default so settings the
+# default severity to warning does not work. I need to explicitly set the severity of these diagnostics to warning.
+[*.cs]
+dotnet_diagnostic.RCS0001.severity = warning      # RCS0001: Add empty line after embedded statement
+dotnet_diagnostic.RCS0003.severity = warning      # RCS0003: Add empty line after using directive list
+dotnet_diagnostic.RCS0008.severity = warning      # RCS0008: Add empty line between block and statement
+dotnet_diagnostic.RCS0010.severity = warning      # RCS0010: Add empty line between declarations
+dotnet_diagnostic.RCS0021.severity = warning      # RCS0021: Add newline after opening brace of block
+dotnet_diagnostic.RCS0022.severity = warning      # RCS0022: Add newline after opening brace of empty block
+dotnet_diagnostic.RCS0023.severity = warning      # RCS0023: Add newline after opening brace of type declaration
+dotnet_diagnostic.RCS0024.severity = warning      # RCS0024: Add newline after switch label
+dotnet_diagnostic.RCS0025.severity = warning      # RCS0025: Add newline before accessor of full property
+dotnet_diagnostic.RCS0027.severity = warning      # RCS0027: Add newline before binary operator instead of after it (or vice versa)
+dotnet_diagnostic.RCS0028.severity = warning      # RCS0028: Add newline before conditional operator instead of after it (or vice versa)
+dotnet_diagnostic.RCS0030.severity = warning      # RCS0030: Add newline before embedded statement
+dotnet_diagnostic.RCS0031.severity = warning      # RCS0031: Add newline before enum member
+dotnet_diagnostic.RCS0033.severity = warning      # RCS0033: Add newline before statement
+dotnet_diagnostic.RCS0034.severity = warning      # RCS0034: Add newline before type parameter constraint
+dotnet_diagnostic.RCS0039.severity = warning      # RCS0039: Remove newline before base list
+dotnet_diagnostic.RCS0041.severity = warning      # RCS0041: Remove newline between 'if' keyword and 'else' keyword
+dotnet_diagnostic.RCS0042.severity = warning      # RCS0042: Remove newlines from accessor list of auto-property
+dotnet_diagnostic.RCS0043.severity = warning      # RCS0043: Remove newlines from accessor with single-line expression
+dotnet_diagnostic.RCS0050.severity = warning      # RCS0050: Add empty line before top declaration
+dotnet_diagnostic.RCS0051.severity = warning      # RCS0051: Add newline between closing brace and 'while' keyword (or vice versa)
+dotnet_diagnostic.RCS0054.severity = warning      # RCS0054: Fix formatting of a call chain
+dotnet_diagnostic.RCS0055.severity = warning      # RCS0055: Fix formatting of a binary expression chain
+
+##########################################
+# Rules for tests
+# This block needs to be in the end so the configuration block below
+# overrides the above configuration only for tests.
+##########################################
 [tests/**/*.cs]
+
+# .NET Code quality rules https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/
 # Reliability rules https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/reliability-warnings
 dotnet_diagnostic.CA2000.severity = silent          # CA2000: Dispose objects before losing scope (in tests you might not need to care about disposing or in some tests it might be impractical.)
 
+# Rules for AsyncFixer
+# See https://github.com/semihokur/AsyncFixer
 dotnet_diagnostic.AsyncFixer01.severity = silent    # AsyncFixer01: Await is the last statement of the method so you can return Task and await in the caller method. (some asserts are async in nature and they must be awaited.)
 
+# Rules for Microsoft.VisualStudio.Threading.Analyzers
+# See https://github.com/microsoft/vs-threading/blob/main/doc/analyzers/index.md
 dotnet_diagnostic.VSTHRD200.severity = silent       # VSTHRD200: Use Async suffix for async methods (I don't want to rename my test methods to end with the Async suffix.)
 
-dotnet_diagnostic.RCS1196.severity = silent         # RCS1196: Call extension method as instance method (sometimes I want to validate null params on the extension method.)
-dotnet_diagnostic.RCS1226.severity = none           # RCS1226: Add paragraph to documentation comment
+# Rules for Roslynator.Analyzers
+# See https://github.com/JosefPihrt/Roslynator/blob/master/src/Analyzers/README.md
 dotnet_diagnostic.RCS1139.severity = none      # RCS1139: Add summary element to documentation comment
-
 dotnet_diagnostic.RCS1140.severity = none      # RCS1140: Add exception to documentation comment
 dotnet_diagnostic.RCS1141.severity = none      # RCS1141: Add 'param' element to documentation comment
-
 dotnet_diagnostic.RCS1142.severity = none      # RCS1142: Add 'typeparam' element to documentation comment
+dotnet_diagnostic.RCS1196.severity = silent    # RCS1196: Call extension method as instance method (sometimes I want to validate null params on the extension method.)
 dotnet_diagnostic.RCS1226.severity = none      # RCS1226: Add paragraph to documentation comment
 dotnet_diagnostic.RCS1228.severity = none      # RCS1228: Unused element in documentation comment
 dotnet_diagnostic.RCS1232.severity = none      # RCS1232: Order elements in documentation comment
