@@ -11,7 +11,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Fallback.FallbackHttpResponseMessages
     public class ExceptionHttpResponseMessage : HttpResponseMessage
     {
         /// <summary>
-        /// Creates an instance of <see cref="ExceptionHttpResponseMessage"/>.
+        /// Initializes a new instance of the <see cref="ExceptionHttpResponseMessage"/> class.
         /// </summary>
         /// <param name="exception">The exception that resulted in the fallback response.</param>
         public ExceptionHttpResponseMessage(Exception exception)

@@ -53,9 +53,9 @@ namespace DotNet.Sdk.Extensions.Tests.Options
             var memoryConfigurationSource = new MemoryConfigurationSource
             {
                 InitialData = new List<KeyValuePair<string, string>>
-                    {
-                        new KeyValuePair<string, string>("MyOptionsSection:SomeOption", "some value")
-                    }
+                {
+                    new KeyValuePair<string, string>("MyOptionsSection:SomeOption", "some value"),
+                },
             };
             var memoryConfigurationProvider = new MemoryConfigurationProvider(memoryConfigurationSource);
             var configurationProviders = new List<IConfigurationProvider> { memoryConfigurationProvider };

@@ -26,11 +26,11 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.InProcess.ResponseMocking
             Undefined,
             Typed,
             Named,
-            Basic
+            Basic,
         }
 
         /// <summary>
-        /// Creates an instance of the <see cref="HttpResponseMessageMockDescriptorBuilder"/>.
+        /// Initializes a new instance of the <see cref="HttpResponseMessageMockDescriptorBuilder"/> class.
         /// </summary>
         public HttpResponseMessageMockDescriptorBuilder()
         {

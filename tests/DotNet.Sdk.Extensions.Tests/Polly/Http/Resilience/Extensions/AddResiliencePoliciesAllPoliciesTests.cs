@@ -49,12 +49,12 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             {
                 Timeout = new TimeoutOptions
                 {
-                    TimeoutInSecs = 0.05
+                    TimeoutInSecs = 0.05,
                 },
                 Retry = new RetryOptions
                 {
                     RetryCount = 2,
-                    MedianFirstRetryDelayInSecs = 0.01
+                    MedianFirstRetryDelayInSecs = 0.01,
                 },
                 CircuitBreaker = new CircuitBreakerOptions
                 {
@@ -62,7 +62,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                     SamplingDurationInSecs = 10,
                     FailureThreshold = 0.6,
                     MinimumThroughput = 10
-                }
+                },
             };
             var services = new ServiceCollection();
             services.AddSingleton(resiliencePoliciesEventHandlerCalls);
@@ -166,12 +166,12 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             {
                 Timeout = new TimeoutOptions
                 {
-                    TimeoutInSecs = 0.05
+                    TimeoutInSecs = 0.05,
                 },
                 Retry = new RetryOptions
                 {
                     RetryCount = 2,
-                    MedianFirstRetryDelayInSecs = 0.01
+                    MedianFirstRetryDelayInSecs = 0.01,
                 },
                 CircuitBreaker = new CircuitBreakerOptions
                 {
@@ -179,7 +179,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                     SamplingDurationInSecs = 10,
                     FailureThreshold = 0.6,
                     MinimumThroughput = 10
-                }
+                },
             };
             var services = new ServiceCollection();
             services.AddSingleton(resiliencePoliciesEventHandlerCalls);

@@ -54,7 +54,7 @@ namespace DotNet.Sdk.Extensions.Tests.Options.ValidateEagerly
                         InitialData = new List<KeyValuePair<string, string>>
                         {
                             new KeyValuePair<string, string>("SomeOption", "some value")
-                        }
+                        },
                     };
                     builder.Add(memoryConfigurationSource);
                 })

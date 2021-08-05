@@ -49,7 +49,7 @@ namespace DotNet.Sdk.Extensions.Testing.Configuration
                     InitialData = new List<KeyValuePair<string, string>>
                     {
                         new KeyValuePair<string, string>(key, value)
-                    }
+                    },
                 };
                 builder.Add(memoryConfigurationSource);
             });

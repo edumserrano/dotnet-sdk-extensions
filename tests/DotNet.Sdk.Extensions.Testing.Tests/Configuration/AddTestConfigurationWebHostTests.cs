@@ -81,7 +81,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
             new TheoryData<IWebHostBuilder, Action<TestConfigurationOptions>, string, string[], Type, string>
             {
                 { null!, _ => { }, "some-appsettings", Array.Empty<string>(), typeof(ArgumentNullException), "Value cannot be null. (Parameter 'builder')" },
-                { new WebHostBuilder(), null!, "some-appsettings", Array.Empty<string>(), typeof(ArgumentNullException), "Value cannot be null. (Parameter 'configureOptions')" }
+                { new WebHostBuilder(), null!, "some-appsettings", Array.Empty<string>(), typeof(ArgumentNullException), "Value cannot be null. (Parameter 'configureOptions')" },
             };
 
         /// <summary>

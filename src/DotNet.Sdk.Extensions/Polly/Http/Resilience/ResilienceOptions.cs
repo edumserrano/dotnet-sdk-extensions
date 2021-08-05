@@ -12,7 +12,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Resilience
     public class ResilienceOptions
     {
         /// <summary>
-        /// Creates an instance of <see cref="ResilienceOptions"/>.
+        /// Initializes a new instance of the <see cref="ResilienceOptions"/> class.
         /// </summary>
         public ResilienceOptions()
         {

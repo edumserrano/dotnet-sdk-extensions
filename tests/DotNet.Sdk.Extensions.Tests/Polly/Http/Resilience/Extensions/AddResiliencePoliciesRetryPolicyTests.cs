@@ -43,7 +43,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 {
                     RetryCount = 2,
                     MedianFirstRetryDelayInSecs = 0.01
-                }
+                },
             };
             var services = new ServiceCollection();
             services
@@ -90,7 +90,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 {
                     RetryCount = 2,
                     MedianFirstRetryDelayInSecs = 0.01
-                }
+                },
             };
             var services = new ServiceCollection();
             services.AddSingleton(resiliencePoliciesEventHandlerCalls);
@@ -140,7 +140,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 {
                     RetryCount = 2,
                     MedianFirstRetryDelayInSecs = 0.01
-                }
+                },
             };
             const string optionsName = "GitHubOptions";
             var services = new ServiceCollection();
@@ -194,7 +194,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 {
                     RetryCount = 2,
                     MedianFirstRetryDelayInSecs = 0.01
-                }
+                },
             };
             const string optionsName = "GitHubOptions";
             var services = new ServiceCollection();
@@ -250,7 +250,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 {
                     RetryCount = 2,
                     MedianFirstRetryDelayInSecs = 0.01
-                }
+                },
             };
             var services = new ServiceCollection();
             services
@@ -302,7 +302,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 {
                     RetryCount = 2,
                     MedianFirstRetryDelayInSecs = 0.01
-                }
+                },
             };
             var services = new ServiceCollection();
             services

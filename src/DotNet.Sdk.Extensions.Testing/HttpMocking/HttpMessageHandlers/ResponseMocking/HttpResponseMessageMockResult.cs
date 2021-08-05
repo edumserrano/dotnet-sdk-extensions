@@ -42,7 +42,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.Response
             return new HttpResponseMessageMockResult
             {
                 Status = HttpResponseMessageMockResults.Executed,
-                HttpResponseMessage = httpResponseMessage
+                HttpResponseMessage = httpResponseMessage,
             };
         }
 
@@ -50,7 +50,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.Response
         {
             return new HttpResponseMessageMockResult
             {
-                Status = HttpResponseMessageMockResults.Skipped
+                Status = HttpResponseMessageMockResults.Skipped,
             };
         }
     }

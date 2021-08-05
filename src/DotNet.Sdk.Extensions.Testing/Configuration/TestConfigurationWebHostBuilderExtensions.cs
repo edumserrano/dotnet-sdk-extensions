@@ -49,7 +49,7 @@ namespace DotNet.Sdk.Extensions.Testing.Configuration
                     InitialData = new List<KeyValuePair<string, string>>
                     {
                         new KeyValuePair<string, string>(key, value)
-                    }
+                    },
                 };
                 appConfigBuilder.Add(memoryConfigurationSource);
             });
@@ -238,7 +238,7 @@ namespace DotNet.Sdk.Extensions.Testing.Configuration
                     var configSource = new JsonConfigurationSource
                     {
                         Path = configPath,
-                        Optional = false
+                        Optional = false,
                     };
                     configSource.ResolveFileProvider(); // this is needed because no file provider is explicitly set on the JsonConfigurationSource
                     return configSource;
