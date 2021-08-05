@@ -61,7 +61,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                     DurationOfBreakInSecs = 5,
                     SamplingDurationInSecs = 10,
                     FailureThreshold = 0.6,
-                    MinimumThroughput = 10
+                    MinimumThroughput = 10,
                 },
             };
             var services = new ServiceCollection();
@@ -178,7 +178,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                     DurationOfBreakInSecs = 5,
                     SamplingDurationInSecs = 10,
                     FailureThreshold = 0.6,
-                    MinimumThroughput = 10
+                    MinimumThroughput = 10,
                 },
             };
             var services = new ServiceCollection();

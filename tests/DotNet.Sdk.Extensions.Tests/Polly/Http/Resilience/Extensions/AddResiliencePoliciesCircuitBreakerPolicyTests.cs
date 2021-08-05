@@ -51,7 +51,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                     DurationOfBreakInSecs = 0.05,
                     SamplingDurationInSecs = 0.1,
                     FailureThreshold = 0.6,
-                    MinimumThroughput = 10
+                    MinimumThroughput = 10,
                 },
             };
             var services = new ServiceCollection();
@@ -97,7 +97,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                     DurationOfBreakInSecs = 0.05,
                     SamplingDurationInSecs = 0.1,
                     FailureThreshold = 0.6,
-                    MinimumThroughput = 10
+                    MinimumThroughput = 10,
                 },
             };
             const string optionsName = "GitHubOptions";
@@ -150,7 +150,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                     DurationOfBreakInSecs = 0.05,
                     SamplingDurationInSecs = 0.1,
                     FailureThreshold = 0.6,
-                    MinimumThroughput = 10
+                    MinimumThroughput = 10,
                 },
             };
             var services = new ServiceCollection();
@@ -202,7 +202,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                     DurationOfBreakInSecs = 0.05,
                     SamplingDurationInSecs = 0.1,
                     FailureThreshold = 0.6,
-                    MinimumThroughput = 10
+                    MinimumThroughput = 10,
                 },
             };
             const string optionsName = "GitHubOptions";
@@ -259,7 +259,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                     DurationOfBreakInSecs = 0.05,
                     SamplingDurationInSecs = 0.1,
                     FailureThreshold = 0.6,
-                    MinimumThroughput = 10
+                    MinimumThroughput = 10,
                 },
             };
             const string optionsName = "GitHubOptions";
@@ -318,7 +318,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                     DurationOfBreakInSecs = 0.05,
                     SamplingDurationInSecs = 0.1,
                     FailureThreshold = 0.6,
-                    MinimumThroughput = 10
+                    MinimumThroughput = 10,
                 },
             };
             var services = new ServiceCollection();
@@ -372,7 +372,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                     DurationOfBreakInSecs = 0.05,
                     SamplingDurationInSecs = 0.1,
                     FailureThreshold = 0.6,
-                    MinimumThroughput = 10
+                    MinimumThroughput = 10,
                 },
             };
             var services = new ServiceCollection();

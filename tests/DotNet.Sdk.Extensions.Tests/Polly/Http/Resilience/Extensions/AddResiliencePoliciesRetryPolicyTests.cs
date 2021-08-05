@@ -42,7 +42,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 Retry = new RetryOptions
                 {
                     RetryCount = 2,
-                    MedianFirstRetryDelayInSecs = 0.01
+                    MedianFirstRetryDelayInSecs = 0.01,
                 },
             };
             var services = new ServiceCollection();
@@ -89,7 +89,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 Retry = new RetryOptions
                 {
                     RetryCount = 2,
-                    MedianFirstRetryDelayInSecs = 0.01
+                    MedianFirstRetryDelayInSecs = 0.01,
                 },
             };
             var services = new ServiceCollection();
@@ -139,7 +139,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 Retry = new RetryOptions
                 {
                     RetryCount = 2,
-                    MedianFirstRetryDelayInSecs = 0.01
+                    MedianFirstRetryDelayInSecs = 0.01,
                 },
             };
             const string optionsName = "GitHubOptions";
@@ -193,7 +193,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 Retry = new RetryOptions
                 {
                     RetryCount = 2,
-                    MedianFirstRetryDelayInSecs = 0.01
+                    MedianFirstRetryDelayInSecs = 0.01,
                 },
             };
             const string optionsName = "GitHubOptions";
@@ -249,7 +249,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 Retry = new RetryOptions
                 {
                     RetryCount = 2,
-                    MedianFirstRetryDelayInSecs = 0.01
+                    MedianFirstRetryDelayInSecs = 0.01,
                 },
             };
             var services = new ServiceCollection();
@@ -301,7 +301,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 Retry = new RetryOptions
                 {
                     RetryCount = 2,
-                    MedianFirstRetryDelayInSecs = 0.01
+                    MedianFirstRetryDelayInSecs = 0.01,
                 },
             };
             var services = new ServiceCollection();
