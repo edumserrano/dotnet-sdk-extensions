@@ -8,7 +8,6 @@
     <AnalysisMode>AllEnabledByDefault</AnalysisMode>                                                          <!-- Aggressive or opt-out mode, where all rules are enabled by default as build warnings. https://docs.microsoft.com/en-us/dotnet/core/project-sdk/msbuild-props#analysismode -->
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>                                                   <!-- Force code analysis to run on build. If this starts to slow down the build or Visual Studio consider enabling it only in CI. https://docs.microsoft.com/en-us/dotnet/core/project-sdk/msbuild-props#enforcecodestyleinbuild -->
     <EnableNETAnalyzers>true</EnableNETAnalyzers>                                                             <!-- .NET code quality analysis is only enabled by default for projects that target .NET 5.0 or later. https://docs.microsoft.com/en-us/dotnet/core/project-sdk/msbuild-props#enablenetanalyzers -->
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>                                               <!-- Processes documentation comments to an XML file. This will also enable the semantics of documentation in comments to be checked. Without it, comments are likely to contain an increasing number of errors over time. See https://github.com/dotnet/docs/issues/23455 and DocumentationFile in https://docs.microsoft.com/en-us/visualstudio/msbuild/csc-task?view=vs-2019-->
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="16.10.56">
