@@ -46,8 +46,8 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
 
         /// <summary>
         /// Tests that the response based <see cref="HttpMockServer"/> responds to requests as configured.
-        /// This also tests the two ways to provide mocks <seealso cref="ResponseBasedBuilder.MockHttpResponse(HttpResponseMock)"/>
-        /// and <seealso cref="ResponseBasedBuilder.MockHttpResponse(Action{HttpResponseMockBuilder})"/>
+        /// This also tests the two ways to provide mocks <see cref="ResponseBasedBuilder.MockHttpResponse(HttpResponseMock)"/>
+        /// and <see cref="ResponseBasedBuilder.MockHttpResponse(Action{HttpResponseMockBuilder})"/>.
         /// </summary>
         [Fact]
         public async Task RepliesAsConfigured()
@@ -90,18 +90,18 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
             // Trying to set up the dev certificate with `dotnet dev-certs https --trust` does not work on linux
             // See https://docs.microsoft.com/en-us/aspnet/core/security/enforcing-ssl?view=aspnetcore-5.0&tabs=visual-studio#ssl-linux
 
-            //var defaultHttpsResponse = await httpClient.GetAsync($"{httpsUrl}/default");
-            //defaultHttpsResponse.StatusCode.ShouldBe(HttpStatusCode.NotFound);
-            //defaultHttpsResponse.Content.Headers.ContentLength.ShouldBe(0);
+            // var defaultHttpsResponse = await httpClient.GetAsync($"{httpsUrl}/default");
+            // defaultHttpsResponse.StatusCode.ShouldBe(HttpStatusCode.NotFound);
+            // defaultHttpsResponse.Content.Headers.ContentLength.ShouldBe(0);
 
-            //var helloHttpsResponse = await httpClient.GetAsync($"{httpsUrl}/hello");
-            //helloHttpsResponse.StatusCode.ShouldBe(HttpStatusCode.Created);
-            //var helloHttpsContent = await helloHttpsResponse.Content.ReadAsStringAsync();
-            //helloHttpsContent.ShouldBe("hello");
+            // var helloHttpsResponse = await httpClient.GetAsync($"{httpsUrl}/hello");
+            // helloHttpsResponse.StatusCode.ShouldBe(HttpStatusCode.Created);
+            // var helloHttpsContent = await helloHttpsResponse.Content.ReadAsStringAsync();
+            // helloHttpsContent.ShouldBe("hello");
         }
 
         /// <summary>
-        /// Tests that the response based <see cref="HttpMockServer"/> evaluates <seealso cref="HttpResponseMock"/>s
+        /// Tests that the response based <see cref="HttpMockServer"/> evaluates multiple <see cref="HttpResponseMock"/>
         /// in the order of which they are added.
         /// This means that if there are two competing predicates the first one wins.
         /// </summary>
@@ -130,7 +130,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
             var helloResponse = await httpClient.GetAsync($"{urls[0]}/hello");
             helloResponse.StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
 
-            // now create another server where the mocks order is reversed to 
+            // now create another server where the mocks order is reversed to
             // show that we indeed get the result from the first registered mock
             await using var mock2 = new HttpMockServerBuilder()
                 .UseDefaultLogLevel(LogLevel.Critical)
@@ -177,8 +177,8 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
         }
 
         /// <summary>
-        /// Tests that you cannot provide null mocks to <seealso cref="ResponseBasedBuilder.MockHttpResponse(HttpResponseMock)"/>
-        /// and <seealso cref="ResponseBasedBuilder.MockHttpResponse(Action{HttpResponseMockBuilder})"/>
+        /// Tests that you cannot provide null mocks to <see cref="ResponseBasedBuilder.MockHttpResponse(HttpResponseMock)"/>
+        /// and <see cref="ResponseBasedBuilder.MockHttpResponse(Action{HttpResponseMockBuilder})"/>.
         /// </summary>
         [Fact]
         public void ValidateMocks()

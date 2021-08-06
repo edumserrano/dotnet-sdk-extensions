@@ -14,7 +14,7 @@ namespace DotNet.Sdk.Extensions.Polly.Policies
     /// <remarks>
     /// It allows keeping the same syntax between extension and non-extension methods because
     /// instead of doing <see cref="CircuitBreakerCheckerAsyncPolicy{T}.Create"/> it allows doing
-    /// <see cref="Create{T}"/>
+    /// <see cref="Create{T}"/>.
     /// </remarks>
     public static class CircuitBreakerCheckerAsyncPolicy
     {
@@ -28,7 +28,7 @@ namespace DotNet.Sdk.Extensions.Polly.Policies
         /// <typeparam name="T">The type returned by the delegate to which the policy is applied to.</typeparam>
         /// <param name="circuitBreakerPolicy">The circuit breaker policy whose state will be checked.</param>
         /// <param name="fallbackValueFactory">A delegate to create a valid return type if the circuit's state is open or isolated.</param>
-        /// <returns>The circuit breaker checker policy</returns>
+        /// <returns>The circuit breaker checker policy.</returns>
         public static CircuitBreakerCheckerAsyncPolicy<T> Create<T>(
             ICircuitBreakerPolicy circuitBreakerPolicy,
             Func<CircuitBreakerState, Context, CancellationToken, Task<T>> fallbackValueFactory)

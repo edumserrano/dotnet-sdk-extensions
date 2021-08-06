@@ -14,7 +14,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers
     public class TestHttpMessageHandlerTests
     {
         /// <summary>
-        /// Validates the arguments for the <seealso cref="TestHttpMessageHandler.MockHttpResponse(HttpResponseMessageMock)"/> method.
+        /// Validates the arguments for the <see cref="TestHttpMessageHandler.MockHttpResponse(HttpResponseMessageMock)"/> method.
         /// </summary>
         [Fact]
         public void ValidateArguments1()
@@ -25,7 +25,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers
         }
 
         /// <summary>
-        /// Validates the arguments for the <seealso cref="TestHttpMessageHandler.MockHttpResponse(Action{HttpResponseMessageMockBuilder})"/> method.
+        /// Validates the arguments for the <see cref="TestHttpMessageHandler.MockHttpResponse(Action{HttpResponseMessageMockBuilder})"/> method.
         /// </summary>
         [Fact]
         public void ValidateArguments2()
@@ -36,7 +36,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers
         }
 
         /// <summary>
-        /// Tests that the <seealso cref="TestHttpMessageHandler"/> throws an exception if it gets executed
+        /// Tests that the <see cref="TestHttpMessageHandler"/> throws an exception if it gets executed
         /// but no mocks were defined.
         /// </summary>
         [Fact]
@@ -50,7 +50,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers
         }
 
         /// <summary>
-        /// Tests that the <seealso cref="TestHttpMessageHandler"/> throws an exception if it gets executed
+        /// Tests that the <see cref="TestHttpMessageHandler"/> throws an exception if it gets executed
         /// but no mocks are executed because none match the HttpRequestMessage.
         /// </summary>
         [Fact]
@@ -72,10 +72,10 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers
         }
 
         /// <summary>
-        /// Tests that the <seealso cref="TestHttpMessageHandler"/> returns the mocked HttpResponseMessage.
+        /// Tests that the <see cref="TestHttpMessageHandler"/> returns the mocked HttpResponseMessage.
         /// In this test no predicate is defined which means the default "always true" predicate takes effect
         /// and the mock is always returned.
-        /// Using <seealso cref="TestHttpMessageHandler.MockHttpResponse(HttpResponseMessageMock)"/>
+        /// Using <see cref="TestHttpMessageHandler.MockHttpResponse(HttpResponseMessageMock)"/>.
         /// </summary>
         [Fact]
         public async Task DefaultPredicate1()
@@ -95,10 +95,10 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers
         }
 
         /// <summary>
-        /// Tests that the <seealso cref="TestHttpMessageHandler"/> returns the mocked HttpResponseMessage.
+        /// Tests that the <see cref="TestHttpMessageHandler"/> returns the mocked HttpResponseMessage.
         /// In this test no predicate is defined which means the default "always true" predicate takes effect
         /// and the mock is always returned.
-        /// Using <seealso cref="TestHttpMessageHandler.MockHttpResponse(Action{HttpResponseMessageMockBuilder})"/>
+        /// Using <see cref="TestHttpMessageHandler.MockHttpResponse(Action{HttpResponseMessageMockBuilder})"/>.
         /// </summary>
         [Fact]
         public async Task DefaultPredicate2()
@@ -114,7 +114,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers
         }
 
         /// <summary>
-        /// Tests that the <seealso cref="TestHttpMessageHandler"/> returns the mocked HttpResponseMessage
+        /// Tests that the <see cref="TestHttpMessageHandler"/> returns the mocked HttpResponseMessage
         /// for the FIRST match.
         /// </summary>
         [Fact]
@@ -142,8 +142,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers
         }
 
         /// <summary>
-        /// Tests that the <seealso cref="TestHttpMessageHandler"/> returns the mocked HttpResponseMessage
-        /// for the appropriate predicate match.
+        /// Tests that the <see cref="TestHttpMessageHandler"/> returns the mocked HttpResponseMessage  for the appropriate predicate match.
         /// </summary>
         [Fact]
         public async Task MultipleMocks()
@@ -175,7 +174,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers
         }
 
         /// <summary>
-        /// Tests that the <seealso cref="TestHttpMessageHandler"/> times out as configured.
+        /// Tests that the <see cref="TestHttpMessageHandler"/> times out as configured.
         /// The timeout behavior is set to mimic .net's behavior so the exception, inner exception
         /// and exception messages should be equal.
         /// </summary>

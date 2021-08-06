@@ -6,7 +6,7 @@ using DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.ResponseMocking;
 namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.ResponseMocking
 {
     /// <summary>
-    /// Defines methods to configure and build an <see cref="HttpResponseMessageMock"/>
+    /// Defines methods to configure and build an <see cref="HttpResponseMessageMock"/>.
     /// </summary>
     public class HttpResponseMessageMockBuilder
     {

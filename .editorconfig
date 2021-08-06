@@ -385,13 +385,18 @@ dotnet_naming_rule.parameters_rule.severity             = warning
 ##########################################
 # Third party analyzers
 ##########################################
+
+##########################################
 # Rules for Microsoft.VisualStudio.Threading.Analyzers
 # See https://github.com/microsoft/vs-threading/blob/main/doc/analyzers/index.md
+##########################################
 [*.cs]
 dotnet_diagnostic.VSTHRD111.severity = none         # VSTHRD111 Use .ConfigureAwait(bool)
 
+##########################################
 # Rules for Roslynator.Analyzers
 # See https://github.com/JosefPihrt/Roslynator/blob/master/src/Analyzers/README.md
+##########################################
 [*.cs]
 dotnet_diagnostic.RCS1021.severity = none   # RCS1021: Convert lambda expression body to expression-body
 dotnet_diagnostic.RCS1070.severity = none   # RCS1070: Remove redundant default switch section
@@ -404,10 +409,12 @@ dotnet_diagnostic.RCS1201.severity = none   # RCS1201: Use method chaining
 dotnet_diagnostic.RCS1224.severity = none   # RCS1224: Make method an extension method
 dotnet_diagnostic.RCS1238.severity = none   # RCS1238: Avoid nested ?: operators
 
+##########################################
 # Rules for Roslynator.Formatting.Analyzers
 # See https://github.com/JosefPihrt/Roslynator/blob/master/src/Formatting.Analyzers/README.md
 # Note: All analyzers in Roslynator.Formatting.Analyzers are disabled by default so settings the
-# default severity to warning does not work. I need to explicitly set the severity of these diagnostics to warning.
+# default severity to warning does not work. I need to explicitly set the severity of these diagnostics.
+##########################################
 [*.cs]
 dotnet_diagnostic.RCS0001.severity = warning      # RCS0001: Add empty line after embedded statement
 dotnet_diagnostic.RCS0003.severity = warning      # RCS0003: Add empty line after using directive list
@@ -434,33 +441,83 @@ dotnet_diagnostic.RCS0054.severity = warning      # RCS0054: Fix formatting of a
 dotnet_diagnostic.RCS0055.severity = warning      # RCS0055: Fix formatting of a binary expression chain
 
 ##########################################
+# Rules for StyleCop.Analyzers
+# See https://dotnetanalyzers.github.io/StyleCopAnalyzers/ or https://github.com/DotNetAnalyzers/StyleCopAnalyzers/tree/master/documentation
+##########################################
+[*.cs]
+# Special Rules (SA0000-)
+dotnet_diagnostic.SA0001.severity = none     # SA0001: XML comment analysis is disabled due to project configuration.
+# Spacing Rules (SA1000-)
+# Readability Rules (SA1100-)
+dotnet_diagnostic.SA1101.severity = none     # SA1101: Prefix local calls with this
+dotnet_diagnostic.SA1116.severity = none     # SA1116: The parameters should begin on the line after the declaration, whenever the parameter span across multiple lines
+# Ordering Rules (SA1200-)
+dotnet_diagnostic.SA1200.severity = none        # SA1200: Using directive should appear within a namespace declaration
+dotnet_diagnostic.SA1201.severity = none        # SA1201: A property should not follow a method
+dotnet_diagnostic.SA1202.severity = none        # SA1202: 'public' members should come before 'private' members
+dotnet_diagnostic.SA1214.severity = none        # SA1214: Readonly fields should appear before non-readonly fields
+# Naming Rules (SA1300-)
+dotnet_diagnostic.SA1309.severity = none        # SA1309: Field should not begin with an underscore
+dotnet_diagnostic.SA1313.severity = none        # SA1313: Parameter '_' should begin with lower-case letter. Covered by IDE1006 and this one triggers false warnings when using discard symbol.
+# Maintainability Rules (SA1400-)
+dotnet_diagnostic.SA1402.severity = none        # SA1402: File may only contain a single type
+# Layout Rules (SA1500-)
+dotnet_diagnostic.SA1512.severity = none        # SA1512: Single-line comments should not be followed by blank line
+dotnet_diagnostic.SA1518.severity = none        # SA1518: Code should not contain blank lines at the end of the file
+# Documentation Rules (SA1600-)
+# Regarding SA1600,SA1601 and SA1602:
+# I already have warnings to make sure public elements are documented, that is enough. These would force even internal/private elements to be documented.
+dotnet_diagnostic.SA1600.severity = none     # SA1600: Elements should be documented.
+dotnet_diagnostic.SA1601.severity = none     # SA1601: Partial elements should be documented
+dotnet_diagnostic.SA1602.severity = none     # SA1602: Enumeration items should be documented.
+dotnet_diagnostic.SA1633.severity = none     # SA1633: The file header is missing or not located at the top of the file.
+dotnet_diagnostic.SA1649.severity = none     # SA1649: File name should match first type name.
+# Alternative Rules (SX0000-)
+
+##########################################
 # Rules for tests
 # This block needs to be in the end so the configuration block below
 # overrides the above configuration only for tests.
 ##########################################
 [tests/**/*.cs]
 
+##########################################
 # .NET Code quality rules https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/
 # Reliability rules https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/reliability-warnings
+##########################################
 dotnet_diagnostic.CA2000.severity = silent          # CA2000: Dispose objects before losing scope (in tests you might not need to care about disposing or in some tests it might be impractical.)
 
+##########################################
 # Rules for AsyncFixer
 # See https://github.com/semihokur/AsyncFixer
+##########################################
 dotnet_diagnostic.AsyncFixer01.severity = silent    # AsyncFixer01: Await is the last statement of the method so you can return Task and await in the caller method. (some asserts are async in nature and they must be awaited.)
 
+##########################################
 # Rules for Microsoft.VisualStudio.Threading.Analyzers
 # See https://github.com/microsoft/vs-threading/blob/main/doc/analyzers/index.md
+##########################################
 dotnet_diagnostic.VSTHRD200.severity = silent       # VSTHRD200: Use Async suffix for async methods (I don't want to rename my test methods to end with the Async suffix.)
 
+##########################################
 # Rules for Roslynator.Analyzers
 # See https://github.com/JosefPihrt/Roslynator/blob/master/src/Analyzers/README.md
-dotnet_diagnostic.RCS1139.severity = none      # RCS1139: Add summary element to documentation comment
-dotnet_diagnostic.RCS1140.severity = none      # RCS1140: Add exception to documentation comment
-dotnet_diagnostic.RCS1141.severity = none      # RCS1141: Add 'param' element to documentation comment
-dotnet_diagnostic.RCS1142.severity = none      # RCS1142: Add 'typeparam' element to documentation comment
-dotnet_diagnostic.RCS1196.severity = silent    # RCS1196: Call extension method as instance method (sometimes I want to validate null params on the extension method.)
-dotnet_diagnostic.RCS1226.severity = none      # RCS1226: Add paragraph to documentation comment
-dotnet_diagnostic.RCS1228.severity = none      # RCS1228: Unused element in documentation comment
-dotnet_diagnostic.RCS1232.severity = none      # RCS1232: Order elements in documentation comment
-dotnet_diagnostic.RCS1243.severity = none      # RCS1243: Duplicate word in a comment
+##########################################
+dotnet_diagnostic.RCS1139.severity = none       # RCS1139: Add summary element to documentation comment
+dotnet_diagnostic.RCS1140.severity = none       # RCS1140: Add exception to documentation comment
+dotnet_diagnostic.RCS1141.severity = none       # RCS1141: Add 'param' element to documentation comment
+dotnet_diagnostic.RCS1142.severity = none       # RCS1142: Add 'typeparam' element to documentation comment
+dotnet_diagnostic.RCS1196.severity = silent     # RCS1196: Call extension method as instance method (sometimes I want to validate null params on the extension method.)
+dotnet_diagnostic.RCS1226.severity = none       # RCS1226: Add paragraph to documentation comment
+dotnet_diagnostic.RCS1228.severity = none       # RCS1228: Unused element in documentation comment
+dotnet_diagnostic.RCS1232.severity = none       # RCS1232: Order elements in documentation comment
+dotnet_diagnostic.RCS1243.severity = none       # RCS1243: Duplicate word in a comment
 
+##########################################
+# Rules for StyleCop.Analyzers
+# See https://dotnetanalyzers.github.io/StyleCopAnalyzers/ or https://github.com/DotNetAnalyzers/StyleCopAnalyzers/tree/master/documentation
+##########################################
+dotnet_diagnostic.SA1515.severity = none        # SA1515: Single-line comment should be preceded by blank line
+dotnet_diagnostic.CS1591.severity = none        # CS1591: Missing XML comment for publicly visible type or member
+dotnet_diagnostic.SA1611.severity = none        # SA1611: The documentation for parameter is missing
+dotnet_diagnostic.SA1615.severity = none        # SA1615: Element return value should be documented.

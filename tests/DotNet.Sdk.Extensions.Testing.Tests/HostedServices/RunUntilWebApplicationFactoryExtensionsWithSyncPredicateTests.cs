@@ -14,7 +14,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
 {
     /// <summary>
     /// These tests simulate an app with a <see cref="BackgroundService"/>.
-    /// For more info see <seealso cref="StartupHostedService"/> and <seealso cref="HostedServicesWebApplicationFactory"/>
+    /// For more info see <see cref="StartupHostedService"/> and <see cref="HostedServicesWebApplicationFactory"/>.
     /// </summary>
     [Trait("Category", XUnitCategories.HostedServices)]
     public class RunUntilWebApplicationFactoryExtensionsWithSyncPredicateTests
@@ -22,7 +22,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
         public static TheoryData<HostedServicesWebApplicationFactory, RunUntilPredicate, Type, string> ValidateArgumentsData =>
             new TheoryData<HostedServicesWebApplicationFactory, RunUntilPredicate, Type, string>
             {
-                { null!, ()=>true, typeof(ArgumentNullException), "Value cannot be null. (Parameter 'webApplicationFactory')" },
+                { null!, () => true, typeof(ArgumentNullException), "Value cannot be null. (Parameter 'webApplicationFactory')" },
                 { new HostedServicesWebApplicationFactory(), null!, typeof(ArgumentNullException), "Value cannot be null. (Parameter 'predicate')" },
             };
 
@@ -47,9 +47,9 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
         public static TheoryData<HostedServicesWebApplicationFactory, RunUntilPredicate, Action<RunUntilOptions>, Type, string> ValidateArgumentsWithOptionsData =>
             new TheoryData<HostedServicesWebApplicationFactory, RunUntilPredicate, Action<RunUntilOptions>, Type, string>
             {
-                { null!, ()=>true, _ => {} , typeof(ArgumentNullException), "Value cannot be null. (Parameter 'webApplicationFactory')" },
-                { new HostedServicesWebApplicationFactory(), null!, _ => {}, typeof(ArgumentNullException), "Value cannot be null. (Parameter 'predicate')" },
-                { new HostedServicesWebApplicationFactory(), ()=>true, null!, typeof(ArgumentNullException), "Value cannot be null. (Parameter 'configureOptions')" },
+                { null!, () => true, _ => { }, typeof(ArgumentNullException), "Value cannot be null. (Parameter 'webApplicationFactory')" },
+                { new HostedServicesWebApplicationFactory(), null!, _ => { }, typeof(ArgumentNullException), "Value cannot be null. (Parameter 'predicate')" },
+                { new HostedServicesWebApplicationFactory(), () => true, null!, typeof(ArgumentNullException), "Value cannot be null. (Parameter 'configureOptions')" },
             };
 
         /// <summary>

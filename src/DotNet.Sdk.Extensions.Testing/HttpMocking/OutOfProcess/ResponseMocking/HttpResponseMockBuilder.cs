@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Http;
 namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.ResponseMocking
 {
     /// <summary>
-    /// Defines methods to configure and build an <see cref="HttpResponseMock"/>
+    /// Defines methods to configure and build an <see cref="HttpResponseMock"/>.
     /// </summary>
     public class HttpResponseMockBuilder
     {

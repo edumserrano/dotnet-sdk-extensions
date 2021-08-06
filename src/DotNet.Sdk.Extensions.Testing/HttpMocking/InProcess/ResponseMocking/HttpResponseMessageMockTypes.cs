@@ -4,6 +4,6 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.InProcess.ResponseMocking
     {
         TypedClient,
         NamedClient,
-        Basic
+        Basic,
     }
 }

@@ -16,7 +16,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary
             return instance.GetInstanceField(type, fieldName);
         }
 
-        // pass in the type if you need to access a field that is not from the type instance.GetType() 
+        // pass in the type if you need to access a field that is not from the type instance.GetType()
         // but from the base/derived class for instance
         public static object? GetInstanceField(this object instance, Type type, string fieldName)
         {
@@ -34,7 +34,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary
             return instance.GetInstanceField<T>(type, fieldName);
         }
 
-        // pass in the type if you need to access a field that is not from the type instance.GetType() 
+        // pass in the type if you need to access a field that is not from the type instance.GetType()
         // but from the base/derived class for instance
         public static T? GetInstanceField<T>(this object instance, Type type, string fieldName)
         {
@@ -77,7 +77,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary
             return instance.GetInstanceProperty(type, propertyName);
         }
 
-        // pass in the type if you need to access a field that is not from the type instance.GetType() 
+        // pass in the type if you need to access a field that is not from the type instance.GetType()
         // but from the base/derived class for instance
         public static object? GetInstanceProperty(this object instance, Type type, string propertyName)
         {
@@ -95,7 +95,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary
             return instance.GetInstanceProperty<T>(type, propertyName);
         }
 
-        // pass in the type if you need to access a field that is not from the type instance.GetType() 
+        // pass in the type if you need to access a field that is not from the type instance.GetType()
         // but from the base/derived class for instance
         public static T? GetInstanceProperty<T>(this object instance, Type type, string propertyName)
         {

@@ -14,7 +14,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
 {
     /// <summary>
     /// These tests simulate an app with a <see cref="BackgroundService"/>.
-    /// For more info see <seealso cref="StartupHostedService"/> and <seealso cref="HostedServicesWebApplicationFactory"/>
+    /// For more info see <see cref="StartupHostedService"/> and <see cref="HostedServicesWebApplicationFactory"/>.
     /// </summary>
     [Trait("Category", XUnitCategories.HostedServices)]
     public class RunUntilHostExtensionsWithSyncPredicateTests
@@ -22,7 +22,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
         public static TheoryData<IHost, RunUntilPredicate, Type, string> ValidateArgumentsData =>
             new TheoryData<IHost, RunUntilPredicate, Type, string>
             {
-                { null!, ()=>true, typeof(ArgumentNullException), "Value cannot be null. (Parameter 'host')" },
+                { null!, () => true, typeof(ArgumentNullException), "Value cannot be null. (Parameter 'host')" },
                 { CreateHost(), null!, typeof(ArgumentNullException), "Value cannot be null. (Parameter 'predicate')" },
             };
 
@@ -56,9 +56,9 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
         public static TheoryData<IHost, RunUntilPredicate, Action<RunUntilOptions>, Type, string> ValidateArgumentsWithOptionsData =>
             new TheoryData<IHost, RunUntilPredicate, Action<RunUntilOptions>, Type, string>
             {
-                { null!, ()=>true, _ => {} , typeof(ArgumentNullException), "Value cannot be null. (Parameter 'host')" },
-                { CreateHost(), null!, _ => {}, typeof(ArgumentNullException), "Value cannot be null. (Parameter 'predicate')" },
-                { CreateHost(), ()=>true, null!, typeof(ArgumentNullException), "Value cannot be null. (Parameter 'configureOptions')" },
+                { null!, () => true, _ => { }, typeof(ArgumentNullException), "Value cannot be null. (Parameter 'host')" },
+                { CreateHost(), null!, _ => { }, typeof(ArgumentNullException), "Value cannot be null. (Parameter 'predicate')" },
+                { CreateHost(), () => true, null!, typeof(ArgumentNullException), "Value cannot be null. (Parameter 'configureOptions')" },
             };
 
         /// <summary>
@@ -99,7 +99,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
 
             // This code creating the Host would exist somewhere in app being tested.
             // In a real scenario we would call the function that creates the Host.
-            // For this test we incorporate the host creation in this test. 
+            // For this test we incorporate the host creation in this test.
             var hostBuilder = Host
                 .CreateDefaultBuilder()
                 .UseDefaultLogLevel(LogLevel.Critical)
@@ -139,7 +139,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
 
             // This code creating the Host would exist somewhere in app being tested.
             // In a real scenario we would call the function that creates the Host.
-            // For this test we incorporate the host creation in this test. 
+            // For this test we incorporate the host creation in this test.
             var hostBuilder = Host
                 .CreateDefaultBuilder()
                 .UseDefaultLogLevel(LogLevel.Critical)
@@ -183,7 +183,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
 
             // This code creating the Host would exist somewhere in app being tested.
             // In a real scenario we would call the function that creates the Host.
-            // For this test we incorporate the host creation in this test. 
+            // For this test we incorporate the host creation in this test.
             var hostBuilder = Host
                 .CreateDefaultBuilder()
                 .UseDefaultLogLevel(LogLevel.Critical)

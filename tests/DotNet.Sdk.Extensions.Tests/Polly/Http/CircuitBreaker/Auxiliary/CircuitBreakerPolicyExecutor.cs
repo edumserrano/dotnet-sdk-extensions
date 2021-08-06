@@ -31,7 +31,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
             _transientHttpStatusCodes = HttpStatusCodesExtensions.GetTransientHttpStatusCodes().ToList();
         }
 
-        public Task TriggerFromExceptionAsync<TException>(Exception exception) where TException : Exception
+        public Task TriggerFromExceptionAsync<TException>(Exception exception)
+            where TException : Exception
         {
             if (exception == null)
             {
@@ -62,6 +63,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
             {
                 throw new InvalidOperationException($"Unexpected status code from closed circuit. Got {response.StatusCode} but expected {HttpStatusCode.OK}.");
             }
+
             // make sure we transition to a new sampling window or else requests would still fall
             // in the previous sampling window where the circuit state had already been open and closed.
             await Task.Delay(TimeSpan.FromSeconds(_circuitBreakerOptions.SamplingDurationInSecs + 0.05));
@@ -103,7 +105,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
             for (var i = 0; i < _circuitBreakerOptions.MinimumThroughput; i++)
             {
                 var response = await _httpClient.GetAsync(requestPath);
-                // the circuit should be closed during this loop which means it will be returning the 
+                // the circuit should be closed during this loop which means it will be returning the
                 // expected status code. Once the circuit is open it starts failing fast by returning
                 // a CircuitBrokenHttpResponseMessage instance whose status code is 500
                 if (response.StatusCode != httpStatusCode)
@@ -113,7 +115,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
             }
         }
 
-        private async Task TriggerCircuitBreakerFromExceptionAsync<TException>(string requestPath) where TException : Exception
+        private async Task TriggerCircuitBreakerFromExceptionAsync<TException>(string requestPath)
+            where TException : Exception
         {
             for (var i = 0; i < _circuitBreakerOptions.MinimumThroughput; i++)
             {

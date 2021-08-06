@@ -16,9 +16,8 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
         /// <param name="webApplicationFactory">The <see cref="WebApplicationFactory{T}"/> to execute.</param>
         /// <param name="predicate">The predicate to determine when the host should be terminated.</param>
         /// <returns>The <see cref="Task"/> that will execute the host until it's terminated.</returns>
-        public static Task RunUntilAsync<T>(
-            this WebApplicationFactory<T> webApplicationFactory,
-            RunUntilPredicate predicate) where T : class
+        public static Task RunUntilAsync<T>(this WebApplicationFactory<T> webApplicationFactory, RunUntilPredicate predicate)
+            where T : class
         {
             if (webApplicationFactory is null)
             {
@@ -45,7 +44,8 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
         public static Task RunUntilAsync<T>(
             this WebApplicationFactory<T> webApplicationFactory,
             RunUntilPredicate predicate,
-            Action<RunUntilOptions> configureOptions) where T : class
+            Action<RunUntilOptions> configureOptions)
+            where T : class
         {
             if (webApplicationFactory is null)
             {

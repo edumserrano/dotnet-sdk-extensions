@@ -42,8 +42,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 Retry = new RetryOptions
                 {
                     RetryCount = 2,
-                    MedianFirstRetryDelayInSecs = 0.01
-                }
+                    MedianFirstRetryDelayInSecs = 0.01,
+                },
             };
             var services = new ServiceCollection();
             services
@@ -72,7 +72,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
         /// Tests that the <see cref="ResiliencePoliciesHttpClientBuilderExtensions.AddResiliencePolicies{TPolicyEventHandler}(IHttpClientBuilder,Action{ResilienceOptions})"/>
         /// overload method adds a <see cref="DelegatingHandler"/> with a retry policy to the <see cref="HttpClient"/>.
         ///
-        /// This also tests that the <see cref="IResiliencePoliciesEventHandler.OnRetryAsync"/> is triggered with the correct values.
+        /// This also tests that the retry event from <see cref="IResiliencePoliciesEventHandler"/> is triggered with the correct values.
         /// </summary>
         [Fact]
         public async Task AddResiliencePoliciesAddsRetryPolicy3()
@@ -89,8 +89,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 Retry = new RetryOptions
                 {
                     RetryCount = 2,
-                    MedianFirstRetryDelayInSecs = 0.01
-                }
+                    MedianFirstRetryDelayInSecs = 0.01,
+                },
             };
             var services = new ServiceCollection();
             services.AddSingleton(resiliencePoliciesEventHandlerCalls);
@@ -139,8 +139,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 Retry = new RetryOptions
                 {
                     RetryCount = 2,
-                    MedianFirstRetryDelayInSecs = 0.01
-                }
+                    MedianFirstRetryDelayInSecs = 0.01,
+                },
             };
             const string optionsName = "GitHubOptions";
             var services = new ServiceCollection();
@@ -193,8 +193,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 Retry = new RetryOptions
                 {
                     RetryCount = 2,
-                    MedianFirstRetryDelayInSecs = 0.01
-                }
+                    MedianFirstRetryDelayInSecs = 0.01,
+                },
             };
             const string optionsName = "GitHubOptions";
             var services = new ServiceCollection();
@@ -249,8 +249,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 Retry = new RetryOptions
                 {
                     RetryCount = 2,
-                    MedianFirstRetryDelayInSecs = 0.01
-                }
+                    MedianFirstRetryDelayInSecs = 0.01,
+                },
             };
             var services = new ServiceCollection();
             services
@@ -301,8 +301,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 Retry = new RetryOptions
                 {
                     RetryCount = 2,
-                    MedianFirstRetryDelayInSecs = 0.01
-                }
+                    MedianFirstRetryDelayInSecs = 0.01,
+                },
             };
             var services = new ServiceCollection();
             services

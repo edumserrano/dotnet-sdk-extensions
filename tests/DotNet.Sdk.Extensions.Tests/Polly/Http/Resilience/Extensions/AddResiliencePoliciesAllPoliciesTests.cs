@@ -49,20 +49,20 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             {
                 Timeout = new TimeoutOptions
                 {
-                    TimeoutInSecs = 0.05
+                    TimeoutInSecs = 0.05,
                 },
                 Retry = new RetryOptions
                 {
                     RetryCount = 2,
-                    MedianFirstRetryDelayInSecs = 0.01
+                    MedianFirstRetryDelayInSecs = 0.01,
                 },
                 CircuitBreaker = new CircuitBreakerOptions
                 {
                     DurationOfBreakInSecs = 5,
                     SamplingDurationInSecs = 10,
                     FailureThreshold = 0.6,
-                    MinimumThroughput = 10
-                }
+                    MinimumThroughput = 10,
+                },
             };
             var services = new ServiceCollection();
             services.AddSingleton(resiliencePoliciesEventHandlerCalls);
@@ -102,7 +102,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             }
 
             // the responses returned should be of type HttpResponseMessage, because they are what
-            // was returned by the http client up until the circuit becomes open, after which the 
+            // was returned by the http client up until the circuit becomes open, after which the
             // responses should be of type CircuitBrokenHttpResponseMessage, because it's what the
             // circuit breaker wrapped policy is returning to fail fast when the circuit is open
             for (var i = 0; i < httpResponses.Count; i++)
@@ -166,20 +166,20 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             {
                 Timeout = new TimeoutOptions
                 {
-                    TimeoutInSecs = 0.05
+                    TimeoutInSecs = 0.05,
                 },
                 Retry = new RetryOptions
                 {
                     RetryCount = 2,
-                    MedianFirstRetryDelayInSecs = 0.01
+                    MedianFirstRetryDelayInSecs = 0.01,
                 },
                 CircuitBreaker = new CircuitBreakerOptions
                 {
                     DurationOfBreakInSecs = 5,
                     SamplingDurationInSecs = 10,
                     FailureThreshold = 0.6,
-                    MinimumThroughput = 10
-                }
+                    MinimumThroughput = 10,
+                },
             };
             var services = new ServiceCollection();
             services.AddSingleton(resiliencePoliciesEventHandlerCalls);
@@ -219,7 +219,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             }
 
             // the responses returned should be of type HttpResponseMessage, because they are what
-            // was returned by the http client up until the circuit becomes open, after which the 
+            // was returned by the http client up until the circuit becomes open, after which the
             // responses should be of type CircuitBrokenHttpResponseMessage, because it's what the
             // circuit breaker wrapped policy is returning to fail fast when the circuit is open
             for (var i = 0; i < httpResponses.Count; i++)

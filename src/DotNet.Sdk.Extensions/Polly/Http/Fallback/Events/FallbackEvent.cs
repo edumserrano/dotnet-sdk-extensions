@@ -19,17 +19,17 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Fallback.Events
         }
 
         /// <summary>
-        /// The name of the HttpClient that triggered this event.
+        /// Gets the name of the HttpClient that triggered this event.
         /// </summary>
         public string HttpClientName { get; }
 
         /// <summary>
-        /// Result from the HttpClient execution.
+        /// Gets result from the HttpClient execution.
         /// </summary>
         public DelegateResult<HttpResponseMessage> Outcome { get; }
 
         /// <summary>
-        /// The Polly Context.
+        /// Gets the Polly Context.
         /// </summary>
         public Context Context { get; }
     }

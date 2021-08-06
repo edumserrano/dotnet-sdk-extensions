@@ -34,7 +34,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
             var retryOptions = new RetryOptions
             {
                 RetryCount = 2,
-                MedianFirstRetryDelayInSecs = 0.01
+                MedianFirstRetryDelayInSecs = 0.01,
             };
             var services = new ServiceCollection();
             services
@@ -69,7 +69,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
             var retryOptions = new RetryOptions
             {
                 RetryCount = 2,
-                MedianFirstRetryDelayInSecs = 0.01
+                MedianFirstRetryDelayInSecs = 0.01,
             };
             const string optionsName = "GitHubOptions";
             var services = new ServiceCollection();
@@ -110,7 +110,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
             var retryOptions = new RetryOptions
             {
                 RetryCount = 2,
-                MedianFirstRetryDelayInSecs = 0.01
+                MedianFirstRetryDelayInSecs = 0.01,
             };
             var services = new ServiceCollection();
             services.AddSingleton(retryPolicyEventHandlerCalls);
@@ -151,7 +151,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
             var retryOptions = new RetryOptions
             {
                 RetryCount = 2,
-                MedianFirstRetryDelayInSecs = 0.01
+                MedianFirstRetryDelayInSecs = 0.01,
             };
             const string optionsName = "GitHubOptions";
             var services = new ServiceCollection();
@@ -196,7 +196,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
             var retryOptions = new RetryOptions
             {
                 RetryCount = 2,
-                MedianFirstRetryDelayInSecs = 0.01
+                MedianFirstRetryDelayInSecs = 0.01,
             };
             const string optionsName = "GitHubOptions";
             var services = new ServiceCollection();
@@ -243,7 +243,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
             var retryOptions = new RetryOptions
             {
                 RetryCount = 2,
-                MedianFirstRetryDelayInSecs = 0.01
+                MedianFirstRetryDelayInSecs = 0.01,
             };
             var services = new ServiceCollection();
             services

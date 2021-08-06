@@ -8,7 +8,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Retry
     public class RetryOptions
     {
         /// <summary>
-        /// The maximum number of retries.
+        /// Gets or sets the maximum number of retries.
         /// </summary>
         /// <remarks>
         /// Must be a value between 0 and <see cref="int.MaxValue"/>.
@@ -17,7 +17,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Retry
         public int RetryCount { get; set; }
 
         /// <summary>
-        /// The median delay to target before the first retry.
+        /// Gets or sets the median delay to target before the first retry.
         /// </summary>
         /// <remarks>
         /// <para>

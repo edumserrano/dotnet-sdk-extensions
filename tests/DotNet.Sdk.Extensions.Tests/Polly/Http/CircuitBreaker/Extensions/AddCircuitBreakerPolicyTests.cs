@@ -47,7 +47,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
                 DurationOfBreakInSecs = 0.05,
                 SamplingDurationInSecs = 0.1,
                 FailureThreshold = 0.6,
-                MinimumThroughput = 10
+                MinimumThroughput = 10,
             };
             var services = new ServiceCollection();
             services
@@ -83,7 +83,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
                 DurationOfBreakInSecs = 0.05,
                 SamplingDurationInSecs = 0.1,
                 FailureThreshold = 0.6,
-                MinimumThroughput = 10
+                MinimumThroughput = 10,
             };
             const string optionsName = "GitHubOptions";
             var services = new ServiceCollection();
@@ -126,7 +126,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
                 DurationOfBreakInSecs = 0.05,
                 SamplingDurationInSecs = 0.1,
                 FailureThreshold = 0.6,
-                MinimumThroughput = 10
+                MinimumThroughput = 10,
             };
             var services = new ServiceCollection();
             services.AddSingleton(circuitBreakerPolicyEventHandlerCalls);
@@ -169,7 +169,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
                 DurationOfBreakInSecs = 0.05,
                 SamplingDurationInSecs = 0.1,
                 FailureThreshold = 0.6,
-                MinimumThroughput = 10
+                MinimumThroughput = 10,
             };
             const string optionsName = "GitHubOptions";
 
@@ -217,7 +217,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
                 DurationOfBreakInSecs = 0.05,
                 SamplingDurationInSecs = 0.1,
                 FailureThreshold = 0.6,
-                MinimumThroughput = 10
+                MinimumThroughput = 10,
             };
             const string optionsName = "GitHubOptions";
 
@@ -267,7 +267,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
                 DurationOfBreakInSecs = 0.05,
                 SamplingDurationInSecs = 0.1,
                 FailureThreshold = 0.6,
-                MinimumThroughput = 10
+                MinimumThroughput = 10,
             };
             var services = new ServiceCollection();
             services
@@ -314,7 +314,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
                 DurationOfBreakInSecs = 0.05,
                 SamplingDurationInSecs = 0.1,
                 FailureThreshold = 0.6,
-                MinimumThroughput = 10
+                MinimumThroughput = 10,
             };
             var services = new ServiceCollection();
             services
@@ -369,7 +369,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
         /// with 500 status code and some extra properties.
         ///
         /// This is to optimize the performance of the code by reducing the exceptions thrown as indicated by
-        /// https://github.com/App-vNext/Polly/wiki/Circuit-Breaker#reducing-thrown-exceptions-when-the-circuit-is-broken
+        /// https://github.com/App-vNext/Polly/wiki/Circuit-Breaker#reducing-thrown-exceptions-when-the-circuit-is-broken.
         ///  </summary>
         [Fact]
         public async Task AddCircuitBreakerPolicyDoesNotThrowExceptionWhenCircuitIsOpen()
@@ -380,7 +380,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
                 DurationOfBreakInSecs = 0.05,
                 SamplingDurationInSecs = 0.1,
                 FailureThreshold = 0.6,
-                MinimumThroughput = 10
+                MinimumThroughput = 10,
             };
             var services = new ServiceCollection();
             services

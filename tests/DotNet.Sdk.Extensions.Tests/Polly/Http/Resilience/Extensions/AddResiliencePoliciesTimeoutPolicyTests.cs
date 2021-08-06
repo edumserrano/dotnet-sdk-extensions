@@ -39,8 +39,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 EnableCircuitBreakerPolicy = false,
                 Timeout = new TimeoutOptions
                 {
-                    TimeoutInSecs = 0.05
-                }
+                    TimeoutInSecs = 0.05,
+                },
             };
             var services = new ServiceCollection();
             services
@@ -79,8 +79,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 EnableCircuitBreakerPolicy = false,
                 Timeout = new TimeoutOptions
                 {
-                    TimeoutInSecs = 0.05
-                }
+                    TimeoutInSecs = 0.05,
+                },
             };
             const string optionsName = "GitHubOptions";
             var services = new ServiceCollection();
@@ -126,8 +126,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 EnableCircuitBreakerPolicy = false,
                 Timeout = new TimeoutOptions
                 {
-                    TimeoutInSecs = 0.05
-                }
+                    TimeoutInSecs = 0.05,
+                },
             };
             var services = new ServiceCollection();
             services.AddSingleton(resiliencePoliciesEventHandlerCalls);
@@ -172,8 +172,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 EnableCircuitBreakerPolicy = false,
                 Timeout = new TimeoutOptions
                 {
-                    TimeoutInSecs = 0.05
-                }
+                    TimeoutInSecs = 0.05,
+                },
             };
             const string optionsName = "GitHubOptions";
             var services = new ServiceCollection();
@@ -223,8 +223,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 EnableCircuitBreakerPolicy = false,
                 Timeout = new TimeoutOptions
                 {
-                    TimeoutInSecs = 0.05
-                }
+                    TimeoutInSecs = 0.05,
+                },
             };
             const string optionsName = "GitHubOptions";
             var services = new ServiceCollection();
@@ -276,8 +276,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 EnableCircuitBreakerPolicy = false,
                 Timeout = new TimeoutOptions
                 {
-                    TimeoutInSecs = 0.05
-                }
+                    TimeoutInSecs = 0.05,
+                },
             };
             var services = new ServiceCollection();
             services
@@ -324,8 +324,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 EnableTimeoutPolicy = false,
                 Timeout = new TimeoutOptions
                 {
-                    TimeoutInSecs = 0.05
-                }
+                    TimeoutInSecs = 0.05,
+                },
             };
             var services = new ServiceCollection();
             services

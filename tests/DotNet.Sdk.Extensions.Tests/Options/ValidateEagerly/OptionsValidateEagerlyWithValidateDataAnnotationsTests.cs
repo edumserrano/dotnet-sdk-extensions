@@ -25,7 +25,7 @@ namespace DotNet.Sdk.Extensions.Tests.Options.ValidateEagerly
         {
             using var host = Host
                 .CreateDefaultBuilder()
-                .UseDefaultLogLevel(LogLevel.None) //expect critical error log so disabling all logs
+                .UseDefaultLogLevel(LogLevel.None) // expect critical error log so disabling all logs
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder
@@ -52,9 +52,9 @@ namespace DotNet.Sdk.Extensions.Tests.Options.ValidateEagerly
                     var memoryConfigurationSource = new MemoryConfigurationSource
                     {
                         InitialData = new List<KeyValuePair<string, string>>
-                            {
-                                new KeyValuePair<string, string>("SomeOption", "some value")
-                            }
+                        {
+                            new KeyValuePair<string, string>("SomeOption", "some value"),
+                        },
                     };
                     builder.Add(memoryConfigurationSource);
                 })

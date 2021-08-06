@@ -18,9 +18,9 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
     public class AddTestConfigurationWebHostTests
     {
         /// <summary>
-        /// Tests that <see cref="WebHost.CreateDefaultBuilder()"/> adds two <see cref="JsonConfigurationProvider"/>
+        /// Tests that <see cref="Microsoft.AspNetCore.WebHost.CreateDefaultBuilder()"/> adds two <see cref="JsonConfigurationProvider"/>
         /// to the app configuration.
-        /// This test serves as a control test because all the tests use the <see cref="WebHost.CreateDefaultBuilder()"/> as a way
+        /// This test serves as a control test because all the tests use the <see cref="Microsoft.AspNetCore.WebHost.CreateDefaultBuilder()"/> as a way
         /// to setup a <see cref="IWebHost"/> with several <see cref="ConfigurationProvider"/> and at least two <see cref="JsonConfigurationProvider"/>.
         /// If this changes in the future then I could start having false positives on the other tests.
         /// </summary>
@@ -48,14 +48,14 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
                 { new WebHostBuilder(), string.Empty, Array.Empty<string>(), typeof(ArgumentException), "Cannot be null or white space. (Parameter 'appSettingsFilename')" },
                 { new WebHostBuilder(), " ", Array.Empty<string>(), typeof(ArgumentException), "Cannot be null or white space. (Parameter 'appSettingsFilename')" },
                 { new WebHostBuilder(), "some-appsettings", null!, typeof(ArgumentNullException), "Value cannot be null. (Parameter 'otherAppsettingsFilenames')" },
-                { new WebHostBuilder(), "some-appsettings", new[] { "" }, typeof(ArgumentException), "Cannot have an element that is null or white space. (Parameter 'otherAppsettingsFilenames')" },
+                { new WebHostBuilder(), "some-appsettings", new[] { string.Empty }, typeof(ArgumentException), "Cannot have an element that is null or white space. (Parameter 'otherAppsettingsFilenames')" },
                 { new WebHostBuilder(), "some-appsettings", new[] { " " }, typeof(ArgumentException), "Cannot have an element that is null or white space. (Parameter 'otherAppsettingsFilenames')" },
-                { new WebHostBuilder(), "some-appsettings", new[] { "something","" }, typeof(ArgumentException), "Cannot have an element that is null or white space. (Parameter 'otherAppsettingsFilenames')" },
+                { new WebHostBuilder(), "some-appsettings", new[] { "something", string.Empty }, typeof(ArgumentException), "Cannot have an element that is null or white space. (Parameter 'otherAppsettingsFilenames')" },
             };
 
         /// <summary>
         /// Validates arguments for the <see cref="TestConfigurationBuilderExtensions.AddTestAppSettings(IWebHostBuilder, string, string[])"/>
-        /// extension method
+        /// extension method.
         /// The test appsettings are loaded from the default directory: AppSettings.
         /// </summary>
         [Theory]
@@ -75,18 +75,18 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         }
 
         /// <summary>
-        /// No need to test more scenarios because they're covered by <see cref="ValidateArguments1"/>
+        /// Gets no need to test more scenarios because they're covered by <see cref="ValidateArguments1"/>.
         /// </summary>
         public static TheoryData<IWebHostBuilder, Action<TestConfigurationOptions>, string, string[], Type, string> ValidateArguments2Data =>
             new TheoryData<IWebHostBuilder, Action<TestConfigurationOptions>, string, string[], Type, string>
             {
                 { null!, _ => { }, "some-appsettings", Array.Empty<string>(), typeof(ArgumentNullException), "Value cannot be null. (Parameter 'builder')" },
-                { new WebHostBuilder(), null!, "some-appsettings", Array.Empty<string>(), typeof(ArgumentNullException), "Value cannot be null. (Parameter 'configureOptions')" }
+                { new WebHostBuilder(), null!, "some-appsettings", Array.Empty<string>(), typeof(ArgumentNullException), "Value cannot be null. (Parameter 'configureOptions')" },
             };
 
         /// <summary>
         /// Validates arguments for the <see cref="TestConfigurationBuilderExtensions.AddTestAppSettings(IWebHostBuilder, Action{TestConfigurationOptions} , string, string[])"/>
-        /// extension method
+        /// extension method.
         /// The test appsettings are loaded from the default directory: AppSettings.
         /// </summary>
         [Theory]

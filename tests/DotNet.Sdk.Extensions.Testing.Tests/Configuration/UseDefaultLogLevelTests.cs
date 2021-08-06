@@ -51,7 +51,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         }
 
         /// <summary>
-        /// Tests that the <see cref="TestConfigurationBuilderExtensions.UseDefaultLogLevel"/>
+        /// Tests that the <see cref="TestConfigurationBuilderExtensions.UseDefaultLogLevel(IWebHostBuilder, LogLevel)"/>
         /// sets the default log level on the <see cref="IConfiguration"/>.
         /// </summary>
         [Fact]

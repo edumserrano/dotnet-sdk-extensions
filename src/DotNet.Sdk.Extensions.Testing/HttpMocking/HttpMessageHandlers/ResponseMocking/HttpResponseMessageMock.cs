@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.ResponseMocking
 {
     /// <summary>
-    /// Represents a mock of an <see cref="HttpResponseMessage"/>
+    /// Represents a mock of an <see cref="HttpResponseMessage"/>.
     /// </summary>
     public class HttpResponseMessageMock
     {

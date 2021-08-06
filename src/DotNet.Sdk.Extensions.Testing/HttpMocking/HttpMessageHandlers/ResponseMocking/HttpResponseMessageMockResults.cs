@@ -13,6 +13,6 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.Response
         /// <summary>
         /// The <see cref="HttpResponseMessageMock"/> was executed.
         /// </summary>
-        Executed
+        Executed,
     }
 }

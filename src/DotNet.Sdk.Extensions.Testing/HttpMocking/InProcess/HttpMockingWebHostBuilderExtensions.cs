@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.TestHost;
 namespace DotNet.Sdk.Extensions.Testing.HttpMocking.InProcess
 {
     /// <summary>
-    /// Provides extension methods to mock <see cref="HttpClient"/> calls on a <see cref="IWebHostBuilder"/>
+    /// Provides extension methods to mock <see cref="HttpClient"/> calls on a <see cref="IWebHostBuilder"/>.
     /// </summary>
     public static class HttpMockingWebHostBuilderExtensions
     {

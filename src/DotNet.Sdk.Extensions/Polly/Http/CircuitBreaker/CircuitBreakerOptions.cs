@@ -8,7 +8,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker
     public class CircuitBreakerOptions
     {
         /// <summary>
-        /// The failure threshold at which the circuit will break, eg 0.5 represents breaking if 50% or more of actions result in a handled failure.
+        /// Gets or sets the failure threshold at which the circuit will break, eg 0.5 represents breaking if 50% or more of actions result in a handled failure.
         /// </summary>
         /// <remarks>
         /// Must be a value between <see cref="double.Epsilon"/> and 1.
@@ -17,7 +17,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker
         public double FailureThreshold { get; set; }
 
         /// <summary>
-        /// The duration of the time slice over which failure ratios are assessed.
+        /// Gets or sets the duration of the time slice over which failure ratios are assessed.
         /// </summary>
         /// <remarks>
         /// Must be a value between <see cref="double.Epsilon"/> and <see cref="double.MaxValue"/>.
@@ -27,7 +27,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker
         public double SamplingDurationInSecs { get; set; }
 
         /// <summary>
-        /// The minimum throughput: this many actions or more must pass through the circuit in the time slice,
+        /// Gets or sets the minimum throughput: this many actions or more must pass through the circuit in the time slice,
         /// for statistics to be considered significant and the circuit-breaker to come into action.
         /// </summary>
         /// <remarks>
@@ -37,7 +37,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker
         public int MinimumThroughput { get; set; }
 
         /// <summary>
-        /// The duration the circuit will stay open before resetting.
+        /// Gets or sets the duration the circuit will stay open before resetting.
         /// </summary>
         /// <remarks>
         /// Must be a value between <see cref="double.Epsilon"/> and <see cref="double.MaxValue"/>.

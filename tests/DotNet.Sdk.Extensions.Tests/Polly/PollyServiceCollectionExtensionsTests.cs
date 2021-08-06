@@ -9,7 +9,7 @@ using Xunit;
 namespace DotNet.Sdk.Extensions.Tests.Polly
 {
     /// <summary>
-    /// Tests for the <see cref="Extensions.Polly.PollyServiceCollectionExtensions"/> class
+    /// Tests for the <see cref="Extensions.Polly.PollyServiceCollectionExtensions"/> class.
     /// </summary>
     [Trait("Category", XUnitCategories.Polly)]
     public class PollyServiceCollectionExtensionsTests

@@ -17,7 +17,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
 {
     /// <summary>
     /// These tests simulate an app with a <see cref="BackgroundService"/>.
-    /// For more info see <seealso cref="StartupHostedService"/> and <seealso cref="HostedServicesWebApplicationFactory"/>
+    /// For more info see <see cref="StartupHostedService"/> and <see cref="HostedServicesWebApplicationFactory"/>.
     /// </summary>
     [Trait("Category", XUnitCategories.HostedServices)]
     public class RunUntilTimeoutTests : IClassFixture<HostedServicesWebApplicationFactory>
@@ -108,7 +108,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
 
             // This code creating the Host would exist somewhere in app being tested.
             // In a real scenario we would call the function that creates the Host.
-            // For this test we incorporate the host creation in this test. 
+            // For this test we incorporate the host creation in this test.
             var hostBuilder = Host
                 .CreateDefaultBuilder()
                 .UseDefaultLogLevel(LogLevel.Critical)

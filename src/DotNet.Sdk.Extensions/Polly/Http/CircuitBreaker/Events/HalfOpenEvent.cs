@@ -14,12 +14,12 @@ namespace DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker.Events
         }
 
         /// <summary>
-        /// The name of the HttpClient that triggered this event.
+        /// Gets the name of the HttpClient that triggered this event.
         /// </summary>
         public string HttpClientName { get; }
 
         /// <summary>
-        /// The circuit breaker options applied to the HttpClient that triggered this event.
+        /// Gets the circuit breaker options applied to the HttpClient that triggered this event.
         /// </summary>
         public CircuitBreakerOptions CircuitBreakerOptions { get; }
     }

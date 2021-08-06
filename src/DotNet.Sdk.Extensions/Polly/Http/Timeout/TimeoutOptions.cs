@@ -8,7 +8,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Timeout
     public class TimeoutOptions
     {
         /// <summary>
-        /// Timeout value in seconds.
+        /// Gets or sets timeout value in seconds.
         /// </summary>
         /// <remarks>
         /// Must be a value between <see cref="double.Epsilon"/> and <see cref="double.MaxValue"/>.

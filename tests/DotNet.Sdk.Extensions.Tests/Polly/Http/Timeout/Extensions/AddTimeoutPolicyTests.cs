@@ -33,7 +33,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
             const string httpClientName = "GitHub";
             var timeoutOptions = new TimeoutOptions
             {
-                TimeoutInSecs = 0.05
+                TimeoutInSecs = 0.05,
             };
             var services = new ServiceCollection();
             services
@@ -63,7 +63,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
             const string httpClientName = "GitHub";
             var timeoutOptions = new TimeoutOptions
             {
-                TimeoutInSecs = 0.05
+                TimeoutInSecs = 0.05,
             };
             const string optionsName = "GitHubOptions";
             var services = new ServiceCollection();
@@ -97,7 +97,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
             const string httpClientName = "GitHub";
             var timeoutOptions = new TimeoutOptions
             {
-                TimeoutInSecs = 0.05
+                TimeoutInSecs = 0.05,
             };
             var services = new ServiceCollection();
             services.AddSingleton(timeoutPolicyEventHandlerCalls);
@@ -134,7 +134,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
             const string httpClientName = "GitHub";
             var timeoutOptions = new TimeoutOptions
             {
-                TimeoutInSecs = 0.05
+                TimeoutInSecs = 0.05,
             };
             const string optionsName = "GitHubOptions";
             var services = new ServiceCollection();
@@ -173,7 +173,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
             const string httpClientName = "GitHub";
             var timeoutOptions = new TimeoutOptions
             {
-                TimeoutInSecs = 0.05
+                TimeoutInSecs = 0.05,
             };
             const string optionsName = "GitHubOptions";
             var services = new ServiceCollection();
@@ -214,7 +214,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
             const string httpClientName = "GitHub";
             var timeoutOptions = new TimeoutOptions
             {
-                TimeoutInSecs = 0.05
+                TimeoutInSecs = 0.05,
             };
             var services = new ServiceCollection();
             services
