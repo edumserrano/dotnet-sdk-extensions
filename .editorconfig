@@ -407,7 +407,13 @@ dotnet_diagnostic.RCS1140.severity = none   # RCS1140: Add exception to document
 dotnet_diagnostic.RCS1161.severity = none   # RCS1161: Enum should declare explicit values
 dotnet_diagnostic.RCS1238.severity = none   # RCS1238: Avoid nested ?: operators
 # Redundancy
-dotnet_diagnostic.RCS1070.severity = none   # RCS1070: Remove redundant default switch section
+dotnet_diagnostic.RCS1031.severity = suggestion     # RCS1031: Remove unnecessary braces
+dotnet_diagnostic.RCS1032.severity = suggestion     # RCS1032: Remove redundant parentheses
+dotnet_diagnostic.RCS1035.severity = none           # RCS1035: Remove redundant comma in initializer
+dotnet_diagnostic.RCS1036.severity = suggestion     # RCS1036: Remove redundant empty line
+dotnet_diagnostic.RCS1037.severity = suggestion     # RCS1037: Remove trailing white-space
+dotnet_diagnostic.RCS1039.severity = suggestion     # RCS1039: Remove argument list from attribute
+dotnet_diagnostic.RCS1070.severity = none           # RCS1070: Remove redundant default switch section	Redundancy	Hidden
 # Simplification
 dotnet_diagnostic.RCS1021.severity = none   # RCS1021: Convert lambda expression body to expression-body
 dotnet_diagnostic.RCS1201.severity = none   # RCS1201: Use method chaining
