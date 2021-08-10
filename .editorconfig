@@ -395,35 +395,38 @@ dotnet_diagnostic.VSTHRD111.severity = none         # VSTHRD111 Use .ConfigureAw
 # See https://github.com/JosefPihrt/Roslynator/blob/master/src/Analyzers/README.md
 ##########################################
 [*.cs]
-
-dotnet_diagnostic.RCS1021.severity = none   # RCS1021: Convert lambda expression body to expression-body
-dotnet_diagnostic.RCS1070.severity = none   # RCS1070: Remove redundant default switch section
+# Design
 dotnet_diagnostic.RCS1090.severity = none   # RCS1090: Add call to 'ConfigureAwait' (or vice versa)
-dotnet_diagnostic.RCS1140.severity = none   # RCS1140: Add exception to documentation comment
-dotnet_diagnostic.RCS1161.severity = none   # RCS1161: Enum should declare explicit values
-dotnet_diagnostic.RCS1181.severity = none   # RCS1181: Convert comment to documentation comment
 dotnet_diagnostic.RCS1194.severity = none   # RCS1194: Implement exception constructors
-dotnet_diagnostic.RCS1201.severity = none   # RCS1201: Use method chaining
 dotnet_diagnostic.RCS1224.severity = none   # RCS1224: Make method an extension method
+# General
+dotnet_diagnostic.RCS1181.severity = none   # RCS1181: Convert comment to documentation comment
+# Maintainability
+dotnet_diagnostic.RCS1140.severity = none   # RCS1140: Add exception to documentation comment
+# Readability
+dotnet_diagnostic.RCS1161.severity = none   # RCS1161: Enum should declare explicit values
 dotnet_diagnostic.RCS1238.severity = none   # RCS1238: Avoid nested ?: operators
-
-
+# Redundancy
+dotnet_diagnostic.RCS1070.severity = none   # RCS1070: Remove redundant default switch section
+# Simplification
+dotnet_diagnostic.RCS1021.severity = none   # RCS1021: Convert lambda expression body to expression-body
+dotnet_diagnostic.RCS1201.severity = none   # RCS1201: Use method chaining
 # Style
-dotnet_diagnostic.RCS1001.severity = none           # RCS1001: Add braces (when expression spans over multiple lines)	Style	Info
+dotnet_diagnostic.RCS1001.severity = suggestion     # RCS1001: Add braces (when expression spans over multiple lines)
 dotnet_diagnostic.RCS1002.severity = none           # RCS1002: Remove braces
-dotnet_diagnostic.RCS1003.severity = none           # RCS1003: Add braces to if-else (when expression spans over multiple lines)	Style	Info
+dotnet_diagnostic.RCS1003.severity = suggestion     # RCS1003: Add braces to if-else (when expression spans over multiple lines)
 dotnet_diagnostic.RCS1004.severity = none           # RCS1004: Remove braces from if-else
 dotnet_diagnostic.RCS1007.severity = suggestion     # RCS1007: Add braces
 dotnet_diagnostic.RCS1017.severity = none           # RCS1017: [deprecated] Avoid multiline expression body
 roslynator.RCS1050.invert = true
 dotnet_diagnostic.RCS1050.severity = suggestion     # RCS1050: Add argument list to object creation expression (or vice versa)
-dotnet_diagnostic.RCS1051.severity = none           # RCS1051: Parenthesize condition of conditional expression	Style
+dotnet_diagnostic.RCS1051.severity = none           # RCS1051: Parenthesize condition of conditional expression
 dotnet_diagnostic.RCS1063.severity = suggestion     # RCS1063: Avoid usage of do statement to create an infinite loop
 dotnet_diagnostic.RCS1064.severity = suggestion     # RCS1064: Avoid usage of for statement to create an infinite loop
 dotnet_diagnostic.RCS1065.severity = none           # RCS1065: Avoid usage of while statement to create an infinite loop
 dotnet_diagnostic.RCS1111.severity = none           # RCS1111: Add braces to switch section with multiple statements
 dotnet_diagnostic.RCS1126.severity = suggestion     # RCS1126: Add braces to if-else
-dotnet_diagnostic.RCS1196.severity = none           # RCS1196: Call extension method as instance method	Style	Info
+dotnet_diagnostic.RCS1196.severity = suggestion     # RCS1196: Call extension method as instance method
 dotnet_diagnostic.RCS1208.severity = none           # RCS1208: Reduce 'if' nesting
 dotnet_diagnostic.RCS1248.severity = suggestion     # RCS1248: Use pattern matching to check for null (or vice versa)
 
