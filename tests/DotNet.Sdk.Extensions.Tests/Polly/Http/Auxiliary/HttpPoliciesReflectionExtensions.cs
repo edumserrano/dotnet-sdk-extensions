@@ -20,7 +20,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary
             return delegatingHandlers
                 .OfType<PolicyHttpMessageHandler>()
                 .Select(x => x.GetPolicy<IsPolicy>())
-                .Where(x => x != null)
+                .Where(x => x is not null)
                 .Select(x => x!); // force the compiler to recognize that the return value is IEnumerable<IsPolicy> and not IEnumerable<IsPolicy?>. For more info see https://github.com/dotnet/roslyn/issues/37468
         }
 

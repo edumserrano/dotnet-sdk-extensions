@@ -16,7 +16,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess
         /// <returns>The <see cref="HttpMockServerBuilder"/> for chaining.</returns>
         public static HttpMockServerBuilder UseDefaultLogLevel(this HttpMockServerBuilder httpMockServerBuilder, LogLevel logLevel)
         {
-            if (httpMockServerBuilder == null)
+            if (httpMockServerBuilder is null)
             {
                 throw new ArgumentNullException(nameof(httpMockServerBuilder));
             }

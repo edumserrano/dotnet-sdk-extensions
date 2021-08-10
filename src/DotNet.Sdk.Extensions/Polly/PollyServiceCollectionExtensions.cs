@@ -32,7 +32,7 @@ namespace DotNet.Sdk.Extensions.Polly
                 throw new ArgumentNullException(nameof(services));
             }
 
-            if (configureRegistry == null)
+            if (configureRegistry is null)
             {
                 throw new ArgumentNullException(nameof(configureRegistry));
             }

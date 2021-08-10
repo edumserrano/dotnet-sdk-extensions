@@ -7,7 +7,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary
     {
         public static object? GetInstanceField(this object instance, string fieldName)
         {
-            if (instance == null)
+            if (instance is null)
             {
                 throw new ArgumentNullException(nameof(instance));
             }
@@ -25,7 +25,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary
 
         public static T? GetInstanceField<T>(this object instance, string fieldName)
         {
-            if (instance == null)
+            if (instance is null)
             {
                 throw new ArgumentNullException(nameof(instance));
             }
@@ -38,7 +38,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary
         // but from the base/derived class for instance
         public static T? GetInstanceField<T>(this object instance, Type type, string fieldName)
         {
-            if (instance == null)
+            if (instance is null)
             {
                 throw new ArgumentNullException(nameof(instance));
             }
@@ -48,7 +48,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary
 
         public static object? GetInstanceField(Type type, object instance, string fieldName)
         {
-            if (type == null)
+            if (type is null)
             {
                 throw new ArgumentNullException(nameof(type));
             }
@@ -68,7 +68,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary
 
         public static object? GetInstanceProperty(this object instance, string propertyName)
         {
-            if (instance == null)
+            if (instance is null)
             {
                 throw new ArgumentNullException(nameof(instance));
             }
@@ -86,7 +86,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary
 
         public static T? GetInstanceProperty<T>(this object instance, string propertyName)
         {
-            if (instance == null)
+            if (instance is null)
             {
                 throw new ArgumentNullException(nameof(instance));
             }
@@ -104,7 +104,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary
 
         public static object? GetInstanceProperty(Type type, object instance, string propertyName)
         {
-            if (type == null)
+            if (type is null)
             {
                 throw new ArgumentNullException(nameof(type));
             }

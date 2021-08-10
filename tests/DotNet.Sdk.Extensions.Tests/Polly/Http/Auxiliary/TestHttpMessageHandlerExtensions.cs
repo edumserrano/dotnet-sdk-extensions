@@ -12,7 +12,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary
             string requestPath,
             HttpStatusCode responseHttpStatusCode)
         {
-            if (testHttpMessageHandler == null)
+            if (testHttpMessageHandler is null)
             {
                 throw new ArgumentNullException(nameof(testHttpMessageHandler));
             }
@@ -32,7 +32,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary
             string requestPath,
             Exception exception)
         {
-            if (testHttpMessageHandler == null)
+            if (testHttpMessageHandler is null)
             {
                 throw new ArgumentNullException(nameof(testHttpMessageHandler));
             }
@@ -50,7 +50,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary
             string requestPath,
             TimeSpan timeout)
         {
-            if (testHttpMessageHandler == null)
+            if (testHttpMessageHandler is null)
             {
                 throw new ArgumentNullException(nameof(testHttpMessageHandler));
             }
