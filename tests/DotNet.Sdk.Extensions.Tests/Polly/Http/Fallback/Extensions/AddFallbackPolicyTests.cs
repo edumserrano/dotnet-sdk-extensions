@@ -21,7 +21,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Fallback.Extensions
     public class AddFallbackPolicyTests
     {
         /// <summary>
-        /// Tests that the <see cref="FallbackPolicyHttpClientBuilderExtensions.AddFallbackPolicy(Microsoft.Extensions.DependencyInjection.IHttpClientBuilder)"/>
+        /// Tests that the <see cref="FallbackPolicyHttpClientBuilderExtensions.AddFallbackPolicy(IHttpClientBuilder)"/>
         /// overload method adds a <see cref="DelegatingHandler"/> with a fallback policy to the <see cref="HttpClient"/>.
         /// </summary>
         [Fact]
