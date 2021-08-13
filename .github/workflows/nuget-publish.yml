@@ -71,7 +71,7 @@ jobs:
           /p:CoverletOutputFormat="json%2copencover" `
           -m:1
     - name: Upload test coverage to Codecov
-      uses: codecov/codecov-action@v2
+      uses: codecov/codecov-action@v1
       if: matrix.os == 'ubuntu-latest' # this is on a matrix run and we only need code coverage uploaded to Codecov once, choosing to upload from the matrix run on ubuntu-latest
       with:
         files: ${{env.TEST_COVERAGE_FILE}}
