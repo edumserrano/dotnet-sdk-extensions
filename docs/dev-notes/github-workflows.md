@@ -107,9 +107,9 @@ The [Dependabot configuration file](/.github/dependabot.yml) contains additional
 
 ### Deleting branches from Dependabot pull requests
 
-The [dependabot-auto-merge-pr](/.github/workflows/dependabot-auto-merge-pr.yml) workflow does not delete the merged branch explicitly because when I tried to use the flag `--delete-branch` from [gh pr merge](https://cli.github.com/manual/gh_pr_merge), GitHub's CLI tries to delete both the remote and local branch. Although it successfully deletes the remote branch, it **fails to delete the local branch** because the workflow does not execute the `gh pr merge` command in a git directory, in fact the workflow does not even checkout the repo.
+To be able to delete branches using the flag `--delete-branch` from [gh pr merge](https://cli.github.com/manual/gh_pr_merge), a checkout of the repo is done before or else the command fails because GitHub's CLI tries to delete both the remote and local branch.
 
-Although there could have been other ways to deal with this I decided to use a GitHub [repository configuration](/docs/dev-notes/dev-notes-main.md#repository-configuration) that will automatically delete branches once PRs are merged.
+**Without** the checkout step the `gh pr merge` command successfully deletes the remote branch, but it **fails to delete the local branch** and the workflow fails.
 
 ### Ignored NuGets
 
