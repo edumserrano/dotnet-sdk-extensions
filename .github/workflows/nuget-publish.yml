@@ -19,8 +19,10 @@ defaults:
   run:
     shell: pwsh
 
-jobs:
+env:
+  DOTNET_VERSION : 5.0.303
 
+jobs:
   build:
     name: Build and test
     strategy:
@@ -38,7 +40,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 5.0.x
+        dotnet-version: ${{env.DOTNET_VERSION}}
     - name: Cache/Restore NuGets
       uses: actions/cache@v2
       with:
@@ -101,7 +103,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 5.0.x
+        dotnet-version: ${{env.DOTNET_VERSION}}
     - name: Package DotNet.Sdk.Extensions
       run: dotnet pack ${{env.EXTENSIONS_CSPROJ_FILEPATH}} -c Release
     - name: Pack DotNet.Sdk.Extensions.Testing
