@@ -35,7 +35,6 @@
     </PackageReference>
     <PackageReference Include="Polly" Version="7.2.2" />
     <PackageReference Include="Polly.Contrib.WaitAndRetry" Version="1.1.1" />
-    <PackageReference Include="System.Interactive.Async" Version="5.0.0" />
   </ItemGroup>
 
 </Project>
