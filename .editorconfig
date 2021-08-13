@@ -469,7 +469,7 @@ dotnet_diagnostic.RCS0055.severity = suggestion      # RCS0055: Fix formatting o
 
 ##########################################
 # Rules for StyleCop.Analyzers
-# See https://dotnetanalyzers.github.io/StyleCopAnalyzers/ or https://github.com/DotNetAnalyzers/StyleCopAnalyzers/tree/master/documentation
+# See https://dotnetanalyzers.github.io/StyleCopAnalyzers/ and https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/DOCUMENTATION.md
 ##########################################
 [*.cs]
 # Special Rules (SA0000-)
