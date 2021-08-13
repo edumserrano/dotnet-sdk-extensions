@@ -12,6 +12,7 @@ on:
   pull_request:
     branches: [ main ]
     paths:
+    - '.github/**'
     - 'src/**'
     - 'tests/**'
     - 'Directory.Build.props'
