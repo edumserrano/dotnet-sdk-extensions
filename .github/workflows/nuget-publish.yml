@@ -7,11 +7,13 @@ on:
     paths:
     - 'src/**'
     - 'tests/**'
+    - 'Directory.Build.props'
   pull_request:
     branches: [ main ]
     paths:
     - 'src/**'
     - 'tests/**'
+    - 'Directory.Build.props'
   schedule:
     - cron: '0 0 * * 0' # Once a week: "At 00:00 on Sunday."
 
