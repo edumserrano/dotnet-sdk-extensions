@@ -105,6 +105,10 @@ With this configuration the `dependabot-auto-merge-pr` workflow will only auto m
 
 The [Dependabot configuration file](/.github/dependabot.yml) contains additional configuration for Dependabot.
 
+### Conditions for auto-merge
+
+Note that for pull requests to automatically be merged the conditions described in [Enable Auto-Merge for PR in Github Action](https://github.com/cli/cli/discussions/3660) must be met.
+
 ### Deleting branches from Dependabot pull requests
 
 To be able to delete branches using the flag `--delete-branch` from [gh pr merge](https://cli.github.com/manual/gh_pr_merge), a checkout of the repo is done before or else the command fails because GitHub's CLI tries to delete both the remote and local branch.
