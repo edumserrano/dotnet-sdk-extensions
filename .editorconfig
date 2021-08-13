@@ -5,9 +5,6 @@
 # For instance if you change to `dotnet_sort_system_directives_first = true:warning` (adding `:warning`)
 # then the rule will be silently ignored. Always test when making changes to this file
 #
-# You can learn more about code analysis here: https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/overview?view=vs-2019
-# See http://EditorConfig.org for more information about .editorconfig files.
-#
 
 ##########################################
 # Common Settings
@@ -95,7 +92,7 @@ dotnet_diagnostic.CA1032.severity = none        # CA1032: Implement standard exc
 # Globalization rules https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/globalization-warnings
 dotnet_diagnostic.CA1308.severity = none        # CA1308: Normalize strings to uppercase
 # Maintainability rules https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/maintainability-warnings
-dotnet_diagnostic.CA1508.severity = none        # CA1508: Avoid dead conditional code # This one seems to be bugged in some cases
+dotnet_diagnostic.CA1508.severity = none        # CA1508: Avoid dead conditional code # This one seems to flag false positives in some cases
 # Naming rules https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/naming-warnings
 dotnet_diagnostic.CA1711.severity = none        # CA1711: Identifiers should not have incorrect suffix
 # Reliability rules https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/reliability-warnings
@@ -163,7 +160,7 @@ dotnet_diagnostic.IDE0058.severity = silent     # Remove unnecessary expression 
 # .NET formatting rules
 # https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/formatting-rules#net-formatting-rules
 [*.cs]
-dotnet_diagnostic.IDE0055.severity = warning    # Rule ID: "IDE0055" (Fix formatting)
+dotnet_diagnostic.IDE0055.severity = suggestion    # Rule ID: "IDE0055" (Fix formatting)
 # Organize using directives
 dotnet_sort_system_directives_first = true
 dotnet_separate_import_directive_groups = false
@@ -398,16 +395,46 @@ dotnet_diagnostic.VSTHRD111.severity = none         # VSTHRD111 Use .ConfigureAw
 # See https://github.com/JosefPihrt/Roslynator/blob/master/src/Analyzers/README.md
 ##########################################
 [*.cs]
-dotnet_diagnostic.RCS1021.severity = none   # RCS1021: Convert lambda expression body to expression-body
-dotnet_diagnostic.RCS1070.severity = none   # RCS1070: Remove redundant default switch section
+# Design
 dotnet_diagnostic.RCS1090.severity = none   # RCS1090: Add call to 'ConfigureAwait' (or vice versa)
-dotnet_diagnostic.RCS1140.severity = none   # RCS1140: Add exception to documentation comment
-dotnet_diagnostic.RCS1161.severity = none   # RCS1161: Enum should declare explicit values
-dotnet_diagnostic.RCS1181.severity = none   # RCS1181: Convert comment to documentation comment
 dotnet_diagnostic.RCS1194.severity = none   # RCS1194: Implement exception constructors
-dotnet_diagnostic.RCS1201.severity = none   # RCS1201: Use method chaining
 dotnet_diagnostic.RCS1224.severity = none   # RCS1224: Make method an extension method
+# General
+dotnet_diagnostic.RCS1181.severity = none   # RCS1181: Convert comment to documentation comment
+# Maintainability
+dotnet_diagnostic.RCS1140.severity = none   # RCS1140: Add exception to documentation comment
+# Readability
+dotnet_diagnostic.RCS1161.severity = none   # RCS1161: Enum should declare explicit values
 dotnet_diagnostic.RCS1238.severity = none   # RCS1238: Avoid nested ?: operators
+# Redundancy
+dotnet_diagnostic.RCS1031.severity = suggestion     # RCS1031: Remove unnecessary braces
+dotnet_diagnostic.RCS1032.severity = suggestion     # RCS1032: Remove redundant parentheses
+dotnet_diagnostic.RCS1035.severity = none           # RCS1035: Remove redundant comma in initializer
+dotnet_diagnostic.RCS1036.severity = suggestion     # RCS1036: Remove redundant empty line
+dotnet_diagnostic.RCS1037.severity = suggestion     # RCS1037: Remove trailing white-space
+dotnet_diagnostic.RCS1039.severity = suggestion     # RCS1039: Remove argument list from attribute
+dotnet_diagnostic.RCS1070.severity = none           # RCS1070: Remove redundant default switch section	Redundancy	Hidden
+# Simplification
+dotnet_diagnostic.RCS1021.severity = none   # RCS1021: Convert lambda expression body to expression-body
+dotnet_diagnostic.RCS1201.severity = none   # RCS1201: Use method chaining
+# Style
+dotnet_diagnostic.RCS1001.severity = suggestion     # RCS1001: Add braces (when expression spans over multiple lines)
+dotnet_diagnostic.RCS1002.severity = none           # RCS1002: Remove braces
+dotnet_diagnostic.RCS1003.severity = suggestion     # RCS1003: Add braces to if-else (when expression spans over multiple lines)
+dotnet_diagnostic.RCS1004.severity = none           # RCS1004: Remove braces from if-else
+dotnet_diagnostic.RCS1007.severity = suggestion     # RCS1007: Add braces
+dotnet_diagnostic.RCS1017.severity = none           # RCS1017: [deprecated] Avoid multiline expression body
+roslynator.RCS1050.invert = true
+dotnet_diagnostic.RCS1050.severity = suggestion     # RCS1050: Add argument list to object creation expression (or vice versa)
+dotnet_diagnostic.RCS1051.severity = none           # RCS1051: Parenthesize condition of conditional expression
+dotnet_diagnostic.RCS1063.severity = suggestion     # RCS1063: Avoid usage of do statement to create an infinite loop
+dotnet_diagnostic.RCS1064.severity = suggestion     # RCS1064: Avoid usage of for statement to create an infinite loop
+dotnet_diagnostic.RCS1065.severity = none           # RCS1065: Avoid usage of while statement to create an infinite loop
+dotnet_diagnostic.RCS1111.severity = none           # RCS1111: Add braces to switch section with multiple statements
+dotnet_diagnostic.RCS1126.severity = suggestion     # RCS1126: Add braces to if-else
+dotnet_diagnostic.RCS1196.severity = suggestion     # RCS1196: Call extension method as instance method
+dotnet_diagnostic.RCS1208.severity = none           # RCS1208: Reduce 'if' nesting
+dotnet_diagnostic.RCS1248.severity = suggestion     # RCS1248: Use pattern matching to check for null (or vice versa)
 
 ##########################################
 # Rules for Roslynator.Formatting.Analyzers
@@ -416,41 +443,70 @@ dotnet_diagnostic.RCS1238.severity = none   # RCS1238: Avoid nested ?: operators
 # default severity to warning does not work. I need to explicitly set the severity of these diagnostics.
 ##########################################
 [*.cs]
-dotnet_diagnostic.RCS0001.severity = warning      # RCS0001: Add empty line after embedded statement
-dotnet_diagnostic.RCS0003.severity = warning      # RCS0003: Add empty line after using directive list
-dotnet_diagnostic.RCS0008.severity = warning      # RCS0008: Add empty line between block and statement
-dotnet_diagnostic.RCS0010.severity = warning      # RCS0010: Add empty line between declarations
-dotnet_diagnostic.RCS0021.severity = warning      # RCS0021: Add newline after opening brace of block
-dotnet_diagnostic.RCS0022.severity = warning      # RCS0022: Add newline after opening brace of empty block
-dotnet_diagnostic.RCS0023.severity = warning      # RCS0023: Add newline after opening brace of type declaration
-dotnet_diagnostic.RCS0024.severity = warning      # RCS0024: Add newline after switch label
-dotnet_diagnostic.RCS0025.severity = warning      # RCS0025: Add newline before accessor of full property
-dotnet_diagnostic.RCS0027.severity = warning      # RCS0027: Add newline before binary operator instead of after it (or vice versa)
-dotnet_diagnostic.RCS0028.severity = warning      # RCS0028: Add newline before conditional operator instead of after it (or vice versa)
-dotnet_diagnostic.RCS0030.severity = warning      # RCS0030: Add newline before embedded statement
-dotnet_diagnostic.RCS0031.severity = warning      # RCS0031: Add newline before enum member
-dotnet_diagnostic.RCS0033.severity = warning      # RCS0033: Add newline before statement
-dotnet_diagnostic.RCS0034.severity = warning      # RCS0034: Add newline before type parameter constraint
-dotnet_diagnostic.RCS0039.severity = warning      # RCS0039: Remove newline before base list
-dotnet_diagnostic.RCS0041.severity = warning      # RCS0041: Remove newline between 'if' keyword and 'else' keyword
-dotnet_diagnostic.RCS0042.severity = warning      # RCS0042: Remove newlines from accessor list of auto-property
-dotnet_diagnostic.RCS0043.severity = warning      # RCS0043: Remove newlines from accessor with single-line expression
-dotnet_diagnostic.RCS0050.severity = warning      # RCS0050: Add empty line before top declaration
-dotnet_diagnostic.RCS0051.severity = warning      # RCS0051: Add newline between closing brace and 'while' keyword (or vice versa)
-dotnet_diagnostic.RCS0054.severity = warning      # RCS0054: Fix formatting of a call chain
-dotnet_diagnostic.RCS0055.severity = warning      # RCS0055: Fix formatting of a binary expression chain
+dotnet_diagnostic.RCS0001.severity = suggestion      # RCS0001: Add empty line after embedded statement
+dotnet_diagnostic.RCS0003.severity = suggestion      # RCS0003: Add empty line after using directive list
+dotnet_diagnostic.RCS0008.severity = suggestion      # RCS0008: Add empty line between block and statement
+dotnet_diagnostic.RCS0010.severity = suggestion      # RCS0010: Add empty line between declarations
+dotnet_diagnostic.RCS0021.severity = suggestion      # RCS0021: Add newline after opening brace of block
+dotnet_diagnostic.RCS0022.severity = suggestion      # RCS0022: Add newline after opening brace of empty block
+dotnet_diagnostic.RCS0023.severity = suggestion      # RCS0023: Add newline after opening brace of type declaration
+dotnet_diagnostic.RCS0024.severity = suggestion      # RCS0024: Add newline after switch label
+dotnet_diagnostic.RCS0025.severity = suggestion      # RCS0025: Add newline before accessor of full property
+dotnet_diagnostic.RCS0027.severity = suggestion      # RCS0027: Add newline before binary operator instead of after it (or vice versa)
+dotnet_diagnostic.RCS0028.severity = suggestion      # RCS0028: Add newline before conditional operator instead of after it (or vice versa)
+dotnet_diagnostic.RCS0030.severity = suggestion      # RCS0030: Add newline before embedded statement
+dotnet_diagnostic.RCS0031.severity = suggestion      # RCS0031: Add newline before enum member
+dotnet_diagnostic.RCS0033.severity = suggestion      # RCS0033: Add newline before statement
+dotnet_diagnostic.RCS0034.severity = suggestion      # RCS0034: Add newline before type parameter constraint
+dotnet_diagnostic.RCS0039.severity = suggestion      # RCS0039: Remove newline before base list
+dotnet_diagnostic.RCS0041.severity = suggestion      # RCS0041: Remove newline between 'if' keyword and 'else' keyword
+dotnet_diagnostic.RCS0042.severity = suggestion      # RCS0042: Remove newlines from accessor list of auto-property
+dotnet_diagnostic.RCS0043.severity = suggestion      # RCS0043: Remove newlines from accessor with single-line expression
+dotnet_diagnostic.RCS0050.severity = suggestion      # RCS0050: Add empty line before top declaration
+dotnet_diagnostic.RCS0051.severity = suggestion      # RCS0051: Add newline between closing brace and 'while' keyword (or vice versa)
+dotnet_diagnostic.RCS0054.severity = suggestion      # RCS0054: Fix formatting of a call chain
+dotnet_diagnostic.RCS0055.severity = suggestion      # RCS0055: Fix formatting of a binary expression chain
 
 ##########################################
 # Rules for StyleCop.Analyzers
-# See https://dotnetanalyzers.github.io/StyleCopAnalyzers/ or https://github.com/DotNetAnalyzers/StyleCopAnalyzers/tree/master/documentation
+# See https://dotnetanalyzers.github.io/StyleCopAnalyzers/ and https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/DOCUMENTATION.md
 ##########################################
 [*.cs]
 # Special Rules (SA0000-)
-dotnet_diagnostic.SA0001.severity = none     # SA0001: XML comment analysis is disabled due to project configuration.
+dotnet_diagnostic.SA0001.severity = none        # SA0001: XML comment analysis is disabled due to project configuration.
 # Spacing Rules (SA1000-)
+dotnet_diagnostic.SA1000.severity = suggestion  # SA1000: Keywords should be spaced correctly
+dotnet_diagnostic.SA1001.severity = suggestion  # SA1001: Commas should be spaced correctly
+dotnet_diagnostic.SA1002.severity = suggestion  # SA1002: Semicolons should be spaced correctly
+dotnet_diagnostic.SA1003.severity = suggestion  # SA1003: Symbols should be spaced correctly
+dotnet_diagnostic.SA1004.severity = suggestion  # SA1004: Documentation lines should begin with single space
+dotnet_diagnostic.SA1005.severity = suggestion  # SA1005: Single line comments should begin with single space
+dotnet_diagnostic.SA1006.severity = suggestion  # SA1006: Preprocessor keywords should not be preceded by space
+dotnet_diagnostic.SA1007.severity = suggestion  # SA1007: Operator keyword should be followed by space
+dotnet_diagnostic.SA1008.severity = suggestion  # SA1008: Opening parenthesis should be spaced correctly
+dotnet_diagnostic.SA1009.severity = suggestion  # SA1009: Closing parenthesis should be spaced correctly
+dotnet_diagnostic.SA1010.severity = suggestion  # SA1010: Opening square brackets should be spaced correctly
+dotnet_diagnostic.SA1011.severity = suggestion  # SA1011: Closing square brackets should be spaced correctly
+dotnet_diagnostic.SA1012.severity = suggestion  # SA1012: Opening braces should be spaced correctly
+dotnet_diagnostic.SA1013.severity = suggestion  # SA1013: Closing braces should be spaced correctly
+dotnet_diagnostic.SA1014.severity = suggestion  # SA1014: Opening generic brackets should be spaced correctly
+dotnet_diagnostic.SA1015.severity = suggestion  # SA1015: Closing generic brackets should be spaced correctly
+dotnet_diagnostic.SA1016.severity = suggestion  # SA1016: Opening attribute brackets should be spaced correctly
+dotnet_diagnostic.SA1017.severity = suggestion  # SA1017: Closing attribute brackets should be spaced correctly
+dotnet_diagnostic.SA1018.severity = suggestion  # SA1018: Nullable type symbols should be spaced correctly
+dotnet_diagnostic.SA1019.severity = suggestion  # SA1019: Member access symbols should be spaced correctly
+dotnet_diagnostic.SA1020.severity = suggestion  # SA1020: Increment decrement symbols should be spaced correctly
+dotnet_diagnostic.SA1021.severity = suggestion  # SA1021: Negative signs should be spaced correctly
+dotnet_diagnostic.SA1022.severity = suggestion  # SA1022: Positive signs should be spaced correctly
+dotnet_diagnostic.SA1023.severity = suggestion  # SA1023: Dereference and access of symbols should be spaced correctly
+dotnet_diagnostic.SA1024.severity = suggestion  # SA1024: Colons Should Be Spaced Correctly
+dotnet_diagnostic.SA1025.severity = suggestion  # SA1025: Code should not contain multiple whitespace in a row
+dotnet_diagnostic.SA1026.severity = suggestion  # SA1026: Code should not contain space after new or stackalloc keyword in implicitly typed array allocation
+dotnet_diagnostic.SA1027.severity = suggestion  # SA1027: Use tabs correctly
+dotnet_diagnostic.SA1028.severity = suggestion  # SA1028: Code should not contain trailing whitespace
 # Readability Rules (SA1100-)
-dotnet_diagnostic.SA1101.severity = none     # SA1101: Prefix local calls with this
-dotnet_diagnostic.SA1116.severity = none     # SA1116: The parameters should begin on the line after the declaration, whenever the parameter span across multiple lines
+dotnet_diagnostic.SA1101.severity = none        # SA1101: Prefix local calls with this
+dotnet_diagnostic.SA1116.severity = none        # SA1116: The parameters should begin on the line after the declaration, whenever the parameter span across multiple lines
 # Ordering Rules (SA1200-)
 dotnet_diagnostic.SA1200.severity = none        # SA1200: Using directive should appear within a namespace declaration
 dotnet_diagnostic.SA1201.severity = none        # SA1201: A property should not follow a method
@@ -462,16 +518,72 @@ dotnet_diagnostic.SA1313.severity = none        # SA1313: Parameter '_' should b
 # Maintainability Rules (SA1400-)
 dotnet_diagnostic.SA1402.severity = none        # SA1402: File may only contain a single type
 # Layout Rules (SA1500-)
+dotnet_diagnostic.SA1500.severity = suggestion  # SA1500: Braces for multi-line statements should not share line
+dotnet_diagnostic.SA1501.severity = suggestion  # SA1501: Statement should not be on a single line
+dotnet_diagnostic.SA1502.severity = suggestion  # SA1502: Element should not be on a single line
+dotnet_diagnostic.SA1503.severity = suggestion  # SA1503: Braces should not be omitted
+dotnet_diagnostic.SA1504.severity = suggestion  # SA1504: All accessors should be single-line or multi-line
+dotnet_diagnostic.SA1505.severity = suggestion  # SA1505: Opening braces should not be followed by blank line	true
+dotnet_diagnostic.SA1506.severity = suggestion  # SA1506: Element documentation headers should not be followed by blank line
+dotnet_diagnostic.SA1507.severity = suggestion  # SA1507: Code should not contain multiple blank lines in a row
+dotnet_diagnostic.SA1508.severity = suggestion  # SA1508: Closing braces should not be preceded by blank line	true
+dotnet_diagnostic.SA1509.severity = suggestion  # SA1509: Opening braces should not be preceded by blank line	true
+dotnet_diagnostic.SA1510.severity = suggestion  # SA1510: Chained statement blocks should not be preceded by blank line
+dotnet_diagnostic.SA1511.severity = suggestion  # SA1511: While-do footer should not be preceded by blank line
 dotnet_diagnostic.SA1512.severity = none        # SA1512: Single-line comments should not be followed by blank line
-dotnet_diagnostic.SA1518.severity = none        # SA1518: Code should not contain blank lines at the end of the file
+dotnet_diagnostic.SA1513.severity = suggestion  # SA1513: Closing brace should be followed by blank line
+dotnet_diagnostic.SA1514.severity = suggestion  # SA1514: Element documentation header should be preceded by blank line
+dotnet_diagnostic.SA1515.severity = suggestion  # SA1515: Single-line comment should be preceded by blank line
+dotnet_diagnostic.SA1516.severity = suggestion  # SA1516: Elements should be separated by blank line
+dotnet_diagnostic.SA1517.severity = suggestion  # SA1517: Code should not contain blank lines at start of file
+dotnet_diagnostic.SA1518.severity = none        # SA1518: Use line endings correctly at end of file
+dotnet_diagnostic.SA1519.severity = suggestion  # SA1519: Braces should not be omitted from multi-line child statement
+dotnet_diagnostic.SA1520.severity = suggestion  # SA1520: Use braces consistently	true
 # Documentation Rules (SA1600-)
 # Regarding SA1600,SA1601 and SA1602:
 # I already have warnings to make sure public elements are documented, that is enough. These would force even internal/private elements to be documented.
-dotnet_diagnostic.SA1600.severity = none     # SA1600: Elements should be documented.
-dotnet_diagnostic.SA1601.severity = none     # SA1601: Partial elements should be documented
-dotnet_diagnostic.SA1602.severity = none     # SA1602: Enumeration items should be documented.
-dotnet_diagnostic.SA1633.severity = none     # SA1633: The file header is missing or not located at the top of the file.
-dotnet_diagnostic.SA1649.severity = none     # SA1649: File name should match first type name.
+dotnet_diagnostic.SA1600.severity = none            # SA1600: Elements should be documented
+dotnet_diagnostic.SA1601.severity = none            # SA1601: Partial elements should be documented
+dotnet_diagnostic.SA1602.severity = none            # SA1602: Enumeration items should be documented
+dotnet_diagnostic.SA1604.severity = suggestion      # SA1604: Element documentation should have summary
+dotnet_diagnostic.SA1605.severity = suggestion      # SA1605: Partial element documentation should have summary
+dotnet_diagnostic.SA1606.severity = suggestion      # SA1606: Element documentation should have summary text
+dotnet_diagnostic.SA1607.severity = suggestion      # SA1607: Partial element documentation should have summary text
+dotnet_diagnostic.SA1608.severity = suggestion      # SA1608: Element documentation should not have default summary
+dotnet_diagnostic.SA1609.severity = none            # SA1609: Property documentation should have value
+dotnet_diagnostic.SA1610.severity = suggestion      # SA1610: Property documentation should have value text
+dotnet_diagnostic.SA1611.severity = suggestion      # SA1611: Element parameters should be documented
+dotnet_diagnostic.SA1612.severity = suggestion      # SA1612: Element parameter documentation should match element parameters
+dotnet_diagnostic.SA1613.severity = suggestion      # SA1613: Element parameter documentation should declare parameter name
+dotnet_diagnostic.SA1614.severity = suggestion      # SA1614: Element parameter documentation should have text
+dotnet_diagnostic.SA1615.severity = suggestion      # SA1615: Element return value should be documented
+dotnet_diagnostic.SA1616.severity = suggestion      # SA1616: Element return value documentation should have text
+dotnet_diagnostic.SA1617.severity = suggestion      # SA1617: Void return value should not be documented
+dotnet_diagnostic.SA1618.severity = suggestion      # SA1618: Generic type parameters should be documented
+dotnet_diagnostic.SA1619.severity = suggestion      # SA1619: Generic type parameters should be documented partial class
+dotnet_diagnostic.SA1620.severity = suggestion      # SA1620: Generic type parameter documentation should match type parameters #	true	Unknown
+dotnet_diagnostic.SA1621.severity = suggestion      # SA1621: Generic type parameter documentation should declare parameter name #	true	Unknown
+dotnet_diagnostic.SA1622.severity = suggestion      # SA1622: Generic type parameter documentation should have text #	true	Unknown
+dotnet_diagnostic.SA1623.severity = suggestion      # SA1623: Property summary documentation should match accessors
+dotnet_diagnostic.SA1624.severity = suggestion      # SA1624: Property summary documentation should omit accessor with restricted access
+dotnet_diagnostic.SA1625.severity = suggestion      # SA1625: Element documentation should not be copied and pasted
+dotnet_diagnostic.SA1626.severity = suggestion      # SA1626: Single-line comments should not use documentation style slashes
+dotnet_diagnostic.SA1627.severity = suggestion      # SA1627: Documentation text should not be empty
+dotnet_diagnostic.SA1629.severity = suggestion      # SA1629: Documentation text should end with a period
+dotnet_diagnostic.SA1633.severity = none            # SA1633: File should have header
+dotnet_diagnostic.SA1634.severity = none            # SA1634: File header should show copyright
+dotnet_diagnostic.SA1635.severity = none            # SA1635: File header should have copyright text
+dotnet_diagnostic.SA1636.severity = none            # SA1636: File header copyright text should match
+dotnet_diagnostic.SA1637.severity = none            # SA1637: File header should contain file name
+dotnet_diagnostic.SA1638.severity = none            # SA1638: File header file name documentation should match file name
+dotnet_diagnostic.SA1639.severity = none            # SA1639: File header should have summary
+dotnet_diagnostic.SA1640.severity = none            # SA1640: File header should have valid company text
+dotnet_diagnostic.SA1641.severity = none            # SA1641: File header company name text should match
+dotnet_diagnostic.SA1642.severity = suggestion      # SA1642: Constructor summary documentation should begin with standard text
+dotnet_diagnostic.SA1643.severity = suggestion      # SA1643: Destructor summary documentation should begin with standard text
+dotnet_diagnostic.SA1648.severity = suggestion      # SA1648: inheritdoc should be used with inheriting class
+dotnet_diagnostic.SA1649.severity = none            # SA1649: File name should match first type name
+dotnet_diagnostic.SA1651.severity = suggestion      # SA1651: Do not use placeholder elements
 # Alternative Rules (SX0000-)
 
 ##########################################

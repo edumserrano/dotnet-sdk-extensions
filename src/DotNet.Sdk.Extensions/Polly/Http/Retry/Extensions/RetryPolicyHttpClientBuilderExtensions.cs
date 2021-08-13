@@ -145,7 +145,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Retry.Extensions
             Action<RetryOptions> configureOptions,
             Func<IServiceProvider, IRetryPolicyEventHandler> eventHandlerFactory)
         {
-            if (httpClientBuilder == null)
+            if (httpClientBuilder is null)
             {
                 throw new ArgumentNullException(nameof(httpClientBuilder));
             }

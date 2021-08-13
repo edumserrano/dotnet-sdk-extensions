@@ -34,7 +34,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
         public Task TriggerFromExceptionAsync<TException>(Exception exception)
             where TException : Exception
         {
-            if (exception == null)
+            if (exception is null)
             {
                 throw new ArgumentNullException(nameof(exception));
             }
