@@ -125,11 +125,20 @@ Dependabot does not know that for target framework netcoreapp3.1 the Microsoft.A
 
 When a pull request is triggered the `GITHUB_TOKEN` will have [different permissions depending if the pull request came from a forked repo or not](https://docs.github.com/en/actions/reference/authentication-in-a-workflow#how-the-permissions-are-calculated-for-a-workflow-job).
 
-When it comes from a forked repo the `GITHUB_TOKEN` will only have read permissions and won't be able to access any action secrets. This is true at least for public repos, for private repos there are [settings that allow you to control this](https://github.blog/2020-08-03-github-actions-improvements-for-fork-and-pull-request-workflows/).
+As per the [docs](https://docs.github.com/en/code-security/supply-chain-security/keeping-your-dependencies-updated-automatically/automating-dependabot-with-github-actions#responding-to-events):
 
-This plus the fact that a [Dependabot pull request is treated as if it was opened from a repository fork](https://github.blog/changelog/2021-02-19-github-actions-workflows-triggered-by-dependabot-prs-will-run-with-read-only-permissions/) means that the action to auto merge Dependabot PRs couldn't be done as part of the main `nuget-publish` workflow without potentially introducing security vulnerabilities.
+> Dependabot is able to trigger GitHub Actions workflows on its pull requests and comments; however, due to ["GitHub Actions: Workflows triggered by Dependabot PRs will run with read-only permissions"](https://github.blog/changelog/2021-02-19-github-actions-workflows-triggered-by-dependabot-prs-will-run-with-read-only-permissions/), certain events are treated differently.
+>
+> For workflows initiated by Dependabot (github.actor == "dependabot[bot]") using the pull_request, pull_request_review, pull_request_review_comment, and push events, the following restrictions apply:
+>
+> - GITHUB_TOKEN has read-only permissions.
+> - Secrets are inaccessible.
+>
+> For more information, see ["Keeping your GitHub Actions and workflows secure: Preventing pwn requests"](https://securitylab.github.com/research/github-actions-preventing-pwn-requests/).
 
-GitHub has all these limitations in place for security reasons. For more information and alternatives read [Keeping your GitHub Actions and workflows secure: Preventing pwn requests](https://securitylab.github.com/research/github-actions-preventing-pwn-requests/).
+Even though pull requests on **public repos** from a forked repo will only have a `GITHUB_TOKEN` with read permissions and won't be able to access any action secrets, for **private repos** there are [settings that allow you to control this](https://github.blog/2020-08-03-github-actions-improvements-for-fork-and-pull-request-workflows/).
+
+Given the above restrictions, the action to auto merge Dependabot PRs couldn't be done as part of the main `nuget-publish` workflow without potentially introducing security vulnerabilities. 
 
 As a result, the `dependabot-auto-merge-pr` workflow, which is responsible for merging a Dependabot PR, is a separate workflow that is [triggered from the completion of the main workflow](https://docs.github.com/en/actions/reference/events-that-trigger-workflows#workflow_run). **This workflow runs in a privileged workflow context which means that the `GITHUB_TOKEN` will have write permissions and be able to approve and merge the PR**.
 
