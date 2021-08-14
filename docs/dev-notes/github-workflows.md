@@ -156,6 +156,12 @@ As per [Github Actions and the threat of malicious pull requests](https://nathan
 
 See [dependabot docs](https://docs.github.com/en/code-security/supply-chain-security/keeping-your-dependencies-updated-automatically/automating-dependabot-with-github-actions#handling-pull_request-events) for code example of how to implement these kind of workflows securily.
 
+#### GitHub blog post series on "Keeping your GitHub Actions and workflows secure"
+
+- [Keeping your GitHub Actions and workflows secure Part 1: Preventing pwn requests](https://securitylab.github.com/research/github-actions-preventing-pwn-requests/)
+- [Keeping your GitHub Actions and workflows secure Part 2: Untrusted input](https://securitylab.github.com/research/github-actions-untrusted-input/)
+- [Keeping your GitHub Actions and workflows secure Part 3: How to trust your building blocks](https://securitylab.github.com/research/github-actions-building-blocks/)
+
 ### Fetch Metadata Action
 
 The [dependabot/fetch-metadata](https://github.com/dependabot/fetch-metadata) can be used to extract information about the dependencies being updated by a Dependabot generated PR.
