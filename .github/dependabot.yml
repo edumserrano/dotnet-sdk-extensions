@@ -7,6 +7,8 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    labels:
+    - 'dependabot:robot:'
     ignore:
     # Ignored because the csproj using this supports 2 different target frameworks and dependabot
     # does not know that for target framework netcoreapp3.1 the Microsoft.AspNetCore.Mvc.Testing
@@ -17,3 +19,5 @@ updates:
     directory: '/'
     schedule:
       interval: "weekly"
+    labels:
+    - 'dependabot:robot:'
