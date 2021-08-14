@@ -143,6 +143,10 @@ As per [Github Actions and the threat of malicious pull requests](https://nathan
 >
 > If you must combine the two, then make sure you guard your configuration with conditions that only runs steps with access to secrets when the pull request being checked out in the workflow is trusted, whatever that means to you and your requirements. If you search Github, you will find configurations that use the if: feature to do something like this - be careful that your logic is not faulty and test, test, test. Use a non privileged account to fork the repo, and try and exploit it using the techniques covered.
 
+#### Example of handling pull_request events
+
+See [dependabot docs](https://docs.github.com/en/code-security/supply-chain-security/keeping-your-dependencies-updated-automatically/automating-dependabot-with-github-actions#handling-pull_request-events) for code example of how to implement these kind of workflows securily.
+
 ### Fetch Metadata Action
 
 The [dependabot/fetch-metadata](https://github.com/dependabot/fetch-metadata) can be used to extract information about the dependencies being updated by a Dependabot generated PR.
