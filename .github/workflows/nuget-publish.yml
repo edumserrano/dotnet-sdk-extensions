@@ -11,11 +11,8 @@ on:
     - 'Directory.Build.props'
   pull_request:
     branches: [ main ]
-    paths:
-    - '.github/**'
-    - 'src/**'
-    - 'tests/**'
-    - 'Directory.Build.props'
+    paths-ignore:
+    - "**.md"
   schedule:
     - cron: '0 0 * * 0' # Once a week: "At 00:00 on Sunday."
 
