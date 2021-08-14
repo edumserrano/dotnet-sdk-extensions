@@ -56,7 +56,7 @@ jobs:
         --fix-whitespace `
         --fix-style info `
         --fix-analyzers info `
-        --verbosity diagnostic
+        --verbosity diagnostic `
         --check
 
   build:
