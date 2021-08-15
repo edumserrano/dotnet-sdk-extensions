@@ -22,10 +22,10 @@ namespace DotNet.Sdk.Extensions.Options
         public static OptionsBuilder<T> AddOptionsValue<T>(this IServiceCollection services, IConfiguration configuration)
             where T : class, new()
         {
-            if (services is null)
-            {
+            if(services is null) {
                 throw new ArgumentNullException(nameof(services));
             }
+
 
             return services
                 .AddOptions<T>()
