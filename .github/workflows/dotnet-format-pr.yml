@@ -38,7 +38,7 @@ jobs:
       run: dotnet restore ${{env.SLN_FILEPATH}}
     - name: Install dotnet-format dotnet tool
       run:  dotnet tool install --global dotnet-format
-    - name: dotnet format --check
+    - name: dotnet format
       run: |
         dotnet format ${{env.SLN_FILEPATH}} `
         --fix-whitespace `
