@@ -18,15 +18,11 @@ jobs:
       SLN_FILEPATH : ${{github.workspace}}/DotNet.Sdk.Extensions.sln
     steps:
     - name: Checkout
-      # for PR runs by default the pull_requst_target event checks out the base branch so we need to explicitly check out the pull request HEAD
+      # the pull_requst_target event checks out the base branch so we need to explicitly check out the pull request HEAD
       if: github.event_name == 'pull_request' || github.event_name == 'pull_request_target'
       uses: actions/checkout@v2
       with:
         ref: ${{ github.event.pull_request.head.sha }}
-    - name: Checkout
-      # for non PR runs we just checkout the default, which is a sha on a branch probably
-      if: github.event_name != 'pull_request' && github.event_name != 'pull_request_target'
-      uses: actions/checkout@v2
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
