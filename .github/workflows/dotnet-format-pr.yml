@@ -21,32 +21,32 @@ jobs:
       uses: actions/checkout@v2
       with:
         ref: ${{ github.event.pull_request.head.sha }}
-        token: ${{ secrets.GH_TOKEN_FOR_CODE_PUSH }}
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 5.0.303
-    - name: Cache/Restore NuGets
-      uses: actions/cache@v2
-      with:
-        path:
-          ~/.nuget/packages
-        key: ${{ runner.os }}-nuget-5.0.x
-        restore-keys: |
-          ${{ runner.os }}-nuget-
-    - name: Restore dependencies
-      run: dotnet restore ${{env.SLN_FILEPATH}}
-    - name: Install dotnet-format dotnet tool
-      run:  dotnet tool install --global dotnet-format
-    - name: dotnet format
-      run: |
-        dotnet format ${{env.SLN_FILEPATH}} `
-        --fix-whitespace `
-        --fix-style info `
-        --fix-analyzers info `
-        --verbosity diagnostic
-    - name: Push dotnet format changes
-      uses: stefanzweifel/git-auto-commit-action@v4.11.0
-      with:
-        commit_message: auto dotnet format
+    #   token: ${{ secrets.GH_TOKEN_FOR_CODE_PUSH }}
+    # - name: Setup .NET
+    #   uses: actions/setup-dotnet@v1
+    #   with:
+    #     dotnet-version: 5.0.303
+    # - name: Cache/Restore NuGets
+    #   uses: actions/cache@v2
+    #   with:
+    #     path:
+    #       ~/.nuget/packages
+    #     key: ${{ runner.os }}-nuget-5.0.x
+    #     restore-keys: |
+    #       ${{ runner.os }}-nuget-
+    # - name: Restore dependencies
+    #   run: dotnet restore ${{env.SLN_FILEPATH}}
+    # - name: Install dotnet-format dotnet tool
+    #   run:  dotnet tool install --global dotnet-format
+    # - name: dotnet format
+    #   run: |
+    #     dotnet format ${{env.SLN_FILEPATH}} `
+    #     --fix-whitespace `
+    #     --fix-style info `
+    #     --fix-analyzers info `
+    #     --verbosity diagnostic
+    # - name: Push dotnet format changes
+    #   uses: stefanzweifel/git-auto-commit-action@v4.11.0
+    #   with:
+    #     commit_message: auto dotnet format
 
