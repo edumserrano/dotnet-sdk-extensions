@@ -1,0 +1,57 @@
+name: dotnet format pull requests
+
+on:
+  pull_request_target:
+    branches: [ main ]
+    paths-ignore:
+    - "**.md"
+
+defaults:
+  run:
+    shell: pwsh
+
+jobs:
+  dotnet-format:
+    name: dotnet format
+    runs-on: ubuntu-latest
+    env:
+      SLN_FILEPATH : ${{github.workspace}}/DotNet.Sdk.Extensions.sln
+    steps:
+    - name: Checkout
+      # for PR runs by default the pull_requst_target event checks out the base branch so we need to explicitly check out the pull request HEAD
+      if: github.event_name == 'pull_request' || github.event_name == 'pull_request_target'
+      uses: actions/checkout@v2
+      with:
+        ref: ${{ github.event.pull_request.head.sha }}
+    - name: Checkout
+      # for non PR runs we just checkout the default, which is a sha on a branch probably
+      if: github.event_name != 'pull_request' && github.event_name != 'pull_request_target'
+      uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: ${{env.DOTNET_VERSION}}
+    - name: Cache/Restore NuGets
+      uses: actions/cache@v2
+      with:
+        path:
+          ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-5.0.x
+        restore-keys: |
+          ${{ runner.os }}-nuget-
+    - name: Restore dependencies
+      run: dotnet restore ${{env.SLN_FILEPATH}}
+    - name: Install dotnet-format dotnet tool
+      run:  dotnet tool install --global dotnet-format
+    - name: dotnet format --check
+      run: |
+        dotnet format ${{env.SLN_FILEPATH}} `
+        --fix-whitespace `
+        --fix-style info `
+        --fix-analyzers info `
+        --verbosity diagnostic
+    - name: Push dotnet format changes
+      uses: stefanzweifel/git-auto-commit-action@v4.11.0
+      with:
+        commit_message: auto dotnet format
+
