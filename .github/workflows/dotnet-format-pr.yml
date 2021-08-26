@@ -53,16 +53,18 @@ jobs:
             --fix-style info `
             --fix-analyzers info `
             --verbosity diagnostic
+          Write-Host "::endgroup::"
 
           git diff-index --quiet HEAD
           if($LASTEXITCODE -eq 0){
             break
           }
           else {
+            Write-Host "::group::Commit changes for dotnet format attempt number $attempt"
             git config --local user.name "actions-user"
             git config --local user.email "actions-user@github.com"
             git commit -a -m "auto dotnet format attempt number $attempt"
-            git push
+            Write-Host "::endgroup::"
           }
         }
 
@@ -73,9 +75,9 @@ jobs:
           Write-Host "dotnet format formatted the solution after $attempt attempts"
         }
 
-    # - name: Push dotnet format changes
-    #   uses: stefanzweifel/git-auto-commit-action@v4.11.0
-    #   with:
-    #     commit_message: auto dotnet format
+    - name: Push dotnet format changes
+      uses: stefanzweifel/git-auto-commit-action@v4.11.0
+      # with:
+      #   commit_message: auto dotnet format
 
 
