@@ -28,9 +28,9 @@ namespace DotNet.Sdk.Extensions.Options
             }
 
             return services
-              .AddOptions<T>()
-              .Bind(configuration)
-              .AddOptionsValue();
+                .AddOptions<T>()
+                .Bind(configuration)
+                .AddOptionsValue();
         }
 
         /// <summary>
