@@ -67,7 +67,7 @@ jobs:
             Write-Host "::group::Commit changes for dotnet format attempt number $attempt"
             git config --local user.name "actions-user"
             git config --local user.email "actions-user@github.com"
-            git checkout ${{ github.event.pull_request.head.ref }}
+            git checkout -b ${{ github.event.pull_request.head.ref }}
             git commit -a -m "auto dotnet format attempt number $attempt"
             Write-Host "::endgroup::"
           }
