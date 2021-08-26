@@ -25,10 +25,6 @@ trim_trailing_whitespace = true
 # File Extension Settings
 ##########################################
 
-# CSharp files
-[*.{cs,sln,csproj}]
-end_of_line = crlf
-
 # Visual Studio Solution Files
 [*.sln]
 indent_style = tab
