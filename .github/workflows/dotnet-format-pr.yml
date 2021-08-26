@@ -66,12 +66,12 @@ jobs:
           else {
             Write-Host "::group::Commit changes for dotnet format attempt number $attempt"
             $branch="${{ github.event.pull_request.head.ref }}"
-            git checkout $branch --verbose;
-            git fetch --depth=1 --verbose
-            git config --local user.name "actions-user" --verbose
-            git config --local user.email "actions-user@github.com" --verbose
-            git commit -a -m "auto dotnet format attempt number $attempt" --verbose
-            git push --set-upstream origin "HEAD:$branch" --atomic --verbose
+            git checkout $branch
+            git fetch --depth=1
+            git config --local user.name "actions-user"
+            git config --local user.email "actions-user@github.com"
+            git commit -a -m "auto dotnet format attempt number $attempt"
+            git push --set-upstream origin "HEAD:$branch" --atomic
             Write-Host "::endgroup::"
           }
         }
