@@ -1,7 +1,7 @@
 name: dotnet format pull requests
 
 on:
-  pull_request_target:
+  pull_request:
     branches: [ main ]
     paths-ignore:
     - "**.md"
@@ -23,9 +23,9 @@ jobs:
         Write-Host $githubContext
     - name: Checkout
       uses: actions/checkout@v2
-      with:
-        ref: ${{ github.event.pull_request.head.sha }}
-        token: ${{ secrets.GH_TOKEN_FOR_CODE_PUSH }} # only need this If I want the commit to retrigger some workflows, like triggering this one again after some dotnet format changes have been done? Do i want/need this?
+      # with:
+      #   ref: ${{ github.event.pull_request.head.sha }}
+      #   token: ${{ secrets.GH_TOKEN_FOR_CODE_PUSH }} # only need this If I want the commit to retrigger some workflows, like triggering this one again after some dotnet format changes have been done? Do i want/need this?
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
