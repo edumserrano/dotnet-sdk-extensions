@@ -13,10 +13,9 @@ namespace DotNet.Sdk.Extensions.Options
         {
             return builder =>
             {
-                var optionsType = typeof(IOptions<>).MakeGenericType(typeof(T));
+                  var optionsType = typeof(IOptions<>).MakeGenericType(typeof(T));
                 var options = builder.ApplicationServices.GetService(optionsType);
-                if (options is not null)
-                {
+                if (options is not null) {
                     // Retrieve the options value to trigger validation
                     _ = ((IOptions<object>)options).Value;
                 }
