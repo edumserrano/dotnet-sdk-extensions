@@ -41,9 +41,11 @@ jobs:
     - name: dotnet format
       run: |
         $maxAttempts = 5
-        $attempt = 1
+        $attempt = 0
 
         while($attempt -le $maxAttempts) {
+          $attempt++
+
           # https://docs.github.com/en/actions/reference/workflow-commands-for-github-actions#grouping-log-lines
           Write-Host "::group::Running dotnet format attempt number $attempt"
           dotnet format ${{env.SLN_FILEPATH}} `
@@ -51,13 +53,17 @@ jobs:
             --fix-style info `
             --fix-analyzers info `
             --verbosity diagnostic
-          git diff-index --quiet HEAD
 
+          git diff-index --quiet HEAD
           if($LASTEXITCODE -eq 0){
             break
           }
-
-          $attempt++
+          else {
+            git config --local user.name "actions-user"
+            git config --local user.email "actions-user@github.com"
+            git commit -a -m "auto dotnet format attempt number $attempt"
+            git push
+          }
         }
 
         if($attempt -gt $maxAttempts) {
@@ -67,8 +73,9 @@ jobs:
           Write-Host "dotnet format formatted the solution after $attempt attempts"
         }
 
-    - name: Push dotnet format changes
-      uses: stefanzweifel/git-auto-commit-action@v4.11.0
-      with:
-        commit_message: auto dotnet format
+    # - name: Push dotnet format changes
+    #   uses: stefanzweifel/git-auto-commit-action@v4.11.0
+    #   with:
+    #     commit_message: auto dotnet format
+
 
