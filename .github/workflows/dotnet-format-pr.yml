@@ -17,6 +17,10 @@ jobs:
     env:
       SLN_FILEPATH : ${{github.workspace}}/DotNet.Sdk.Extensions.sln
     steps:
+    - name: Debug github event
+      run: |
+        $githubContext = '${{toJSON(github)}}'
+        Write-Host $githubContext
     - name: Checkout
       uses: actions/checkout@v2
       with:
