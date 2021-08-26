@@ -34,102 +34,106 @@ jobs:
       TEST_COVERAGE_FILE : tests/test-results/coverage-results/coverage.opencover.xml
       TEST_COVERAGE_REPORT_DIR : tests/test-results/coverage-results/report
     steps:
-    - uses: actions/checkout@v2
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: ${{env.DOTNET_VERSION}}
-    - name: Cache/Restore NuGets
-      uses: actions/cache@v2
-      with:
-        path:
-          ~/.nuget/packages
-        key: ${{ runner.os }}-nuget-5.0.x
-        restore-keys: |
-          ${{ runner.os }}-nuget-
-    - name: Install reportgenerator dotnet tool
-      run:  dotnet tool install --global dotnet-reportgenerator-globaltool
-    - name: Restore dependencies
-      run: dotnet restore ${{env.SLN_FILEPATH}}
-    - name: Build
-      run: dotnet build ${{env.SLN_FILEPATH}} -c Release -warnaserror --no-restore --no-incremental
-    - name: Test and code coverage
+    - name: Debug github event
       run: |
-        dotnet test ${{env.SLN_FILEPATH}} `
-          -c Release `
-          --no-build `
-          --verbosity normal `
-          --logger trx `
-          --results-directory "$(Join-Path -Path (Get-Location) -ChildPath "${{env.TEST_RESULTS_DIR}}")" `
-          /p:CollectCoverage=true `
-          /p:CoverletOutput="$(Join-Path -Path (Get-Location) -ChildPath "${{env.TEST_COVERAGE_DIR}}/")" `
-          /p:MergeWith="$(Join-Path -Path (Get-Location) -ChildPath "${{env.TEST_COVERAGE_DIR}}/coverage.json")" `
-          /p:CoverletOutputFormat="json%2copencover" `
-          -m:1
-    - name: Upload test coverage to Codecov
-      uses: codecov/codecov-action@v2.0.2
-      if: matrix.os == 'ubuntu-latest' # this is on a matrix run and we only need code coverage uploaded to Codecov once, choosing to upload from the matrix run on ubuntu-latest
-      with:
-        files: ${{env.TEST_COVERAGE_FILE}}
-        fail_ci_if_error: true
-    - name: Generate code coverage report
-      if: matrix.os == 'ubuntu-latest' # this is on a matrix run and we only need code coverage report generated and uploaded once, choosing to upload from the matrix run on ubuntu-latest
-      run: |
-        reportgenerator `
-          "-reports:${{env.TEST_COVERAGE_FILE}}" `
-          "-targetdir:${{env.TEST_COVERAGE_REPORT_DIR}}" `
-          -reportTypes:htmlInline
-    - name: Upload code coverage report to artifacts
-      if: matrix.os == 'ubuntu-latest'
-      uses: actions/upload-artifact@v2
-      with:
-        name: code-coverage-report
-        path: ${{env.TEST_COVERAGE_REPORT_DIR}}
+        $githubContext = '${{toJSON(github)}}'
+        Write-Host $githubContext
+  #   - uses: actions/checkout@v2
+  #   - name: Setup .NET
+  #     uses: actions/setup-dotnet@v1
+  #     with:
+  #       dotnet-version: ${{env.DOTNET_VERSION}}
+  #   - name: Cache/Restore NuGets
+  #     uses: actions/cache@v2
+  #     with:
+  #       path:
+  #         ~/.nuget/packages
+  #       key: ${{ runner.os }}-nuget-5.0.x
+  #       restore-keys: |
+  #         ${{ runner.os }}-nuget-
+  #   - name: Install reportgenerator dotnet tool
+  #     run:  dotnet tool install --global dotnet-reportgenerator-globaltool
+  #   - name: Restore dependencies
+  #     run: dotnet restore ${{env.SLN_FILEPATH}}
+  #   - name: Build
+  #     run: dotnet build ${{env.SLN_FILEPATH}} -c Release -warnaserror --no-restore --no-incremental
+  #   - name: Test and code coverage
+  #     run: |
+  #       dotnet test ${{env.SLN_FILEPATH}} `
+  #         -c Release `
+  #         --no-build `
+  #         --verbosity normal `
+  #         --logger trx `
+  #         --results-directory "$(Join-Path -Path (Get-Location) -ChildPath "${{env.TEST_RESULTS_DIR}}")" `
+  #         /p:CollectCoverage=true `
+  #         /p:CoverletOutput="$(Join-Path -Path (Get-Location) -ChildPath "${{env.TEST_COVERAGE_DIR}}/")" `
+  #         /p:MergeWith="$(Join-Path -Path (Get-Location) -ChildPath "${{env.TEST_COVERAGE_DIR}}/coverage.json")" `
+  #         /p:CoverletOutputFormat="json%2copencover" `
+  #         -m:1
+  #   - name: Upload test coverage to Codecov
+  #     uses: codecov/codecov-action@v2.0.2
+  #     if: matrix.os == 'ubuntu-latest' # this is on a matrix run and we only need code coverage uploaded to Codecov once, choosing to upload from the matrix run on ubuntu-latest
+  #     with:
+  #       files: ${{env.TEST_COVERAGE_FILE}}
+  #       fail_ci_if_error: true
+  #   - name: Generate code coverage report
+  #     if: matrix.os == 'ubuntu-latest' # this is on a matrix run and we only need code coverage report generated and uploaded once, choosing to upload from the matrix run on ubuntu-latest
+  #     run: |
+  #       reportgenerator `
+  #         "-reports:${{env.TEST_COVERAGE_FILE}}" `
+  #         "-targetdir:${{env.TEST_COVERAGE_REPORT_DIR}}" `
+  #         -reportTypes:htmlInline
+  #   - name: Upload code coverage report to artifacts
+  #     if: matrix.os == 'ubuntu-latest'
+  #     uses: actions/upload-artifact@v2
+  #     with:
+  #       name: code-coverage-report
+  #       path: ${{env.TEST_COVERAGE_REPORT_DIR}}
 
-  nuget-publish:
-    name: Publish NuGet packages and symbols
-    needs: [build]
-    runs-on: ubuntu-latest
-    env:
-      EXTENSIONS_CSPROJ_FILEPATH : ${{github.workspace}}/src/DotNet.Sdk.Extensions/DotNet.Sdk.Extensions.csproj
-      TESTING_EXTENSIONS_CSPROJ_FILEPATH : ${{github.workspace}}/src/DotNet.Sdk.Extensions.Testing/DotNet.Sdk.Extensions.Testing.csproj
-      EXTENSIONS_BIN_FOLDER : ${{github.workspace}}/src/DotNet.Sdk.Extensions/bin/Release
-      TESTING_EXTENSIONS_BIN_FOLDER : ${{github.workspace}}/src/DotNet.Sdk.Extensions.Testing/bin/Release
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: ${{env.DOTNET_VERSION}}
-    - name: Package DotNet.Sdk.Extensions
-      run: dotnet pack ${{env.EXTENSIONS_CSPROJ_FILEPATH}} -c Release
-    - name: Pack DotNet.Sdk.Extensions.Testing
-      run: dotnet pack ${{env.TESTING_EXTENSIONS_CSPROJ_FILEPATH}} -c Release
-    - name: Publish DotNet.Sdk.Extensions nuget and symbols
-      uses: ./.github/actions/nuget-push
-      if: github.event_name != 'pull_request' # don't push nugets on pull requests
-      env:
-        NUGET_PUSH_API_KEY: ${{ secrets.NUGET_PUSH_API_KEY }}
-      with:
-        api-key: '$env:NUGET_PUSH_API_KEY'
-        source: 'https://api.nuget.org/v3/index.json'
-        working-directory: ${{env.EXTENSIONS_BIN_FOLDER}}
-    - name: Publish DotNet.Sdk.Extensions.Testing nuget and symbols
-      uses: ./.github/actions/nuget-push
-      if: github.event_name != 'pull_request' # don't push nugets on pull requests
-      env:
-        NUGET_PUSH_API_KEY: ${{ secrets.NUGET_PUSH_API_KEY }}
-      with:
-        api-key: '$env:NUGET_PUSH_API_KEY'
-        source: 'https://api.nuget.org/v3/index.json'
-        working-directory: ${{env.TESTING_EXTENSIONS_BIN_FOLDER}}
-    - name: Upload nugets and symbols to artifacts
-      uses: actions/upload-artifact@v2
-      with:
-        name: nuget-packages-and-symbols
-        path: |
-          ${{env.EXTENSIONS_BIN_FOLDER}}/*.nupkg
-          ${{env.EXTENSIONS_BIN_FOLDER}}/*.snupkg
-          ${{env.TESTING_EXTENSIONS_BIN_FOLDER}}/*.nupkg
-          ${{env.TESTING_EXTENSIONS_BIN_FOLDER}}/*.snupkg
+  # nuget-publish:
+  #   name: Publish NuGet packages and symbols
+  #   needs: [build]
+  #   runs-on: ubuntu-latest
+  #   env:
+  #     EXTENSIONS_CSPROJ_FILEPATH : ${{github.workspace}}/src/DotNet.Sdk.Extensions/DotNet.Sdk.Extensions.csproj
+  #     TESTING_EXTENSIONS_CSPROJ_FILEPATH : ${{github.workspace}}/src/DotNet.Sdk.Extensions.Testing/DotNet.Sdk.Extensions.Testing.csproj
+  #     EXTENSIONS_BIN_FOLDER : ${{github.workspace}}/src/DotNet.Sdk.Extensions/bin/Release
+  #     TESTING_EXTENSIONS_BIN_FOLDER : ${{github.workspace}}/src/DotNet.Sdk.Extensions.Testing/bin/Release
+  #   steps:
+  #   - name: Checkout repository
+  #     uses: actions/checkout@v2
+  #   - name: Setup .NET
+  #     uses: actions/setup-dotnet@v1
+  #     with:
+  #       dotnet-version: ${{env.DOTNET_VERSION}}
+  #   - name: Package DotNet.Sdk.Extensions
+  #     run: dotnet pack ${{env.EXTENSIONS_CSPROJ_FILEPATH}} -c Release
+  #   - name: Pack DotNet.Sdk.Extensions.Testing
+  #     run: dotnet pack ${{env.TESTING_EXTENSIONS_CSPROJ_FILEPATH}} -c Release
+  #   - name: Publish DotNet.Sdk.Extensions nuget and symbols
+  #     uses: ./.github/actions/nuget-push
+  #     if: github.event_name != 'pull_request' # don't push nugets on pull requests
+  #     env:
+  #       NUGET_PUSH_API_KEY: ${{ secrets.NUGET_PUSH_API_KEY }}
+  #     with:
+  #       api-key: '$env:NUGET_PUSH_API_KEY'
+  #       source: 'https://api.nuget.org/v3/index.json'
+  #       working-directory: ${{env.EXTENSIONS_BIN_FOLDER}}
+  #   - name: Publish DotNet.Sdk.Extensions.Testing nuget and symbols
+  #     uses: ./.github/actions/nuget-push
+  #     if: github.event_name != 'pull_request' # don't push nugets on pull requests
+  #     env:
+  #       NUGET_PUSH_API_KEY: ${{ secrets.NUGET_PUSH_API_KEY }}
+  #     with:
+  #       api-key: '$env:NUGET_PUSH_API_KEY'
+  #       source: 'https://api.nuget.org/v3/index.json'
+  #       working-directory: ${{env.TESTING_EXTENSIONS_BIN_FOLDER}}
+  #   - name: Upload nugets and symbols to artifacts
+  #     uses: actions/upload-artifact@v2
+  #     with:
+  #       name: nuget-packages-and-symbols
+  #       path: |
+  #         ${{env.EXTENSIONS_BIN_FOLDER}}/*.nupkg
+  #         ${{env.EXTENSIONS_BIN_FOLDER}}/*.snupkg
+  #         ${{env.TESTING_EXTENSIONS_BIN_FOLDER}}/*.nupkg
+  #         ${{env.TESTING_EXTENSIONS_BIN_FOLDER}}/*.snupkg
