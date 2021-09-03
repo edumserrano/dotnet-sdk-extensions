@@ -20,10 +20,6 @@ jobs:
       DOTNET_VERSION : 5.0.303
       WORKFLOW_RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
     steps:    
-    - name: Debug github event
-      run: |
-        $githubContext = '${{toJSON(github)}}'
-        Write-Host $githubContext
     - name: Checkout
       uses: actions/checkout@v2
     - name: Setup .NET

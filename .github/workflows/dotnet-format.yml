@@ -74,25 +74,28 @@ jobs:
           --fix-style info `
           --fix-analyzers info `
           --verbosity diagnostic
-    - name: Set branch name
-      id: set-branch-name
+    - name: Set commit info
+      id: set-commit-info
       run: |
-        $branchSuffix = (Get-Date).ToString("dd-MMM-yyyy") 
-        $branchName = "dotnet-format-$branchSuffix"
+        $date = (Get-Date).ToString("dd-MMM-yyyy") 
+        $branchName = "dotnet-format-$date"
+        $commitMessage = "auto dotnet format $date"
         Write-Host "::set-output name=branch-name::$branchName"
         Write-Host "Branch name set to $branchName"
+        Write-Host "::set-output name=commit-message::$commitMessage"
+        Write-Host "Commit message set to $commitMessage"
     - name: Create branch
       uses: peterjgrainger/action-create-branch@v2.0.1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        branch: ${{ steps.set-branch-name.outputs.branch-name }}
+        branch: ${{ steps.set-commit-info.outputs.branch-name }}
     - name: Push dotnet format changes to branch
       id: auto-commit-action
       uses: stefanzweifel/git-auto-commit-action@v4.11.0
       with:
         commit_message: auto dotnet format
-        branch: ${{ steps.set-branch-name.outputs.branch-name }}
+        branch: ${{ steps.set-commit-info.outputs.branch-name }}
     - name: Create dotnet format PR
       if: steps.auto-commit-action.outputs.changes_detected == 'true'
       env:
@@ -103,7 +106,7 @@ jobs:
         # Without using a custom GitHub token the PR would be created but no checks would be executed.
         GITHUB_TOKEN: ${{ secrets.DOTNET_FORMAT_GH_TOKEN }}
       run: |
-        $title = "${{ steps.set-branch-name.outputs.branch-name }}: fix code guidelines violations"
+        $title = "${{ steps.set-commit-info.outputs.branch-name }}: fix code guidelines violations"
         $body = "Fix code guidline violations."
         gh pr create `
           --title $title `
