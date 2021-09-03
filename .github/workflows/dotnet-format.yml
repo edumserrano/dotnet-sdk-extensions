@@ -38,18 +38,18 @@ jobs:
         Write-Host "::set-output name=can-create-pr::$canCreatePr"
     - name: Debug step output
       run: |
-        Write-Host ${{ steps.open-pr-check.can-create-pr }}        
+        Write-Host ${{ steps.open-pr-check.outputs.can-create-pr }}      
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
-      if: steps.open-pr-check.can-create-pr == 'True'
+      if: steps.open-pr-check.outputscan-create-pr == 'True'
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
     - name: Install dotnet-format dotnet tool
-      if: steps.open-pr-check.can-create-pr == 'True'
+      if: steps.open-pr-check.outputscan-create-pr == 'True'
       run:  dotnet tool install --global dotnet-format    
     - name: Cache/Restore NuGets
       uses: actions/cache@v2
-      if: steps.open-pr-check.can-create-pr == 'True'
+      if: steps.open-pr-check.outputscan-create-pr == 'True'
       with:
         path:
           ~/.nuget/packages
@@ -58,9 +58,9 @@ jobs:
           ${{ runner.os }}-nuget-
     - name: Restore dependencies
       run: dotnet restore ${{ env.SLN_FILEPATH }}
-      if: steps.open-pr-check.can-create-pr == 'True'
+      if: steps.open-pr-check.outputscan-create-pr == 'True'
     - name: dotnet format
-      if: steps.open-pr-check.can-create-pr == 'True'
+      if: steps.open-pr-check.outputscan-create-pr == 'True'
       run: |
         dotnet format ${{ env.SLN_FILEPATH }} `
           --fix-whitespace `
@@ -69,14 +69,14 @@ jobs:
           --verbosity diagnostic
     - name: set branch name
       id: set-branch-name
-      if: steps.open-pr-check.can-create-pr == 'True'
+      if: steps.open-pr-check.outputscan-create-pr == 'True'
       run: |
         $branchSuffix = (Get-Date).ToString("dd-MMM-yyyy") 
         $branchName = "dotnet-format-$branchSuffix"
         Write-Host "::set-output name=branch-name::$branchName"
     - name: Push dotnet format changes
       uses: stefanzweifel/git-auto-commit-action@v4.11.0
-      if: steps.open-pr-check.can-create-pr == 'True'
+      if: steps.open-pr-check.outputscan-create-pr == 'True'
       with:
         commit_message: auto dotnet format
         branch: ${{ steps.set-branch-name.outputs.branch-name }}
