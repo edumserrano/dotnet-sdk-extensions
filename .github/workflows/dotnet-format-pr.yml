@@ -11,8 +11,8 @@ defaults:
     shell: pwsh
 
 jobs:
-  dotnet-format:
-    name: dotnet format
+  dotnet-format-check:
+    name: dotnet format check
     runs-on: ubuntu-latest
     env:
       SLN_FILENAME: DotNet.Sdk.Extensions.sln
