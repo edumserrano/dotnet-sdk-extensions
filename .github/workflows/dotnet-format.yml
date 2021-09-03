@@ -84,6 +84,7 @@ jobs:
         $branchSuffix = (Get-Date).ToString("dd-MMM-yyyy") 
         $branchName = "dotnet-format-$branchSuffix"
         Write-Host "::set-output name=branch-name::$branchName"
+        Write-Host "Branch name set to $branchName"
     - name: Create branch
       uses: peterjgrainger/action-create-branch@v2.0.1
       env:
@@ -91,11 +92,13 @@ jobs:
       with:
         branch: ${{ steps.set-branch-name.outputs.branch-name }}
     - name: Push dotnet format changes to branch
+      id: auto-commit-action
       uses: stefanzweifel/git-auto-commit-action@v4.11.0
       with:
         commit_message: auto dotnet format
         branch: ${{ steps.set-branch-name.outputs.branch-name }}
     - name: Create dotnet format PR
+      if: steps.auto-commit-action.outputs.changes_detected == 'true'
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
