@@ -1,4 +1,4 @@
-name: dotnet format pull requests
+name: dotnet format check
 
 on:
   pull_request:
