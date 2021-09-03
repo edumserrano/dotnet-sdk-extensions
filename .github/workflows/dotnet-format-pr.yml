@@ -17,6 +17,7 @@ jobs:
     env:
       SLN_FILEPATH : ${{ github.workspace }}/DotNet.Sdk.Extensions.sln
       DOTNET_VERSION : 5.0.303
+      WORKFLOW_RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
     steps:
     - name: Debug github event
       run: |
@@ -41,6 +42,7 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-nuget-
     - name: dotnet format
+      id: dotnet-format
       run: |
         Write-Host "::group::Running dotnet format"
         dotnet format ${{ env.SLN_FILEPATH }} `
@@ -65,6 +67,28 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
+        $hasChanges = [System.Convert]::ToBoolean("${{ steps.dotnet-format.outputs.has-changes }}")
+        if($hasChanges) {
+          $commentBody = @"
+        :exclamation: dotnet format found files that do not respect the code guidelines. For more information please see the output from this [workflow run](${{ env.WORKFLOW_RUN_URL }}).
+        
+        Before merging this PR please fix the issues found in commit ${{ github.event.pull_request.head.sha }}. You can do so by running [dotnet format](https://github.com/dotnet/format) on the solution as such:
+        dotnet format ${{ env.SLN_FILEPATH }} --fix-whitespace --fix-style info --fix-analyzers info --verbosity diagnostic
+        "@
+        }
+        else {
+          $commentBody = @"
+        :heavy_check_mark: dotnet format didn't find any file that dooes not respect the code guidelines. For more information please see the output from this [workflow run](${{ env.WORKFLOW_RUN_URL }}).
+        "@
+        }
+        
         $prNumber = "${{github.event.pull_request.number}}"
-        $prUrl = "https://github.com/edumserrano/dot-net-sdk-extensions/pull/$prNumber"
-        gh pr comment $prNumber --body "This looks great, lets get it deployed."
+        gh pr comment $prNumber --body $commentBody
+    - name: Set workflow exit status
+      run: |
+        $hasChanges = [System.Convert]::ToBoolean("${{ steps.dotnet-format.outputs.has-changes }}")
+        if($hasChanges) {
+          Exit 1
+        }
+
+        Exit 0
