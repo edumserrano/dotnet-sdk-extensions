@@ -7,6 +7,9 @@ on:
     paths-ignore:
     - "**.md"
 
+env:
+  DOTNET_FORMAT_LABEL : dotnet-format
+
 defaults:
   run:
     shell: pwsh
@@ -27,7 +30,7 @@ jobs:
       run: |
         # Only create a PR if there isn't any dotnet format PR open
         # This prevents multiple pull requests being open to fix the same dotnet format issues
-        $openPullRequestsResult = gh pr list --state open --label dotnet-format
+        $openPullRequestsResult = gh pr list --state open --label ${{ env.DOTNET_FORMAT_LABEL }}
         $canCreatePr = [string]::IsNullOrEmpty($openPullRequestsResult)
         Write-Host "::set-output name=can-create-pr::$canCreatePr"
         
@@ -92,6 +95,16 @@ jobs:
       with:
         commit_message: auto dotnet format
         branch: ${{ steps.set-branch-name.outputs.branch-name }}
+    - name: Create dotnet format PR
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        $title = "${{ steps.set-branch-name.outputs.branch-name }}: fix code guidelines violations"
+        $body = "Fix code guidline violations."
+        gh pr create `
+          --title $title `
+          --body $body `
+          --label ${{ env.DOTNET_FORMAT_LABEL }}
     # - name: dotnet format
     #   run: |
     #     $maxAttempts = 5
