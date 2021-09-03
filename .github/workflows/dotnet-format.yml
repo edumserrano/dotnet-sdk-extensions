@@ -12,17 +12,12 @@ defaults:
     shell: pwsh
 
 jobs:
-  dotnet-format:
-    name: dotnet format
+  check-open-pr:
+    name: Check for dotnet format open PR
     runs-on: ubuntu-latest
-    env:
-      SLN_FILEPATH : ${{ github.workspace }}/DotNet.Sdk.Extensions.sln
-      DOTNET_VERSION : 5.0.303
+    outputs:
+      can-create-pr: ${{ steps.open-pr-check.outputs.can-create-pr }}
     steps:
-    - name: Debug github event
-      run: |
-        $githubContext = '${{toJSON(github)}}'
-        Write-Host $githubContext
     - name: Checkout
       uses: actions/checkout@v2
     - name: Check for open dotnet format PRs
@@ -34,22 +29,30 @@ jobs:
         # This prevents multiple pull requests being open to fix the same dotnet format issues
         $openPullRequestsResult = gh pr list --state open --label dotnet-format
         $canCreatePr = [string]::IsNullOrEmpty($openPullRequestsResult)
-        Write-Host $canCreatePr
-        Write-Host "::set-output name=can-create-pr::$canCreatePr"
-    - name: Debug step output
+        Write-Host "::set-output name=can-create-pr::$canCreatePr"  
+  dotnet-format:
+    name: dotnet format
+    needs: [check-open-pr]
+    if: needs.check-open-pr.outputs.can-create-pr == 'True'
+    runs-on: ubuntu-latest
+    env:
+      SLN_FILEPATH : ${{ github.workspace }}/DotNet.Sdk.Extensions.sln
+      DOTNET_VERSION : 5.0.303
+    steps:
+    - name: Debug github event
       run: |
-        Write-Host ${{ steps.open-pr-check.outputs.can-create-pr }}      
+        $githubContext = '${{toJSON(github)}}'
+        Write-Host $githubContext
+    - name: Checkout
+      uses: actions/checkout@v2
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
-      if: steps.open-pr-check.outputs.can-create-pr == 'True'
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
     - name: Install dotnet-format dotnet tool
-      if: steps.open-pr-check.outputs.can-create-pr == 'True'
       run:  dotnet tool install --global dotnet-format    
     - name: Cache/Restore NuGets
       uses: actions/cache@v2
-      if: steps.open-pr-check.outputs.can-create-pr == 'True'
       with:
         path:
           ~/.nuget/packages
@@ -58,25 +61,21 @@ jobs:
           ${{ runner.os }}-nuget-
     - name: Restore dependencies
       run: dotnet restore ${{ env.SLN_FILEPATH }}
-      if: steps.open-pr-check.outputs.can-create-pr == 'True'
     - name: dotnet format
-      if: steps.open-pr-check.outputs.can-create-pr == 'True'
       run: |
         dotnet format ${{ env.SLN_FILEPATH }} `
           --fix-whitespace `
           --fix-style info `
           --fix-analyzers info `
           --verbosity diagnostic
-    - name: set branch name
+    - name: Set branch name
       id: set-branch-name
-      if: steps.open-pr-check.outputs.can-create-pr == 'True'
       run: |
         $branchSuffix = (Get-Date).ToString("dd-MMM-yyyy") 
         $branchName = "dotnet-format-$branchSuffix"
         Write-Host "::set-output name=branch-name::$branchName"
     - name: Push dotnet format changes
       uses: stefanzweifel/git-auto-commit-action@v4.11.0
-      if: steps.open-pr-check.outputs.can-create-pr == 'True'
       with:
         commit_message: auto dotnet format
         branch: ${{ steps.set-branch-name.outputs.branch-name }}
