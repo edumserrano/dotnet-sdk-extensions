@@ -42,14 +42,25 @@ jobs:
           ${{ runner.os }}-nuget-
     - name: dotnet format
       run: |
+        Write-Host "::group::Running dotnet format attempt number $attempt"
         dotnet format ${{env.SLN_FILEPATH}} `
           --fix-whitespace `
           --fix-style info `
           --fix-analyzers info `
           --verbosity diagnostic `
           --check
+        Write-Host "::endgroup::"
         $hasChanges = $LASTEXITCODE -ne 0
         Write-Host "::set-output name=has-changes::$hasChanges"
+        
+        if($hasChanges) {
+          Write-Host "::warning::dotnet format found files that require formatting."        
+        }
+        else {
+          Write-Host "dotnet format didn't find any file that requires formatting."        
+        }
+        
+        Exit 0 # always exit successfully
     - name: GitHub PR comment
       run: |
         $prNumber = "${{github.event.workflow_run.pull_requests[0].number}}"
