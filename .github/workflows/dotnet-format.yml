@@ -29,7 +29,14 @@ jobs:
         # This prevents multiple pull requests being open to fix the same dotnet format issues
         $openPullRequestsResult = gh pr list --state open --label dotnet-format
         $canCreatePr = [string]::IsNullOrEmpty($openPullRequestsResult)
-        Write-Host "::set-output name=can-create-pr::$canCreatePr"  
+        Write-Host "::set-output name=can-create-pr::$canCreatePr"
+        
+        if($canCreatePr) {
+          Write-Host "There isn't any open dotnet format PR so this workflow will proceed with the dotnet format job."    
+        }  
+        else {
+          Write-Host "::warning::There is an open dotnet format PR so this workflow will NOT proceed with the dotnet format job."    
+        }
   dotnet-format:
     name: dotnet format
     needs: [check-open-pr]
@@ -74,7 +81,13 @@ jobs:
         $branchSuffix = (Get-Date).ToString("dd-MMM-yyyy") 
         $branchName = "dotnet-format-$branchSuffix"
         Write-Host "::set-output name=branch-name::$branchName"
-    - name: Push dotnet format changes
+    - name: Create branch
+      uses: peterjgrainger/action-create-branch@v2.0.1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        branch: ${{ steps.set-branch-name.outputs.branch-name }}
+    - name: Push dotnet format changes to branch
       uses: stefanzweifel/git-auto-commit-action@v4.11.0
       with:
         commit_message: auto dotnet format
