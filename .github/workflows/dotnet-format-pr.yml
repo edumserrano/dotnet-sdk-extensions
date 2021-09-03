@@ -42,7 +42,7 @@ jobs:
         key: ${{ runner.os }}-nuget-${{ env.DOTNET_VERSION }}
         restore-keys: |
           ${{ runner.os }}-nuget-
-    - name: dotnet format
+    - name: dotnet format check
       id: dotnet-format
       run: |
         Write-Host "::group::Running dotnet format"
