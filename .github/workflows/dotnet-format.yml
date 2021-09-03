@@ -34,6 +34,7 @@ jobs:
         # This prevents multiple pull requests being open to fix the same dotnet format issues
         $openPullRequestsResult = gh pr list --state open --label dotnet-format
         $canCreatePr = [string]::IsNullOrEmpty($openPullRequestsResult)
+        Write-Host $canCreatePr
         Write-Host "::set-output name=can-create-pr::$canCreatePr"
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
