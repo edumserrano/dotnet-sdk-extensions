@@ -70,16 +70,16 @@ jobs:
       run: |
         $hasChanges = [System.Convert]::ToBoolean("${{ steps.dotnet-format.outputs.has-changes }}")
         if($hasChanges) {
-        $commentBody = @"
-        :exclamation: dotnet format found files that do not respect the code guidelines. For more information please see the output from this [workflow run](${{ env.WORKFLOW_RUN_URL }}).
+          $commentBody = @"
+        :exclamation: **dotnet format** found files that do not respect the code guidelines. For more information please see the output from this [workflow run](${{ env.WORKFLOW_RUN_URL }}).
         
         Before merging this PR please fix the reported issues. You can do so by running [dotnet format](https://github.com/dotnet/format) on the solution as such:
         ``dotnet format ${{ env.SLN_FILENAME }} --fix-whitespace --fix-style info --fix-analyzers info --verbosity diagnostic``
         "@
         }
         else {
-        $commentBody = @"
-        :heavy_check_mark: dotnet format didn't find any file that does not respect the code guidelines. For more information please see the output from this [workflow run](${{ env.WORKFLOW_RUN_URL }}).
+          $commentBody = @"
+        :heavy_check_mark: **dotnet format** didn't find any file that does not respect the code guidelines. For more information please see the output from this [workflow run](${{ env.WORKFLOW_RUN_URL }}).
         "@
         }
         
