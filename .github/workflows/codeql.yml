@@ -33,7 +33,7 @@ jobs:
       matrix:
         language: [ 'csharp' ]
     env:
-      SLN_FILEPATH : ${{github.workspace}}/DotNet.Sdk.Extensions.sln
+      SLN_FILEPATH : ${{ github.workspace }}/DotNet.Sdk.Extensions.sln
       DOTNET_VERSION : 5.0.303
     steps:
     - name: Checkout repository
@@ -41,13 +41,13 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: ${{env.DOTNET_VERSION}}
+        dotnet-version: ${{ env.DOTNET_VERSION }}
     - name: Cache/Restore NuGets
       uses: actions/cache@v2
       with:
         path:
           ~/.nuget/packages
-        key: ${{ runner.os }}-nuget-${{env.DOTNET_VERSION}}
+        key: ${{ runner.os }}-nuget-${{ env.DOTNET_VERSION }}
         restore-keys: |
           ${{ runner.os }}-nuget-
     - name: Initialize CodeQL
@@ -56,9 +56,9 @@ jobs:
         languages: ${{ matrix.language }}
         queries: security-and-quality
     - name: Restore dependencies
-      run: dotnet restore ${{env.SLN_FILEPATH}}
+      run: dotnet restore ${{ env.SLN_FILEPATH }}
     - name: Build
-      run: dotnet build ${{env.SLN_FILEPATH}} -c Release -warnaserror --no-restore --no-incremental
+      run: dotnet build ${{ env.SLN_FILEPATH }} -c Release -warnaserror --no-restore --no-incremental
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1
     - name: Upload SARIF file

@@ -1,4 +1,4 @@
-name: dotnet format pull requests
+name: dotnet format check
 
 on:
   pull_request:
@@ -15,12 +15,14 @@ jobs:
     name: dotnet format
     runs-on: ubuntu-latest
     env:
-      SLN_FILEPATH : ${{github.workspace}}/DotNet.Sdk.Extensions.sln
+      SLN_FILENAME: DotNet.Sdk.Extensions.sln
+      SLN_FILEPATH : ${{ github.workspace }}/DotNet.Sdk.Extensions.sln
       DOTNET_VERSION : 5.0.303
+      WORKFLOW_RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
     steps:
     - name: Debug github event
       run: |
-        $githubContext = '${{toJSON(github)}}'
+        $githubContext = '${{ toJSON(github) }}'
         Write-Host $githubContext
     - name: Checkout
       uses: actions/checkout@v2
@@ -29,7 +31,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: ${{env.DOTNET_VERSION}}
+        dotnet-version: ${{ env.DOTNET_VERSION }}
     - name: Install dotnet-format tool
       run:  dotnet tool install --global dotnet-format
     - name: Cache/Restore NuGets
@@ -37,22 +39,59 @@ jobs:
       with:
         path:
           ~/.nuget/packages
-        key: ${{ runner.os }}-nuget-${{env.DOTNET_VERSION}}
+        key: ${{ runner.os }}-nuget-${{ env.DOTNET_VERSION }}
         restore-keys: |
           ${{ runner.os }}-nuget-
     - name: dotnet format
+      id: dotnet-format
       run: |
-        dotnet format ${{env.SLN_FILEPATH}} `
+        Write-Host "::group::Running dotnet format"
+        dotnet format ${{ env.SLN_FILEPATH }} `
           --fix-whitespace `
           --fix-style info `
           --fix-analyzers info `
           --verbosity diagnostic `
           --check
+        Write-Host "::endgroup::"
         $hasChanges = $LASTEXITCODE -ne 0
         Write-Host "::set-output name=has-changes::$hasChanges"
+        
+        if($hasChanges) {
+          Write-Host "::warning::dotnet format found files that require formatting."        
+        }
+        else {
+          Write-Host "dotnet format didn't find any file that requires formatting."        
+        }
+
+        Exit 0 # always exit successfully
     - name: GitHub PR comment
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        $prNumber = "${{github.event.workflow_run.pull_requests[0].number}}"
-        $prUrl = "https://github.com/edumserrano/dot-net-sdk-extensions/pull/$prNumber"
-        # gh pr merge --auto --squash --delete-branch "$prUrl"
-        Write-Host $prUrl
+        $hasChanges = [System.Convert]::ToBoolean("${{ steps.dotnet-format.outputs.has-changes }}")
+        if($hasChanges) {
+          $commentBody = @"
+        :exclamation: **dotnet format** found files that do not respect the code guidelines. For more information please see the output from this [workflow run](${{ env.WORKFLOW_RUN_URL }}).
+        
+        Before merging this PR please fix the reported issues. You can do so by running [dotnet format](https://github.com/dotnet/format) on the solution as such:
+        ``dotnet format ${{ env.SLN_FILENAME }} --fix-whitespace --fix-style info --fix-analyzers info --verbosity diagnostic``
+        "@
+        }
+        else {
+          $commentBody = @"
+        :heavy_check_mark: **dotnet format** didn't find any file that does not respect the code guidelines. For more information please see the output from this [workflow run](${{ env.WORKFLOW_RUN_URL }}).
+        "@
+        }
+        
+        $prNumber = "${{github.event.pull_request.number}}"
+        gh pr comment $prNumber --body $commentBody
+    - name: Set workflow exit status
+      run: |
+        $hasChanges = [System.Convert]::ToBoolean("${{ steps.dotnet-format.outputs.has-changes }}")
+        if($hasChanges) {
+          Write-Host "dotnet format found files that do not respect the code guidelines so setting the workflow status as failed."
+          Exit 1
+        }
+
+        Write-Host "dotnet format didn't find any file that does not respect the code guidelines so setting the workflow status as successful."
+        Exit 0

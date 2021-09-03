@@ -21,9 +21,10 @@ jobs:
       with:
         ref: ${{github.event.workflow_run.head_branch}}
     - name: Approve and merge dependabot PR
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        $prNumber = "${{github.event.workflow_run.pull_requests[0].number}}"
+        $prNumber = "${{ github.event.workflow_run.pull_requests[0].number }}"
         $prUrl = "https://github.com/edumserrano/dot-net-sdk-extensions/pull/$prNumber"
         gh pr merge --auto --squash --delete-branch "$prUrl"
-      env:
-        GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
+      
