@@ -36,6 +36,9 @@ jobs:
         $canCreatePr = [string]::IsNullOrEmpty($openPullRequestsResult)
         Write-Host $canCreatePr
         Write-Host "::set-output name=can-create-pr::$canCreatePr"
+    - name: Debug step output
+      run: |
+        Write-Host ${{ steps.open-pr-check.can-create-pr }}        
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       if: steps.open-pr-check.can-create-pr == 'True'
