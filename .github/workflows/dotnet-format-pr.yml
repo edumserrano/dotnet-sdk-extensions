@@ -66,4 +66,4 @@ jobs:
         $prNumber = "${{github.event.pull_request.number}}"
         $prUrl = "https://github.com/edumserrano/dot-net-sdk-extensions/pull/$prNumber"
         # gh pr merge --auto --squash --delete-branch "$prUrl"
-        Write-Host $prUrl
+        gh pr comment $prNumber --body "This looks great, lets get it deployed."
