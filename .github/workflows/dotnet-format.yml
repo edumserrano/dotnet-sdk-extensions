@@ -96,6 +96,11 @@ jobs:
     - name: Create dotnet format PR
       if: steps.auto-commit-action.outputs.changes_detected == 'true'
       env:
+        # From https://docs.github.com/en/actions/reference/authentication-in-a-workflow#using-the-github_token-in-a-workflow
+        # "When you use the repository's GITHUB_TOKEN to perform tasks on behalf of
+        # the GitHub Actions app, events triggered by the GITHUB_TOKEN will not create a new workflow run."
+        #
+        # Without using a custom GitHub token the PR would be created but no checks would be executed.
         GITHUB_TOKEN: ${{ secrets.DOTNET_FORMAT_GH_TOKEN }}
       run: |
         $title = "${{ steps.set-branch-name.outputs.branch-name }}: fix code guidelines violations"
