@@ -109,13 +109,22 @@ jobs:
       run: |
         $title = "${{ steps.set-commit-info.outputs.branch-name }}: fix code guidelines violations"
         $body = @"
-        **dotnet format** [workflow run](${{ env.WORKFLOW_RUN_URL }}) detected code guidelines violations and
-        automatically created this PR.
+        **dotnet format** [workflow run](${{ env.WORKFLOW_RUN_URL }}) detected code guidelines violations and automatically created this PR.
 
         :warning: Please review the suggested changes before merging.
 
-        **Note**: sometimes dotnet format adds unecessary commets when formatting files. This seems to happen when 
-        supporting multiple target frameworks. If this happens you should remove the comments. 
+        **Note**: sometimes the fix provided by the analyzers adds unecessary commets when formatting files. 
+        This should only happen if the project supports multiple target frameworks and the fix doesn't produce the same output for all.
+        However, I found that sometimes the ``Unmerged change from project ...`` comment shows up even though the fix produced the same output.
+        If this happens, just delete the comments added. Otherwise you incorporate the commented out code using [preprocessor directives to control conditional compilation](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/preprocessor-directives#conditional-compilation).
+        Example:
+        ``````csharp
+        #if NET5_0
+            Console.WriteLine("Target framework is  .NET 5");
+        #elif NETCOREAPP3_1
+            Console.WriteLine("Target framework is  .NET 3.1");
+        #endif
+        ``````
         "@
         gh pr create `
           --title $title `
