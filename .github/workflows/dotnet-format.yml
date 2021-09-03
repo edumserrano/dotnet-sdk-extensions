@@ -49,10 +49,6 @@ jobs:
       SLN_FILEPATH : ${{ github.workspace }}/DotNet.Sdk.Extensions.sln
       DOTNET_VERSION : 5.0.303
     steps:
-    - name: Debug github event
-      run: |
-        $githubContext = '${{toJSON(github)}}'
-        Write-Host $githubContext
     - name: Checkout
       uses: actions/checkout@v2
     - name: Setup .NET
@@ -100,7 +96,7 @@ jobs:
     - name: Create dotnet format PR
       if: steps.auto-commit-action.outputs.changes_detected == 'true'
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.DOTNET_FORMAT_GH_TOKEN }}
       run: |
         $title = "${{ steps.set-branch-name.outputs.branch-name }}: fix code guidelines violations"
         $body = "Fix code guidline violations."
@@ -108,57 +104,3 @@ jobs:
           --title $title `
           --body $body `
           --label ${{ env.DOTNET_FORMAT_LABEL }}
-    # - name: dotnet format
-    #   run: |
-    #     $maxAttempts = 5
-    #     $attempt = 0
-
-    #     git config --local user.name "actions-user"
-    #     git config --local user.email "actions-user@github.com"
-    #     $branchSuffix = (Get-Date).ToString("dd-MMM-yyyy") 
-    #     $branchName = "dotnet-format-$branchSuffix"
-    #     git checkout -b $branchName
-
-    #     while($attempt -le $maxAttempts) {
-    #       $attempt++
-
-    #       Write-Host "::group::Running dotnet format attempt number $attempt"
-    #       dotnet format ${{env.SLN_FILEPATH}} `
-    #         --fix-whitespace `
-    #         --fix-style info `
-    #         --fix-analyzers info `
-    #         --verbosity diagnostic
-    #       Write-Host "::endgroup::"
-
-    #       git diff-index --quiet HEAD
-    #       if($LASTEXITCODE -eq 0){
-    #         break
-    #       }
-    #       else {
-    #         Write-Host "::group::Commit changes for dotnet format attempt number $attempt"
-    #         # $branch="${{ github.event.pull_request.head.ref }}"
-    #         # git checkout $branch
-    #         # git fetch --depth=1
-    #         # git config --local user.name "actions-user"
-    #         # git config --local user.email "actions-user@github.com"
-    #         # git commit -a -m "auto dotnet format attempt number $attempt"
-    #         # git push --set-upstream origin "HEAD:$branch" --atomic
-    #         # git push
-
-    #         Write-Host "::endgroup::"
-    #       }
-    #     }
-
-    #     if($attempt -gt $maxAttempts) {
-    #       Write-Host "::error::dotnet format couldn't format the solution after $maxAttempts attempts"
-    #     }
-    #     else {
-    #       Write-Host "dotnet format formatted the solution after $attempt attempts"
-    #     }
-
-    # - name: Push dotnet format changes
-    #   uses: stefanzweifel/git-auto-commit-action@v4.11.0
-    #   with:
-    #     commit_message: auto dotnet format
-
-
