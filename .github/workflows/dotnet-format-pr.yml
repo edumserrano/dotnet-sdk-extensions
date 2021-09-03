@@ -1,7 +1,7 @@
 name: dotnet format pull requests
 
 on:
-  pull_request_target:
+  pull_request:
     branches: [ main ]
     paths-ignore:
     - "**.md"
@@ -16,6 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       SLN_FILEPATH : ${{github.workspace}}/DotNet.Sdk.Extensions.sln
+      DOTNET_VERSION : 5.0.303
     steps:
     - name: Debug github event
       run: |
@@ -25,68 +26,33 @@ jobs:
       uses: actions/checkout@v2
       with:
         ref: ${{ github.event.pull_request.head.sha }}
-        # token: ${{ secrets.GH_TOKEN_FOR_CODE_PUSH }} # only need this If I want the commit to retrigger some workflows, like triggering this one again after some dotnet format changes have been done? Do i want/need this?
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 5.0.303
+        dotnet-version: ${{env.DOTNET_VERSION}}
+    - name: Install dotnet-format tool
+      run:  dotnet tool install --global dotnet-format
     - name: Cache/Restore NuGets
       uses: actions/cache@v2
       with:
         path:
           ~/.nuget/packages
-        key: ${{ runner.os }}-nuget-5.0.x
+        key: ${{ runner.os }}-nuget-${{env.DOTNET_VERSION}}
         restore-keys: |
           ${{ runner.os }}-nuget-
-    - name: Restore dependencies
-      run: dotnet restore ${{env.SLN_FILEPATH}}
-    - name: Install dotnet-format dotnet tool
-      run:  dotnet tool install --global dotnet-format
     - name: dotnet format
       run: |
-        $maxAttempts = 5
-        $attempt = 0
-
-        while($attempt -le $maxAttempts) {
-          $attempt++
-
-          # https://docs.github.com/en/actions/reference/workflow-commands-for-github-actions#grouping-log-lines
-          Write-Host "::group::Running dotnet format attempt number $attempt"
-          dotnet format ${{env.SLN_FILEPATH}} `
-            --fix-whitespace `
-            --fix-style info `
-            --fix-analyzers info `
-            --verbosity diagnostic
-          Write-Host "::endgroup::"
-
-          git diff-index --quiet HEAD
-          if($LASTEXITCODE -eq 0){
-            break
-          }
-          else {
-            Write-Host "::group::Commit changes for dotnet format attempt number $attempt"
-            $branch="${{ github.event.pull_request.head.ref }}"
-            # git checkout $branch
-            # git fetch --depth=1
-            git config --local user.name "actions-user"
-            git config --local user.email "actions-user@github.com"
-            git commit -a -m "auto dotnet format attempt number $attempt"
-            # git push --set-upstream origin "HEAD:$branch" --atomic
-            git push
-            Write-Host "::endgroup::"
-          }
-        }
-
-        if($attempt -gt $maxAttempts) {
-          Write-Host "::error::dotnet format couldn't format the solution after $maxAttempts attempts"
-        }
-        else {
-          Write-Host "dotnet format formatted the solution after $attempt attempts"
-        }
-
-    # - name: Push dotnet format changes
-    #   uses: stefanzweifel/git-auto-commit-action@v4.11.0
-    #   with:
-    #     commit_message: auto dotnet format
-
-
+        dotnet format ${{env.SLN_FILEPATH}} `
+          --fix-whitespace `
+          --fix-style info `
+          --fix-analyzers info `
+          --verbosity diagnostic `
+          --check
+        $hasChanges = $LASTEXITCODE -ne 0
+        Write-Host "::set-output name=has-changes::$hasChanges"
+    - name: GitHub PR comment
+      run: |
+        $prNumber = "${{github.event.workflow_run.pull_requests[0].number}}"
+        $prUrl = "https://github.com/edumserrano/dot-net-sdk-extensions/pull/$prNumber"
+        # gh pr merge --auto --squash --delete-branch "$prUrl"
+        Write-Host $prUrl
