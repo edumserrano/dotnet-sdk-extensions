@@ -48,6 +48,7 @@ jobs:
     env:
       SLN_FILEPATH : ${{ github.workspace }}/DotNet.Sdk.Extensions.sln
       DOTNET_VERSION : 5.0.303
+      WORKFLOW_RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
     steps:
     - name: Checkout
       uses: actions/checkout@v2
@@ -107,7 +108,15 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.DOTNET_FORMAT_GH_TOKEN }}
       run: |
         $title = "${{ steps.set-commit-info.outputs.branch-name }}: fix code guidelines violations"
-        $body = "Fix code guidline violations."
+        $body = @"
+        **dotnet format** [workflow run](${{ env.WORKFLOW_RUN_URL }}) detected code guidelines violations and
+        automatically created this PR.
+
+        :warning: Please review the suggested changes before merging.
+
+        **Note**: sometimes dotnet format adds unecessary commets when formatting files. This seems to happen when 
+        supporting multiple target frameworks. If this happens you should remove the comments. 
+        "@
         gh pr create `
           --title $title `
           --body $body `
