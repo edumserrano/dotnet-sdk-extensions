@@ -11,8 +11,8 @@ defaults:
     shell: pwsh
 
 jobs:
-  dotnet-format:
-    name: dotnet format
+  dotnet-format-check:
+    name: dotnet format check
     runs-on: ubuntu-latest
     env:
       SLN_FILENAME: DotNet.Sdk.Extensions.sln
@@ -20,14 +20,8 @@ jobs:
       DOTNET_VERSION : 5.0.303
       WORKFLOW_RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
     steps:
-    - name: Debug github event
-      run: |
-        $githubContext = '${{ toJSON(github) }}'
-        Write-Host $githubContext
     - name: Checkout
       uses: actions/checkout@v2
-      with:
-        ref: ${{ github.event.pull_request.head.sha }}
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
@@ -42,7 +36,7 @@ jobs:
         key: ${{ runner.os }}-nuget-${{ env.DOTNET_VERSION }}
         restore-keys: |
           ${{ runner.os }}-nuget-
-    - name: dotnet format
+    - name: dotnet format check
       id: dotnet-format
       run: |
         Write-Host "::group::Running dotnet format"

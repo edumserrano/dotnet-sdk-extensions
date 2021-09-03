@@ -2,16 +2,10 @@ name: dotnet format
 
 on:
   workflow_dispatch:
-  # push:
-  #   branches: [ main ]
-  #   paths-ignore:
-  #   - "**.md"
-  # pull_request:
-  #   branches: [ main ]
-  #   paths-ignore:
-  #   - "**.md"
-  # schedule:
-  #   - cron: '0 0 * * 0' # Once a week: "At 00:00 on Sunday."
+  push:
+    branches: [ main ]
+    paths-ignore:
+    - "**.md"
 
 defaults:
   run:
@@ -22,75 +16,114 @@ jobs:
     name: dotnet format
     runs-on: ubuntu-latest
     env:
-      SLN_FILEPATH : ${{github.workspace}}/DotNet.Sdk.Extensions.sln
+      SLN_FILEPATH : ${{ github.workspace }}/DotNet.Sdk.Extensions.sln
       DOTNET_VERSION : 5.0.303
     steps:
     - name: Debug github event
       run: |
         $githubContext = '${{toJSON(github)}}'
         Write-Host $githubContext
+    - name: Check for open dotnet format PRs
+      id: open-pr-check
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        # Only create a PR if there isn't any dotnet format PR open
+        # This prevents multiple pull requests being open to fix the same dotnet format issues
+        $openPullRequestsResult = gh pr list --state open --label dotnet-format
+        $canCreatePr = [string]::IsNullOrEmpty($openPullRequestsResult)
+        Write-Host "::set-output name=can-create-pr::$canCreatePr"
     - name: Checkout
       uses: actions/checkout@v2
-      with:
-        ref: ${{ github.event.pull_request.head.sha }}
-        # token: ${{ secrets.GH_TOKEN_FOR_CODE_PUSH }} # only need this If I want the commit to retrigger some workflows, like triggering this one again after some dotnet format changes have been done? Do i want/need this?
+      if: steps.open-pr-check.can-create-pr == 'True'
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
+      if: steps.open-pr-check.can-create-pr == 'True'
       with:
-        dotnet-version: ${{env.DOTNET_VERSION}}
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+    - name: Install dotnet-format dotnet tool
+      if: steps.open-pr-check.can-create-pr == 'True'
+      run:  dotnet tool install --global dotnet-format    
     - name: Cache/Restore NuGets
       uses: actions/cache@v2
+      if: steps.open-pr-check.can-create-pr == 'True'
       with:
         path:
           ~/.nuget/packages
-        key: ${{ runner.os }}-nuget-${{env.DOTNET_VERSION}}
+        key: ${{ runner.os }}-nuget-${{ env.DOTNET_VERSION }}
         restore-keys: |
           ${{ runner.os }}-nuget-
     - name: Restore dependencies
-      run: dotnet restore ${{env.SLN_FILEPATH}}
-    - name: Install dotnet-format dotnet tool
-      run:  dotnet tool install --global dotnet-format
+      run: dotnet restore ${{ env.SLN_FILEPATH }}
+      if: steps.open-pr-check.can-create-pr == 'True'
     - name: dotnet format
+      if: steps.open-pr-check.can-create-pr == 'True'
       run: |
-        $maxAttempts = 5
-        $attempt = 0
+        dotnet format ${{ env.SLN_FILEPATH }} `
+          --fix-whitespace `
+          --fix-style info `
+          --fix-analyzers info `
+          --verbosity diagnostic
+    - name: set branch name
+      id: set-branch-name
+      if: steps.open-pr-check.can-create-pr == 'True'
+      run: |
+        $branchSuffix = (Get-Date).ToString("dd-MMM-yyyy") 
+        $branchName = "dotnet-format-$branchSuffix"
+        Write-Host "::set-output name=branch-name::$branchName"
+    - name: Push dotnet format changes
+      uses: stefanzweifel/git-auto-commit-action@v4.11.0
+      if: steps.open-pr-check.can-create-pr == 'True'
+      with:
+        commit_message: auto dotnet format
+        branch: ${{ steps.set-branch-name.outputs.branch-name }}
+    # - name: dotnet format
+    #   run: |
+    #     $maxAttempts = 5
+    #     $attempt = 0
 
-        while($attempt -le $maxAttempts) {
-          $attempt++
+    #     git config --local user.name "actions-user"
+    #     git config --local user.email "actions-user@github.com"
+    #     $branchSuffix = (Get-Date).ToString("dd-MMM-yyyy") 
+    #     $branchName = "dotnet-format-$branchSuffix"
+    #     git checkout -b $branchName
 
-          # https://docs.github.com/en/actions/reference/workflow-commands-for-github-actions#grouping-log-lines
-          Write-Host "::group::Running dotnet format attempt number $attempt"
-          dotnet format ${{env.SLN_FILEPATH}} `
-            --fix-whitespace `
-            --fix-style info `
-            --fix-analyzers info `
-            --verbosity diagnostic
-          Write-Host "::endgroup::"
+    #     while($attempt -le $maxAttempts) {
+    #       $attempt++
 
-          git diff-index --quiet HEAD
-          if($LASTEXITCODE -eq 0){
-            break
-          }
-          else {
-            Write-Host "::group::Commit changes for dotnet format attempt number $attempt"
-            $branch="${{ github.event.pull_request.head.ref }}"
-            # git checkout $branch
-            # git fetch --depth=1
-            git config --local user.name "actions-user"
-            git config --local user.email "actions-user@github.com"
-            git commit -a -m "auto dotnet format attempt number $attempt"
-            # git push --set-upstream origin "HEAD:$branch" --atomic
-            git push
-            Write-Host "::endgroup::"
-          }
-        }
+    #       Write-Host "::group::Running dotnet format attempt number $attempt"
+    #       dotnet format ${{env.SLN_FILEPATH}} `
+    #         --fix-whitespace `
+    #         --fix-style info `
+    #         --fix-analyzers info `
+    #         --verbosity diagnostic
+    #       Write-Host "::endgroup::"
 
-        if($attempt -gt $maxAttempts) {
-          Write-Host "::error::dotnet format couldn't format the solution after $maxAttempts attempts"
-        }
-        else {
-          Write-Host "dotnet format formatted the solution after $attempt attempts"
-        }
+    #       git diff-index --quiet HEAD
+    #       if($LASTEXITCODE -eq 0){
+    #         break
+    #       }
+    #       else {
+    #         Write-Host "::group::Commit changes for dotnet format attempt number $attempt"
+    #         # $branch="${{ github.event.pull_request.head.ref }}"
+    #         # git checkout $branch
+    #         # git fetch --depth=1
+    #         # git config --local user.name "actions-user"
+    #         # git config --local user.email "actions-user@github.com"
+    #         # git commit -a -m "auto dotnet format attempt number $attempt"
+    #         # git push --set-upstream origin "HEAD:$branch" --atomic
+    #         # git push
+
+    #         Write-Host "::endgroup::"
+    #       }
+    #     }
+
+    #     if($attempt -gt $maxAttempts) {
+    #       Write-Host "::error::dotnet format couldn't format the solution after $maxAttempts attempts"
+    #     }
+    #     else {
+    #       Write-Host "dotnet format formatted the solution after $attempt attempts"
+    #     }
 
     # - name: Push dotnet format changes
     #   uses: stefanzweifel/git-auto-commit-action@v4.11.0

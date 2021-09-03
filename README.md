@@ -1,6 +1,7 @@
 # Extensions for .NET SDK
 
-[![Build Status](https://github.com/edumserrano/dot-net-sdk-extensions/workflows/Publish%20Nuget%20packages/badge.svg)](https://github.com/edumserrano/dot-net-sdk-extensions/actions/workflows/nuget-publish.yml)
+[![Build Status](https://github.com/edumserrano/dot-net-sdk-extensions/actions/workflows/nuget-publish.yml/badge.svg)](https://github.com/edumserrano/dot-net-sdk-extensions/actions/workflows/nuget-publish.yml)
+[![dotnet format](https://github.com/edumserrano/dot-net-sdk-extensions/actions/workflows/dotnet-format.yml/badge.svg)](https://github.com/edumserrano/dot-net-sdk-extensions/actions/workflows/dotnet-format.yml)
 [![CodeQL](https://github.com/edumserrano/dot-net-sdk-extensions/actions/workflows/codeql.yml/badge.svg)](https://github.com/edumserrano/dot-net-sdk-extensions/actions/workflows/codeql.yml)
 [![codecov](https://codecov.io/gh/edumserrano/dot-net-sdk-extensions/branch/main/graph/badge.svg?token=KYW77A6UV9)](https://codecov.io/gh/edumserrano/dot-net-sdk-extensions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
@@ -12,10 +13,10 @@ This repo contains extensions to help build .NET applications, using .net core 3
 
 This repo provides two NuGet packages:
 
-| NuGet                   |      Version    | Downloads
-|-------------------------|:---------------:|:---------------:|
-| [DotNet-Sdk-Extensions](https://www.nuget.org/packages/DotNet-Sdk-Extensions) | [![Nuget DotNet-Sdk-Extensions](https://img.shields.io/nuget/v/DotNet-Sdk-Extensions)](https://www.nuget.org/packages/DotNet-Sdk-Extensions) | ![Nuget](https://img.shields.io/nuget/dt/DotNet-Sdk-Extensions)
-| [DotNet-Sdk-Extensions-Testing](https://www.nuget.org/packages/DotNet-Sdk-Extensions-Testing) | [![Nuget DotNet-Sdk-Extensions-Testing](https://img.shields.io/nuget/v/DotNet-Sdk-Extensions-Testing)](https://www.nuget.org/packages/DotNet-Sdk-Extensions-Testing) | ![Nuget](https://img.shields.io/nuget/dt/DotNet-Sdk-Extensions-Testing)
+| NuGet                                                                                         |                                                                               Version                                                                                |                                Downloads                                |
+| --------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------: |
+| [DotNet-Sdk-Extensions](https://www.nuget.org/packages/DotNet-Sdk-Extensions)                 |             [![Nuget DotNet-Sdk-Extensions](https://img.shields.io/nuget/v/DotNet-Sdk-Extensions)](https://www.nuget.org/packages/DotNet-Sdk-Extensions)             |     ![Nuget](https://img.shields.io/nuget/dt/DotNet-Sdk-Extensions)     |
+| [DotNet-Sdk-Extensions-Testing](https://www.nuget.org/packages/DotNet-Sdk-Extensions-Testing) | [![Nuget DotNet-Sdk-Extensions-Testing](https://img.shields.io/nuget/v/DotNet-Sdk-Extensions-Testing)](https://www.nuget.org/packages/DotNet-Sdk-Extensions-Testing) | ![Nuget](https://img.shields.io/nuget/dt/DotNet-Sdk-Extensions-Testing) |
 
 Installation is performed via NuGet and you can do it using the following commands:
 
