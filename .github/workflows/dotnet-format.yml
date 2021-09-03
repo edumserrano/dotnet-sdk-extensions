@@ -23,6 +23,8 @@ jobs:
       run: |
         $githubContext = '${{toJSON(github)}}'
         Write-Host $githubContext
+    - name: Checkout
+      uses: actions/checkout@v2
     - name: Check for open dotnet format PRs
       id: open-pr-check
       env:
@@ -33,9 +35,6 @@ jobs:
         $openPullRequestsResult = gh pr list --state open --label dotnet-format
         $canCreatePr = [string]::IsNullOrEmpty($openPullRequestsResult)
         Write-Host "::set-output name=can-create-pr::$canCreatePr"
-    - name: Checkout
-      uses: actions/checkout@v2
-      if: steps.open-pr-check.can-create-pr == 'True'
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       if: steps.open-pr-check.can-create-pr == 'True'
