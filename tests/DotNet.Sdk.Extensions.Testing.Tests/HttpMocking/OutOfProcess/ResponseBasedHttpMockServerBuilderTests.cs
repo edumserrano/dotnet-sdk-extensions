@@ -54,7 +54,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
         /// In linux this test fails with error:
         /// System.Net.Http.HttpRequestException : The SSL connection could not be established, see inner exception.
         /// because dev certificate does not exist
-        /// For more info on how to resolve this issue see: https://docs.microsoft.com/en-us/aspnet/core/security/enforcing-ssl?view=aspnetcore-5.0&tabs=visual-studio#ssl-linux
+        /// For more info on how to resolve this issue see: https://docs.microsoft.com/en-us/aspnet/core/security/enforcing-ssl?view=aspnetcore-5.0&tabs=visual-studio#ssl-linux.
         /// </remarks>
         [Fact]
         public async Task RepliesAsConfigured()
