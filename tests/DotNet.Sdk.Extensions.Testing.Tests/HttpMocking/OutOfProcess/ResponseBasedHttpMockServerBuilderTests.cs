@@ -49,6 +49,13 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
         /// This also tests the two ways to provide mocks <see cref="ResponseBasedBuilder.MockHttpResponse(HttpResponseMock)"/>
         /// and <see cref="ResponseBasedBuilder.MockHttpResponse(Action{HttpResponseMockBuilder})"/>.
         /// </summary>
+        /// <remarks>
+        /// This test only uses HTTP urls and not HTTPs because otherwise it fails to run on linux.
+        /// In linux this test fails with error:
+        /// System.Net.Http.HttpRequestException : The SSL connection could not be established, see inner exception.
+        /// because dev certificate does not exist
+        /// For more info on how to resolve this issue see: https://docs.microsoft.com/en-us/aspnet/core/security/enforcing-ssl?view=aspnetcore-5.0&tabs=visual-studio#ssl-linux
+        /// </remarks>
         [Fact]
         public async Task RepliesAsConfigured()
         {
@@ -82,22 +89,6 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess
             helloHttpResponse.StatusCode.ShouldBe(HttpStatusCode.Created);
             var helloHttpContent = await helloHttpResponse.Content.ReadAsStringAsync();
             helloHttpContent.ShouldBe("hello");
-
-            // TODO for now don't test https because it fails to run the test on linux based ci agent
-            // In linux this test fails with error:
-            // System.Net.Http.HttpRequestException : The SSL connection could not be established, see inner exception.
-            // because dev certificate does not exist
-            // Trying to set up the dev certificate with `dotnet dev-certs https --trust` does not work on linux
-            // See https://docs.microsoft.com/en-us/aspnet/core/security/enforcing-ssl?view=aspnetcore-5.0&tabs=visual-studio#ssl-linux
-
-            // var defaultHttpsResponse = await httpClient.GetAsync($"{httpsUrl}/default");
-            // defaultHttpsResponse.StatusCode.ShouldBe(HttpStatusCode.NotFound);
-            // defaultHttpsResponse.Content.Headers.ContentLength.ShouldBe(0);
-
-            // var helloHttpsResponse = await httpClient.GetAsync($"{httpsUrl}/hello");
-            // helloHttpsResponse.StatusCode.ShouldBe(HttpStatusCode.Created);
-            // var helloHttpsContent = await helloHttpsResponse.Content.ReadAsStringAsync();
-            // helloHttpsContent.ShouldBe("hello");
         }
 
         /// <summary>
