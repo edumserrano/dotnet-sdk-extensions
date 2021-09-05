@@ -132,4 +132,4 @@ jobs:
           --title $title `
           --body $body `
           --label ${{ env.DOTNET_FORMAT_LABEL }} `
-          --label bot
+          --label bot:robot:
