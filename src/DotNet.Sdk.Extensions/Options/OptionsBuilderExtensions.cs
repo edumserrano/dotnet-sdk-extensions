@@ -123,6 +123,5 @@ namespace DotNet.Sdk.Extensions.Options
                 return options.Value;
             });
         }
-        
     }
 }
