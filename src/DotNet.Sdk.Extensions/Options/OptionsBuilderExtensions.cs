@@ -52,12 +52,10 @@ namespace DotNet.Sdk.Extensions.Options
             {
                 throw new ArgumentNullException(nameof(services));
             }
-
             if (configuration is null)
             {
                 throw new ArgumentNullException(nameof(configuration));
             }
-
             return services
                 .AddOptions<T>()
                 .Bind(configuration.GetSection(sectionName))
