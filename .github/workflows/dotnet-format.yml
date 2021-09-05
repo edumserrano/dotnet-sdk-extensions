@@ -131,4 +131,5 @@ jobs:
         gh pr create `
           --title $title `
           --body $body `
-          --label ${{ env.DOTNET_FORMAT_LABEL }}
+          --label ${{ env.DOTNET_FORMAT_LABEL }} `
+          --label bot
