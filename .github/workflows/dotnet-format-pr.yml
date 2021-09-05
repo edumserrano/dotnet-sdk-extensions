@@ -13,6 +13,7 @@ defaults:
 jobs:
   dotnet-format-check:
     name: dotnet format check
+    if: github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
     env:
       SLN_FILENAME: DotNet.Sdk.Extensions.sln
