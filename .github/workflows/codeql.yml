@@ -17,7 +17,7 @@ on:
     - cron: '0 0 * * 0' # Once a week: "At 00:00 on Sunday."
 
 concurrency: 
-  group: ${{ github.ref }}-${{ github.head_ref }}
+  group: ${{ github.workflow }}-${{ github.ref }}-${{ github.head_ref }}
   cancel-in-progress: true
 
 defaults:
@@ -40,10 +40,6 @@ jobs:
       SLN_FILEPATH : ${{ github.workspace }}/DotNet.Sdk.Extensions.sln
       DOTNET_VERSION : 5.0.303
     steps:
-    - name: Debug github event
-      run: |
-        $githubContext = '${{toJSON(github)}}'
-        Write-Host $githubContext
     - name: Checkout repository
       uses: actions/checkout@v2
     - name: Setup .NET
