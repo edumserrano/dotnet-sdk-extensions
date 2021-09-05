@@ -86,12 +86,6 @@ jobs:
           --fix-style info `
           --fix-analyzers info `
           --verbosity diagnostic
-    # - name: Create branch
-    #   uses: peterjgrainger/action-create-branch@v2.0.1
-    #   env:
-    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    #   with:
-    #     branch: ${{ steps.commit-info.outputs.branch-name }}
     - name: Push dotnet format changes to branch
       id: auto-commit-action
       uses: stefanzweifel/git-auto-commit-action@v4.11.0
