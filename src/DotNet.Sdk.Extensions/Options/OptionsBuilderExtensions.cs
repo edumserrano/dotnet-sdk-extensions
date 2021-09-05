@@ -26,7 +26,6 @@ namespace DotNet.Sdk.Extensions.Options
             {
                 throw new ArgumentNullException(nameof(services));
             }
-
             return services
                 .AddOptions<T>()
                 .Bind(configuration)
