@@ -2,11 +2,13 @@
 
 There are two workflows setup on this repo:
 
-| Worflow                   |      Status and link      |  Description      |
-|---------------------------|:-------------------------:|:-----------------:|
-| [nuget-publish](/.github/workflows/nuget-publish.yml)             |  [![Publish Nuget packages](https://github.com/edumserrano/dot-net-sdk-extensions/actions/workflows/nuget-publish.yml/badge.svg)](https://github.com/edumserrano/dot-net-sdk-extensions/actions/workflows/nuget-publish.yml) | Main workflow to build the code, run tests and publish NuGets |
-| [dependabot-auto-merge-pr](/.github/workflows/dependabot-auto-merge-pr.yml)             |  [![Dependabot auto merge PR](https://github.com/edumserrano/dot-net-sdk-extensions/actions/workflows/dependabot-auto-merge-pr.yml/badge.svg)](https://github.com/edumserrano/dot-net-sdk-extensions/actions/workflows/dependabot-auto-merge-pr.yml) | Used to auto merge Dependabot PRs |
-| [codeql](/.github/workflows/codeql.yml)             |  [![CodeQL](https://github.com/edumserrano/dot-net-sdk-extensions/actions/workflows/codeql.yml/badge.svg)](https://github.com/edumserrano/dot-net-sdk-extensions/actions/workflows/codeql.yml) | Analyses code quality with the [CodeQL tool](https://github.com/github/codeql) |
+| Worflow                                                                     |                                                                                                                   Status and link                                                                                                                   |                                                            Description                                                            |
+| --------------------------------------------------------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------------------------------: |
+| [nuget-publish](/.github/workflows/nuget-publish.yml)                       |             [![Publish Nuget packages](https://github.com/edumserrano/dot-net-sdk-extensions/actions/workflows/nuget-publish.yml/badge.svg)](https://github.com/edumserrano/dot-net-sdk-extensions/actions/workflows/nuget-publish.yml)             |                                   Main workflow to build the code, run tests and publish NuGets                                   |
+| [dependabot-auto-merge-pr](/.github/workflows/dependabot-auto-merge-pr.yml) | [![Dependabot auto merge PR](https://github.com/edumserrano/dot-net-sdk-extensions/actions/workflows/dependabot-auto-merge-pr.yml/badge.svg)](https://github.com/edumserrano/dot-net-sdk-extensions/actions/workflows/dependabot-auto-merge-pr.yml) |                                                Automatically merges Dependabot PRs                                                |
+| [codeql](/.github/workflows/codeql.yml)                                     |                            [![CodeQL](https://github.com/edumserrano/dot-net-sdk-extensions/actions/workflows/codeql.yml/badge.svg)](https://github.com/edumserrano/dot-net-sdk-extensions/actions/workflows/codeql.yml)                            |                          Analyses code quality with the [CodeQL tool](https://github.com/github/codeql)                           |
+| [dotnet-format](/.github/workflows/dotnet-format.yml)                       |                 [![dotnet format](https://github.com/edumserrano/dot-net-sdk-extensions/actions/workflows/dotnet-format.yml/badge.svg)](https://github.com/edumserrano/dot-net-sdk-extensions/actions/workflows/dotnet-format.yml)                  |        Runs [dotnet format](https://github.com/dotnet/format) on the main branch and creates PRs when changes are required        |
+| [dotnet-format-pr](/.github/workflows/dotnet-format-pr.yml)                 |           [![dotnet format check](https://github.com/edumserrano/dot-net-sdk-extensions/actions/workflows/dotnet-format-pr.yml/badge.svg)](https://github.com/edumserrano/dot-net-sdk-extensions/actions/workflows/dotnet-format-pr.yml)            | Runs [dotnet format](https://github.com/dotnet/format) on pull requests and creates a comment on the PR when changes are required |
 
 ## Debugging workflows
 
@@ -19,7 +21,9 @@ $githubContext = '${{toJSON(github)}}'
 Write-Host $githubContext
 ```
 
-It is also useful to look at the [workflow run logs](https://docs.github.com/en/actions/managing-workflow-runs/using-workflow-run-logs), specially at the `set up job` section which is were you can find for example the permissions assigned to the `GITHUB_TOKEN` that the job will use.
+It's useful to look at the [workflow run logs](https://docs.github.com/en/actions/managing-workflow-runs/using-workflow-run-logs), specially at the `set up job` section which is were you can find for example the permissions assigned to the `GITHUB_TOKEN` that the job will use.
+
+You can also [enable debug logging](https://docs.github.com/en/actions/monitoring-and-troubleshooting-workflows/enabling-debug-logging).
 
 ## nuget-publish workflow
 
@@ -180,3 +184,15 @@ This workflow produces status checks on pull requests and the repo is configured
 
 [As per documentation](https://docs.github.com/en/code-security/secure-coding/automatically-scanning-your-code-for-vulnerabilities-and-errors/configuring-code-scanning#avoiding-unnecessary-scans-of-pull-requests):
 >For CodeQL code scanning workflow files, don't use the paths-ignore or paths keywords with the on:push event as this is likely to cause missing analyses. For accurate results, CodeQL code scanning needs to be able to compare new changes with the analysis of the previous commit.
+
+## dotnet-format workflow
+
+This workflow runs [dotnet format](https://github.com/dotnet/format) on pushes to the main branch and creates a pull request when changes are required.
+
+The dotnet format will report violations based on the [.editorconfig](/.editorconfig) file.
+
+There are several analyzers added to the projects via the [Directory.Build.props](/docs/dev-notes/dev-notes-main.md#projects-wide-configuration) files which enhance the results of the dotnet format tool.
+
+## dotnet-format-pr workflow
+
+Similar to the [dotnet-format workflow](#dotnet-format-workflow) but it runs only on pull requests and adds a comment to the pull request with the results of running the dotnet format tool.

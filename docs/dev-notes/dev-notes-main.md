@@ -24,12 +24,11 @@ For more information on how to debug the NuGet packages code from your applicati
 
 ## Projects wide configuration
 
-The [Directory.Build.props](/Directory.Build.props) at the root of the repo enables for all projects:
+The [Directory.Build.props](/Directory.Build.props) at the root of the repo enables for all sevaral settings as well as adds some common NuGet packages for analyzers.
 
-- [Nullable referece types](https://docs.microsoft.com/en-us/dotnet/csharp/nullable-migration-strategies) are enabled.
-](https://github.com/NuGet/Home/wiki/Enable-repeatable-package-restore-using-lock-file)
-- [Deterministic build](https://github.com/clairernovotny/DeterministicBuilds) is enabled for builds executed on GitHub.
-- [TreatWarningsAsErrors](https://github.com/clairernovotny/DeterministicBuilds) is enabled for builds executed on GitHub.
+Furthermore, specifically for test projects, there is another [Directory.Build.props](/tests/Directory.Build.props) that applies some NuGet packages that should be part of all test projects.
+
+The props file for tests is merged with the root level props file so all test projects obey to the same set of settings defined by the root level props file.
 
 ## Repository configuration
 
@@ -39,7 +38,6 @@ From all the GitHub repository settings the configurations worth mentioning are:
 - **Branch protection rules**. There is a branch protection rule for the the `main` branch that will enforce the following:
   - Require status checks to pass before merging.
   - Require branches to be up to date before merging.
-  - Require signed commits.
   - Require linear history.
 
 ## GitHub Workflows
