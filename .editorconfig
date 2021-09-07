@@ -25,6 +25,10 @@ trim_trailing_whitespace = true
 # File Extension Settings
 ##########################################
 
+# CSharp files
+[*.{cs,sln,csproj}]
+end_of_line = crlf
+
 # Visual Studio Solution Files
 [*.sln]
 indent_style = tab
@@ -53,13 +57,17 @@ trim_trailing_whitespace = false
 [*.{htm,html,js,jsm,ts,tsx,css,sass,scss,less,pcss,svg,vue}]
 indent_size = 2
 
+# Force bash scripts to always use lf line endings so that if a repo is accessed
+# in Unix via a file share from Windows, the scripts will work.
+# Bash Files
+[*.sh]
+end_of_line = lf
+
+# Likewise, force cmd and batch scripts to always use crlf
 # Batch Files
 [*.{cmd,bat}]
 end_of_line = crlf
 
-# Bash Files
-[*.sh]
-end_of_line = lf
 
 # Makefiles
 [Makefile]
