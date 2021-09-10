@@ -6,6 +6,7 @@ using DotNet.Sdk.Extensions.Polly.Http.Fallback.FallbackHttpResponseMessages;
 using DotNet.Sdk.Extensions.Polly.Http.Retry.Events;
 using Polly;
 using Polly.Contrib.WaitAndRetry;
+using Polly.Extensions.Http;
 using Polly.Retry;
 using Polly.Timeout;
 
@@ -33,6 +34,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Retry
                         return false;
                     }
 
+                    // transient http status codes: 5xx or 408
                     return response.StatusCode is >= HttpStatusCode.InternalServerError or HttpStatusCode.RequestTimeout;
                 })
                 .WaitAndRetryAsync(
