@@ -50,5 +50,6 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Retry
                         return policyEventHandler.OnRetryAsync(retryEvent);
                     });
         }
+
     }
 }
