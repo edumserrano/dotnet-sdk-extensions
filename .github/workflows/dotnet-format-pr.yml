@@ -84,6 +84,11 @@ jobs:
         "@
         }
         
+        $commentBody += @"
+        
+        ::warning:: dotnet format does **NOT** remove unused references. You have to do this manually. Please check that there isn't any unused reference.
+        "@
+
         $prNumber = "${{github.event.pull_request.number}}"
         gh pr comment $prNumber --body $commentBody
     - name: Set workflow exit status
