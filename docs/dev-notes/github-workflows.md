@@ -202,3 +202,4 @@ There are several analyzers added to the projects via the [Directory.Build.props
 ## dotnet-format-pr workflow
 
 Similar to the [dotnet-format workflow](#dotnet-format-workflow) but it runs only on pull requests and adds a comment to the pull request with the results of running the dotnet format tool.
+
