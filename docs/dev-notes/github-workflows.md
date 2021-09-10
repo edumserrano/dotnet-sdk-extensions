@@ -25,6 +25,12 @@ It's useful to look at the [workflow run logs](https://docs.github.com/en/action
 
 You can also [enable debug logging](https://docs.github.com/en/actions/monitoring-and-troubleshooting-workflows/enabling-debug-logging).
 
+## Warnings will make the workflows fail
+
+When a workflow requires building the code, the build command includes the `-warnaserror` flag which will cause the build to fail if there are any errors.
+
+This is used to help keep the code healthy whilst balancing local dev. Meaning, when developing locally there is no need to force all warnings to be fixed to be able to build the code.
+
 ## nuget-publish workflow
 
 This workflow will:
