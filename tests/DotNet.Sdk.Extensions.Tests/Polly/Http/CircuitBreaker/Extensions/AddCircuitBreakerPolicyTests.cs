@@ -302,6 +302,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
         /// Previous tests would only assert the break and reset events from the circuit breaker event handler.
         /// This is because to check the on half open events takes time and instead of having all the circuit breaker related
         /// tests be slow, only this one is.
+        ///
+        /// This test is able to check the on half open events because the reset type on the circuit breaker is set to CircuitBreakerPolicyExecutorResetTypes.Normal.
         /// </summary>
         [Fact]
         public async Task AddCircuitBreakerPolicy7()
