@@ -263,7 +263,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
                 })
                 .ConfigureHttpMessageHandlerBuilder(httpMessageHandlerBuilder =>
                 {
-                    timeoutPolicy1 = httpMessageHandlerBuilder.AdditionalHandlers
+                    timeoutPolicy1 = httpMessageHandlerBuilder
                         .GetPolicies<AsyncTimeoutPolicy<HttpResponseMessage>>()
                         .FirstOrDefault();
                 });
@@ -275,7 +275,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
                 })
                 .ConfigureHttpMessageHandlerBuilder(httpMessageHandlerBuilder =>
                 {
-                    timeoutPolicy2 = httpMessageHandlerBuilder.AdditionalHandlers
+                    timeoutPolicy2 = httpMessageHandlerBuilder
                         .GetPolicies<AsyncTimeoutPolicy<HttpResponseMessage>>()
                         .FirstOrDefault();
                 });

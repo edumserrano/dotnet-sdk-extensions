@@ -293,7 +293,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
                 })
                 .ConfigureHttpMessageHandlerBuilder(httpMessageHandlerBuilder =>
                 {
-                    retryPolicy1 = httpMessageHandlerBuilder.AdditionalHandlers
+                    retryPolicy1 = httpMessageHandlerBuilder
                         .GetPolicies<AsyncRetryPolicy<HttpResponseMessage>>()
                         .FirstOrDefault();
                 });
@@ -306,7 +306,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
                 })
                 .ConfigureHttpMessageHandlerBuilder(httpMessageHandlerBuilder =>
                 {
-                    retryPolicy2 = httpMessageHandlerBuilder.AdditionalHandlers
+                    retryPolicy2 = httpMessageHandlerBuilder
                         .GetPolicies<AsyncRetryPolicy<HttpResponseMessage>>()
                         .FirstOrDefault();
                 });

@@ -5,6 +5,7 @@ using DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary;
 using DotNet.Sdk.Extensions.Tests.Polly.Http.Fallback.Auxiliary;
 using DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Auxiliary;
 using DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Auxiliary;
+using Polly.CircuitBreaker;
 
 namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Auxiliary
 {
