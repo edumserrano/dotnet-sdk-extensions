@@ -44,7 +44,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
             _resetType = resetType;
             return this;
         }
-        
+
         public Task TriggerFromExceptionAsync<TException>(Exception exception)
             where TException : Exception
         {
@@ -66,7 +66,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
                 responseHttpStatusCode: httpStatusCode);
             return TriggerCircuitBreakerFromTransientStatusCodeAsync(handledRequestPath, httpStatusCode);
         }
-        
+
         private async Task WaitResetAsync()
         {
             // wait for the duration of break so that the circuit goes into half open state
