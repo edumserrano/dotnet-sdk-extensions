@@ -11,13 +11,20 @@ using DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary;
 
 namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
 {
+    public enum CircuitBreakerPolicyExecutorResetTypes
+    {
+        Quick,
+        Normal,
+    }
+
     public sealed class CircuitBreakerPolicyExecutor : IAsyncDisposable
     {
         private readonly HttpClient _httpClient;
+        private readonly string _resetRequestPath;
         private readonly CircuitBreakerOptions _circuitBreakerOptions;
         private readonly TestHttpMessageHandler _testHttpMessageHandler;
-        private readonly string _resetRequestPath;
         private readonly List<HttpStatusCode> _transientHttpStatusCodes;
+        private CircuitBreakerPolicyExecutorResetTypes _resetType;
 
         public CircuitBreakerPolicyExecutor(
             HttpClient httpClient,
@@ -29,6 +36,13 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
             _testHttpMessageHandler = testHttpMessageHandler;
             _resetRequestPath = HandleResetRequest();
             _transientHttpStatusCodes = HttpStatusCodesExtensions.GetTransientHttpStatusCodes().ToList();
+            _resetType = CircuitBreakerPolicyExecutorResetTypes.Quick;
+        }
+
+        public CircuitBreakerPolicyExecutor WithReset(CircuitBreakerPolicyExecutorResetTypes resetType)
+        {
+            _resetType = resetType;
+            return this;
         }
 
         public Task TriggerFromExceptionAsync<TException>(Exception exception)
@@ -53,7 +67,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
             return TriggerCircuitBreakerFromTransientStatusCodeAsync(handledRequestPath, httpStatusCode);
         }
 
-        public async ValueTask WaitForResetAsync()
+        private async Task WaitResetAsync()
         {
             // wait for the duration of break so that the circuit goes into half open state
             await Task.Delay(TimeSpan.FromSeconds(_circuitBreakerOptions.DurationOfBreakInSecs + 0.05));
@@ -132,9 +146,19 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
             }
         }
 
-        public ValueTask DisposeAsync()
+        public async ValueTask DisposeAsync()
         {
-            return WaitForResetAsync();
+            switch (_resetType)
+            {
+                case CircuitBreakerPolicyExecutorResetTypes.Quick:
+                    _httpClient.ResetCircuitBreakerPolicy();
+                    break;
+                case CircuitBreakerPolicyExecutorResetTypes.Normal:
+                    await WaitResetAsync();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
     }
 }

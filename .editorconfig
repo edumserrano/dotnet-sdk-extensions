@@ -435,6 +435,8 @@ dotnet_diagnostic.RCS1126.severity = suggestion     # RCS1126: Add braces to if-
 dotnet_diagnostic.RCS1196.severity = suggestion     # RCS1196: Call extension method as instance method
 dotnet_diagnostic.RCS1208.severity = none           # RCS1208: Reduce 'if' nesting
 dotnet_diagnostic.RCS1248.severity = suggestion     # RCS1248: Use pattern matching to check for null (or vice versa)
+# Usage
+dotnet_diagnostic.RCS1221.severity = none           # RCS1221: Use pattern matching instead of combination of 'as' operator and null check
 
 ##########################################
 # Rules for Roslynator.Formatting.Analyzers

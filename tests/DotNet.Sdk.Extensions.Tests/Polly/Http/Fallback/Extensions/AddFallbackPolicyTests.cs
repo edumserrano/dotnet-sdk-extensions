@@ -131,7 +131,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Fallback.Extensions
                 .AddFallbackPolicy()
                 .ConfigureHttpMessageHandlerBuilder(httpMessageHandlerBuilder =>
                 {
-                    fallbackPolicy1 = httpMessageHandlerBuilder.AdditionalHandlers
+                    fallbackPolicy1 = httpMessageHandlerBuilder
                         .GetPolicies<AsyncPolicyWrap<HttpResponseMessage>>()
                         .FirstOrDefault();
                 });
@@ -140,7 +140,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Fallback.Extensions
                 .AddFallbackPolicy()
                 .ConfigureHttpMessageHandlerBuilder(httpMessageHandlerBuilder =>
                 {
-                    fallbackPolicy2 = httpMessageHandlerBuilder.AdditionalHandlers
+                    fallbackPolicy2 = httpMessageHandlerBuilder
                         .GetPolicies<AsyncPolicyWrap<HttpResponseMessage>>()
                         .FirstOrDefault();
                 });
