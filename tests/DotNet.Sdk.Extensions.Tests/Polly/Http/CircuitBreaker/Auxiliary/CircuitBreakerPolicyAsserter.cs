@@ -80,7 +80,6 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
             // So we only check for then when the reset type is CircuitBreakerPolicyExecutorResetTypes.Normal
             if (_resetType == CircuitBreakerPolicyExecutorResetTypes.Normal)
             {
-                EventHandlerShouldReceiveExpectedEvents(count, httpClientName, eventHandlerCalls);
                 eventHandlerCalls
                     .OnHalfOpenAsyncCalls
                     .Count(x => x.HttpClientName.Equals(httpClientName, StringComparison.Ordinal)
