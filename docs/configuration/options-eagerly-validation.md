@@ -1,5 +1,12 @@
 ﻿# Eagerly validating options
 
+## :warning: Note
+
+If using .NET 6 there is now a built in API to solve this. Please see:
+
+- [Add Eager Options Validation: ValidateOnStart API](https://github.com/dotnet/runtime/pull/47821)
+- [OptionsBuilderExtensions.ValidateOnStart<TOptions>(OptionsBuilder<TOptions>) Method](https://docs.microsoft.com/en-us/dotnet/api/microsoft.extensions.dependencyinjection.optionsbuilderextensions.validateonstart)
+
 ## Motivation
 
 I want to be able to make sure the appsettings files are populated correctly and if not I want the web app to fail to start.
