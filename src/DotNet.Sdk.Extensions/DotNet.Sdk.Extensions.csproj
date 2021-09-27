@@ -11,12 +11,13 @@
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <PackageId>DotNet-Sdk-Extensions</PackageId>
-    <Version>1.0.11-alpha</Version>
+    <Version>1.0.12-alpha</Version>
     <Owners>Eduardo Serrano</Owners>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/edumserrano/dot-net-sdk-extensions</PackageProjectUrl>
     <Description>Extensions for the .NET SDK. For more information see https://github.com/edumserrano/dot-net-sdk-extensions. </Description>
+    <PackageReadmeFile>../../docs/nuget/dotnet-sdk-extensions-nuget-readme.md</PackageReadmeFile>
     <PackageTags>dotnet core extensions csharp c#</PackageTags>
 
     <!--<RepositoryUrl>https://github.com/edumserrano/dot-net-sdk-extensions</RepositoryUrl>-->
