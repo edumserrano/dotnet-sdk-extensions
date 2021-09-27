@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <TargetFrameworks>net5.0;netcoreapp3.1</TargetFrameworks>
-    <langVersion>latest</langVersion>
     <PackageReadmeFileName>dotnet-sdk-extensions-testing-nuget-readme.md</PackageReadmeFileName>
 
     <!--nuget package info-->
