@@ -46,12 +46,27 @@ jobs:
         $body = '{{"name":"myTestCheck", "head_sha": "{0}", "status": "completed", "conclusion": "success" }}' -f $headSha
         $repo = "${{ github.repository }}"
         $apiUrl = "https://api.github.com/repos/$repo/check-runs"
-
+        $auth = "Authorization: Bearer $GITHUB_TOKEN"
+        Write-Host $auth
         curl `
           -X POST `
-          -H "Authorization: Bearer $GITHUB_TOKEN" `
+          -H $auth `
           -H "Accept: application/vnd.github.v3+json" `
           $apiUrl -d $body
+
+    - name: Create status check bash
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        BUILD_COMMIT=${{ steps.comment-branch.outputs.head_sha }}
+        REPO=${{ github.repository }}
+        curl \
+        -X POST \
+        -H "Authorization: Bearer $GITHUB_TOKEN" \
+        -H "Accept: application/vnd.github.v3+json" \
+        https://api.github.com/repos/edumserrano/dot-net-sdk-extensions/check-runs \
+        -d '{"name":"build", "head_sha": "'"$BUILD_COMMIT"'", "status": "completed", "conclusion": "success" }'
 
     # - name: Checkout
     #   uses: actions/checkout@v2
