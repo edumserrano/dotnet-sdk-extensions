@@ -53,7 +53,6 @@ jobs:
           -H $auth `
           -H "Accept: application/vnd.github.v3+json" `
           $apiUrl -d $body
-
     - name: Create status check bash
       shell: bash
       env:
