@@ -1,4 +1,4 @@
-name: dotnet format pr fix
+name: PR dotnet format fix
 
 on:
   issue_comment:
@@ -13,8 +13,8 @@ defaults:
     shell: pwsh
 
 jobs:
-  dotnet-format-check:
-    name: dotnet format check 3321
+  dotnet-format-fix:
+    name: PR dotnet format fix
     if: github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
     env:

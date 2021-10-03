@@ -1,4 +1,4 @@
-name: dotnet format pr check
+name: PR dotnet format check
 
 on:
   pull_request_target:
@@ -16,7 +16,7 @@ defaults:
 
 jobs:
   dotnet-format-check:
-    name: dotnet format check 223
+    name: PR dotnet format check
     if: github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
     env:
