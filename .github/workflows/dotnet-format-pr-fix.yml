@@ -15,7 +15,7 @@ defaults:
 jobs:
   dotnet-format-fix:
     name: PR dotnet format fix
-    if: github.event.issue.pull_request && github.event.comment.body == '/dotnet format'  # check if the comments come from pull request, exclude those from issue.
+    if: github.event.issue.pull_request && github.event.issue.state == 'open' && github.event.comment.body == '/dotnet format'  # check if the comments come from pull request, exclude those from issue.
     runs-on: ubuntu-latest
     env:
       SLN_FILENAME: DotNet.Sdk.Extensions.sln
@@ -42,13 +42,17 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        BUILD_COMMIT="${{ steps.comment-branch.outputs.head_sha }}}"
+        $headSha="${{ steps.comment-branch.outputs.head_sha }}"
+        $body = '{{"name":"myTestCheck", "head_sha": "{0}", "status": "completed", "conclusion": "success" }}' -f $headSha
+        $owner = "${{ github.repository_owner }}"
+        $repo = "${{ github.repository }}"
+        $apiUrl = "https://api.github.com/repos/$owner/$repo/check-runs"
         curl `
-        -X POST `
-        -H "Authorization: Bearer $GITHUB_TOKEN" `
-        -H "Accept: application/vnd.github.v3+json" `
-        https://api.github.com/repos/{org}/{repo}/check-runs `
-        -d '{"name":"myTestCheck", "head_sha": "'"$BUILD_COMMIT"'", "status": "completed", "conclusion": "success" }'
+          -X POST `
+          -H "Authorization: Bearer $GITHUB_TOKEN" `
+          -H "Accept: application/vnd.github.v3+json" `
+          $apiUrl -d $body
+
 
     # - name: Checkout
     #   uses: actions/checkout@v2
