@@ -1,0 +1,112 @@
+name: dotnet format pr fix
+
+on:
+  issue_comment:
+    types: [created]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}-${{ github.head_ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: pwsh
+
+jobs:
+  dotnet-format-check:
+    name: dotnet format check
+    if: github.actor != 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    env:
+      SLN_FILENAME: DotNet.Sdk.Extensions.sln
+      SLN_FILEPATH : ${{ github.workspace }}/DotNet.Sdk.Extensions.sln
+      DOTNET_VERSION : 5.0.303
+      WORKFLOW_RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+    steps:
+    - name: Dump context
+      run: Write-Host '${{ toJson(github) }}'
+    - uses: xt0rted/pull-request-comment-branch@v1 # This action lets you filter your workflow to comments only on pull requests. It also gets the head ref and sha for the pull request branch which can be used later in the workflow.
+      id: comment-branch
+    - uses: actions/checkout@v2
+      if: success()
+      with:
+        ref: ${{ steps.comment-branch.outputs.head_ref }}
+
+
+    # - name: Checkout
+    #   uses: actions/checkout@v2
+    #   with:
+    #     ref: ${{ github.event.pull_request.head.sha }}
+    # - name: Setup .NET
+    #   uses: actions/setup-dotnet@v1
+    #   with:
+    #     dotnet-version: ${{ env.DOTNET_VERSION }}
+    # - name: Install dotnet-format tool
+    #   run:  dotnet tool install --global dotnet-format
+    # - name: Cache/Restore NuGets
+    #   uses: actions/cache@v2
+    #   with:
+    #     path:
+    #       ~/.nuget/packages
+    #     key: ${{ runner.os }}-nuget-${{ env.DOTNET_VERSION }}
+    #     restore-keys: |
+    #       ${{ runner.os }}-nuget-
+    # - name: dotnet format check
+    #   id: dotnet-format
+    #   run: |
+    #     Write-Host "::group::Running dotnet format"
+    #     dotnet format ${{ env.SLN_FILEPATH }} `
+    #       --fix-whitespace `
+    #       --fix-style info `
+    #       --fix-analyzers info `
+    #       --verbosity diagnostic `
+    #       --check
+    #     Write-Host "::endgroup::"
+    #     $hasChanges = $LASTEXITCODE -ne 0
+    #     Write-Host "::set-output name=has-changes::$hasChanges"
+
+    #     if($hasChanges) {
+    #       Write-Host "::warning::dotnet format found files that require formatting."
+    #     }
+    #     else {
+    #       Write-Host "dotnet format didn't find any file that requires formatting."
+    #     }
+
+    #     Exit 0 # always exit successfully
+    # - name: GitHub PR comment
+    #   env:
+    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    #   run: |
+    #     $hasChanges = [System.Convert]::ToBoolean("${{ steps.dotnet-format.outputs.has-changes }}")
+    #     if($hasChanges) {
+    #       $commentBody = @"
+    #     :exclamation: **dotnet format** found files that do not respect the code guidelines. For more information please see the output from this [workflow run](${{ env.WORKFLOW_RUN_URL }}).
+
+    #     Before merging this PR please fix the reported issues. You can do so by running [dotnet format](https://github.com/dotnet/format) on the solution as such:
+    #     ``dotnet format ${{ env.SLN_FILENAME }} --fix-whitespace --fix-style info --fix-analyzers info --verbosity diagnostic``
+    #     "@
+    #     }
+    #     else {
+    #       $commentBody = @"
+    #     :heavy_check_mark: **dotnet format** didn't find any file that does not respect the code guidelines. For more information please see the output from this [workflow run](${{ env.WORKFLOW_RUN_URL }}).
+    #     "@
+    #     }
+
+    #     $commentBody += @"
+
+
+    #     :warning: dotnet format does **NOT** remove unused references. You have to do this manually. Please check that there isn't any unused reference.
+    #     "@
+
+    #     $prNumber = "${{github.event.pull_request.number}}"
+    #     gh pr comment $prNumber --body $commentBody
+    # - name: Set workflow exit status
+    #   run: |
+    #     $hasChanges = [System.Convert]::ToBoolean("${{ steps.dotnet-format.outputs.has-changes }}")
+    #     if($hasChanges) {
+    #       Write-Host "dotnet format found files that do not respect the code guidelines so setting the workflow status as failed."
+    #       Exit 1
+    #     }
+
+    #     Write-Host "dotnet format didn't find any file that does not respect the code guidelines so setting the workflow status as successful."
+    #     Exit 0
