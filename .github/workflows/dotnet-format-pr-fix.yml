@@ -50,6 +50,7 @@ jobs:
         https://api.github.com/repos/{org}/{repo}/check-runs `
         -d '{"name":"myTestCheck", "head_sha": "'"$BUILD_COMMIT"'", "status": "completed", "conclusion": "success" }'
 
+
     # - name: Checkout
     #   uses: actions/checkout@v2
     # - name: Checkout Pull Request
