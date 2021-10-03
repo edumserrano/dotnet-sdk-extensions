@@ -35,7 +35,8 @@ jobs:
     - uses: LouisBrunner/checks-action@v1.2.0
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        name: PR dotnet format fix
+        sha: ${{ steps.comment-branch.outputs.head_sha }}
+        name: Test XYZ
         conclusion: ${{ job.status }}
 
     # - name: Checkout
