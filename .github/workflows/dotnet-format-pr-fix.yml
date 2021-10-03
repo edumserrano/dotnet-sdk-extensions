@@ -14,7 +14,7 @@ defaults:
 
 jobs:
   dotnet-format-check:
-    name: dotnet format check
+    name: dotnet format check 3321
     if: github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
     env:
