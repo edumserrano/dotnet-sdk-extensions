@@ -44,9 +44,9 @@ jobs:
       run: |
         $headSha="${{ steps.comment-branch.outputs.head_sha }}"
         $body = '{{"name":"myTestCheck", "head_sha": "{0}", "status": "completed", "conclusion": "success" }}' -f $headSha
-        $owner = "${{ github.repository_owner }}"
         $repo = "${{ github.repository }}"
-        $apiUrl = "https://api.github.com/repos/$owner/$repo/check-runs"
+        $apiUrl = "https://api.github.com/repos/$repo/check-runs"
+
         curl `
           -X POST `
           -H "Authorization: Bearer $GITHUB_TOKEN" `
