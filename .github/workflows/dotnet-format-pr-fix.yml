@@ -15,7 +15,7 @@ defaults:
 jobs:
   dotnet-format-fix:
     name: PR dotnet format fix
-    if: github.actor != 'dependabot[bot]'
+    if: github.event.issue.pull_request && github.event.comment.body == '/dotnet format'  # check if the comments come from pull request, exclude those from issue.
     runs-on: ubuntu-latest
     env:
       SLN_FILENAME: DotNet.Sdk.Extensions.sln
@@ -27,18 +27,22 @@ jobs:
       run: Write-Host '${{ toJson(github) }}'
     - uses: xt0rted/pull-request-comment-branch@v1 # This action lets you filter your workflow to comments only on pull requests. It also gets the head ref and sha for the pull request branch which can be used later in the workflow.
       id: comment-branch
-    # - uses: actions/checkout@v2
-    #   if: success()
-    #   with:
-    #     ref: ${{ steps.comment-branch.outputs.head_ref }}
-    - name: Checkout
-      uses: actions/checkout@v2
-    - name: Checkout Pull Request
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: gh pr checkout ${{ github.event.issue.number }}
-    - name: test
-      run: exit 2
+    - name: Dump context 2
+      run: Write-Host '${{ toJson(steps.comment-branch.outputs) }}'
+    - uses: actions/checkout@v2
+      if: success()
+      with:
+        ref: ${{ steps.comment-branch.outputs.head_ref }}
+    # - name: Checkout
+    #   uses: actions/checkout@v2
+    # - name: Checkout Pull Request
+    #   env:
+    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    #   run: gh pr checkout ${{ github.event.issue.number }}
+    # - name: test
+    #   run: exit 2
+
+
     # - name: Checkout
     #   uses: actions/checkout@v2
     #   with:
