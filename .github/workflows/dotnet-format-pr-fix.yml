@@ -38,34 +38,53 @@ jobs:
     #     sha: ${{ steps.comment-branch.outputs.head_sha }}
     #     name: Test XYZ
     #     conclusion: ${{ job.status }}
-    - name: Create status check
+    # - name: Create status check
+    #   env:
+    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    #   run: |
+    #     $headSha="${{ steps.comment-branch.outputs.head_sha }}"
+    #     $body = '{{"name":"myTestCheckPwsh", "head_sha": "{0}", "status": "completed", "conclusion": "success" }}' -f $headSha
+    #     $repo = "${{ github.repository }}"
+    #     $apiUrl = "https://api.github.com/repos/$repo/check-runs"
+    #     $auth = "Authorization: Bearer $env:GITHUB_TOKEN"
+    #     Write-Host $auth
+    #     curl `
+    #       -X POST `
+    #       -H $auth `
+    #       -H "Accept: application/vnd.github.v3+json" `
+    #       $apiUrl -d $body
+    # - name: Create status check bash
+    #   shell: bash
+    #   env:
+    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    #   run: |
+    #     BUILD_COMMIT=${{ steps.comment-branch.outputs.head_sha }}
+    #     REPO=${{ github.repository }}
+    #     curl \
+    #     -X POST \
+    #     -H "Authorization: Bearer $GITHUB_TOKEN" \
+    #     -H "Accept: application/vnd.github.v3+json" \
+    #     https://api.github.com/repos/edumserrano/dot-net-sdk-extensions/check-runs \
+    #     -d '{"name":"myTestCheckBash", "head_sha": "'"$BUILD_COMMIT"'", "status": "completed", "conclusion": "success" }'
+    - name: Create status
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         $headSha="${{ steps.comment-branch.outputs.head_sha }}"
-        $body = '{{"name":"myTestCheck", "head_sha": "{0}", "status": "completed", "conclusion": "success" }}' -f $headSha
         $repo = "${{ github.repository }}"
-        $apiUrl = "https://api.github.com/repos/$repo/check-runs"
-        $auth = "Authorization: Bearer $GITHUB_TOKEN"
-        Write-Host $auth
-        curl `
-          -X POST `
-          -H $auth `
-          -H "Accept: application/vnd.github.v3+json" `
-          $apiUrl -d $body
-    - name: Create status check bash
-      shell: bash
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        BUILD_COMMIT=${{ steps.comment-branch.outputs.head_sha }}
-        REPO=${{ github.repository }}
-        curl \
-        -X POST \
-        -H "Authorization: Bearer $GITHUB_TOKEN" \
-        -H "Accept: application/vnd.github.v3+json" \
-        https://api.github.com/repos/edumserrano/dot-net-sdk-extensions/check-runs \
-        -d '{"name":"build", "head_sha": "'"$BUILD_COMMIT"'", "status": "completed", "conclusion": "success" }'
+        $uri = "https://api.github.com/repos/$repo/statuses/$headSha"
+        $headers = @{
+          Accept = "application/vnd.github.v3+json"
+          Authorization = "Bearer ${{ env.GITHUB_TOKEN }}"
+        }
+        $body = @{
+          context = "${{ github.workflow}}"
+          description = "dotnet format changes pushed"
+          target_url = "${{ env.WORKFLOW_RUN_URL }}"
+          state = "success"
+        } | ConvertTo-Json -compress
+
+        Invoke-RestMethod -Method 'Post' -Uri $uri -Headers $headers -Body $body
 
     # - name: Checkout
     #   uses: actions/checkout@v2
