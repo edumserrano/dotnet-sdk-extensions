@@ -4,11 +4,24 @@ on:
   issue_comment:
     types: [created]
 
-# Concurrency defined with the comment body in mind so that if there are multiple comments with the same value then
-# all in progress workflows are cancelled except one (triggered from the latest comment).
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}-${{ github.head_ref }}-${{ github.event.comment.body }}
-  cancel-in-progress: true
+# Unlike other workflows this one does not have a concurrency defined.
+# If we define a concurrency then aworkflow run that was triggered by the expected comment could get cancelled
+# by any another following comment added to the pull request
+#
+# As an alternative we could consider adding the comment body (github.event.comment.body) to the
+# concurrency group id. This would mean that workflows would only get cancelled if they had the same
+# comment body, which would mean that for all comments with the same body all workflows in progress would get cancelled except for the last.
+# Downsides with this approach:
+# - workflow runs might fail to start because of invalid characters used in comments or because of comment size. Functionally this is not a problem
+# because the workflow would always run for the expected comment. However, the workflow history would show fail runs for this error cases =/
+# - the purpose of this workflow is to run dotnet format and push changes to the PR. If the workflow is cancelled after the changes are pushed
+# to the PR but before the workflow finishes then we end up in a potential invalid state. Meaning, if for instance I want to take an action after the changes are pushed,
+# such as adding a comment to the PR, then the workflow could get cancelled before the comment is made on the PR.
+# In short, there are parts of the workflow that once started should be finished, the workflow should NOT be allowed to be aborted to avoid getting into
+# a bad state.
+#
+# Mainly because of the second downside I decided to NOT add a concurrency group based on the comment body
+#
 
 defaults:
   run:
