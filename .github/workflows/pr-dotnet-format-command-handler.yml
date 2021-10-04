@@ -84,7 +84,7 @@ jobs:
   dotnet-format:
     name: dotnet format
     needs: [check-pr-comment]
-    if: needs.check-pr-comment.outputs.can-run-dotnet-format == 'True'
+    if: needs.check-pr-comment.outputs.run-dotnet-format == 'True'
     runs-on: ubuntu-latest
     env:
       PR_NUMBER: ${{ needs.check-pr-comment.outputs.pr-number }}
