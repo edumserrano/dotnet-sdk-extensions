@@ -87,7 +87,7 @@ jobs:
     if: needs.check-pr-comment.outputs.can-run-dotnet-format == 'True'
     runs-on: ubuntu-latest
     env:
-      PR_NUMBER: ${{ sneeds.check-pr-comment.outputs.pr-number }}
+      PR_NUMBER: ${{ needs.check-pr-comment.outputs.pr-number }}
       PR_HEAD_SHA: ${{ needs.check-pr-comment.outputs.pr-head-sha}}
     steps:
     - name: Checkout
