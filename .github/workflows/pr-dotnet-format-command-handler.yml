@@ -1,4 +1,4 @@
-name: PR dotnet format fix
+name: PR dotnet format command handler
 
 on:
   issue_comment:
@@ -13,25 +13,24 @@ defaults:
     shell: pwsh
 
 jobs:
-  dotnet-format-fix:
-    name: PR dotnet format fix
-    if: github.event.issue.pull_request && github.event.issue.state == 'open' && github.event.comment.body == '/dotnet format'  # check if the comments come from pull request, exclude those from issue.
+  check-pr-comment:
+    name: Check PR comment
+    # if: github.event.issue.pull_request && github.event.issue.state == 'open' && github.event.comment.body == '/dotnet format'  # check if the comments come from pull request, exclude those from issue.
     runs-on: ubuntu-latest
-    env:
-      SLN_FILENAME: DotNet.Sdk.Extensions.sln
-      SLN_FILEPATH : ${{ github.workspace }}/DotNet.Sdk.Extensions.sln
-      DOTNET_VERSION : 5.0.303
-      WORKFLOW_RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+    outputs:
+      run-dotnet-format: ${{ steps.check-pr-comment.outputs.run-dotnet-format }}
+      pr-number: ${{ steps.check-pr-comment.outputs.pr-number }}
+      pr-head-sha: ${{ steps.check-pr-comment.outputs.pr-head-sha}}
     steps:
     - name: Dump context
       run: Write-Host '${{ toJson(github) }}'
-    - uses: xt0rted/pull-request-comment-branch@v1
-      id: comment-branch
-    - name: Dump output from xt0rted/pull-request-comment-branch
-      run: Write-Host '${{ toJson(steps.comment-branch.outputs) }}'
-    - uses: actions/checkout@v2
-      with:
-        ref: ${{ steps.comment-branch.outputs.head_ref }}
+    # - uses: xt0rted/pull-request-comment-branch@v1
+    #   id: comment-branch
+    # - name: Dump output from xt0rted/pull-request-comment-branch
+    #   run: Write-Host '${{ toJson(steps.comment-branch.outputs) }}'
+    # - uses: actions/checkout@v2
+    #   with:
+    #     ref: ${{ steps.comment-branch.outputs.head_ref }}
     # - uses: LouisBrunner/checks-action@v1.2.0
     #   with:
     #     token: ${{ secrets.GITHUB_TOKEN }}
@@ -66,25 +65,66 @@ jobs:
     #     -H "Accept: application/vnd.github.v3+json" \
     #     https://api.github.com/repos/edumserrano/dot-net-sdk-extensions/check-runs \
     #     -d '{"name":"myTestCheckBash", "head_sha": "'"$BUILD_COMMIT"'", "status": "completed", "conclusion": "success" }'
-    - name: Create status
+
+    - name: check PR comment
+      uses: machine-learning-apps/actions-chatops@master
+      id: check-pr-comment
+      with:
+        TRIGGER_PHRASE: "/dotnet format"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Dump output from 'check PR comment' step
+      run: Write-Host '${{ toJson(steps.check-pr-comment.outputs) }}'
+    - name: Set job outputs
       run: |
-        $headSha="${{ steps.comment-branch.outputs.head_sha }}"
-        $repo = "${{ github.repository }}"
-        $uri = "https://api.github.com/repos/$repo/statuses/$headSha"
-        $headers = @{
-          Accept = "application/vnd.github.v3+json"
-          Authorization = "Bearer ${{ env.GITHUB_TOKEN }}"
-        }
-        $body = @{
-          context = "${{ github.workflow}}"
-          description = "dotnet format changes pushed"
-          target_url = "${{ env.WORKFLOW_RUN_URL }}"
-          state = "success"
-        } | ConvertTo-Json -compress
+        Write-Host "::set-output name=run-dotnet-format::${{ steps.check-pr-comment.outputs.BOOL_TRIGGERED }}"
+        Write-Host "::set-output name=pr-number::${{ steps.check-pr-comment.outputs.PULL_REQUEST_NUMBER }}"
+        Write-Host "::set-output name=pr-head-sha::${{ steps.check-pr-comment.outputs.SHA }}"
 
-        Invoke-RestMethod -Method 'Post' -Uri $uri -Headers $headers -Body $body
+  dotnet-format:
+    name: dotnet format
+    needs: [check-pr-comment]
+    if: needs.check-pr-comment.outputs.can-run-dotnet-format == 'True'
+    runs-on: ubuntu-latest
+    env:
+      PR_NUMBER: ${{ sneeds.check-pr-comment.outputs.pr-number }}
+      PR_HEAD_SHA: ${{ needs.check-pr-comment.outputs.pr-head-sha}}
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        ref: ${{ env.PR_HEAD_SHA }}
+    # - name: Create status
+    #   env:
+    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    #   run: |
+    #     $headSha="${{ steps.comment-branch.outputs.head_sha }}"
+    #     $repo = "${{ github.repository }}"
+    #     $uri = "https://api.github.com/repos/$repo/statuses/$headSha"
+    #     $headers = @{
+    #       Accept = "application/vnd.github.v3+json"
+    #       Authorization = "Bearer ${{ env.GITHUB_TOKEN }}"
+    #     }
+    #     $body = @{
+    #       context = "${{ github.workflow}}"
+    #       description = "dotnet format changes pushed"
+    #       target_url = "${{ env.WORKFLOW_RUN_URL }}"
+    #       state = "success"
+    #     } | ConvertTo-Json -compress
+
+    #     Invoke-RestMethod -Method 'Post' -Uri $uri -Headers $headers -Body $body
+    - name: Add PR Status
+      uses: niteoweb/pull_request_status_action@v1.0.0
+      with:
+        pr_number: ${{ env.PR_NUMBER }}
+        state: success # Any of the (error | failure | pending | success) states
+        repository: ${{ github.repository }}
+        context: ${{ github.workflow}}
+        target_url: ${{ env.WORKFLOW_RUN_URL }}
+        description: "dotnet format changes pushed"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 
     # - name: Checkout
     #   uses: actions/checkout@v2
