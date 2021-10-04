@@ -4,8 +4,10 @@ on:
   issue_comment:
     types: [created]
 
+# Concurrency defined with the comment body in mind so that if there are multiple comments with the same value then
+# all in progress workflows are cancelled except one (triggered from the latest comment).
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}-${{ github.head_ref }}
+  group: ${{ github.workflow }}-${{ github.ref }}-${{ github.head_ref }}-${{ github.event.comment.body }}
   cancel-in-progress: true
 
 defaults:
@@ -84,6 +86,7 @@ jobs:
     env:
       PR_NUMBER: ${{ needs.check-pr-comment.outputs.pr-number }}
       PR_HEAD_SHA: ${{ needs.check-pr-comment.outputs.pr-head-sha}}
+      WORKFLOW_RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
     steps:
     - name: Dump github context
       run: Write-Host '${{ toJson(github) }}'
@@ -118,7 +121,7 @@ jobs:
         pr_number: ${{ env.PR_NUMBER }}
         state: success # Any of the (error | failure | pending | success) states
         repository: ${{ github.repository }}
-        context: ${{ github.workflow}} / ${{ github.job}} (${{ github.event_name }})
+        context: ${{ github.workflow}} / dotnet format (${{ github.event_name }}) # mimic format from github checks $workflow-name / $job-name ($event-name)
         target_url: ${{ env.WORKFLOW_RUN_URL }}
         description: "dotnet format changes pushed"
       env:
@@ -126,11 +129,10 @@ jobs:
 
 
 # STATUS SHOULD MOVE BETWEEN THE FOLLOWING
-# In progress
-# Expected - Waiting for status to be reported
+# Expected -- Waiting for status to be reported
 # Successfull in $time (get time from either diff between current time and the github.event.created_at) OR https://github.community/t/get-the-job-elapsed-time/18070 OR https://stackoverflow.com/questions/67890631/how-can-i-get-the-total-build-time-of-a-github-action-workflow
-
-
+#
+# After add comment to PR saying that changes were applied with commit $commitSHA and please review them
 
 
 
