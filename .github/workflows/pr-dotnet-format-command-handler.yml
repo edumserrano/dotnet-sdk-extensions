@@ -27,6 +27,10 @@ defaults:
   run:
     shell: pwsh
 
+env:
+  STATUS_CONTEXT : ${{ github.workflow}} / dotnet format (${{ github.event_name }}) # mimic format from github checks $workflow-name / $job-name ($event-name)
+  WORKFLOW_RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
 jobs:
   check-pr-comment:
     name: Check PR comment
@@ -97,13 +101,11 @@ jobs:
     if: needs.check-pr-comment.outputs.run-dotnet-format == 'True'
     runs-on: ubuntu-latest
     env:
-      DOTNET_VERSION : 5.0.303
       PR_NUMBER: ${{ needs.check-pr-comment.outputs.pr-number }}
       PR_HEAD_SHA: ${{ needs.check-pr-comment.outputs.pr-head-sha}}
-      WORKFLOW_RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      DOTNET_VERSION : 5.0.303
       SLN_FILENAME: DotNet.Sdk.Extensions.sln
       SLN_FILEPATH : ${{ github.workspace }}/DotNet.Sdk.Extensions.sln
-      STATUS_CONTEXT : ${{ github.workflow}} / dotnet format (${{ github.event_name }}) # mimic format from github checks $workflow-name / $job-name ($event-name)
     steps:
     - name: Dump github context
       run: Write-Host '${{ toJson(github) }}'
@@ -144,7 +146,6 @@ jobs:
 
     #     Invoke-RestMethod -Method 'Post' -Uri $uri -Headers $headers -Body $body
 
-
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
@@ -165,12 +166,48 @@ jobs:
           --fix-whitespace `
           --fix-style info `
           --fix-analyzers info `
-          --verbosity diagnostic `
-          --check
+          --verbosity diagnostic
     - name: Push dotnet format changes
+      id: auto-commit-action
       uses: stefanzweifel/git-auto-commit-action@v4.11.0
       with:
         commit_message: dotnet format for PR ${{ env.PR_NUMBER }}
+    - name: Add comment to PR
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        $changesDetected = [System.Convert]::ToBoolean("${{ steps.auto-commit-action.outputs.changes_detected }}")
+        if($changesDetected) {
+          $commentBody = @"
+        :exclamation: **dotnet format** found files that did not respect the code guidelines and pushed commit ${{ steps.auto-commit-action.outputs.commit_hash }}. Please review it before merging the PR.
+
+        For more information please see the output from this [workflow run](${{ env.WORKFLOW_RUN_URL }}).
+        "@
+        }
+        else {
+          $commentBody = @"
+        :heavy_check_mark: **dotnet format** didn't find any file that does not respect the code guidelines or there weren't any available automated fixes.
+
+         For more information please see the output from this [workflow run](${{ env.WORKFLOW_RUN_URL }}).
+        "@
+        }
+
+        gh pr comment ${{ env.PR_NUMBER }} --body $commentBody
+
+  set-final-status:
+    name: Set final status
+    needs: [check-pr-comment, dotnet-format]
+    if: always()
+    runs-on: ubuntu-latest
+    env:
+      PR_NUMBER: ${{ needs.check-pr-comment.outputs.pr-number }}
+    steps:
+    - name: Dump github context
+      run: Write-Host '${{ toJson(github) }}'
+    - name: Dump job context
+      run: Write-Host '${{ toJson(job) }}'
+    - name: Dump needs context
+      run: Write-Host '${{ toJson(needs) }}'
     - name: Set PR status to success
       uses: niteoweb/pull_request_status_action@v1.0.0
       with:
@@ -179,11 +216,11 @@ jobs:
         repository: ${{ github.repository }}
         context: ${{ env.STATUS_CONTEXT }}
         target_url: ${{ env.WORKFLOW_RUN_URL }}
-        description: "dotnet format changes pushed"
+        description: "Successfull in"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Set PR status to failure
-      if: ${{ !success() }} # usually you don't need the ${{ }} in the 'if' clause but you cannot skip them when negating in 'if:' cause it reports syntax error
+      if: ${{ needs.dotnet-format.result != 'success' || !success() }}
       uses: niteoweb/pull_request_status_action@v1.0.0
       with:
         pr_number: ${{ env.PR_NUMBER }}
@@ -191,9 +228,15 @@ jobs:
         repository: ${{ github.repository }}
         context: ${{ env.STATUS_CONTEXT }}
         target_url: ${{ env.WORKFLOW_RUN_URL }}
-        description: "The workflow failed or was cancelled"
+        description: "The workflow failed or was cancelled."
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+
+
+
+
+
 
 # add a step to run if pipeline fails to set status check to failure
 # Any of the (error | failure | pending | success) states
