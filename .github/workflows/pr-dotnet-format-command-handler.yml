@@ -28,8 +28,7 @@ defaults:
     shell: pwsh
 
 env:
-  DOTNET_FORMAT_JOB_NAME: dotnet format
-  STATUS_CONTEXT : ${{ github.workflow}} / ${{ env.DOTNET_FORMAT_JOB_NAME }} (${{ github.event_name }}) # mimic format from github checks $workflow-name / $job-name ($event-name)
+  STATUS_CONTEXT : ${{ github.workflow }} / dotnet format (${{ github.event_name }}) # mimic format from github checks $workflow-name / $job-name ($event-name)
   WORKFLOW_RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
 jobs:
@@ -97,7 +96,7 @@ jobs:
       run: Write-Host '${{ toJson(steps.check-pr-comment.outputs) }}'
 
   dotnet-format:
-    name: ${{ env.DOTNET_FORMAT_JOB_NAME }}
+    name: dotnet format
     needs: [check-pr-comment]
     if: needs.check-pr-comment.outputs.run-dotnet-format == 'True'
     runs-on: ubuntu-latest
