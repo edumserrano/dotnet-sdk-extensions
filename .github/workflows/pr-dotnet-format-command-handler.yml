@@ -100,6 +100,8 @@ jobs:
       PR_NUMBER: ${{ needs.check-pr-comment.outputs.pr-number }}
       PR_HEAD_SHA: ${{ needs.check-pr-comment.outputs.pr-head-sha}}
       WORKFLOW_RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      SLN_FILENAME: DotNet.Sdk.Extensions.sln
+      SLN_FILEPATH : ${{ github.workspace }}/DotNet.Sdk.Extensions.sln
     steps:
     - name: Dump github context
       run: Write-Host '${{ toJson(github) }}'
@@ -128,6 +130,29 @@ jobs:
     #     } | ConvertTo-Json -compress
 
     #     Invoke-RestMethod -Method 'Post' -Uri $uri -Headers $headers -Body $body
+    # - name: Add PR Status
+    #   uses: niteoweb/pull_request_status_action@v1.0.0
+    #   with:
+    #     pr_number: ${{ env.PR_NUMBER }}
+    #     state: success # Any of the (error | failure | pending | success) states
+    #     repository: ${{ github.repository }}
+    #     context: ${{ github.workflow}} / dotnet format (${{ github.event_name }}) # mimic format from github checks $workflow-name / $job-name ($event-name)
+    #     target_url: ${{ env.WORKFLOW_RUN_URL }}
+    #     description: "dotnet format changes pushed"
+    #   env:
+    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: dotnet format
+      run: |
+        dotnet format ${{ env.SLN_FILEPATH }} `
+          --fix-whitespace `
+          --fix-style info `
+          --fix-analyzers info `
+          --verbosity diagnostic `
+          --check
+    - name: Push dotnet format changes
+      uses: stefanzweifel/git-auto-commit-action@v4.11.0
+      with:
+        commit_message: dotnet format for PR ${{ env.PR_NUMBER }}
     - name: Add PR Status
       uses: niteoweb/pull_request_status_action@v1.0.0
       with:
@@ -139,6 +164,7 @@ jobs:
         description: "dotnet format changes pushed"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 
 
 # STATUS SHOULD MOVE BETWEEN THE FOLLOWING
