@@ -85,6 +85,7 @@ jobs:
     #     https://api.github.com/repos/edumserrano/dot-net-sdk-extensions/check-runs \
     #     -d '{"name":"myTestCheckBash", "head_sha": "'"$BUILD_COMMIT"'", "status": "completed", "conclusion": "success" }'
 
+
     - name: check PR comment
       uses: machine-learning-apps/actions-chatops@master
       id: check-pr-comment
