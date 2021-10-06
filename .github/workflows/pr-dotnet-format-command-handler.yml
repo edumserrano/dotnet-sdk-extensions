@@ -100,8 +100,6 @@ jobs:
     needs: [check-pr-comment]
     if: needs.check-pr-comment.outputs.run-dotnet-format == 'True'
     runs-on: ubuntu-latest
-    outputs:
-      job-id: ${{ steps.get-current-job-id.outputs.job_id }}
     env:
       PR_NUMBER: ${{ needs.check-pr-comment.outputs.pr-number }}
       PR_HEAD_SHA: ${{ needs.check-pr-comment.outputs.pr-head-sha}}
@@ -121,7 +119,7 @@ jobs:
         repository: ${{ github.repository }}
         context: ${{ env.STATUS_CONTEXT }}
         target_url: ${{ env.WORKFLOW_RUN_URL }}
-        description: "Expected — Waiting for status to be reported"
+        description: "Waiting for status to be reported"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Checkout
@@ -207,12 +205,6 @@ jobs:
         token: ${{ secrets.GITHUB_TOKEN }}
         commentId: ${{ steps.add-pr-comment.outputs.pr-comment-id }}
         reaction: ${{ steps.add-pr-comment.outputs.pr-comment-reaction }}
-    - name: Get current job id
-      id: get-current-job-id
-      uses: Tiryoh/gha-jobid-action@v0
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        job_name: ${{ github.job }}
 
   set-final-pr-status:
     name: Set final PR status
@@ -221,7 +213,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       PR_NUMBER: ${{ needs.check-pr-comment.outputs.pr-number }}
-      DOTNET_FORMAT_JOB_ID: ${{ needs.dotnet-format.outputs.job-id }}
     steps:
     - name: Dump github context
       run: Write-Host '${{ toJson(github) }}'
@@ -233,7 +224,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        $uri = "https://api.github.com/repos/${{ github.repository }}/actions/jobs/${{ env.DOTNET_FORMAT_JOB_ID }}"
+        $uri = "https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/jobs"
         $headers = @{
           Accept = "application/vnd.github.v3+json"
           Authorization = "Bearer ${{ env.GITHUB_TOKEN }}"
