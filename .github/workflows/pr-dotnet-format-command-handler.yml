@@ -219,6 +219,25 @@ jobs:
         "@
         }
 
+        $commentBody += @"
+
+
+        ## Note
+        Sometimes the fix provided by the analyzers produces unecessary comments when formatting files.
+
+        This should only happen if the project supports multiple target frameworks and the fix doesn't produce the same output for all. However, it seems that sometimes the ``Unmerged change from project ...`` comment shows up even though the fix produced the same output.
+
+        If this happens, just delete the comments added. Otherwise, consider incorporating the commented out code using [preprocessor directives to control conditional compilation](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/preprocessor-directives#conditional-compilation).
+        Example:
+        ``````csharp
+        #if NET5_0
+            ...
+        #elif NETCOREAPP3_1
+            ...
+        #endif
+        ``````
+        "@
+
         $commentUrl = gh pr comment ${{ env.PR_NUMBER }} --body $commentBody
         Write-Host "Created comment at $commentUrl"
         $commentId = $commentUrl.Split("-")[-1]
@@ -278,7 +297,7 @@ jobs:
         repository: ${{ github.repository }}
         context: ${{ env.STATUS_CONTEXT }}
         target_url: ${{ env.WORKFLOW_RUN_URL }}
-        description: "Successfull in ${{ steps.get-job-execution-time.outputs.dotnet-format-job-duration }}"
+        description: "Successful in ${{ steps.get-job-execution-time.outputs.dotnet-format-job-duration }}"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Set PR status to failure
@@ -290,7 +309,7 @@ jobs:
         repository: ${{ github.repository }}
         context: ${{ env.STATUS_CONTEXT }}
         target_url: ${{ env.WORKFLOW_RUN_URL }}
-        description: "The workflow failed or was cancelled."
+        description: "Workflow failed or cancelled"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
