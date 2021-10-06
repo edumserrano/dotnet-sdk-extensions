@@ -25,6 +25,7 @@ namespace DotNet.Sdk.Extensions.Options
             if (services is null)
             {
                 throw new ArgumentNullException(nameof(services));
+
             }
 
             return services
