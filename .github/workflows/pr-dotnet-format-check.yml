@@ -75,9 +75,9 @@ jobs:
         :exclamation: **dotnet format** found files that do not respect the code guidelines. For more information please see the output from this [workflow run](${{ env.WORKFLOW_RUN_URL }}).
 
         Before merging this PR please fix the reported issues. You can do so by either:
-        - adding a comment on this PR with: `/dotnet format`
+        - adding a comment on this PR with: ``/dotnet format``
         - or locally running [dotnet format](https://github.com/dotnet/format) on the solution as such:
-        `dotnet format DotNet.Sdk.Extensions.sln --fix-whitespace --fix-style info --fix-analyzers info --verbosity diagnostic`
+        ``dotnet format DotNet.Sdk.Extensions.sln --fix-whitespace --fix-style info --fix-analyzers info --verbosity diagnostic```
         "@
         }
         else {
