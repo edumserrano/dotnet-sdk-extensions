@@ -195,14 +195,16 @@ jobs:
       with:
         branch: ${{ env.PR_BRANCH_NAME }}
         commit_message: dotnet format for PR ${{ env.PR_NUMBER }}
-    - name: Add PT comment
+    - name: Dump auto commit action output
+      run: Write-Host '${{ toJson(steps.auto-commit-action.outputs) }}'
+    - name: Add PR comment
       id: add-pr-comment
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         $changesDetected = [System.Convert]::ToBoolean("${{ steps.auto-commit-action.outputs.changes_detected }}")
         if($changesDetected) {
-          Write-Host "::set-output name=pr-comment-reaction::hooray"
+          Write-Host "::set-output name=pr-comment-reaction::eyes"
           $commentBody = @"
         :exclamation: **dotnet format** found files that did not respect the code guidelines and pushed commit ${{ steps.auto-commit-action.outputs.commit_hash }}. Please review it before merging the PR.
 
@@ -210,7 +212,7 @@ jobs:
         "@
         }
         else {
-          Write-Host "::set-output name=pr-comment-reaction::confused"
+          Write-Host "::set-output name=pr-comment-reaction::hooray"
           $commentBody = @"
         :heavy_check_mark: **dotnet format** didn't find any file that does not respect the code guidelines or there weren't any available automated fixes.
 
