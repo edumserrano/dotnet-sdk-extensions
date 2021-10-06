@@ -56,6 +56,14 @@ jobs:
     #     sha: ${{ steps.comment-branch.outputs.head_sha }}
     #     name: Test XYZ
     #     conclusion: ${{ job.status }}
+
+
+
+# consider using this create status action because the niteoweb/pull_request_status_action@v1.0.0 action seems to have some python warnings:
+#  WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+# it also serves as a way to show how these kind of tasks can be accomplish
+# this would become a shareable action on this repo
+
     # - name: Create status check
     #   env:
     #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -71,6 +79,8 @@ jobs:
     #       -H $auth `
     #       -H "Accept: application/vnd.github.v3+json" `
     #       $apiUrl -d $body
+
+
     # - name: Create status check bash
     #   shell: bash
     #   env:
@@ -111,6 +121,12 @@ jobs:
       run: Write-Host '${{ toJson(github) }}'
     - name: Dump job context
       run: Write-Host '${{ toJson(job) }}'
+    - name: Add eyes reaction to workflow trigger comment
+      uses: dkershner6/reaction-action@v1
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        commentId: ${{ github.event.comment.id }}
+        reaction: eyes
     - name: Set PR status to pending
       uses: niteoweb/pull_request_status_action@v1.0.0
       with:
@@ -221,6 +237,7 @@ jobs:
     - name: Dump needs context
       run: Write-Host '${{ toJson(needs) }}'
     - name: Get dotnet-format job execution time
+      id: get-job-execution-time
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
@@ -230,7 +247,13 @@ jobs:
           Authorization = "Bearer ${{ env.GITHUB_TOKEN }}"
         }
 
-        Invoke-RestMethod -Method 'Get' -Uri $uri -Headers $headers
+        $response = Invoke-RestMethod -Method 'Get' -Uri $uri -Headers $headers
+        Write-Host $response
+        $jobStartTime = $response.jobs.where{$_.name -eq 'dotnet-format'}.started_at
+        $jobEndTime = $response.jobs.where{$_.name -eq 'dotnet-format'}.completed_at
+        $jobDuration = $jobEndTime - $jobStartTime
+        $jobDurationInMinutes = [Math]::Round($jobDuration.TotalMinutes)
+        Write-Host "::set-output name=dotnet-format-job-duration::$jobDurationInMinutes"
     - name: Set PR status to success
       uses: niteoweb/pull_request_status_action@v1.0.0
       with:
@@ -239,7 +262,7 @@ jobs:
         repository: ${{ github.repository }}
         context: ${{ env.STATUS_CONTEXT }}
         target_url: ${{ env.WORKFLOW_RUN_URL }}
-        description: "Successfull in"
+        description: "Successfull in ${{ steps.get-job-execution-time.dotnet-format-job-duration }}m"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Set PR status to failure
