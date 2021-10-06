@@ -295,7 +295,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 
-
 # git config --local user.name "actions-user"
 # git config --local user.email "actions-user@github.com"
 # git commit -a -m "auto dotnet format attempt number $attempt"
