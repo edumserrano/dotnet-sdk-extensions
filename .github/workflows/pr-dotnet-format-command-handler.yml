@@ -260,7 +260,6 @@ jobs:
 
 
 
-
 # add a step to run if pipeline fails to set status check to failure
 # Any of the (error | failure | pending | success) states
 # STATUS SHOULD MOVE BETWEEN THE FOLLOWING
