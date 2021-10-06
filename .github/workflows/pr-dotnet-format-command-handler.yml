@@ -109,7 +109,7 @@ jobs:
       run: Write-Host '${{ toJson(steps.check-pr-comment.outputs) }}'
 
   dotnet-format:
-    name: ${{ env.DOTNET_FORMAT_JOB_NAME }}
+    name: dotnet format
     needs: [check-pr-comment]
     if: needs.check-pr-comment.outputs.run-dotnet-format == 'True'
     runs-on: ubuntu-latest
