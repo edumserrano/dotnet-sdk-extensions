@@ -41,6 +41,7 @@ jobs:
       run-dotnet-format: ${{ steps.check-pr-comment.outputs.BOOL_TRIGGERED }}
       pr-number: ${{ steps.check-pr-comment.outputs.PULL_REQUEST_NUMBER }}
       pr-head-sha: ${{ steps.check-pr-comment.outputs.SHA }}
+      pr-branch-name: ${{ steps.check-pr-comment.outputs.BRANCH_NAME }}
     steps:
     - name: Dump context
       run: Write-Host '${{ toJson(github) }}'
@@ -116,6 +117,7 @@ jobs:
     env:
       PR_NUMBER: ${{ needs.check-pr-comment.outputs.pr-number }}
       PR_HEAD_SHA: ${{ needs.check-pr-comment.outputs.pr-head-sha}}
+      PR_BRANCH_NAME: ${{ needs.check-pr-comment.outputs.pr-branch-name}}
       DOTNET_VERSION : 5.0.303
       SLN_FILENAME: DotNet.Sdk.Extensions.sln
       SLN_FILEPATH : ${{ github.workspace }}/DotNet.Sdk.Extensions.sln
@@ -191,6 +193,7 @@ jobs:
       id: auto-commit-action
       uses: stefanzweifel/git-auto-commit-action@v4.11.0
       with:
+        branch: ${{ env.PR_BRANCH_NAME }}
         commit_message: dotnet format for PR ${{ env.PR_NUMBER }}
     - name: Add PT comment
       id: add-pr-comment
