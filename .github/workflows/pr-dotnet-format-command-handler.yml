@@ -59,9 +59,11 @@ jobs:
 
 
 
-# consider using this create status action because the niteoweb/pull_request_status_action@v1.0.0 action seems to have some python warnings:
+# consider using this create status action because the niteoweb/pull_request_status_action@v1.0.0 action seems to have some python warnings when building the container for the action "Build niteoweb/pull_request_status_action@v1.0.0" "Build container for action use: '/home/runner/work/_actions/niteoweb/pull_request_status_action/v1.0.0/Dockerfile'.":
 #  WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
-# it also serves as a way to show how these kind of tasks can be accomplish
+# This probably isn't any serious issue ? Although this build step adds 12 secs to each job where this action is used!!!
+#
+# using this custom action below also serves as a way to show how these kind of tasks can be accomplish
 # this would become a shareable action on this repo
 
     # - name: Create status check
@@ -95,7 +97,7 @@ jobs:
     #     https://api.github.com/repos/edumserrano/dot-net-sdk-extensions/check-runs \
     #     -d '{"name":"myTestCheckBash", "head_sha": "'"$BUILD_COMMIT"'", "status": "completed", "conclusion": "success" }'
 
-    - name: check PR comment
+    - name: Check PR comment
       uses: machine-learning-apps/actions-chatops@master
       id: check-pr-comment
       with:
@@ -248,7 +250,7 @@ jobs:
         }
 
         $response = Invoke-RestMethod -Method 'Get' -Uri $uri -Headers $headers
-        Write-Host $response
+        $response | ConvertTo-Json
         $jobStartTime = $response.jobs.where{$_.name -eq 'dotnet-format'}.started_at
         $jobEndTime = $response.jobs.where{$_.name -eq 'dotnet-format'}.completed_at
         $jobDuration = $jobEndTime - $jobStartTime
@@ -262,7 +264,7 @@ jobs:
         repository: ${{ github.repository }}
         context: ${{ env.STATUS_CONTEXT }}
         target_url: ${{ env.WORKFLOW_RUN_URL }}
-        description: "Successfull in ${{ steps.get-job-execution-time.dotnet-format-job-duration }}m"
+        description: "Successfull in ${{ steps.get-job-execution-time.outputs.dotnet-format-job-duration }}m"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Set PR status to failure
