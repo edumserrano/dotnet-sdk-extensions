@@ -195,8 +195,6 @@ jobs:
       with:
         branch: ${{ env.PR_BRANCH_NAME }}
         commit_message: dotnet format for PR ${{ env.PR_NUMBER }}
-    - name: Dump auto commit action output
-      run: Write-Host '${{ toJson(steps.auto-commit-action.outputs) }}'
     - name: Add PR comment
       id: add-pr-comment
       env:
@@ -205,8 +203,9 @@ jobs:
         $changesDetected = [System.Convert]::ToBoolean("${{ steps.auto-commit-action.outputs.changes_detected }}")
         if($changesDetected) {
           Write-Host "::set-output name=pr-comment-reaction::eyes"
+          $lastCommitHash = git rev-parse HEAD
           $commentBody = @"
-        :exclamation: **dotnet format** found files that did not respect the code guidelines and pushed commit ${{ steps.auto-commit-action.outputs.commit_hash }}. Please review it before merging the PR.
+        :exclamation: **dotnet format** found files that did not respect the code guidelines and pushed commit $lastCommitHash. Please review it before merging the PR.
 
         For more information please see the output from this [workflow run](${{ env.WORKFLOW_RUN_URL }}).
         "@
