@@ -4,19 +4,22 @@ on:
   issue_comment:
     types: [created]
 
-# Unlike other workflows this one does not have a concurrency defined.
-# If we define a concurrency then aworkflow run that was triggered by the expected comment could get cancelled
-# by any another following comment added to the pull request
+# Unlike other workflows this one does not have a concurrency defined. If we define a concurrency then a workflow run
+# that was triggered by the expected comment could get cancelled by any other following comment added to the pull request.
 #
-# As an alternative we could consider adding the comment body (github.event.comment.body) to the
-# concurrency group id. This would mean that workflows would only get cancelled if they had the same
-# comment body, which would mean that for all comments with the same body all workflows in progress would get cancelled except for the last.
-# Downsides with this approach:
+# As an alternative we could consider adding the comment body (github.event.comment.body) to the concurrency group id.
+# This would mean that workflows would only get cancelled if they had the same comment body, which would mean that for
+# all comments with the same body all workflows in progress would get cancelled except for the last.
+#
+# Downsides with the approach having the github.event.comment.body as part of the concurrency group id:
+#
 # - workflow runs might fail to start because of invalid characters used in comments or because of comment size. Functionally this is not a problem
-# because the workflow would always run for the expected comment. However, the workflow history would show fail runs for this error cases =/
-# - the purpose of this workflow is to run dotnet format and push changes to the PR. If the workflow is cancelled after the changes are pushed
-# to the PR but before the workflow finishes then we end up in a potential invalid state. Meaning, if for instance I want to take an action after the changes are pushed,
-# such as adding a comment to the PR, then the workflow could get cancelled before the comment is made on the PR.
+# because the workflow would always run for the expected comment. However, the workflow history would show fail runs for this error cases which is
+# not great.
+#
+# - the purpose of this workflow is to run dotnet format and push changes to the PR. If the workflow is cancelled after the changes are pushed to
+# the PR but before the workflow finishes then we end up in a potential invalid state. Meaning, if for instance I want to take an action after the
+# changes are pushed, such as adding a comment to the PR, then the workflow could get cancelled before the comment is made on the PR.
 # In short, there are parts of the workflow that once started should be finished, the workflow should NOT be allowed to be aborted to avoid getting into
 # a bad state.
 #
@@ -147,7 +150,13 @@ jobs:
       uses: actions/checkout@v2
       with:
         ref: ${{ env.PR_HEAD_SHA }}
-        # token: ${{ secrets.GH_TOKEN_FOR_CODE_PUSH }} # only need this If I want the commit to retrigger some workflows
+        # From https://docs.github.com/en/actions/reference/authentication-in-a-workflow#using-the-github_token-in-a-workflow
+        # "When you use the repository's GITHUB_TOKEN to perform tasks on behalf of
+        # the GitHub Actions app, events triggered by the GITHUB_TOKEN will not create a new workflow run."
+        #
+        # Without using a custom GitHub token the PR would be created but no checks would be executed.
+        GITHUB_TOKEN: ${{ secrets.DOTNET_FORMAT_GH_TOKEN }}
+
     # - name: Create status
     #   env:
     #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -320,112 +329,3 @@ jobs:
 # git commit -a -m "auto dotnet format attempt number $attempt"
 # git push
 
-
-
-# add a step to run if pipeline fails to set status check to failure
-# Any of the (error | failure | pending | success) states
-# STATUS SHOULD MOVE BETWEEN THE FOLLOWING
-# Expected -- Waiting for status to be reported
-# Successfull in $time (get time from either diff between current time and the github.event.created_at) OR https://github.community/t/get-the-job-elapsed-time/18070 OR https://stackoverflow.com/questions/67890631/how-can-i-get-the-total-build-time-of-a-github-action-workflow
-#
-# After add comment to PR saying that changes were applied with commit $commitSHA and please review them
-
-
-
-
-
-
-
-
-
-
-
-
-
-    # - name: Checkout
-    #   uses: actions/checkout@v2
-    # - name: Checkout Pull Request
-    #   env:
-    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    #   run: gh pr checkout ${{ github.event.issue.number }}
-    # - name: test
-    #   run: exit 2
-
-
-    # - name: Checkout
-    #   uses: actions/checkout@v2
-    #   with:
-    #     ref: ${{ github.event.pull_request.head.sha }}
-    # - name: Setup .NET
-    #   uses: actions/setup-dotnet@v1
-    #   with:
-    #     dotnet-version: ${{ env.DOTNET_VERSION }}
-    # - name: Install dotnet-format tool
-    #   run:  dotnet tool install --global dotnet-format
-    # - name: Cache/Restore NuGets
-    #   uses: actions/cache@v2
-    #   with:
-    #     path:
-    #       ~/.nuget/packages
-    #     key: ${{ runner.os }}-nuget-${{ env.DOTNET_VERSION }}
-    #     restore-keys: |
-    #       ${{ runner.os }}-nuget-
-    # - name: dotnet format check
-    #   id: dotnet-format
-    #   run: |
-    #     Write-Host "::group::Running dotnet format"
-    #     dotnet format ${{ env.SLN_FILEPATH }} `
-    #       --fix-whitespace `
-    #       --fix-style info `
-    #       --fix-analyzers info `
-    #       --verbosity diagnostic `
-    #       --check
-    #     Write-Host "::endgroup::"
-    #     $hasChanges = $LASTEXITCODE -ne 0
-    #     Write-Host "::set-output name=has-changes::$hasChanges"
-
-    #     if($hasChanges) {
-    #       Write-Host "::warning::dotnet format found files that require formatting."
-    #     }
-    #     else {
-    #       Write-Host "dotnet format didn't find any file that requires formatting."
-    #     }
-
-    #     Exit 0 # always exit successfully
-    # - name: GitHub PR comment
-    #   env:
-    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    #   run: |
-    #     $hasChanges = [System.Convert]::ToBoolean("${{ steps.dotnet-format.outputs.has-changes }}")
-    #     if($hasChanges) {
-    #       $commentBody = @"
-    #     :exclamation: **dotnet format** found files that do not respect the code guidelines. For more information please see the output from this [workflow run](${{ env.WORKFLOW_RUN_URL }}).
-
-    #     Before merging this PR please fix the reported issues. You can do so by running [dotnet format](https://github.com/dotnet/format) on the solution as such:
-    #     ``dotnet format ${{ env.SLN_FILENAME }} --fix-whitespace --fix-style info --fix-analyzers info --verbosity diagnostic``
-    #     "@
-    #     }
-    #     else {
-    #       $commentBody = @"
-    #     :heavy_check_mark: **dotnet format** didn't find any file that does not respect the code guidelines. For more information please see the output from this [workflow run](${{ env.WORKFLOW_RUN_URL }}).
-    #     "@
-    #     }
-
-    #     $commentBody += @"
-
-
-    #     :warning: dotnet format does **NOT** remove unused references. You have to do this manually. Please check that there isn't any unused reference.
-    #     "@
-
-    #     $prNumber = "${{github.event.pull_request.number}}"
-    #     gh pr comment $prNumber --body $commentBody
-    # - name: Set workflow exit status
-    #   run: |
-    #     $hasChanges = [System.Convert]::ToBoolean("${{ steps.dotnet-format.outputs.has-changes }}")
-    #     if($hasChanges) {
-    #       Write-Host "dotnet format found files that do not respect the code guidelines so setting the workflow status as failed."
-    #       Exit 1
-    #     }
-
-    #     Write-Host "dotnet format didn't find any file that does not respect the code guidelines so setting the workflow status as successful."
-    #     Exit 0
