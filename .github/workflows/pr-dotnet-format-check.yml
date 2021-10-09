@@ -69,7 +69,10 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        $commentBody = "# [${{ github.workflow }}](${{ env.WORKFLOW_RUN_URL }})"
+        $commentBody = @"
+        `# [${{ github.workflow }}](${{ env.WORKFLOW_RUN_URL }})
+
+        "@
         $hasChanges = [System.Convert]::ToBoolean("${{ steps.dotnet-format.outputs.has-changes }}")
         if($hasChanges) {
           $commentBody += @"

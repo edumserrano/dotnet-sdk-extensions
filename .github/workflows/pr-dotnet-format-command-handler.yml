@@ -211,7 +211,10 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        $commentBody = "# [${{ github.workflow }}](${{ env.WORKFLOW_RUN_URL }})"
+        $commentBody = @"
+        `# [${{ github.workflow }}](${{ env.WORKFLOW_RUN_URL }})
+
+        "@
         $changesDetected = [System.Convert]::ToBoolean("${{ steps.auto-commit-action.outputs.changes_detected }}")
         if($changesDetected) {
           Write-Host "::set-output name=pr-comment-reaction::eyes"
