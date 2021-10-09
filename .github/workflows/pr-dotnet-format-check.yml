@@ -69,10 +69,11 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
+        $commentBody = "# [${{ github.workflow }}](${{ env.WORKFLOW_RUN_URL }})"
         $hasChanges = [System.Convert]::ToBoolean("${{ steps.dotnet-format.outputs.has-changes }}")
         if($hasChanges) {
           $commentBody = @"
-        :exclamation: **dotnet format** found files that do not respect the code guidelines. For more information please see the output from this [workflow run](${{ env.WORKFLOW_RUN_URL }}).
+        :exclamation: **dotnet format** found files that do not respect the code guidelines.
 
         Before merging this PR please fix the reported issues. You can do so by either:
         - adding a comment on this PR with: ``/dotnet format``
@@ -82,7 +83,7 @@ jobs:
         }
         else {
           $commentBody = @"
-        :heavy_check_mark: **dotnet format** didn't find any file that does not respect the code guidelines. For more information please see the output from this [workflow run](${{ env.WORKFLOW_RUN_URL }}).
+        :heavy_check_mark: **dotnet format** didn't find any file that does not respect the code guidelines.
         "@
         }
 

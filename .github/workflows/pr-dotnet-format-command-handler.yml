@@ -211,23 +211,16 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
+        $commentBody = "# [${{ github.workflow }}](${{ env.WORKFLOW_RUN_URL }})"
         $changesDetected = [System.Convert]::ToBoolean("${{ steps.auto-commit-action.outputs.changes_detected }}")
         if($changesDetected) {
           Write-Host "::set-output name=pr-comment-reaction::eyes"
           $lastCommitHash = git rev-parse HEAD
-          $commentBody = @"
-        :exclamation: **dotnet format** found files that did not respect the code guidelines and pushed commit $lastCommitHash. Please review it before merging the PR.
-
-        For more information please see the output from this [workflow run](${{ env.WORKFLOW_RUN_URL }}).
-        "@
+          $commentBody = ":exclamation: **dotnet format** found files that did not respect the code guidelines and pushed commit $lastCommitHash. Please review it before merging the PR."
         }
         else {
           Write-Host "::set-output name=pr-comment-reaction::hooray"
-          $commentBody = @"
-        :heavy_check_mark: **dotnet format** didn't find any file that does not respect the code guidelines or there weren't any available automated fixes.
-
-         For more information please see the output from this [workflow run](${{ env.WORKFLOW_RUN_URL }}).
-        "@
+          $commentBody = ":heavy_check_mark: **dotnet format** didn't find any file that does not respect the code guidelines or there weren't any available automated fixes."
         }
 
         $commentBody += @"
