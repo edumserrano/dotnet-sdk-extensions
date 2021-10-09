@@ -38,7 +38,7 @@ env:
 jobs:
   check-pr-comment:
     name: Check PR comment
-    # if: github.event.issue.pull_request && github.event.issue.state == 'open' && github.event.comment.body == '/dotnet format'  # check if the comments come from pull request, exclude those from issue.
+    if: github.event.issue.pull_request && github.event.issue.state == 'open' && github.event.comment.body == '/dotnet format'
     runs-on: ubuntu-latest
     outputs:
       run-dotnet-format: ${{ steps.check-pr-comment.outputs.BOOL_TRIGGERED }}
@@ -102,6 +102,8 @@ jobs:
     #     https://api.github.com/repos/edumserrano/dot-net-sdk-extensions/check-runs \
     #     -d '{"name":"myTestCheckBash", "head_sha": "'"$BUILD_COMMIT"'", "status": "completed", "conclusion": "success" }'
 
+    # the check on the workflow covers the required condition to trigger the workflow but the steop below
+    # will retrieve require data from the PR to use as outputs of this job
     - name: Check PR comment
       uses: machine-learning-apps/actions-chatops@master
       id: check-pr-comment
@@ -154,8 +156,8 @@ jobs:
         # "When you use the repository's GITHUB_TOKEN to perform tasks on behalf of
         # the GitHub Actions app, events triggered by the GITHUB_TOKEN will not create a new workflow run."
         #
-        # Without using a custom GitHub token the PR would be created but no checks would be executed.
-        GITHUB_TOKEN: ${{ secrets.DOTNET_FORMAT_GH_TOKEN }}
+        # Without using a custom GitHub token the PR commit would be created but no checks would be re-executed.
+        token: ${{ secrets.DOTNET_FORMAT_GH_TOKEN }}
 
     # - name: Create status
     #   env:
@@ -261,7 +263,7 @@ jobs:
   set-final-pr-status:
     name: Set final PR status
     needs: [check-pr-comment, dotnet-format]
-    if: always()
+    if: needs.check-pr-comment.outputs.run-dotnet-format == 'True'
     runs-on: ubuntu-latest
     env:
       PR_NUMBER: ${{ needs.check-pr-comment.outputs.pr-number }}
