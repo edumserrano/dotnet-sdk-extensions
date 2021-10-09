@@ -72,7 +72,7 @@ jobs:
         $commentBody = "# [${{ github.workflow }}](${{ env.WORKFLOW_RUN_URL }})"
         $hasChanges = [System.Convert]::ToBoolean("${{ steps.dotnet-format.outputs.has-changes }}")
         if($hasChanges) {
-          $commentBody = @"
+          $commentBody += @"
         :exclamation: **dotnet format** found files that do not respect the code guidelines.
 
         Before merging this PR please fix the reported issues. You can do so by either:
@@ -82,7 +82,7 @@ jobs:
         "@
         }
         else {
-          $commentBody = @"
+          $commentBody += @"
         :heavy_check_mark: **dotnet format** didn't find any file that does not respect the code guidelines.
         "@
         }
