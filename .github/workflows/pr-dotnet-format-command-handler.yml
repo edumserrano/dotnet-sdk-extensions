@@ -194,7 +194,7 @@ jobs:
       run: Write-Host '${{ toJson(job) }}'
     - name: Dump needs context
       run: Write-Host '${{ toJson(needs) }}'
-    - name: Checkout
+    - name: Checkout # need to checkout just because I'm using a custom action that exists on this repo
       uses: actions/checkout@v2
     - name: Get dotnet-format job execution time
       id: get-job-execution-time
