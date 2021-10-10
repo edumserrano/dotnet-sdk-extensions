@@ -282,7 +282,6 @@ jobs:
         }
 
         $response = Invoke-RestMethod -Method 'Get' -Uri $uri -Headers $headers
-        $response | ConvertTo-Json
         $jobStartTime = $response.jobs.where{$_.name -eq '${{ env.DOTNET_FORMAT_JOB_NAME }}'}.started_at
         $jobEndTime = $response.jobs.where{$_.name -eq '${{ env.DOTNET_FORMAT_JOB_NAME }}'}.completed_at
         $jobDuration = $jobEndTime - $jobStartTime
@@ -296,17 +295,34 @@ jobs:
         }
 
         Write-Host "::set-output name=dotnet-format-job-duration::$jobDurationAsString"
+    # - name: Set PR status to success
+    #   uses: niteoweb/pull_request_status_action@v1.0.0
+    #   with:
+    #     pr_number: ${{ env.PR_NUMBER }}
+    #     state: success
+    #     repository: ${{ github.repository }}
+    #     context: ${{ env.STATUS_CONTEXT }}
+    #     target_url: ${{ env.WORKFLOW_RUN_URL }}
+    #     description: "Successful in ${{ steps.get-job-execution-time.outputs.dotnet-format-job-duration }}"
+    #   env:
+    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+
+    # need step to get the latest sha from PR
+
+
     - name: Set PR status to success
-      uses: niteoweb/pull_request_status_action@v1.0.0
+      uses: ./.github/actions/create-gh-status
+      # env:
+      #   NUGET_PUSH_API_KEY: ${{ secrets.NUGET_PUSH_API_KEY }} # update this on the other action if I can just pass it as a param
       with:
-        pr_number: ${{ env.PR_NUMBER }}
-        state: success
-        repository: ${{ github.repository }}
+        repo: ${{ github.repository }}
+        pr-num: ${{ env.PR_NUMBER }}
         context: ${{ env.STATUS_CONTEXT }}
-        target_url: ${{ env.WORKFLOW_RUN_URL }}
-        description: "Successful in ${{ steps.get-job-execution-time.outputs.dotnet-format-job-duration }}"
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        state: success
+        description: Successful in ${{ steps.get-job-execution-time.outputs.dotnet-format-job-duration }}
+        target-url: ${{ env.WORKFLOW_RUN_URL }}
+        token: ${{ secrets.GITHUB_TOKEN }}
     - name: Set PR status to failure
       if: ${{ needs.dotnet-format.result != 'success' || !success() }}
       uses: niteoweb/pull_request_status_action@v1.0.0

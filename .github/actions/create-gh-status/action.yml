@@ -1,0 +1,88 @@
+# Why
+#
+# I was using the niteoweb/pull_request_status_action@v1.0.0 action to GitHub create status.
+# However this action adds a step at the start of the workflow where it builds a container:
+#
+# - This step has some python warnings: "WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour
+# with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv"
+#
+# - At the time of writing this, this step adds around 12 secs to each job where this action is used.
+#
+# The warning might not be an issue but just to be safe and shave off ~12 secs on the workflows I've created this action that does the same.
+#
+
+name: 'Create GitHub status'
+description: 'Creates a GitHub status'
+inputs:
+  repo:
+    description: 'The repository for the which the status will be created. Expected format is {owner}/{repo}.'
+    required: true
+  pr-num:
+    description: 'The Pull Request number.'
+    required: true
+  context:
+    description: 'A string label to differentiate this status from the status of other systems. This field is case-insensitive.'
+    required: true
+  state:
+    description: 'The state of the status. Can be one of error, failure, pending, or success.'
+    required: true
+  description:
+    description: 'A short description of the status.'
+    required: true
+  target-url:
+    description: 'The target URL to associate with this status. This URL will be linked from the GitHub UI to allow users to easily see the source of the status.'
+    required: true
+  token:
+    description: 'The token to use when calling GitHub APIs.'
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - shell: pwsh
+      id: get-pr-sha
+      run: |
+        $uri = "https://api.github.com/repos/${{ inputs.repo }}/pulls/${{ inputs.pr-num }}"
+        $headers = @{
+          Accept = "application/vnd.github.v3+json"
+          Authorization = "Bearer ${{ inputs.token }}"
+        }
+
+        $response = Invoke-RestMethod -Method 'Get' -Uri $uri -Headers $headers
+        Write-Host "::set-output name=pr-sha::$response.head.sha"
+    - shell: pwsh
+      run: |
+        $uri = "https://api.github.com/repos/${{ inputs.repo }}/statuses/${{ steps.get-pr-sha.outputs.pr-sha }}"
+        $headers = @{
+          Accept = "application/vnd.github.v3+json"
+          Authorization = "Bearer ${{ inputs.token }}"
+        }
+        $body = @{
+          context = "${{ inputs.context }}"
+          description = "${{ inputs.description }}"
+          target_url = "${{ inputs.target-url }}"
+          state = "${{ inputs.state }}"
+        } | ConvertTo-Json -compress
+
+        Invoke-RestMethod -Method 'Post' -Uri $uri -Headers $headers -Body $body
+
+
+    # - name: Create status
+    #   env:
+    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    #   run: |
+    #     $headSha="${{ steps.comment-branch.outputs.head_sha }}"
+    #     $repo = "${{ github.repository }}"
+    #     $uri = "https://api.github.com/repos/$repo/statuses/$headSha"
+    #     $headers = @{
+    #       Accept = "application/vnd.github.v3+json"
+    #       Authorization = "Bearer ${{ env.GITHUB_TOKEN }}"
+    #     }
+    #     $body = @{
+    #       context = "${{ github.workflow}}"
+    #       description = "dotnet format changes pushed"
+    #       target_url = "${{ env.WORKFLOW_RUN_URL }}"
+    #       state = "success"
+    #     } | ConvertTo-Json -compress
+
+    #     Invoke-RestMethod -Method 'Post' -Uri $uri -Headers $headers -Body $body
