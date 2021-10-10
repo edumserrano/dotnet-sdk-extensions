@@ -138,6 +138,16 @@ jobs:
         commentId: ${{ github.event.comment.id }}
         reaction: eyes
 
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        ref: ${{ env.PR_HEAD_SHA }}
+        # From https://docs.github.com/en/actions/reference/authentication-in-a-workflow#using-the-github_token-in-a-workflow
+        # "When you use the repository's GITHUB_TOKEN to perform tasks on behalf of
+        # the GitHub Actions app, events triggered by the GITHUB_TOKEN will not create a new workflow run."
+        #
+        # Without using a custom GitHub token the PR commit would be created but no checks would be re-executed.
+        token: ${{ secrets.DOTNET_FORMAT_GH_TOKEN }}
 
 
     - name: Set PR status to pending
@@ -168,16 +178,6 @@ jobs:
 
 
 
-    - name: Checkout
-      uses: actions/checkout@v2
-      with:
-        ref: ${{ env.PR_HEAD_SHA }}
-        # From https://docs.github.com/en/actions/reference/authentication-in-a-workflow#using-the-github_token-in-a-workflow
-        # "When you use the repository's GITHUB_TOKEN to perform tasks on behalf of
-        # the GitHub Actions app, events triggered by the GITHUB_TOKEN will not create a new workflow run."
-        #
-        # Without using a custom GitHub token the PR commit would be created but no checks would be re-executed.
-        token: ${{ secrets.DOTNET_FORMAT_GH_TOKEN }}
 
     # - name: Create status
     #   env:
