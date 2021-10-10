@@ -122,20 +122,16 @@ jobs:
     - name: Publish DotNet.Sdk.Extensions nuget and symbols
       uses: ./.github/actions/nuget-push
       if: github.event_name != 'pull_request' # don't push nugets on pull requests
-      env:
-        NUGET_PUSH_API_KEY: ${{ secrets.NUGET_PUSH_API_KEY }}
       with:
-        api-key: '$env:NUGET_PUSH_API_KEY'
-        source: 'https://api.nuget.org/v3/index.json'
+        api-key: ${{ secrets.NUGET_PUSH_API_KEY }}
+        source: https://api.nuget.org/v3/index.json
         working-directory: ${{ env.EXTENSIONS_BIN_FOLDER }}
     - name: Publish DotNet.Sdk.Extensions.Testing nuget and symbols
       uses: ./.github/actions/nuget-push
       if: github.event_name != 'pull_request' # don't push nugets on pull requests
-      env:
-        NUGET_PUSH_API_KEY: ${{ secrets.NUGET_PUSH_API_KEY }}
       with:
-        api-key: '$env:NUGET_PUSH_API_KEY'
-        source: 'https://api.nuget.org/v3/index.json'
+        api-key: ${{ secrets.NUGET_PUSH_API_KEY }}
+        source: https://api.nuget.org/v3/index.json
         working-directory: ${{ env.TESTING_EXTENSIONS_BIN_FOLDER }}
     - name: Upload nugets and symbols to artifacts
       uses: actions/upload-artifact@v2

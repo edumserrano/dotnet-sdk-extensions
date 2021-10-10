@@ -48,60 +48,6 @@ jobs:
     steps:
     - name: Dump context
       run: Write-Host '${{ toJson(github) }}'
-    # - uses: xt0rted/pull-request-comment-branch@v1
-    #   id: comment-branch
-    # - name: Dump output from xt0rted/pull-request-comment-branch
-    #   run: Write-Host '${{ toJson(steps.comment-branch.outputs) }}'
-    # - uses: actions/checkout@v2
-    #   with:
-    #     ref: ${{ steps.comment-branch.outputs.head_ref }}
-    # - uses: LouisBrunner/checks-action@v1.2.0
-    #   with:
-    #     token: ${{ secrets.GITHUB_TOKEN }}
-    #     sha: ${{ steps.comment-branch.outputs.head_sha }}
-    #     name: Test XYZ
-    #     conclusion: ${{ job.status }}
-
-
-
-# consider using this create status action because the niteoweb/pull_request_status_action@v1.0.0 action seems to have some python warnings when building the container for the action "Build niteoweb/pull_request_status_action@v1.0.0" "Build container for action use: '/home/runner/work/_actions/niteoweb/pull_request_status_action/v1.0.0/Dockerfile'.":
-#  WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
-# This probably isn't any serious issue ? Although this build step adds 12 secs to each job where this action is used!!!
-#
-# using this custom action below also serves as a way to show how these kind of tasks can be accomplish
-# this would become a shareable action on this repo
-
-    # - name: Create status check
-    #   env:
-    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    #   run: |
-    #     $headSha="${{ steps.comment-branch.outputs.head_sha }}"
-    #     $body = '{{"name":"myTestCheckPwsh", "head_sha": "{0}", "status": "completed", "conclusion": "success" }}' -f $headSha
-    #     $repo = "${{ github.repository }}"
-    #     $apiUrl = "https://api.github.com/repos/$repo/check-runs"
-    #     $auth = "Authorization: Bearer $env:GITHUB_TOKEN"
-    #     Write-Host $auth
-    #     curl `
-    #       -X POST `
-    #       -H $auth `
-    #       -H "Accept: application/vnd.github.v3+json" `
-    #       $apiUrl -d $body
-
-
-    # - name: Create status check bash
-    #   shell: bash
-    #   env:
-    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    #   run: |
-    #     BUILD_COMMIT=${{ steps.comment-branch.outputs.head_sha }}
-    #     REPO=${{ github.repository }}
-    #     curl \
-    #     -X POST \
-    #     -H "Authorization: Bearer $GITHUB_TOKEN" \
-    #     -H "Accept: application/vnd.github.v3+json" \
-    #     https://api.github.com/repos/edumserrano/dot-net-sdk-extensions/check-runs \
-    #     -d '{"name":"myTestCheckBash", "head_sha": "'"$BUILD_COMMIT"'", "status": "completed", "conclusion": "success" }'
-
     # the check on the workflow covers the required condition to trigger the workflow but the steop below
     # will retrieve require data from the PR to use as outputs of this job
     - name: Check PR comment
@@ -137,7 +83,6 @@ jobs:
         token: ${{ secrets.GITHUB_TOKEN }}
         commentId: ${{ github.event.comment.id }}
         reaction: eyes
-
     - name: Checkout
       uses: actions/checkout@v2
       with:
@@ -148,12 +93,8 @@ jobs:
         #
         # Without using a custom GitHub token the PR commit would be created but no checks would be re-executed.
         token: ${{ secrets.DOTNET_FORMAT_GH_TOKEN }}
-
-
     - name: Set PR status to pending
       uses: ./.github/actions/create-gh-status
-      # env:
-      #   NUGET_PUSH_API_KEY: ${{ secrets.NUGET_PUSH_API_KEY }} # update this on the other action if I can just pass it as a param
       with:
         repo: ${{ github.repository }}
         pr-num: ${{ env.PR_NUMBER }}
@@ -162,43 +103,6 @@ jobs:
         description: Waiting for status to be reported
         target-url: ${{ env.WORKFLOW_RUN_URL }}
         token: ${{ secrets.GITHUB_TOKEN }}
-
-    # - name: Set PR status to pending
-    #   uses: niteoweb/pull_request_status_action@v1.0.0
-    #   with:
-    #     pr_number: ${{ env.PR_NUMBER }}
-    #     state: pending
-    #     repository: ${{ github.repository }}
-    #     context: ${{ env.STATUS_CONTEXT }}
-    #     target_url: ${{ env.WORKFLOW_RUN_URL }}
-    #     description: "Waiting for status to be reported"
-    #   env:
-    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-
-
-
-
-    # - name: Create status
-    #   env:
-    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    #   run: |
-    #     $headSha="${{ steps.comment-branch.outputs.head_sha }}"
-    #     $repo = "${{ github.repository }}"
-    #     $uri = "https://api.github.com/repos/$repo/statuses/$headSha"
-    #     $headers = @{
-    #       Accept = "application/vnd.github.v3+json"
-    #       Authorization = "Bearer ${{ env.GITHUB_TOKEN }}"
-    #     }
-    #     $body = @{
-    #       context = "${{ github.workflow}}"
-    #       description = "dotnet format changes pushed"
-    #       target_url = "${{ env.WORKFLOW_RUN_URL }}"
-    #       state = "success"
-    #     } | ConvertTo-Json -compress
-
-    #     Invoke-RestMethod -Method 'Post' -Uri $uri -Headers $headers -Body $body
-
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
@@ -315,26 +219,8 @@ jobs:
         }
 
         Write-Host "::set-output name=dotnet-format-job-duration::$jobDurationAsString"
-    # - name: Set PR status to success
-    #   uses: niteoweb/pull_request_status_action@v1.0.0
-    #   with:
-    #     pr_number: ${{ env.PR_NUMBER }}
-    #     state: success
-    #     repository: ${{ github.repository }}
-    #     context: ${{ env.STATUS_CONTEXT }}
-    #     target_url: ${{ env.WORKFLOW_RUN_URL }}
-    #     description: "Successful in ${{ steps.get-job-execution-time.outputs.dotnet-format-job-duration }}"
-    #   env:
-    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-
-    # need step to get the latest sha from PR
-
-
     - name: Set PR status to success
       uses: ./.github/actions/create-gh-status
-      # env:
-      #   NUGET_PUSH_API_KEY: ${{ secrets.NUGET_PUSH_API_KEY }} # update this on the other action if I can just pass it as a param
       with:
         repo: ${{ github.repository }}
         pr-num: ${{ env.PR_NUMBER }}
@@ -345,21 +231,12 @@ jobs:
         token: ${{ secrets.GITHUB_TOKEN }}
     - name: Set PR status to failure
       if: ${{ needs.dotnet-format.result != 'success' || !success() }}
-      uses: niteoweb/pull_request_status_action@v1.0.0
+      uses: ./.github/actions/create-gh-status
       with:
-        pr_number: ${{ env.PR_NUMBER }}
-        state: failure
-        repository: ${{ github.repository }}
+        repo: ${{ github.repository }}
+        pr-num: ${{ env.PR_NUMBER }}
         context: ${{ env.STATUS_CONTEXT }}
-        target_url: ${{ env.WORKFLOW_RUN_URL }}
-        description: "Workflow failed or cancelled"
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-
-
-# git config --local user.name "actions-user"
-# git config --local user.email "actions-user@github.com"
-# git commit -a -m "auto dotnet format attempt number $attempt"
-# git push
-
+        state: failure
+        description: Workflow failed or cancelled
+        target-url: ${{ env.WORKFLOW_RUN_URL }}
+        token: ${{ secrets.GITHUB_TOKEN }}
