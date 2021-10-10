@@ -137,17 +137,37 @@ jobs:
         token: ${{ secrets.GITHUB_TOKEN }}
         commentId: ${{ github.event.comment.id }}
         reaction: eyes
+
+
+
     - name: Set PR status to pending
-      uses: niteoweb/pull_request_status_action@v1.0.0
+      uses: ./.github/actions/create-gh-status
+      # env:
+      #   NUGET_PUSH_API_KEY: ${{ secrets.NUGET_PUSH_API_KEY }} # update this on the other action if I can just pass it as a param
       with:
-        pr_number: ${{ env.PR_NUMBER }}
-        state: pending
-        repository: ${{ github.repository }}
+        repo: ${{ github.repository }}
+        pr-num: ${{ env.PR_NUMBER }}
         context: ${{ env.STATUS_CONTEXT }}
-        target_url: ${{ env.WORKFLOW_RUN_URL }}
-        description: "Waiting for status to be reported"
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        state: pending
+        description: Waiting for status to be reported
+        target-url: ${{ env.WORKFLOW_RUN_URL }}
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    # - name: Set PR status to pending
+    #   uses: niteoweb/pull_request_status_action@v1.0.0
+    #   with:
+    #     pr_number: ${{ env.PR_NUMBER }}
+    #     state: pending
+    #     repository: ${{ github.repository }}
+    #     context: ${{ env.STATUS_CONTEXT }}
+    #     target_url: ${{ env.WORKFLOW_RUN_URL }}
+    #     description: "Waiting for status to be reported"
+    #   env:
+    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+
+
+
     - name: Checkout
       uses: actions/checkout@v2
       with:
