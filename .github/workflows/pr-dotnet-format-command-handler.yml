@@ -194,6 +194,8 @@ jobs:
       run: Write-Host '${{ toJson(job) }}'
     - name: Dump needs context
       run: Write-Host '${{ toJson(needs) }}'
+    - name: Checkout
+      uses: actions/checkout@v2
     - name: Get dotnet-format job execution time
       id: get-job-execution-time
       env:
