@@ -49,7 +49,14 @@ runs:
         }
 
         $response = Invoke-RestMethod -Method 'Get' -Uri $uri -Headers $headers
+        $response | ConvertTo-Json
         Write-Host "::set-output name=pr-sha::$response.head.sha"
+        Write-Host "-------------"
+        Write-Host $response.head.sha
+        Write-Host "-------------"
+    - shell: pwsh
+      run: |
+        Write-Host '${{ toJson(steps.get-pr-sha.outputs) }}'
     - shell: pwsh
       run: |
         $uri = "https://api.github.com/repos/${{ inputs.repo }}/statuses/${{ steps.get-pr-sha.outputs.pr-sha }}"
