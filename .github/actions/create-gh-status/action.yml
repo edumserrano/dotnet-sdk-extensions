@@ -10,6 +10,8 @@
 #
 # The warning might not be an issue but just to be safe and shave off ~12 secs on the workflows I've created this action that does the same.
 #
+# As a bonus this action shows how I can create custom actions to interact with the GitHub API.
+#
 
 name: 'Create GitHub status'
 description: 'Creates a GitHub status'
@@ -49,11 +51,9 @@ runs:
         }
 
         $response = Invoke-RestMethod -Method 'Get' -Uri $uri -Headers $headers
-        $response | ConvertTo-Json
-        Write-Host "::set-output name=pr-sha::$response.head.sha"
-        Write-Host "-------------"
-        Write-Host $response.head.sha
-        Write-Host "-------------"
+        $sha = $response.head.sha
+        Write-Host "::set-output name=pr-sha::$sha"
+        Write-Host "PR head sha is $sha"
     - shell: pwsh
       run: |
         Write-Host '${{ toJson(steps.get-pr-sha.outputs) }}'
