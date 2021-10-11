@@ -35,10 +35,6 @@ runs:
         Write-Host '${{ toJson(runner) }}'
         Write-Host "::endgroup::"
 
-        # Write-Host "::group::secrets context"
-        # Write-Host '${{ toJson(secrets) }}'
-        # Write-Host "::endgroup::"
-
         Write-Host "::group::strategy context"
         Write-Host '${{ toJson(strategy) }}'
         Write-Host "::endgroup::"
