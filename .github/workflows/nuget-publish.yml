@@ -43,6 +43,8 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
+    - name: Output contexts
+      uses: ./.github/actions/debug-contexts
     - name: Cache/Restore NuGets
       uses: actions/cache@v2
       with:
@@ -103,6 +105,8 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
+    - name: Output contexts
+      uses: ./.github/actions/debug-contexts
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:

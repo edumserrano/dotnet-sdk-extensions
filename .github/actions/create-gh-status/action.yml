@@ -72,24 +72,3 @@ runs:
         } | ConvertTo-Json -compress
 
         Invoke-RestMethod -Method 'Post' -Uri $uri -Headers $headers -Body $body
-
-
-    # - name: Create status
-    #   env:
-    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    #   run: |
-    #     $headSha="${{ steps.comment-branch.outputs.head_sha }}"
-    #     $repo = "${{ github.repository }}"
-    #     $uri = "https://api.github.com/repos/$repo/statuses/$headSha"
-    #     $headers = @{
-    #       Accept = "application/vnd.github.v3+json"
-    #       Authorization = "Bearer ${{ env.GITHUB_TOKEN }}"
-    #     }
-    #     $body = @{
-    #       context = "${{ github.workflow}}"
-    #       description = "dotnet format changes pushed"
-    #       target_url = "${{ env.WORKFLOW_RUN_URL }}"
-    #       state = "success"
-    #     } | ConvertTo-Json -compress
-
-    #     Invoke-RestMethod -Method 'Post' -Uri $uri -Headers $headers -Body $body
