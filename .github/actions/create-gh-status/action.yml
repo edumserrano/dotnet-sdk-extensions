@@ -41,7 +41,8 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - shell: pwsh
+    - name: Get Pull request SHA
+      shell: pwsh
       id: get-pr-sha
       run: |
         $uri = "https://api.github.com/repos/${{ inputs.repo }}/pulls/${{ inputs.pr-num }}"
@@ -54,10 +55,12 @@ runs:
         $sha = $response.head.sha
         Write-Host "::set-output name=pr-sha::$sha"
         Write-Host "PR head sha is $sha"
-    - shell: pwsh
+    - name: Dump 'Get Pull request SHA' step outputs
+      shell: pwsh
       run: |
         Write-Host '${{ toJson(steps.get-pr-sha.outputs) }}'
-    - shell: pwsh
+    - name: Create GitHub status
+      shell: pwsh
       run: |
         $uri = "https://api.github.com/repos/${{ inputs.repo }}/statuses/${{ steps.get-pr-sha.outputs.pr-sha }}"
         $headers = @{

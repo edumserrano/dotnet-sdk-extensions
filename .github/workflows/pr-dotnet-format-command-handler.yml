@@ -46,8 +46,6 @@ jobs:
       pr-head-sha: ${{ steps.check-pr-comment.outputs.SHA }}
       pr-branch-name: ${{ steps.check-pr-comment.outputs.BRANCH_NAME }}
     steps:
-    - name: Dump context
-      run: Write-Host '${{ toJson(github) }}'
     # the check on the workflow covers the required condition to trigger the workflow but the steop below
     # will retrieve require data from the PR to use as outputs of this job
     - name: Check PR comment
@@ -73,10 +71,6 @@ jobs:
       SLN_FILENAME: DotNet.Sdk.Extensions.sln
       SLN_FILEPATH : ${{ github.workspace }}/DotNet.Sdk.Extensions.sln
     steps:
-    - name: Dump github context
-      run: Write-Host '${{ toJson(github) }}'
-    - name: Dump job context
-      run: Write-Host '${{ toJson(job) }}'
     - name: Add eyes reaction to workflow trigger comment
       uses: dkershner6/reaction-action@v1
       with:
@@ -188,12 +182,6 @@ jobs:
     env:
       PR_NUMBER: ${{ needs.check-pr-comment.outputs.pr-number }}
     steps:
-    - name: Dump github context
-      run: Write-Host '${{ toJson(github) }}'
-    - name: Dump job context
-      run: Write-Host '${{ toJson(job) }}'
-    - name: Dump needs context
-      run: Write-Host '${{ toJson(needs) }}'
     - name: Checkout # need to checkout just because I'm using a custom action that exists on this repo
       uses: actions/checkout@v2
     - name: Get dotnet-format job execution time

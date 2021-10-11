@@ -14,11 +14,12 @@ There are two workflows setup on this repo:
 
 You can print [github context objects](https://docs.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions) by using the [`toJSON` function](https://docs.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#tojson).
 
-Powershell example:
+Example with a step running powershell:
 
 ```powershell
-$githubContext = '${{toJSON(github)}}'
-Write-Host $githubContext
+- name: Dump github context
+  shell: pwsh
+  run: Write-Host '${{ toJson(github) }}'
 ```
 
 It's useful to look at the [workflow run logs](https://docs.github.com/en/actions/managing-workflow-runs/using-workflow-run-logs), specially at the `set up job` section which is were you can find for example the permissions assigned to the `GITHUB_TOKEN` that the job will use.
