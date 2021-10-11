@@ -42,9 +42,11 @@ runs:
         Write-Host "::group::matrix context"
         Write-Host '${{ toJson(matrix) }}'
         Write-Host "::endgroup::"
-    - shell: pwsh
-      if: needs != null
-      run: |
-        Write-Host "::group::needs context"
-        Write-Host '${{ toJson(needs) }}'
-        Write-Host "::endgroup::"
+
+        # $outputNeedsContext = [System.Convert]::ToBoolean("${{ inputs.needs }}")
+        $outputNeedsContext = $false
+        if(outputNeedsContext){
+          Write-Host "::group::needs context"
+          Write-Host '${{ toJson(needs) }}'
+          Write-Host "::endgroup::"
+        }
