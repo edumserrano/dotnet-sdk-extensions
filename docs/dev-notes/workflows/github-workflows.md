@@ -18,7 +18,7 @@ There are two workflows setup on this repo:
 - [nuget-publish](/docs/dev-notes/workflows/nuget-publish-workflow.md)
 - [pr-dependabot-auto-merge](/docs/dev-notes/workflows/pr-dependabot-auto-merge-workflow.md)
 - [pr-dotnet-format-check](/docs/dev-notes/workflows/pr-dotnet-format-check-workflow.md)
-- [pr-dotnet-format-command-handler](/docs/dev-notes/workflows/pr-pr-dotnet-format-command-handler-workflow.md)
+- [pr-dotnet-format-command-handler](/docs/dev-notes/workflows/pr-dotnet-format-command-handler-workflow.md)
 
 ## Debugging workflows
 
