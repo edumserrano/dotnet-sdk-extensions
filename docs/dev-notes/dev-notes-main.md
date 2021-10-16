@@ -24,7 +24,7 @@ For more information on how to debug the NuGet packages code from your applicati
 
 ## Projects wide configuration
 
-The [Directory.Build.props](/Directory.Build.props) at the root of the repo enables for all projects sevaral settings as well as adds some common NuGet packages.
+The [Directory.Build.props](/Directory.Build.props) at the root of the repo enables for all projects several settings as well as adds some common NuGet packages.
 
 Furthermore, just for test projects, there is another [Directory.Build.props](/tests/Directory.Build.props) that applies some NuGet packages that should be part of all test projects.
 
@@ -43,7 +43,6 @@ From all the GitHub repository settings the configurations worth mentioning are:
 ## GitHub Workflows
 
 For more information about the GitHub workflows configured for this repo go [here](/docs/dev-notes/workflows/github-workflows.md).
-
 
 ## Other notes
 
