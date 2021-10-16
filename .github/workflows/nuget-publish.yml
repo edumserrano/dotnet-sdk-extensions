@@ -1,3 +1,5 @@
+# When making changes to this file please update the corresponding documentation which can be found at /docs/dev-notes/workflows
+
 name: Publish Nuget packages
 
 on:

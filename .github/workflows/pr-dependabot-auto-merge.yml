@@ -1,4 +1,6 @@
-name: Dependabot auto merge PR
+# When making changes to this file please update the corresponding documentation which can be found at /docs/dev-notes/workflows
+
+name: PR Dependabot auto merge
 
 on:
   workflow_run:
@@ -6,7 +8,7 @@ on:
     types:
     - completed
 
-concurrency: 
+concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}-${{ github.head_ref }}
   cancel-in-progress: true
 
@@ -30,4 +32,3 @@ jobs:
       run: |
         $prNumber = "${{ github.event.workflow_run.pull_requests[0].number }}"
         gh pr merge --auto --squash --delete-branch $prNumber
-      
