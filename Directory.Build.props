@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
-    <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>    <!-- Enable deterministic builds as per https://github.com/clairernovotny/DeterministicBuilds.Recommended when using sourcelink -->
+    <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>    <!-- Enable deterministic builds as per https://github.com/clairernovotny/DeterministicBuilds. Recommended when using sourcelink -->
     <WarningsAsErrors>nullable;</WarningsAsErrors>    <!-- treat all nullable reference warnings as errors -->
     <AnalysisLevel>latest</AnalysisLevel>    <!-- Use the latest code analyzers that have been released are used. https://docs.microsoft.com/en-us/dotnet/core/project-sdk/msbuild-props#analysislevel -->
     <AnalysisMode>AllEnabledByDefault</AnalysisMode>    <!-- Aggressive or opt-out mode, where all rules are enabled by default as build warnings. https://docs.microsoft.com/en-us/dotnet/core/project-sdk/msbuild-props#analysismode -->

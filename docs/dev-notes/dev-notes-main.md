@@ -20,6 +20,26 @@ Furthermore, just for test projects, there is another [Directory.Build.props](/t
 
 The props file for tests is merged with the root level props file so all test projects obey to the same set of settings defined by the root level props file.
 
+## Deterministic Build configuration
+
+Following the guide from [Deterministic Builds](https://github.com/clairernovotny/DeterministicBuilds) the `ContinuousIntegrationBuild` setting on the root [Directory.Build.props](/Directory.Build.props) is set to true, if the build is being executed in GitHub actions.
+
+## Source Link configuration
+
+Following the guide from [Source Link](https://github.com/dotnet/sourcelink) the following settings are configured to enable creating Nuget libraries that provide source debugging:
+
+- `PublishRepositoryUrl`
+- `EmbedUntrackedSources`
+- `IncludeSymbols`
+- `SymbolPackageFormat`
+
+These values are configured on the projects that produce NuGet packages:
+
+- [DotNet.Sdk.Extensions.csproj](/src/DotNet.Sdk.Extensions/DotNet.Sdk.Extensions.csproj)
+- [DotNet.Sdk.Extensions.Testing.csproj](/src/Dotnet.Sdk.Extensions.Testing/DotNet.Sdk.Extensions.Testing.csproj)
+
+In addition, as per the documentation, both the above projects include the `Microsoft.SourceLink.GitHub` NuGet.
+
 ## Repository configuration
 
 From all the GitHub repository settings the configurations worth mentioning are:
