@@ -64,6 +64,16 @@ For more information about each extension check its docs. You can find the link 
 
 * [Notes on WebApplicationFactory regarding asp.net integration tests](/docs/integration-tests/web-application-factory.md)
 
+## Debugging
+
+The NuGet packages published include symbols generated with [sourcelink](https://github.com/dotnet/sourcelink).
+
+For more information on how to debug the NuGet packages code from your application see:
+
+- [Exploring .NET Core's SourceLink - Stepping into the Source Code of NuGet packages you don't own](https://www.hanselman.com/blog/exploring-net-cores-sourcelink-stepping-into-the-source-code-of-nuget-packages-you-dont-own)
+- [How to Configure Visual Studio to Use SourceLink to Step into NuGet Package Source](https://aaronstannard.com/visual-studio-sourcelink-setup/).
+- [Source Link - microsoft docs](https://docs.microsoft.com/en-us/dotnet/standard/library-guidance/sourcelink)
+
 ## Dev notes
 
 For notes aimed at developers working on this repo or just trying to understand it go [here](/docs/dev-notes/dev-notes-main.md). It will show you how to build and run the solution among other things.
