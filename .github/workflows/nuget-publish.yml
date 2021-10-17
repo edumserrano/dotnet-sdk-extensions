@@ -36,9 +36,9 @@ jobs:
     env:
       SLN_FILEPATH : ${{github.workspace}}/DotNet.Sdk.Extensions.sln
       TEST_RESULTS_DIR : tests/test-results
-      TEST_COVERAGE_DIR : tests/test-results/coverage-results
-      TEST_COVERAGE_FILE : tests/test-results/coverage-results/coverage.opencover.xml
-      TEST_COVERAGE_REPORT_DIR : tests/test-results/coverage-results/report
+      TEST_COVERAGE_DIR : tests/coverage-results
+      TEST_COVERAGE_FILE : tests/coverage-results/coverage.opencover.xml
+      TEST_COVERAGE_REPORT_DIR : tests/coverage-results/report
     steps:
     - uses: actions/checkout@v2
     - name: Setup .NET
