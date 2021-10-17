@@ -62,7 +62,7 @@ jobs:
     - name: Test and code coverage
       id: dotnet-test
       run: |
-        var testResultsDir = $(Join-Path -Path (Get-Location) -ChildPath "${{ env.TEST_RESULTS_DIR }}")
+        $testResultsDir = $(Join-Path -Path (Get-Location) -ChildPath "${{ env.TEST_RESULTS_DIR }}")
         Write-Host "::set-output name=test-results-dir::$testResultsDir"
         dotnet test ${{ env.SLN_FILEPATH }} `
           -c Release `
