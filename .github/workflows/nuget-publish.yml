@@ -127,7 +127,7 @@ jobs:
           ${{ runner.os }}-nuget-
     - name: Package DotNet.Sdk.Extensions
       run: dotnet pack ${{ env.EXTENSIONS_CSPROJ_FILEPATH }} -c Release
-    - name: Pack DotNet.Sdk.Extensions.Testing
+    - name: Package DotNet.Sdk.Extensions.Testing
       run: dotnet pack ${{ env.TESTING_EXTENSIONS_CSPROJ_FILEPATH }} -c Release
     - name: Publish DotNet.Sdk.Extensions nuget and symbols
       uses: ./.github/actions/nuget-push
@@ -148,7 +148,7 @@ jobs:
       with:
         name: nuget-packages-and-symbols
         path: |
-          ${{ env.EXTENSIONS_BIN_FOLDER }}/**/*.nupkg
-          ${{ env.EXTENSIONS_BIN_FOLDER }}/**/*.snupkg
-          ${{ env.TESTING_EXTENSIONS_BIN_FOLDER }}/**/*.nupkg
-          ${{ env.TESTING_EXTENSIONS_BIN_FOLDER }}/**/*.snupkg
+          ${{ env.EXTENSIONS_BIN_FOLDER }}/*.nupkg
+          ${{ env.EXTENSIONS_BIN_FOLDER }}/*.snupkg
+          ${{ env.TESTING_EXTENSIONS_BIN_FOLDER }}/*.nupkg
+          ${{ env.TESTING_EXTENSIONS_BIN_FOLDER }}/*.snupkg
