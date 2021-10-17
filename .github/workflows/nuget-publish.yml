@@ -148,7 +148,7 @@ jobs:
       with:
         name: nuget-packages-and-symbols
         path: |
-          ${{ env.EXTENSIONS_BIN_FOLDER }}/*/*.nupkg
-          ${{ env.EXTENSIONS_BIN_FOLDER }}/*/*.snupkg
-          ${{ env.TESTING_EXTENSIONS_BIN_FOLDER }}/*/*.nupkg
-          ${{ env.TESTING_EXTENSIONS_BIN_FOLDER }}/*/*.snupkg
+          ${{ env.EXTENSIONS_BIN_FOLDER }}/**/*.nupkg
+          ${{ env.EXTENSIONS_BIN_FOLDER }}/**/*.snupkg
+          ${{ env.TESTING_EXTENSIONS_BIN_FOLDER }}/**/*.nupkg
+          ${{ env.TESTING_EXTENSIONS_BIN_FOLDER }}/**/*.snupkg
