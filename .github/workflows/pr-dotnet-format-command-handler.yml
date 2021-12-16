@@ -1,4 +1,4 @@
-# When making changes to this file please update the corresponding documentation which can be found at /docs/dev-notes/workflows
+# When making changes to this file please update the corresponding documentation which can be found at /docs/dev-notes/workflows/pr-dotnet-format-command-handler-workflow.md
 
 name: PR dotnet format command handler
 
@@ -88,11 +88,7 @@ jobs:
           ${{ runner.os }}-nuget-
     - name: dotnet format
       run: |
-        dotnet format ${{ env.SLN_FILEPATH }} `
-          --fix-whitespace `
-          --fix-style info `
-          --fix-analyzers info `
-          --verbosity diagnostic
+        dotnet format ${{ env.SLN_FILEPATH }} --severity info --verbosity diagnostic
     - name: Push dotnet format changes
       id: auto-commit-action
       uses: stefanzweifel/git-auto-commit-action@v4.11.0

@@ -1,5 +1,5 @@
 
-# When making changes to this file please update the corresponding documentation which can be found at /docs/dev-notes/workflows
+# When making changes to this file please update the corresponding documentation which can be found at /docs/dev-notes/workflows/codeql-workflow.md
 #
 # As per documentation at https://docs.github.com/en/code-security/secure-coding/automatically-scanning-your-code-for-vulnerabilities-and-errors/configuring-code-scanning#avoiding-unnecessary-scans-of-pull-requests
 # For CodeQL code scanning workflow files, don't use the paths-ignore or paths keywords with the on:push event
