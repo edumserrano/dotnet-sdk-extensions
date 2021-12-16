@@ -53,7 +53,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       SLN_FILEPATH : ${{ github.workspace }}/DotNet.Sdk.Extensions.sln
-      DOTNET_VERSION : 5.0.303
+      DOTNET_VERSION : 6.0.101
       WORKFLOW_RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
     steps:
     - name: Checkout

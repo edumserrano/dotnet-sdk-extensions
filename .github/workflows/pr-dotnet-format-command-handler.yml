@@ -47,7 +47,7 @@ jobs:
       PR_NUMBER: ${{ needs.check-pr-comment.outputs.pr-number }}
       PR_HEAD_SHA: ${{ needs.check-pr-comment.outputs.pr-head-sha}}
       PR_BRANCH_NAME: ${{ needs.check-pr-comment.outputs.pr-branch-name}}
-      DOTNET_VERSION : 5.0.303
+      DOTNET_VERSION : 6.0.101
       SLN_FILENAME: DotNet.Sdk.Extensions.sln
       SLN_FILEPATH : ${{ github.workspace }}/DotNet.Sdk.Extensions.sln
     steps:
