@@ -1,5 +1,5 @@
 
-# When making changes to this file please update the corresponding documentation which can be found at /docs/dev-notes/workflows
+# When making changes to this file please update the corresponding documentation which can be found at /docs/dev-notes/workflows/codeql-workflow.md
 #
 # As per documentation at https://docs.github.com/en/code-security/secure-coding/automatically-scanning-your-code-for-vulnerabilities-and-errors/configuring-code-scanning#avoiding-unnecessary-scans-of-pull-requests
 # For CodeQL code scanning workflow files, don't use the paths-ignore or paths keywords with the on:push event
@@ -41,7 +41,7 @@ jobs:
         language: [ 'csharp' ]
     env:
       SLN_FILEPATH : ${{ github.workspace }}/DotNet.Sdk.Extensions.sln
-      DOTNET_VERSION : 5.0.303
+      DOTNET_VERSION : 6.0.101
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
