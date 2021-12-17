@@ -15,7 +15,7 @@ using Xunit;
 namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess
 {
     [Trait("Category", XUnitCategories.HttpMockingInProcess)]
-    public sealed class UseHttpMocksTests : IClassFixture<HttpResponseMockingWebApplicationFactory>, IDisposable
+    public sealed class UseHttpMocksTests : IClassFixture<HttpResponseMockingWebApplicationFactory>
     {
         private readonly HttpResponseMockingWebApplicationFactory _webApplicationFactory;
 
@@ -305,11 +305,6 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess
             var response = await httpClient.GetAsync("/basic-client");
             var message = await response.Content.ReadAsStringAsync();
             message.ShouldBe("Basic http client returned: True");
-        }
-
-        public void Dispose()
-        {
-            _webApplicationFactory.Dispose();
         }
     }
 }

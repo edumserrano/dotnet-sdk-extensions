@@ -96,6 +96,10 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.Response
         /// <summary>
         /// Configures the mock to timeout.
         /// </summary>
+        /// <remarks>
+        /// This assumes that the <see cref="HttpClient.Timeout"/> has been configured to a value lower
+        /// than the <paramref name="timeout"/> value passed in.
+        /// </remarks>
         /// <param name="timeout">The value for the timeout.</param>
         /// <returns>The <see cref="HttpResponseMessageMockBuilder"/> for chaining.</returns>
         public HttpResponseMessageMockBuilder TimesOut(TimeSpan timeout)
@@ -111,9 +115,8 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.Response
             _handlerAsync = async (_, cancellationToken) =>
             {
                 await Task.Delay(timeout, cancellationToken);
-                var innerException = new TimeoutException("A task was canceled.");
-                var timeoutMsg = $"The request was canceled due to the configured HttpClient.Timeout of {timeout.TotalSeconds} seconds elapsing.";
-                throw new TaskCanceledException(timeoutMsg, innerException);
+                var exMsg = $"The request should have been aborted but it wasn't. Make sure the HttpClient.Timeout value is set to a value lower than {timeout.TotalSeconds} seconds.";
+                throw new InvalidOperationException(exMsg);
             };
             return this;
         }

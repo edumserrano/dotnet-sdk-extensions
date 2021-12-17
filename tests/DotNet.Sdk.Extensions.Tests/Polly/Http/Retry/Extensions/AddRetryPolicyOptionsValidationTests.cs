@@ -42,7 +42,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
             {
                 serviceProvider.InstantiateNamedHttpClient(httpClientName);
             });
-            exception.Message.ShouldBe($"DataAnnotation validation failed for members: 'RetryCount' with the error: 'The field RetryCount must be between {0} and {int.MaxValue}.'.");
+            //exception.Message.ShouldBe($"DataAnnotation validation failed for members: 'RetryCount' with the error: 'The field RetryCount must be between {0} and {int.MaxValue}.'.");
+            exception.Message.ShouldBe($"DataAnnotation validation failed for 'RetryOptions' members: 'RetryCount' with the error: 'The field RetryCount must be between {0} and {int.MaxValue}.'.");
         }
 
         /// <summary>
@@ -96,7 +97,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
             {
                 serviceProvider.InstantiateNamedHttpClient(httpClientName);
             });
-            exception.Message.ShouldBe($"DataAnnotation validation failed for members: 'MedianFirstRetryDelayInSecs' with the error: 'The field MedianFirstRetryDelayInSecs must be between {double.Epsilon} and {double.MaxValue}.'.");
+            //exception.Message.ShouldBe($"DataAnnotation validation failed for members: 'MedianFirstRetryDelayInSecs' with the error: 'The field MedianFirstRetryDelayInSecs must be between {double.Epsilon} and {double.MaxValue}.'.");
+            exception.Message.ShouldBe($"DataAnnotation validation failed for 'RetryOptions' members: 'MedianFirstRetryDelayInSecs' with the error: 'The field MedianFirstRetryDelayInSecs must be between {double.Epsilon} and {double.MaxValue}.'.");
         }
 
         /// <summary>
@@ -173,7 +175,8 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
             {
                 serviceProvider.InstantiateNamedHttpClient(httpClientName);
             });
-            exception.Message.ShouldBe($"A validation error has occurred.; DataAnnotation validation failed for members: 'RetryCount' with the error: 'The field RetryCount must be between {0} and {int.MaxValue}.'.");
+            //exception.Message.ShouldBe($"A validation error has occurred.; DataAnnotation validation failed for members: 'RetryCount' with the error: 'The field RetryCount must be between {0} and {int.MaxValue}.'.");
+            exception.Message.ShouldBe($"A validation error has occurred.; DataAnnotation validation failed for 'RetryOptions' members: 'RetryCount' with the error: 'The field RetryCount must be between {0} and {int.MaxValue}.'.");
         }
     }
 }

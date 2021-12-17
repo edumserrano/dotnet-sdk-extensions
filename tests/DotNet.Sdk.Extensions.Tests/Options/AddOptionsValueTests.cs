@@ -4,7 +4,6 @@ using DotNet.Sdk.Extensions.Options;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Memory;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using Shouldly;
 using Xunit;
 
@@ -38,7 +37,7 @@ namespace DotNet.Sdk.Extensions.Tests.Options
             var configuration = new ConfigurationRoot(new List<IConfigurationProvider>());
             var servicesArgumentNullException = Should.Throw<ArgumentNullException>(() =>
             {
-                OptionsBuilderExtensions.AddOptionsValue<MyOptions>(services: null!, configuration);
+                Extensions.Options.OptionsBuilderExtensions.AddOptionsValue<MyOptions>(services: null!, configuration);
             });
             servicesArgumentNullException.Message.ShouldBe("Value cannot be null. (Parameter 'services')");
         }
@@ -79,7 +78,7 @@ namespace DotNet.Sdk.Extensions.Tests.Options
             var serviceCollection = new ServiceCollection();
             var servicesArgumentNullException = Should.Throw<ArgumentNullException>(() =>
             {
-                OptionsBuilderExtensions.AddOptionsValue<MyOptions>(services: null!, configuration, sectionName: "MyOptionsSection");
+                Extensions.Options.OptionsBuilderExtensions.AddOptionsValue<MyOptions>(services: null!, configuration, sectionName: "MyOptionsSection");
             });
             servicesArgumentNullException.Message.ShouldBe("Value cannot be null. (Parameter 'services')");
             var configurationArgumentNullException = Should.Throw<ArgumentNullException>(() =>
@@ -116,7 +115,7 @@ namespace DotNet.Sdk.Extensions.Tests.Options
         {
             var optionsBuilderArgumentNullException = Should.Throw<ArgumentNullException>(() =>
             {
-                OptionsBuilderExtensions.AddOptionsValue<MyOptions>(optionsBuilder: null!);
+                Extensions.Options.OptionsBuilderExtensions.AddOptionsValue<MyOptions>(optionsBuilder: null!);
             });
             optionsBuilderArgumentNullException.Message.ShouldBe("Value cannot be null. (Parameter 'optionsBuilder')");
         }

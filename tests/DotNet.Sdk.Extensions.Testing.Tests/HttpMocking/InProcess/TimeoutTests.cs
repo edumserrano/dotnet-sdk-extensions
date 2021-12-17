@@ -1,7 +1,10 @@
 using System;
+using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.InProcess;
 using DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess.Auxiliary.Timeout;
+using Microsoft.Extensions.DependencyInjection;
 using Polly.Timeout;
 using Shouldly;
 using Xunit;
@@ -9,7 +12,7 @@ using Xunit;
 namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess
 {
     [Trait("Category", XUnitCategories.HttpMockingInProcess)]
-    public sealed class TimeoutTests : IClassFixture<TimeoutHttpResponseMockingWebApplicationFactory>, IDisposable
+    public sealed class TimeoutTests : IClassFixture<TimeoutHttpResponseMockingWebApplicationFactory>
     {
         private readonly TimeoutHttpResponseMockingWebApplicationFactory _webApplicationFactory;
 
@@ -19,13 +22,18 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess
         }
 
         /// <summary>
-        /// The setup for this sets up a named HttpClient "named-client" without further configuration.
-        /// This tests that if we define a mock to timeout it will timeout as expected.
+        /// The setup for this test sets up a named HttpClient "named-client-with-low-timeout" and with a configured timeout of 50ms,
+        /// see <see cref="TimeoutStartupHttpResponseMocking"/> for more info on the setup.
+        ///
+        /// This tests that if we define a mock to timeout then it will timeout as long as the mock timeout is higher than
+        /// the <see cref="HttpClient.Timeout"/>.
+        ///
+        /// In this test the timeout of 1 second defined on the mock is higher than the timeout of 50ms defined on the HttpClient.
         /// </summary>
         [Fact]
-        public async Task TimeoutOnHttpClientWithDefaultTimeout()
+        public async Task TimeoutOnHttpClientWithTimeoutConfigured1()
         {
-            var httpClient = _webApplicationFactory
+            var webAppFactory = _webApplicationFactory
                 .WithWebHostBuilder(webHostBuilder =>
                 {
                     webHostBuilder.UseHttpMocks(handlers =>
@@ -33,26 +41,17 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess
                         handlers.MockHttpResponse(httpResponseMessageBuilder =>
                         {
                             httpResponseMessageBuilder
-                                .ForNamedClient("named-client")
-                                .TimesOut(TimeSpan.FromMilliseconds(50));
+                                .ForNamedClient("named-client-with-low-timeout")
+                                .TimesOut(TimeSpan.FromSeconds(1));
                         });
                     });
-                })
-                .CreateClient();
+                });
 
-            // for some reason the exception returned by Should.ThrowAsync is missing the InnerException so
-            // we are using the try/catch code as a workaround
-            // I've raised an issue at https://github.com/shouldly/shouldly/issues/817
-            TaskCanceledException? expectedException = null;
-            try
-            {
-                await httpClient.GetAsync("/named-client");
-            }
-            catch (TaskCanceledException exception)
-            {
-                expectedException = exception;
-            }
+            var httpClient = webAppFactory.CreateClient();
+            await httpClient.GetAsync("/named-client-with-low-timeout");
 
+            var exceptionService = webAppFactory.Services.GetRequiredService<ExceptionService>();
+            var expectedException = exceptionService.Exceptions.FirstOrDefault();
             expectedException.ShouldNotBeNull("Expected TaskCanceledException but didn't get any.");
             expectedException.ShouldBeOfType<TaskCanceledException>();
             expectedException.InnerException.ShouldBeOfType<TimeoutException>();
@@ -61,63 +60,18 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess
         }
 
         /// <summary>
-        /// The setup for this sets up a named HttpClient "named-client-with-timeout" and with a configured timeout of 200ms.
-        /// This tests that if we define a mock to timeout for an HttpClient with an existing timeout configuration then
-        /// the lowest timeout will be triggered first.
+        /// The setup for this test sets up a named HttpClient "named-client-with-high-timeout" and with a configured timeout of 50ms,
+        /// see <see cref="TimeoutStartupHttpResponseMocking"/> for more info on the setup.
         ///
-        /// In this test the timeout of 1 second defined on the mock is higher than the timeout of 200ms defined
-        /// on the HttpClient.
-        /// </summary>
-        [Fact]
-        public async Task TimeoutOnHttpClientWithTimeoutConfigured1()
-        {
-            var httpClient = _webApplicationFactory
-                .WithWebHostBuilder(webHostBuilder =>
-                {
-                    webHostBuilder.UseHttpMocks(handlers =>
-                    {
-                        handlers.MockHttpResponse(httpResponseMessageBuilder =>
-                        {
-                            httpResponseMessageBuilder
-                                .ForNamedClient("named-client-with-timeout")
-                                .TimesOut(TimeSpan.FromSeconds(1));
-                        });
-                    });
-                })
-                .CreateClient();
-
-            // for some reason the exception returned by Should.ThrowAsync is missing the InnerException so
-            // we are using the try/catch code as a workaround
-            // I've raised an issue at https://github.com/shouldly/shouldly/issues/817
-            TaskCanceledException? expectedException = null;
-            try
-            {
-                await httpClient.GetAsync("/named-client-with-timeout");
-            }
-            catch (TaskCanceledException exception)
-            {
-                expectedException = exception;
-            }
-
-            expectedException.ShouldNotBeNull("Expected TaskCanceledException but didn't get any.");
-            expectedException.ShouldBeOfType<TaskCanceledException>();
-            expectedException.InnerException.ShouldBeOfType<TimeoutException>();
-            expectedException.Message.ShouldBe("The request was canceled due to the configured HttpClient.Timeout of 0.2 seconds elapsing.");
-            expectedException.InnerException.Message.ShouldBe("A task was canceled.");
-        }
-
-        /// <summary>
-        /// The setup for this sets up a named HttpClient "named-client-with-timeout" and with a configured timeout of 200ms.
-        /// This tests that if we define a mock to timeout for an HttpClient with an existing timeout configuration then
-        /// the lowest timeout will be triggered first.
+        /// This tests that if we define a mock to timeout with a lower value than the than the <see cref="HttpClient.Timeout"/>
+        /// then we do NOT get the timeout exception.
         ///
-        /// In this test the timeout of 1ms defined on the mock is lower than the timeout of 200ms defined
-        /// on the HttpClient.
+        /// In this test the timeout of 50ms second defined on the mock is lower than the timeout of 100s defined on the HttpClient.
         /// </summary>
         [Fact]
         public async Task TimeoutOnHttpClientWithTimeoutConfigured2()
         {
-            var httpClient = _webApplicationFactory
+            var webAppFactory = _webApplicationFactory
                 .WithWebHostBuilder(webHostBuilder =>
                 {
                     webHostBuilder.UseHttpMocks(handlers =>
@@ -125,47 +79,36 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess
                         handlers.MockHttpResponse(httpResponseMessageBuilder =>
                         {
                             httpResponseMessageBuilder
-                                .ForNamedClient("named-client-with-timeout")
-                                .TimesOut(TimeSpan.FromMilliseconds(1));
+                                .ForNamedClient("named-client-with-high-timeout")
+                                .TimesOut(TimeSpan.FromMilliseconds(50));
                         });
                     });
-                })
-                .CreateClient();
+                });
 
-            // for some reason the exception returned by Should.ThrowAsync is missing the InnerException so
-            // we are using the try/catch code as a workaround
-            // I've raised an issue at https://github.com/shouldly/shouldly/issues/817
-            TaskCanceledException? expectedException = null;
-            try
-            {
-                await httpClient.GetAsync("/named-client-with-timeout");
-            }
-            catch (TaskCanceledException exception)
-            {
-                expectedException = exception;
-            }
+            var httpClient = webAppFactory.CreateClient();
+            await httpClient.GetAsync("/named-client-with-high-timeout");
 
-            expectedException.ShouldNotBeNull("Expected TaskCanceledException but didn't get any.");
-            expectedException.ShouldBeOfType<TaskCanceledException>();
-            expectedException.InnerException.ShouldBeOfType<TimeoutException>();
-            expectedException.Message.ShouldBe("The request was canceled due to the configured HttpClient.Timeout of 0.001 seconds elapsing.");
-            expectedException.InnerException.Message.ShouldBe("A task was canceled.");
+            var exceptionService = webAppFactory.Services.GetRequiredService<ExceptionService>();
+            var expectedException = exceptionService.Exceptions.FirstOrDefault();
+            expectedException.ShouldNotBeNull("Expected InvalidOperationException but didn't get any.");
+            expectedException.ShouldBeOfType<InvalidOperationException>();
+            expectedException.Message.ShouldBe("The request should have been aborted but it wasn't. Make sure the HttpClient.Timeout value is set to a value lower than 0.05 seconds.");
         }
 
         /// <summary>
-        /// The setup for this test uses Polly to define a timeout policy for the named HttpClient "polly-named-client".
-        /// The timeout for the HttpClient is set to 200ms and the HttpClient is invoked when doing a GET to /polly-named-client.
+        /// The setup for this test uses Polly to define a timeout policy for the named HttpClient "polly-named-client-with-low-timeout".
+        /// The timeout for the policy is set to 50ms and the HttpClient is invoked when doing a GET to /polly-named-client-with-low-timeout.
         ///
-        /// This tests that if we define a mock to timeout for an HttpClient with an existing timeout configuration then
-        /// the lowest timeout will be triggered first.
+        /// This tests that if we define a mock to timeout then it will timeout as long as the mock timeout is higher than the timeout on the
+        /// Polly policy.
         ///
-        /// In this test the timeout of 1 second defined on the mock is higher than the timeout of 200ms defined
+        /// In this test the timeout of 1 second defined on the mock is higher than the timeout of 50ms defined by the Polly policy
         /// on the HttpClient so Polly throws a TimeoutRejectedException when a timeout occurs.
         /// </summary>
         [Fact]
-        public async Task TimeoutWithPolly()
+        public async Task TimeoutWithPolly1()
         {
-            var httpClient = _webApplicationFactory
+            var webAppFactory = _webApplicationFactory
                 .WithWebHostBuilder(webHostBuilder =>
                 {
                     webHostBuilder.UseHttpMocks(handlers =>
@@ -173,31 +116,35 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess
                         handlers.MockHttpResponse(httpResponseMessageBuilder =>
                         {
                             httpResponseMessageBuilder
-                                .ForNamedClient("polly-named-client")
+                                .ForNamedClient("polly-named-client-with-low-timeout")
                                 .TimesOut(TimeSpan.FromSeconds(1));
                         });
                     });
-                })
-                .CreateClient();
+                });
 
-            var exception = await Should.ThrowAsync<TimeoutRejectedException>(httpClient.GetAsync("/polly-named-client"));
-            exception.Message.ShouldBe("The delegate executed asynchronously through TimeoutPolicy did not complete within the timeout.");
+            var httpClient = webAppFactory.CreateClient();
+            await httpClient.GetAsync("/polly-named-client-with-low-timeout");
+
+            var exceptionService = webAppFactory.Services.GetRequiredService<ExceptionService>();
+            var expectedException = exceptionService.Exceptions.FirstOrDefault();
+            expectedException.ShouldNotBeNull("Expected TimeoutRejectedException but didn't get any.");
+            expectedException.ShouldBeOfType<TimeoutRejectedException>();
+            expectedException.Message.ShouldBe("The delegate executed asynchronously through TimeoutPolicy did not complete within the timeout.");
         }
 
         /// <summary>
-        /// The setup for this test uses Polly to define a timeout policy for the named HttpClient "polly-named-client".
-        /// The timeout for the HttpClient is set to 200ms and the HttpClient is invoked when doing a GET to /polly-named-client.
+        /// The setup for this test uses Polly to define a timeout policy for the named HttpClient "polly-named-client-with-high-timeout".
+        /// The timeout for policy is set to 100s and the HttpClient is invoked when doing a GET to /polly-named-client-with-high-timeout.
         ///
-        /// This tests that if we define a mock to timeout for an HttpClient with an existing timeout configuration then
-        /// the lowest timeout will be triggered first.
+        /// This tests that if we define a mock to timeout with a lower value than the than the timeout defined by the Polly policy
+        /// then we do NOT get the timeout exception.
         ///
-        /// In this test the timeout of 1ms defined on the mock is lower than the timeout of 200ms defined
-        /// on the HttpClient.
+        /// In this test the timeout of 50ms defined on the mock is lower than the timeout of 100s defined by the Polly policy.
         /// </summary>
         [Fact]
         public async Task TimeoutWithPolly2()
         {
-            var httpClient = _webApplicationFactory
+            var webAppFactory = _webApplicationFactory
                 .WithWebHostBuilder(webHostBuilder =>
                 {
                     webHostBuilder.UseHttpMocks(handlers =>
@@ -205,36 +152,20 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess
                         handlers.MockHttpResponse(httpResponseMessageBuilder =>
                         {
                             httpResponseMessageBuilder
-                                .ForNamedClient("polly-named-client")
-                                .TimesOut(TimeSpan.FromMilliseconds(1));
+                                .ForNamedClient("polly-named-client-with-high-timeout")
+                                .TimesOut(TimeSpan.FromMilliseconds(50));
                         });
                     });
-                })
-                .CreateClient();
+                });
 
-            // for some reason the exception returned by Should.ThrowAsync is missing the InnerException so
-            // we are using the try/catch code as a workaround
-            // I've raised an issue at https://github.com/shouldly/shouldly/issues/817
-            TaskCanceledException? expectedException = null;
-            try
-            {
-                await httpClient.GetAsync("/polly-named-client");
-            }
-            catch (TaskCanceledException exception)
-            {
-                expectedException = exception;
-            }
+            var httpClient = webAppFactory.CreateClient();
+            await httpClient.GetAsync("/polly-named-client-with-high-timeout");
 
-            expectedException.ShouldNotBeNull("Expected TaskCanceledException but didn't get any.");
-            expectedException.ShouldBeOfType<TaskCanceledException>();
-            expectedException.InnerException.ShouldBeOfType<TimeoutException>();
-            expectedException.Message.ShouldBe("The request was canceled due to the configured HttpClient.Timeout of 0.001 seconds elapsing.");
-            expectedException.InnerException.Message.ShouldBe("A task was canceled.");
-        }
-
-        public void Dispose()
-        {
-            _webApplicationFactory.Dispose();
+            var exceptionService = webAppFactory.Services.GetRequiredService<ExceptionService>();
+            var expectedException = exceptionService.Exceptions.FirstOrDefault();
+            expectedException.ShouldNotBeNull("Expected InvalidOperationException but didn't get any.");
+            expectedException.ShouldBeOfType<InvalidOperationException>();
+            expectedException.Message.ShouldBe("The request should have been aborted but it wasn't. Make sure the HttpClient.Timeout value is set to a value lower than 0.05 seconds.");
         }
     }
 }

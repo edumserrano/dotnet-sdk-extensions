@@ -100,7 +100,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.InProcess
             {
                 /*
                  * this is the exact code that IHttpClientBuilder.ConfigurePrimaryHandler does.
-                 * For more info see https://github.com/dotnet/runtime/blob/master/src/libraries/Microsoft.Extensions.Http/src/DependencyInjection/HttpClientBuilderExtensions.cs#L183
+                 * For more info see https://github.com/dotnet/runtime/blob/823ec6914c2ea5f9e99bc261c6247e4d78fa1cfd/src/libraries/Microsoft.Extensions.Http/src/DependencyInjection/HttpClientBuilderExtensions.cs#L183
                  *
                  * By doing this we take control of how the PrimaryHandler is build for the HttpClient by the IHttpClientFactory
                  *

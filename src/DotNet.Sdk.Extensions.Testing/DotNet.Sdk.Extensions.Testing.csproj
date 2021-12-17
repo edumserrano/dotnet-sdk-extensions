@@ -28,7 +28,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="..\..\docs\nuget\$(PackageReadmeFileName)" Pack="true" PackagePath="\"/>
+    <None Include="..\..\docs\nuget\$(PackageReadmeFileName)" Pack="true" PackagePath="\" />
   </ItemGroup>
 
   <ItemGroup>

@@ -343,12 +343,13 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
 
             var serviceProvider = services.BuildServiceProvider();
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
-            await Should.ThrowAsync<TaskCanceledException>(() =>
+            var expectedException = await Should.ThrowAsync<InvalidOperationException>(() =>
             {
                 return httpClient
                     .TimeoutExecutor(resilienceOptions.Timeout, testHttpMessageHandler)
                     .TriggerTimeoutPolicyAsync();
             });
+            expectedException.Message.ShouldBe("The request should have been aborted but it wasn't. Make sure the HttpClient.Timeout value is set to a value lower than 1.05 seconds.");
         }
     }
 }
