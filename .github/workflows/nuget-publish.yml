@@ -24,7 +24,7 @@ defaults:
     shell: pwsh
 
 env:
-  DOTNET_VERSION : 6.0.101
+  LATEST_DOTNET_VERSION : 6.0.101
 
 jobs:
   build:
@@ -44,13 +44,16 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: ${{ env.DOTNET_VERSION }}
+        dotnet-version: |
+          3.1.x
+          5.0.x
+          ${{ env.LATEST_DOTNET_VERSION }}
     - name: Cache/Restore NuGets
       uses: actions/cache@v2
       with:
         path:
           ~/.nuget/packages
-        key: ${{ runner.os }}-nuget-${{ env.DOTNET_VERSION }}
+        key: ${{ runner.os }}-nuget
         restore-keys: |
           ${{ runner.os }}-nuget-
     - name: Install reportgenerator dotnet tool
@@ -116,13 +119,13 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: ${{ env.DOTNET_VERSION }}
+        dotnet-version: ${{ env.LATEST_DOTNET_VERSION }}
     - name: Cache/Restore NuGets
       uses: actions/cache@v2
       with:
         path:
           ~/.nuget/packages
-        key: ${{ runner.os }}-nuget-${{ env.DOTNET_VERSION }}
+        key: ${{ runner.os }}-nuget-${{ env.LATEST_DOTNET_VERSION }}
         restore-keys: |
           ${{ runner.os }}-nuget-
     - name: Package DotNet.Sdk.Extensions
