@@ -21,6 +21,10 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices.Auxiliary
         {
             return Host.CreateDefaultBuilder()
                 .UseDefaultLogLevel(LogLevel.Critical)
+                .ConfigureServices(services =>
+                {
+                    services.DisableHostStoppingLogs();
+                })
                 .ConfigureWebHostDefaults(_ =>
                 {
                 });
