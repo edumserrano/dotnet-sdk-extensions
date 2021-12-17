@@ -34,7 +34,7 @@ namespace DotNet.Sdk.Extensions.Tests.Options.ValidateEagerly
                 })
                 .Build();
             var validationException = await Should.ThrowAsync<OptionsValidationException>(host.StartAsync());
-            //validationException.Message.ShouldBe("DataAnnotation validation failed for members: 'SomeOption' with the error: 'The SomeOption field is required.'.");
+            // validationException.Message.ShouldBe("DataAnnotation validation failed for members: 'SomeOption' with the error: 'The SomeOption field is required.'.");
             validationException.Message.ShouldBe("DataAnnotation validation failed for 'MyOptions2' members: 'SomeOption' with the error: 'The SomeOption field is required.'.");
         }
 

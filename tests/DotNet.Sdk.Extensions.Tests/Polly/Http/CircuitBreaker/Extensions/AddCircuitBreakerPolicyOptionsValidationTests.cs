@@ -45,7 +45,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
             {
                 serviceProvider.InstantiateNamedHttpClient(httpClientName);
             });
-            //exception.Message.ShouldBe($"DataAnnotation validation failed for members: 'DurationOfBreakInSecs' with the error: 'The field DurationOfBreakInSecs must be between {double.Epsilon} and {double.MaxValue}.'.");
+            // exception.Message.ShouldBe($"DataAnnotation validation failed for members: 'DurationOfBreakInSecs' with the error: 'The field DurationOfBreakInSecs must be between {double.Epsilon} and {double.MaxValue}.'.");
             exception.Message.ShouldBe($"DataAnnotation validation failed for 'CircuitBreakerOptions' members: 'DurationOfBreakInSecs' with the error: 'The field DurationOfBreakInSecs must be between {double.Epsilon} and {double.MaxValue}.'.");
         }
 
@@ -79,7 +79,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
             {
                 serviceProvider.InstantiateNamedHttpClient(httpClientName);
             });
-            //exception.Message.ShouldBe($"DataAnnotation validation failed for members: 'SamplingDurationInSecs' with the error: 'The field SamplingDurationInSecs must be between {double.Epsilon} and {double.MaxValue}.'.");
+            // exception.Message.ShouldBe($"DataAnnotation validation failed for members: 'SamplingDurationInSecs' with the error: 'The field SamplingDurationInSecs must be between {double.Epsilon} and {double.MaxValue}.'.");
             exception.Message.ShouldBe($"DataAnnotation validation failed for 'CircuitBreakerOptions' members: 'SamplingDurationInSecs' with the error: 'The field SamplingDurationInSecs must be between {double.Epsilon} and {double.MaxValue}.'.");
         }
 
@@ -115,7 +115,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
             {
                 serviceProvider.InstantiateNamedHttpClient(httpClientName);
             });
-            //exception.Message.ShouldBe($"DataAnnotation validation failed for members: 'FailureThreshold' with the error: 'The field FailureThreshold must be between {double.Epsilon} and {1}.'.");
+            // exception.Message.ShouldBe($"DataAnnotation validation failed for members: 'FailureThreshold' with the error: 'The field FailureThreshold must be between {double.Epsilon} and {1}.'.");
             exception.Message.ShouldBe($"DataAnnotation validation failed for 'CircuitBreakerOptions' members: 'FailureThreshold' with the error: 'The field FailureThreshold must be between {double.Epsilon} and {1}.'.");
         }
 
@@ -148,7 +148,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
             {
                 serviceProvider.InstantiateNamedHttpClient(httpClientName);
             });
-            //exception.Message.ShouldBe($"DataAnnotation validation failed for members: 'MinimumThroughput' with the error: 'The field MinimumThroughput must be between {2} and {int.MaxValue}.'.");
+            // exception.Message.ShouldBe($"DataAnnotation validation failed for members: 'MinimumThroughput' with the error: 'The field MinimumThroughput must be between {2} and {int.MaxValue}.'.");
             exception.Message.ShouldBe($"DataAnnotation validation failed for 'CircuitBreakerOptions' members: 'MinimumThroughput' with the error: 'The field MinimumThroughput must be between {2} and {int.MaxValue}.'.");
         }
 
@@ -230,7 +230,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions
             {
                 serviceProvider.InstantiateNamedHttpClient(httpClientName);
             });
-            //exception.Message.ShouldBe($"A validation error has occurred.; DataAnnotation validation failed for members: 'DurationOfBreakInSecs' with the error: 'The field DurationOfBreakInSecs must be between {double.Epsilon} and {double.MaxValue}.'.");
+            // exception.Message.ShouldBe($"A validation error has occurred.; DataAnnotation validation failed for members: 'DurationOfBreakInSecs' with the error: 'The field DurationOfBreakInSecs must be between {double.Epsilon} and {double.MaxValue}.'.");
             exception.Message.ShouldBe($"A validation error has occurred.; DataAnnotation validation failed for 'CircuitBreakerOptions' members: 'DurationOfBreakInSecs' with the error: 'The field DurationOfBreakInSecs must be between {double.Epsilon} and {double.MaxValue}.'.");
         }
     }
