@@ -1,5 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
+#if !NETCOREAPP3_1 && !NET5_0
 using Microsoft.Extensions.Hosting;
+#endif
 
 namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices.Auxiliary
 {
@@ -26,12 +28,13 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices.Auxiliary
         /// </para>
         /// </remarks>
         /// <param name="services">The <see cref="IServiceCollection"/> to configure.</param>
-        public static void DisableHostStoppingLogs(this IServiceCollection services)
+        public static IServiceCollection DisableHostStoppingLogs(this IServiceCollection services)
         {
 #if NETCOREAPP3_1 || NET5_0
             // do nothing
+            return services;
 #else
-            services.Configure<HostOptions>(hostOptions =>
+            return services.Configure<HostOptions>(hostOptions =>
             {
                 hostOptions.BackgroundServiceExceptionBehavior = BackgroundServiceExceptionBehavior.Ignore;
             });
