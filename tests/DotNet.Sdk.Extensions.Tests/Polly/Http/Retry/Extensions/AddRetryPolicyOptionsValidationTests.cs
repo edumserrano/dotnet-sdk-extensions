@@ -43,7 +43,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
                 serviceProvider.InstantiateNamedHttpClient(httpClientName);
             });
 #if NET6_0
-            exception.Message.ShouldBe($"DataAnnotation validation failed for 'RetryOptions' members: 'RetryCount' with the error: 'The field RetryCount must be between {0} and {int.MaxValue}.'.");           
+            exception.Message.ShouldBe($"DataAnnotation validation failed for 'RetryOptions' members: 'RetryCount' with the error: 'The field RetryCount must be between {0} and {int.MaxValue}.'.");
 #else
             exception.Message.ShouldBe($"DataAnnotation validation failed for members: 'RetryCount' with the error: 'The field RetryCount must be between {0} and {int.MaxValue}.'.");
 #endif
