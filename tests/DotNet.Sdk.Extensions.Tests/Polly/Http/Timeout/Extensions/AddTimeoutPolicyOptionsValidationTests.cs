@@ -41,8 +41,11 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
             {
                 serviceProvider.InstantiateNamedHttpClient(httpClientName);
             });
-            //exception.Message.ShouldBe($"DataAnnotation validation failed for members: 'TimeoutInSecs' with the error: 'The field TimeoutInSecs must be between {double.Epsilon} and {double.MaxValue}.'.");
+#if NET6_0
             exception.Message.ShouldBe($"DataAnnotation validation failed for 'TimeoutOptions' members: 'TimeoutInSecs' with the error: 'The field TimeoutInSecs must be between {double.Epsilon} and {double.MaxValue}.'.");
+#else
+            exception.Message.ShouldBe($"DataAnnotation validation failed for members: 'TimeoutInSecs' with the error: 'The field TimeoutInSecs must be between {double.Epsilon} and {double.MaxValue}.'.");
+#endif
         }
 
         /// <summary>
@@ -111,8 +114,11 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
             {
                 serviceProvider.InstantiateNamedHttpClient(httpClientName);
             });
-            //exception.Message.ShouldBe($"A validation error has occurred.; DataAnnotation validation failed for members: 'TimeoutInSecs' with the error: 'The field TimeoutInSecs must be between {double.Epsilon} and {double.MaxValue}.'.");
+#if NET6_0
             exception.Message.ShouldBe($"A validation error has occurred.; DataAnnotation validation failed for 'TimeoutOptions' members: 'TimeoutInSecs' with the error: 'The field TimeoutInSecs must be between {double.Epsilon} and {double.MaxValue}.'.");
+#else
+            exception.Message.ShouldBe($"A validation error has occurred.; DataAnnotation validation failed for members: 'TimeoutInSecs' with the error: 'The field TimeoutInSecs must be between {double.Epsilon} and {double.MaxValue}.'.");
+#endif
         }
     }
 }

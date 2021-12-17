@@ -200,9 +200,13 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers
 
             expectedException.ShouldNotBeNull("Expected TaskCanceledException but didn't get any.");
             expectedException.ShouldBeOfType<TaskCanceledException>();
+#if NETCOREAPP3_1
+            expectedException.InnerException.ShouldBeNull();
+#else
             expectedException.InnerException.ShouldBeOfType<TimeoutException>();
             expectedException.Message.ShouldBe("The request was canceled due to the configured HttpClient.Timeout of 0.05 seconds elapsing.");
             expectedException.InnerException.Message.ShouldBe("A task was canceled.");
+#endif
         }
     }
 }

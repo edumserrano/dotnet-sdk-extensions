@@ -20,7 +20,9 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers
 
             var server = host.Services.GetRequiredService<IServer>();
             var addressFeature = server.Features.Get<IServerAddressesFeature>();
-            return addressFeature.Addresses;
+            return addressFeature is null
+                ? new List<string>()
+                : addressFeature.Addresses;
         }
 
         public static HttpMockServerUrl ToHttpMockServerUrl(this string address)
