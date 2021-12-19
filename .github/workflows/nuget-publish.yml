@@ -37,7 +37,7 @@ jobs:
       SLN_FILEPATH : ${{github.workspace}}/DotNet.Sdk.Extensions.sln
       TEST_RESULTS_DIR : tests/test-results
       TEST_COVERAGE_DIR : tests/coverage-results
-      TEST_COVERAGE_FILE : tests/coverage-results/coverage.opencover.xml
+      TEST_COVERAGE_FILE : tests/coverage-results/coverage.net6.0.opencover.xml
       TEST_COVERAGE_REPORT_DIR : tests/coverage-results/report
     steps:
     - uses: actions/checkout@v2
@@ -80,25 +80,25 @@ jobs:
           -m:1
     - name: Upload test coverage to Codecov
       uses: codecov/codecov-action@v2.1.0
-      if: matrix.os == 'ubuntu-latest' # this is on a matrix run and we only need code coverage uploaded to Codecov once, choosing to upload from the matrix run on ubuntu-latest
+      if: matrix.os == 'ubuntu-latest' # this is on a matrix run and we only need code coverage uploaded to Codecov once.
       with:
         files: ${{ env.TEST_COVERAGE_FILE }}
         fail_ci_if_error: true
     - name: Generate code coverage report
-      if: matrix.os == 'ubuntu-latest' # this is on a matrix run and we only need code coverage report generated and uploaded once, choosing to upload from the matrix run on ubuntu-latest
+      if: matrix.os == 'ubuntu-latest' && always() # run this step even if previous steps failed. This is on a matrix run and we only need code coverage report generated and uploaded once.
       run: |
         reportgenerator `
           "-reports:${{ env.TEST_COVERAGE_FILE }}" `
           "-targetdir:${{ env.TEST_COVERAGE_REPORT_DIR }}" `
           -reportTypes:htmlInline
     - name: Upload code coverage report to artifacts
-      if: matrix.os == 'ubuntu-latest' && always() # run this step even if previous steps failed, for instance when running tests fail I want to be able to see the test report
+      if: matrix.os == 'ubuntu-latest' && always() # run this step even if previous steps failed. It's useful to upload artifacts even if tests failed.
       uses: actions/upload-artifact@v2
       with:
         name: code-coverage-report
         path: ${{ env.TEST_COVERAGE_REPORT_DIR }}
     - name: Upload test-results to artifacts
-      if: matrix.os == 'ubuntu-latest'
+      if: matrix.os == 'ubuntu-latest' && always() # run this step even if previous steps failed. It's useful to upload artifacts even if tests failed.
       uses: actions/upload-artifact@v2
       with:
         name: test-results
