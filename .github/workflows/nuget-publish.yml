@@ -37,6 +37,7 @@ jobs:
       SLN_FILEPATH : ${{github.workspace}}/DotNet.Sdk.Extensions.sln
       TEST_RESULTS_DIR : tests/test-results
       TEST_COVERAGE_DIR : tests/coverage-results
+      TEST_COVERAGE_MERGE_FILE : tests/coverage-results/coverage.net6.0.json
       TEST_COVERAGE_FILE : tests/coverage-results/coverage.net6.0.opencover.xml
       TEST_COVERAGE_REPORT_DIR : tests/coverage-results/report
     steps:
@@ -75,7 +76,7 @@ jobs:
           --results-directory "$testResultsDir" `
           /p:CollectCoverage=true `
           /p:CoverletOutput="$(Join-Path -Path (Get-Location) -ChildPath "${{ env.TEST_COVERAGE_DIR }}/")" `
-          /p:MergeWith="$(Join-Path -Path (Get-Location) -ChildPath "${{ env.TEST_COVERAGE_FILE }}")" `
+          /p:MergeWith="$(Join-Path -Path (Get-Location) -ChildPath "${{ env.TEST_COVERAGE_MERGE_FILE }}")" `
           /p:CoverletOutputFormat="json%2copencover" `
           -m:1
     - name: Upload test coverage to Codecov
