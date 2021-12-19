@@ -36,11 +36,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers
         public async ValueTask DisposeAsync()
         {
             await DisposeAsyncCore();
-
-            // will be able to remove the pragma below when https://github.com/dotnet/roslyn-analyzers/pull/3679 is released
-#pragma warning disable CA1816 // Dispose methods should call SuppressFinalize
             GC.SuppressFinalize(this);
-#pragma warning restore CA1816 // Dispose methods should call SuppressFinalize
         }
 
         protected abstract IHostBuilder CreateHostBuilder(string[] args);
