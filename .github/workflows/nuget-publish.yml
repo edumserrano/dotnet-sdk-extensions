@@ -75,7 +75,7 @@ jobs:
           --results-directory "$testResultsDir" `
           /p:CollectCoverage=true `
           /p:CoverletOutput="$(Join-Path -Path (Get-Location) -ChildPath "${{ env.TEST_COVERAGE_DIR }}/")" `
-          /p:MergeWith="$(Join-Path -Path (Get-Location) -ChildPath "${{ env.TEST_COVERAGE_DIR }}/coverage.json")" `
+          /p:MergeWith="$(Join-Path -Path (Get-Location) -ChildPath "${{ env.TEST_COVERAGE_FILE }}")" `
           /p:CoverletOutputFormat="json%2copencover" `
           -m:1
     - name: Upload test coverage to Codecov
