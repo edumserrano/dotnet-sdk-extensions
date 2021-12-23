@@ -108,14 +108,14 @@ jobs:
         path: ${{ steps.dotnet-test.outputs.test-results-dir }}
     - name: GitHub test report
       uses: dorny/test-reporter@v1
-      if: always()
+      if: matrix.os == 'ubuntu-latest' && always()
       with:
         name: dotnet test
         path: ${{ env.TEST_RESULTS_DIR }}/*.trx
         reporter: dotnet-trx
         max-annotations: 50
     - name: GitHub test report 2
-      if: always()
+      if: matrix.os == 'ubuntu-latest' && always()
       uses: dflydev/check-runs-action@v1
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
