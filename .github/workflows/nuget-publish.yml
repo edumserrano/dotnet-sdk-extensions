@@ -73,13 +73,13 @@ jobs:
           --no-build `
           --logger trx `
           --logger html `
-          --logger GitHubActions `
           --results-directory "$testResultsDir" `
           /p:CollectCoverage=true `
           /p:CoverletOutput="$(Join-Path -Path (Get-Location) -ChildPath "${{ env.TEST_COVERAGE_DIR }}/")" `
           /p:MergeWith="$(Join-Path -Path (Get-Location) -ChildPath "${{ env.TEST_COVERAGE_MERGE_FILE }}")" `
           /p:CoverletOutputFormat="json%2copencover" `
           -m:1
+        # --logger GitHubActions `
     - name: Upload test coverage to Codecov
       uses: codecov/codecov-action@v2.1.0
       if: matrix.os == 'ubuntu-latest' # this is on a matrix run and we only need code coverage uploaded to Codecov once.
