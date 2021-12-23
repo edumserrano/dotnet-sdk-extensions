@@ -106,7 +106,14 @@ jobs:
       with:
         name: test-results
         path: ${{ steps.dotnet-test.outputs.test-results-dir }}
-
+    - name: GitHub test report
+      uses: dorny/test-reporter@v1
+      if: success() || failure()    # run this step even if previous step failed
+      with:
+        name: dotnet test
+        path: ${{ env.TEST_RESULTS_DIR }}/*.trx
+        reporter: dotnet-trx
+        max-annotations: 50
   nuget-publish:
     name: Publish NuGet packages and symbols
     needs: [build]
