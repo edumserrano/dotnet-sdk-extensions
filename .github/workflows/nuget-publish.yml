@@ -73,6 +73,7 @@ jobs:
           --no-build `
           --logger trx `
           --logger html `
+          --logger html `
           --results-directory "$testResultsDir" `
           /p:CollectCoverage=true `
           /p:CoverletOutput="$(Join-Path -Path (Get-Location) -ChildPath "${{ env.TEST_COVERAGE_DIR }}/")" `
