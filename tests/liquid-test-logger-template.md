@@ -16,7 +16,9 @@
 {%- assign overall = "❌ Fail" *-%}
 {%- endif -%}
 
-# {{ library.parameters.Title }}
+{% assign first_result_set = run.result_sets | first %}
+{% assign test_dll = first_result_set.source | path_split | last %}
+# {{overall}} - test run for {{ test_dll }} on {{ parameters.TargetFramework }}
 ### Run Summary
 
 <p>
@@ -53,8 +55,11 @@
 ### Result Sets
 {%- for set in run.result_sets -%}
 #### {{ set.source | path_split | last }} - {{set.passed_count | divided_by: set.executed_tests_count | times: 100.0 | round: 2 }}%
+
+{% assign failed_set_results = set.results  | where: "outcome", "Failed" %}
+{%- if failed_set_results.size > 0 -%}
 <details>
-<summary>Full Results</summary>
+<summary>Failed tests</summary>
 <table>
 <thead>
 <tr>
@@ -64,7 +69,7 @@
 <th>Fully qualified name</th>
 </tr>
 </thead>
-{%- for result in set.results -%}
+{%- for result in failed_set_results -%}
 <tr>
 <td> {% case result.outcome %} {% when 'Passed' %}✔️{% when 'Failed' %}❌{% else %}⚠️{% endcase %} {{ result.outcome }} </td>
 <td>{{ result.duration | format_duration }}</td>
@@ -85,6 +90,80 @@
 </tbody>
 </table>
 </details>
+{%- endif -%}
+
+{% assign skipped_set_results = set.results  | where: "outcome", "Skipped" %}
+{%- if skipped_set_results.size > 0 -%}
+<details>
+<summary>Skipped tests</summary>
+<table>
+<thead>
+<tr>
+<th>Result</th>
+<th>Duration</th>
+<th>Test</th>
+<th>Fully qualified name</th>
+</tr>
+</thead>
+{%- for result in skipped_set_results -%}
+<tr>
+<td> {% case result.outcome %} {% when 'Passed' %}✔️{% when 'Failed' %}❌{% else %}⚠️{% endcase %} {{ result.outcome }} </td>
+<td>{{ result.duration | format_duration }}</td>
+<td> {{ result.test_case.display_name }}
+{%- if result.outcome == 'Failed' -%}
+<blockquote><details>
+<summary>Error</summary>
+<strong>Message:</strong>
+<pre><code>{{result.error_message}}</code></pre>
+<strong>Stack Trace:</strong>
+<pre><code>{{result.error_stack_trace}}</code></pre>
+</details></blockquote>
+{%- endif -%}
+</td>
+<td> {{ result.test_case.fully_qualified_name }} </td>
+</tr>
+{%- endfor -%}
+</tbody>
+</table>
+</details>
+{%- endif -%}
+
+{% assign passed_set_results = set.results  | where: "outcome", "Passed" %}
+{%- if passed_set_results.size > 0 -%}
+<details>
+<summary>Passed tests</summary>
+<table>
+<thead>
+<tr>
+<th>Result</th>
+<th>Duration</th>
+<th>Test</th>
+<th>Fully qualified name</th>
+</tr>
+</thead>
+{%- for result in passed_set_results -%}
+<tr>
+<td> {% case result.outcome %} {% when 'Passed' %}✔️{% when 'Failed' %}❌{% else %}⚠️{% endcase %} {{ result.outcome }} </td>
+<td>{{ result.duration | format_duration }}</td>
+<td> {{ result.test_case.display_name }}
+{%- if result.outcome == 'Failed' -%}
+<blockquote><details>
+<summary>Error</summary>
+<strong>Message:</strong>
+<pre><code>{{result.error_message}}</code></pre>
+<strong>Stack Trace:</strong>
+<pre><code>{{result.error_stack_trace}}</code></pre>
+</details></blockquote>
+{%- endif -%}
+</td>
+<td> {{ result.test_case.fully_qualified_name }} </td>
+</tr>
+{%- endfor -%}
+</tbody>
+</table>
+</details>
+{%- endif -%}
+
 {%- endfor -%}
 
 ### Run Messages
@@ -97,6 +176,7 @@
 </code></pre>
 </details>
 
+{%- if warnings.size > 0 -%}
 <details>
 <summary>Warning</summary>
 <pre><code>
@@ -105,7 +185,9 @@
 {%- endfor -%}
 </code></pre>
 </details>
+{%- endif -%}
 
+{%- if errors.size > 0 -%}
 <details>
 <summary>Error</summary>
 <pre><code>
@@ -114,3 +196,4 @@
 {%- endfor -%}
 </code></pre>
 </details>
+{%- endif -%}
