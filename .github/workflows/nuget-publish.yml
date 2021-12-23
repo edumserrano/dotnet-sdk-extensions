@@ -122,6 +122,7 @@ jobs:
         id: dotnettest
         conclusion: some outcome
 
+
   nuget-publish:
     name: Publish NuGet packages and symbols
     needs: [build]
