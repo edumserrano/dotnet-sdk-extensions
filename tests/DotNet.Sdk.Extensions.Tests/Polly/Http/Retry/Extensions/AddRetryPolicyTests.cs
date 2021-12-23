@@ -21,6 +21,18 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions
     [Trait("Category", XUnitCategories.Polly)]
     public class AddRetryPolicyTests
     {
+        [Fact]
+        public void TestLogger1()
+        {
+            throw new InvalidOperationException("test logger 1");
+        }
+
+        [Fact]
+        public void TestLogger2()
+        {
+            true.ShouldBeFalse();
+        }
+
         /// <summary>
         /// Tests that the <see cref="RetryPolicyHttpClientBuilderExtensions.AddRetryPolicy(IHttpClientBuilder,Action{RetryOptions})"/>
         /// overload method adds a <see cref="DelegatingHandler"/> with a retry policy to the <see cref="HttpClient"/>.
