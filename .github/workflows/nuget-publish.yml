@@ -85,28 +85,34 @@ jobs:
       if: always()
       run: |
         Write-Host '${{ toJson(steps.dotnet-test) }}'
-    # this job is on a matrix run but I only want to upload code coverage to Codecov once. However run it even if the if the dotnet-test step fails
+    # this job is on a matrix run but I only want to upload code coverage to Codecov once, so I've chose to run it on one of the matrix.os values.
+    # furthermore, the steps below provide feedback on the test run so I want to run them even if job failed or if the dotnet-test step fails. For that
+    # I need:
+    # - the 'always()' condition: without it the step only runs if the job is successful, it's like the 'if' condition on any step always has a hidden '&& success()' clause
+    # - the '(steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure')' condition: to run the steps only if the dotnet-test step has ran, regardless
+    # if it failed or not. It won't run if the dotnet-test step has been skipped or cancelled. In this case, there's no point in trying to run the steps below
+    # because there won't be any data from the test run.
     - name: Upload test coverage to Codecov
       uses: codecov/codecov-action@v2.1.0
-      if: matrix.os == 'ubuntu-latest' && (steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure')
+      if: matrix.os == 'ubuntu-latest' && (steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure') && always()
       with:
         files: ${{ env.TEST_COVERAGE_FILE }}
         fail_ci_if_error: true
     - name: Generate code coverage report
-      if: steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure'  # run even if the dotnet-test step fails
+      if: steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure' && always()
       run: |
         reportgenerator `
           "-reports:${{ env.TEST_COVERAGE_FILE }}" `
           "-targetdir:${{ env.TEST_COVERAGE_REPORT_DIR }}" `
           -reportTypes:htmlInline
     - name: Upload code coverage report to artifacts
-      if: steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure'  # run even if the dotnet-test step fails
+      if: steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure' && always()
       uses: actions/upload-artifact@v2
       with:
         name: code-coverage-report-${{ matrix.os }}
         path: ${{ env.TEST_COVERAGE_REPORT_DIR }}
     - name: Upload test-results to artifacts
-      if: steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure'  # run even if the dotnet-test step fails
+      if: steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure' && always()
       uses: actions/upload-artifact@v2
       with:
         name: test-results-${{ matrix.os }}
