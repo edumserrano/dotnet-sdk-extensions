@@ -35,11 +35,11 @@ jobs:
     runs-on: ${{ matrix.os }}
     env:
       SLN_FILEPATH : ${{github.workspace}}/DotNet.Sdk.Extensions.sln
-      TEST_RESULTS_DIR : tests/test-results
-      TEST_COVERAGE_DIR : tests/coverage-results
-      TEST_COVERAGE_MERGE_FILE : tests/coverage-results/coverage.net6.0.json
-      TEST_COVERAGE_FILE : tests/coverage-results/coverage.net6.0.opencover.xml
-      TEST_COVERAGE_REPORT_DIR : tests/coverage-results/report
+      TEST_RESULTS_DIR : tests/${{ matrix.os }}/test-results
+      TEST_COVERAGE_DIR : tests/${{ matrix.os }}/coverage-results
+      TEST_COVERAGE_MERGE_FILE : tests/${{ matrix.os }}/coverage-results/coverage.net6.0.json
+      TEST_COVERAGE_FILE : tests/${{ matrix.os }}/coverage-results/coverage.net6.0.opencover.xml
+      TEST_COVERAGE_REPORT_DIR : tests/${{ matrix.os }}/coverage-results/report
     steps:
     - uses: actions/checkout@v2
     - name: Setup .NET
@@ -91,32 +91,32 @@ jobs:
         files: ${{ env.TEST_COVERAGE_FILE }}
         fail_ci_if_error: true
     - name: Generate code coverage report
-      if: matrix.os == 'ubuntu-latest' && always()
+      if: always()
       run: |
         reportgenerator `
           "-reports:${{ env.TEST_COVERAGE_FILE }}" `
           "-targetdir:${{ env.TEST_COVERAGE_REPORT_DIR }}" `
           -reportTypes:htmlInline
     - name: Upload code coverage report to artifacts
-      if: matrix.os == 'ubuntu-latest' && always()
+      if: always()
       uses: actions/upload-artifact@v2
       with:
-        name: code-coverage-report
+        name: code-coverage-report-${{ matrix.os }}
         path: ${{ env.TEST_COVERAGE_REPORT_DIR }}
     - name: Upload test-results to artifacts
-      if: matrix.os == 'ubuntu-latest' && always()
+      if: always()
       uses: actions/upload-artifact@v2
       with:
-        name: test-results
+        name: test-results-${{ matrix.os }}
         path: ${{ steps.dotnet-test.outputs.test-results-dir }}
-    - name: GitHub test report
-      uses: dorny/test-reporter@v1
-      if: matrix.os == 'ubuntu-latest' && github.event_name != 'pull_request' && always()
-      with:
-        name: dotnet test results
-        path: ${{ env.TEST_RESULTS_DIR }}/*.trx
-        reporter: dotnet-trx
-        max-annotations: 50
+    # - name: GitHub test report
+    #   uses: dorny/test-reporter@v1
+    #   if: matrix.os == 'ubuntu-latest' && github.event_name != 'pull_request' && always()
+    #   with:
+    #     name: dotnet test results
+    #     path: ${{ env.TEST_RESULTS_DIR }}/*.trx
+    #     reporter: dotnet-trx
+    #     max-annotations: 50
 
   nuget-publish:
     name: Publish NuGet packages and symbols

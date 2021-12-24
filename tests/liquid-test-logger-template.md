@@ -60,19 +60,25 @@
 {%- if failed_set_results.size > 0 -%}
 <details>
 <summary>Failed tests</summary>
-<table>
+<table style="white-space:nowrap;">
 <thead>
 <tr>
 <th>Result</th>
 <th>Duration</th>
+<th>Traits</th>
 <th>Test</th>
-<th>Fully qualified name</th>
+<th>Test class</th>
 </tr>
 </thead>
 {%- for result in failed_set_results -%}
 <tr>
 <td> {% case result.outcome %} {% when 'Passed' %}✔️{% when 'Failed' %}❌{% else %}⚠️{% endcase %} {{ result.outcome }} </td>
-<td>{{ result.duration | format_duration }}</td>
+<td> {{ result.duration | format_duration }}</td>
+<td>
+{%- for trait in result.test_case.traits -%}
+[{{ trait.Name }} : <strong>{{ trait.Value }}</strong>]</br>
+{%- endfor -%}
+</td>
 <td> {{ result.test_case.display_name }}
 {%- if result.outcome == 'Failed' -%}
 <blockquote><details>
@@ -84,7 +90,18 @@
 </details></blockquote>
 {%- endif -%}
 </td>
-<td> {{ result.test_case.fully_qualified_name }} </td>
+{% assign fully_qualified_name_splits = result.test_case.fully_qualified_name | split: "." %}
+{% assign class_index = fully_qualified_name_splits.size | minus: 1 %}
+{%- for name_split in fully_qualified_name_splits -%}
+{%- if forloop.index == class_index -%}
+{%- assign test_class = name_split -%}
+{%- endif -%}
+{%- endfor -%}
+<td>{{ test_class }}
+<blockquote><details>
+<summary>Fully qualified name</summary>
+{{ result.test_case.fully_qualified_name }}
+</details></blockquote>
 </tr>
 {%- endfor -%}
 </tbody>
@@ -96,19 +113,25 @@
 {%- if skipped_set_results.size > 0 -%}
 <details>
 <summary>Skipped tests</summary>
-<table>
+<table style="white-space:nowrap;">
 <thead>
 <tr>
 <th>Result</th>
 <th>Duration</th>
+<th>Traits</th>
 <th>Test</th>
-<th>Fully qualified name</th>
+<th>Test class</th>
 </tr>
 </thead>
 {%- for result in skipped_set_results -%}
 <tr>
 <td> {% case result.outcome %} {% when 'Passed' %}✔️{% when 'Failed' %}❌{% else %}⚠️{% endcase %} {{ result.outcome }} </td>
 <td>{{ result.duration | format_duration }}</td>
+<td>
+{%- for trait in result.test_case.traits -%}
+[{{ trait.Name }} : <strong>{{ trait.Value }}</strong>]</br>
+{%- endfor -%}
+</td>
 <td> {{ result.test_case.display_name }}
 {%- if result.outcome == 'Failed' -%}
 <blockquote><details>
@@ -120,7 +143,18 @@
 </details></blockquote>
 {%- endif -%}
 </td>
-<td> {{ result.test_case.fully_qualified_name }} </td>
+{% assign fully_qualified_name_splits = result.test_case.fully_qualified_name | split: "." %}
+{% assign class_index = fully_qualified_name_splits.size | minus: 1 %}
+{%- for name_split in fully_qualified_name_splits -%}
+{%- if forloop.index == class_index -%}
+{%- assign test_class = name_split -%}
+{%- endif -%}
+{%- endfor -%}
+<td>{{ test_class }}
+<blockquote><details>
+<summary>Fully qualified name</summary>
+{{ result.test_case.fully_qualified_name }}
+</details></blockquote>
 </tr>
 {%- endfor -%}
 </tbody>
@@ -132,19 +166,25 @@
 {%- if passed_set_results.size > 0 -%}
 <details>
 <summary>Passed tests</summary>
-<table>
+<table style="white-space:nowrap;">
 <thead>
 <tr>
 <th>Result</th>
 <th>Duration</th>
+<th>Traits</th>
 <th>Test</th>
-<th>Fully qualified name</th>
+<th>Test class</th>
 </tr>
 </thead>
 {%- for result in passed_set_results -%}
 <tr>
 <td> {% case result.outcome %} {% when 'Passed' %}✔️{% when 'Failed' %}❌{% else %}⚠️{% endcase %} {{ result.outcome }} </td>
 <td>{{ result.duration | format_duration }}</td>
+<td>
+{%- for trait in result.test_case.traits -%}
+[{{ trait.Name }} : <strong>{{ trait.Value }}</strong>]</br>
+{%- endfor -%}
+</td>
 <td> {{ result.test_case.display_name }}
 {%- if result.outcome == 'Failed' -%}
 <blockquote><details>
@@ -156,7 +196,18 @@
 </details></blockquote>
 {%- endif -%}
 </td>
-<td> {{ result.test_case.fully_qualified_name }} </td>
+{% assign fully_qualified_name_splits = result.test_case.fully_qualified_name | split: "." %}
+{% assign class_index = fully_qualified_name_splits.size | minus: 1 %}
+{%- for name_split in fully_qualified_name_splits -%}
+{%- if forloop.index == class_index -%}
+{%- assign test_class = name_split -%}
+{%- endif -%}
+{%- endfor -%}
+<td>{{ test_class }}
+<blockquote><details>
+<summary>Fully qualified name</summary>
+{{ result.test_case.fully_qualified_name }}
+</details></blockquote>
 </tr>
 {%- endfor -%}
 </tbody>
