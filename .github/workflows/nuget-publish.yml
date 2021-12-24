@@ -140,7 +140,7 @@ jobs:
           output = @{
             title = "title of the check run"
             summary = "summary for the check run"
-            text = $testReports
+            text = "$testReports"
           }
         } | ConvertTo-Json -compress
 
