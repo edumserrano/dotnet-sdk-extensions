@@ -81,30 +81,28 @@ jobs:
           /p:MergeWith="$(Join-Path -Path (Get-Location) -ChildPath "${{ env.TEST_COVERAGE_MERGE_FILE }}")" `
           /p:CoverletOutputFormat="json%2copencover" `
           -m:1
-    # this job is on a matrix run and we only need some of the steps below to be executed once so we chose to run only
-    # when the matrix.os is ubuntu-latest. Furthermore, some steps are set to always run as well so that they run even if
-    # previous steps have failed. This is because if tests fail to run we still need feedback provided by those steps.
+    # this job is on a matrix run but I only want to upload code coverage to Codecov once. However run it even if the if the dotnet-test step fails
     - name: Upload test coverage to Codecov
       uses: codecov/codecov-action@v2.1.0
-      if: matrix.os == 'ubuntu-latest' && always()
+      if: matrix.os == 'ubuntu-latest' && (steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure')
       with:
         files: ${{ env.TEST_COVERAGE_FILE }}
         fail_ci_if_error: true
     - name: Generate code coverage report
-      if: always()
+      if: steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure'  # run even if the dotnet-test step fails
       run: |
         reportgenerator `
           "-reports:${{ env.TEST_COVERAGE_FILE }}" `
           "-targetdir:${{ env.TEST_COVERAGE_REPORT_DIR }}" `
           -reportTypes:htmlInline
     - name: Upload code coverage report to artifacts
-      if: always()
+      if: steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure'  # run even if the dotnet-test step fails
       uses: actions/upload-artifact@v2
       with:
         name: code-coverage-report-${{ matrix.os }}
         path: ${{ env.TEST_COVERAGE_REPORT_DIR }}
     - name: Upload test-results to artifacts
-      if: always()
+      if: steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure'  # run even if the dotnet-test step fails
       uses: actions/upload-artifact@v2
       with:
         name: test-results-${{ matrix.os }}
