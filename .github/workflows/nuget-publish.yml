@@ -95,20 +95,20 @@ jobs:
         files: ${{ env.TEST_COVERAGE_FILE }}
         fail_ci_if_error: true
     - name: Generate code coverage report
-      if: steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure' && always()
+      if: (steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure') && always()
       run: |
         reportgenerator `
           "-reports:${{ env.TEST_COVERAGE_FILE }}" `
           "-targetdir:${{ env.TEST_COVERAGE_REPORT_DIR }}" `
           -reportTypes:htmlInline
     - name: Upload code coverage report to artifacts
-      if: steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure' && always()
+      if: (steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure') && always()
       uses: actions/upload-artifact@v2
       with:
         name: code-coverage-report-${{ matrix.os }}
         path: ${{ env.TEST_COVERAGE_REPORT_DIR }}
     - name: Upload test-results to artifacts
-      if: steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure' && always()
+      if: (steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure') && always()
       uses: actions/upload-artifact@v2
       with:
         name: test-results-${{ matrix.os }}
@@ -122,11 +122,11 @@ jobs:
     #     reporter: dotnet-trx
     #     max-annotations: 50
     - name: GitHub check run for dotnet test
-      if: matrix.os == 'ubuntu-latest' && (steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure') && always()
+      if: (steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure') && always()
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        $testReports = Get-Content *.md # concatenate all markdown test reports
+        $testReports = Get-Content ${{ env.TEST_RESULTS_DIR }}/*.md # concatenate all markdown test reports
         $uri = "https://api.github.com/repos/${{ github.repository }}/check-runs"
         $headers = @{
           Accept = "application/vnd.github.v3+json"
@@ -145,7 +145,8 @@ jobs:
         } | ConvertTo-Json -compress
 
         $response = Invoke-RestMethod -Method 'Post' -Uri $uri -Headers $headers -Body $body
-        Write-Host "::notice title=dotnet test (${{ matrix.os }})::$response.url"
+        $checkUrl = $response.details_url
+        Write-Host "::notice title=dotnet test (${{ matrix.os }})::checkUrl"
 
   nuget-publish:
     name: Publish NuGet packages and symbols
