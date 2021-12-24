@@ -74,37 +74,49 @@ jobs:
           --logger trx `
           --logger html `
           --logger GitHubActions `
+          --logger "liquid.custom;Template=${{github.workspace}}/tests/liquid-test-logger-template.md" `
           --results-directory "$testResultsDir" `
           /p:CollectCoverage=true `
           /p:CoverletOutput="$(Join-Path -Path (Get-Location) -ChildPath "${{ env.TEST_COVERAGE_DIR }}/")" `
           /p:MergeWith="$(Join-Path -Path (Get-Location) -ChildPath "${{ env.TEST_COVERAGE_MERGE_FILE }}")" `
           /p:CoverletOutputFormat="json%2copencover" `
           -m:1
+    # this job is on a matrix run and we only need some of the steps below to be executed once so we chose to run only
+    # when the matrix.os is ubuntu-latest. Furthermore, some steps are set to always run as well so that they run even if
+    # previous steps have failed. This is because if tests fail to run we still need feedback provided by those steps.
     - name: Upload test coverage to Codecov
       uses: codecov/codecov-action@v2.1.0
-      if: matrix.os == 'ubuntu-latest' # this is on a matrix run and we only need code coverage uploaded to Codecov once.
+      if: matrix.os == 'ubuntu-latest' && always()
       with:
         files: ${{ env.TEST_COVERAGE_FILE }}
         fail_ci_if_error: true
     - name: Generate code coverage report
-      if: matrix.os == 'ubuntu-latest' && always() # run this step even if previous steps failed. This is on a matrix run and we only need code coverage report generated once.
+      if: matrix.os == 'ubuntu-latest' && always()
       run: |
         reportgenerator `
           "-reports:${{ env.TEST_COVERAGE_FILE }}" `
           "-targetdir:${{ env.TEST_COVERAGE_REPORT_DIR }}" `
           -reportTypes:htmlInline
     - name: Upload code coverage report to artifacts
-      if: matrix.os == 'ubuntu-latest' && always() # run this step even if previous steps failed. It's useful to upload artifacts even if tests failed.
+      if: matrix.os == 'ubuntu-latest' && always()
       uses: actions/upload-artifact@v2
       with:
         name: code-coverage-report
         path: ${{ env.TEST_COVERAGE_REPORT_DIR }}
     - name: Upload test-results to artifacts
-      if: matrix.os == 'ubuntu-latest' && always() # run this step even if previous steps failed. It's useful to upload artifacts even if tests failed.
+      if: matrix.os == 'ubuntu-latest' && always()
       uses: actions/upload-artifact@v2
       with:
         name: test-results
         path: ${{ steps.dotnet-test.outputs.test-results-dir }}
+    - name: GitHub test report
+      uses: dorny/test-reporter@v1
+      if: matrix.os == 'ubuntu-latest' && github.event_name != 'pull_request' && always()
+      with:
+        name: dotnet test results
+        path: ${{ env.TEST_RESULTS_DIR }}/*.trx
+        reporter: dotnet-trx
+        max-annotations: 50
 
   nuget-publish:
     name: Publish NuGet packages and symbols
