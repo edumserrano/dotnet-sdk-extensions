@@ -121,29 +121,31 @@ jobs:
     #     path: ${{ env.TEST_RESULTS_DIR }}/*.trx
     #     reporter: dotnet-trx
     #     max-annotations: 50
-    - name: Create GitHub check run
+    - name: GitHub check run for dotnet test
       if: matrix.os == 'ubuntu-latest' && (steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure') && always()
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
+        $testReports = Get-Content *.md # concatenate all markdown test reports
         $uri = "https://api.github.com/repos/${{ github.repository }}/check-runs"
         $headers = @{
           Accept = "application/vnd.github.v3+json"
           Authorization = "Bearer ${{ env.GITHUB_TOKEN }}"
         }
         $body = @{
-          name = "dotnet test"
+          name = "dotnet test (${{ matrix.os }})"
           head_sha = "${{ github.sha }}"
           status = "completed"
           conclusion = "success"
           output = @{
             title = "title of the check run"
             summary = "summary for the check run"
-            text = "this suppports markdown"
+            text = $testReports
           }
         } | ConvertTo-Json -compress
 
-        Invoke-RestMethod -Method 'Post' -Uri $uri -Headers $headers -Body $body
+        $response = Invoke-RestMethod -Method 'Post' -Uri $uri -Headers $headers -Body $body
+        Write-Host "::notice title=dotnet test (${{ matrix.os }})::$response.url"
 
   nuget-publish:
     name: Publish NuGet packages and symbols
