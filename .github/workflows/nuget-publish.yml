@@ -81,6 +81,10 @@ jobs:
           /p:MergeWith="$(Join-Path -Path (Get-Location) -ChildPath "${{ env.TEST_COVERAGE_MERGE_FILE }}")" `
           /p:CoverletOutputFormat="json%2copencover" `
           -m:1
+    - name: Debug
+      if: always()
+      run: |
+        Write-Host '${{ toJson(steps.dotnet-test) }}'
     # this job is on a matrix run but I only want to upload code coverage to Codecov once. However run it even if the if the dotnet-test step fails
     - name: Upload test coverage to Codecov
       uses: codecov/codecov-action@v2.1.0
