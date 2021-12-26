@@ -119,8 +119,8 @@ jobs:
     - name: Log Codecov info
       if: matrix.os == 'ubuntu-latest' && (steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure') && always()
       run: |
-        $codeCoveUrl = "https://app.codecov.io/gh/${{ github.repository }}/"
-        Write-Host "::notice::Code coverage has been uploaded to Codecov at $codeCoveUrl. You can download the code coverage report from the build artifact named: ${{ env.CODE_COVERAGE_ARTIFACT_NAME }}."
+        $codeCoveUrl = "https://app.codecov.io/gh/${{ github.repository }}"
+        Write-Host "::notice title=Code coverage::Code coverage has been uploaded to Codecov at $codeCoveUrl . You can download the code coverage report from the build artifact named: ${{ env.CODE_COVERAGE_ARTIFACT_NAME }}."
     - name: Upload test-results to artifacts
       if: (steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure') && always()
       uses: actions/upload-artifact@v2
@@ -172,16 +172,15 @@ jobs:
     - name: Log DotNet.Sdk.Extensions NuGet push info
       if: (steps.dotnet-sdk-extensions-nuget-push.conclusion == 'success' || steps.dotnet-sdk-extensions-nuget-push.conclusion == 'failure') && always()
       run: |
-        Write-Host "value is ${{ steps.dotnet-sdk-extensions-nuget-push.outputs.nuget-already-exists }}"
         $pushStepConclusion = ${{ steps.dotnet-test.conclusion }}
         $nugetAlreadyExists = [System.Convert]::ToBoolean("${{ steps.dotnet-sdk-extensions-nuget-push.outputs.nuget-already-exists }}")
         if($nugetAlreadyExists) {
           Write-Host "::notice::You can download the NuGet packages and symbols from the build artifact named: ${{ env.NUGET_ARTIFACT_NAME }}."
         }
-        else if($pushStepConclusion -eq 'failure') {
+        elseif($pushStepConclusion -eq 'failure') {
           Write-Host "::error::Failed to push DotNet.Sdk.Extensions NuGet and symbols."
         }
-        else if($pushStepConclusion -eq 'success')
+        elseif($pushStepConclusion -eq 'success')
           Write-Host "::notice::Successfully pushed DotNet.Sdk.Extensions NuGet and symbols to nuget.org. You can find the package at: https://www.nuget.org/packages/DotNet-Sdk-Extensions."
         }
     - name: Publish DotNet.Sdk.Extensions.Testing nuget and symbols
