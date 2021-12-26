@@ -34,12 +34,13 @@ jobs:
         os: [ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     env:
-      SLN_FILEPATH : ${{github.workspace}}/DotNet.Sdk.Extensions.sln
-      TEST_RESULTS_DIR : tests/${{ matrix.os }}/test-results
-      TEST_COVERAGE_DIR : tests/${{ matrix.os }}/coverage-results
-      TEST_COVERAGE_MERGE_FILE : tests/${{ matrix.os }}/coverage-results/coverage.net6.0.json
-      TEST_COVERAGE_FILE : tests/${{ matrix.os }}/coverage-results/coverage.net6.0.opencover.xml
-      TEST_COVERAGE_REPORT_DIR : tests/${{ matrix.os }}/coverage-results/report
+      SLN_FILEPATH: ${{github.workspace}}/DotNet.Sdk.Extensions.sln
+      TEST_RESULTS_DIR: tests/${{ matrix.os }}/test-results
+      TEST_COVERAGE_DIR: tests/${{ matrix.os }}/coverage-results
+      TEST_COVERAGE_MERGE_FILE: tests/${{ matrix.os }}/coverage-results/coverage.net6.0.json
+      TEST_COVERAGE_FILE: tests/${{ matrix.os }}/coverage-results/coverage.net6.0.opencover.xml
+      TEST_COVERAGE_REPORT_DIR: tests/${{ matrix.os }}/coverage-results/report
+      TEST_RESULTS_ARTIFACT_NAME: test-results-${{ matrix.os }}
     steps:
     - uses: actions/checkout@v2
     - name: Setup .NET
@@ -82,11 +83,12 @@ jobs:
           /p:CoverletOutputFormat="json%2copencover" `
           -m:1
 
+        $downloadArtifactMessage = "You can inspect the test results by downloading the build artifact named: ${{ env.TEST_RESULTS_ARTIFACT_NAME }}."
         if($LASTEXITCODE -eq 0) {
-          Write-Host "::notice::All tests passed. You can inspect the test results by downloading them from the build artifacts."
+          Write-Host "::notice::Tests passed. $downloadArtifactMessage"
         }
         else {
-          Write-Host "::error::Tests failed. You can inspect the test results by downloading them from the build artifacts."
+          Write-Host "::error::Tests failed. $downloadArtifactMessage"
         }
     # this job is on a matrix run but I only want to upload code coverage to Codecov once, so I've chose to run it on one of the matrix.os values.
     # furthermore, the steps below provide feedback on the test run so I want to run them even if job failed or if the dotnet-test step fails. For that
@@ -118,7 +120,7 @@ jobs:
       if: (steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure') && always()
       uses: actions/upload-artifact@v2
       with:
-        name: test-results-${{ matrix.os }}
+        name: ${{ env.TEST_RESULTS_ARTIFACT_NAME }}
         path: ${{ steps.dotnet-test.outputs.test-results-dir }}
 
   nuget-publish:

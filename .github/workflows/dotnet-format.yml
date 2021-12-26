@@ -98,10 +98,10 @@ jobs:
       run: |
         $hasChanges = [System.Convert]::ToBoolean("${{ steps.auto-commit-action.outputs.changes_detected }}")
         if($hasChanges) {
-          Write-Host "::notice::dotnet format didn't find any file that requires formatting."
+          Write-Host "::warning::dotnet format found files that require formatting."
         }
         else {
-          Write-Host "::warning::dotnet format found files that require formatting."
+          Write-Host "::notice::dotnet format didn't find any file that requires formatting."
         }
     - name: Create dotnet format PR
       if: steps.auto-commit-action.outputs.changes_detected == 'true'
