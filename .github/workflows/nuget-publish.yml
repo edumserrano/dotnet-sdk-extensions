@@ -86,10 +86,10 @@ jobs:
 
         $downloadArtifactMessage = "You can inspect the test results by downloading the build artifact named: ${{ env.TEST_RESULTS_ARTIFACT_NAME }}."
         if($LASTEXITCODE -eq 0) {
-          Write-Host "::notice::Tests passed. $downloadArtifactMessage"
+          Write-Host "::notice::Tests passed on ${{ matrix.os }}. $downloadArtifactMessage"
         }
         else {
-          Write-Host "::error::Tests failed. $downloadArtifactMessage"
+          Write-Host "::error::Tests failed on  ${{ matrix.os }}. $downloadArtifactMessage"
         }
     # this job is on a matrix run but I only want to upload code coverage to Codecov once, so I've chose to run it on one of the matrix.os values.
     # furthermore, the steps below provide feedback on the test run so I want to run them even if the dotnet-test step fails. For that
@@ -119,8 +119,8 @@ jobs:
     - name: Log Codecov info
       if: matrix.os == 'ubuntu-latest' && (steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure') && always()
       run: |
-        $codeCoveUrl = "https://app.codecov.io/gh/${{ github.repository }}"
-        Write-Host "::notice title=Code coverage::Code coverage has been uploaded to Codecov at $codeCoveUrl . You can download the code coverage report from the build artifact named: ${{ env.CODE_COVERAGE_ARTIFACT_NAME }}."
+        $codeCoveUrl = "https://app.codecov.io/gh/${{ github.repository }}/"
+        Write-Host "::notice title=Code coverage::Code coverage has been uploaded to Codecov at $codeCoveUrl. You can download the code coverage report from the build artifact named: ${{ env.CODE_COVERAGE_ARTIFACT_NAME }}."
     - name: Upload test-results to artifacts
       if: (steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure') && always()
       uses: actions/upload-artifact@v2
