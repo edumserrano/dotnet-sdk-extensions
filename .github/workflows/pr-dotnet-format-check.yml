@@ -61,7 +61,7 @@ jobs:
           Write-Host "::warning::dotnet format found files that require formatting."
         }
         else {
-          Write-Host "dotnet format didn't find any file that requires formatting."
+          Write-Host "::notice title=dotnet format::dotnet format didn't find any file that requires formatting."
         }
 
         Exit 0 # always exit successfully

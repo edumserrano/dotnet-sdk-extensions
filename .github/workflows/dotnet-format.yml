@@ -41,7 +41,7 @@ jobs:
         Write-Host "::set-output name=can-create-pr::$canCreatePr"
 
         if($canCreatePr) {
-          Write-Host "There isn't any open dotnet format PR so this workflow will proceed with the dotnet format job."
+          Write-Host "::notice title=Check for dotnet format open PR::There isn't any open dotnet format PR so this workflow will proceed with the dotnet format job."
         }
         else {
           Write-Host "::warning::There is an open dotnet format PR so this workflow will NOT proceed with the dotnet format job."
