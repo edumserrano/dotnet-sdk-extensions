@@ -180,7 +180,7 @@ jobs:
         elseif($pushStepConclusion -eq 'failure') {
           Write-Host "::error::Failed to push DotNet.Sdk.Extensions NuGet and symbols."
         }
-        elseif($pushStepConclusion -eq 'success')
+        elseif($pushStepConclusion -eq 'success') {
           Write-Host "::notice::Successfully pushed DotNet.Sdk.Extensions NuGet and symbols to nuget.org. You can find the package at: https://www.nuget.org/packages/DotNet-Sdk-Extensions."
         }
     - name: Publish DotNet.Sdk.Extensions.Testing nuget and symbols
