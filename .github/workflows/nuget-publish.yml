@@ -41,6 +41,7 @@ jobs:
       TEST_COVERAGE_FILE: tests/${{ matrix.os }}/coverage-results/coverage.net6.0.opencover.xml
       TEST_COVERAGE_REPORT_DIR: tests/${{ matrix.os }}/coverage-results/report
       TEST_RESULTS_ARTIFACT_NAME: test-results-${{ matrix.os }}
+      CODE_COVERAGE_ARTIFACT_NAME: code-coverage-report-${{ matrix.os }}
     steps:
     - uses: actions/checkout@v2
     - name: Setup .NET
@@ -114,8 +115,13 @@ jobs:
       if: (steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure') && always()
       uses: actions/upload-artifact@v2
       with:
-        name: code-coverage-report-${{ matrix.os }}
+        name: ${{ env.CODE_COVERAGE_ARTIFACT_NAME }}
         path: ${{ env.TEST_COVERAGE_REPORT_DIR }}
+    - name: Log Codecov info
+      if: (steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure') && always()
+      run: |
+        $codeCoveUrl = "https://app.codecov.io/gh/{{ github.repository }}/"
+        Write-Host "::notice::Code coverage has been uploaded to Codecov at $codeCoveUrl. You can download the code coverage report from the build artifact named: ${{ env.CODE_COVERAGE_ARTIFACT_NAME }}."
     - name: Upload test-results to artifacts
       if: (steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure') && always()
       uses: actions/upload-artifact@v2
