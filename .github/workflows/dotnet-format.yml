@@ -94,6 +94,15 @@ jobs:
       with:
         commit_message: ${{ steps.commit-info.outputs.commit-message }}
         branch: ${{ steps.commit-info.outputs.branch-name }}
+    - name: log dotnet format output
+      run: |
+        $hasChanges = [System.Convert]::ToBoolean("${{ steps.auto-commit-action.outputs.changes_detected }}")
+        if($hasChanges) {
+          Write-Host "::notice::dotnet format didn't find any file that requires formatting."
+        }
+        else {
+          Write-Host "::warning::dotnet format found files that require formatting."
+        }
     - name: Create dotnet format PR
       if: steps.auto-commit-action.outputs.changes_detected == 'true'
       env:
