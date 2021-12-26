@@ -172,7 +172,7 @@ jobs:
     - name: Log DotNet.Sdk.Extensions NuGet push info
       if: (steps.dotnet-sdk-extensions-nuget-push.conclusion == 'success' || steps.dotnet-sdk-extensions-nuget-push.conclusion == 'failure') && always()
       run: |
-        $pushStepConclusion = ${{ steps.dotnet-test.conclusion }}
+        $pushStepConclusion = '${{ steps.dotnet-test.conclusion }}'
         $nugetAlreadyExists = [System.Convert]::ToBoolean("${{ steps.dotnet-sdk-extensions-nuget-push.outputs.nuget-already-exists }}")
         if($nugetAlreadyExists) {
           Write-Host "::notice::You can download the NuGet packages and symbols from the build artifact named: ${{ env.NUGET_ARTIFACT_NAME }}."
