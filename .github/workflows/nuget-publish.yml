@@ -92,12 +92,11 @@ jobs:
           Write-Host "::error::Tests failed. $downloadArtifactMessage"
         }
     # this job is on a matrix run but I only want to upload code coverage to Codecov once, so I've chose to run it on one of the matrix.os values.
-    # furthermore, the steps below provide feedback on the test run so I want to run them even if job failed or if the dotnet-test step fails. For that
+    # furthermore, the steps below provide feedback on the test run so I want to run them even if the dotnet-test step fails. For that
     # I need:
     # - the 'always()' condition: without it the step only runs if the job is successful, it's like the 'if' condition on any step always has a hidden '&& success()' clause
     # - the '(steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure')' condition: to run the steps only if the dotnet-test step has ran, regardless
-    # if it failed or not. It won't run if the dotnet-test step has been skipped or cancelled. In this case, there's no point in trying to run the steps below
-    # because there won't be any data from the test run.
+    # if it failed or not. It won't run if the dotnet-test step has been skipped or cancelled.
     - name: Upload test coverage to Codecov
       uses: codecov/codecov-action@v2.1.0
       if: matrix.os == 'ubuntu-latest' && (steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure') && always()
@@ -118,9 +117,9 @@ jobs:
         name: ${{ env.CODE_COVERAGE_ARTIFACT_NAME }}
         path: ${{ env.TEST_COVERAGE_REPORT_DIR }}
     - name: Log Codecov info
-      if: (steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure') && always()
+      if: matrix.os == 'ubuntu-latest' && (steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure') && always()
       run: |
-        $codeCoveUrl = "https://app.codecov.io/gh/{{ github.repository }}/"
+        $codeCoveUrl = "https://app.codecov.io/gh/${{ github.repository }}/"
         Write-Host "::notice::Code coverage has been uploaded to Codecov at $codeCoveUrl. You can download the code coverage report from the build artifact named: ${{ env.CODE_COVERAGE_ARTIFACT_NAME }}."
     - name: Upload test-results to artifacts
       if: (steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure') && always()
@@ -138,6 +137,7 @@ jobs:
       TESTING_EXTENSIONS_CSPROJ_FILEPATH : ${{ github.workspace }}/src/DotNet.Sdk.Extensions.Testing/DotNet.Sdk.Extensions.Testing.csproj
       EXTENSIONS_BIN_FOLDER : ${{ github.workspace }}/src/DotNet.Sdk.Extensions/bin/Release
       TESTING_EXTENSIONS_BIN_FOLDER : ${{ github.workspace }}/src/DotNet.Sdk.Extensions.Testing/bin/Release
+      NUGET_ARTIFACT_NAME : nuget-packages-and-symbols
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
@@ -158,25 +158,50 @@ jobs:
     - name: Package DotNet.Sdk.Extensions.Testing
       run: dotnet pack ${{ env.TESTING_EXTENSIONS_CSPROJ_FILEPATH }} -c Release
     - name: Publish DotNet.Sdk.Extensions nuget and symbols
+      id: dotnet-sdk-extensions-nuget-push
       uses: ./.github/actions/nuget-push
-      if: github.event_name != 'pull_request' # don't push nugets on pull requests
+      if: github.event_name != 'pull_request' # don't push NuGets on pull requests
       with:
         api-key: ${{ secrets.NUGET_PUSH_API_KEY }}
         source: https://api.nuget.org/v3/index.json
         working-directory: ${{ env.EXTENSIONS_BIN_FOLDER }}
+    # Some of the steps below provide feedback on the NuGet push and artifact upload and I want to run them even if some of the previous steps failed. For that I need:
+    # - the 'always()' condition: without it the step only runs if the job is successful, it's like the 'if' condition on any step always has a hidden '&& success()' clause
+    # - the '(steps.<step-id>.conclusion == 'success' || steps.<step-id>.conclusion == 'failure')' condition: to run the steps only if the <step-id> step has ran, regardless
+    # if it failed or not. It won't run if the <step-id> step has been skipped or cancelled.
+    - name: Log DotNet.Sdk.Extensions NuGet push info
+      if: (steps.dotnet-sdk-extensions-nuget-push.conclusion == 'success' || steps.dotnet-sdk-extensions-nuget-push.conclusion == 'failure') && always()
+      run: |
+        Write-Host "value is ${{ steps.dotnet-sdk-extensions-nuget-push.outputs.nuget-already-exists }}"
+        $pushStepConclusion = ${{ steps.dotnet-test.conclusion }}
+        $nugetAlreadyExists = [System.Convert]::ToBoolean("${{ steps.dotnet-sdk-extensions-nuget-push.outputs.nuget-already-exists }}")
+        if($nugetAlreadyExists) {
+          Write-Host "::notice::You can download the NuGet packages and symbols from the build artifact named: ${{ env.NUGET_ARTIFACT_NAME }}."
+        }
+        else if($pushStepConclusion -eq 'failure') {
+          Write-Host "::error::Failed to push DotNet.Sdk.Extensions NuGet and symbols."
+        }
+        else if($pushStepConclusion -eq 'success')
+          Write-Host "::notice::Successfully pushed DotNet.Sdk.Extensions NuGet and symbols to nuget.org. You can find the package at: https://www.nuget.org/packages/DotNet-Sdk-Extensions."
+        }
     - name: Publish DotNet.Sdk.Extensions.Testing nuget and symbols
       uses: ./.github/actions/nuget-push
-      if: github.event_name != 'pull_request' # don't push nugets on pull requests
+      if: github.event_name != 'pull_request' # don't push NuGets on pull requests
       with:
         api-key: ${{ secrets.NUGET_PUSH_API_KEY }}
         source: https://api.nuget.org/v3/index.json
         working-directory: ${{ env.TESTING_EXTENSIONS_BIN_FOLDER }}
-    - name: Upload nugets and symbols to artifacts
+    - name: Upload NuGets and symbols to artifacts
+      id: upload-nuget-artifacts
       uses: actions/upload-artifact@v2
       with:
-        name: nuget-packages-and-symbols
+        name: ${{ env.NUGET_ARTIFACT_NAME }}
         path: |
           ${{ env.EXTENSIONS_BIN_FOLDER }}/*.nupkg
           ${{ env.EXTENSIONS_BIN_FOLDER }}/*.snupkg
           ${{ env.TESTING_EXTENSIONS_BIN_FOLDER }}/*.nupkg
           ${{ env.TESTING_EXTENSIONS_BIN_FOLDER }}/*.snupkg
+    - name: Log NuGet artifacts info
+      if: (steps.upload-nuget-artifacts.conclusion == 'success' || steps.upload-nuget-artifacts.conclusion == 'failure') && always()
+      run: |
+        Write-Host "::notice::You can download the NuGet packages and symbols from the build artifact named: ${{ env.NUGET_ARTIFACT_NAME }}."

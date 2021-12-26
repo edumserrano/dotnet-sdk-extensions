@@ -36,11 +36,16 @@ inputs:
   working-directory:
     description: 'The directory that will be used to push nuget packages. It will push all *.nupkg and corresponding symbol packages present in the directory.'
     required: true
+outputs:
+  nuget-already-exists:
+    description: "Indicates if any of the NuGet packages failed to be uploaded because they already existed on the server."
+    value: ${{ steps.nuget-push.outputs.nuget-already-exists }}
 
 runs:
   using: "composite"
   steps:
     - shell: pwsh
+      id: nuget-push
       working-directory: ${{ inputs.working-directory }}
       run: |
         Write-Host "Pushing the following nuget packages and symbols:"
@@ -59,6 +64,7 @@ runs:
         # - understand which .nupgk succeeded and push the corresponding symbols packages (.snupkg).
 
         $nugetAlreadyExists = ($nugetResponse | ?{$_.Contains("Response status code does not indicate success: 409")}).Length -gt 0
+        Write-Host "::set-output name=nuget-already-exists::$nugetAlreadyExists"
         if($nugetAlreadyExists) {
           Write-Host "The nuget package already exists. The output from nuget push was:"
           $nugetResponse # this will print out the output from the 'dotnet nuget push' command
