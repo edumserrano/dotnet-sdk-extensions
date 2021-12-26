@@ -82,11 +82,11 @@ jobs:
           /p:CoverletOutputFormat="json%2copencover" `
           -m:1
 
-        if($LASTEXITCODE -ne 0) {
+        if($LASTEXITCODE -eq 0) {
           Write-Host "::notice title=dotnet test (${{ matrix.os }})::All tests passed."
         }
         else {
-          Write-Host "::notice title=dotnet test (${{ matrix.os }})::Tests failed."
+          Write-Host "::error title=dotnet test (${{ matrix.os }})::Tests failed."
         }
     # this job is on a matrix run but I only want to upload code coverage to Codecov once, so I've chose to run it on one of the matrix.os values.
     # furthermore, the steps below provide feedback on the test run so I want to run them even if job failed or if the dotnet-test step fails. For that
@@ -125,7 +125,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        $testReports = Get-Content ${{ env.TEST_RESULTS_DIR }}/*.md # concatenate all markdown test reports
+        # $testReports = Get-Content ${{ env.TEST_RESULTS_DIR }}/*.md # concatenate all markdown test reports
+        $testReports = Get-ChildItem -Path ${{ env.TEST_RESULTS_DIR }} -Filter *.md | Select-Object -first 1 | Get-Content
         $uri = "https://api.github.com/repos/${{ github.repository }}/check-runs"
         $headers = @{
           Accept = "application/vnd.github.v3+json"
