@@ -135,7 +135,7 @@ jobs:
         "@
 
         $commentUrl = gh pr comment ${{ env.PR_NUMBER }} --body $commentBody
-        Write-Host "Created comment at $commentUrl"
+        Write-Host "::notice::Created comment at $commentUrl."
         $commentId = $commentUrl.Split("-")[-1]
         Write-Host "::set-output name=pr-comment-id::$commentId"
     - name: Add hooray reaction to PR comment

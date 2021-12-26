@@ -58,10 +58,10 @@ jobs:
         Write-Host "::set-output name=has-changes::$hasChanges"
 
         if($hasChanges) {
-          Write-Host "::warning::dotnet format found files that require formatting."
+          Write-Host "::warning::dotnet format found files that do not respect the code guidelines."
         }
         else {
-          Write-Host "::notice title=dotnet format::dotnet format didn't find any file that requires formatting."
+          Write-Host "::notice::dotnet format didn't find any file that does not respect the code guidelines."
         }
 
         Exit 0 # always exit successfully
@@ -107,9 +107,9 @@ jobs:
       run: |
         $hasChanges = [System.Convert]::ToBoolean("${{ steps.dotnet-format.outputs.has-changes }}")
         if($hasChanges) {
-          Write-Host "dotnet format found files that do not respect the code guidelines so setting the workflow status as failed."
+          Write-Host "::error::dotnet format found files that do not respect the code guidelines so setting the workflow status as failed."
           Exit 1
         }
 
-        Write-Host "dotnet format didn't find any file that does not respect the code guidelines so setting the workflow status as successful."
+        Write-Host "::notice::dotnet format didn't find any file that does not respect the code guidelines so setting the workflow status as successful."
         Exit 0
