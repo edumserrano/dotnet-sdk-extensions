@@ -205,7 +205,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers
 #if NETCOREAPP3_1
             expectedException.InnerException.ShouldBeNull();
 #else
-            expectedException.InnerException.ShouldBeOfType<TimeoutException>();     
+            expectedException.InnerException.ShouldBeOfType<TimeoutException>();
             expectedException.InnerException.Message.ShouldBe("A task was canceled.");
 #endif
         }
