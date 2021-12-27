@@ -181,7 +181,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers
             handler.MockHttpResponse(builder => builder.TimesOut(TimeSpan.FromMilliseconds(500)));
             var httpClient = new HttpClient(handler)
             {
-                Timeout = TimeSpan.FromMilliseconds(150),
+                Timeout = TimeSpan.FromMilliseconds(50),
             };
             var request = new HttpRequestMessage(HttpMethod.Get, "https://google.com");
 
@@ -200,11 +200,11 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers
 
             expectedException.ShouldNotBeNull("Expected TaskCanceledException but didn't get any.");
             expectedException.ShouldBeOfType<TaskCanceledException>();
-            expectedException.Message.ShouldBe("The request was canceled due to the configured HttpClient.Timeout of 0.05 seconds elapsing.");
-
 #if NETCOREAPP3_1
+            expectedException.Message.ShouldBe("A task was canceled.");
             expectedException.InnerException.ShouldBeNull();
 #else
+expectedException.Message.ShouldBe("The request was canceled due to the configured HttpClient.Timeout of 0.05 seconds elapsing.");
             expectedException.InnerException.ShouldBeOfType<TimeoutException>();
             expectedException.InnerException.Message.ShouldBe("A task was canceled.");
 #endif
