@@ -181,7 +181,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers
             handler.MockHttpResponse(builder => builder.TimesOut(TimeSpan.FromMilliseconds(500)));
             var httpClient = new HttpClient(handler)
             {
-                Timeout = TimeSpan.FromMilliseconds(50),
+                Timeout = TimeSpan.FromMilliseconds(150),
             };
             var request = new HttpRequestMessage(HttpMethod.Get, "https://google.com");
 
@@ -205,7 +205,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers
 #if NETCOREAPP3_1
             expectedException.InnerException.ShouldBeNull();
 #else
-            expectedException.InnerException.ShouldBeOfType<TimeoutException>();     
+            expectedException.InnerException.ShouldBeOfType<TimeoutException>();
             expectedException.InnerException.Message.ShouldBe("A task was canceled.");
 #endif
         }
