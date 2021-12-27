@@ -117,10 +117,10 @@ jobs:
         name: ${{ env.CODE_COVERAGE_ARTIFACT_NAME }}
         path: ${{ env.TEST_COVERAGE_REPORT_DIR }}
     - name: Log Codecov info
-      if: matrix.os == 'ubuntu-latest' && (steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure') && always()
+      if: (steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure') && always()
       run: |
         $codeCoveUrl = "https://app.codecov.io/gh/${{ github.repository }}/"
-        Write-Host "::notice title=Code coverage::Code coverage has been uploaded to Codecov at $codeCoveUrl. You can download the code coverage report from the build artifact named: ${{ env.CODE_COVERAGE_ARTIFACT_NAME }}."
+        Write-Host "::notice title=Code coverage (${{ matrix.os }})::Code coverage has been uploaded to Codecov at $codeCoveUrl. You can download the code coverage report from the build artifact named: ${{ env.CODE_COVERAGE_ARTIFACT_NAME }}."
     - name: Upload test-results to artifacts
       if: (steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure') && always()
       uses: actions/upload-artifact@v2
