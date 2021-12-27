@@ -109,9 +109,6 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.Response
                 throw new InvalidOperationException("Response behavior already configured.");
             }
 
-            // when simulating a timeout we need to do the same as what HttpClient
-            // does in that situation which is to throw a TaskCanceledException with an inner
-            // exception of TimeoutException
             _handlerAsync = async (_, cancellationToken) =>
             {
                 await Task.Delay(timeout, cancellationToken);
