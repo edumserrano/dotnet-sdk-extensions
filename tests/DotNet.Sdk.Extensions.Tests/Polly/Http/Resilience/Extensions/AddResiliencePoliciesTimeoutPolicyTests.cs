@@ -39,7 +39,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 EnableCircuitBreakerPolicy = false,
                 Timeout = new TimeoutOptions
                 {
-                    TimeoutInSecs = 0.05,
+                    TimeoutInSecs = 0.15,
                 },
             };
             var services = new ServiceCollection();
@@ -79,7 +79,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 EnableCircuitBreakerPolicy = false,
                 Timeout = new TimeoutOptions
                 {
-                    TimeoutInSecs = 0.05,
+                    TimeoutInSecs = 0.15,
                 },
             };
             const string optionsName = "GitHubOptions";
@@ -126,7 +126,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 EnableCircuitBreakerPolicy = false,
                 Timeout = new TimeoutOptions
                 {
-                    TimeoutInSecs = 0.05,
+                    TimeoutInSecs = 0.15,
                 },
             };
             var services = new ServiceCollection();
@@ -172,7 +172,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 EnableCircuitBreakerPolicy = false,
                 Timeout = new TimeoutOptions
                 {
-                    TimeoutInSecs = 0.05,
+                    TimeoutInSecs = 0.15,
                 },
             };
             const string optionsName = "GitHubOptions";
@@ -223,7 +223,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 EnableCircuitBreakerPolicy = false,
                 Timeout = new TimeoutOptions
                 {
-                    TimeoutInSecs = 0.05,
+                    TimeoutInSecs = 0.15,
                 },
             };
             const string optionsName = "GitHubOptions";
@@ -276,7 +276,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 EnableCircuitBreakerPolicy = false,
                 Timeout = new TimeoutOptions
                 {
-                    TimeoutInSecs = 0.05,
+                    TimeoutInSecs = 0.15,
                 },
             };
             var services = new ServiceCollection();
@@ -324,7 +324,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 EnableTimeoutPolicy = false,
                 Timeout = new TimeoutOptions
                 {
-                    TimeoutInSecs = 0.05,
+                    TimeoutInSecs = 0.15,
                 },
             };
             var services = new ServiceCollection();
@@ -349,7 +349,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                     .TimeoutExecutor(resilienceOptions.Timeout, testHttpMessageHandler)
                     .TriggerTimeoutPolicyAsync();
             });
-            expectedException.Message.ShouldBe("The request should have been aborted but it wasn't. Make sure the HttpClient.Timeout value is set to a value lower than 1.05 seconds.");
+            expectedException.Message.ShouldBe("The request should have been aborted but it wasn't. Make sure the HttpClient.Timeout value is set to a value lower than 1.15 seconds.");
         }
     }
 }
