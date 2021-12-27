@@ -172,24 +172,39 @@ jobs:
     - name: Log DotNet.Sdk.Extensions NuGet push info
       if: (steps.dotnet-sdk-extensions-nuget-push.conclusion == 'success' || steps.dotnet-sdk-extensions-nuget-push.conclusion == 'failure') && always()
       run: |
-        $pushStepConclusion = '${{ steps.dotnet-test.conclusion }}'
+        $pushStepConclusion = '${{ steps.dotnet-sdk-extensions-nuget-push.conclusion }}'
         $nugetAlreadyExists = [System.Convert]::ToBoolean("${{ steps.dotnet-sdk-extensions-nuget-push.outputs.nuget-already-exists }}")
         if($nugetAlreadyExists) {
-          Write-Host "::notice::DotNet.Sdk.Extensions NuGet was NOT published to nuget.org because the version that was to be pushed already exists."
+          Write-Host "::notice title=DotNet.Sdk.Extensions NuGet::DotNet.Sdk.Extensions NuGet was NOT published to nuget.org because the version to be pushed already exists."
         }
         elseif($pushStepConclusion -eq 'failure') {
-          Write-Host "::error::Failed to push DotNet.Sdk.Extensions NuGet and symbols."
+          Write-Host "::error title=DotNet.Sdk.Extensions NuGet::Failed to push DotNet.Sdk.Extensions NuGet and symbols."
         }
         elseif($pushStepConclusion -eq 'success') {
-          Write-Host "::notice::Successfully pushed DotNet.Sdk.Extensions NuGet and symbols to nuget.org. You can find the package at: https://www.nuget.org/packages/DotNet-Sdk-Extensions."
+          Write-Host "::notice title=DotNet.Sdk.Extensions NuGet::Successfully pushed DotNet.Sdk.Extensions NuGet and symbols to nuget.org. You can find the package at: https://www.nuget.org/packages/DotNet-Sdk-Extensions."
         }
     - name: Publish DotNet.Sdk.Extensions.Testing nuget and symbols
       uses: ./.github/actions/nuget-push
+      id: dotnet-sdk-extensions-testing-nuget-push
       if: github.event_name != 'pull_request' # don't push NuGets on pull requests
       with:
         api-key: ${{ secrets.NUGET_PUSH_API_KEY }}
         source: https://api.nuget.org/v3/index.json
         working-directory: ${{ env.TESTING_EXTENSIONS_BIN_FOLDER }}
+    - name: Log DotNet.Sdk.Extensions.Testing NuGet push info
+      if: (steps.dotnet-sdk-extensions-testing-nuget-push.conclusion == 'success' || steps.dotnet-sdk-extensions-testing-nuget-push.conclusion == 'failure') && always()
+      run: |
+        $pushStepConclusion = '${{ steps.dotnet-sdk-extensions-testing-nuget-push.conclusion }}'
+        $nugetAlreadyExists = [System.Convert]::ToBoolean("${{ steps.dotnet-sdk-extensions-testing-nuget-push.outputs.nuget-already-exists }}")
+        if($nugetAlreadyExists) {
+          Write-Host "::notice title=DotNet.Sdk.Extensions.Testing NuGet::DotNet.Sdk.Extensions.Testing NuGet was NOT published to nuget.org because the version to be pushed already exists."
+        }
+        elseif($pushStepConclusion -eq 'failure') {
+          Write-Host "::error title=DotNet.Sdk.Extensions.Testing NuGet::Failed to push DotNet.Sdk.Extensions.Testing NuGet and symbols."
+        }
+        elseif($pushStepConclusion -eq 'success') {
+          Write-Host "::notice title=DotNet.Sdk.Extensions.Testing NuGet::Successfully pushed DotNet.Sdk.Extensions.Testing NuGet and symbols to nuget.org. You can find the package at: https://www.nuget.org/packages/DotNet-Sdk-Extensions-Testing."
+        }
     - name: Upload NuGets and symbols to artifacts
       id: upload-nuget-artifacts
       uses: actions/upload-artifact@v2
