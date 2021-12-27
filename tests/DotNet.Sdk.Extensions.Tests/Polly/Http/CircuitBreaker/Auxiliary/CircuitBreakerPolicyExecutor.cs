@@ -85,15 +85,22 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
 
         public async Task ShouldBeOpenAsync(string requestPath)
         {
-            var response = await _httpClient.GetAsync(requestPath);
-            if (response is not CircuitBrokenHttpResponseMessage circuitBrokenHttpResponseMessage)
+            try
             {
-                throw new InvalidOperationException($"Unexpected response type from open circuit. Expected a {typeof(CircuitBrokenHttpResponseMessage)} but got a {response.GetType()} from requestPath: {requestPath}");
-            }
+                var response = await _httpClient.GetAsync(requestPath);
+                if (response is not CircuitBrokenHttpResponseMessage circuitBrokenHttpResponseMessage)
+                {
+                    throw new InvalidOperationException($"Unexpected response type from open circuit. Expected a {typeof(CircuitBrokenHttpResponseMessage)} but got a {response.GetType()} from requestPath: {requestPath}");
+                }
 
-            if (circuitBrokenHttpResponseMessage.StatusCode != HttpStatusCode.InternalServerError)
+                if (circuitBrokenHttpResponseMessage.StatusCode != HttpStatusCode.InternalServerError)
+                {
+                    throw new InvalidOperationException($"Unexpected status code from open circuit. Got {response.StatusCode} but expected {HttpStatusCode.InternalServerError} from requestPath: {requestPath}");
+                }
+            }
+            catch (Exception ex)
             {
-                throw new InvalidOperationException($"Unexpected status code from open circuit. Got {response.StatusCode} but expected {HttpStatusCode.InternalServerError} from requestPath: {requestPath}");
+                throw new InvalidOperationException($"The circuit should be open but wasn't. Unexpected exception of type {ex.GetType()} from requestPath: {requestPath}");
             }
         }
 
