@@ -218,4 +218,4 @@ jobs:
     - name: Log NuGet artifacts info
       if: (steps.upload-nuget-artifacts.conclusion == 'success' || steps.upload-nuget-artifacts.conclusion == 'failure') && always()
       run: |
-        Write-Host "::notice::You can download the NuGet packages and symbols from the build artifact named: ${{ env.NUGET_ARTIFACT_NAME }}."
+        Write-Host "::notice title=NuGets::You can download the NuGet packages and symbols from the build artifact named: ${{ env.NUGET_ARTIFACT_NAME }}."
