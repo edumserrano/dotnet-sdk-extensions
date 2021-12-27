@@ -8,12 +8,25 @@ using DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker;
 using DotNet.Sdk.Extensions.Polly.Http.Fallback.FallbackHttpResponseMessages;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers;
 using DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary;
+using Polly.CircuitBreaker;
 
 namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
 {
+    /// <summary>
+    /// Indicates how the circuit breaker reset should be performed.
+    /// </summary>
     public enum CircuitBreakerPolicyExecutorResetTypes
     {
+        /// <summary>
+        /// The circuit breaker reset will be instant. This is done by invoking the
+        /// <see cref="ICircuitBreakerPolicy.Reset"/> method.
+        /// </summary>
         Quick,
+
+        /// <summary>
+        /// The circuit breaker reset will be done as normal. This is done by waiting
+        /// until the circuit breaker transitions to half open and then to closed state.
+        /// </summary>
         Normal,
     }
 
@@ -70,7 +83,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary
         private async Task WaitResetAsync()
         {
             // wait for the duration of break so that the circuit goes into half open state
-            await Task.Delay(TimeSpan.FromSeconds(_circuitBreakerOptions.DurationOfBreakInSecs + 0.05));
+            await Task.Delay(TimeSpan.FromSeconds(_circuitBreakerOptions.DurationOfBreakInSecs + 0.07));
             // successful response will move the circuit breaker into closed state
             var response = await _httpClient.GetAsync(_resetRequestPath);
             if (response.StatusCode != HttpStatusCode.OK)
