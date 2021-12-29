@@ -87,8 +87,8 @@ jobs:
         template: ${{ steps.setup-pr-comment.outputs.pr-comment-template }}
         vars: |
           workflow: ${{ github.workflow }}
-          workflow-url: ${{ env.WORKFLOW_RUN_URL }}
-          last-commit-hash: ${{ steps.setup-pr-comment.outputs.pr-last-commit-hash }}
+          workflowUrl: ${{ env.WORKFLOW_RUN_URL }}
+          lastCommitHash: ${{ steps.setup-pr-comment.outputs.pr-last-commit-hash }}
     - name: Sanitize PR comment
       id: sanitize-pr-comment
       run: |
