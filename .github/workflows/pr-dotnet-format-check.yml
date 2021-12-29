@@ -26,6 +26,8 @@ jobs:
       SLN_FILEPATH : ${{ github.workspace }}/DotNet.Sdk.Extensions.sln
       DOTNET_VERSION : 6.0.101
       WORKFLOW_RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      PR_NUMBER: ${{ github.event.pull_request.number }}
+      PR_BRANCH_NAME: ${{ github.event.pull_request.head.ref }}
     steps:
     - name: Checkout
       uses: actions/checkout@v2
@@ -65,44 +67,50 @@ jobs:
         }
 
         Exit 0 # always exit successfully
-    - name: GitHub PR comment
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Setup PR comment
+      id: setup-pr-comment
       run: |
-        $commentBody = @"
-        `# [${{ github.workflow }}](${{ env.WORKFLOW_RUN_URL }})
-
-        "@
         $hasChanges = [System.Convert]::ToBoolean("${{ steps.dotnet-format.outputs.has-changes }}")
         if($hasChanges) {
-          $commentBody += @"
-        :exclamation: **dotnet format** found files that do not respect the code guidelines.
-
-        Before merging this PR please fix the reported issues. You can do so by either:
-        - adding a comment on this PR with:
-        ``````
-        /dotnet-format
-        ``````
-        - or locally running [dotnet format](https://github.com/dotnet/format) on the solution as such:
-        ``````
-        dotnet format DotNet.Sdk.Extensions.sln --severity info --verbosity diagnostic
-        ``````
-        "@
+          Write-Host "::set-output name=pr-comment-template::.github/workflows/templates/pr-dotnet-format-check/dotnet-format-found-changes.md"
         }
         else {
-          $commentBody += @"
-        :heavy_check_mark: **dotnet format** didn't find any file that does not respect the code guidelines.
-        "@
+          Write-Host "::set-output name=pr-comment-template::.github/workflows/templates/pr-dotnet-format-check/dotnet-format-did-not-find-changes.md"
         }
-
-        $commentBody += @"
-
-
-        :warning: dotnet format does **NOT** remove unused references. You have to do this manually. Please check that there isn't any unused reference.
-        "@
-
-        $prNumber = "${{github.event.pull_request.number}}"
-        gh pr comment $prNumber --body $commentBody
+    - name: Render comment template
+      id: render-pr-comment-template
+      uses: chuhlomin/render-template@v1.3
+      with:
+        template: ${{ steps.setup-pr-comment.outputs.pr-comment-template }}
+        vars: |
+          workflow: ${{ github.workflow }}
+          workflowUrl: ${{ env.WORKFLOW_RUN_URL }}
+    - name: Sanitize PR comment
+      id: sanitize-pr-comment
+      run: |
+        $commentBody = "${{ steps.render-pr-comment-template.outputs.result }}"
+        $commentBody = $commentBody -replace "`n","%0A" # The content must be escaped to preserve newlines. See https://github.community/t/set-output-truncates-multiline-strings/16852/3
+        Write-Host "::set-output name=pr-comment-body::$commentBody"
+    - name: Find Comment
+      uses: peter-evans/find-comment@v1.3.0
+      id: find-comment
+      with:
+        issue-number: ${{ env.PR_NUMBER }}
+        body-includes: PR dotnet format check
+        comment-author: github-actions[bot]
+    - name: Create comment
+      uses: peter-evans/create-or-update-comment@v1.4.5
+      if:  ${{ steps.find-comment.outputs.comment-id == 0 }}
+      with:
+        issue-number: ${{ env.PR_NUMBER }}
+        body: ${{ steps.sanitize-pr-comment.outputs.pr-comment-body }}
+    - name: Update comment
+      uses: peter-evans/create-or-update-comment@v1.4.5
+      if:  ${{ steps.find-comment.outputs.comment-id != 0 }}
+      with:
+        comment-id: ${{ steps.find-comment.outputs.comment-id }}
+        edit-mode: replace
+        body: ${{ steps.sanitize-pr-comment.outputs.pr-comment-body }}
     - name: Set workflow exit status
       run: |
         $hasChanges = [System.Convert]::ToBoolean("${{ steps.dotnet-format.outputs.has-changes }}")
