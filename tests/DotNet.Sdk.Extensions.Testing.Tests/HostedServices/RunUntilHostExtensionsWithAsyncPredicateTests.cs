@@ -159,7 +159,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
 
             var runUntilTask = host.RunUntilAsync(() => Task.FromResult(callCount >= 4), options => options.Timeout = TimeSpan.FromMilliseconds(1300));
             var exception = await Should.ThrowAsync<RunUntilException>(runUntilTask);
-            exception.Message.ShouldBe("RunUntilExtensions.RunUntilAsync timed out after 00:00:01. This means the Host was shutdown before the RunUntilExtensions.RunUntilAsync predicate returned true. If that's what you intended, meaning, if you want to run the Host for a set period of time, consider using RunUntilExtensions.RunUntilTimeoutAsync instead.");
+            exception.Message.ShouldBe("RunUntilExtensions.RunUntilAsync timed out after 00:00:01.3000000. This means the Host was shutdown before the RunUntilExtensions.RunUntilAsync predicate returned true. If that's what you intended, meaning, if you want to run the Host for a set period of time, consider using RunUntilExtensions.RunUntilTimeoutAsync instead.");
         }
 
         /// <summary>
