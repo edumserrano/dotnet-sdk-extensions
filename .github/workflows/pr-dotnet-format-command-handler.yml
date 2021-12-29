@@ -116,7 +116,6 @@ jobs:
         commentId: ${{ steps.add-pr-comment.outputs.pr-comment-id }}
         reaction: ${{ steps.add-pr-comment.outputs.pr-comment-reaction }}
 
-
   set-final-pr-status:
     name: Set final PR status
     needs: [dotnet-format]
