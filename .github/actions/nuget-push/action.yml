@@ -1,4 +1,4 @@
-# Why
+# Why was this action created:
 #
 # I was using the following command:
 # 'dotnet nuget push ./*.nupkg --api-key <api-key> --source https://api.nuget.org/v3/index.json --skip-duplicate'
