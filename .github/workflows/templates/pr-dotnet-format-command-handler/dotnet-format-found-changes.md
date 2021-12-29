@@ -1,6 +1,6 @@
-# [{{ .workflow }}]({{ .workflow-url }})
+# [{{ .workflow }}]({{ .workflowUrl }})
 
-:exclamation: **dotnet format** found files that did not respect the code guidelines and pushed commit {{ .last-commit-hash }}. Please review it before merging the PR.
+:exclamation: **dotnet format** found files that did not respect the code guidelines and pushed commit {{ .lastCommitHash }}. Please review it before merging the PR.
 
 ## Note
 

@@ -1,4 +1,4 @@
-# [{{ .workflow }}]({{ .workflow-url }})
+# [{{ .workflow }}]({{ .workflowUrl }})
 
 :heavy_check_mark: **dotnet format** didn't find any file that does not respect the code guidelines or there weren't any available automated fixes.
 
