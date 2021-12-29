@@ -1,0 +1,203 @@
+# # When making changes to this file please update the corresponding documentation which can be found at /docs/dev-notes/workflows/pr-dotnet-format-command-handler-workflow.md
+
+# name: PR dotnet format command handler
+
+# on:
+#   issue_comment:
+#     types: [created]
+
+# defaults:
+#   run:
+#     shell: pwsh
+
+# env:
+#   DOTNET_FORMAT_JOB_NAME: dotnet format
+#   STATUS_CONTEXT : ${{ github.workflow }} / dotnet format (${{ github.event_name }}) # mimic format from github checks $workflow-name / $job-name ($event-name)
+#   WORKFLOW_RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+# jobs:
+#   check-pr-comment:
+#     name: Check PR comment
+#     if: github.event.issue.pull_request && github.event.issue.state == 'open' && github.event.comment.body == '/dotnet format'
+#     runs-on: ubuntu-latest
+#     outputs:
+#       run-dotnet-format: ${{ steps.check-pr-comment.outputs.BOOL_TRIGGERED }}
+#       pr-number: ${{ steps.check-pr-comment.outputs.PULL_REQUEST_NUMBER }}
+#       pr-head-sha: ${{ steps.check-pr-comment.outputs.SHA }}
+#       pr-branch-name: ${{ steps.check-pr-comment.outputs.BRANCH_NAME }}
+#     steps:
+#     # the check on the workflow covers the required condition to trigger the workflow but the step below
+#     # will retrieve require data from the PR to use as outputs of this job
+#     - name: Check PR comment
+#       uses: machine-learning-apps/actions-chatops@master
+#       id: check-pr-comment
+#       with:
+#         TRIGGER_PHRASE: "/dotnet format"
+#       env:
+#         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#     - name: Dump output from 'check PR comment' step
+#       run: Write-Host '${{ toJson(steps.check-pr-comment.outputs) }}'
+
+#   dotnet-format:
+#     name: dotnet format
+#     needs: [check-pr-comment]
+#     if: needs.check-pr-comment.outputs.run-dotnet-format == 'True'
+#     runs-on: ubuntu-latest
+#     env:
+#       PR_NUMBER: ${{ needs.check-pr-comment.outputs.pr-number }}
+#       PR_HEAD_SHA: ${{ needs.check-pr-comment.outputs.pr-head-sha}}
+#       PR_BRANCH_NAME: ${{ needs.check-pr-comment.outputs.pr-branch-name}}
+#       DOTNET_VERSION : 6.0.101
+#       SLN_FILENAME: DotNet.Sdk.Extensions.sln
+#       SLN_FILEPATH : ${{ github.workspace }}/DotNet.Sdk.Extensions.sln
+#     steps:
+#     - name: Add eyes reaction to workflow trigger comment
+#       uses: dkershner6/reaction-action@v1
+#       with:
+#         token: ${{ secrets.GITHUB_TOKEN }}
+#         commentId: ${{ github.event.comment.id }}
+#         reaction: eyes
+#     - name: Checkout
+#       uses: actions/checkout@v2
+#       with:
+#         ref: ${{ env.PR_HEAD_SHA }}
+#         token: ${{ secrets.DOTNET_FORMAT_GH_TOKEN }}
+#     - name: Set PR status to pending
+#       uses: ./.github/actions/create-gh-status
+#       with:
+#         repo: ${{ github.repository }}
+#         pr-num: ${{ env.PR_NUMBER }}
+#         context: ${{ env.STATUS_CONTEXT }}
+#         state: pending
+#         description: Waiting for status to be reported
+#         target-url: ${{ env.WORKFLOW_RUN_URL }}
+#         token: ${{ secrets.GITHUB_TOKEN }}
+#     - name: Setup .NET
+#       uses: actions/setup-dotnet@v1
+#       with:
+#         dotnet-version: ${{ env.DOTNET_VERSION }}
+#     - name: Install dotnet-format tool
+#       run:  dotnet tool install --global dotnet-format
+#     - name: Cache/Restore NuGets
+#       uses: actions/cache@v2
+#       with:
+#         path:
+#           ~/.nuget/packages
+#         key: ${{ runner.os }}-nuget-${{ env.DOTNET_VERSION }}
+#         restore-keys: |
+#           ${{ runner.os }}-nuget-
+#     - name: dotnet format
+#       run: |
+#         dotnet format ${{ env.SLN_FILEPATH }} --severity info --verbosity diagnostic
+#     - name: Push dotnet format changes
+#       id: auto-commit-action
+#       uses: stefanzweifel/git-auto-commit-action@v4.11.0
+#       with:
+#         branch: ${{ env.PR_BRANCH_NAME }}
+#         commit_message: dotnet format for PR ${{ env.PR_NUMBER }}
+#     - name: Add PR comment
+#       id: add-pr-comment
+#       env:
+#         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#       run: |
+#         $commentBody = @"
+#         `# [${{ github.workflow }}](${{ env.WORKFLOW_RUN_URL }})
+
+#         "@
+#         $changesDetected = [System.Convert]::ToBoolean("${{ steps.auto-commit-action.outputs.changes_detected }}")
+#         if($changesDetected) {
+#           Write-Host "::set-output name=pr-comment-reaction::eyes"
+#           $lastCommitHash = git rev-parse HEAD
+#           $commentBody += ":exclamation: **dotnet format** found files that did not respect the code guidelines and pushed commit $lastCommitHash. Please review it before merging the PR."
+#         }
+#         else {
+#           Write-Host "::set-output name=pr-comment-reaction::hooray"
+#           $commentBody += ":heavy_check_mark: **dotnet format** didn't find any file that does not respect the code guidelines or there weren't any available automated fixes."
+#         }
+
+#         $commentBody += @"
+
+
+#         ## Note
+#         Sometimes the fix provided by the analyzers produces unecessary comments when formatting files.
+
+#         This should only happen if the project supports multiple target frameworks and the fix doesn't produce the same output for all. However, it seems that sometimes the ``Unmerged change from project ...`` comment shows up even though the fix produced the same output.
+
+#         If this happens, just delete the comments added. Otherwise, consider incorporating the commented out code using [preprocessor directives to control conditional compilation](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/preprocessor-directives#conditional-compilation).
+#         Example:
+#         ``````csharp
+#         #if NET5_0
+#             ...
+#         #elif NETCOREAPP3_1
+#             ...
+#         #endif
+#         ``````
+#         "@
+
+#         $commentUrl = gh pr comment ${{ env.PR_NUMBER }} --body $commentBody
+#         Write-Host "::notice::Created comment at $commentUrl."
+#         $commentId = $commentUrl.Split("-")[-1]
+#         Write-Host "::set-output name=pr-comment-id::$commentId"
+#     - name: Add hooray reaction to PR comment
+#       uses: dkershner6/reaction-action@v1
+#       with:
+#         token: ${{ secrets.GITHUB_TOKEN }}
+#         commentId: ${{ steps.add-pr-comment.outputs.pr-comment-id }}
+#         reaction: ${{ steps.add-pr-comment.outputs.pr-comment-reaction }}
+
+#   set-final-pr-status:
+#     name: Set final PR status
+#     needs: [check-pr-comment, dotnet-format]
+#     if: needs.check-pr-comment.outputs.run-dotnet-format == 'True'
+#     runs-on: ubuntu-latest
+#     env:
+#       PR_NUMBER: ${{ needs.check-pr-comment.outputs.pr-number }}
+#     steps:
+#     - name: Checkout # need to checkout just because I'm using a custom action that exists on this repo
+#       uses: actions/checkout@v2
+#     - name: Get dotnet-format job execution time
+#       id: get-job-execution-time
+#       env:
+#         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#       run: |
+#         $uri = "https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/jobs"
+#         $headers = @{
+#           Accept = "application/vnd.github.v3+json"
+#           Authorization = "Bearer ${{ env.GITHUB_TOKEN }}"
+#         }
+
+#         $response = Invoke-RestMethod -Method 'Get' -Uri $uri -Headers $headers
+#         $jobStartTime = $response.jobs.where{$_.name -eq '${{ env.DOTNET_FORMAT_JOB_NAME }}'}.started_at
+#         $jobEndTime = $response.jobs.where{$_.name -eq '${{ env.DOTNET_FORMAT_JOB_NAME }}'}.completed_at
+#         $jobDuration = $jobEndTime - $jobStartTime
+#         if($jobDuration.Minutes -eq 0) {
+#           $jobDurationInSeconds = $jobDuration.Seconds
+#           $jobDurationAsString = "${jobDurationInSeconds}s"
+#         }
+#         else{
+#           $jobDurationInMinutes = [Math]::Round($jobDuration.TotalMinutes)
+#           $jobDurationAsString = "${jobDurationInMinutes}m"
+#         }
+
+#         Write-Host "::set-output name=dotnet-format-job-duration::$jobDurationAsString"
+#     - name: Set PR status to success
+#       uses: ./.github/actions/create-gh-status
+#       with:
+#         repo: ${{ github.repository }}
+#         pr-num: ${{ env.PR_NUMBER }}
+#         context: ${{ env.STATUS_CONTEXT }}
+#         state: success
+#         description: Successful in ${{ steps.get-job-execution-time.outputs.dotnet-format-job-duration }}
+#         target-url: ${{ env.WORKFLOW_RUN_URL }}
+#         token: ${{ secrets.GITHUB_TOKEN }}
+#     - name: Set PR status to failure
+#       if: ${{ needs.dotnet-format.result != 'success' || !success() }}
+#       uses: ./.github/actions/create-gh-status
+#       with:
+#         repo: ${{ github.repository }}
+#         pr-num: ${{ env.PR_NUMBER }}
+#         context: ${{ env.STATUS_CONTEXT }}
+#         state: failure
+#         description: Workflow failed or cancelled
+#         target-url: ${{ env.WORKFLOW_RUN_URL }}
+#         token: ${{ secrets.GITHUB_TOKEN }}
