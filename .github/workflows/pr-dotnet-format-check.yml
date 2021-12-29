@@ -81,7 +81,7 @@ jobs:
         Before merging this PR please fix the reported issues. You can do so by either:
         - adding a comment on this PR with:
         ``````
-        /dotnet format
+        /dotnet-format
         ``````
         - or locally running [dotnet format](https://github.com/dotnet/format) on the solution as such:
         ``````
