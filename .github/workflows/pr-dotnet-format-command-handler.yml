@@ -92,7 +92,7 @@ jobs:
     - name: Sanitize PR comment
       id: sanitize-pr-comment
       run: |
-        $commentBody = ${{ steps.render-pr-comment-template.outputs.result }}
+        $commentBody = "${{ steps.render-pr-comment-template.outputs.result }}"
         $commentBody = $commentBody -replace "`n","%0A" # The content must be escaped to preserve newlines. See https://github.community/t/set-output-truncates-multiline-strings/16852/3
         Write-Host "::set-output name=pr-comment-body::$commentBody"
     - name: Find Comment
@@ -154,4 +154,3 @@ jobs:
         description: Workflow failed or cancelled
         target-url: ${{ env.WORKFLOW_RUN_URL }}
         token: ${{ secrets.GITHUB_TOKEN }}
-
