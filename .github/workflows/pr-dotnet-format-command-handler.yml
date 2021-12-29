@@ -69,44 +69,32 @@ jobs:
     - name: Setup PR comment
       id: setup-pr-comment
       run: |
-        $commentBody = @"
-        `# [${{ github.workflow }}](${{ env.WORKFLOW_RUN_URL }})
-
-        "@
         $changesDetected = [System.Convert]::ToBoolean("${{ steps.auto-commit-action.outputs.changes_detected }}")
         if($changesDetected) {
           Write-Host "::set-output name=pr-comment-reaction::eyes"
           $lastCommitHash = git rev-parse HEAD
-          $commentBody += ":exclamation: **dotnet format** found files that did not respect the code guidelines and pushed commit $lastCommitHash. Please review it before merging the PR."
+          Write-Host "::set-output name=pr-last-commit-hash::$lastCommitHash"
+          Write-Host "::set-output name=pr-comment-template::.github/workflows/templates/pr-dotnet-format-command-handler/dotnet-format-found-changes.md"
         }
         else {
           Write-Host "::set-output name=pr-comment-reaction::hooray"
-          $commentBody += ":heavy_check_mark: **dotnet format** didn't find any file that does not respect the code guidelines or there weren't any available automated fixes."
+          Write-Host "::set-output name=pr-comment-template::.github/workflows/templates/pr-dotnet-format-command-handler/dotnet-format-did-not-find-changes.md"
         }
-
-        $commentBody += @"
-
-
-        ## Note
-        Sometimes the fix provided by the analyzers produces unecessary comments when formatting files.
-
-        This should only happen if the project supports multiple target frameworks and the fix doesn't produce the same output for all. However, it seems that sometimes the ``Unmerged change from project ...`` comment shows up even though the fix produced the same output.
-
-        If this happens, just delete the comments added. Otherwise, consider incorporating the commented out code using [preprocessor directives to control conditional compilation](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/preprocessor-directives#conditional-compilation).
-        Example:
-        ``````csharp
-        #if NET5_0
-            ...
-        #elif NETCOREAPP3_1
-            ...
-        #endif
-        ``````
-        "@
-
-        # The content must be escaped to preserve newlines. See https://github.community/t/set-output-truncates-multiline-strings/16852/3
-        $commentBody = $commentBody -replace "`n","%0A"
+    - name: Render comment template
+      id: render-pr-comment-template
+      uses: chuhlomin/render-template@v1.3
+      with:
+        template: ${{ steps.setup-pr-comment.outputs.pr-comment-template }}
+        vars: |
+          workflow: ${{ github.workflow }}
+          workflow-url: ${{ env.WORKFLOW_RUN_URL }}
+          last-commit-hash: ${{ steps.setup-pr-comment.outputs.pr-last-commit-hash }}
+    - name: Sanitize PR comment
+      id: sanitize-pr-comment
+      run: |
+        $commentBody = ${{ steps.render-pr-comment-template.outputs.result }}
+        $commentBody = $commentBody -replace "`n","%0A" # The content must be escaped to preserve newlines. See https://github.community/t/set-output-truncates-multiline-strings/16852/3
         Write-Host "::set-output name=pr-comment-body::$commentBody"
-        Write-Host $commentBody
     - name: Find Comment
       uses: peter-evans/find-comment@v1.3.0
       id: find-comment
@@ -119,7 +107,7 @@ jobs:
       if:  ${{ steps.find-comment.outputs.comment-id == 0 }}
       with:
         issue-number: ${{ env.PR_NUMBER }}
-        body: ${{ steps.setup-pr-comment.outputs.pr-comment-body }}
+        body: ${{ steps.sanitize-pr-comment.outputs.pr-comment-body }}
         reactions: ${{ steps.setup-pr-comment.outputs.pr-comment-reaction }}
     - name: Update comment
       uses: peter-evans/create-or-update-comment@v1.4.5
@@ -127,7 +115,7 @@ jobs:
       with:
         comment-id: ${{ steps.find-comment.outputs.comment-id }}
         edit-mode: replace
-        body: ${{ steps.setup-pr-comment.outputs.pr-comment-body }}
+        body: ${{ steps.sanitize-pr-comment.outputs.pr-comment-body }}
         reactions: ${{ steps.setup-pr-comment.outputs.pr-comment-reaction }}
 
   set-final-pr-status:
