@@ -85,7 +85,7 @@ jobs:
         ``````
         - or locally running [dotnet format](https://github.com/dotnet/format) on the solution as such:
         ``````
-        dotnet format DotNet.Sdk.Extensions.sln --fix-whitespace --fix-style info --fix-analyzers info --verbosity diagnostic
+        dotnet format DotNet.Sdk.Extensions.sln --severity info --verbosity diagnostic
         ``````
         "@
         }
