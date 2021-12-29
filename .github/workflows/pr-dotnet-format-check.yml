@@ -113,3 +113,4 @@ jobs:
 
         Write-Host "::notice::dotnet format didn't find any file that does not respect the code guidelines so setting the workflow status as successful."
         Exit 0
+
