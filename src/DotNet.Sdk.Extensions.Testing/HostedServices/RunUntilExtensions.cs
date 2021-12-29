@@ -95,7 +95,7 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices
             hostRunner.Dispose();
             if (runUntilResult == RunUntilResult.TimedOut)
             {
-                throw new RunUntilException($"{nameof(RunUntilExtensions)}.{nameof(RunUntilAsync)} timed out after {options.Timeout}. This means the Host was shutdown before the {nameof(RunUntilExtensions)}.{nameof(RunUntilAsync)} predicate returned true. If that's what you intended, if you want to run the Host for a set period of time consider using {nameof(RunUntilExtensions)}.{nameof(RunUntilTimeoutAsync)} instead.");
+                throw new RunUntilException($"{nameof(RunUntilExtensions)}.{nameof(RunUntilAsync)} timed out after {options.Timeout}. This means the Host was shutdown before the {nameof(RunUntilExtensions)}.{nameof(RunUntilAsync)} predicate returned true. If that's what you intended, meaning, if you want to run the Host for a set period of time, consider using {nameof(RunUntilExtensions)}.{nameof(RunUntilTimeoutAsync)} instead.");
             }
         }
     }
