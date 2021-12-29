@@ -104,7 +104,7 @@ jobs:
         "@
 
         # The content must be escaped to preserve newlines. See https://github.community/t/set-output-truncates-multiline-strings/16852/3
-        $commentBody = $commentBody -replace "`n","$0A"
+        $commentBody = $commentBody -replace "`n","%0A"
         Write-Host "::set-output name=pr-comment-body::$commentBody"
         Write-Host $commentBody
     - name: Find Comment
@@ -113,10 +113,7 @@ jobs:
       with:
         issue-number: ${{ env.PR_NUMBER }}
         body-includes: PR dotnet format command handler
-        # comment-author: github-actions
-    - name: Dump find comment output
-      run: |
-        Write-Host '${{ toJson(steps.find-comment.outputs) }}'
+        comment-author: github-actions[bot]
     - name: Create comment
       uses: peter-evans/create-or-update-comment@v1.4.5
       if:  ${{ steps.find-comment.outputs.comment-id == 0 }}
