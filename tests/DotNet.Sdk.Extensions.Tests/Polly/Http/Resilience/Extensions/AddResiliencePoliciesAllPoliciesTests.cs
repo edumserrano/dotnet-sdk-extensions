@@ -49,7 +49,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             {
                 Timeout = new TimeoutOptions
                 {
-                    TimeoutInSecs = 0.15,
+                    TimeoutInSecs = 0.25,
                 },
                 Retry = new RetryOptions
                 {
@@ -166,7 +166,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             {
                 Timeout = new TimeoutOptions
                 {
-                    TimeoutInSecs = 0.15,
+                    TimeoutInSecs = 0.25,
                 },
                 Retry = new RetryOptions
                 {

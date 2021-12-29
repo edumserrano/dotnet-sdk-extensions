@@ -317,7 +317,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                 EnableRetryPolicy = false,
                 Timeout = new TimeoutOptions
                 {
-                    TimeoutInSecs = 0.15,
+                    TimeoutInSecs = 0.25,
                 },
             };
             var services = new ServiceCollection();
