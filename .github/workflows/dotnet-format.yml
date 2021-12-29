@@ -126,7 +126,6 @@ jobs:
       run: |
         $title = "${{ steps.commit-info.outputs.branch-name }}: fix code guidelines violations"
         $body = "${{ steps.sanitize-pr-body.outputs.pr-body }}"
-        "@
         $prUrl = gh pr create `
           --title $title `
           --body $body `
