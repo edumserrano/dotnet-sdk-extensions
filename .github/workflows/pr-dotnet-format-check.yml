@@ -65,8 +65,6 @@ jobs:
         else {
           Write-Host "::notice::dotnet format didn't find any file that does not respect the code guidelines."
         }
-
-        Exit 0 # always exit successfully
     - name: Setup PR comment
       id: setup-pr-comment
       run: |
