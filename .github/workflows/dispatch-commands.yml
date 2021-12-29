@@ -15,4 +15,3 @@ jobs:
           token: ${{ secrets.DISPATCH_COMMANDS_GH_TOKEN }}
           commands: |
             dotnet-format
-

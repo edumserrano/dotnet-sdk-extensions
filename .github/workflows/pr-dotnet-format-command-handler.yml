@@ -115,7 +115,6 @@ jobs:
         body-includes: PR dotnet format command handler
         # comment-author: github-actions
     - name: Dump find comment output
-      id: setup-pr-comment
       run: |
         Write-Host '${{ toJson(steps.find-comment.outputs) }}'
     - name: Create comment
