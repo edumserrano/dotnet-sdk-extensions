@@ -24,7 +24,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
         [Fact]
         public void AddHttpClientTimeoutOptions()
         {
-            //const string optionsName = "timeoutOptions";
+            // const string optionsName = "timeoutOptions";
             const string optionsName = "timeoutOptions";
             const int timeoutInSecs = 3;
             var services = new ServiceCollection();
