@@ -119,38 +119,18 @@ jobs:
   set-final-pr-status:
     name: Set final PR status
     needs: [dotnet-format]
-    if: needs.check-pr-comment.outputs.run-dotnet-format == 'True'
     runs-on: ubuntu-latest
-    env:
-      PR_NUMBER: ${{ needs.check-pr-comment.outputs.pr-number }}
     steps:
-    - name: Checkout # need to checkout just because I'm using a custom action that exists on this repo
+    - name: Checkout # need to checkout because I'm using customs actions that exists on this repo
       uses: actions/checkout@v2
     - name: Get dotnet-format job execution time
       id: get-job-execution-time
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        $uri = "https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/jobs"
-        $headers = @{
-          Accept = "application/vnd.github.v3+json"
-          Authorization = "Bearer ${{ env.GITHUB_TOKEN }}"
-        }
-
-        $response = Invoke-RestMethod -Method 'Get' -Uri $uri -Headers $headers
-        $jobStartTime = $response.jobs.where{$_.name -eq '${{ env.DOTNET_FORMAT_JOB_NAME }}'}.started_at
-        $jobEndTime = $response.jobs.where{$_.name -eq '${{ env.DOTNET_FORMAT_JOB_NAME }}'}.completed_at
-        $jobDuration = $jobEndTime - $jobStartTime
-        if($jobDuration.Minutes -eq 0) {
-          $jobDurationInSeconds = $jobDuration.Seconds
-          $jobDurationAsString = "${jobDurationInSeconds}s"
-        }
-        else{
-          $jobDurationInMinutes = [Math]::Round($jobDuration.TotalMinutes)
-          $jobDurationAsString = "${jobDurationInMinutes}m"
-        }
-
-        Write-Host "::set-output name=dotnet-format-job-duration::$jobDurationAsString"
+      uses: ./.github/actions/get-gh-job-duration
+      with:
+        repo: ${{ github.repository }}
+        run-id: ${{ github.run_id }}
+        job-name: ${{ env.DOTNET_FORMAT_JOB_NAME }}
+        token: ${{ secrets.GITHUB_TOKEN }}
     - name: Set PR status to success
       uses: ./.github/actions/create-gh-status
       with:
@@ -158,7 +138,7 @@ jobs:
         pr-num: ${{ env.PR_NUMBER }}
         context: ${{ env.STATUS_CONTEXT }}
         state: success
-        description: Successful in ${{ steps.get-job-execution-time.outputs.dotnet-format-job-duration }}
+        description: Successful in ${{ steps.get-job-execution-time.outputs.job-duration }}
         target-url: ${{ env.WORKFLOW_RUN_URL }}
         token: ${{ secrets.GITHUB_TOKEN }}
     - name: Set PR status to failure
