@@ -104,7 +104,7 @@ jobs:
         "@
 
         # The content must be escaped to preserve newlines. See https://github.community/t/set-output-truncates-multiline-strings/16852/3
-        $commentBody = commentBody -replace "`n","$0A"
+        $commentBody = $commentBody -replace "`n","$0A"
         Write-Host "::set-output name=pr-comment-body::$commentBody"
         Write-Host $commentBody
     - name: Find Comment
