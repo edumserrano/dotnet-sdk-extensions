@@ -92,14 +92,14 @@ jobs:
           Write-Host "::error title=Tests (${{ matrix.os }})::Tests failed on  ${{ matrix.os }}. $downloadArtifactMessage"
         }
     # this job is on a matrix run but I only want to upload code coverage to Codecov once, so I've chose to run it on one of the matrix.os values.
-    # furthermore, the steps below provide feedback on the test run so I want to run them even if the dotnet-test step fails. For that
+    # furthermore, some of the steps below provide feedback on the test run so I want to run them even if the dotnet-test step fails. For that
     # I need:
     # - the 'always()' condition: without it the step only runs if the job is successful, it's like the 'if' condition on any step always has a hidden '&& success()' clause
     # - the '(steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure')' condition: to run the steps only if the dotnet-test step has ran, regardless
     # if it failed or not. It won't run if the dotnet-test step has been skipped or cancelled.
     - name: Upload test coverage to Codecov
       uses: codecov/codecov-action@v2.1.0
-      if: matrix.os == 'ubuntu-latest' && (steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure') && always()
+      if: matrix.os == 'ubuntu-latest'
       with:
         files: ${{ env.TEST_COVERAGE_FILE }}
         fail_ci_if_error: true
