@@ -33,6 +33,7 @@ jobs:
       run: |
         Write-Host '${{ toJson(github.event.client_payload.pull_request) }}'
 
+
     # the check on the workflow covers the required condition to trigger the workflow but the step below
     # will retrieve require data from the PR to use as outputs of this job
     # - name: Check PR comment
