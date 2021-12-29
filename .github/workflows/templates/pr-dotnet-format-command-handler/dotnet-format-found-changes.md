@@ -10,7 +10,6 @@ This should only happen if the project supports multiple target frameworks and t
 
 If this happens, just delete the comments added. Otherwise, consider incorporating the commented out code using [preprocessor directives to control conditional compilation](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/preprocessor-directives#conditional-compilation).
 Example:
-
 ```csharp
 #if NET5_0
     ...
