@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Slash command dispatch
-        uses: peter-evans/slash-command-dispatch@v2
+        uses: peter-evans/slash-command-dispatch@v2.3.0
         with:
           token: ${{ secrets.DISPATCH_COMMANDS_GH_TOKEN }}
           commands: |

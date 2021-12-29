@@ -66,10 +66,8 @@ jobs:
       with:
         branch: ${{ env.PR_BRANCH_NAME }}
         commit_message: dotnet format for PR ${{ env.PR_NUMBER }}
-    - name: Add PR comment
-      id: add-pr-comment
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Setup PR comment
+      id: setup-pr-comment
       run: |
         $commentBody = @"
         `# [${{ github.workflow }}](${{ env.WORKFLOW_RUN_URL }})
@@ -105,17 +103,29 @@ jobs:
         ``````
         "@
 
-        $commentUrl = gh pr comment ${{ env.PR_NUMBER }} --body $commentBody
-        Write-Host "::notice::Created comment at $commentUrl."
-        $commentId = $commentUrl.Split("-")[-1]
-        Write-Host "::set-output name=pr-comment-id::$commentId"
-    - name: Add hooray reaction to PR comment
-      uses: dkershner6/reaction-action@v1
+        Write-Host "::set-output name=pr-comment-body::$commentBody"
+    - name: Find Comment
+      uses: peter-evans/find-comment@v1.3.0
+      id: find-comment
       with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        commentId: ${{ steps.add-pr-comment.outputs.pr-comment-id }}
-        reaction: ${{ steps.add-pr-comment.outputs.pr-comment-reaction }}
-
+        issue-number: ${{ env.PR_NUMBER }}
+        body-includes: PR dotnet format command handler
+        comment-author: github-actions
+    - name: Create comment
+      uses: peter-evans/create-or-update-comment@v1.4.5
+      if:  ${{ steps.find-comment.outputs.comment-id == 0 }}
+      with:
+        issue-number: ${{ env.PR_NUMBER }}
+        body: ${{ steps.setup-pr-comment.outputs.pr-comment-body }}
+        reactions: ${{ steps.setup-pr-comment.outputs.pr-comment-reaction }}
+    - name: Update comment
+      uses: peter-evans/create-or-update-comment@v1.4.5
+      if:  ${{ steps.find-comment.outputs.comment-id != 0 }}
+      with:
+        comment-id: ${{ steps.find-comment.outputs.comment-id }}
+        edit-mode: replace
+        body: ${{ steps.setup-pr-comment.outputs.pr-comment-body }}
+        reactions: ${{ steps.setup-pr-comment.outputs.pr-comment-reaction }}
 
   set-final-pr-status:
     name: Set final PR status
