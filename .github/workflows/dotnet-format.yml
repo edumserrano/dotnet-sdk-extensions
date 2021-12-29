@@ -103,31 +103,29 @@ jobs:
         else {
           Write-Host "::notice::dotnet format didn't find any file that does not respect the code guidelines."
         }
+    - name: Render PR body template
+      id: render-pr-body-template
+      if: steps.auto-commit-action.outputs.changes_detected == 'true'
+      uses: chuhlomin/render-template@v1.3
+      with:
+        template: .github/workflows/templates/dotnet-format/dotnet-format-found-changes.md
+        vars: |
+          workflow: ${{ github.workflow }}
+          workflowUrl: ${{ env.WORKFLOW_RUN_URL }}
+    - name: Sanitize PR body
+      id: sanitize-pr-body
+      if: steps.auto-commit-action.outputs.changes_detected == 'true'
+      run: |
+        $body = "${{ steps.render-pr-body-template.outputs.result }}"
+        $body = $body -replace "`n","%0A" # The content must be escaped to preserve newlines. See https://github.community/t/set-output-truncates-multiline-strings/16852/3
+        Write-Host "::set-output name=pr-body::$body"
     - name: Create dotnet format PR
       if: steps.auto-commit-action.outputs.changes_detected == 'true'
       env:
         GITHUB_TOKEN: ${{ secrets.DOTNET_FORMAT_GH_TOKEN }}
       run: |
         $title = "${{ steps.commit-info.outputs.branch-name }}: fix code guidelines violations"
-        $body = @"
-        **dotnet format** [workflow run](${{ env.WORKFLOW_RUN_URL }}) detected code guidelines violations and automatically created this PR.
-
-        :warning: Please review the suggested changes before merging.
-
-        ## Note
-        Sometimes the fix provided by the analyzers produces unecessary comments when formatting files.
-
-        This should only happen if the project supports multiple target frameworks and the fix doesn't produce the same output for all. However, it seems that sometimes the ``Unmerged change from project ...`` comment shows up even though the fix produced the same output.
-
-        If this happens, just delete the comments added. Otherwise, consider incorporating the commented out code using [preprocessor directives to control conditional compilation](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/preprocessor-directives#conditional-compilation).
-        Example:
-        ``````csharp
-        #if NET5_0
-            ...
-        #elif NETCOREAPP3_1
-            ...
-        #endif
-        ``````
+        $body = "${{ steps.sanitize-pr-body.outputs.pr-body }}"
         "@
         $prUrl = gh pr create `
           --title $title `
