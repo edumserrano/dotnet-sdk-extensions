@@ -130,7 +130,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
         [Fact]
         public async Task TimeoutOption()
         {
-            //var callCount = 0;
+            // var callCount = 0;
             var callCount = 0;
             var calculator = Substitute.For<ICalculator>();
             calculator
