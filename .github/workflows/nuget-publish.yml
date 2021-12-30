@@ -141,7 +141,7 @@ jobs:
     - name: Find Comment
       uses: peter-evans/find-comment@v1.3.0
       id: find-comment
-      if: github.event_name == 'pull_request' (steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure') && always()
+      if: github.event_name == 'pull_request' && (steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure') && always()
       with:
         issue-number: ${{ env.PR_NUMBER }}
         body-includes: Test runs on ${{ matrix.os }}
