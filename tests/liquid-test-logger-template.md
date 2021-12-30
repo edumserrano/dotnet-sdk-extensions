@@ -26,6 +26,7 @@
 <strong>Pass Rate:</strong> {{pass_percentage}}% <br />
 <strong>Run Duration:</strong> {{ run.elapsed_time_in_running_tests | format_duration }} <br />
 <strong>Date:</strong> {{ run.started | local_time | date: '%Y-%m-%d %H:%M:%S' }} - {{ run.finished | local_time | date: '%Y-%m-%d %H:%M:%S' }} <br />
+<strong>Operating System:</strong> {{ parameters.os }} <br />
 <strong>Framework:</strong> {{ parameters.TargetFramework }} <br />
 <strong>Total Tests:</strong> {{total}} <br />
 </p>
