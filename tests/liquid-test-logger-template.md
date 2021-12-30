@@ -18,7 +18,7 @@
 
 {% assign first_result_set = run.result_sets | first %}
 {% assign test_dll = first_result_set.source | path_split | last %}
-# {{overall}} - test run for {{ test_dll }} on {{ parameters.TargetFramework }}
+# {{overall}} - {{ parameters.os }} test run for {{ test_dll }} on {{ parameters.TargetFramework }}
 ### Run Summary
 
 <p>
