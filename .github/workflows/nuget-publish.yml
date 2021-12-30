@@ -42,6 +42,7 @@ jobs:
       TEST_COVERAGE_REPORT_DIR: tests/${{ matrix.os }}/coverage-results/report
       TEST_RESULTS_ARTIFACT_NAME: test-results-${{ matrix.os }}
       CODE_COVERAGE_ARTIFACT_NAME: code-coverage-report-${{ matrix.os }}
+      PR_NUMBER: ${{ github.event.pull_request.number }}
     steps:
     - uses: actions/checkout@v2
     - name: Setup .NET
