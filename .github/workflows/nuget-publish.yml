@@ -132,8 +132,10 @@ jobs:
       id: sanitize-pr-comment
       if: github.event_name == 'pull_request'
       run: |
-        $commentBody = Get-Content ${{ steps.dotnet-test.outputs.test-results-dir }}/*.md
-        $commentBody = $commentBody -replace "`n","%0A" # The content must be escaped to preserve newlines. See https://github.community/t/set-output-truncates-multiline-strings/16852/3
+        $commentBody = Get-Content ${{ steps.dotnet-test.outputs.test-results-dir }}/*.md -Raw
+        # The content must be escaped to preserve newlines. See https://github.community/t/set-output-truncates-multiline-strings/16852/3
+        $commentBody = $commentBody -replace "`n","%0A"
+        $commentBody = $commentBody -replace "`r","%0D"
         Write-Host "::set-output name=pr-comment-body::$commentBody"
     - name: Find Comment
       uses: peter-evans/find-comment@v1.3.0

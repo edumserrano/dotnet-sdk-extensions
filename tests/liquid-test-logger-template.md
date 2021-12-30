@@ -20,8 +20,12 @@
 {%- assign failed_set_results = set.results  | where: "outcome", "Failed" -%}
 {%- assign skipped_set_results = set.results  | where: "outcome", "Skipped" -%}
 {%- assign passed_set_results = set.results  | where: "outcome", "Passed" -%}
-# {{overall}} - {{ parameters.matrixOs }} test run for {{ test_dll }} on {{ parameters.TargetFramework }}
-### Run Summary
+<details>
+<summary>
+<strong>{{overall}} - {{ parameters.matrixOs }} test run for {{ test_dll }} on {{ parameters.TargetFramework }}
+</strong></summary>
+
+## Run Summary
 
 <p>
 <strong>Overall Result:</strong> {{overall}} <br />
@@ -61,9 +65,8 @@
 
 {%- if failed_set_results.size > 0 or skipped_set_results.size > 0 -%}
 
----
+## Run results
 
-### Run results
 {%- if failed_set_results.size > 0 -%}
 <details>
 <summary>❌ Failed tests</summary>
@@ -186,9 +189,8 @@ Source:
 {%- endcomment -%}
 {%- endif -%}
 
----
+## Run Messages
 
-### Run Messages
 <details>
 <summary>Informational</summary>
 <pre><code>
@@ -219,3 +221,5 @@ Source:
 </code></pre>
 </details>
 {%- endif -%}
+
+</details>
