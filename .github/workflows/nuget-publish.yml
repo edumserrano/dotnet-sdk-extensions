@@ -43,6 +43,7 @@ jobs:
       TEST_RESULTS_ARTIFACT_NAME: test-results-${{ matrix.os }}
       CODE_COVERAGE_ARTIFACT_NAME: code-coverage-report-${{ matrix.os }}
       PR_NUMBER: ${{ github.event.pull_request.number }}
+      WORKFLOW_RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
     steps:
     - uses: actions/checkout@v2
     - name: Setup .NET
@@ -132,8 +133,8 @@ jobs:
       id: sanitize-pr-comment
       if: github.event_name == 'pull_request' && (steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure') && always()
       run: |
-        $commentBody = "# Test runs on ${{ matrix.os }}`n`n"
-        $commentBody += Get-Content ${{ steps.dotnet-test.outputs.test-results-dir }}/*.md
+        $commentBody = "# [Test runs on ${{ matrix.os }}](${{ env.WORKFLOW_RUN_URL }})`n`n"
+        $commentBody += Get-Content ${{ steps.dotnet-test.outputs.test-results-dir }}/*.md -Raw
         # The content must be escaped to preserve newlines. See https://github.community/t/set-output-truncates-multiline-strings/16852/3
         $commentBody = $commentBody -replace "`n","%0A"
         $commentBody = $commentBody -replace "`r","%0D"
