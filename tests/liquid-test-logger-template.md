@@ -22,7 +22,7 @@
 {%- assign passed_set_results = set.results  | where: "outcome", "Passed" -%}
 <details>
 <summary>
-<strong>{{overall}} - {{ parameters.matrixOs }} test run for {{ test_dll }} on {{ parameters.TargetFramework }}
+<strong>{{overall}} - {{ test_dll }} on {{ parameters.TargetFramework }}
 </strong></summary>
 
 ## Run Summary
@@ -31,10 +31,10 @@
 <strong>Overall Result:</strong> {{overall}} <br />
 <strong>Pass Rate:</strong> {{pass_percentage}}% <br />
 <strong>Total Tests:</strong> {{total}} <br />
-
+<p></p>
 <strong>Date:</strong> {{ run.started | local_time | date: '%Y-%m-%d %H:%M:%S' }} - {{ run.finished | local_time | date: '%Y-%m-%d %H:%M:%S' }} <br />
 <strong>Run Duration:</strong> {{ run.elapsed_time_in_running_tests | format_duration }} <br />
-
+<p></p>
 <strong>GitHub Runner OS:</strong> {{ parameters.matrixOs }} <br />
 <strong>Operating System:</strong> {{ parameters.os }} <br />
 <strong>Framework:</strong> {{ parameters.TargetFramework }} <br />
