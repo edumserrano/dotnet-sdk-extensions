@@ -635,3 +635,9 @@ dotnet_diagnostic.SA1515.severity = none        # SA1515: Single-line comment sh
 dotnet_diagnostic.CS1591.severity = none        # CS1591: Missing XML comment for publicly visible type or member
 dotnet_diagnostic.SA1611.severity = none        # SA1611: The documentation for parameter is missing
 dotnet_diagnostic.SA1615.severity = none        # SA1615: Element return value should be documented.
+
+##########################################
+# Rules for xunit.analyzers
+# See https://xunit.net/xunit.analyzers/rules/
+##########################################
+dotnet_diagnostic.xUnit1004.severity = none     # xUnit1004: Test methods should not be skipped
