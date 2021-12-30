@@ -22,6 +22,17 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
     [Trait("Category", XUnitCategories.Polly)]
     public class AddTimeoutPolicyTests
     {
+        // [Fact]
+        // public void Fail1()
+        // {
+        //     1.ShouldBe(2);
+        // }
+
+        // [Fact(Skip = "skip reason 1")]
+        // public void Skip1()
+        // {
+        // }
+
         /// <summary>
         /// Tests that the <see cref="TimeoutPolicyHttpClientBuilderExtensions.AddTimeoutPolicy(IHttpClientBuilder,Action{TimeoutOptions})"/>
         /// overload method adds a <see cref="DelegatingHandler"/> with a timeout policy to the <see cref="HttpClient"/>.

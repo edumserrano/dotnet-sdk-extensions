@@ -68,15 +68,15 @@ jobs:
     - name: Test and code coverage
       id: dotnet-test
       run: |
+        $os = $PSVersionTable.OS
         $testResultsDir = $(Join-Path -Path (Get-Location) -ChildPath "${{ env.TEST_RESULTS_DIR }}")
         Write-Host "::set-output name=test-results-dir::$testResultsDir"
         dotnet test ${{ env.SLN_FILEPATH }} `
           -c Release `
           --no-build `
           --logger "trx;LogFilePrefix=framework" `
-          --logger "html;LogFilePrefix=framework" `
           --logger GitHubActions `
-          --logger "liquid.custom;Template=${{github.workspace}}/tests/liquid-test-logger-template.md;os=${{ matrix.os }};LogFilePrefix=framework" `
+          --logger "liquid.custom;Template=${{github.workspace}}/tests/liquid-test-logger-template.md;matrixOs=${{ matrix.os }};os=$os;LogFilePrefix=framework" `
           --results-directory "$testResultsDir" `
           /p:CollectCoverage=true `
           /p:CoverletOutput="$(Join-Path -Path (Get-Location) -ChildPath "${{ env.TEST_COVERAGE_DIR }}/")" `

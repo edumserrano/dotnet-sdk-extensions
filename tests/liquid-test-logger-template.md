@@ -15,20 +15,26 @@
 {%- else -%}
 {%- assign overall = "❌ Fail" *-%}
 {%- endif -%}
-
-{% assign first_result_set = run.result_sets | first %}
-{% assign test_dll = first_result_set.source | path_split | last %}
-# {{overall}} - {{ parameters.os }} test run for {{ test_dll }} on {{ parameters.TargetFramework }}
+{%- assign set = run.result_sets | first -%}
+{%- assign test_dll = set.source | path_split | last -%}
+{%- assign failed_set_results = set.results  | where: "outcome", "Failed" -%}
+{%- assign skipped_set_results = set.results  | where: "outcome", "Skipped" -%}
+{%- assign passed_set_results = set.results  | where: "outcome", "Passed" -%}
+# {{overall}} - {{ parameters.matrixOs }} test run for {{ test_dll }} on {{ parameters.TargetFramework }}
 ### Run Summary
 
 <p>
 <strong>Overall Result:</strong> {{overall}} <br />
 <strong>Pass Rate:</strong> {{pass_percentage}}% <br />
-<strong>Run Duration:</strong> {{ run.elapsed_time_in_running_tests | format_duration }} <br />
+<strong>Total Tests:</strong> {{total}} <br />
+
 <strong>Date:</strong> {{ run.started | local_time | date: '%Y-%m-%d %H:%M:%S' }} - {{ run.finished | local_time | date: '%Y-%m-%d %H:%M:%S' }} <br />
+<strong>Run Duration:</strong> {{ run.elapsed_time_in_running_tests | format_duration }} <br />
+
+<strong>GitHub Runner OS:</strong> {{ parameters.matrixOs }} <br />
 <strong>Operating System:</strong> {{ parameters.os }} <br />
 <strong>Framework:</strong> {{ parameters.TargetFramework }} <br />
-<strong>Total Tests:</strong> {{total}} <br />
+<strong>Assembly:</strong> {{ test_dll }} <br />
 </p>
 
 <table>
@@ -53,170 +59,134 @@
 </tbody>
 </table>
 
-### Result Sets
-{%- for set in run.result_sets -%}
-#### {{ set.source | path_split | last }} - {{set.passed_count | divided_by: set.executed_tests_count | times: 100.0 | round: 2 }}%
+{%- if failed_set_results.size > 0 or skipped_set_results.size > 0 -%}
 
-{% assign failed_set_results = set.results  | where: "outcome", "Failed" %}
+---
+
+### Run results
 {%- if failed_set_results.size > 0 -%}
 <details>
-<summary>Failed tests</summary>
-<table style="white-space:nowrap;">
+<summary>❌ Failed tests</summary>
+<table>
 <thead>
 <tr>
-<th>Result</th>
-<th>Duration</th>
-<th>Traits</th>
 <th>Test</th>
-<th>Test class</th>
+<th>Duration</th>
 </tr>
 </thead>
 {%- for result in failed_set_results -%}
 <tr>
-<td> {% case result.outcome %} {% when 'Passed' %}✔️{% when 'Failed' %}❌{% else %}⚠️{% endcase %} {{ result.outcome }} </td>
-<td> {{ result.duration | format_duration }}</td>
 <td>
-{%- for trait in result.test_case.traits -%}
-[{{ trait.Name }} : <strong>{{ trait.Value }}</strong>]</br>
-{%- endfor -%}
-</td>
-<td> {{ result.test_case.display_name }}
-{%- if result.outcome == 'Failed' -%}
-<blockquote><details>
-<summary>Error</summary>
-<strong>Message:</strong>
-<pre><code>{{result.error_message}}</code></pre>
-<strong>Stack Trace:</strong>
-<pre><code>{{result.error_stack_trace}}</code></pre>
-</details></blockquote>
-{%- endif -%}
-</td>
-{% assign fully_qualified_name_splits = result.test_case.fully_qualified_name | split: "." %}
-{% assign class_index = fully_qualified_name_splits.size | minus: 1 %}
+<details>
+<summary>
+❌ {{ result.test_case.display_name }}
+</summary>
+{%- assign fully_qualified_name_splits = result.test_case.fully_qualified_name | split: "." -%}
+{%- assign class_index = fully_qualified_name_splits.size | minus: 1 -%}
 {%- for name_split in fully_qualified_name_splits -%}
 {%- if forloop.index == class_index -%}
 {%- assign test_class = name_split -%}
 {%- endif -%}
 {%- endfor -%}
-<td>{{ test_class }}
-<blockquote><details>
-<summary>Fully qualified name</summary>
-{{ result.test_case.fully_qualified_name }}
-</details></blockquote>
+Class:
+<blockquote>{{- test_class -}}</blockquote>
+Source:
+<blockquote>{{- result.test_case.fully_qualified_name -}}</blockquote>
+Message:
+<blockquote>{{result.error_message}}</blockquote>
+Stack Trace:
+<blockquote>{{result.error_stack_trace}}<blockquote>
+</details>
+</td>
+<td>{{ result.duration | format_duration }}</td>
 </tr>
 {%- endfor -%}
 </tbody>
 </table>
 </details>
 {%- endif -%}
-
-{% assign skipped_set_results = set.results  | where: "outcome", "Skipped" %}
 {%- if skipped_set_results.size > 0 -%}
 <details>
-<summary>Skipped tests</summary>
-<table style="white-space:nowrap;">
+<summary>⚠️ Skipped tests</summary>
+<table>
 <thead>
 <tr>
-<th>Result</th>
-<th>Duration</th>
-<th>Traits</th>
 <th>Test</th>
-<th>Test class</th>
+<th>Duration</th>
 </tr>
 </thead>
 {%- for result in skipped_set_results -%}
 <tr>
-<td> {% case result.outcome %} {% when 'Passed' %}✔️{% when 'Failed' %}❌{% else %}⚠️{% endcase %} {{ result.outcome }} </td>
-<td>{{ result.duration | format_duration }}</td>
 <td>
-{%- for trait in result.test_case.traits -%}
-[{{ trait.Name }} : <strong>{{ trait.Value }}</strong>]</br>
-{%- endfor -%}
-</td>
-<td> {{ result.test_case.display_name }}
-{%- if result.outcome == 'Failed' -%}
-<blockquote><details>
-<summary>Error</summary>
-<strong>Message:</strong>
-<pre><code>{{result.error_message}}</code></pre>
-<strong>Stack Trace:</strong>
-<pre><code>{{result.error_stack_trace}}</code></pre>
-</details></blockquote>
-{%- endif -%}
-</td>
-{% assign fully_qualified_name_splits = result.test_case.fully_qualified_name | split: "." %}
-{% assign class_index = fully_qualified_name_splits.size | minus: 1 %}
+<details>
+<summary>
+⚠️ {{ result.test_case.display_name }}
+</summary>
+{%- assign fully_qualified_name_splits = result.test_case.fully_qualified_name | split: "." -%}
+{%- assign class_index = fully_qualified_name_splits.size | minus: 1 -%}
 {%- for name_split in fully_qualified_name_splits -%}
 {%- if forloop.index == class_index -%}
 {%- assign test_class = name_split -%}
 {%- endif -%}
 {%- endfor -%}
-<td>{{ test_class }}
-<blockquote><details>
-<summary>Fully qualified name</summary>
-{{ result.test_case.fully_qualified_name }}
-</details></blockquote>
+Class:
+<blockquote>{{- test_class -}}</blockquote>
+Source:
+<blockquote>{{- result.test_case.fully_qualified_name -}}</blockquote>
+</details>
+</td>
+<td>{{ result.duration | format_duration }}</td>
 </tr>
 {%- endfor -%}
 </tbody>
 </table>
 </details>
 {%- endif -%}
-
-{% assign passed_set_results = set.results  | where: "outcome", "Passed" %}
+{%- comment -%}
+Commenting out the passed tests group because otherwise the test results output starts to become too long
+to be used as a PR comment. Max size for a PR comment is 65 536.
+Leaving the template here in case I change my mind.
 {%- if passed_set_results.size > 0 -%}
 <details>
-<summary>Passed tests</summary>
-<table style="white-space:nowrap;">
+<summary>✔️ Passed tests</summary>
+<table>
 <thead>
 <tr>
-<th>Result</th>
-<th>Duration</th>
-<th>Traits</th>
 <th>Test</th>
-<th>Test class</th>
+<th>Duration</th>
 </tr>
 </thead>
 {%- for result in passed_set_results -%}
 <tr>
-<td> {% case result.outcome %} {% when 'Passed' %}✔️{% when 'Failed' %}❌{% else %}⚠️{% endcase %} {{ result.outcome }} </td>
-<td>{{ result.duration | format_duration }}</td>
 <td>
-{%- for trait in result.test_case.traits -%}
-[{{ trait.Name }} : <strong>{{ trait.Value }}</strong>]</br>
-{%- endfor -%}
-</td>
-<td> {{ result.test_case.display_name }}
-{%- if result.outcome == 'Failed' -%}
-<blockquote><details>
-<summary>Error</summary>
-<strong>Message:</strong>
-<pre><code>{{result.error_message}}</code></pre>
-<strong>Stack Trace:</strong>
-<pre><code>{{result.error_stack_trace}}</code></pre>
-</details></blockquote>
-{%- endif -%}
-</td>
-{% assign fully_qualified_name_splits = result.test_case.fully_qualified_name | split: "." %}
-{% assign class_index = fully_qualified_name_splits.size | minus: 1 %}
+<details>
+<summary>
+✔️ {{ result.test_case.display_name }}
+</summary>
+{%- assign fully_qualified_name_splits = result.test_case.fully_qualified_name | split: "." -%}
+{%- assign class_index = fully_qualified_name_splits.size | minus: 1 -%}
 {%- for name_split in fully_qualified_name_splits -%}
 {%- if forloop.index == class_index -%}
 {%- assign test_class = name_split -%}
 {%- endif -%}
 {%- endfor -%}
-<td>{{ test_class }}
-<blockquote><details>
-<summary>Fully qualified name</summary>
-{{ result.test_case.fully_qualified_name }}
-</details></blockquote>
+Class:
+<blockquote>{{- test_class -}}</blockquote>
+Source:
+<blockquote>{{- result.test_case.fully_qualified_name -}}</blockquote>
+</details>
+</td>
+<td>{{ result.duration | format_duration }}</td>
 </tr>
 {%- endfor -%}
 </tbody>
 </table>
 </details>
 {%- endif -%}
+{%- endcomment -%}
+{%- endif -%}
 
-{%- endfor -%}
+---
 
 ### Run Messages
 <details>
