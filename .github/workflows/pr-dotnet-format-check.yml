@@ -98,13 +98,13 @@ jobs:
         comment-author: github-actions[bot]
     - name: Create comment
       uses: peter-evans/create-or-update-comment@v1.4.5
-      if:  ${{ steps.find-comment.outputs.comment-id == 0 }}
+      if: steps.find-comment.outputs.comment-id == 0
       with:
         issue-number: ${{ env.PR_NUMBER }}
         body: ${{ steps.sanitize-pr-comment.outputs.pr-comment-body }}
     - name: Update comment
       uses: peter-evans/create-or-update-comment@v1.4.5
-      if:  ${{ steps.find-comment.outputs.comment-id != 0 }}
+      if: steps.find-comment.outputs.comment-id != 0
       with:
         comment-id: ${{ steps.find-comment.outputs.comment-id }}
         edit-mode: replace

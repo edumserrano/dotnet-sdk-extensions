@@ -104,14 +104,14 @@ jobs:
         comment-author: github-actions[bot]
     - name: Create comment
       uses: peter-evans/create-or-update-comment@v1.4.5
-      if:  ${{ steps.find-comment.outputs.comment-id == 0 }}
+      if:  steps.find-comment.outputs.comment-id == 0
       with:
         issue-number: ${{ env.PR_NUMBER }}
         body: ${{ steps.sanitize-pr-comment.outputs.pr-comment-body }}
         reactions: ${{ steps.setup-pr-comment.outputs.pr-comment-reaction }}
     - name: Update comment
       uses: peter-evans/create-or-update-comment@v1.4.5
-      if:  ${{ steps.find-comment.outputs.comment-id != 0 }}
+      if:  steps.find-comment.outputs.comment-id != 0
       with:
         comment-id: ${{ steps.find-comment.outputs.comment-id }}
         edit-mode: replace
@@ -144,7 +144,7 @@ jobs:
         target-url: ${{ env.WORKFLOW_RUN_URL }}
         token: ${{ secrets.GITHUB_TOKEN }}
     - name: Set PR status to failure
-      if: ${{ needs.dotnet-format.result != 'success' || !success() }}
+      if: needs.dotnet-format.result != 'success' || !success()
       uses: ./.github/actions/create-gh-status
       with:
         repo: ${{ github.repository }}
