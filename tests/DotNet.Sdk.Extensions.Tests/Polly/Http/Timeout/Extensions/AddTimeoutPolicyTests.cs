@@ -29,7 +29,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
         // }
 
         // [Fact]
-        // public void Fail2()
+        // public void Fail22()
         // {
         //     throw new InvalidOperationException("failed because abc");
         // }
