@@ -28,6 +28,12 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions
         //     1.ShouldBe(2);
         // }
 
+        // [Fact]
+        // public void Fail2()
+        // {
+        //     throw new InvalidOperationException("failed because abc");
+        // }
+
         // [Fact(Skip = "skip reason 1")]
         // public void Skip1()
         // {
