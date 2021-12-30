@@ -134,32 +134,20 @@ jobs:
       if: github.event_name == 'pull_request' && (steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure') && always()
       run: |
         $commentBody = "# [Test runs on ${{ matrix.os }}](${{ env.WORKFLOW_RUN_URL }})`n`n"
-        $commentBody += Get-Content ${{ steps.dotnet-test.outputs.test-results-dir }}/*.md -Raw
+        $commentBody += Get-Content ${{ steps.dotnet-test.outputs.test-results-dir }}/*.md -Raw # without the -Raw the escaping that happens next does not work. Not sure why.
         # The content must be escaped to preserve newlines. See https://github.community/t/set-output-truncates-multiline-strings/16852/3
         $commentBody = $commentBody -replace "`n","%0A"
         $commentBody = $commentBody -replace "`r","%0D"
         Write-Host "::set-output name=pr-comment-body::$commentBody"
-    - name: Find Comment
-      uses: peter-evans/find-comment@v1.3.0
-      id: find-comment
-      if: github.event_name == 'pull_request' && (steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure') && always()
+    - name: Update PR with test results
+      uses: ./.github/actions/create-update-comment
+      if:   github.event_name == 'pull_request' && (steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure') && always()
       with:
         issue-number: ${{ env.PR_NUMBER }}
         body-includes: Test runs on ${{ matrix.os }}
         comment-author: github-actions[bot]
-    - name: Create comment
-      uses: peter-evans/create-or-update-comment@v1.4.5
-      if:   github.event_name == 'pull_request' && steps.find-comment.outputs.comment-id == 0 && (steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure') && always()
-      with:
-        issue-number: ${{ env.PR_NUMBER }}
         body: ${{ steps.sanitize-pr-comment.outputs.pr-comment-body }}
-    - name: Update comment
-      uses: peter-evans/create-or-update-comment@v1.4.5
-      if:   github.event_name == 'pull_request' && steps.find-comment.outputs.comment-id != 0 && (steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure') && always()
-      with:
-        comment-id: ${{ steps.find-comment.outputs.comment-id }}
         edit-mode: replace
-        body: ${{ steps.sanitize-pr-comment.outputs.pr-comment-body }}
 
   nuget-publish:
     name: Publish NuGet packages and symbols

@@ -1,0 +1,52 @@
+# Why was this action created:
+#
+# This is used to create or update a comment in GitHub issues, mainly on Pull Requests.
+# I was using the three actions below in several workflows so I thought I'd create one action
+# with the 3 to avoid the repetition.
+#
+
+name: 'Create GitHub status'
+description: 'Creates a GitHub status'
+inputs:
+  issue-number:
+    description: 'The number of the issue or pull request in which to search.'
+    required: true
+  body-includes:
+    description: 'A string to search for in the body of comments.'
+    required: true
+  comment-author:
+    description: 'The GitHub user name of the comment author.'
+    required: true
+  body:
+    description: 'The comment body.'
+    required: true
+  edit-mode:
+    description: 'The mode when updating a comment, replace or append.'
+    required: true
+  reactions:
+    description: 'A comma separated list of reactions to add to the comment. (+1, -1, laugh, confused, heart, hooray, rocket, eyes)'
+    required: false
+
+runs:
+  using: "composite"
+  steps:
+    - name: Find Comment
+      uses: peter-evans/find-comment@v1.3.0
+      id: find-comment
+      with:
+        issue-number: ${{ inputs.issue-number }}
+        body-includes: ${{ inputs.body-includes }}
+        comment-author: ${{ inputs.comment-author }}
+    - name: Create comment
+      uses: peter-evans/create-or-update-comment@v1.4.5
+      if:   steps.find-comment.outputs.comment-id == 0
+      with:
+        issue-number: ${{ inputs.issue-number }}
+        body: ${{ inputs.body }}
+    - name: Update comment
+      uses: peter-evans/create-or-update-comment@v1.4.5
+      if:   steps.find-comment.outputs.comment-id != 0
+      with:
+        comment-id: ${{ steps.find-comment.outputs.comment-id }}
+        edit-mode: ${{ inputs.edit-mode }}
+        body: ${{ inputs.body }}
