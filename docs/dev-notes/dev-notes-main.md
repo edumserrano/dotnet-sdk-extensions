@@ -7,6 +7,14 @@
 1) Clone the repo and open the **DotNet.Sdk.Extensions.sln:** solution file at the root.
 2) Press build on Visual Studio.
 
+## Testing
+
+The test projects run against multiple frameworks and the [workflow to build and test](/.github/workflows/nuget-publish.yml) the solution runs both on Linux and on Windows.
+
+[Remote testing](https://docs.microsoft.com/en-us/visualstudio/test/remote-testing?view=vs-2022) with WSL is configured on the solution which enables you to run the tests locally on Linux or on Windows. You can view the configuration file at [testenvironments.json](/testenvironments.json).
+
+To run the tests on Linux you need to have at least `Visual Studio 2022` and the Linux distro `Ubuntu-20.04` installed on [WSL](https://docs.microsoft.com/en-us/windows/wsl/install).
+
 ### Using dotnet CLI
 
 1) Clone the repo and browse to the directory using your favorite shell.

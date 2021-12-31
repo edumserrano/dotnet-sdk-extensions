@@ -2,12 +2,15 @@
 
 [![Publish Nuget packages](https://github.com/edumserrano/dot-net-sdk-extensions/actions/workflows/nuget-publish.yml/badge.svg)](https://github.com/edumserrano/dot-net-sdk-extensions/actions/workflows/nuget-publish.yml)
 
-[This workflow]((/.github/workflows/nuget-publish.yml)) will:
+[This workflow](/.github/workflows/nuget-publish.yml) will:
 
-1) Always builds the code and run tests on windows-latest and ubuntu-latest.
-2) On ubuntu-latest, generates code coverage and uploads it to Codecov and as a workflow artifact.
-3) On ubuntu-latest, generates NuGet packages and uploads them as a workflow artifact.
-4) Publishes NuGet packages if the workflow was not triggered by a pull request.
+- Builds the code and runs tests on windows-latest and ubuntu-latest.
+- Generates code coverage and uploads as a workflow artifact.
+- Uploads code coverage to Codecov.
+- Uploades test results as a workflow artifact.
+- If the workflow was triggered by a pull request, adds the test results as a comment on the PR.
+- Generates NuGet packages and uploads them as a workflow artifact.
+- If the workflow was triggered by a pull request, publishes NuGet packages to nuget.org.
 
 ## Secrets
 
@@ -30,6 +33,14 @@ The [Codecov configuration file](/.github/codecov.yml) contains additional confi
 The `dotnet build` command includes the `-warnaserror` flag which will cause the build to fail if there are any errors.
 
 This is used to help keep the code healthy whilst balancing local dev. Meaning, when developing locally there is no need to force all warnings to be fixed to be able to build the code.
+
+## Testing loggers
+
+When running tests we use 3 loggers:
+
+- `trx`: normal logger, produces test result files which can be downloaded and viewed on Visual Studio.
+- `GitHubActions`: used to produce annotations on the workflow to give more visibility when tests fail. For more info see [GitHub Actions Test Logger](https://github.com/Tyrrrz/GitHubActionsTestLogger). It also adds annotations on PRs.
+- `liquid.custom`: Uses a [template](/tests/liquid-test-logger-template.md) to create a markdown reports for the test results. These markdown reports are uploaded as workflow artifacts and in case of Pull Requests they are added as comments. For more info see [Liquid Test Reports](https://github.com/kurtmkurtm/LiquidTestReports).
 
 ## NuGet push action
 

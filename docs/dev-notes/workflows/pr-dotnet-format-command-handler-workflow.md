@@ -2,7 +2,7 @@
 
 [![PR dotnet format command handler](https://github.com/edumserrano/dot-net-sdk-extensions/actions/workflows/pr-dotnet-format-command-handler.yml/badge.svg)](https://github.com/edumserrano/dot-net-sdk-extensions/actions/workflows/pr-dotnet-format-command-handler.yml)
 
-[This workflow](/.github/workflows/pr-dotnet-format-command-handler.yml) is triggered when someone adds a comment on a PR with the following body: `/dotnet format`.
+[This workflow](/.github/workflows/pr-dotnet-format-command-handler.yml) is triggered when someone adds a comment on a PR with the following body: `/dotnet-format`.
 
 The workflow will run [dotnet format](https://github.com/dotnet/format) on the PR that was commented and if there are any changes detected it will push those changes to the PR's branch. Finally, it will add a comment on the PR with the results of the `dotnet format` command.
 
