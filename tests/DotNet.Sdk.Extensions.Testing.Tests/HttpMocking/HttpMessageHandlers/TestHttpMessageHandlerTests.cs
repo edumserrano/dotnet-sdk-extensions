@@ -45,7 +45,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers
             var handler = new TestHttpMessageHandler();
             var request = new HttpRequestMessage(HttpMethod.Get, "https://test.com");
             var httpClient = new HttpClient(handler);
-            var exception = await Should.ThrowAsync<InvalidOperationException>(httpClient.SendAsync(request, CancellationToken.None));
+            var exception = await Should.ThrowAsync<InvalidOperationException>(httpClient.SendAsync(request));
             exception.Message.ShouldBe("No response mock defined for GET to https://test.com/.");
         }
 
@@ -67,7 +67,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers
 
             var request = new HttpRequestMessage(HttpMethod.Get, "https://test.com");
             var httpClient = new HttpClient(handler);
-            var exception = await Should.ThrowAsync<InvalidOperationException>(httpClient.SendAsync(request, CancellationToken.None));
+            var exception = await Should.ThrowAsync<InvalidOperationException>(httpClient.SendAsync(request));
             exception.Message.ShouldBe("No response mock defined for GET to https://test.com/.");
         }
 
@@ -89,7 +89,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers
 
             var request = new HttpRequestMessage(HttpMethod.Get, "https://test.com");
             var httpClient = new HttpClient(handler);
-            var httpResponseMessage = await httpClient.SendAsync(request, CancellationToken.None);
+            var httpResponseMessage = await httpClient.SendAsync(request);
             httpResponseMessage.StatusCode.ShouldBe(HttpStatusCode.Created);
         }
 
@@ -107,7 +107,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers
 
             var request = new HttpRequestMessage(HttpMethod.Get, "https://test.com");
             var httpClient = new HttpClient(handler);
-            var httpResponseMessage = await httpClient.SendAsync(request, CancellationToken.None);
+            var httpResponseMessage = await httpClient.SendAsync(request);
             httpResponseMessage.StatusCode.ShouldBe(HttpStatusCode.Created);
         }
 
@@ -134,7 +134,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers
                 });
             var request = new HttpRequestMessage(HttpMethod.Get, "https://test.com");
             var httpClient = new HttpClient(handler);
-            var httpResponseMessage = await httpClient.SendAsync(request, CancellationToken.None);
+            var httpResponseMessage = await httpClient.SendAsync(request);
             httpResponseMessage.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
         }
 
@@ -161,11 +161,11 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers
 
             var httpClient = new HttpClient(handler);
             var request1 = new HttpRequestMessage(HttpMethod.Get, "https://google.com");
-            var httpResponseMessage1 = await httpClient.SendAsync(request1, CancellationToken.None);
+            var httpResponseMessage1 = await httpClient.SendAsync(request1);
             httpResponseMessage1.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
 
             var request2 = new HttpRequestMessage(HttpMethod.Get, "https://microsoft.com");
-            var httpResponseMessage2 = await httpClient.SendAsync(request2, CancellationToken.None);
+            var httpResponseMessage2 = await httpClient.SendAsync(request2);
             httpResponseMessage2.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
         }
 
@@ -176,10 +176,10 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers
         public async Task TimesOut()
         {
             var handler = new TestHttpMessageHandler();
-            handler.MockHttpResponse(builder => builder.TimesOut(TimeSpan.FromSeconds(1)));
+            handler.MockHttpResponse(builder => builder.TimesOut(TimeSpan.FromSeconds(2)));
             var httpClient = new HttpClient(handler)
             {
-                Timeout = TimeSpan.FromMilliseconds(150),
+                Timeout = TimeSpan.FromMilliseconds(250),
             };
             var request = new HttpRequestMessage(HttpMethod.Get, "https://google.com");
 
@@ -189,7 +189,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers
             TaskCanceledException? expectedException = null;
             try
             {
-                await httpClient.SendAsync(request, CancellationToken.None);
+                await httpClient.SendAsync(request);
             }
             catch (TaskCanceledException exception)
             {
@@ -202,7 +202,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers
             expectedException.Message.ShouldBe("A task was canceled.");
             expectedException.InnerException.ShouldBeNull();
 #else
-            expectedException.Message.ShouldBe("The request was canceled due to the configured HttpClient.Timeout of 0.15 seconds elapsing.");
+            expectedException.Message.ShouldBe("The request was canceled due to the configured HttpClient.Timeout of 0.25 seconds elapsing.");
             expectedException.InnerException.ShouldBeOfType<TimeoutException>();
             expectedException.InnerException.Message.ShouldBe("A task was canceled.");
 #endif
