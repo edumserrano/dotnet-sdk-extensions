@@ -41,7 +41,7 @@ jobs:
         language: [ 'csharp' ]
     env:
       SLN_FILEPATH : ${{ github.workspace }}/DotNet.Sdk.Extensions.sln
-      DOTNET_VERSION : 6.0.101
+      DOTNET_VERSION : 6.0.x
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2

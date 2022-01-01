@@ -24,7 +24,7 @@ jobs:
     env:
       SLN_FILENAME: DotNet.Sdk.Extensions.sln
       SLN_FILEPATH : ${{ github.workspace }}/DotNet.Sdk.Extensions.sln
-      DOTNET_VERSION : 6.0.101
+      DOTNET_VERSION : 6.0.x
       WORKFLOW_RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
       PR_NUMBER: ${{ github.event.pull_request.number }}
       PR_BRANCH_NAME: ${{ github.event.pull_request.head.ref }}

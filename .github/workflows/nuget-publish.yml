@@ -24,7 +24,7 @@ defaults:
     shell: pwsh
 
 env:
-  LATEST_DOTNET_VERSION : 6.0.101
+  LATEST_DOTNET_VERSION : 6.0.x
 
 jobs:
   build:
