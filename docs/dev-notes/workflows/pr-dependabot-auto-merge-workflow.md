@@ -29,9 +29,9 @@ To be able to delete branches using the flag `--delete-branch` from [gh pr merge
 
 ## Ignored NuGets
 
-On the [Dependabot configuration file](/.github/dependabot.yml) the NuGet `Microsoft.AspNetCore.Mvc.Testing` is ignored because at the moment the `DotNet.Sdk.Extensions.Testing` project where the NuGet is used targets two target frameworks  and has an `if condition` to use different NuGet versions depending on the target framework.
+On the [Dependabot configuration file](/.github/dependabot.yml) the NuGet `Microsoft.AspNetCore.Mvc.Testing` is ignored because at the moment the `DotNet.Sdk.Extensions.Testing` project where the NuGet is used targets multiple target frameworks and has an `if condition` to use different NuGet versions depending on the target framework.
 
-Dependabot does not know that for target framework netcoreapp3.1 the Microsoft.AspNetCore.Mvc.Testing NuGet cannot be higher than 3.x.x. This NuGet needs to be manually updated for the other target framework.
+Dependabot does not know that handle this well and as such this NuGet needs to be manually updated for each target framework.
 
 ## Security considerations when setting up auto merge for Dependabot PRs
 
