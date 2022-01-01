@@ -114,7 +114,7 @@ jobs:
       id: sanitize-pr-body
       if: steps.auto-commit-action.outputs.changes_detected == 'true'
       run: |
-        $body = "${{ steps.render-pr-body-template.outputs.result }}"
+        $body = '${{ steps.render-pr-body-template.outputs.result }}'
         $body = $body -replace "`n","%0A" # The content must be escaped to preserve newlines. See https://github.community/t/set-output-truncates-multiline-strings/16852/3
         Write-Host "::set-output name=pr-body::$body"
     - name: Create dotnet format PR
@@ -123,8 +123,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.DOTNET_FORMAT_GH_TOKEN }}
       run: |
         $title = "${{ steps.commit-info.outputs.branch-name }}: fix code guidelines violations"
-        $body = "${{ steps.sanitize-pr-body.outputs.pr-body }}"
-        $body = $body -replace "```","``````"
+        $body = '${{ steps.sanitize-pr-body.outputs.pr-body }}'
         $prUrl = gh pr create `
           --title $title `
           --body $body `
