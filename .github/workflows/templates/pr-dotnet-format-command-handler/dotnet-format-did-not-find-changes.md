@@ -4,7 +4,7 @@
 
 ## Note
 
-Sometimes the fix provided by the analyzers produces unecessary comments when formatting files.
+Sometimes the fix provided by the analyzers produces unnecessary comments when formatting files.
 
 This should only happen if the project supports multiple target frameworks and the fix doesn't produce the same output for all. However, it seems that sometimes the `Unmerged change from project ...` comment shows up even though the fix produced the same output.
 
