@@ -123,9 +123,11 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.DOTNET_FORMAT_GH_TOKEN }}
       run: |
         $title = "${{ steps.commit-info.outputs.branch-name }}: fix code guidelines violations"
+        $body = "${{ steps.sanitize-pr-body.outputs.pr-body }}"
+        $body = $body -replace "```","``````"
         $prUrl = gh pr create `
           --title $title `
-          --body "${{ steps.sanitize-pr-body.outputs.pr-body }}" `
+          --body $body `
           --label ${{ env.DOTNET_FORMAT_LABEL }} `
           --label bot:robot:
         Write-Host "::notice::Created dotnet format PR at $prUrl."
