@@ -117,6 +117,12 @@ jobs:
         $body = "${{ steps.render-pr-body-template.outputs.result }}"
         $body = $body -replace "`n","%0A" # The content must be escaped to preserve newlines. See https://github.community/t/set-output-truncates-multiline-strings/16852/3
         Write-Host "::set-output name=pr-body::$body"
+        Write-Host $body
+    - name: Debug
+      if: steps.auto-commit-action.outputs.changes_detected == 'true'
+      run: |
+        $body = "${{ steps.sanitize-pr-body.outputs.pr-body }}"
+        Write-Host $body
     - name: Create dotnet format PR
       if: steps.auto-commit-action.outputs.changes_detected == 'true'
       env:
