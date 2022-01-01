@@ -176,16 +176,15 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess
             var httpClient = _webApplicationFactory
                 .WithWebHostBuilder(builder =>
                 {
-                    builder
-                        .UseHttpMocks(handlers =>
+                    builder.UseHttpMocks(handlers =>
+                    {
+                        handlers.MockHttpResponse(httpResponseMessageBuilder =>
                         {
-                            handlers.MockHttpResponse(httpResponseMessageBuilder =>
-                            {
-                                httpResponseMessageBuilder
-                                    .ForTypedClient<MyApiClient>("my-typed-client-2")
-                                    .RespondWith(new HttpResponseMessage(HttpStatusCode.OK));
-                            });
+                            httpResponseMessageBuilder
+                                .ForTypedClient<MyApiClient>("my-typed-client-2")
+                                .RespondWith(new HttpResponseMessage(HttpStatusCode.OK));
                         });
+                    });
                 })
                 .CreateClient();
 
