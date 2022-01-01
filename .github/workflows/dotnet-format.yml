@@ -62,8 +62,6 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
-    - name: Install dotnet-format dotnet tool
-      run:  dotnet tool install --global dotnet-format
     - name: Cache/Restore NuGets
       uses: actions/cache@v2
       with:
