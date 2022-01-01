@@ -114,7 +114,9 @@ jobs:
       id: sanitize-pr-body
       if: steps.auto-commit-action.outputs.changes_detected == 'true'
       run: |
-        $body = "${{ steps.render-pr-body-template.outputs.result }}"
+        $body = @"
+        ${{ steps.render-pr-body-template.outputs.result }}
+        "@
         $body = $body -replace "`n","%0A" # The content must be escaped to preserve newlines. See https://github.community/t/set-output-truncates-multiline-strings/16852/3
         Write-Host "::set-output name=pr-body::$body"
         Write-Host $body
