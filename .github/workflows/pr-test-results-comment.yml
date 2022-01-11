@@ -32,9 +32,14 @@ jobs:
         workflow: ${{ env.ARTIFACTS_WORKFLOW_NAME }}
         name:  ${{ env.UBUNTU_TEST_RESULTS_ARTIFACT_NAME }}
         run_id: ${{ env.ARTIFACTS_WORKFLOW_ID }}
+        path: ${{ env.UBUNTU_TEST_RESULTS_ARTIFACT_NAME }}
     - name: Download artifact
       uses: dawidd6/action-download-artifact@v2.16.0
       with:
         workflow: ${{ env.ARTIFACTS_WORKFLOW_NAME }}
         name:  ${{ env.WINDOWS_TEST_RESULTS_ARTIFACT_NAME }}
         run_id: ${{ env.ARTIFACTS_WORKFLOW_ID }}
+        path:  ${{ env.WINDOWS_TEST_RESULTS_ARTIFACT_NAME }}
+    - name: ls
+      shell: pwsh
+      run: ls -R
