@@ -100,7 +100,7 @@ jobs:
     - name: Render PR body template
       id: render-pr-body-template
       if: steps.auto-commit-action.outputs.changes_detected == 'true'
-      uses: chuhlomin/render-template@v1.3
+      uses: chuhlomin/render-template@v1.4
       with:
         template: .github/workflows/templates/dotnet-format/dotnet-format-found-changes.md
         vars: |

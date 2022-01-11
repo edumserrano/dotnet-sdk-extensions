@@ -73,7 +73,7 @@ jobs:
         }
     - name: Render comment template
       id: render-pr-comment-template
-      uses: chuhlomin/render-template@v1.3
+      uses: chuhlomin/render-template@v1.4
       with:
         template: ${{ steps.setup-pr-comment.outputs.pr-comment-template }}
         vars: |
