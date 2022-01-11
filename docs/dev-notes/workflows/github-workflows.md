@@ -21,6 +21,10 @@ There are two workflows setup on this repo:
 - [pr-dotnet-format-check](/docs/dev-notes/workflows/pr-dotnet-format-check-workflow.md)
 - [pr-dotnet-format-command-handler](/docs/dev-notes/workflows/pr-dotnet-format-command-handler-workflow.md)
 
+## Workflow's security
+
+See [Security considerations on GitHub workflows](/docs/dev-notes/workflows/security-considerations.md).
+
 ## Debugging workflows
 
 You can print [github context objects](https://docs.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions) by using the [`toJSON` function](https://docs.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#tojson).

@@ -80,8 +80,9 @@ GitHub blog post series on "Keeping your GitHub Actions and workflows secure":
 - [Keeping your GitHub Actions and workflows secure Part 2: Untrusted input](https://securitylab.github.com/research/github-actions-untrusted-input/)
 - [Keeping your GitHub Actions and workflows secure Part 3: How to trust your building blocks](https://securitylab.github.com/research/github-actions-building-blocks/)
 
-Good security practices for using GitHub Actions features:
+More info on GitHub Actions features and good security practices:
 
 - [Security hardening for GitHub Actions](https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions)
 - [Github Actions and the threat of malicious pull requests](https://nathandavison.com/blog/github-actions-and-the-threat-of-malicious-pull-requests)
 - [GitHub Actions improvements for fork and pull request workflows](https://github.blog/2020-08-03-github-actions-improvements-for-fork-and-pull-request-workflows/)
+- [Approving workflow runs from public forks](https://docs.github.com/en/actions/managing-workflow-runs/approving-workflow-runs-from-public-forks)

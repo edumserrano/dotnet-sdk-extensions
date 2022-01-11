@@ -8,4 +8,4 @@ The main idea is to notify that the pull request does not respect the code guide
 
 ## Security considerations
 
-This workflow uses the `pull_request_target` trigger and checks out the incoming code which could [lead to security vulnerabilities](./security-considerations.md#beware-of-pull_request_target). However since this workflow does NOT run any of the incoming code it is safe.
+This workflow uses the `pull_request_target` trigger and checks out the incoming code which could [lead to security vulnerabilities](/docs/dev-notes/workflows/security-considerations.md#beware-of-pull_request_target). However since this workflow does NOT run any of the incoming code it is safe.

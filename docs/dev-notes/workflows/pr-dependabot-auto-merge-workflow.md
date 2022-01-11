@@ -49,7 +49,7 @@ Given the above restrictions, the action to auto merge Dependabot PRs couldn't b
 
 As a result, the `dependabot-auto-merge-pr` workflow, which is responsible for merging a Dependabot PR, is a separate workflow that is [triggered from the completion of the main workflow](https://docs.github.com/en/actions/reference/events-that-trigger-workflows#workflow_run). **This workflow runs in a privileged workflow context which means that the `GITHUB_TOKEN` will have write permissions and be able to approve and merge the PR**.
 
-For more information on keeping GitHub workflows secure see: [Security considerations on GitHub workflows](./security-considerations.md)
+For more information on keeping GitHub workflows secure see: [Security considerations on GitHub workflows](/docs/dev-notes/workflows/security-considerations.md)
 
 ## Fetch Metadata Action
 
