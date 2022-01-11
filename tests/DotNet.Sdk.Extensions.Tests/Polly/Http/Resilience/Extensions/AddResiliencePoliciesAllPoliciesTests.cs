@@ -202,7 +202,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             var serviceProvider = services.BuildServiceProvider();
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
             const string triggerTimeoutPath = "/timeout";
-            var timeout = TimeSpan.FromSeconds(resilienceOptions.Timeout.TimeoutInSecs + 1);
+            var timeout = TimeSpan.FromSeconds(resilienceOptions.Timeout.TimeoutInSecs + 2);
             testHttpMessageHandler.HandleTimeout(triggerTimeoutPath, timeout);
             var httpResponses = new List<HttpResponseMessage>();
             // make enough requests to trigger the circuit breaker, then make sure we make some more
