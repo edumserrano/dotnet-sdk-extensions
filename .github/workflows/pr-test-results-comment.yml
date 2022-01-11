@@ -38,3 +38,4 @@ jobs:
         workflow: ${{ env.ARTIFACTS_WORKFLOW_NAME }}
         name:  ${{ env.WINDOWS_TEST_RESULTS_ARTIFACT_NAME }}
         run_id: ${{ env.ARTIFACTS_WORKFLOW_ID }}
+
