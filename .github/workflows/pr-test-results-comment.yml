@@ -20,26 +20,50 @@ jobs:
     env:
       ARTIFACTS_WORKFLOW_NAME: nuget-publish.yml
       ARTIFACTS_WORKFLOW_ID: ${{ github.event.workflow_run.id }}
-      UBUNTU_TEST_RESULTS_ARTIFACT_NAME: test-results-ubuntu-latest
-      WINDOWS_TEST_RESULTS_ARTIFACT_NAME: test-results-windows-latest
+      ARTIFACTS_WORKFLOW_URL: ${{ github.event.workflow_run.html_url }}
+      TEST_RESULTS_ARTIFACT_NAME: test-results-ubuntu-latest
+      MATRIX_OS: ubuntu-latest
+      PR_NUMBER: ${{ github.event.workflow_run.pull_request[0].number }}
     steps:
     - name: Dump github context
-      shell: pwsh
       run: Write-Host '${{ toJson(github) }}'
     - name: Download artifact
       uses: dawidd6/action-download-artifact@v2.16.0
+      continue-on-error: true
       with:
         workflow: ${{ env.ARTIFACTS_WORKFLOW_NAME }}
-        name:  ${{ env.UBUNTU_TEST_RESULTS_ARTIFACT_NAME }}
+        name:  ${{ env.TEST_RESULTS_ARTIFACT_NAME }}
         run_id: ${{ env.ARTIFACTS_WORKFLOW_ID }}
-        path: ${{ env.UBUNTU_TEST_RESULTS_ARTIFACT_NAME }}
-    - name: Download artifact
-      uses: dawidd6/action-download-artifact@v2.16.0
-      with:
-        workflow: ${{ env.ARTIFACTS_WORKFLOW_NAME }}
-        name:  ${{ env.WINDOWS_TEST_RESULTS_ARTIFACT_NAME }}
-        run_id: ${{ env.ARTIFACTS_WORKFLOW_ID }}
-        path:  ${{ env.WINDOWS_TEST_RESULTS_ARTIFACT_NAME }}
+        path: ${{ env.TEST_RESULTS_ARTIFACT_NAME }}
     - name: ls
-      shell: pwsh
       run: ls -R
+    - name: Check artifact download
+      id: artifact-download-check
+      run: |
+        if(Test-Path -Path ./${{ env.TEST_RESULTS_ARTIFACT_NAME }}){
+          Write-Host "::set-output name=artifact-downloaded::true"
+          Write-Host "Set output variable artifact-downloaded to true"
+        }
+        else{
+          Write-Host "::set-output name=artifact-downloaded::false"
+          Write-Host "Set output variable artifact-downloaded to false"
+        }
+    - name: Sanitize PR test results comment
+      id: sanitize-pr-comment
+      if: steps.artifact-download-check.artifact-downloaded == 'true'
+      run: |
+        $commentBody = "# [Test runs on ${{ env.MATRIX_OS }}](${{ env.ARTIFACTS_WORKFLOW_URL }})`n`n"
+        $commentBody += Get-Content ./${{ env.TEST_RESULTS_ARTIFACT_NAME }}/*.md -Raw # without the -Raw the escaping that happens next does not work. Not sure why.
+        # The content must be escaped to preserve newlines. See https://github.community/t/set-output-truncates-multiline-strings/16852/3
+        $commentBody = $commentBody -replace "`n","%0A"
+        $commentBody = $commentBody -replace "`r","%0D"
+        Write-Host "::set-output name=pr-comment-body::$commentBody"
+    - name: Update PR with test results
+      uses: ./.github/actions/create-update-comment
+      if: steps.artifact-download-check.artifact-downloaded == 'true'
+      with:
+        issue-number: ${{ env.PR_NUMBER }}
+        body-includes: Test runs on ${{ env.MATRIX_OS }}
+        comment-author: github-actions[bot]
+        body: ${{ steps.sanitize-pr-comment.outputs.pr-comment-body }}
+        edit-mode: replace

@@ -38,7 +38,6 @@ jobs:
       TEST_COVERAGE_REPORT_DIR: tests/${{ matrix.os }}/coverage-results/report
       TEST_RESULTS_ARTIFACT_NAME: test-results-${{ matrix.os }}
       CODE_COVERAGE_ARTIFACT_NAME: code-coverage-report-${{ matrix.os }}
-      PR_NUMBER: ${{ github.event.pull_request.number }}
       WORKFLOW_RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
     steps:
     - uses: actions/checkout@v2
@@ -125,25 +124,6 @@ jobs:
       with:
         name: ${{ env.TEST_RESULTS_ARTIFACT_NAME }}
         path: ${{ steps.dotnet-test.outputs.test-results-dir }}
-    - name: Sanitize PR test results comment
-      id: sanitize-pr-comment
-      if: github.event_name == 'pull_request' && (steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure') && always()
-      run: |
-        $commentBody = "# [Test runs on ${{ matrix.os }}](${{ env.WORKFLOW_RUN_URL }})`n`n"
-        $commentBody += Get-Content ${{ steps.dotnet-test.outputs.test-results-dir }}/*.md -Raw # without the -Raw the escaping that happens next does not work. Not sure why.
-        # The content must be escaped to preserve newlines. See https://github.community/t/set-output-truncates-multiline-strings/16852/3
-        $commentBody = $commentBody -replace "`n","%0A"
-        $commentBody = $commentBody -replace "`r","%0D"
-        Write-Host "::set-output name=pr-comment-body::$commentBody"
-    - name: Update PR with test results
-      uses: ./.github/actions/create-update-comment
-      if:   github.event_name == 'pull_request' && (steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure') && always()
-      with:
-        issue-number: ${{ env.PR_NUMBER }}
-        body-includes: Test runs on ${{ matrix.os }}
-        comment-author: github-actions[bot]
-        body: ${{ steps.sanitize-pr-comment.outputs.pr-comment-body }}
-        edit-mode: replace
 
   nuget-publish:
     name: Publish NuGet packages and symbols
