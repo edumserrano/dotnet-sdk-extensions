@@ -25,21 +25,16 @@ jobs:
          - test-results-artifact-name: "test-results-windows-latest"
            os: "windows-latest"
     env:
-      ARTIFACTS_WORKFLOW_NAME: nuget-publish.yml
-      ARTIFACTS_WORKFLOW_ID: ${{ github.event.workflow_run.id }}
-      ARTIFACTS_WORKFLOW_URL: ${{ github.event.workflow_run.html_url }}
       TEST_RESULTS_ARTIFACT_NAME: ${{ matrix.test-results-artifact-name }}
-      MATRIX_OS: ${{ matrix.os }}
-      PR_NUMBER: ${{ github.event.workflow_run.pull_requests[0].number }}
     steps:
     - uses: actions/checkout@v2
     - name: Download artifact
       uses: dawidd6/action-download-artifact@v2.16.0
       continue-on-error: true
       with:
-        workflow: ${{ env.ARTIFACTS_WORKFLOW_NAME }}
+        workflow: nuget-publish.yml
         name:  ${{ env.TEST_RESULTS_ARTIFACT_NAME }}
-        run_id: ${{ env.ARTIFACTS_WORKFLOW_ID }}
+        run_id: ${{ github.event.workflow_run.id }}
         path: ${{ env.TEST_RESULTS_ARTIFACT_NAME }}
     - name: Check artifact download
       id: artifact-download-check
@@ -56,7 +51,7 @@ jobs:
       id: sanitize-pr-comment
       if: steps.artifact-download-check.outputs.artifact-downloaded == 'true'
       run: |
-        $commentBody = "# [Test runs on ${{ env.MATRIX_OS }}](${{ env.ARTIFACTS_WORKFLOW_URL }})`n`n"
+        $commentBody = "# [Test runs on ${{ matrix.os }}](${{ github.event.workflow_run.html_url }}) for commit ${{ github.sha }}`n`n"
         $commentBody += Get-Content ./${{ env.TEST_RESULTS_ARTIFACT_NAME }}/*.md -Raw # without the -Raw the escaping that happens next does not work. Not sure why.
         # The content must be escaped to preserve newlines. See https://github.community/t/set-output-truncates-multiline-strings/16852/3
         $commentBody = $commentBody -replace "`n","%0A"
@@ -66,8 +61,9 @@ jobs:
       uses: ./.github/actions/create-update-comment
       if: steps.artifact-download-check.outputs.artifact-downloaded == 'true'
       with:
-        issue-number: ${{ env.PR_NUMBER }}
-        body-includes: Test runs on ${{ env.MATRIX_OS }}
+        issue-number: ${{ github.event.workflow_run.pull_requests[0].number }}
+        body-includes: Test runs on ${{ matrix.os }}
         comment-author: github-actions[bot]
         body: ${{ steps.sanitize-pr-comment.outputs.pr-comment-body }}
         edit-mode: replace
+
