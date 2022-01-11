@@ -1,0 +1,23 @@
+# When making changes to this file please update the corresponding documentation which can be found at /docs/dev-notes/workflows/pr-test-results-comment-workflow.md
+
+name: PR test results comment
+
+on:
+  workflow_run:
+    workflows: ["Publish Nuget packages"]
+    types:
+    - completed
+
+defaults:
+  run:
+    shell: pwsh
+
+jobs:
+  main:
+    name: Add test results as PR comment
+    runs-on: ubuntu-latest
+    if: github.event.workflow_run.conclusion == 'success'
+    steps:
+    - name: Dump github context
+      shell: pwsh
+      run: Write-Host '${{ toJson(github) }}'

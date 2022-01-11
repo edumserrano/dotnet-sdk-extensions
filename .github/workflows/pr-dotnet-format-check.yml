@@ -8,10 +8,6 @@ on:
     paths-ignore:
     - "**.md"
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}-${{ github.head_ref }}
-  cancel-in-progress: true
-
 defaults:
   run:
     shell: pwsh
