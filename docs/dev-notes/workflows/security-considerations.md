@@ -72,6 +72,8 @@ An example would be:
 - The main workflow has a `pull_request` trigger which will run the code from the forked repo on a non-priviliged context. The test results are uploaded as a workflow artifact.
 - A separate workflow using the `workflow_run` trigger will start once the main workflow completes. This workflow runs in the context of the target repository with a priviliged context. It will download the test results artifact from the non-priviliged workflow and create a comment on the Pull Request.
 
+You can use the [actions/upload-artifact@v2](https://github.com/actions/upload-artifact) action to upload artifacts from the non priviliged workflow and the [dawidd6/action-download-artifact@v2](https://github.com/dawidd6/action-download-artifact) to download artifacts on the priviliged workflow context.
+
 ## Further security reading
 
 GitHub blog post series on "Keeping your GitHub Actions and workflows secure":

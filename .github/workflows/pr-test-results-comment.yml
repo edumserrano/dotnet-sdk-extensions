@@ -16,8 +16,25 @@ jobs:
   main:
     name: Add test results as PR comment
     runs-on: ubuntu-latest
-    if: github.event.workflow_run.conclusion == 'success'
+    if: github.event.workflow_run.event == 'pull_request'
+    env:
+      ARTIFACTS_WORKFLOW_NAME: nuget-publish.yml
+      ARTIFACTS_WORKFLOW_ID: ${{ github.event.workflow_run.id }}
+      UBUNTU_TEST_RESULTS_ARTIFACT_NAME: test-results-ubuntu-latest
+      WINDOWS_TEST_RESULTS_ARTIFACT_NAME: test-results-windows-latest
     steps:
     - name: Dump github context
       shell: pwsh
       run: Write-Host '${{ toJson(github) }}'
+    - name: Download artifact
+      uses: dawidd6/action-download-artifact@v2.16.0
+      with:
+        workflow: ${{ env.ARTIFACTS_WORKFLOW_NAME }}
+        name:  ${{ env.UBUNTU_TEST_RESULTS_ARTIFACT_NAME }}
+        run_id: ${{ env.ARTIFACTS_WORKFLOW_ID }}
+    - name: Download artifact
+      uses: dawidd6/action-download-artifact@v2.16.0
+      with:
+        workflow: ${{ env.ARTIFACTS_WORKFLOW_NAME }}
+        name:  ${{ env.WINDOWS_TEST_RESULTS_ARTIFACT_NAME }}
+        run_id: ${{ env.ARTIFACTS_WORKFLOW_ID }}
