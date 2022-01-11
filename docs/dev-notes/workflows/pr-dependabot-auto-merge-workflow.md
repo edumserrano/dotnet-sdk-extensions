@@ -35,8 +35,6 @@ Dependabot does not know that handle this well and as such this NuGet needs to b
 
 ## Security considerations when setting up auto merge for Dependabot PRs
 
-When a pull request is triggered the `GITHUB_TOKEN` will have [different permissions depending if the pull request came from a forked repo or not](https://docs.github.com/en/actions/reference/authentication-in-a-workflow#how-the-permissions-are-calculated-for-a-workflow-job).
-
 As per the [docs](https://docs.github.com/en/code-security/supply-chain-security/keeping-your-dependencies-updated-automatically/automating-dependabot-with-github-actions#responding-to-events):
 
 > Dependabot is able to trigger GitHub Actions workflows on its pull requests and comments; however, due to ["GitHub Actions: Workflows triggered by Dependabot PRs will run with read-only permissions"](https://github.blog/changelog/2021-02-19-github-actions-workflows-triggered-by-dependabot-prs-will-run-with-read-only-permissions/), certain events are treated differently.
@@ -46,35 +44,14 @@ As per the [docs](https://docs.github.com/en/code-security/supply-chain-security
 > - GITHUB_TOKEN has read-only permissions.
 > - Secrets are inaccessible.
 >
-> For more information, see ["Keeping your GitHub Actions and workflows secure: Preventing pwn requests"](https://securitylab.github.com/research/github-actions-preventing-pwn-requests/).
 
-Even though pull requests on **public repos** from a forked repo will only have a `GITHUB_TOKEN` with read permissions and won't be able to access any action secrets, for **private repos** there are [settings that allow you to control this](https://github.blog/2020-08-03-github-actions-improvements-for-fork-and-pull-request-workflows/).
-
-Given the above restrictions, the action to auto merge Dependabot PRs couldn't be done as part of the main `nuget-publish` workflow without potentially introducing security vulnerabilities. 
+Given the above restrictions, the action to auto merge Dependabot PRs couldn't be done as part of the main `nuget-publish` workflow without potentially introducing security vulnerabilities.
 
 As a result, the `dependabot-auto-merge-pr` workflow, which is responsible for merging a Dependabot PR, is a separate workflow that is [triggered from the completion of the main workflow](https://docs.github.com/en/actions/reference/events-that-trigger-workflows#workflow_run). **This workflow runs in a privileged workflow context which means that the `GITHUB_TOKEN` will have write permissions and be able to approve and merge the PR**.
 
-As explained by [Keeping your GitHub Actions and workflows secure: Preventing pwn requests](https://securitylab.github.com/research/github-actions-preventing-pwn-requests/), anything that is used on a privileged workflow context must be trusted data. For example, binaries built from an untrusted PR, would be a security vulnerability if executed in the privileged workflow_run workflow context. **Since the `dependabot-auto-merge-pr` workflow does not use any data from the workflow that triggered it, apart from the PR number, there is no security risk**.
+For more information on keeping GitHub workflows secure see: [Security considerations on GitHub workflows](./security-considerations.md)
 
-### Extra note
-
-As per [Github Actions and the threat of malicious pull requests](https://nathandavison.com/blog/github-actions-and-the-threat-of-malicious-pull-requests):
-
-> Really, the answer to this is simple - if you're using the pull_request_target event in Github Actions, don't use actions/checkout to then checkout the pull request's code. If you do, then you are opening yourself up to the malicious pull request attack.
->
-> If you must combine the two, then make sure you guard your configuration with conditions that only runs steps with access to secrets when the pull request being checked out in the workflow is trusted, whatever that means to you and your requirements. If you search Github, you will find configurations that use the if: feature to do something like this - be careful that your logic is not faulty and test, test, test. Use a non privileged account to fork the repo, and try and exploit it using the techniques covered.
-
-#### Example of handling pull_request events
-
-See [dependabot docs](https://docs.github.com/en/code-security/supply-chain-security/keeping-your-dependencies-updated-automatically/automating-dependabot-with-github-actions#handling-pull_request-events) for code example of how to implement these kind of workflows securily.
-
-#### GitHub blog post series on "Keeping your GitHub Actions and workflows secure"
-
-- [Keeping your GitHub Actions and workflows secure Part 1: Preventing pwn requests](https://securitylab.github.com/research/github-actions-preventing-pwn-requests/)
-- [Keeping your GitHub Actions and workflows secure Part 2: Untrusted input](https://securitylab.github.com/research/github-actions-untrusted-input/)
-- [Keeping your GitHub Actions and workflows secure Part 3: How to trust your building blocks](https://securitylab.github.com/research/github-actions-building-blocks/)
-
-### Fetch Metadata Action
+## Fetch Metadata Action
 
 The [dependabot/fetch-metadata](https://github.com/dependabot/fetch-metadata) can be used to extract information about the dependencies being updated by a Dependabot generated PR.
 
