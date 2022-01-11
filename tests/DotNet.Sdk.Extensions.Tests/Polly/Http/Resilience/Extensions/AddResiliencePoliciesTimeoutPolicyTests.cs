@@ -349,7 +349,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
                     .TimeoutExecutor(resilienceOptions.Timeout, testHttpMessageHandler)
                     .TriggerTimeoutPolicyAsync();
             });
-            expectedException.Message.ShouldBe("The request should have been aborted but it wasn't. Make sure the HttpClient.Timeout value is set to a value lower than 1.25 seconds.");
+            expectedException.Message.ShouldBe("The request should have been aborted but it wasn't. Make sure the HttpClient.Timeout value is set to a value lower than 2.25 seconds.");
         }
     }
 }
