@@ -23,7 +23,7 @@ jobs:
       ARTIFACTS_WORKFLOW_URL: ${{ github.event.workflow_run.html_url }}
       TEST_RESULTS_ARTIFACT_NAME: test-results-ubuntu-latest
       MATRIX_OS: ubuntu-latest
-      PR_NUMBER: ${{ github.event.workflow_run.pull_request[0].number }}
+      PR_NUMBER: ${{ github.event.workflow_run.pull_requests[0].number }}
     steps:
     - name: Dump github context
       run: Write-Host '${{ toJson(github) }}'
@@ -50,7 +50,7 @@ jobs:
         }
     - name: Sanitize PR test results comment
       id: sanitize-pr-comment
-      if: steps.artifact-download-check.artifact-downloaded == 'true'
+      if: steps.artifact-download-check.outputs.artifact-downloaded == 'true'
       run: |
         $commentBody = "# [Test runs on ${{ env.MATRIX_OS }}](${{ env.ARTIFACTS_WORKFLOW_URL }})`n`n"
         $commentBody += Get-Content ./${{ env.TEST_RESULTS_ARTIFACT_NAME }}/*.md -Raw # without the -Raw the escaping that happens next does not work. Not sure why.
@@ -60,7 +60,7 @@ jobs:
         Write-Host "::set-output name=pr-comment-body::$commentBody"
     - name: Update PR with test results
       uses: ./.github/actions/create-update-comment
-      if: steps.artifact-download-check.artifact-downloaded == 'true'
+      if: steps.artifact-download-check.outputs.artifact-downloaded == 'true'
       with:
         issue-number: ${{ env.PR_NUMBER }}
         body-includes: Test runs on ${{ env.MATRIX_OS }}
