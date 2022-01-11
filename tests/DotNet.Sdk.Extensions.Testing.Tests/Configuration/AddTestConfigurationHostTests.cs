@@ -17,6 +17,12 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
     [Trait("Category", XUnitCategories.Configuration)]
     public class AddTestConfigurationHostTests
     {
+        [Fact]
+        public void ThisWillFail()
+        {
+            true.ShouldBeFalse();
+        }
+
         /// <summary>
         /// Tests that <see cref="Host.CreateDefaultBuilder()"/> adds two <see cref="JsonConfigurationProvider"/>
         /// to the app configuration.
