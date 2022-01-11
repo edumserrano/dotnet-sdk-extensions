@@ -19,6 +19,9 @@ on:
   schedule:
     - cron: '0 0 * * 0' # Once a week: "At 00:00 on Sunday."
 
+permissions:
+  security-events: write
+
 defaults:
   run:
     shell: pwsh
