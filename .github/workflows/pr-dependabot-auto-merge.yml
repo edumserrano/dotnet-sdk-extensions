@@ -8,6 +8,10 @@ on:
     types:
     - completed
 
+permissions:
+  contents: read
+  pull-requests: write
+
 defaults:
   run:
     shell: pwsh
