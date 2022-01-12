@@ -127,7 +127,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices
                 .Build();
 
             var sw = Stopwatch.StartNew();
-            await host.RunUntilTimeoutAsync(TimeSpan.FromMilliseconds(2100));
+            await host.RunUntilTimeoutAsync(TimeSpan.FromMilliseconds(2300));
             sw.Stop();
 
             sw.Elapsed.ShouldBeGreaterThanOrEqualTo(TimeSpan.FromMilliseconds(2000));
