@@ -3,14 +3,13 @@
 name: PR dotnet format check
 
 on:
-  pull_request_target:
+  pull_request:
     branches: [ main ]
     paths-ignore:
     - "**.md"
 
 permissions:
   contents: read
-  pull-requests: write
 
 defaults:
   run:
@@ -26,7 +25,6 @@ jobs:
       SLN_FILEPATH : ${{ github.workspace }}/DotNet.Sdk.Extensions.sln
       DOTNET_VERSION : 6.0.x
       WORKFLOW_RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
-      PR_NUMBER: ${{ github.event.pull_request.number }}
       PR_BRANCH_NAME: ${{ github.event.pull_request.head.ref }}
       DOTNET_FORMAT_ARTIFACT_FILEPATH: ${{github.workspace}}/dotnet-format-result.json
     steps:
@@ -66,38 +64,22 @@ jobs:
         }
 
         Exit 0 # this avoids the step failing when the dotnet format command detects changes
-    - name: Setup PR comment
-      id: setup-pr-comment
+    - name: Save dotnet format result
       run: |
         $hasChanges = [System.Convert]::ToBoolean("${{ steps.dotnet-format.outputs.has-changes }}")
-        if($hasChanges) {
-          Write-Host "::set-output name=pr-comment-template::.github/workflows/templates/pr-dotnet-format-check/dotnet-format-found-changes.md"
-        }
-        else {
-          Write-Host "::set-output name=pr-comment-template::.github/workflows/templates/pr-dotnet-format-check/dotnet-format-did-not-find-changes.md"
-        }
-    - name: Render comment template
-      id: render-pr-comment-template
-      uses: chuhlomin/render-template@v1.4
+        $body = @{
+          hasChanges = $hasChanges
+          workflow = "${{ github.workflow }}"
+          workflowUrl = "${{ env.WORKFLOW_RUN_URL }}"
+          prNumber = ${{ github.event.pull_request.number }}
+        } | ConvertTo-Json
+        $body > ${{ env.DOTNET_FORMAT_ARTIFACT_FILEPATH }}
+        cat ${{ env.DOTNET_FORMAT_ARTIFACT_FILEPATH }}
+    - name: Upload dotnet format result
+      uses: actions/upload-artifact@v2
       with:
-        template: ${{ steps.setup-pr-comment.outputs.pr-comment-template }}
-        vars: |
-          workflow: ${{ github.workflow }}
-          workflowUrl: ${{ env.WORKFLOW_RUN_URL }}
-    - name: Sanitize PR comment
-      id: sanitize-pr-comment
-      run: |
-        $commentBody = "${{ steps.render-pr-comment-template.outputs.result }}"
-        $commentBody = $commentBody -replace "`n","%0A" # The content must be escaped to preserve newlines. See https://github.community/t/set-output-truncates-multiline-strings/16852/3
-        Write-Host "::set-output name=pr-comment-body::$commentBody"
-    - name: Update PR with dotnet format result
-      uses: ./.github/actions/create-update-comment
-      with:
-        issue-number: ${{ env.PR_NUMBER }}
-        body-includes: PR dotnet format check
-        comment-author: github-actions[bot]
-        body: ${{ steps.sanitize-pr-comment.outputs.pr-comment-body }}
-        edit-mode: replace
+        name: dotnet-format-result
+        path: ${{ env.DOTNET_FORMAT_ARTIFACT_FILEPATH }}
     - name: Set workflow exit status
       run: |
         $hasChanges = [System.Convert]::ToBoolean("${{ steps.dotnet-format.outputs.has-changes }}")
@@ -108,18 +90,4 @@ jobs:
 
         Write-Host "dotnet format didn't find any file that does not respect the code guidelines so setting the workflow status as successful."
         Exit 0
-    - name: Save dotnet format result
-      run: |
-        $hasChanges = [System.Convert]::ToBoolean("${{ steps.dotnet-format.outputs.has-changes }}")
-        $body = @{
-          dotnetFormatHasChanges = $hasChanges
-          workflow = "${{ github.workflow }}"
-          workflowUrl = "${{ env.WORKFLOW_RUN_URL }}"
-        } | ConvertTo-Json
-        $body > ${{ env.DOTNET_FORMAT_ARTIFACT_FILEPATH }}
-        cat ${{ env.DOTNET_FORMAT_ARTIFACT_FILEPATH }}
-    - name: Upload dotnet format result
-      uses: actions/upload-artifact@v2
-      with:
-        name: dotnet-format-result
-        path: ${{ env.DOTNET_FORMAT_ARTIFACT_FILEPATH }}
+
