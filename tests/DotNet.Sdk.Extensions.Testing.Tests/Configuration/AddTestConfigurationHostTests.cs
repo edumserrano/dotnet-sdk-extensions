@@ -31,11 +31,23 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
                 .CreateDefaultBuilder()
                 .Build();
 
-
-                var a = 2;
-
-
             var configuration = (ConfigurationRoot)host.Services.GetRequiredService<IConfiguration>();
+
+/* Unmerged change from project 'DotNet.Sdk.Extensions.Testing.Tests(net5.0)'
+Before:
+            var configuration = (ConfigurationRoot)host.Services.GetRequiredService<IConfiguration>();
+            var jsonConfigurationProviders = configuration.Providers.OfType<JsonConfigurationProvider>();
+After:
+            var jsonConfigurationProviders = configuration.Providers.OfType<JsonConfigurationProvider>();
+*/
+
+/* Unmerged change from project 'DotNet.Sdk.Extensions.Testing.Tests(net6.0)'
+Before:
+            var configuration = (ConfigurationRoot)host.Services.GetRequiredService<IConfiguration>();
+            var jsonConfigurationProviders = configuration.Providers.OfType<JsonConfigurationProvider>();
+After:
+            var jsonConfigurationProviders = configuration.Providers.OfType<JsonConfigurationProvider>();
+*/
             var jsonConfigurationProviders = configuration.Providers.OfType<JsonConfigurationProvider>();
             jsonConfigurationProviders.Count().ShouldBe(2);
         }
