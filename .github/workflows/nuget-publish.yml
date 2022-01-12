@@ -43,7 +43,8 @@ jobs:
       CODE_COVERAGE_ARTIFACT_NAME: code-coverage-report-${{ matrix.os }}
       WORKFLOW_RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
     steps:
-    - uses: actions/checkout@v2
+    - name: Checkout repository
+      uses: actions/checkout@v2
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:

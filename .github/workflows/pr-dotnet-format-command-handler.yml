@@ -33,7 +33,7 @@ jobs:
       SLN_FILENAME: DotNet.Sdk.Extensions.sln
       SLN_FILEPATH : ${{ github.workspace }}/DotNet.Sdk.Extensions.sln
     steps:
-    - name: Checkout
+    - name: Checkout repository
       uses: actions/checkout@v2
       with:
         ref: ${{ env.PR_HEAD_SHA }}

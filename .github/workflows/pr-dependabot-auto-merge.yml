@@ -24,8 +24,6 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
-      with:
-        ref: ${{github.event.workflow_run.head_branch}}
     - name: Approve and merge dependabot PR
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

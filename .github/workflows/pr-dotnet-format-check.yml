@@ -28,10 +28,8 @@ jobs:
       PR_BRANCH_NAME: ${{ github.event.pull_request.head.ref }}
       DOTNET_FORMAT_ARTIFACT_FILEPATH: ${{github.workspace}}/dotnet-format-result.json
     steps:
-    - name: Checkout
+    - name: Checkout repository
       uses: actions/checkout@v2
-      with:
-        ref: ${{ github.event.pull_request.head.sha }}
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:

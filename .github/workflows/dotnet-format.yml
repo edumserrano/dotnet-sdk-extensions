@@ -27,7 +27,7 @@ jobs:
     outputs:
       can-create-pr: ${{ steps.open-pr-check.outputs.can-create-pr }}
     steps:
-    - name: Checkout
+    - name: Checkout repository
       uses: actions/checkout@v2
     - name: Check for open dotnet format PRs
       id: open-pr-check
