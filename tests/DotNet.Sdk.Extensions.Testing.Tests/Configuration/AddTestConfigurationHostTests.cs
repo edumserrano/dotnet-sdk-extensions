@@ -30,11 +30,6 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
             using var host = Host
                 .CreateDefaultBuilder()
                 .Build();
-
-
-                var a = 2;
-
-
             var configuration = (ConfigurationRoot)host.Services.GetRequiredService<IConfiguration>();
             var jsonConfigurationProviders = configuration.Providers.OfType<JsonConfigurationProvider>();
             jsonConfigurationProviders.Count().ShouldBe(2);
