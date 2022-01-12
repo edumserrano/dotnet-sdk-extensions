@@ -7,7 +7,7 @@ on:
     types: [created]
 
 permissions:
-  contents: none
+  pull-requests: write
 
 jobs:
   command-dispatch:
