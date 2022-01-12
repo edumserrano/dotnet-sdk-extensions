@@ -28,6 +28,7 @@ jobs:
       WORKFLOW_RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
       PR_NUMBER: ${{ github.event.pull_request.number }}
       PR_BRANCH_NAME: ${{ github.event.pull_request.head.ref }}
+      DOTNET_FORMAT_ARTIFACT_FILEPATH: ${{github.workspace}}/dotnet-format-result.json
     steps:
     - name: Checkout
       uses: actions/checkout@v2
@@ -107,3 +108,18 @@ jobs:
 
         Write-Host "dotnet format didn't find any file that does not respect the code guidelines so setting the workflow status as successful."
         Exit 0
+    - name: Save dotnet format result
+      run: |
+        $hasChanges = [System.Convert]::ToBoolean("${{ steps.dotnet-format.outputs.has-changes }}")
+        $body = @{
+          dotnetFormatHasChanges = $hasChanges
+          workflow = "${{ github.workflow }}"
+          workflowUrl = "${{ env.WORKFLOW_RUN_URL }}"
+        } | ConvertTo-Json
+        $body > ${{ env.DOTNET_FORMAT_ARTIFACT_FILEPATH }}
+        cat ${{ env.DOTNET_FORMAT_ARTIFACT_FILEPATH }}
+    - name: Upload dotnet format result
+      uses: actions/upload-artifact@v2
+      with:
+        name: dotnet-format-result
+        path: ${{ env.DOTNET_FORMAT_ARTIFACT_FILEPATH }}
