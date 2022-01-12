@@ -123,3 +123,4 @@ jobs:
       with:
         name: dotnet-format-result
         path: ${{ env.DOTNET_FORMAT_ARTIFACT_FILEPATH }}
+
