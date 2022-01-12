@@ -6,6 +6,10 @@ on:
   repository_dispatch:
     types: [dotnet-format-command]
 
+permissions:
+  contents: read
+  pull-requests: write
+
 defaults:
   run:
     shell: pwsh
