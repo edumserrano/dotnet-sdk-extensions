@@ -1,9 +1,14 @@
 # When making changes to this file please update the corresponding documentation which can be found at /docs/dev-notes/workflows/dispatch-commands-workflow.md
 
 name: Slash command dispatch
+
 on:
   issue_comment:
     types: [created]
+
+permissions:
+  pull-requests: write
+
 jobs:
   command-dispatch:
     name: Slash command dispatch

@@ -2,15 +2,14 @@
 
 [![Publish Nuget packages](https://github.com/edumserrano/dot-net-sdk-extensions/actions/workflows/nuget-publish.yml/badge.svg)](https://github.com/edumserrano/dot-net-sdk-extensions/actions/workflows/nuget-publish.yml)
 
-[This workflow](/.github/workflows/nuget-publish.yml) will:
+[This workflow](/.github/workflows/nuget-publish.yml):
 
 - Builds the code and runs tests on windows-latest and ubuntu-latest.
 - Generates code coverage and uploads as a workflow artifact.
 - Uploads code coverage to Codecov.
 - Uploades test results as a workflow artifact.
-- If the workflow was triggered by a pull request, adds the test results as a comment on the PR.
 - Generates NuGet packages and uploads them as a workflow artifact.
-- If the workflow was triggered by a pull request, publishes NuGet packages to nuget.org.
+- If the workflow was NOT triggered by a pull request, publishes NuGet packages to nuget.org.
 
 ## Secrets
 

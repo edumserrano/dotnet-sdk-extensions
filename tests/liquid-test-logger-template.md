@@ -21,9 +21,9 @@
 {%- assign skipped_set_results = set.results  | where: "outcome", "Skipped" -%}
 {%- assign passed_set_results = set.results  | where: "outcome", "Passed" -%}
 <details>
-<summary>
-<strong>{{overall}} - {{ test_dll }} on {{ parameters.TargetFramework }}
-</strong></summary>
+<summary><strong>{{overall}} - {{ test_dll }} on {{ parameters.TargetFramework }}</strong></summary>
+
+----
 
 ## Run Summary
 
@@ -221,5 +221,7 @@ Source:
 </code></pre>
 </details>
 {%- endif -%}
+
+----
 
 </details>

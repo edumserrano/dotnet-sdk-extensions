@@ -338,7 +338,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
             var serviceProvider = services.BuildServiceProvider();
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
             const string triggerTimeoutPath = "/timeout";
-            var timeout = TimeSpan.FromSeconds(resilienceOptions.Timeout.TimeoutInSecs + 1);
+            var timeout = TimeSpan.FromSeconds(resilienceOptions.Timeout.TimeoutInSecs + 2);
             testHttpMessageHandler.HandleTimeout(triggerTimeoutPath, timeout);
 
             await Should.ThrowAsync<TimeoutRejectedException>(() => httpClient.GetAsync(triggerTimeoutPath));
