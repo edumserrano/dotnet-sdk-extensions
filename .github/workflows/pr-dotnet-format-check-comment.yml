@@ -39,8 +39,10 @@ jobs:
         $dotnetFormatResultJson = Get-Content ./${{ env.TEST_RESULTS_ARTIFACT_NAME }}/dotnet-format-result.json
         Write-Host $dotnetFormatResultJson
         $dotnetFormatResult = $dotnetFormatResultJson | ConvertFrom-Json
-        Write-Host "::set-output name=workflow::$dotnetFormatResult.workflow"
-        Write-Host "::set-output name=workflow-url::$dotnetFormatResult.workflowUrl"
+        $workflow = $dotnetFormatResult.workflow
+        $workflowUrl = $dotnetFormatResult.workflowUrl
+        Write-Host "::set-output name=workflow::$workflow"
+        Write-Host "::set-output name=workflow-url::$workflowUrl"
         if($dotnetFormatResult.hasChanges) {
           Write-Host "::set-output name=pr-comment-template::.github/workflows/templates/pr-dotnet-format-check/dotnet-format-found-changes.md"
         }
