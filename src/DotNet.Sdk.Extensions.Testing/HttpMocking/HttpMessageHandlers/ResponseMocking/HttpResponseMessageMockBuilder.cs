@@ -113,7 +113,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.Response
             {
                 await Task.Delay(timeout, cancellationToken);
                 var exMsg = $"The request should have been aborted but it wasn't. Make sure the HttpClient.Timeout value is set to a value lower than {timeout.TotalSeconds} seconds.";
-                throw new InvalidOperationException(exMsg);
+                throw new TimeoutExpectedException(exMsg);
             };
             return this;
         }

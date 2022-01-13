@@ -6,6 +6,7 @@ using DotNet.Sdk.Extensions.Polly.Http.Resilience.Events;
 using DotNet.Sdk.Extensions.Polly.Http.Resilience.Extensions;
 using DotNet.Sdk.Extensions.Polly.Http.Timeout;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers;
+using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.ResponseMocking;
 using DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary;
 using DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Auxiliary;
 using Microsoft.Extensions.DependencyInjection;
@@ -343,7 +344,7 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions
 
             var serviceProvider = services.BuildServiceProvider();
             var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
-            var expectedException = await Should.ThrowAsync<InvalidOperationException>(() =>
+            var expectedException = await Should.ThrowAsync<TimeoutExpectedException>(() =>
             {
                 return httpClient
                     .TimeoutExecutor(resilienceOptions.Timeout, testHttpMessageHandler)

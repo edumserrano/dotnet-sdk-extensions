@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.ResponseMocking;
 using DotNet.Sdk.Extensions.Testing.HttpMocking.InProcess;
 using DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess.Auxiliary.Timeout;
 using Microsoft.Extensions.DependencyInjection;
@@ -96,7 +97,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess
             var exceptionService = webAppFactory.Services.GetRequiredService<ExceptionService>();
             var expectedException = exceptionService.Exceptions.FirstOrDefault();
             expectedException.ShouldNotBeNull("Expected InvalidOperationException but didn't get any.");
-            expectedException.ShouldBeOfType<InvalidOperationException>();
+            expectedException.ShouldBeOfType<TimeoutExpectedException>();
             expectedException.Message.ShouldBe("The request should have been aborted but it wasn't. Make sure the HttpClient.Timeout value is set to a value lower than 0.05 seconds.");
         }
 
@@ -169,7 +170,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess
             var exceptionService = webAppFactory.Services.GetRequiredService<ExceptionService>();
             var expectedException = exceptionService.Exceptions.FirstOrDefault();
             expectedException.ShouldNotBeNull("Expected InvalidOperationException but didn't get any.");
-            expectedException.ShouldBeOfType<InvalidOperationException>();
+            expectedException.ShouldBeOfType<TimeoutExpectedException>();
             expectedException.Message.ShouldBe("The request should have been aborted but it wasn't. Make sure the HttpClient.Timeout value is set to a value lower than 0.05 seconds.");
         }
     }

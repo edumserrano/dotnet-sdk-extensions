@@ -132,7 +132,7 @@ There is no recommendation on any of the different ways to do the mocking. You s
 
 ## Timeouts
 
-You can also test timeouts by configuring the http response mock using the `HttpResponseMessageMockBuilder.TimesOut` instead of the `HttpResponseMessageMockBuilder.RespondsWith` method as such:
+You can also test timeouts by configuring the http response mock using the `HttpResponseMessageMockBuilder.TimesOut` instead of the `HttpResponseMessageMockBuilder.RespondsWith` method as follows:
 
 ```csharp
 var handler = new TestHttpMessageHandler();
@@ -158,6 +158,12 @@ expectedException.InnerException!.GetType().ShouldBe(typeof(TimeoutException));
 expectedException.Message.ShouldBe("The request was canceled due to the configured HttpClient.Timeout of 0.001 seconds elapsing.");
 expectedException.InnerException.Message.ShouldBe("A task was canceled.");
 ```
+
+Note that the `TimesOut` method will not force the `HttpClient` to timeout after the indicated time. The `TimesOut` method is syntactic sugar for waiting for a specific period of time and if while waiting the `HttpClient` does not abort the request due to a timeout then a `TimeoutExpectedException` will be raised.
+
+The proper way to use `HttpResponseMessageMockBuilder.TimesOut` method is to make sure you configure the `HttpClient` timeout to a certain value then use `HttpResponseMessageMockBuilder.TimesOut` with a value higher than that. If you want to test short timeouts you must override the `HttpClient` timeout to a short value as part of your test.
+
+The value added by `HttpResponseMessageMockBuilder.TimesOut` is not only the syntactic sugar to avoid having to do a wait for a certain period of time when mocking an HTTP response, but also the fact that if a timeout is not triggered you will get the custom `TimeoutExpectedException` exception. This avoids getting into situations were your tests might pass or fail unintentionally.
 
 ## Notes
 
