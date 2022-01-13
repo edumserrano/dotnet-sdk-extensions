@@ -27,6 +27,10 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         [Fact]
         public void ControlTest()
         {
+
+              var a = 2;
+
+
             using var host = Host
                 .CreateDefaultBuilder()
                 .Build();
