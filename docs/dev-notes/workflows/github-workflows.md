@@ -26,12 +26,15 @@ There are two workflows setup on this repo:
 
 ## Workflow's security
 
-All the workflows have the minimum required `GITHUB_TOKEN` permissions. The main purpose is to protect from the threat of malicious pull requests. For more information see [Security considerations on GitHub workflows](/docs/dev-notes/workflows/security-considerations.md).
+All the workflows have the minimum required `GITHUB_TOKEN` permissions. Furthermore, the workflows that require priviliged context are separated from the ones that could potentially executed malicious code. The main purpose is to protect from the threat of malicious pull requests. For more information see:
+
+- [Security considerations on GitHub workflows](/docs/dev-notes/workflows/security-considerations.md)
+- [Security considerations on GitHub workflows regarding dotnet CLI](/docs/dev-notes/workflows/security-considerations-security-considerations-and-dotnet.md)
 
 Other relevant links:
-- [Permissions for the GITHUB_TOKEN](https://docs.github.com/en/actions/security-guides/automatic-token-authentication#permissions-for-the-github_token).
-- [Syntax for GITHUB_TOKEN permissions](https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#permissions).
-- [Breakdown of GITHU_TOKEN permissions by API calls](https://docs.github.com/en/rest/reference/permissions-required-for-github-apps).
+- [Permissions for the GITHUB_TOKEN](https://docs.github.com/en/actions/security-guides/automatic-token-authentication#permissions-for-the-github_token)
+- [Syntax for GITHUB_TOKEN permissions](https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#permissions)
+- [Breakdown of GITHU_TOKEN permissions by API calls](https://docs.github.com/en/rest/reference/permissions-required-for-github-apps)
 ## Debugging workflows
 
 You can print [github context objects](https://docs.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions) by using the [`toJSON` function](https://docs.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#tojson).
