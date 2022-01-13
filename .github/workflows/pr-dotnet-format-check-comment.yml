@@ -41,17 +41,16 @@ jobs:
         $dotnetFormatResult = $dotnetFormatResultJson | ConvertFrom-Json
         $workflow = $dotnetFormatResult.workflow
         $workflowUrl = $dotnetFormatResult.workflowUrl
+        $prNumber = $dotnetFormatResult.prNumber
         Write-Host "::set-output name=workflow::$workflow"
         Write-Host "::set-output name=workflow-url::$workflowUrl"
+        Write-Host "::set-output name=pr-number::$prNumber"
         if($dotnetFormatResult.hasChanges) {
           Write-Host "::set-output name=pr-comment-template::.github/workflows/templates/pr-dotnet-format-check/dotnet-format-found-changes.md"
         }
         else {
           Write-Host "::set-output name=pr-comment-template::.github/workflows/templates/pr-dotnet-format-check/dotnet-format-did-not-find-changes.md"
         }
-    - name: Debug
-      run: |
-        Write-Host '${{ toJson(steps.setup-pr-comment.outputs) }}'
     - name: Render comment template
       id: render-pr-comment-template
       uses: chuhlomin/render-template@v1.4
@@ -69,7 +68,7 @@ jobs:
     - name: Update PR with dotnet format result
       uses: ./.github/actions/create-update-comment
       with:
-        issue-number: ${{ env.PR_NUMBER }}
+        issue-number: ${{ steps.setup-pr-comment.outputs.pr-number }}
         body-includes: ${{ steps.setup-pr-comment.outputs.workflow }}
         comment-author: github-actions[bot]
         body: ${{ steps.sanitize-pr-comment.outputs.pr-comment-body }}
