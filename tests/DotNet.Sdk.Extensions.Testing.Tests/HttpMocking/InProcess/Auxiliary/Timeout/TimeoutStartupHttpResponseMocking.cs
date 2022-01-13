@@ -23,7 +23,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess.Auxiliary.Ti
                 .AddHttpClient("named-client-with-low-timeout")
                 .ConfigureHttpClient(client =>
                 {
-                    client.Timeout = TimeSpan.FromMilliseconds(150);
+                    client.Timeout = TimeSpan.FromMilliseconds(250);
                 });
             services
                 .AddHttpClient("named-client-with-high-timeout")
@@ -35,7 +35,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess.Auxiliary.Ti
                 .AddHttpClient("polly-named-client-with-low-timeout")
                 .AddHttpMessageHandler(_ =>
                 {
-                    var timeoutPolicy = Policy.TimeoutAsync<HttpResponseMessage>(TimeSpan.FromMilliseconds(150));
+                    var timeoutPolicy = Policy.TimeoutAsync<HttpResponseMessage>(TimeSpan.FromMilliseconds(250));
                     return new PolicyHttpMessageHandler(timeoutPolicy);
                 });
             services

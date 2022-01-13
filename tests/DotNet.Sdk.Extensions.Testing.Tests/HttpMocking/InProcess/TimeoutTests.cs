@@ -22,13 +22,13 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess
         }
 
         /// <summary>
-        /// The setup for this test sets up a named HttpClient "named-client-with-low-timeout" and with a configured timeout of 150ms,
+        /// The setup for this test sets up a named HttpClient "named-client-with-low-timeout" and with a configured timeout of 250ms,
         /// see <see cref="TimeoutStartupHttpResponseMocking"/> for more info on the setup.
         ///
         /// This tests that if we define a mock to timeout then it will timeout as long as the mock timeout is higher than
         /// the <see cref="HttpClient.Timeout"/>.
         ///
-        /// In this test the timeout of 1 second defined on the mock is higher than the timeout of 150ms defined on the HttpClient.
+        /// In this test the timeout of 2 second defined on the mock is higher than the timeout of 250ms defined on the HttpClient.
         /// </summary>
         [Fact]
         public async Task TimeoutOnHttpClientWithTimeoutConfigured1()
@@ -42,7 +42,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess
                         {
                             httpResponseMessageBuilder
                                 .ForNamedClient("named-client-with-low-timeout")
-                                .TimesOut(TimeSpan.FromSeconds(1));
+                                .TimesOut(TimeSpan.FromSeconds(2));
                         });
                     });
                 });
@@ -58,7 +58,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess
             expectedException.Message.ShouldBe("A task was canceled.");
             expectedException.InnerException.ShouldBeNull();
 #else
-            expectedException.Message.ShouldBe("The request was canceled due to the configured HttpClient.Timeout of 0.15 seconds elapsing.");
+            expectedException.Message.ShouldBe("The request was canceled due to the configured HttpClient.Timeout of 0.25 seconds elapsing.");
             expectedException.InnerException.ShouldBeOfType<TimeoutException>();
             expectedException.InnerException.Message.ShouldBe("A task was canceled.");
 #endif
@@ -102,12 +102,12 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess
 
         /// <summary>
         /// The setup for this test uses Polly to define a timeout policy for the named HttpClient "polly-named-client-with-low-timeout".
-        /// The timeout for the policy is set to 150ms and the HttpClient is invoked when doing a GET to /polly-named-client-with-low-timeout.
+        /// The timeout for the policy is set to 250ms and the HttpClient is invoked when doing a GET to /polly-named-client-with-low-timeout.
         ///
         /// This tests that if we define a mock to timeout then it will timeout as long as the mock timeout is higher than the timeout on the
         /// Polly policy.
         ///
-        /// In this test the timeout of 1 second defined on the mock is higher than the timeout of 150ms defined by the Polly policy
+        /// In this test the timeout of 2 second defined on the mock is higher than the timeout of 250ms defined by the Polly policy
         /// on the HttpClient so Polly throws a TimeoutRejectedException when a timeout occurs.
         /// </summary>
         [Fact]
@@ -122,7 +122,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess
                         {
                             httpResponseMessageBuilder
                                 .ForNamedClient("polly-named-client-with-low-timeout")
-                                .TimesOut(TimeSpan.FromSeconds(1));
+                                .TimesOut(TimeSpan.FromSeconds(2));
                         });
                     });
                 });
