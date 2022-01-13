@@ -1,4 +1,4 @@
-# [{{ .workflow }}]({{ .workflowUrl }})
+# [{{ .workflow }}]({{ .workflowUrl }}) for commit {{ .commitSha }}
 
 :exclamation: **dotnet format** found files that do not respect the code guidelines.
 

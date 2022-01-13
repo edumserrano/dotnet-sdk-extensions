@@ -1,4 +1,4 @@
-# [{{ .workflow }}]({{ .workflowUrl }})
+# [{{ .workflow }}]({{ .workflowUrl }}) for commit {{ .commitSha }}
 
 :heavy_check_mark: **dotnet format** didn't find any file that does not respect the code guidelines.
 

@@ -110,6 +110,7 @@ jobs:
         vars: |
           workflow: ${{ github.workflow }}
           workflowUrl: ${{ env.WORKFLOW_RUN_URL }}
+          commitSha: ${{ github.sha }}
     - name: Sanitize PR body
       id: sanitize-pr-body
       if: steps.auto-commit-action.outputs.changes_detected == 'true'

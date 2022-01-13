@@ -23,11 +23,12 @@ jobs:
     runs-on: ubuntu-latest
     env:
       TEST_RESULTS_ARTIFACT_NAME: dotnet-format-result
+      HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
       with:
-        ref: ${{ github.event.workflow_run.head_sha }}
+        ref: ${{ env.HEAD_SHA }}
     - name: Download artifact
       uses: dawidd6/action-download-artifact@v2.16.0
       with:
@@ -61,6 +62,7 @@ jobs:
         vars: |
           workflow: ${{ steps.setup-pr-comment.outputs.workflow }}
           workflowUrl: ${{ steps.setup-pr-comment.outputs.workflow-url }}
+          commitSha: ${{ env.HEAD_SHA }}
     - name: Sanitize PR comment
       id: sanitize-pr-comment
       run: |

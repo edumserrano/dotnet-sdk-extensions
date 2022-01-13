@@ -1,4 +1,4 @@
-# [{{ .workflow }}]({{ .workflowUrl }})
+# [{{ .workflow }}]({{ .workflowUrl }}) for commit {{ .commitSha }}
 
 **dotnet format** detected code guidelines violations and automatically created this PR.
 
