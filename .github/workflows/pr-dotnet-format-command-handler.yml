@@ -68,45 +68,52 @@ jobs:
       with:
         branch: ${{ env.PR_BRANCH_NAME }}
         commit_message: dotnet format for PR ${{ env.PR_NUMBER }}
-    - name: Setup PR comment
-      id: setup-pr-comment
-      run: |
-        $changesDetected = [System.Convert]::ToBoolean("${{ steps.auto-commit-action.outputs.changes_detected }}")
-        if($changesDetected) {
-          Write-Host "::set-output name=pr-comment-reaction::eyes"
-          $commitSha = git rev-parse HEAD
-          Write-Host "::set-output name=commit-sha::$commitSha"
-          Write-Host "::set-output name=pr-comment-template::.github/workflows/templates/pr-dotnet-format-command-handler/dotnet-format-found-changes.md"
-        }
-        else {
-          Write-Host "::set-output name=pr-comment-reaction::hooray"
-          Write-Host "::set-output name=pr-comment-template::.github/workflows/templates/pr-dotnet-format-command-handler/dotnet-format-did-not-find-changes.md"
-        }
-    - name: Render comment template
-      id: render-pr-comment-template
-      uses: chuhlomin/render-template@v1.4
+    # - name: Setup PR comment
+    #   id: setup-pr-comment
+    #   run: |
+    #     $changesDetected = [System.Convert]::ToBoolean("${{ steps.auto-commit-action.outputs.changes_detected }}")
+    #     if($changesDetected) {
+    #       Write-Host "::set-output name=pr-comment-reaction::eyes"
+    #       $commitSha = git rev-parse HEAD
+    #       Write-Host "::set-output name=commit-sha::$commitSha"
+    #       Write-Host "::set-output name=pr-comment-template::.github/workflows/templates/pr-dotnet-format-command-handler/dotnet-format-found-changes.md"
+    #     }
+    #     else {
+    #       Write-Host "::set-output name=pr-comment-reaction::hooray"
+    #       Write-Host "::set-output name=pr-comment-template::.github/workflows/templates/pr-dotnet-format-command-handler/dotnet-format-did-not-find-changes.md"
+    #     }
+    # - name: Render comment template
+    #   id: render-pr-comment-template
+    #   uses: chuhlomin/render-template@v1.4
+    #   with:
+    #     template: ${{ steps.setup-pr-comment.outputs.pr-comment-template }}
+    #     vars: |
+    #       workflow: ${{ github.workflow }}
+    #       workflowUrl: ${{ env.WORKFLOW_RUN_URL }}
+    #       commitSha: ${{ env.PR_HEAD_SHA }}
+    #       pushedCommitSha: ${{ steps.setup-pr-comment.outputs.commit-sha }}
+    # - name: Sanitize PR comment
+    #   id: sanitize-pr-comment
+    #   run: |
+    #     $commentBody = "${{ steps.render-pr-comment-template.outputs.result }}"
+    #     $commentBody = $commentBody -replace "`n","%0A" # The content must be escaped to preserve newlines. See https://github.community/t/set-output-truncates-multiline-strings/16852/3
+    #     Write-Host "::set-output name=pr-comment-body::$commentBody"
+    # - name: Update PR with dotnet format result
+    #   uses: ./.github/actions/create-update-comment
+    #   with:
+    #     issue-number: ${{ env.PR_NUMBER }}
+    #     body-includes: PR dotnet format command handler
+    #     comment-author: github-actions[bot]
+    #     body: ${{ steps.sanitize-pr-comment.outputs.pr-comment-body }}
+    #     edit-mode: replace
+    #     reactions: ${{ steps.setup-pr-comment.outputs.pr-comment-reaction }}
+    - name: Upload repo with commit
+      if: steps.auto-commit-action.outputs.changes_detected == 'true'
+      uses: actions/upload-artifact@v2
       with:
-        template: ${{ steps.setup-pr-comment.outputs.pr-comment-template }}
-        vars: |
-          workflow: ${{ github.workflow }}
-          workflowUrl: ${{ env.WORKFLOW_RUN_URL }}
-          commitSha: ${{ env.PR_HEAD_SHA }}
-          pushedCommitSha: ${{ steps.setup-pr-comment.outputs.commit-sha }}
-    - name: Sanitize PR comment
-      id: sanitize-pr-comment
-      run: |
-        $commentBody = "${{ steps.render-pr-comment-template.outputs.result }}"
-        $commentBody = $commentBody -replace "`n","%0A" # The content must be escaped to preserve newlines. See https://github.community/t/set-output-truncates-multiline-strings/16852/3
-        Write-Host "::set-output name=pr-comment-body::$commentBody"
-    - name: Update PR with dotnet format result
-      uses: ./.github/actions/create-update-comment
-      with:
-        issue-number: ${{ env.PR_NUMBER }}
-        body-includes: PR dotnet format command handler
-        comment-author: github-actions[bot]
-        body: ${{ steps.sanitize-pr-comment.outputs.pr-comment-body }}
-        edit-mode: replace
-        reactions: ${{ steps.setup-pr-comment.outputs.pr-comment-reaction }}
+        name: repo
+        path: |
+          ${{ github.workspace }}
 
   set-final-pr-status:
     name: Set final PR status
