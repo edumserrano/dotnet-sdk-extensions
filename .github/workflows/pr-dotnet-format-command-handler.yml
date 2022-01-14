@@ -117,7 +117,7 @@ jobs:
           workflow = "${{ github.workflow }}"
           workflowUrl = "${{ env.WORKFLOW_RUN_URL }}"
           prNumber = ${{ github.event.pull_request.number }}
-          prBranchName = ${{ github.event.client_payload.pull_request.head.ref }}
+          prBranchName = "${{ github.event.client_payload.pull_request.head.ref }}"
         } | ConvertTo-Json
         $body > ${{ env.WORKFLOW_INFO_ARTIFACT_FILEPATH }}
         cat ${{ env.WORKFLOW_INFO_ARTIFACT_FILEPATH }}
