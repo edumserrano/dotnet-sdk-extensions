@@ -37,7 +37,7 @@ jobs:
     - name: Read dotnet format workflow info
       id: dotnet-format-workflow-info
       run: |
-        $worfklowInfoFilePath = ${{ github.workspace }}/${{ env.WORKFLOW_INFO_ARTIFACT_NAME }}/workflow-info.json
+        $worfklowInfoFilePath = "${{ github.workspace }}/${{ env.WORKFLOW_INFO_ARTIFACT_NAME }}/workflow-info.json"
         $workflowInfoJson = Get-Content $worfklowInfoFilePath
         Write-Host $workflowInfoJson
         $workflowInfo = $workflowInfoJson | ConvertFrom-Json
