@@ -22,10 +22,10 @@ jobs:
     # env:
       # HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
     steps:
-    - name: Dump github context
-      run: Write-Host '${{ toJson(github) }}'
     - name: Dump secrets context
       run: Write-Host '${{ toJson(secrets) }}'
+    - name: Dump github context
+      run: Write-Host '${{ toJson(github) }}'
     - name: Checkout repository
       uses: actions/checkout@v2
       with:

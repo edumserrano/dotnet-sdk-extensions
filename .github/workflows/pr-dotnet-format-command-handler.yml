@@ -31,10 +31,10 @@ jobs:
       PR_HEAD_SHA: ${{ github.event.client_payload.pull_request.head.sha }}
       WORKFLOW_INFO_ARTIFACT_FILEPATH: ${{github.workspace}}/workflow-info.json
     steps:
-    - name: Dump github context
-      run: Write-Host '${{ toJson(github) }}'
     - name: Dump secrets context
       run: Write-Host '${{ toJson(secrets) }}'
+    - name: Dump github context
+      run: Write-Host '${{ toJson(github) }}'
     - name: Checkout repository
       uses: actions/checkout@v2
       with:
