@@ -27,8 +27,6 @@ jobs:
       with:
         # ref: ${{ env.HEAD_SHA }}
         token: ${{ secrets.DOTNET_FORMAT_GH_TOKEN }} # just to setup the git token, don't care about the data checked out, it will be overwritten below
-    - name: ls 1
-      run: ls -R
     - name: Download dotnet format workflow info artifact
       uses: dawidd6/action-download-artifact@v2.16.0
       with:
@@ -57,20 +55,28 @@ jobs:
 
         rm $worfklowInfoFilePath # delete file so that it doesn't get pushed to the branch in the following steps
     - name: Download repo from dotnet format
+      if: steps.dotnet-format-workflow-info.outputs.has-changes == 'true'
       uses: dawidd6/action-download-artifact@v2.16.0
       with:
         workflow: pr-dotnet-format-command-handler.yml
         name:  repo
         run_id: ${{ github.event.workflow_run.id }}
-    - name: ls 2
-      run: ls -R
+        path: ./temp
+    - name: Apply repo from dotnet format
+      if: steps.dotnet-format-workflow-info.outputs.has-changes == 'true'
+      id: setup-pr-comment
+      run: |
+        rm -R ./temp/.git
+        Copy-Item -Path ./temp/* -Destination . -Recurse -Force
     - name: Push dotnet format changes
+      if: steps.dotnet-format-workflow-info.outputs.has-changes == 'true'
       id: auto-commit-action
       uses: stefanzweifel/git-auto-commit-action@v4.11.0
       with:
         branch: ${{ steps.dotnet-format-workflow-info.outputs.pr-branch-name }}
         commit_message: dotnet format for PR ${{ steps.dotnet-format-workflow-info.outputs.pr-number }}
     - name: Setup PR comment
+      if: steps.dotnet-format-workflow-info.outputs.has-changes == 'true'
       id: setup-pr-comment
       run: |
         $changesDetected = [System.Convert]::ToBoolean("${{ steps.auto-commit-action.outputs.changes_detected }}")
@@ -85,6 +91,7 @@ jobs:
           Write-Host "::set-output name=pr-comment-template::.github/workflows/templates/pr-dotnet-format-command-handler/dotnet-format-did-not-find-changes.md"
         }
     - name: Render comment template
+      if: steps.dotnet-format-workflow-info.outputs.has-changes == 'true'
       id: render-pr-comment-template
       uses: chuhlomin/render-template@v1.4
       with:
@@ -95,12 +102,14 @@ jobs:
           commitSha: ${{ github.event.workflow_run.head_sha }}
           pushedCommitSha: ${{ steps.setup-pr-comment.outputs.commit-sha }}
     - name: Sanitize PR comment
+      if: steps.dotnet-format-workflow-info.outputs.has-changes == 'true'
       id: sanitize-pr-comment
       run: |
         $commentBody = "${{ steps.render-pr-comment-template.outputs.result }}"
         $commentBody = $commentBody -replace "`n","%0A" # The content must be escaped to preserve newlines. See https://github.community/t/set-output-truncates-multiline-strings/16852/3
         Write-Host "::set-output name=pr-comment-body::$commentBody"
     - name: Update PR with dotnet format result
+      if: steps.dotnet-format-workflow-info.outputs.has-changes == 'true'
       uses: ./.github/actions/create-update-comment
       with:
         issue-number: ${{ steps.dotnet-format-workflow-info.outputs.pr-number }}
