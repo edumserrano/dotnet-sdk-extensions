@@ -35,7 +35,6 @@ jobs:
       uses: actions/checkout@v2
       with:
         ref: ${{ env.PR_HEAD_SHA }}
-        token: ${{ secrets.DOTNET_FORMAT_GH_TOKEN }}
     - name: Set PR status to pending
       uses: ./.github/actions/create-gh-status
       with:

@@ -22,21 +22,23 @@ jobs:
     # env:
       # HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
     steps:
-    # - name: Checkout repository
-    #   uses: actions/checkout@v2
-    #   with:
-    #     ref: ${{ env.HEAD_SHA }}
+    - name: Checkout repository
+      uses: actions/checkout@v2
+      with:
+        # ref: ${{ env.HEAD_SHA }}
+        token: ${{ secrets.DOTNET_FORMAT_GH_TOKEN }} # just to setup the git token, don't care about the data checked out, it will be overwritten below
+    - name: ls 1
+      run: ls -R
     - name: Download dotnet format workflow info artifact
       uses: dawidd6/action-download-artifact@v2.16.0
       with:
         workflow: pr-dotnet-format-command-handler.yml
         name:  workflow-info
         run_id: ${{ github.event.workflow_run.id }}
-        path: ${{ github.workspace }}
     - name: Read dotnet format workflow info
       id: dotnet-format-workflow-info
       run: |
-        $worfklowInfoFilePath = "${{ github.workspace }}/workflow-info.json"
+        $worfklowInfoFilePath = "./workflow-info.json"
         $workflowInfoJson = Get-Content $worfklowInfoFilePath
         Write-Host $workflowInfoJson
         $workflowInfo = $workflowInfoJson | ConvertFrom-Json
@@ -54,9 +56,14 @@ jobs:
         Write-Host "::set-output name=pr-branch-name::$prBranchName"
 
         rm $worfklowInfoFilePath # delete file so that it doesn't get pushed to the branch in the following steps
-    - name: GitHub Login
-      run: |
-        gh auth login --with-token ${{ secrets.DOTNET_FORMAT_GH_TOKEN }}
+    - name: Download repo from dotnet format
+      uses: dawidd6/action-download-artifact@v2.16.0
+      with:
+        workflow: pr-dotnet-format-command-handler.yml
+        name:  repo
+        run_id: ${{ github.event.workflow_run.id }}
+    - name: ls 2
+      run: ls -R
     - name: Push dotnet format changes
       id: auto-commit-action
       uses: stefanzweifel/git-auto-commit-action@v4.11.0
