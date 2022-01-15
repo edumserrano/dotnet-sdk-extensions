@@ -64,7 +64,6 @@ jobs:
         path: ./temp
     - name: Apply repo from dotnet format
       if: steps.dotnet-format-workflow-info.outputs.has-changes == 'true'
-      id: setup-pr-comment
       run: |
         rm -R ./temp/.git
         Copy-Item -Path ./temp/* -Destination . -Recurse -Force
