@@ -31,6 +31,10 @@ jobs:
       PR_HEAD_SHA: ${{ github.event.client_payload.pull_request.head.sha }}
       WORKFLOW_INFO_ARTIFACT_FILEPATH: ${{github.workspace}}/workflow-info.json
     steps:
+    - name: Dump github context
+      run: Write-Host '${{ toJson(github) }}'
+    - name: Dump secrets context
+      run: Write-Host '${{ toJson(secrets) }}'
     - name: Checkout repository
       uses: actions/checkout@v2
       with:
@@ -108,6 +112,13 @@ jobs:
     - name: Check if there are changes
       id: changes
       uses: UnicornGlobal/has-changes-action@v1.0.11
+    - name: Upload repo
+      if: steps.changes.outputs.changed == 1
+      uses: actions/upload-artifact@v2
+      with:
+        name: repo
+        path: |
+          ${{ github.workspace }}
     - name: Save workflow info
       run: |
         $hasChanges = [System.Convert]::ToBoolean(${{ steps.changes.outputs.changed }})
@@ -125,13 +136,7 @@ jobs:
       with:
         name: workflow-info
         path: ${{ env.WORKFLOW_INFO_ARTIFACT_FILEPATH }}
-    - name: Upload repo
-      if: steps.changes.outputs.changed == 1
-      uses: actions/upload-artifact@v2
-      with:
-        name: repo
-        path: |
-          ${{ github.workspace }}
+
 
   set-final-pr-status:
     name: Set final PR status
