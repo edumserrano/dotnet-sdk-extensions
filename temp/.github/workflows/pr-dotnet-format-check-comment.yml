@@ -1,0 +1,79 @@
+# When making changes to this file please update the corresponding documentation which can be found at /docs/dev-notes/workflows/pr-dotnet-format-check-comment-workflow.md
+
+name: PR dotnet format check comment
+
+on:
+  workflow_run:
+    workflows: ["PR dotnet format check"]
+    types:
+    - completed
+
+permissions:
+  contents: read
+  pull-requests: write
+
+defaults:
+  run:
+    shell: pwsh
+
+jobs:
+  main:
+    name: Add dotnet format results as PR comment
+    if: github.event.workflow_run.event == 'pull_request'
+    runs-on: ubuntu-latest
+    env:
+      TEST_RESULTS_ARTIFACT_NAME: dotnet-format-result
+      HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+      with:
+        ref: ${{ env.HEAD_SHA }}
+    - name: Download artifact
+      uses: dawidd6/action-download-artifact@v2.16.0
+      with:
+        workflow: pr-dotnet-format-check.yml
+        name:  ${{ env.TEST_RESULTS_ARTIFACT_NAME }}
+        run_id: ${{ github.event.workflow_run.id }}
+        path: ${{ env.TEST_RESULTS_ARTIFACT_NAME }}
+    - name: Setup PR comment
+      id: setup-pr-comment
+      run: |
+        $dotnetFormatResultJson = Get-Content ./${{ env.TEST_RESULTS_ARTIFACT_NAME }}/dotnet-format-result.json
+        Write-Host $dotnetFormatResultJson
+        $dotnetFormatResult = $dotnetFormatResultJson | ConvertFrom-Json
+        $workflow = $dotnetFormatResult.workflow
+        $workflowUrl = $dotnetFormatResult.workflowUrl
+        $prNumber = $dotnetFormatResult.prNumber
+        Write-Host "::set-output name=workflow::$workflow"
+        Write-Host "::set-output name=workflow-url::$workflowUrl"
+        Write-Host "::set-output name=pr-number::$prNumber"
+        if($dotnetFormatResult.hasChanges) {
+          Write-Host "::set-output name=pr-comment-template::.github/workflows/templates/pr-dotnet-format-check/dotnet-format-found-changes.md"
+        }
+        else {
+          Write-Host "::set-output name=pr-comment-template::.github/workflows/templates/pr-dotnet-format-check/dotnet-format-did-not-find-changes.md"
+        }
+    - name: Render comment template
+      id: render-pr-comment-template
+      uses: chuhlomin/render-template@v1.4
+      with:
+        template: ${{ steps.setup-pr-comment.outputs.pr-comment-template }}
+        vars: |
+          workflow: ${{ steps.setup-pr-comment.outputs.workflow }}
+          workflowUrl: ${{ steps.setup-pr-comment.outputs.workflow-url }}
+          commitSha: ${{ env.HEAD_SHA }}
+    - name: Sanitize PR comment
+      id: sanitize-pr-comment
+      run: |
+        $commentBody = "${{ steps.render-pr-comment-template.outputs.result }}"
+        $commentBody = $commentBody -replace "`n","%0A" # The content must be escaped to preserve newlines. See https://github.community/t/set-output-truncates-multiline-strings/16852/3
+        Write-Host "::set-output name=pr-comment-body::$commentBody"
+    - name: Update PR with dotnet format result
+      uses: ./.github/actions/create-update-comment
+      with:
+        issue-number: ${{ steps.setup-pr-comment.outputs.pr-number }}
+        body-includes: ${{ steps.setup-pr-comment.outputs.workflow }}
+        comment-author: github-actions[bot]
+        body: ${{ steps.sanitize-pr-comment.outputs.pr-comment-body }}
+        edit-mode: replace

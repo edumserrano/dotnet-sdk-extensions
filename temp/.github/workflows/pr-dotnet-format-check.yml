@@ -1,0 +1,91 @@
+# When making changes to this file please update the corresponding documentation which can be found at /docs/dev-notes/workflows/pr-dotnet-format-check-workflow.md
+
+name: PR dotnet format check
+
+on:
+  pull_request:
+    branches: [ main ]
+    paths-ignore:
+    - "**.md"
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: pwsh
+
+jobs:
+  dotnet-format-check:
+    name: PR dotnet format check
+    if: github.actor != 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    env:
+      SLN_FILENAME: DotNet.Sdk.Extensions.sln
+      SLN_FILEPATH : ${{ github.workspace }}/DotNet.Sdk.Extensions.sln
+      DOTNET_VERSION : 6.0.x
+      WORKFLOW_RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      PR_BRANCH_NAME: ${{ github.event.pull_request.head.ref }}
+      DOTNET_FORMAT_ARTIFACT_FILEPATH: ${{github.workspace}}/dotnet-format-result.json
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+    - name: Cache/Restore NuGets
+      uses: actions/cache@v2
+      with:
+        path:
+          ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ env.DOTNET_VERSION }}
+        restore-keys: |
+          ${{ runner.os }}-nuget-
+    - name: dotnet format check
+      id: dotnet-format
+      run: |
+        Write-Host "::group::Running dotnet format"
+        dotnet format ${{ env.SLN_FILEPATH }} `
+          --severity info `
+          --verify-no-changes `
+          --verbosity diagnostic
+        Write-Host "::endgroup::"
+        $hasChanges = $LASTEXITCODE -ne 0
+        Write-Host "::set-output name=has-changes::$hasChanges"
+
+        if($hasChanges) {
+          Write-Host "::error::dotnet format found files that do not respect the code guidelines."
+        }
+        else {
+          Write-Host "::notice::dotnet format didn't find any file that does not respect the code guidelines."
+        }
+
+        Exit 0 # this avoids the step failing when the dotnet format command detects changes
+    - name: Save dotnet format result
+      run: |
+        $hasChanges = [System.Convert]::ToBoolean("${{ steps.dotnet-format.outputs.has-changes }}")
+        $body = @{
+          hasChanges = $hasChanges
+          workflow = "${{ github.workflow }}"
+          workflowUrl = "${{ env.WORKFLOW_RUN_URL }}"
+          prNumber = ${{ github.event.pull_request.number }}
+        } | ConvertTo-Json
+        $body > ${{ env.DOTNET_FORMAT_ARTIFACT_FILEPATH }}
+        cat ${{ env.DOTNET_FORMAT_ARTIFACT_FILEPATH }}
+    - name: Upload dotnet format result
+      uses: actions/upload-artifact@v2
+      with:
+        name: dotnet-format-result
+        path: ${{ env.DOTNET_FORMAT_ARTIFACT_FILEPATH }}
+    - name: Set workflow exit status
+      run: |
+        $hasChanges = [System.Convert]::ToBoolean("${{ steps.dotnet-format.outputs.has-changes }}")
+        if($hasChanges) {
+          Write-Host "dotnet format found files that do not respect the code guidelines so setting the workflow status as failed."
+          Exit 1
+        }
+
+        Write-Host "dotnet format didn't find any file that does not respect the code guidelines so setting the workflow status as successful."
+        Exit 0
+

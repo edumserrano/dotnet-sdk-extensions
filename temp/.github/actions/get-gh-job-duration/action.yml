@@ -1,0 +1,54 @@
+# Why was this action created:
+#
+# This is used to get the job curation from a GitHub workflow.
+# I wanted to add a status to a pull request and wanted to simulate what the default GitHub status checks do. For that
+# I needed to add the duration of the job to the status check description.
+#
+
+name: 'Get job duration of a GitHub workflow'
+description: 'Gets the job duration of a GitHub workflow'
+inputs:
+  repo:
+    description: 'The repository for the which the status will be created. Expected format is {owner}/{repo}.'
+    required: true
+  run-id:
+    description: 'The id of the workflow run.'
+    required: true
+  job-name:
+    description: 'The name of the job.'
+    required: true
+  token:
+    description: 'The token to use when calling GitHub APIs.'
+    required: true
+outputs:
+  job-duration:
+    description: "The duration of the job formatted. If the total duration is less than 1 minute then it displays as Xs, where X is the total seconds, otherwise it displays Ym, where Y is the total minutes."
+    value: ${{ steps.get-job-execution-time.outputs.job-duration }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Get dotnet-format job execution time
+      shell: pwsh
+      id: get-job-execution-time
+      run: |
+        $uri = "https://api.github.com/repos/${{ inputs.repo }}/actions/runs/${{ inputs.run-id }}/jobs"
+        $headers = @{
+          Accept = "application/vnd.github.v3+json"
+          Authorization = "Bearer ${{ inputs.token }}"
+        }
+
+        $response = Invoke-RestMethod -Method 'Get' -Uri $uri -Headers $headers
+        $jobStartTime = $response.jobs.where{$_.name -eq '${{ inputs.job-name }}'}.started_at
+        $jobEndTime = $response.jobs.where{$_.name -eq '${{ inputs.job-name }}'}.completed_at
+        $jobDuration = $jobEndTime - $jobStartTime
+        if($jobDuration.Minutes -eq 0) {
+          $jobDurationInSeconds = $jobDuration.Seconds
+          $jobDurationAsString = "${jobDurationInSeconds}s"
+        }
+        else{
+          $jobDurationInMinutes = [Math]::Round($jobDuration.TotalMinutes)
+          $jobDurationAsString = "${jobDurationInMinutes}m"
+        }
+
+        Write-Host "::set-output name=job-duration::$jobDurationAsString"

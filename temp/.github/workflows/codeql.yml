@@ -1,0 +1,74 @@
+
+# When making changes to this file please update the corresponding documentation which can be found at /docs/dev-notes/workflows/codeql-workflow.md
+#
+# As per documentation at https://docs.github.com/en/code-security/secure-coding/automatically-scanning-your-code-for-vulnerabilities-and-errors/configuring-code-scanning#avoiding-unnecessary-scans-of-pull-requests
+# For CodeQL code scanning workflow files, don't use the paths-ignore or paths keywords with the on:push event
+# as this is likely to cause missing analyses. For accurate results, CodeQL code scanning needs to be able to
+# compare new changes with the analysis of the previous commit.
+
+name: "CodeQL"
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+    paths-ignore:
+    - "**.md"
+  schedule:
+    - cron: '0 0 * * 0' # Once a week: "At 00:00 on Sunday."
+
+permissions:
+  security-events: write
+
+defaults:
+  run:
+    shell: pwsh
+
+jobs:
+  analyze:
+    name: CodeQL analyze
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ 'csharp' ]
+    env:
+      SLN_FILEPATH : ${{ github.workspace }}/DotNet.Sdk.Extensions.sln
+      DOTNET_VERSION : 6.0.x
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+    - name: Cache/Restore NuGets
+      uses: actions/cache@v2
+      with:
+        path:
+          ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ env.DOTNET_VERSION }}
+        restore-keys: |
+          ${{ runner.os }}-nuget-
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v1
+      with:
+        languages: ${{ matrix.language }}
+        queries: security-and-quality
+    - name: Restore dependencies
+      run: dotnet restore ${{ env.SLN_FILEPATH }}
+    - name: Build
+      run: dotnet build ${{ env.SLN_FILEPATH }} -c Release -warnaserror --no-restore --no-incremental
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v1
+    - name: Upload SARIF file
+      uses: actions/upload-artifact@v2
+      with:
+        name: csharp-sarif
+        path: ${{runner.workspace}}/results/csharp.sarif

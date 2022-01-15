@@ -1,0 +1,22 @@
+# When making changes to this file please update the corresponding documentation which can be found at /docs/dev-notes/workflows/dispatch-commands-workflow.md
+
+name: Slash command dispatch
+
+on:
+  issue_comment:
+    types: [created]
+
+permissions:
+  pull-requests: write
+
+jobs:
+  command-dispatch:
+    name: Slash command dispatch
+    runs-on: ubuntu-latest
+    steps:
+      - name: Slash command dispatch
+        uses: peter-evans/slash-command-dispatch@v2.3.0
+        with:
+          token: ${{ secrets.DISPATCH_COMMANDS_GH_TOKEN }}
+          commands: |
+            dotnet-format

@@ -1,0 +1,25 @@
+<Project>
+  <!--
+    I wanted this file to be merged with the Directory.Build.props at the root of the repo.
+    To do this I've followed the example presented here https://stackoverflow.com/questions/45974279/multi-level-merging-of-msbuild-directory-build-props-files
+    which comes from this GitHub issue https://github.com/dotnet/msbuild/issues/2456
+  -->
+  <PropertyGroup>
+    <ParentDirectoryBuildPropsPath>$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)..\'))</ParentDirectoryBuildPropsPath>
+  </PropertyGroup>
+  <ImportGroup>
+    <Import Project="$(ParentDirectoryBuildPropsPath)" />
+  </ImportGroup>
+  <ItemGroup>
+    <PackageReference Include="coverlet.msbuild" Version="3.1.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="NSubstitute" Version="4.2.2" />
+    <PackageReference Include="Shouldly" Version="4.0.3" />
+    <PackageReference Include="xunit.analyzers" Version="0.10.0" />
+    <PackageReference Include="NSubstitute.Analyzers.CSharp" Version="1.0.15" />
+    <PackageReference Include="GitHubActionsTestLogger" Version="1.2.0" />
+    <PackageReference Include="LiquidTestReports.Custom" Version="1.0.9" />
+  </ItemGroup>
+</Project>
