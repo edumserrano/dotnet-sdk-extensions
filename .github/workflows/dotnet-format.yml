@@ -20,21 +20,15 @@ defaults:
   run:
     shell: pwsh
 
-env:
-  STATUS_CONTEXT : ${{ github.workflow }} / dotnet format (${{ github.event_name }}) # mimic format from github checks $workflow-name / $job-name ($event-name)
-  WORKFLOW_RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
-  PR_NUMBER: ${{ github.event.client_payload.pull_request.number }}
-
 jobs:
   dotnet-format:
     name: dotnet format
-    if: github.event_name == 'pull_request' # missing condition: and if PR is open
     runs-on: ubuntu-latest
     env:
       DOTNET_VERSION : 6.0.x
-      SLN_FILENAME: DotNet.Sdk.Extensions.sln
-      SLN_FILEPATH : ${{ github.workspace }}/DotNet.Sdk.Extensions.sln
       WORKFLOW_INFO_ARTIFACT_FILEPATH: ${{github.workspace}}/workflow-info.json
+      WORKFLOW_RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      DOTNET_FORMAT_REPORT_FILEPATH: ${{github.workspace}}/dotnet-format-report.json
     steps:
     - name: Dump github context
       env:
@@ -55,39 +49,76 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-nuget-
     - name: dotnet format
+      id: dotnet-format
       run: |
-        dotnet format ${{ env.SLN_FILEPATH }} --severity info --verbosity diagnostic
-    - name: Check if there are changes
-      id: changes
-      uses: UnicornGlobal/has-changes-action@v1.0.11
+        dotnet format ${{ github.workspace }}/DotNet.Sdk.Extensions.sln `
+          --severity info `
+          --verbosity diagnostic `
+          --report ${{ env.DOTNET_FORMAT_REPORT_FILEPATH }}
+        $dotnetFormatReport = Get-Content ${{ env.DOTNET_FORMAT_REPORT_FILEPATH }} | ConvertFrom-Json
+        $filePaths = $dotnetFormatReport.FilePath | Get-Unique
+        $dotnetFormatHasChanges =  $filePaths.Count -ne 0
+        $dotnetFormatHasChangesAsString =  dotnetFormatHasChanges.ToString().ToLower()
+        Write-Host "::set-output name=has-changes::$dotnetFormatHasChangesAsString"
+    - name: Delete all files without dotnet format changes
+      if: steps.dotnet-format.outputs.has-changes == 'true'
+      run: |
+        $files = Get-ChildItem -Path "${{github.workspace}}" -File -Recurse
+        $dotnetFormatReport = Get-Content ${{ env.DOTNET_FORMAT_REPORT_FILEPATH }} | ConvertFrom-Json
+        $filePaths = $dotnetFormatReport.FilePath | Get-Unique
+
+        // delete all files except for the ones with dotnet format changes
+        foreach($file in $files) {
+          if($filePaths -Contains $file.FullName) {
+            // don't do anything on files that have changes from dotnet format
+          }
+          else {
+            rm $file.FullName
+          }
+        }
+
+        // delete all empty folders
+        Get-ChildItem $tdc -Recurse -Force -Directory |
+            Sort-Object -Property FullName -Descending |
+            Where-Object { $($_ | Get-ChildItem -Force | Select-Object -First 1).Count -eq 0 } |
+            Remove-Item -Verbose
     - name: Upload repo
-      if: steps.changes.outputs.changed == 1
+      if: steps.dotnet-format.outputs.has-changes == 'true'
       uses: actions/upload-artifact@v2
       with:
         name: repo
         path: ${{ github.workspace }}
-    - name: Log repo artifact info
+    - name: Log dotnet format info
       run: |
-        $hasChanges = [System.Convert]::ToBoolean(steps.changes.outputs.changed)
+        $hasChanges = [System.Convert]::ToBoolean("${{ steps.dotnet-format.outputs.has-changes }}")
         if($hasChanges) {
-          Write-Host "::notice title=dotnet format::dotnet format detected code guidelines violations  ."
+          Write-Host "::warning title=dotnet format::dotnet format detected code guidelines violations. The files resulting from dotnet format have been uploaded to the artifact named: repo."
         }
-        elseif($pushStepConclusion -eq 'failure') {
-          Write-Host "::error title=DotNet.Sdk.Extensions NuGet::Failed to push DotNet.Sdk.Extensions NuGet and symbols."
-        }
-        elseif($pushStepConclusion -eq 'success') {
-          Write-Host "::notice title=DotNet.Sdk.Extensions NuGet::Successfully pushed DotNet.Sdk.Extensions NuGet and symbols to nuget.org. You can find the package at: https://www.nuget.org/packages/DotNet-Sdk-Extensions."
+        else {
+          Write-Host "::notice title=dotnet format::dotnet format did NOT detect code guidelines violations."
         }
     - name: Save workflow info
       run: |
-        $hasChanges = [System.Convert]::ToBoolean(${{ steps.changes.outputs.changed }})
-        $body = @{
-          hasChanges = $hasChanges
-          workflow = "${{ github.workflow }}"
-          workflowUrl = "${{ env.WORKFLOW_RUN_URL }}"
-          prNumber = "${{ env.PR_NUMBER }}"
-          prBranchName = "${{ github.event.client_payload.pull_request.head.ref }}"
-        } | ConvertTo-Json
+        $hasChanges = [System.Convert]::ToBoolean("${{ steps.dotnet-format.outputs.has-changes }}")
+        $isPullRequest = "${{ github.event_name }}" -eq "pull_request"
+
+        if($isPullRequest) {
+          $body = @{
+                    hasChanges = $hasChanges
+                    workflow = "${{ github.workflow }}"
+                    workflowUrl = "${{ env.WORKFLOW_RUN_URL }}"
+                    prNumber = "${{ github.event.pull_request.number }}"
+                    prBranchName = "${{ github.event.pull_request.head.ref }}"
+                  }
+        }
+        else {
+          $body = @{
+                    hasChanges = $hasChanges
+                    workflow = "${{ github.workflow }}"
+                    workflowUrl = "${{ env.WORKFLOW_RUN_URL }}"
+                  }
+        }
+
         $body > ${{ env.WORKFLOW_INFO_ARTIFACT_FILEPATH }}
         cat ${{ env.WORKFLOW_INFO_ARTIFACT_FILEPATH }}
     - name: Upload workflow info

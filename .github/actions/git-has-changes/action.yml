@@ -1,0 +1,30 @@
+# Why was this action created:
+#
+# This checks if there are local changes in a git repository.
+# At the time of writing this the only equivalent actions on the marketplace either had to build a container before running which adds to the workflow's execution time
+# or were in pre-release.
+#
+
+name: 'Git changes'
+description: 'Checks if there are changes in a Git repository by running: git status --porcelain'
+inputs:
+  path:
+    description: 'The path for the Git repo. It will use the current directory if not specified.'
+    required: false
+    default: './'
+outputs:
+  nuget-already-exists:
+    description: "Indicates if any of the NuGet packages failed to be uploaded because they already existed on the server."
+    value: ${{ steps.git-changes.outputs.has-changes }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Check for Git changes
+      id: git-changes
+      shell: pwsh
+      working-directory: ${{ inputs.path }}
+      run: |
+        $gitStatus = git status --porcelain
+        $hasChanges = [string]::IsNullOrEmpty($a).ToString().ToLower()
+        Write-Host "::set-output name=has-changes::$hasChanges"
