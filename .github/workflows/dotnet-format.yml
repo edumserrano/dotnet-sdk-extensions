@@ -63,7 +63,7 @@ jobs:
     - name: Delete all files without dotnet format changes
       if: steps.dotnet-format.outputs.has-changes == 'true'
       run: |
-        $files = Get-ChildItem -Path "${{github.workspace}}" -File -Recurse
+        $files = Get-ChildItem -Path "${{github.workspace}}" -File -Recurse -Force
         $dotnetFormatReport = Get-Content ${{ env.DOTNET_FORMAT_REPORT_FILEPATH }} | ConvertFrom-Json
         $filePaths = $dotnetFormatReport.FilePath | Get-Unique
 
