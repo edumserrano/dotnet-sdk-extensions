@@ -1,4 +1,4 @@
-# When making changes to this file please update the corresponding documentation which can be found at /docs/dev-notes/workflows/pr-dotnet-format-workflow.md
+# When making changes to this file please update the corresponding documentation which can be found at /docs/dev-notes/workflows/dotnet-format-workflow.md
 
 name: dotnet format
 
@@ -24,6 +24,7 @@ jobs:
   dotnet-format:
     name: dotnet format
     runs-on: ubuntu-latest
+    environment: default
     env:
       DOTNET_VERSION : 6.0.x
       WORKFLOW_INFO_ARTIFACT_FILEPATH: ${{github.workspace}}/workflow-info.json
@@ -88,15 +89,6 @@ jobs:
       with:
         name: repo
         path: ${{ github.workspace }}
-    - name: Log dotnet format info
-      run: |
-        $hasChanges = [System.Convert]::ToBoolean("${{ steps.dotnet-format.outputs.has-changes }}")
-        if($hasChanges) {
-          Write-Host "::warning title=dotnet format::dotnet format detected code guidelines violations. The files resulting from dotnet format have been uploaded to the artifact named: repo."
-        }
-        else {
-          Write-Host "::notice title=dotnet format::dotnet format did NOT detect code guidelines violations."
-        }
     - name: Save workflow info
       run: |
         $hasChanges = [System.Convert]::ToBoolean("${{ steps.dotnet-format.outputs.has-changes }}")
@@ -126,3 +118,15 @@ jobs:
       with:
         name: workflow-info
         path: ${{ env.WORKFLOW_INFO_ARTIFACT_FILEPATH }}
+    - name: Log workflow
+      run: |
+        $hasChanges = [System.Convert]::ToBoolean("${{ steps.dotnet-format.outputs.has-changes }}")
+        if($hasChanges) {
+          Write-Host "::warning title=dotnet format::dotnet format detected code guidelines violations. The files resulting from dotnet format have been uploaded as a workflow artifact with the name: repo."
+        }
+        else {
+          Write-Host "::notice title=dotnet format::dotnet format did NOT detect code guidelines violations."
+        }
+
+        Write-Host "::notice title=workflow info::Information about this workflow has been saved as a workflow artifact named: workflow-info"
+

@@ -85,7 +85,7 @@ jobs:
           /p:CoverletOutputFormat="json%2copencover" `
           -m:1
 
-        $downloadArtifactMessage = "You can inspect the test results by downloading the build artifact named: ${{ env.TEST_RESULTS_ARTIFACT_NAME }}."
+        $downloadArtifactMessage = "You can inspect the test results by downloading the workflow artifact named: ${{ env.TEST_RESULTS_ARTIFACT_NAME }}."
         if($LASTEXITCODE -eq 0) {
           Write-Host "::notice title=Tests (${{ matrix.os }})::Tests passed on ${{ matrix.os }}. $downloadArtifactMessage"
         }
@@ -121,7 +121,7 @@ jobs:
       if: (steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure') && always()
       run: |
         $codeCoveUrl = "https://app.codecov.io/gh/${{ github.repository }}/"
-        Write-Host "::notice title=Code coverage (${{ matrix.os }})::Code coverage has been uploaded to Codecov at $codeCoveUrl. You can download the code coverage report from the build artifact named: ${{ env.CODE_COVERAGE_ARTIFACT_NAME }}."
+        Write-Host "::notice title=Code coverage (${{ matrix.os }})::Code coverage has been uploaded to Codecov at $codeCoveUrl. You can download the code coverage report from the workflow artifact named: ${{ env.CODE_COVERAGE_ARTIFACT_NAME }}."
     - name: Upload test results to artifacts
       if: (steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure') && always()
       uses: actions/upload-artifact@v2
@@ -219,4 +219,4 @@ jobs:
     - name: Log NuGet artifacts info
       if: (steps.upload-nuget-artifacts.conclusion == 'success' || steps.upload-nuget-artifacts.conclusion == 'failure') && always()
       run: |
-        Write-Host "::notice title=NuGets::You can download the NuGet packages and symbols from the build artifact named: ${{ env.NUGET_ARTIFACT_NAME }}."
+        Write-Host "::notice title=NuGets::You can download the NuGet packages and symbols from the worfklow artifact named: ${{ env.NUGET_ARTIFACT_NAME }}."
