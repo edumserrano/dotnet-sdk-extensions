@@ -1,4 +1,4 @@
-# When making changes to this file please update the corresponding documentation which can be found at /docs/dev-notes/workflows/dotnet-format-workflow.md
+# When making changes to this file please update the corresponding documentation which can be found at /docs/dev-notes/workflows/pr-dotnet-format-workflow.md
 
 name: dotnet format
 
@@ -8,55 +8,39 @@ on:
     branches: [ main ]
     paths-ignore:
     - "**.md"
+  pull_request:
+    branches: [ main ]
+    paths-ignore:
+    - "**.md"
 
 permissions:
-  contents: write
-  pull-requests: write
-
-env:
-  DOTNET_FORMAT_LABEL : dotnet-format
+  contents: read
 
 defaults:
   run:
     shell: pwsh
 
-jobs:
-  check-open-pr:
-    name: Check for dotnet format open PR
-    runs-on: ubuntu-latest
-    outputs:
-      can-create-pr: ${{ steps.open-pr-check.outputs.can-create-pr }}
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
-    - name: Check for open dotnet format PRs
-      id: open-pr-check
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        # Only create a PR if there isn't any dotnet format PR open
-        # This prevents multiple pull requests being open to fix the same dotnet format issues
-        $openPullRequestsResult = gh pr list --state open --label ${{ env.DOTNET_FORMAT_LABEL }}
-        $canCreatePr = [string]::IsNullOrEmpty($openPullRequestsResult)
-        Write-Host "::set-output name=can-create-pr::$canCreatePr"
+env:
+  STATUS_CONTEXT : ${{ github.workflow }} / dotnet format (${{ github.event_name }}) # mimic format from github checks $workflow-name / $job-name ($event-name)
+  WORKFLOW_RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+  PR_NUMBER: ${{ github.event.client_payload.pull_request.number }}
 
-        if($canCreatePr) {
-          Write-Host "::notice::There isn't any open dotnet format PR so this workflow will proceed with the dotnet format job."
-        }
-        else {
-          Write-Host "::warning::There is an open dotnet format PR so this workflow will NOT proceed with the dotnet format job."
-        }
+jobs:
   dotnet-format:
     name: dotnet format
-    needs: [check-open-pr]
-    if: needs.check-open-pr.outputs.can-create-pr == 'True'
+    if: github.event_name == 'pull_request' # missing condition: and if PR is open
     runs-on: ubuntu-latest
     env:
-      SLN_FILEPATH : ${{ github.workspace }}/DotNet.Sdk.Extensions.sln
       DOTNET_VERSION : 6.0.x
-      WORKFLOW_RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      SLN_FILENAME: DotNet.Sdk.Extensions.sln
+      SLN_FILEPATH : ${{ github.workspace }}/DotNet.Sdk.Extensions.sln
+      WORKFLOW_INFO_ARTIFACT_FILEPATH: ${{github.workspace}}/workflow-info.json
     steps:
-    - name: Checkout
+    - name: Dump github context
+      env:
+        GITHUB_CONTEXT: ${{ toJSON(github) }}
+      run: $env:GITHUB_CONTEXT
+    - name: Checkout repository
       uses: actions/checkout@v2
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
@@ -70,64 +54,44 @@ jobs:
         key: ${{ runner.os }}-nuget-${{ env.DOTNET_VERSION }}
         restore-keys: |
           ${{ runner.os }}-nuget-
-    - name: Restore dependencies
-      run: dotnet restore ${{ env.SLN_FILEPATH }}
-    - name: Prepare commit info
-      id: commit-info
-      run: |
-        $date = (Get-Date).ToString("dd-MMM-yyyy")
-        $branchName = "dotnet-format-$date"
-        $commitMessage = "auto dotnet format $date"
-        Write-Host "::set-output name=branch-name::$branchName"
-        Write-Host "Branch name set to $branchName"
-        Write-Host "::set-output name=commit-message::$commitMessage"
-        Write-Host "Commit message set to $commitMessage"
     - name: dotnet format
       run: |
-        git checkout -b ${{ steps.commit-info.outputs.branch-name }}
         dotnet format ${{ env.SLN_FILEPATH }} --severity info --verbosity diagnostic
-    - name: Push dotnet format changes to branch
-      id: auto-commit-action
-      uses: stefanzweifel/git-auto-commit-action@v4.12.0
+    - name: Check if there are changes
+      id: changes
+      uses: UnicornGlobal/has-changes-action@v1.0.11
+    - name: Upload repo
+      if: steps.changes.outputs.changed == 1
+      uses: actions/upload-artifact@v2
       with:
-        commit_message: ${{ steps.commit-info.outputs.commit-message }}
-        branch: ${{ steps.commit-info.outputs.branch-name }}
-    - name: log dotnet format output
+        name: repo
+        path: ${{ github.workspace }}
+    - name: Log repo artifact info
       run: |
-        $hasChanges = [System.Convert]::ToBoolean("${{ steps.auto-commit-action.outputs.changes_detected }}")
+        $hasChanges = [System.Convert]::ToBoolean(steps.changes.outputs.changed)
         if($hasChanges) {
-          Write-Host "::warning::dotnet format found files that do not respect the code guidelines."
+          Write-Host "::notice title=dotnet format::dotnet format detected code guidelines violations  ."
         }
-        else {
-          Write-Host "::notice::dotnet format didn't find any file that does not respect the code guidelines."
+        elseif($pushStepConclusion -eq 'failure') {
+          Write-Host "::error title=DotNet.Sdk.Extensions NuGet::Failed to push DotNet.Sdk.Extensions NuGet and symbols."
         }
-    - name: Render PR body template
-      id: render-pr-body-template
-      if: steps.auto-commit-action.outputs.changes_detected == 'true'
-      uses: chuhlomin/render-template@v1.4
+        elseif($pushStepConclusion -eq 'success') {
+          Write-Host "::notice title=DotNet.Sdk.Extensions NuGet::Successfully pushed DotNet.Sdk.Extensions NuGet and symbols to nuget.org. You can find the package at: https://www.nuget.org/packages/DotNet-Sdk-Extensions."
+        }
+    - name: Save workflow info
+      run: |
+        $hasChanges = [System.Convert]::ToBoolean(${{ steps.changes.outputs.changed }})
+        $body = @{
+          hasChanges = $hasChanges
+          workflow = "${{ github.workflow }}"
+          workflowUrl = "${{ env.WORKFLOW_RUN_URL }}"
+          prNumber = "${{ env.PR_NUMBER }}"
+          prBranchName = "${{ github.event.client_payload.pull_request.head.ref }}"
+        } | ConvertTo-Json
+        $body > ${{ env.WORKFLOW_INFO_ARTIFACT_FILEPATH }}
+        cat ${{ env.WORKFLOW_INFO_ARTIFACT_FILEPATH }}
+    - name: Upload workflow info
+      uses: actions/upload-artifact@v2
       with:
-        template: .github/workflows/templates/dotnet-format/dotnet-format-found-changes.md
-        vars: |
-          workflow: ${{ github.workflow }}
-          workflowUrl: ${{ env.WORKFLOW_RUN_URL }}
-          commitSha: ${{ github.sha }}
-    - name: Sanitize PR body
-      id: sanitize-pr-body
-      if: steps.auto-commit-action.outputs.changes_detected == 'true'
-      run: |
-        $body = "${{ steps.render-pr-body-template.outputs.result }}"
-        $body = $body -replace "`n","%0A" # The content must be escaped to preserve newlines. See https://github.community/t/set-output-truncates-multiline-strings/16852/3
-        Write-Host "::set-output name=pr-body::$body"
-    - name: Create dotnet format PR
-      if: steps.auto-commit-action.outputs.changes_detected == 'true'
-      env:
-        GITHUB_TOKEN: ${{ secrets.DOTNET_FORMAT_GH_TOKEN }}
-      run: |
-        $title = "${{ steps.commit-info.outputs.branch-name }}: fix code guidelines violations"
-        $body = "${{ steps.sanitize-pr-body.outputs.pr-body }}"
-        $prUrl = gh pr create `
-          --title $title `
-          --body $body `
-          --label ${{ env.DOTNET_FORMAT_LABEL }} `
-          --label bot:robot:
-        Write-Host "::notice::Created dotnet format PR at $prUrl."
+        name: workflow-info
+        path: ${{ env.WORKFLOW_INFO_ARTIFACT_FILEPATH }}

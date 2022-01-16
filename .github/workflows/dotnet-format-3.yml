@@ -1,0 +1,133 @@
+# When making changes to this file please update the corresponding documentation which can be found at /docs/dev-notes/workflows/dotnet-format-workflow.md
+
+name: dotnet format OLD
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+    paths-ignore:
+    - "**.md"
+
+permissions:
+  contents: write
+  pull-requests: write
+
+env:
+  DOTNET_FORMAT_LABEL : dotnet-format
+
+defaults:
+  run:
+    shell: pwsh
+
+jobs:
+  check-open-pr:
+    name: Check for dotnet format open PR
+    runs-on: ubuntu-latest
+    outputs:
+      can-create-pr: ${{ steps.open-pr-check.outputs.can-create-pr }}
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+    - name: Check for open dotnet format PRs
+      id: open-pr-check
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        # Only create a PR if there isn't any dotnet format PR open
+        # This prevents multiple pull requests being open to fix the same dotnet format issues
+        $openPullRequestsResult = gh pr list --state open --label ${{ env.DOTNET_FORMAT_LABEL }}
+        $canCreatePr = [string]::IsNullOrEmpty($openPullRequestsResult)
+        Write-Host "::set-output name=can-create-pr::$canCreatePr"
+
+        if($canCreatePr) {
+          Write-Host "::notice::There isn't any open dotnet format PR so this workflow will proceed with the dotnet format job."
+        }
+        else {
+          Write-Host "::warning::There is an open dotnet format PR so this workflow will NOT proceed with the dotnet format job."
+        }
+  dotnet-format:
+    name: dotnet format
+    needs: [check-open-pr]
+    if: needs.check-open-pr.outputs.can-create-pr == 'True'
+    runs-on: ubuntu-latest
+    env:
+      SLN_FILEPATH : ${{ github.workspace }}/DotNet.Sdk.Extensions.sln
+      DOTNET_VERSION : 6.0.x
+      WORKFLOW_RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+    - name: Cache/Restore NuGets
+      uses: actions/cache@v2
+      with:
+        path:
+          ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ env.DOTNET_VERSION }}
+        restore-keys: |
+          ${{ runner.os }}-nuget-
+    - name: Restore dependencies
+      run: dotnet restore ${{ env.SLN_FILEPATH }}
+    - name: Prepare commit info
+      id: commit-info
+      run: |
+        $date = (Get-Date).ToString("dd-MMM-yyyy")
+        $branchName = "dotnet-format-$date"
+        $commitMessage = "auto dotnet format $date"
+        Write-Host "::set-output name=branch-name::$branchName"
+        Write-Host "Branch name set to $branchName"
+        Write-Host "::set-output name=commit-message::$commitMessage"
+        Write-Host "Commit message set to $commitMessage"
+    - name: dotnet format
+      run: |
+        git checkout -b ${{ steps.commit-info.outputs.branch-name }}
+        dotnet format ${{ env.SLN_FILEPATH }} --severity info --verbosity diagnostic
+    - name: Push dotnet format changes to branch
+      id: auto-commit-action
+      uses: stefanzweifel/git-auto-commit-action@v4.12.0
+      with:
+        commit_message: ${{ steps.commit-info.outputs.commit-message }}
+        branch: ${{ steps.commit-info.outputs.branch-name }}
+    - name: log dotnet format output
+      run: |
+        $hasChanges = [System.Convert]::ToBoolean("${{ steps.auto-commit-action.outputs.changes_detected }}")
+        if($hasChanges) {
+          Write-Host "::warning::dotnet format found files that do not respect the code guidelines."
+        }
+        else {
+          Write-Host "::notice::dotnet format didn't find any file that does not respect the code guidelines."
+        }
+    - name: Render PR body template
+      id: render-pr-body-template
+      if: steps.auto-commit-action.outputs.changes_detected == 'true'
+      uses: chuhlomin/render-template@v1.4
+      with:
+        template: .github/workflows/templates/dotnet-format/dotnet-format-found-changes.md
+        vars: |
+          workflow: ${{ github.workflow }}
+          workflowUrl: ${{ env.WORKFLOW_RUN_URL }}
+          commitSha: ${{ github.sha }}
+    - name: Sanitize PR body
+      id: sanitize-pr-body
+      if: steps.auto-commit-action.outputs.changes_detected == 'true'
+      run: |
+        $body = "${{ steps.render-pr-body-template.outputs.result }}"
+        $body = $body -replace "`n","%0A" # The content must be escaped to preserve newlines. See https://github.community/t/set-output-truncates-multiline-strings/16852/3
+        Write-Host "::set-output name=pr-body::$body"
+    - name: Create dotnet format PR
+      if: steps.auto-commit-action.outputs.changes_detected == 'true'
+      env:
+        GITHUB_TOKEN: ${{ secrets.DOTNET_FORMAT_GH_TOKEN }}
+      run: |
+        $title = "${{ steps.commit-info.outputs.branch-name }}: fix code guidelines violations"
+        $body = "${{ steps.sanitize-pr-body.outputs.pr-body }}"
+        $prUrl = gh pr create `
+          --title $title `
+          --body $body `
+          --label ${{ env.DOTNET_FORMAT_LABEL }} `
+          --label bot:robot:
+        Write-Host "::notice::Created dotnet format PR at $prUrl."
