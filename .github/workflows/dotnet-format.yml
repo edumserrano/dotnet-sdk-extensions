@@ -67,17 +67,17 @@ jobs:
         $dotnetFormatReport = Get-Content ${{ env.DOTNET_FORMAT_REPORT_FILEPATH }} | ConvertFrom-Json
         $filePaths = $dotnetFormatReport.FilePath | Get-Unique
 
-        // delete all files except for the ones with dotnet format changes
+        # delete all files except for the ones with dotnet format changes
         foreach($file in $files) {
           if($filePaths -Contains $file.FullName) {
-            // don't do anything on files that have changes from dotnet format
+            # don't do anything on files that have changes from dotnet format
           }
           else {
             rm $file.FullName
           }
         }
 
-        // delete all empty folders
+        # delete all empty folders
         Get-ChildItem $tdc -Recurse -Force -Directory |
             Sort-Object -Property FullName -Descending |
             Where-Object { $($_ | Get-ChildItem -Force | Select-Object -First 1).Count -eq 0 } |
