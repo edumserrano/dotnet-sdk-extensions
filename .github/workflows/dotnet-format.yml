@@ -35,6 +35,10 @@ jobs:
       env:
         GITHUB_CONTEXT: ${{ toJSON(github) }}
       run: $env:GITHUB_CONTEXT
+    - name: Dump secrets context
+      env:
+        SECRETS_CONTEXT: ${{ toJSON(secrets) }}
+      run: $env:SECRETS_CONTEXT
     - name: Checkout repository
       uses: actions/checkout@v2
     - name: Setup .NET
