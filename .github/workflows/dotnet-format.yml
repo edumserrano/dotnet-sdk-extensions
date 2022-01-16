@@ -58,7 +58,7 @@ jobs:
         $dotnetFormatReport = Get-Content ${{ env.DOTNET_FORMAT_REPORT_FILEPATH }} | ConvertFrom-Json
         $filePaths = $dotnetFormatReport.FilePath | Get-Unique
         $dotnetFormatHasChanges =  $filePaths.Count -ne 0
-        $dotnetFormatHasChangesAsString =  dotnetFormatHasChanges.ToString().ToLower()
+        $dotnetFormatHasChangesAsString =  $dotnetFormatHasChanges.ToString().ToLower()
         Write-Host "::set-output name=has-changes::$dotnetFormatHasChangesAsString"
     - name: Delete all files without dotnet format changes
       if: steps.dotnet-format.outputs.has-changes == 'true'
