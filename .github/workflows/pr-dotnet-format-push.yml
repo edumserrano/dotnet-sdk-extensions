@@ -75,7 +75,7 @@ jobs:
     - name: Push dotnet format changes
       if: steps.dotnet-format-workflow-info.outputs.has-changes == 'true'
       id: auto-commit-action
-      uses: stefanzweifel/git-auto-commit-action@v4.11.0
+      uses: stefanzweifel/git-auto-commit-action@v4.13.1
       with:
         branch: ${{ steps.dotnet-format-workflow-info.outputs.pr-branch-name }}
         commit_message: dotnet format for PR ${{ steps.dotnet-format-workflow-info.outputs.pr-number }}

@@ -88,7 +88,7 @@ jobs:
         dotnet format ${{ env.SLN_FILEPATH }} --severity info --verbosity diagnostic
     - name: Push dotnet format changes to branch
       id: auto-commit-action
-      uses: stefanzweifel/git-auto-commit-action@v4.12.0
+      uses: stefanzweifel/git-auto-commit-action@v4.13.1
       with:
         commit_message: ${{ steps.commit-info.outputs.commit-message }}
         branch: ${{ steps.commit-info.outputs.branch-name }}
