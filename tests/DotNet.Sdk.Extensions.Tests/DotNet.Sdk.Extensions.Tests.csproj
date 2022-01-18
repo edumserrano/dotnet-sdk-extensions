@@ -33,6 +33,6 @@
     <Message Importance="high" Text="THIS GETS CALLED FROM DOTNET FORMAT" />
     <!-- You could use the Exec task to run any command, for instance to run a powershell script -->
     <!-- https://docs.microsoft.com/en-us/visualstudio/msbuild/exec-task -->
-</Target>
+  </Target>
   
 </Project>
