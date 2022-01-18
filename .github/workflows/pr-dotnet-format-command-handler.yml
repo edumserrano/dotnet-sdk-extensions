@@ -32,9 +32,13 @@ jobs:
       WORKFLOW_INFO_ARTIFACT_FILEPATH: ${{github.workspace}}/workflow-info.json
     steps:
     - name: Dump secrets context
-      run: Write-Host '${{ toJson(secrets) }}'
+      env:
+        SECRETS_CONTEXT: ${{ toJSON(secrets) }}
+      run: $env:SECRETS_CONTEXT
     - name: Dump github context
-      run: Write-Host '${{ toJson(github) }}'
+      env:
+        GITHUB_CONTEXT: ${{ toJSON(github) }}
+      run: $env:GITHUB_CONTEXT
     - name: Checkout repository
       uses: actions/checkout@v2
       with:
