@@ -24,10 +24,10 @@ jobs:
   dotnet-format:
     name: dotnet format
     runs-on: ubuntu-latest
-    environment: default
+    environment: disable-secrets-workflow
     env:
       DOTNET_VERSION : 6.0.x
-      WORKFLOW_INFO_ARTIFACT_FILEPATH: ${{github.workspace}}/workflow-info.json
+      WORKFLOW_INFO_ARTIFACT_FILEPATH: ${{github.workspace}}/dotnet-format-workflow-info.json
       WORKFLOW_RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
       DOTNET_FORMAT_REPORT_FILEPATH: ${{github.workspace}}/dotnet-format-report.json
     steps:
@@ -87,11 +87,11 @@ jobs:
             Sort-Object -Property FullName -Descending |
             Where-Object { $($_ | Get-ChildItem -Force | Select-Object -First 1).Count -eq 0 } |
             Remove-Item -Force
-    - name: Upload repo
+    - name: Upload files changed by dotnet format
       if: steps.dotnet-format.outputs.has-changes == 'true'
       uses: actions/upload-artifact@v2
       with:
-        name: repo
+        name: dotnet-format-files
         path: ${{ github.workspace }}
     - name: Save workflow info
       run: |
@@ -120,17 +120,17 @@ jobs:
     - name: Upload workflow info
       uses: actions/upload-artifact@v2
       with:
-        name: workflow-info
+        name: dotnet-format-workflow-info
         path: ${{ env.WORKFLOW_INFO_ARTIFACT_FILEPATH }}
     - name: Log workflow
       run: |
         $hasChanges = [System.Convert]::ToBoolean("${{ steps.dotnet-format.outputs.has-changes }}")
         if($hasChanges) {
-          Write-Host "::warning title=dotnet format::dotnet format detected code guidelines violations. The files resulting from dotnet format have been uploaded as a workflow artifact with the name: repo."
+          Write-Host "::warning title=dotnet format::dotnet format detected code guidelines violations. The files resulting from dotnet format have been uploaded as a workflow artifact with the name: dotnet-format-files."
         }
         else {
           Write-Host "::notice title=dotnet format::dotnet format did NOT detect code guidelines violations."
         }
 
-        Write-Host "::notice title=workflow info::Information about this workflow has been saved as a workflow artifact named: workflow-info"
+        Write-Host "::notice title=workflow info::Information about this workflow has been saved as a workflow artifact named: dotnet-format-workflow-info"
 
