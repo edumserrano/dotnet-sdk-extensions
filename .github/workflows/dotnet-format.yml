@@ -115,7 +115,8 @@ jobs:
                   }
         }
 
-        $body > ${{ env.WORKFLOW_INFO_ARTIFACT_FILEPATH }}
+        $bodyAsJson = $body | ConvertTo-Json
+        $bodyAsJson > ${{ env.WORKFLOW_INFO_ARTIFACT_FILEPATH }}
         cat ${{ env.WORKFLOW_INFO_ARTIFACT_FILEPATH }}
     - name: Upload workflow info
       uses: actions/upload-artifact@v2
