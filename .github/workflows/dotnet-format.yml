@@ -126,11 +126,11 @@ jobs:
       run: |
         $hasChanges = [System.Convert]::ToBoolean("${{ steps.dotnet-format.outputs.has-changes }}")
         if($hasChanges) {
-          Write-Host "::warning title=dotnet format::dotnet format detected code guidelines violations. The files resulting from dotnet format have been uploaded as a workflow artifact with the name: dotnet-format-files."
+          Write-Host "::warning title=dotnet format::dotnet format detected code guidelines violations. The files resulting from dotnet format have been published as a workflow artifact with the name: dotnet-format-files."
         }
         else {
           Write-Host "::notice title=dotnet format::dotnet format did NOT detect code guidelines violations."
         }
 
-        Write-Host "::notice title=workflow info::Information about this workflow has been saved as a workflow artifact named: dotnet-format-workflow-info"
+        Write-Host "::notice title=workflow info::Information about this workflow has been published as a workflow artifact named: dotnet-format-workflow-info."
 
