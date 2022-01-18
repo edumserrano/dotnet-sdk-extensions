@@ -1,0 +1,31 @@
+# When making changes to this file please update the corresponding documentation which can be found at /docs/dev-notes/workflows/dotnet-format-apply-changes-workflow.md
+
+name: dotnet format - apply changes
+
+on:
+  workflow_run:
+    workflows: ["dotnet format"]
+    types:
+    - completed
+
+permissions:
+  pull-requests: write
+
+defaults:
+  run:
+    shell: pwsh
+
+jobs:
+  on-push:
+    name: Push dotnet format changes to PR
+    environment: dotnet-format-apply-changes-workflow
+    runs-on: ubuntu-latest
+    steps:
+    - name: Dump secrets context
+      env:
+        SECRETS_CONTEXT: ${{ toJSON(secrets) }}
+      run: $env:SECRETS_CONTEXT
+    - name: Dump github context
+      env:
+        GITHUB_CONTEXT: ${{ toJSON(github) }}
+      run: $env:GITHUB_CONTEXT

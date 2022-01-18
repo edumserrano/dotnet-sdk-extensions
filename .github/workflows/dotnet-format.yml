@@ -21,10 +21,10 @@ defaults:
     shell: pwsh
 
 jobs:
-  dotnet-format:
+  main:
     name: dotnet format
-    runs-on: ubuntu-latest
     environment: disable-secrets-workflow
+    runs-on: ubuntu-latest
     env:
       DOTNET_VERSION : 6.0.x
       WORKFLOW_INFO_ARTIFACT_FILEPATH: ${{github.workspace}}/dotnet-format-workflow-info.json
