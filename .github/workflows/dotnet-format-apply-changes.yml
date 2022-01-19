@@ -268,6 +268,6 @@ jobs:
         issue-number: ${{ steps.dotnet-format-workflow-info.outputs.pr-number }}
         body-includes: '[${{ steps.dotnet-format-workflow-info.outputs.workflow }}]'
         comment-author: github-actions[bot]
-        body: ${{ steps.sanitize-pr-comment.outputs.pr-comment-body }}
+        body: '<!-- on-pr-dotnet-format -->'
         edit-mode: replace
         reactions: ${{ steps.setup-pr-comment.outputs.pr-comment-reaction }}

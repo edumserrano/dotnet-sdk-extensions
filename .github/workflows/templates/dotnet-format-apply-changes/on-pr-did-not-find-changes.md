@@ -24,3 +24,5 @@ Example:
 ``````
 
 </details>
+
+<!-- on-pr-dotnet-format -->
