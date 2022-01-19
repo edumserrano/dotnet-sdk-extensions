@@ -39,6 +39,10 @@ jobs:
       env:
         GITHUB_CONTEXT: ${{ toJSON(github) }}
       run: $env:GITHUB_CONTEXT
+    - name: Checkout repository
+      uses: actions/checkout@v2
+      with:
+        ref: ${{ env.WORKFLOW_HEAD_SHA }}
     - name: Check for open dotnet format PRs
       id: open-pr-check
       env:
@@ -249,7 +253,7 @@ jobs:
     - name: Setup PR comment
       id: setup-pr-comment
       run: |
-        $changesDetected = [System.Convert]::ToBoolean("${{ steps.auto-commit-action.outputs.changes_detected }}")
+        $changesDetected = [System.Convert]::ToBoolean("${{ steps.dotnet-format-workflow-info.outputs.has-changes }}")
         if($changesDetected) {
           Write-Host "::set-output name=pr-comment-reaction::eyes"
           $commitSha = git rev-parse HEAD
