@@ -45,7 +45,7 @@ jobs:
       uses: dawidd6/action-download-artifact@v2.16.0
       with:
         workflow: ${{ env.DOTNET_FORMAT_WORKFLOW_FILENAME }}
-        name:  ${{ DOTNET_FORMAT_WORKFLOW_INFO_ARTIFACT }}
+        name:  ${{ env.DOTNET_FORMAT_WORKFLOW_INFO_ARTIFACT }}
         run_id: ${{ github.event.workflow_run.id }}
     - name: Read dotnet format workflow info
       id: dotnet-format-workflow-info
@@ -118,7 +118,6 @@ jobs:
           --label bot:robot:
         Write-Host "::notice::Created dotnet format PR at $prUrl."
 
-
   on-pull-request:
     name: Process dotnet format changes on pull request
     environment: dotnet-format-apply-changes-workflow
@@ -144,7 +143,7 @@ jobs:
       uses: dawidd6/action-download-artifact@v2.16.0
       with:
         workflow: ${{ env.DOTNET_FORMAT_WORKFLOW_FILENAME }}
-        name:  ${{ DOTNET_FORMAT_WORKFLOW_INFO_ARTIFACT }}
+        name:  ${{ env.DOTNET_FORMAT_WORKFLOW_INFO_ARTIFACT }}
         run_id: ${{ github.event.workflow_run.id }}
     - name: Read dotnet format workflow info
       id: dotnet-format-workflow-info
