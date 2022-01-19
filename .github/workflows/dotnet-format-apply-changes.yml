@@ -266,8 +266,8 @@ jobs:
       uses: ./.github/actions/create-update-comment
       with:
         issue-number: ${{ steps.dotnet-format-workflow-info.outputs.pr-number }}
-        body-includes: '[${{ steps.dotnet-format-workflow-info.outputs.workflow }}]'
+        body-includes: '<!-- on-pr-dotnet-format -->'
         comment-author: github-actions[bot]
-        body: '<!-- on-pr-dotnet-format -->'
+        body: ${{ steps.sanitize-pr-comment.outputs.pr-comment-body }}
         edit-mode: replace
         reactions: ${{ steps.setup-pr-comment.outputs.pr-comment-reaction }}
