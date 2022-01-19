@@ -25,7 +25,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         /// If this changes in the future then I could start having false positives on the other tests.
         /// </summary>
         [Fact]
-        public void ControlTest()
+           public void ControlTest()
         {
             using var host = Host
                 .CreateDefaultBuilder()
