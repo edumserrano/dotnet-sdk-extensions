@@ -22,7 +22,7 @@ jobs:
   on-push-check-open-pr:
     name: Check for dotnet format open PR
     if: github.event.workflow_run.event == 'push'
-    environment: dotnet-format-apply-changes-workflow
+    environment: disable-secrets-workflow
     permissions:
       contents: read
       pull-requests: read
@@ -66,7 +66,7 @@ jobs:
   on-push-dotnet-format:
     name: Process dotnet format changes on push
     needs: [on-push-check-open-pr]
-    if: needs.check-open-pr.outputs.can-create-pr == 'True'
+    if: needs.on-push-check-open-pr.outputs.can-create-pr == 'true'
     environment: dotnet-format-apply-changes-workflow
     permissions:
       contents: write
