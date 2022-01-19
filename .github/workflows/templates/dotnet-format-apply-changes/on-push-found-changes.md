@@ -4,7 +4,9 @@
 
 :warning: Please review the suggested changes before merging.
 
-## Note
+<details>
+<summary><strong>Note</strong></summary>
+</br>
 
 Sometimes the fix provided by the analyzers produces unnecessary comments when formatting files.
 
@@ -20,3 +22,5 @@ Example:
     ...
 #endif
 ````````````
+
+</details>

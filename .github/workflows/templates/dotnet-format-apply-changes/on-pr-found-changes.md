@@ -1,8 +1,10 @@
 # [{{ .workflow }}]({{ .workflowUrl }}) for commit {{ .commitSha }}
 
-:heavy_check_mark: **dotnet format** didn't find any file that does not respect the code guidelines or there weren't any available automated fixes.
+:exclamation: **dotnet format** found files that did not respect the code guidelines and pushed commit {{ .pushedCommitSha }}. Please review it before merging the PR.
 
-## Note
+<details>
+<summary><strong>Note</strong></summary>
+</br>
 
 Sometimes the fix provided by the analyzers produces unnecessary comments when formatting files.
 
@@ -18,3 +20,5 @@ Example:
     ...
 #endif
 ``````
+
+</details>

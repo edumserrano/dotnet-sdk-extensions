@@ -24,6 +24,7 @@ jobs:
     if: github.event.workflow_run.event == 'push'
     environment: disable-secrets-workflow
     permissions:
+      contents: read
       pull-requests: read
     runs-on: ubuntu-latest
     outputs:
@@ -109,25 +110,6 @@ jobs:
         Write-Host "::set-output name=workflow-url::$workflowUrl"
 
         rm $worfklowInfoFilePath # delete file so that it doesn't get pushed to the branch in the following steps
-    - name: Check for open dotnet format PRs
-      id: open-pr-check
-      if: steps.dotnet-format-workflow-info.outputs.has-changes == 'true'
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        # Only create a PR if there isn't any dotnet format PR open. This prevents multiple pull requests being open to fix dotnet format issues.
-        # Once one is merged, the workflows will create more dotnet format PRs if needed.
-
-        $openPullRequestsResult = gh pr list --state open --label ${{ env.DOTNET_FORMAT_LABEL }}
-        $canCreatePr = [string]::IsNullOrEmpty($openPullRequestsResult)
-        Write-Host "::set-output name=can-create-pr::$canCreatePr"
-
-        if($canCreatePr) {
-          Write-Host "::notice::There isn't any open dotnet format PR so one will be created."
-        }
-        else {
-          Write-Host "::warning::There is an open dotnet format PR so this workflow will NOT create a new PR."
-        }
     - name: Prepare commit info
       id: commit-info
       if: steps.dotnet-format-workflow-info.outputs.has-changes == 'true'
@@ -162,11 +144,11 @@ jobs:
       if: steps.auto-commit-action.outputs.changes_detected == 'true'
       uses: chuhlomin/render-template@v1.4
       with:
-        template: .github/workflows/templates/dotnet-format/dotnet-format-found-changes.md
+        template: .github/workflows/templates/dotnet-format-apply-changes/on-push-found-changes.md
         vars: |
-          workflow: ${{ github.workflow }}
-          workflowUrl: ${{ env.WORKFLOW_RUN_URL }}
-          commitSha: ${{ github.sha }}
+          workflow: ${{ steps.dotnet-format-workflow-info.outputs.workflow }}
+          workflowUrl: ${{ steps.dotnet-format-workflow-info.outputs.workflow-url }}
+          commitSha: ${{ env.WORKFLOW_HEAD_SHA }}
     - name: Sanitize PR body
       id: sanitize-pr-body
       if: steps.auto-commit-action.outputs.changes_detected == 'true'
@@ -258,11 +240,11 @@ jobs:
           Write-Host "::set-output name=pr-comment-reaction::eyes"
           $commitSha = git rev-parse HEAD
           Write-Host "::set-output name=commit-sha::$commitSha"
-          Write-Host "::set-output name=pr-comment-template::.github/workflows/templates/pr-dotnet-format-command-handler/dotnet-format-found-changes.md"
+          Write-Host "::set-output name=pr-comment-template::.github/workflows/templates/dotnet-format-apply-changes/on-pr-found-changes.md"
         }
         else {
           Write-Host "::set-output name=pr-comment-reaction::hooray"
-          Write-Host "::set-output name=pr-comment-template::.github/workflows/templates/pr-dotnet-format-command-handler/dotnet-format-did-not-find-changes.md"
+          Write-Host "::set-output name=pr-comment-template::.github/workflows/templates/dotnet-format-apply-changes/on-pr-did-not-find-changes.md"
         }
     - name: Render comment template
       id: render-pr-comment-template
