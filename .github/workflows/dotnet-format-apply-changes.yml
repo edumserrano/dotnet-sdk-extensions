@@ -8,21 +8,23 @@ on:
     types:
     - completed
 
-permissions:
-  pull-requests: write
-
 defaults:
   run:
     shell: pwsh
 
 env:
   DOTNET_FORMAT_WORKFLOW_FILENAME : dotnet-format.yml
+  DOTNET_FORMAT_WORKFLOW_INFO_ARTIFACT : dotnet-format-workflow-info
+  DOTNET_FORMAT_FILES_ARTIFACT : dotnet-format-files
   WORKFLOW_HEAD_SHA : ${{ github.event.workflow_run.head_sha }}
 
 jobs:
   on-push:
     name: Process dotnet format changes on push
     environment: dotnet-format-apply-changes-workflow
+    permissions:
+      contents: write
+      pull-requests: write
     runs-on: ubuntu-latest
     if: github.event.workflow_run.event == 'push'
     steps:
@@ -34,11 +36,94 @@ jobs:
       env:
         GITHUB_CONTEXT: ${{ toJSON(github) }}
       run: $env:GITHUB_CONTEXT
+    - name: Checkout repository
+      uses: actions/checkout@v2
+      with:
+        ref: ${{ env.WORKFLOW_HEAD_SHA }}
+        token: ${{ secrets.DOTNET_FORMAT_GH_TOKEN }}
+    - name: Download dotnet format workflow info artifact
+      uses: dawidd6/action-download-artifact@v2.16.0
+      with:
+        workflow: ${{ env.DOTNET_FORMAT_WORKFLOW_FILENAME }}
+        name:  ${{ DOTNET_FORMAT_WORKFLOW_INFO_ARTIFACT }}
+        run_id: ${{ github.event.workflow_run.id }}
+    - name: Read dotnet format workflow info
+      id: dotnet-format-workflow-info
+      run: |
+        $worfklowInfoFilePath = "./dotnet-format-workflow-info.json"
+        $workflowInfoJson = Get-Content $worfklowInfoFilePath
+        Write-Host $workflowInfoJson
+        $workflowInfo = $workflowInfoJson | ConvertFrom-Json
+
+        $hasChanges = $workflowInfo.hasChanges
+        $workflow = $workflowInfo.workflow
+        $workflowUrl = $workflowInfo.workflowUrl
+
+        Write-Host "::set-output name=has-changes::$hasChanges"
+        Write-Host "::set-output name=workflow::$workflow"
+        Write-Host "::set-output name=workflow-url::$workflowUrl"
+
+        rm $worfklowInfoFilePath # delete file so that it doesn't get pushed to the branch in the following steps
+    - name: Download dotnet format changed files
+      if: steps.dotnet-format-workflow-info.outputs.has-changes == 'true'
+      uses: dawidd6/action-download-artifact@v2.16.0
+      with:
+        workflow: ${{ env.DOTNET_FORMAT_WORKFLOW_FILENAME }}
+        name:  ${{ env.DOTNET_FORMAT_FILES_ARTIFACT }}
+        run_id: ${{ github.event.workflow_run.id }}
+    - name: Prepare commit info
+      id: commit-info
+      run: |
+        $date = (Get-Date).ToString("dd-MMM-yyyy")
+        $branchName = "dotnet-format-$date"
+        $commitMessage = "auto dotnet format $date"
+        Write-Host "::set-output name=branch-name::$branchName"
+        Write-Host "Branch name set to $branchName"
+        Write-Host "::set-output name=commit-message::$commitMessage"
+        Write-Host "Commit message set to $commitMessage"
+    - name: Push dotnet format changes to branch
+      id: auto-commit-action
+      uses: stefanzweifel/git-auto-commit-action@v4.13.1
+      with:
+        commit_message: ${{ steps.commit-info.outputs.commit-message }}
+        branch: ${{ steps.commit-info.outputs.branch-name }}
+    - name: Render PR body template
+      id: render-pr-body-template
+      if: steps.auto-commit-action.outputs.changes_detected == 'true'
+      uses: chuhlomin/render-template@v1.4
+      with:
+        template: .github/workflows/templates/dotnet-format/dotnet-format-found-changes.md
+        vars: |
+          workflow: ${{ github.workflow }}
+          workflowUrl: ${{ env.WORKFLOW_RUN_URL }}
+          commitSha: ${{ github.sha }}
+    - name: Sanitize PR body
+      id: sanitize-pr-body
+      if: steps.auto-commit-action.outputs.changes_detected == 'true'
+      run: |
+        $body = "${{ steps.render-pr-body-template.outputs.result }}"
+        $body = $body -replace "`n","%0A" # The content must be escaped to preserve newlines. See https://github.community/t/set-output-truncates-multiline-strings/16852/3
+        Write-Host "::set-output name=pr-body::$body"
+    - name: Create dotnet format PR
+      if: steps.auto-commit-action.outputs.changes_detected == 'true'
+      env:
+        GITHUB_TOKEN: ${{ secrets.DOTNET_FORMAT_GH_TOKEN }}
+      run: |
+        $title = "${{ steps.commit-info.outputs.branch-name }}: fix code guidelines violations"
+        $body = "${{ steps.sanitize-pr-body.outputs.pr-body }}"
+        $prUrl = gh pr create `
+          --title $title `
+          --body $body `
+          --label ${{ env.DOTNET_FORMAT_LABEL }} `
+          --label bot:robot:
+        Write-Host "::notice::Created dotnet format PR at $prUrl."
 
 
   on-pull-request:
     name: Process dotnet format changes on pull request
     environment: dotnet-format-apply-changes-workflow
+    permissions:
+      pull-requests: write
     runs-on: ubuntu-latest
     if: github.event.workflow_run.event == 'pull_request'
     steps:
@@ -59,7 +144,7 @@ jobs:
       uses: dawidd6/action-download-artifact@v2.16.0
       with:
         workflow: ${{ env.DOTNET_FORMAT_WORKFLOW_FILENAME }}
-        name:  dotnet-format-workflow-info
+        name:  ${{ DOTNET_FORMAT_WORKFLOW_INFO_ARTIFACT }}
         run_id: ${{ github.event.workflow_run.id }}
     - name: Read dotnet format workflow info
       id: dotnet-format-workflow-info
@@ -87,7 +172,7 @@ jobs:
       uses: dawidd6/action-download-artifact@v2.16.0
       with:
         workflow: ${{ env.DOTNET_FORMAT_WORKFLOW_FILENAME }}
-        name:  dotnet-format-files
+        name:  ${{ env.DOTNET_FORMAT_FILES_ARTIFACT }}
         run_id: ${{ github.event.workflow_run.id }}
     - name: Push dotnet format changes
       if: steps.dotnet-format-workflow-info.outputs.has-changes == 'true'
@@ -97,7 +182,6 @@ jobs:
         branch: ${{ steps.dotnet-format-workflow-info.outputs.pr-branch-name }}
         commit_message: dotnet format from workflow for PR ${{ steps.dotnet-format-workflow-info.outputs.pr-number }}
     - name: Setup PR comment
-      if: steps.dotnet-format-workflow-info.outputs.has-changes == 'true'
       id: setup-pr-comment
       run: |
         $changesDetected = [System.Convert]::ToBoolean("${{ steps.auto-commit-action.outputs.changes_detected }}")
@@ -112,7 +196,6 @@ jobs:
           Write-Host "::set-output name=pr-comment-template::.github/workflows/templates/pr-dotnet-format-command-handler/dotnet-format-did-not-find-changes.md"
         }
     - name: Render comment template
-      if: steps.dotnet-format-workflow-info.outputs.has-changes == 'true'
       id: render-pr-comment-template
       uses: chuhlomin/render-template@v1.4
       with:
@@ -123,14 +206,12 @@ jobs:
           commitSha: ${{ env.WORKFLOW_HEAD_SHA }}
           pushedCommitSha: ${{ steps.setup-pr-comment.outputs.commit-sha }}
     - name: Sanitize PR comment
-      if: steps.dotnet-format-workflow-info.outputs.has-changes == 'true'
       id: sanitize-pr-comment
       run: |
         $commentBody = "${{ steps.render-pr-comment-template.outputs.result }}"
         $commentBody = $commentBody -replace "`n","%0A" # The content must be escaped to preserve newlines. See https://github.community/t/set-output-truncates-multiline-strings/16852/3
         Write-Host "::set-output name=pr-comment-body::$commentBody"
     - name: Update PR with dotnet format result
-      if: steps.dotnet-format-workflow-info.outputs.has-changes == 'true'
       uses: ./.github/actions/create-update-comment
       with:
         issue-number: ${{ steps.dotnet-format-workflow-info.outputs.pr-number }}
