@@ -19,14 +19,61 @@ env:
   WORKFLOW_HEAD_SHA : ${{ github.event.workflow_run.head_sha }}
 
 jobs:
-  on-push:
+  on-push-check-open-pr:
+    name: Check for dotnet format open PR
+    if: github.event.workflow_run.event == 'push'
+    environment: dotnet-format-apply-changes-workflow
+    permissions:
+      contents: read
+      pull-requests: read
+    runs-on: ubuntu-latest
+    outputs:
+      can-create-pr: ${{ steps.open-pr-check.outputs.can-create-pr }}
+    env:
+      DOTNET_FORMAT_LABEL : dotnet-format
+    steps:
+    - name: Dump secrets context
+      env:
+        SECRETS_CONTEXT: ${{ toJSON(secrets) }}
+      run: $env:SECRETS_CONTEXT
+    - name: Dump github context
+      env:
+        GITHUB_CONTEXT: ${{ toJSON(github) }}
+      run: $env:GITHUB_CONTEXT
+    - name: Checkout repository
+      uses: actions/checkout@v2
+      with:
+        ref: ${{ env.WORKFLOW_HEAD_SHA }}
+    - name: Check for open dotnet format PRs
+      id: open-pr-check
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        # Only create a PR if there isn't any dotnet format PR open. This prevents multiple pull requests being open to fix dotnet format issues.
+        # Once one is merged, the workflows will create more dotnet format PRs if needed.
+
+        $openPullRequestsResult = gh pr list --state open --label ${{ env.DOTNET_FORMAT_LABEL }}
+        $canCreatePr = [string]::IsNullOrEmpty($openPullRequestsResult)
+        Write-Host "::set-output name=can-create-pr::$canCreatePr"
+
+        if($canCreatePr) {
+          Write-Host "::notice::There isn't any open dotnet format PR so one will be created."
+        }
+        else {
+          Write-Host "::warning::There's an open dotnet format PR so this workflow will NOT create a new PR."
+        }
+
+  on-push-dotnet-format:
     name: Process dotnet format changes on push
+    needs: [on-push-check-open-pr]
+    if: needs.check-open-pr.outputs.can-create-pr == 'True'
     environment: dotnet-format-apply-changes-workflow
     permissions:
       contents: write
       pull-requests: write
     runs-on: ubuntu-latest
-    if: github.event.workflow_run.event == 'push'
+    env:
+      DOTNET_FORMAT_LABEL : dotnet-format
     steps:
     - name: Dump secrets context
       env:
@@ -63,6 +110,25 @@ jobs:
         Write-Host "::set-output name=workflow-url::$workflowUrl"
 
         rm $worfklowInfoFilePath # delete file so that it doesn't get pushed to the branch in the following steps
+    - name: Check for open dotnet format PRs
+      id: open-pr-check
+      if: steps.dotnet-format-workflow-info.outputs.has-changes == 'true'
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        # Only create a PR if there isn't any dotnet format PR open. This prevents multiple pull requests being open to fix dotnet format issues.
+        # Once one is merged, the workflows will create more dotnet format PRs if needed.
+
+        $openPullRequestsResult = gh pr list --state open --label ${{ env.DOTNET_FORMAT_LABEL }}
+        $canCreatePr = [string]::IsNullOrEmpty($openPullRequestsResult)
+        Write-Host "::set-output name=can-create-pr::$canCreatePr"
+
+        if($canCreatePr) {
+          Write-Host "::notice::There isn't any open dotnet format PR so one will be created."
+        }
+        else {
+          Write-Host "::warning::There is an open dotnet format PR so this workflow will NOT create a new PR."
+        }
     - name: Prepare commit info
       id: commit-info
       if: steps.dotnet-format-workflow-info.outputs.has-changes == 'true'
@@ -125,11 +191,11 @@ jobs:
 
   on-pull-request:
     name: Process dotnet format changes on pull request
+    if: github.event.workflow_run.event == 'pull_request'
     environment: dotnet-format-apply-changes-workflow
     permissions:
       pull-requests: write
     runs-on: ubuntu-latest
-    if: github.event.workflow_run.event == 'pull_request'
     steps:
     - name: Dump secrets context
       env:
