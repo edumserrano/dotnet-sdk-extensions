@@ -25,7 +25,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         /// If this changes in the future then I could start having false positives on the other tests.
         /// </summary>
         [Fact]
-           public void ControlTest()
+        public void ControlTest()
         {
             using var host = Host
                 .CreateDefaultBuilder()
@@ -36,8 +36,8 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         }
 
         public static TheoryData<IHostBuilder, string, string[], Type, string> ValidateArguments1Data =>
-            new TheoryData<IHostBuilder, string, string[], Type, string>
-            {
+         new TheoryData<IHostBuilder, string, string[], Type, string>
+         {
                 { null!, "some-appsettings", Array.Empty<string>(), typeof(ArgumentNullException), "Value cannot be null. (Parameter 'builder')" },
                 { new HostBuilder(), null!, Array.Empty<string>(), typeof(ArgumentException), "Cannot be null or white space. (Parameter 'appSettingsFilename')" },
                 { new HostBuilder(), string.Empty, Array.Empty<string>(), typeof(ArgumentException), "Cannot be null or white space. (Parameter 'appSettingsFilename')" },
@@ -46,7 +46,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
                 { new HostBuilder(), "some-appsettings", new[] { string.Empty }, typeof(ArgumentException), "Cannot have an element that is null or white space. (Parameter 'otherAppsettingsFilenames')" },
                 { new HostBuilder(), "some-appsettings", new[] { " " }, typeof(ArgumentException), "Cannot have an element that is null or white space. (Parameter 'otherAppsettingsFilenames')" },
                 { new HostBuilder(), "some-appsettings", new[] { "something", string.Empty }, typeof(ArgumentException), "Cannot have an element that is null or white space. (Parameter 'otherAppsettingsFilenames')" },
-            };
+         };
 
         /// <summary>
         /// Validates arguments for the <see cref="TestConfigurationBuilderExtensions.AddTestAppSettings(IHostBuilder, string, string[])"/>
@@ -56,11 +56,11 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         [Theory]
         [MemberData(nameof(ValidateArguments1Data))]
         public void ValidateArguments1(
-            IHostBuilder hostBuilder,
-            string appSettingsFilename,
-            string[] otherAppSettingsFilenames,
-            Type exceptionType,
-            string exceptionMessage)
+         IHostBuilder hostBuilder,
+         string appSettingsFilename,
+         string[] otherAppSettingsFilenames,
+         Type exceptionType,
+         string exceptionMessage)
         {
             var exception = Should.Throw(() =>
             {
@@ -73,11 +73,11 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         /// Gets no need to test more scenarios because they're covered by <see cref="ValidateArguments1"/>.
         /// </summary>
         public static TheoryData<IHostBuilder, Action<TestConfigurationOptions>, string, string[], Type, string> ValidateArguments2Data =>
-            new TheoryData<IHostBuilder, Action<TestConfigurationOptions>, string, string[], Type, string>
-            {
+         new TheoryData<IHostBuilder, Action<TestConfigurationOptions>, string, string[], Type, string>
+         {
                 { null!, _ => { }, "some-appsettings", Array.Empty<string>(), typeof(ArgumentNullException), "Value cannot be null. (Parameter 'builder')" },
                 { new HostBuilder(), null!, "some-appsettings", Array.Empty<string>(), typeof(ArgumentNullException), "Value cannot be null. (Parameter 'configureOptions')" },
-            };
+         };
 
         /// <summary>
         /// Validates arguments for the <see cref="TestConfigurationBuilderExtensions.AddTestAppSettings(IWebHostBuilder, Action{TestConfigurationOptions} , string, string[])"/>
@@ -87,12 +87,12 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
         [Theory]
         [MemberData(nameof(ValidateArguments2Data))]
         public void ValidateArguments2(
-            IHostBuilder hostBuilder,
-            Action<TestConfigurationOptions> configureOptions,
-            string appSettingsFilename,
-            string[] otherAppSettingsFilenames,
-            Type exceptionType,
-            string exceptionMessage)
+         IHostBuilder hostBuilder,
+         Action<TestConfigurationOptions> configureOptions,
+         string appSettingsFilename,
+         string[] otherAppSettingsFilenames,
+         Type exceptionType,
+         string exceptionMessage)
         {
             var exception = Should.Throw(() =>
             {
