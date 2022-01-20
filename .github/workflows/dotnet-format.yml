@@ -55,7 +55,7 @@ jobs:
           ${{ runner.os }}-nuget-
     - name: gh list pr
       id: dotnet-format-pr
-      if: github.event.workflow_run.event == 'pull_request'
+      if: github.event_name == 'pull_request'
       run: |
         $filesChanged = gh pr view ${{ github.event.pull_request.number }} --json files --jq '.files.[].path'
         Write-Host $filesChanged
