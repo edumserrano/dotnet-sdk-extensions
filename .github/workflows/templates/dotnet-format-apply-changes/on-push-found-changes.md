@@ -24,4 +24,3 @@ Example:
 ````````````
 
 </details>
-
