@@ -2,6 +2,8 @@
 
 :exclamation: **dotnet format** found files that did not respect the code guidelines and pushed commit {{ .pushedCommitSha }}. Please review it before merging the PR.
 
+:warning: dotnet format does **NOT** remove unused references. You have to do this manually. Please check that there isn't any unused reference.
+
 <details>
 <summary><strong>Note</strong></summary>
 </br>

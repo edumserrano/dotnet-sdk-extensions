@@ -232,30 +232,21 @@ jobs:
       with:
         branch: ${{ steps.dotnet-format-workflow-info.outputs.pr-branch-name }}
         commit_message: dotnet format from workflow for PR ${{ steps.dotnet-format-workflow-info.outputs.pr-number }}
-    - name: Setup PR comment
-      id: setup-pr-comment
+    - name: Get dotnet format commit SHA
+      id: dotnet-format-commit
       run: |
-        $changesDetected = [System.Convert]::ToBoolean("${{ steps.dotnet-format-workflow-info.outputs.has-changes }}")
-        if($changesDetected) {
-          Write-Host "::set-output name=pr-comment-reaction::eyes"
           $commitSha = git rev-parse HEAD
           Write-Host "::set-output name=commit-sha::$commitSha"
-          Write-Host "::set-output name=pr-comment-template::.github/workflows/templates/dotnet-format-apply-changes/on-pr-found-changes.md"
-        }
-        else {
-          Write-Host "::set-output name=pr-comment-reaction::hooray"
-          Write-Host "::set-output name=pr-comment-template::.github/workflows/templates/dotnet-format-apply-changes/on-pr-did-not-find-changes.md"
-        }
     - name: Render comment template
       id: render-pr-comment-template
       uses: chuhlomin/render-template@v1.4
       with:
-        template: ${{ steps.setup-pr-comment.outputs.pr-comment-template }}
+        template: .github/workflows/templates/dotnet-format-apply-changes/on-pr-found-changes.md
         vars: |
           workflow: ${{ steps.dotnet-format-workflow-info.outputs.workflow }}
           workflowUrl: ${{ steps.dotnet-format-workflow-info.outputs.workflow-url }}
           commitSha: ${{ env.WORKFLOW_HEAD_SHA }}
-          pushedCommitSha: ${{ steps.setup-pr-comment.outputs.commit-sha }}
+          pushedCommitSha: ${{ steps.dotnet-format-commit.outputs.commit-sha }}
     - name: Sanitize PR comment
       id: sanitize-pr-comment
       run: |
@@ -270,4 +261,4 @@ jobs:
         comment-author: github-actions[bot]
         body: ${{ steps.sanitize-pr-comment.outputs.pr-comment-body }}
         edit-mode: replace
-        reactions: ${{ steps.setup-pr-comment.outputs.pr-comment-reaction }}
+        reactions: eyes
