@@ -288,3 +288,4 @@ jobs:
         else {
           Write-Host "::notice title=dotnet format::dotnet format did NOT detect code guidelines violations on the PR at $prUrl."
         }
+
