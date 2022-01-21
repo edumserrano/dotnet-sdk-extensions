@@ -19,7 +19,7 @@ defaults:
 
 jobs:
   main:
-    name: dotnet format on push
+    name: dotnet format
     environment: disable-secrets-workflow
     permissions:
       contents: read
