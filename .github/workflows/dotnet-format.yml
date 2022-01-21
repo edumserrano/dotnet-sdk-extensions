@@ -19,7 +19,7 @@ defaults:
 
 jobs:
   main:
-    name: dotnet format
+    name: dotnet format on push
     environment: disable-secrets-workflow
     permissions:
       contents: read
@@ -126,9 +126,14 @@ jobs:
         path: ${{ github.workspace }}
     - name: Save workflow info
       run: |
-        $hasChanges = [System.Convert]::ToBoolean("${{ steps.dotnet-format-parse.outputs.has-changes }}")
-        $isPullRequest = "${{ github.event_name }}" -eq "pull_request"
+        if([string]::IsNullOrEmpty("${{ steps.dotnet-format-parse.outputs.has-changes }}")) {
+          $hasChanges = $false
+        }
+        else {
+          $hasChanges = [System.Convert]::ToBoolean("${{ steps.dotnet-format-parse.outputs.has-changes }}")
+        }
 
+        $isPullRequest = "${{ github.event_name }}" -eq "pull_request"
         if($isPullRequest) {
           $body = @{
                     hasChanges = $hasChanges
