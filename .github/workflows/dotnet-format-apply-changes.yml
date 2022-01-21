@@ -141,7 +141,7 @@ jobs:
         branch: ${{ steps.commit-info.outputs.branch-name }}
     - name: Render PR body template
       id: render-pr-body-template
-      if: steps.auto-commit-action.outputs.changes_detected == 'true'
+      if: steps.dotnet-format-workflow-info.outputs.has-changes == 'true'
       uses: chuhlomin/render-template@v1.4
       with:
         template: .github/workflows/templates/dotnet-format-apply-changes/on-push-found-changes.md
@@ -151,14 +151,14 @@ jobs:
           commitSha: ${{ env.WORKFLOW_HEAD_SHA }}
     - name: Sanitize PR body
       id: sanitize-pr-body
-      if: steps.auto-commit-action.outputs.changes_detected == 'true'
+      if: steps.dotnet-format-workflow-info.outputs.has-changes == 'true'
       run: |
         $body = "${{ steps.render-pr-body-template.outputs.result }}"
         $body = $body -replace "`n","%0A" # The content must be escaped to preserve newlines. See https://github.community/t/set-output-truncates-multiline-strings/16852/3
         Write-Host "::set-output name=pr-body::$body"
     - name: Create dotnet format PR
       id: create-pr
-      if: steps.auto-commit-action.outputs.changes_detected == 'true'
+      if: steps.dotnet-format-workflow-info.outputs.has-changes == 'true'
       env:
         GITHUB_TOKEN: ${{ secrets.DOTNET_FORMAT_GH_TOKEN }}
       run: |
@@ -172,7 +172,7 @@ jobs:
         Write-Host "::set-output name=pr-url::$prUrl"
     - name: Log info
       run: |
-        $hasChanges = [System.Convert]::ToBoolean("${{ steps.auto-commit-action.outputs.changes_detected }}")
+        $hasChanges = [System.Convert]::ToBoolean("${{ steps.dotnet-format-workflow-info.outputs.has-changes }}")
         $prUrl = "${{ steps.create-pr.outputs.pr-url }}"
 
         if($hasChanges) {
