@@ -53,9 +53,9 @@ jobs:
         key: ${{ runner.os }}-nuget-${{ env.DOTNET_VERSION }}
         restore-keys: |
           ${{ runner.os }}-nuget-
-    - name: test get files changed with filter
+    - name: Get files changed on PR
       uses: dorny/paths-filter@v2.10.2
-      id: changes
+      id: pr-changes
       if: github.event_name == 'pull_request'
       with:
         list-files: shell
@@ -65,29 +65,34 @@ jobs:
     - name: debug dorny
       if: github.event_name == 'pull_request'
       run: |
-        Write-Host "${{ steps.changes.outputs.cs }}"
-        Write-Host "${{ steps.changes.outputs.cs_count }}"
-        Write-Host "${{ steps.changes.outputs.cs_files }}"
+        Write-Host "${{ steps.pr-changes.outputs.cs }}"
+        Write-Host "${{ steps.pr-changes.outputs.cs_count }}"
+        Write-Host "${{ steps.pr-changes.outputs.cs_files }}"
     - name: dotnet format on pull request
       id: dotnet-format-pr
-      if: github.event_name == 'pull_request'
+      if: steps.pr-changes.outputs.cs == 'true'
       env:
         GITHUB_TOKEN: ${{ secrets.DOTNET_FORMAT_GH_TOKEN }}
       run: |
-        $filesChanged = gh pr view ${{ github.event.pull_request.number }} --json files --jq '.files.[].path'
-        Write-Host "Files changed:`n$filesChanged"
-        dotnet format --include $filesChanged `
+        Write-Host "::group::Files changed on PR"
+        Write-Host "${{ steps.pr-changes.outputs.cs_count }} files changed:`n${{ steps.pr-changes.outputs.cs_files }}"
+        Write-Host "::endgroup::"
+        Write-Host "::group::Running dotnet format"
+        dotnet format --include ${{ steps.pr-changes.outputs.cs_files }} `
           --severity info `
           --verbosity diagnostic `
           --report ${{ env.DOTNET_FORMAT_REPORT_FILEPATH }}
+        Write-Host "::endgroup::"
     - name: dotnet format on push
       id: dotnet-format-push
       if: github.event_name == 'push'
       run: |
+        Write-Host "::group::Running dotnet format"
         dotnet format ${{ github.workspace }}/DotNet.Sdk.Extensions.sln `
           --severity info `
           --verbosity diagnostic `
           --report ${{ env.DOTNET_FORMAT_REPORT_FILEPATH }}
+        Write-Host "::endgroup::"
     - name: Parse dotnet format
       id: dotnet-format-parse
       run: |
