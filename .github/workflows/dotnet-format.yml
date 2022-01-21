@@ -60,21 +60,29 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.DOTNET_FORMAT_GH_TOKEN }}
       run: |
         $filesChanged = gh pr view ${{ github.event.pull_request.number }} --json files --jq '.files.[].path'
-        Write-Host $filesChanged
+        dotnet format ${{ github.workspace }}/DotNet.Sdk.Extensions.sln `
+          --include $filesChanged `
+          --severity info `
+          --verbosity diagnostic `
+          --report ${{ env.DOTNET_FORMAT_REPORT_FILEPATH }}
     - name: dotnet format
-      id: dotnet-format
+      id: dotnet-format-push
+      if: github.event_name == 'push'
       run: |
         dotnet format ${{ github.workspace }}/DotNet.Sdk.Extensions.sln `
           --severity info `
           --verbosity diagnostic `
           --report ${{ env.DOTNET_FORMAT_REPORT_FILEPATH }}
+    - name: Parse dotnet format
+      id: dotnet-format-parse
+      run: |
         $dotnetFormatReport = Get-Content ${{ env.DOTNET_FORMAT_REPORT_FILEPATH }} | ConvertFrom-Json
         $filePaths = $dotnetFormatReport.FilePath | Get-Unique
         $dotnetFormatHasChanges =  $filePaths.Count -ne 0
         $dotnetFormatHasChangesAsString =  $dotnetFormatHasChanges.ToString().ToLower()
         Write-Host "::set-output name=has-changes::$dotnetFormatHasChangesAsString"
     - name: Delete all files without dotnet format changes
-      if: steps.dotnet-format.outputs.has-changes == 'true'
+      if: steps.dotnet-format-parse.outputs.has-changes == 'true'
       run: |
         $files = Get-ChildItem -Path "${{github.workspace}}" -File -Recurse -Force
         $dotnetFormatReport = Get-Content ${{ env.DOTNET_FORMAT_REPORT_FILEPATH }} | ConvertFrom-Json
@@ -96,14 +104,14 @@ jobs:
             Where-Object { $($_ | Get-ChildItem -Force | Select-Object -First 1).Count -eq 0 } |
             Remove-Item -Force
     - name: Upload files changed by dotnet format
-      if: steps.dotnet-format.outputs.has-changes == 'true'
+      if: steps.dotnet-format-parse.outputs.has-changes == 'true'
       uses: actions/upload-artifact@v2
       with:
         name: dotnet-format-files
         path: ${{ github.workspace }}
     - name: Save workflow info
       run: |
-        $hasChanges = [System.Convert]::ToBoolean("${{ steps.dotnet-format.outputs.has-changes }}")
+        $hasChanges = [System.Convert]::ToBoolean("${{ steps.dotnet-format-parse.outputs.has-changes }}")
         $isPullRequest = "${{ github.event_name }}" -eq "pull_request"
 
         if($isPullRequest) {
@@ -133,7 +141,7 @@ jobs:
         path: ${{ env.WORKFLOW_INFO_ARTIFACT_FILEPATH }}
     - name: Log workflow
       run: |
-        $hasChanges = [System.Convert]::ToBoolean("${{ steps.dotnet-format.outputs.has-changes }}")
+        $hasChanges = [System.Convert]::ToBoolean("${{ steps.dotnet-format-parse.outputs.has-changes }}")
         if($hasChanges) {
           Write-Host "::warning title=dotnet format::dotnet format detected code guidelines violations. The files resulting from dotnet format have been published as a workflow artifact with the name: dotnet-format-files."
         }
