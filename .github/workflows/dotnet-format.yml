@@ -165,3 +165,4 @@ jobs:
         }
 
         Write-Host "::notice title=workflow info::Information about this workflow has been published as a workflow artifact named: dotnet-format-workflow-info."
+
