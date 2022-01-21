@@ -62,12 +62,6 @@ jobs:
         filters: |
           cs:
             - '**/*.cs'
-    - name: debug dorny
-      if: github.event_name == 'pull_request'
-      run: |
-        Write-Host "${{ steps.pr-changes.outputs.cs }}"
-        Write-Host "${{ steps.pr-changes.outputs.cs_count }}"
-        Write-Host "${{ steps.pr-changes.outputs.cs_files }}"
     - name: dotnet format on pull request
       id: dotnet-format-pr
       if: steps.pr-changes.outputs.cs == 'true'
@@ -95,6 +89,7 @@ jobs:
         Write-Host "::endgroup::"
     - name: Parse dotnet format
       id: dotnet-format-parse
+      if: steps.pr-changes.outputs.cs == 'true' || github.event_name == 'push'
       run: |
         $dotnetFormatReport = Get-Content ${{ env.DOTNET_FORMAT_REPORT_FILEPATH }} | ConvertFrom-Json
         $filePaths = $dotnetFormatReport.FilePath | Get-Unique
