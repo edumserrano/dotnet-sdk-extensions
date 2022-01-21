@@ -15,7 +15,7 @@ using Xunit;
 namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration
 {
     [Trait("Category", XUnitCategories.Configuration)]
-    public class AddTestConfigurationWebHostTests
+       public class AddTestConfigurationWebHostTests
     {
         /// <summary>
         /// Tests that <see cref="WebHost.CreateDefaultBuilder()"/> adds two <see cref="JsonConfigurationProvider"/>
