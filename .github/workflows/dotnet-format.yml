@@ -96,6 +96,16 @@ jobs:
         $dotnetFormatHasChanges =  $filePaths.Count -ne 0
         $dotnetFormatHasChangesAsString =  $dotnetFormatHasChanges.ToString().ToLower()
         Write-Host "::set-output name=has-changes::$dotnetFormatHasChangesAsString"
+    - name: Check for changes
+      id: changes
+      run: |
+        if([string]::IsNullOrEmpty("${{ steps.dotnet-format-parse.outputs.has-changes }}")) {
+          $hasChanges = $false
+        }
+        else {
+          $hasChanges = [System.Convert]::ToBoolean("${{ steps.dotnet-format-parse.outputs.has-changes }}")
+        }
+        Write-Host "::set-output name=has-changes::$hasChanges"
     - name: Delete all files without dotnet format changes
       if: steps.dotnet-format-parse.outputs.has-changes == 'true'
       run: |
@@ -126,12 +136,7 @@ jobs:
         path: ${{ github.workspace }}
     - name: Save workflow info
       run: |
-        if([string]::IsNullOrEmpty("${{ steps.dotnet-format-parse.outputs.has-changes }}")) {
-          $hasChanges = $false
-        }
-        else {
-          $hasChanges = [System.Convert]::ToBoolean("${{ steps.dotnet-format-parse.outputs.has-changes }}")
-        }
+        $hasChanges = [System.Convert]::ToBoolean("${{ steps.changes.outputs.has-changes }}")
 
         $isPullRequest = "${{ github.event_name }}" -eq "pull_request"
         if($isPullRequest) {
@@ -161,7 +166,7 @@ jobs:
         path: ${{ env.WORKFLOW_INFO_ARTIFACT_FILEPATH }}
     - name: Log workflow
       run: |
-        $hasChanges = [System.Convert]::ToBoolean("${{ steps.dotnet-format-parse.outputs.has-changes }}")
+        $hasChanges = [System.Convert]::ToBoolean("${{ steps.changes.outputs.has-changes }}")
         if($hasChanges) {
           Write-Host "::warning title=dotnet format::dotnet format detected code guidelines violations. The files resulting from dotnet format have been published as a workflow artifact with the name: dotnet-format-files."
         }
