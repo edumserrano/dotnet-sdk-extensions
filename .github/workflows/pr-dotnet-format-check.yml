@@ -1,35 +1,35 @@
 # When making changes to this file please update the corresponding documentation which can be found at /docs/dev-notes/workflows/pr-dotnet-format-check-workflow.md
 
-name: PR dotnet format check
+# name: PR dotnet format check
 
-on:
-  pull_request:
-    branches: [ main ]
-    paths-ignore:
-    - "**.md"
+# on:
+#   pull_request:
+#     branches: [ main ]
+#     paths-ignore:
+#     - "**.md"
 
-permissions:
-  contents: read
+# permissions:
+#   contents: read
 
-defaults:
-  run:
-    shell: pwsh
+# defaults:
+#   run:
+#     shell: pwsh
 
-jobs:
-  dotnet-format-check:
-    name: PR dotnet format check
-    if: github.actor != 'dependabot[bot]'
-    runs-on: ubuntu-latest
-    env:
-      SLN_FILENAME: DotNet.Sdk.Extensions.sln
-      SLN_FILEPATH : ${{ github.workspace }}/DotNet.Sdk.Extensions.sln
-      DOTNET_VERSION : 6.0.x
-      WORKFLOW_RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
-      PR_BRANCH_NAME: ${{ github.event.pull_request.head.ref }}
-      DOTNET_FORMAT_ARTIFACT_FILEPATH: ${{github.workspace}}/dotnet-format-result.json
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+# jobs:
+#   dotnet-format-check:
+#     name: PR dotnet format check
+#     if: github.actor != 'dependabot[bot]'
+#     runs-on: ubuntu-latest
+#     env:
+#       SLN_FILENAME: DotNet.Sdk.Extensions.sln
+#       SLN_FILEPATH : ${{ github.workspace }}/DotNet.Sdk.Extensions.sln
+#       DOTNET_VERSION : 6.0.x
+#       WORKFLOW_RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+#       PR_BRANCH_NAME: ${{ github.event.pull_request.head.ref }}
+#       DOTNET_FORMAT_ARTIFACT_FILEPATH: ${{github.workspace}}/dotnet-format-result.json
+#     steps:
+#     - name: Checkout repository
+#       uses: actions/checkout@v2
     # - name: Setup .NET
     #   uses: actions/setup-dotnet@v1
     #   with:

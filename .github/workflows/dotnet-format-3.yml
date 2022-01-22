@@ -1,27 +1,27 @@
 # When making changes to this file please update the corresponding documentation which can be found at /docs/dev-notes/workflows/dotnet-format-workflow.md
 
-name: dotnet format OLD
+# name: dotnet format OLD
 
-on:
-  workflow_dispatch:
-  push:
-    branches: [ main ]
-    paths-ignore:
-    - "**.md"
+# on:
+#   workflow_dispatch:
+#   push:
+#     branches: [ main ]
+#     paths-ignore:
+#     - "**.md"
 
-permissions:
-  contents: write
-  pull-requests: write
+# permissions:
+#   contents: write
+#   pull-requests: write
 
-env:
-  DOTNET_FORMAT_LABEL : dotnet-format
+# env:
+#   DOTNET_FORMAT_LABEL : dotnet-format
 
-defaults:
-  run:
-    shell: pwsh
+# defaults:
+#   run:
+#     shell: pwsh
 
-jobs:
-  check-open-pr:
+# jobs:
+#   check-open-pr:
     name: Check for dotnet format open PR
     runs-on: ubuntu-latest
     outputs:

@@ -1,73 +1,73 @@
 # When making changes to this file please update the corresponding documentation which can be found at /docs/dev-notes/workflows/pr-dotnet-format-command-handler-workflow.md
 
-name: PR dotnet format command handler
+# name: PR dotnet format command handler
 
-on:
-  repository_dispatch:
-    types: [dotnet-format-command]
+# on:
+#   repository_dispatch:
+#     types: [dotnet-format-command]
 
-permissions:
-  contents: read
-  statuses: write
+# permissions:
+#   contents: read
+#   statuses: write
 
-defaults:
-  run:
-    shell: pwsh
+# defaults:
+#   run:
+#     shell: pwsh
 
-env:
-  STATUS_CONTEXT : ${{ github.workflow }} / dotnet format (${{ github.event_name }}) # mimic format from github checks $workflow-name / $job-name ($event-name)
-  WORKFLOW_RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
-  PR_NUMBER: ${{ github.event.client_payload.pull_request.number }}
+# env:
+#   STATUS_CONTEXT : ${{ github.workflow }} / dotnet format (${{ github.event_name }}) # mimic format from github checks $workflow-name / $job-name ($event-name)
+#   WORKFLOW_RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+#   PR_NUMBER: ${{ github.event.client_payload.pull_request.number }}
 
-jobs:
-  dotnet-format:
-    name: dotnet format
-    if: github.event.client_payload.pull_request && github.event.client_payload.pull_request.state == 'open'
-    runs-on: ubuntu-latest
-    env:
-      DOTNET_VERSION : 6.0.x
-      SLN_FILENAME: DotNet.Sdk.Extensions.sln
-      SLN_FILEPATH : ${{ github.workspace }}/DotNet.Sdk.Extensions.sln
-      PR_HEAD_SHA: ${{ github.event.client_payload.pull_request.head.sha }}
-      WORKFLOW_INFO_ARTIFACT_FILEPATH: ${{github.workspace}}/workflow-info.json
-    steps:
-    - name: Dump secrets context
-      env:
-        SECRETS_CONTEXT: ${{ toJSON(secrets) }}
-      run: $env:SECRETS_CONTEXT
-    - name: Dump github context
-      env:
-        GITHUB_CONTEXT: ${{ toJSON(github) }}
-      run: $env:GITHUB_CONTEXT
-    - name: Checkout repository
-      uses: actions/checkout@v2
-      with:
-        ref: ${{ env.PR_HEAD_SHA }}
-    - name: Set PR status to pending
-      uses: ./.github/actions/create-gh-status
-      with:
-        repo: ${{ github.repository }}
-        pr-num: ${{ env.PR_NUMBER }}
-        context: ${{ env.STATUS_CONTEXT }}
-        state: pending
-        description: Waiting for status to be reported
-        target-url: ${{ env.WORKFLOW_RUN_URL }}
-        token: ${{ secrets.GITHUB_TOKEN }}
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: ${{ env.DOTNET_VERSION }}
-    - name: Cache/Restore NuGets
-      uses: actions/cache@v2
-      with:
-        path:
-          ~/.nuget/packages
-        key: ${{ runner.os }}-nuget-${{ env.DOTNET_VERSION }}
-        restore-keys: |
-          ${{ runner.os }}-nuget-
-    - name: dotnet format
-      run: |
-        dotnet format ${{ env.SLN_FILEPATH }} --severity info --verbosity diagnostic
+# jobs:
+#   dotnet-format:
+#     name: dotnet format
+#     if: github.event.client_payload.pull_request && github.event.client_payload.pull_request.state == 'open'
+#     runs-on: ubuntu-latest
+#     env:
+#       DOTNET_VERSION : 6.0.x
+#       SLN_FILENAME: DotNet.Sdk.Extensions.sln
+#       SLN_FILEPATH : ${{ github.workspace }}/DotNet.Sdk.Extensions.sln
+#       PR_HEAD_SHA: ${{ github.event.client_payload.pull_request.head.sha }}
+#       WORKFLOW_INFO_ARTIFACT_FILEPATH: ${{github.workspace}}/workflow-info.json
+#     steps:
+#     - name: Dump secrets context
+#       env:
+#         SECRETS_CONTEXT: ${{ toJSON(secrets) }}
+#       run: $env:SECRETS_CONTEXT
+#     - name: Dump github context
+#       env:
+#         GITHUB_CONTEXT: ${{ toJSON(github) }}
+#       run: $env:GITHUB_CONTEXT
+#     - name: Checkout repository
+#       uses: actions/checkout@v2
+#       with:
+#         ref: ${{ env.PR_HEAD_SHA }}
+#     - name: Set PR status to pending
+#       uses: ./.github/actions/create-gh-status
+#       with:
+#         repo: ${{ github.repository }}
+#         pr-num: ${{ env.PR_NUMBER }}
+#         context: ${{ env.STATUS_CONTEXT }}
+#         state: pending
+#         description: Waiting for status to be reported
+#         target-url: ${{ env.WORKFLOW_RUN_URL }}
+#         token: ${{ secrets.GITHUB_TOKEN }}
+#     - name: Setup .NET
+#       uses: actions/setup-dotnet@v1
+#       with:
+#         dotnet-version: ${{ env.DOTNET_VERSION }}
+#     - name: Cache/Restore NuGets
+#       uses: actions/cache@v2
+#       with:
+#         path:
+#           ~/.nuget/packages
+#         key: ${{ runner.os }}-nuget-${{ env.DOTNET_VERSION }}
+#         restore-keys: |
+#           ${{ runner.os }}-nuget-
+#     - name: dotnet format
+#       run: |
+#         dotnet format ${{ env.SLN_FILEPATH }} --severity info --verbosity diagnostic
     # - name: Push dotnet format changes
     #   id: auto-commit-action
     #   uses: stefanzweifel/git-auto-commit-action@v4.11.0
@@ -113,70 +113,70 @@ jobs:
     #     body: ${{ steps.sanitize-pr-comment.outputs.pr-comment-body }}
     #     edit-mode: replace
     #     reactions: ${{ steps.setup-pr-comment.outputs.pr-comment-reaction }}
-    - name: Check if there are changes
-      id: changes
-      uses: UnicornGlobal/has-changes-action@v1.0.12
-    - name: Upload repo
-      if: steps.changes.outputs.changed == 1
-      uses: actions/upload-artifact@v2
-      with:
-        name: repo
-        path: |
-          ${{ github.workspace }}
-    - name: Save workflow info
-      run: |
-        $hasChanges = [System.Convert]::ToBoolean(${{ steps.changes.outputs.changed }})
-        $body = @{
-          hasChanges = $hasChanges
-          workflow = "${{ github.workflow }}"
-          workflowUrl = "${{ env.WORKFLOW_RUN_URL }}"
-          prNumber = ${{ env.PR_NUMBER }}
-          prBranchName = "${{ github.event.client_payload.pull_request.head.ref }}"
-        } | ConvertTo-Json
-        $body > ${{ env.WORKFLOW_INFO_ARTIFACT_FILEPATH }}
-        cat ${{ env.WORKFLOW_INFO_ARTIFACT_FILEPATH }}
-    - name: Upload workflow info
-      uses: actions/upload-artifact@v2
-      with:
-        name: workflow-info
-        path: ${{ env.WORKFLOW_INFO_ARTIFACT_FILEPATH }}
+  #   - name: Check if there are changes
+  #     id: changes
+  #     uses: UnicornGlobal/has-changes-action@v1.0.12
+  #   - name: Upload repo
+  #     if: steps.changes.outputs.changed == 1
+  #     uses: actions/upload-artifact@v2
+  #     with:
+  #       name: repo
+  #       path: |
+  #         ${{ github.workspace }}
+  #   - name: Save workflow info
+  #     run: |
+  #       $hasChanges = [System.Convert]::ToBoolean(${{ steps.changes.outputs.changed }})
+  #       $body = @{
+  #         hasChanges = $hasChanges
+  #         workflow = "${{ github.workflow }}"
+  #         workflowUrl = "${{ env.WORKFLOW_RUN_URL }}"
+  #         prNumber = ${{ env.PR_NUMBER }}
+  #         prBranchName = "${{ github.event.client_payload.pull_request.head.ref }}"
+  #       } | ConvertTo-Json
+  #       $body > ${{ env.WORKFLOW_INFO_ARTIFACT_FILEPATH }}
+  #       cat ${{ env.WORKFLOW_INFO_ARTIFACT_FILEPATH }}
+  #   - name: Upload workflow info
+  #     uses: actions/upload-artifact@v2
+  #     with:
+  #       name: workflow-info
+  #       path: ${{ env.WORKFLOW_INFO_ARTIFACT_FILEPATH }}
 
 
-  set-final-pr-status:
-    name: Set final PR status
-    needs: [dotnet-format]
-    runs-on: ubuntu-latest
-    env:
-      DOTNET_FORMAT_JOB_NAME: dotnet format
-    steps:
-    - name: Checkout # need to checkout because I'm using customs actions that exists on this repo
-      uses: actions/checkout@v2
-    - name: Get dotnet-format job execution time
-      id: get-job-execution-time
-      uses: ./.github/actions/get-gh-job-duration
-      with:
-        repo: ${{ github.repository }}
-        run-id: ${{ github.run_id }}
-        job-name: ${{ env.DOTNET_FORMAT_JOB_NAME }}
-        token: ${{ secrets.GITHUB_TOKEN }}
-    - name: Set PR status to success
-      uses: ./.github/actions/create-gh-status
-      with:
-        repo: ${{ github.repository }}
-        pr-num: ${{ env.PR_NUMBER }}
-        context: ${{ env.STATUS_CONTEXT }}
-        state: success
-        description: Successful in ${{ steps.get-job-execution-time.outputs.job-duration }}
-        target-url: ${{ env.WORKFLOW_RUN_URL }}
-        token: ${{ secrets.GITHUB_TOKEN }}
-    - name: Set PR status to failure
-      if: needs.dotnet-format.result != 'success' || !success()
-      uses: ./.github/actions/create-gh-status
-      with:
-        repo: ${{ github.repository }}
-        pr-num: ${{ env.PR_NUMBER }}
-        context: ${{ env.STATUS_CONTEXT }}
-        state: failure
-        description: Workflow failed or cancelled
-        target-url: ${{ env.WORKFLOW_RUN_URL }}
-        token: ${{ secrets.GITHUB_TOKEN }}
+  # set-final-pr-status:
+  #   name: Set final PR status
+  #   needs: [dotnet-format]
+  #   runs-on: ubuntu-latest
+  #   env:
+  #     DOTNET_FORMAT_JOB_NAME: dotnet format
+  #   steps:
+  #   - name: Checkout # need to checkout because I'm using customs actions that exists on this repo
+  #     uses: actions/checkout@v2
+  #   - name: Get dotnet-format job execution time
+  #     id: get-job-execution-time
+  #     uses: ./.github/actions/get-gh-job-duration
+  #     with:
+  #       repo: ${{ github.repository }}
+  #       run-id: ${{ github.run_id }}
+  #       job-name: ${{ env.DOTNET_FORMAT_JOB_NAME }}
+  #       token: ${{ secrets.GITHUB_TOKEN }}
+  #   - name: Set PR status to success
+  #     uses: ./.github/actions/create-gh-status
+  #     with:
+  #       repo: ${{ github.repository }}
+  #       pr-num: ${{ env.PR_NUMBER }}
+  #       context: ${{ env.STATUS_CONTEXT }}
+  #       state: success
+  #       description: Successful in ${{ steps.get-job-execution-time.outputs.job-duration }}
+  #       target-url: ${{ env.WORKFLOW_RUN_URL }}
+  #       token: ${{ secrets.GITHUB_TOKEN }}
+  #   - name: Set PR status to failure
+  #     if: needs.dotnet-format.result != 'success' || !success()
+  #     uses: ./.github/actions/create-gh-status
+  #     with:
+  #       repo: ${{ github.repository }}
+  #       pr-num: ${{ env.PR_NUMBER }}
+  #       context: ${{ env.STATUS_CONTEXT }}
+  #       state: failure
+  #       description: Workflow failed or cancelled
+  #       target-url: ${{ env.WORKFLOW_RUN_URL }}
+  #       token: ${{ secrets.GITHUB_TOKEN }}
