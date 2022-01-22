@@ -94,7 +94,7 @@ jobs:
         $dotnetFormatReport = Get-Content ${{ env.DOTNET_FORMAT_REPORT_FILEPATH }} | ConvertFrom-Json
         $filePaths = $dotnetFormatReport.FilePath | Get-Unique
         $dotnetFormatHasChanges =  $filePaths.Count -ne 0
-        $dotnetFormatHasChangesAsString =  $dotnetFormatHasChanges.ToString().ToLower()
+        $dotnetFormatHasChangesAsString =  $dotnetFormatHasChanges.ToString()
         Write-Host "::set-output name=has-changes::$dotnetFormatHasChangesAsString"
     - name: Check for changes
       id: changes

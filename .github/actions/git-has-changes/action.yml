@@ -26,5 +26,5 @@ runs:
       working-directory: ${{ inputs.path }}
       run: |
         $gitStatus = git status --porcelain
-        $hasChanges = [string]::IsNullOrEmpty($a).ToString().ToLower()
+        $hasChanges = [string]::IsNullOrEmpty($a).ToString()
         Write-Host "::set-output name=has-changes::$hasChanges"
