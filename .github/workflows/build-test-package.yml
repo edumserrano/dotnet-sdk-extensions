@@ -24,7 +24,7 @@ env:
 
 jobs:
   main:
-    name: Build and test
+    name: Build, test and package
     environment: no-secrets-workflow
     permissions:
       contents: read
@@ -33,6 +33,7 @@ jobs:
         os: [ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     env:
+      WORKFLOW_RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
       SLN_FILEPATH: ${{github.workspace}}/DotNet.Sdk.Extensions.sln
       EXTENSIONS_CSPROJ_FILEPATH : ${{ github.workspace }}/src/DotNet.Sdk.Extensions/DotNet.Sdk.Extensions.csproj
       EXTENSIONS_BIN_FOLDER : ${{ github.workspace }}/src/DotNet.Sdk.Extensions/bin/Release
@@ -45,7 +46,7 @@ jobs:
       TEST_COVERAGE_REPORT_DIR: tests/${{ matrix.os }}/coverage-results/report
       TEST_RESULTS_ARTIFACT_NAME: test-results-${{ matrix.os }}
       CODE_COVERAGE_ARTIFACT_NAME: code-coverage-report-${{ matrix.os }}
-      WORKFLOW_RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      NUGET_ARTIFACT_NAME : nuget-packages-and-symbols
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
