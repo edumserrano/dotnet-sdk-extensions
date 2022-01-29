@@ -55,7 +55,7 @@ runs:
         $nugetResponse = dotnet nuget push ./*.nupkg --api-key ${{ inputs.api-key }} --source ${{ inputs.source }} --no-symbols true
         $nugetPushExitCode = $LastExitCode
 
-        # If there is more than 1 .nupkg corresponding .snupgk in this directory the action will not work as expected
+        # If there is more than 1 .nupkg and corresponding .snupgk in this directory the action will not work as expected
         # because of how the check for 'does the package already exist?' is done.
         # The check for 'does the package already exist?' is done by checking if any part of the response of the nuget push command
         # for *.nupkg returned a 409. So if there are for instance 2 .nupkg packages and only 1 resulted in 409 then the way this action

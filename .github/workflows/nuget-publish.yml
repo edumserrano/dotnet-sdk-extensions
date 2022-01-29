@@ -1,222 +1,80 @@
-# # When making changes to this file please update the corresponding documentation which can be found at /docs/dev-notes/workflows/nuget-publish-workflow.md
+# When making changes to this file please update the corresponding documentation which can be found at /docs/dev-notes/workflows/nuget-publish-workflow.md
 
-# name: Publish Nuget packages
+name: Publish NuGet packages
 
-# on:
-#   workflow_dispatch:
-#   push:
-#     branches: [ main ]
-#     paths-ignore:
-#     - "**.md"
-#   pull_request:
-#     branches: [ main ]
-#     paths-ignore:
-#     - "**.md"
-#   schedule:
-#     - cron: '0 0 * * 0' # Once a week: "At 00:00 on Sunday."
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * 0' # Once a week: "At 00:00 on Sunday."
 
-# permissions:
-#   contents: read
+defaults:
+  run:
+    shell: pwsh
 
-# defaults:
-#   run:
-#     shell: pwsh
-
-# env:
-#   LATEST_DOTNET_VERSION : 6.0.x
-
-# jobs:
-#   build:
-#     name: Build and test
-#     strategy:
-#       matrix:
-#         os: [ubuntu-latest, windows-latest]
-#     runs-on: ${{ matrix.os }}
-#     env:
-#       SLN_FILEPATH: ${{github.workspace}}/DotNet.Sdk.Extensions.sln
-#       TEST_RESULTS_DIR: tests/${{ matrix.os }}/test-results
-#       TEST_COVERAGE_DIR: tests/${{ matrix.os }}/coverage-results
-#       TEST_COVERAGE_MERGE_FILE: tests/${{ matrix.os }}/coverage-results/coverage.net6.0.json
-#       TEST_COVERAGE_FILE: tests/${{ matrix.os }}/coverage-results/coverage.net6.0.opencover.xml
-#       TEST_COVERAGE_REPORT_DIR: tests/${{ matrix.os }}/coverage-results/report
-#       TEST_RESULTS_ARTIFACT_NAME: test-results-${{ matrix.os }}
-#       CODE_COVERAGE_ARTIFACT_NAME: code-coverage-report-${{ matrix.os }}
-#       WORKFLOW_RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
-#     steps:
-#     - name: Checkout repository
-#       uses: actions/checkout@v2
-#     - name: Setup .NET
-#       uses: actions/setup-dotnet@v1
-#       with:
-#         dotnet-version: |
-#           3.1.x
-#           5.0.x
-#           ${{ env.LATEST_DOTNET_VERSION }}
-#     - name: Cache/Restore NuGets
-#       uses: actions/cache@v2
-#       with:
-#         path:
-#           ~/.nuget/packages
-#         key: ${{ runner.os }}-nuget
-#         restore-keys: |
-#           ${{ runner.os }}-nuget-
-#     - name: Install reportgenerator dotnet tool
-#       run:  dotnet tool install --global dotnet-reportgenerator-globaltool
-#     - name: Restore dependencies
-#       run: dotnet restore ${{ env.SLN_FILEPATH }}
-#     - name: Build
-#       run: dotnet build ${{ env.SLN_FILEPATH }} -c Release -warnaserror --no-restore --no-incremental
-#     - name: Test and code coverage
-#       id: dotnet-test
-#       run: |
-#         $os = $PSVersionTable.OS
-#         $testResultsDir = $(Join-Path -Path (Get-Location) -ChildPath "${{ env.TEST_RESULTS_DIR }}")
-#         Write-Host "::set-output name=test-results-dir::$testResultsDir"
-#         dotnet test ${{ env.SLN_FILEPATH }} `
-#           -c Release `
-#           --no-build `
-#           --logger "trx;LogFilePrefix=framework" `
-#           --logger GitHubActions `
-#           --logger "liquid.custom;Template=${{github.workspace}}/tests/liquid-test-logger-template.md;matrixOs=${{ matrix.os }};os=$os;LogFilePrefix=framework" `
-#           --results-directory "$testResultsDir" `
-#           /p:CollectCoverage=true `
-#           /p:CoverletOutput="$(Join-Path -Path (Get-Location) -ChildPath "${{ env.TEST_COVERAGE_DIR }}/")" `
-#           /p:MergeWith="$(Join-Path -Path (Get-Location) -ChildPath "${{ env.TEST_COVERAGE_MERGE_FILE }}")" `
-#           /p:CoverletOutputFormat="json%2copencover" `
-#           -m:1
-
-#         $downloadArtifactMessage = "You can inspect the test results by downloading the workflow artifact named: ${{ env.TEST_RESULTS_ARTIFACT_NAME }}."
-#         if($LASTEXITCODE -eq 0) {
-#           Write-Host "::notice title=Tests (${{ matrix.os }})::Tests passed on ${{ matrix.os }}. $downloadArtifactMessage"
-#         }
-#         else {
-#           Write-Host "::error title=Tests (${{ matrix.os }})::Tests failed on  ${{ matrix.os }}. $downloadArtifactMessage"
-#         }
-#     # this job is on a matrix run but I only want to upload code coverage to Codecov once, so I've chose to run it on one of the matrix.os values.
-#     # furthermore, some of the steps below provide feedback on the test run so I want to run them even if the dotnet-test step fails. For that
-#     # I need:
-#     # - the 'always()' condition: without it the step only runs if the job is successful, it's like the 'if' condition on any step always has a hidden '&& success()' clause
-#     # - the '(steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure')' condition: to run the steps only if the dotnet-test step has ran, regardless
-#     # if it failed or not. It won't run if the dotnet-test step has been skipped or cancelled.
-#     - name: Upload test coverage to Codecov
-#       uses: codecov/codecov-action@v2.1.0
-#       if: matrix.os == 'ubuntu-latest'
-#       with:
-#         files: ${{ env.TEST_COVERAGE_FILE }}
-#         fail_ci_if_error: true
-#     - name: Generate code coverage report
-#       if: (steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure') && always()
-#       run: |
-#         reportgenerator `
-#           "-reports:${{ env.TEST_COVERAGE_FILE }}" `
-#           "-targetdir:${{ env.TEST_COVERAGE_REPORT_DIR }}" `
-#           -reportTypes:htmlInline
-#     - name: Upload code coverage report to artifacts
-#       if: (steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure') && always()
-#       uses: actions/upload-artifact@v2
-#       with:
-#         name: ${{ env.CODE_COVERAGE_ARTIFACT_NAME }}
-#         path: ${{ env.TEST_COVERAGE_REPORT_DIR }}
-#     - name: Log Codecov info
-#       if: (steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure') && always()
-#       run: |
-#         $codeCoveUrl = "https://app.codecov.io/gh/${{ github.repository }}/"
-#         Write-Host "::notice title=Code coverage (${{ matrix.os }})::Code coverage has been uploaded to Codecov at $codeCoveUrl. You can download the code coverage report from the workflow artifact named: ${{ env.CODE_COVERAGE_ARTIFACT_NAME }}."
-#     - name: Upload test results to artifacts
-#       if: (steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure') && always()
-#       uses: actions/upload-artifact@v2
-#       with:
-#         name: ${{ env.TEST_RESULTS_ARTIFACT_NAME }}
-#         path: ${{ steps.dotnet-test.outputs.test-results-dir }}
-
-#   nuget-publish:
-#     name: Publish NuGet packages and symbols
-#     needs: [build]
-#     runs-on: ubuntu-latest
-#     env:
-#       EXTENSIONS_CSPROJ_FILEPATH : ${{ github.workspace }}/src/DotNet.Sdk.Extensions/DotNet.Sdk.Extensions.csproj
-#       TESTING_EXTENSIONS_CSPROJ_FILEPATH : ${{ github.workspace }}/src/DotNet.Sdk.Extensions.Testing/DotNet.Sdk.Extensions.Testing.csproj
-#       EXTENSIONS_BIN_FOLDER : ${{ github.workspace }}/src/DotNet.Sdk.Extensions/bin/Release
-#       TESTING_EXTENSIONS_BIN_FOLDER : ${{ github.workspace }}/src/DotNet.Sdk.Extensions.Testing/bin/Release
-#       NUGET_ARTIFACT_NAME : nuget-packages-and-symbols
-#     steps:
-#     - name: Checkout repository
-#       uses: actions/checkout@v2
-#     - name: Setup .NET
-#       uses: actions/setup-dotnet@v1
-#       with:
-#         dotnet-version: ${{ env.LATEST_DOTNET_VERSION }}
-#     - name: Cache/Restore NuGets
-#       uses: actions/cache@v2
-#       with:
-#         path:
-#           ~/.nuget/packages
-#         key: ${{ runner.os }}-nuget-${{ env.LATEST_DOTNET_VERSION }}
-#         restore-keys: |
-#           ${{ runner.os }}-nuget-
-#     - name: Package DotNet.Sdk.Extensions
-#       run: dotnet pack ${{ env.EXTENSIONS_CSPROJ_FILEPATH }} -c Release
-#     - name: Package DotNet.Sdk.Extensions.Testing
-#       run: dotnet pack ${{ env.TESTING_EXTENSIONS_CSPROJ_FILEPATH }} -c Release
-#     - name: Publish DotNet.Sdk.Extensions nuget and symbols
-#       id: dotnet-sdk-extensions-nuget-push
-#       uses: ./.github/actions/nuget-push
-#       if: github.event_name != 'pull_request' # don't push NuGets on pull requests
-#       with:
-#         api-key: ${{ secrets.NUGET_PUSH_API_KEY }}
-#         source: https://api.nuget.org/v3/index.json
-#         working-directory: ${{ env.EXTENSIONS_BIN_FOLDER }}
-#     # Some of the steps below provide feedback on the NuGet push and artifact upload and I want to run them even if some of the previous steps failed. For that I need:
-#     # - the 'always()' condition: without it the step only runs if the job is successful, it's like the 'if' condition on any step always has a hidden '&& success()' clause
-#     # - the '(steps.<step-id>.conclusion == 'success' || steps.<step-id>.conclusion == 'failure')' condition: to run the steps only if the <step-id> step has ran, regardless
-#     # if it failed or not. It won't run if the <step-id> step has been skipped or cancelled.
-#     - name: Log DotNet.Sdk.Extensions NuGet push info
-#       if: (steps.dotnet-sdk-extensions-nuget-push.conclusion == 'success' || steps.dotnet-sdk-extensions-nuget-push.conclusion == 'failure') && always()
-#       run: |
-#         $pushStepConclusion = '${{ steps.dotnet-sdk-extensions-nuget-push.conclusion }}'
-#         $nugetAlreadyExists = [System.Convert]::ToBoolean("${{ steps.dotnet-sdk-extensions-nuget-push.outputs.nuget-already-exists }}")
-#         if($nugetAlreadyExists) {
-#           Write-Host "::notice title=DotNet.Sdk.Extensions NuGet::DotNet.Sdk.Extensions NuGet was NOT published to nuget.org because the version to be pushed already exists."
-#         }
-#         elseif($pushStepConclusion -eq 'failure') {
-#           Write-Host "::error title=DotNet.Sdk.Extensions NuGet::Failed to push DotNet.Sdk.Extensions NuGet and symbols."
-#         }
-#         elseif($pushStepConclusion -eq 'success') {
-#           Write-Host "::notice title=DotNet.Sdk.Extensions NuGet::Successfully pushed DotNet.Sdk.Extensions NuGet and symbols to nuget.org. You can find the package at: https://www.nuget.org/packages/DotNet-Sdk-Extensions."
-#         }
-#     - name: Publish DotNet.Sdk.Extensions.Testing nuget and symbols
-#       uses: ./.github/actions/nuget-push
-#       id: dotnet-sdk-extensions-testing-nuget-push
-#       if: github.event_name != 'pull_request' # don't push NuGets on pull requests
-#       with:
-#         api-key: ${{ secrets.NUGET_PUSH_API_KEY }}
-#         source: https://api.nuget.org/v3/index.json
-#         working-directory: ${{ env.TESTING_EXTENSIONS_BIN_FOLDER }}
-#     - name: Log DotNet.Sdk.Extensions.Testing NuGet push info
-#       if: (steps.dotnet-sdk-extensions-testing-nuget-push.conclusion == 'success' || steps.dotnet-sdk-extensions-testing-nuget-push.conclusion == 'failure') && always()
-#       run: |
-#         $pushStepConclusion = '${{ steps.dotnet-sdk-extensions-testing-nuget-push.conclusion }}'
-#         $nugetAlreadyExists = [System.Convert]::ToBoolean("${{ steps.dotnet-sdk-extensions-testing-nuget-push.outputs.nuget-already-exists }}")
-#         if($nugetAlreadyExists) {
-#           Write-Host "::notice title=DotNet.Sdk.Extensions.Testing NuGet::DotNet.Sdk.Extensions.Testing NuGet was NOT published to nuget.org because the version to be pushed already exists."
-#         }
-#         elseif($pushStepConclusion -eq 'failure') {
-#           Write-Host "::error title=DotNet.Sdk.Extensions.Testing NuGet::Failed to push DotNet.Sdk.Extensions.Testing NuGet and symbols."
-#         }
-#         elseif($pushStepConclusion -eq 'success') {
-#           Write-Host "::notice title=DotNet.Sdk.Extensions.Testing NuGet::Successfully pushed DotNet.Sdk.Extensions.Testing NuGet and symbols to nuget.org. You can find the package at: https://www.nuget.org/packages/DotNet-Sdk-Extensions-Testing."
-#         }
-#     - name: Upload NuGets and symbols to artifacts
-#       id: upload-nuget-artifacts
-#       uses: actions/upload-artifact@v2
-#       with:
-#         name: ${{ env.NUGET_ARTIFACT_NAME }}
-#         path: |
-#           ${{ env.EXTENSIONS_BIN_FOLDER }}/*.nupkg
-#           ${{ env.EXTENSIONS_BIN_FOLDER }}/*.snupkg
-#           ${{ env.TESTING_EXTENSIONS_BIN_FOLDER }}/*.nupkg
-#           ${{ env.TESTING_EXTENSIONS_BIN_FOLDER }}/*.snupkg
-#     - name: Log NuGet artifacts info
-#       if: (steps.upload-nuget-artifacts.conclusion == 'success' || steps.upload-nuget-artifacts.conclusion == 'failure') && always()
-#       run: |
-#         Write-Host "::notice title=NuGets::You can download the NuGet packages and symbols from the worfklow artifact named: ${{ env.NUGET_ARTIFACT_NAME }}."
+jobs:
+  main:
+    name: Publish NuGet packages and symbols
+    # environment: no-secrets-workflow
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    env:
+      EXTENSIONS_BIN_FOLDER : ${{ github.workspace }}/DotNet.Sdk.Extensions/bin/Release
+      TESTING_EXTENSIONS_BIN_FOLDER : ${{ github.workspace }}/DotNet.Sdk.Extensions.Testing/bin/Release
+      NUGET_ARTIFACT_NAME : nuget-packages-and-symbols
+    steps:
+    # Some of the steps below provide feedback on the test run and I want to run them even if some of the previous steps failed. For that
+    # I need:
+    # - the 'always()' condition: without it the step only runs if the job is successful, it's like the 'if' condition on any step always has a hidden '&& success()' clause.
+    # - the '(steps.<step-id>.conclusion == 'success' || steps.<step-id>.conclusion == 'failure')' condition: to run the steps only if the <step-id> step has ran, regardless
+    # if it failed or not. It won't run if the <step-id> step has been skipped or cancelled.
+    - name: Download NuGets artifact
+      uses: dawidd6/action-download-artifact@v2.16.0
+      with:
+        workflow: build-test-package.yml
+        name:  nuget-packages-and-symbols
+        branch: master
+        event: push
+    - name: Publish DotNet.Sdk.Extensions nuget and symbols
+      id: dotnet-sdk-extensions-nuget-push
+      uses: ./.github/actions/nuget-push
+      with:
+        api-key: ${{ secrets.NUGET_PUSH_API_KEY }}
+        source: https://api.nuget.org/v3/index.json
+        working-directory: ${{ env.EXTENSIONS_BIN_FOLDER }}
+    - name: Log DotNet.Sdk.Extensions NuGet push info
+      if: (steps.dotnet-sdk-extensions-nuget-push.conclusion == 'success' || steps.dotnet-sdk-extensions-nuget-push.conclusion == 'failure') && always()
+      run: |
+        $pushStepConclusion = '${{ steps.dotnet-sdk-extensions-nuget-push.conclusion }}'
+        $nugetAlreadyExists = [System.Convert]::ToBoolean("${{ steps.dotnet-sdk-extensions-nuget-push.outputs.nuget-already-exists }}")
+        if($nugetAlreadyExists) {
+          Write-Host "::notice title=DotNet.Sdk.Extensions NuGet::DotNet.Sdk.Extensions NuGet was NOT published to nuget.org because the version to be pushed already exists."
+        }
+        elseif($pushStepConclusion -eq 'failure') {
+          Write-Host "::error title=DotNet.Sdk.Extensions NuGet::Failed to push DotNet.Sdk.Extensions NuGet and symbols."
+        }
+        elseif($pushStepConclusion -eq 'success') {
+          Write-Host "::notice title=DotNet.Sdk.Extensions NuGet::Successfully pushed DotNet.Sdk.Extensions NuGet and symbols to nuget.org. You can find the package at: https://www.nuget.org/packages/DotNet-Sdk-Extensions."
+        }
+    - name: Publish DotNet.Sdk.Extensions.Testing nuget and symbols
+      uses: ./.github/actions/nuget-push
+      id: dotnet-sdk-extensions-testing-nuget-push
+      if: github.event_name != 'pull_request' # don't push NuGets on pull requests
+      with:
+        api-key: ${{ secrets.NUGET_PUSH_API_KEY }}
+        source: https://api.nuget.org/v3/index.json
+        working-directory: ${{ env.TESTING_EXTENSIONS_BIN_FOLDER }}
+    - name: Log DotNet.Sdk.Extensions.Testing NuGet push info
+      if: (steps.dotnet-sdk-extensions-testing-nuget-push.conclusion == 'success' || steps.dotnet-sdk-extensions-testing-nuget-push.conclusion == 'failure') && always()
+      run: |
+        $pushStepConclusion = '${{ steps.dotnet-sdk-extensions-testing-nuget-push.conclusion }}'
+        $nugetAlreadyExists = [System.Convert]::ToBoolean("${{ steps.dotnet-sdk-extensions-testing-nuget-push.outputs.nuget-already-exists }}")
+        if($nugetAlreadyExists) {
+          Write-Host "::notice title=DotNet.Sdk.Extensions.Testing NuGet::DotNet.Sdk.Extensions.Testing NuGet was NOT published to nuget.org because the version to be pushed already exists."
+        }
+        elseif($pushStepConclusion -eq 'failure') {
+          Write-Host "::error title=DotNet.Sdk.Extensions.Testing NuGet::Failed to push DotNet.Sdk.Extensions.Testing NuGet and symbols."
+        }
+        elseif($pushStepConclusion -eq 'success') {
+          Write-Host "::notice title=DotNet.Sdk.Extensions.Testing NuGet::Successfully pushed DotNet.Sdk.Extensions.Testing NuGet and symbols to nuget.org. You can find the package at: https://www.nuget.org/packages/DotNet-Sdk-Extensions-Testing."
+        }
