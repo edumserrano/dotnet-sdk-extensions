@@ -36,14 +36,6 @@ jobs:
     env:
       DOTNET_FORMAT_LABEL : dotnet-format
     steps:
-    - name: Dump secrets context
-      env:
-        SECRETS_CONTEXT: ${{ toJSON(secrets) }}
-      run: $env:SECRETS_CONTEXT
-    - name: Dump github context
-      env:
-        GITHUB_CONTEXT: ${{ toJSON(github) }}
-      run: $env:GITHUB_CONTEXT
     - name: Checkout repository
       uses: actions/checkout@v2
       with:
@@ -117,14 +109,6 @@ jobs:
       WORKFLOW: ${{ needs.on-push-check.outputs.workflow }}
       WORKFLOW_URL: ${{ needs.on-push-check.outputs.workflow-url }}
     steps:
-    - name: Dump secrets context
-      env:
-        SECRETS_CONTEXT: ${{ toJSON(secrets) }}
-      run: $env:SECRETS_CONTEXT
-    - name: Dump github context
-      env:
-        GITHUB_CONTEXT: ${{ toJSON(github) }}
-      run: $env:GITHUB_CONTEXT
     - name: Checkout repository
       uses: actions/checkout@v2
       with:
@@ -195,14 +179,6 @@ jobs:
       pull-requests: write
     runs-on: ubuntu-latest
     steps:
-    - name: Dump secrets context
-      env:
-        SECRETS_CONTEXT: ${{ toJSON(secrets) }}
-      run: $env:SECRETS_CONTEXT
-    - name: Dump github context
-      env:
-        GITHUB_CONTEXT: ${{ toJSON(github) }}
-      run: $env:GITHUB_CONTEXT
     - name: Checkout repository
       uses: actions/checkout@v2
       with:

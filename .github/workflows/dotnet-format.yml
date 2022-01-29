@@ -33,14 +33,6 @@ jobs:
       WORKFLOW_RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
       DOTNET_FORMAT_REPORT_FILEPATH: ${{github.workspace}}/dotnet-format-report.json
     steps:
-    - name: Dump secrets context
-      env:
-        SECRETS_CONTEXT: ${{ toJSON(secrets) }}
-      run: $env:SECRETS_CONTEXT
-    - name: Dump github context
-      env:
-        GITHUB_CONTEXT: ${{ toJSON(github) }}
-      run: $env:GITHUB_CONTEXT
     - name: Checkout repository
       uses: actions/checkout@v2
     - name: Setup .NET
