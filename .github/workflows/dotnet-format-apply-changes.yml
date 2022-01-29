@@ -97,7 +97,7 @@ jobs:
           Write-Host "::notice::dotnet format did NOT detect code guidelines violations."
         }
         elseif($hasChanges -and $canCreatePr) {
-          Write-Host "::notice::dotnet format detected code guidelines violations and so a PR will be created with the changes."
+          Write-Host "::warning::dotnet format detected code guidelines violations and so a PR will be created with the changes."
         }
         elseif($hasChanges -and !$canCreatePr) {
           Write-Host "::warning::dotnet format detected code guidelines violations but a PR from dotnet format is already open so a new one will not be created. Only one dotnet format PR can be open at a time."

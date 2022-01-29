@@ -55,33 +55,7 @@ jobs:
         key: ${{ runner.os }}-nuget-${{ env.DOTNET_VERSION }}
         restore-keys: |
           ${{ runner.os }}-nuget-
-    - name: Get files changed on PR
-      uses: dorny/paths-filter@v2.10.2
-      id: pr-changes
-      if: github.event_name == 'pull_request'
-      with:
-        list-files: shell
-        filters: |
-          cs:
-            - '**/*.cs'
-    - name: dotnet format on pull request
-      id: dotnet-format-pr
-      if: steps.pr-changes.outputs.cs == 'true'
-      env:
-        GITHUB_TOKEN: ${{ secrets.DOTNET_FORMAT_GH_TOKEN }}
-      run: |
-        Write-Host "::group::Files changed on PR"
-        Write-Host "${{ steps.pr-changes.outputs.cs_count }} files changed:`n${{ steps.pr-changes.outputs.cs_files }}"
-        Write-Host "::endgroup::"
-        Write-Host "::group::Running dotnet format"
-        dotnet format --include ${{ steps.pr-changes.outputs.cs_files }} `
-          --severity info `
-          --verbosity diagnostic `
-          --report ${{ env.DOTNET_FORMAT_REPORT_FILEPATH }}
-        Write-Host "::endgroup::"
-    - name: dotnet format on push
-      id: dotnet-format-push
-      if: github.event_name == 'push'
+    - name: dotnet format
       run: |
         Write-Host "::group::Running dotnet format"
         dotnet format ${{ github.workspace }}/DotNet.Sdk.Extensions.sln `
@@ -91,23 +65,12 @@ jobs:
         Write-Host "::endgroup::"
     - name: Parse dotnet format
       id: dotnet-format-parse
-      if: steps.pr-changes.outputs.cs == 'true' || github.event_name == 'push'
       run: |
         $dotnetFormatReport = Get-Content ${{ env.DOTNET_FORMAT_REPORT_FILEPATH }} | ConvertFrom-Json
         $filePaths = $dotnetFormatReport.FilePath | Get-Unique
         $dotnetFormatHasChanges =  $filePaths.Count -ne 0
         $dotnetFormatHasChangesAsString =  $dotnetFormatHasChanges.ToString()
         Write-Host "::set-output name=has-changes::$dotnetFormatHasChangesAsString"
-    - name: Check for changes
-      id: changes
-      run: |
-        if([string]::IsNullOrEmpty("${{ steps.dotnet-format-parse.outputs.has-changes }}")) {
-          $hasChanges = $false
-        }
-        else {
-          $hasChanges = [System.Convert]::ToBoolean("${{ steps.dotnet-format-parse.outputs.has-changes }}")
-        }
-        Write-Host "::set-output name=has-changes::$hasChanges"
     - name: Delete all files without dotnet format changes
       if: steps.dotnet-format-parse.outputs.has-changes == 'true'
       run: |
@@ -138,7 +101,7 @@ jobs:
         path: ${{ github.workspace }}
     - name: Save workflow info
       run: |
-        $hasChanges = [System.Convert]::ToBoolean("${{ steps.changes.outputs.has-changes }}")
+        $hasChanges = [System.Convert]::ToBoolean("${{ steps.dotnet-format-parse.outputs.has-changes }}")
 
         $isPullRequest = "${{ github.event_name }}" -eq "pull_request"
         if($isPullRequest) {
@@ -168,7 +131,7 @@ jobs:
         path: ${{ env.WORKFLOW_INFO_ARTIFACT_FILEPATH }}
     - name: Log workflow
       run: |
-        $hasChanges = [System.Convert]::ToBoolean("${{ steps.changes.outputs.has-changes }}")
+        $hasChanges = [System.Convert]::ToBoolean("${{ steps.dotnet-format-parse.outputs.has-changes }}")
         if($hasChanges) {
           Write-Host "::warning title=dotnet format::dotnet format detected code guidelines violations. The files resulting from dotnet format have been published as a workflow artifact with the name: dotnet-format-files."
         }
