@@ -19,7 +19,7 @@ env:
   WORKFLOW_HEAD_SHA : ${{ github.event.workflow_run.head_sha }}
 
 jobs:
-  on-push-check-open-pr:
+  on-push-check:
     name: Check for dotnet format open PR
     if: github.event.workflow_run.event == 'push'
     environment: no-secrets-workflow
@@ -28,50 +28,11 @@ jobs:
       pull-requests: read
     runs-on: ubuntu-latest
     outputs:
+      has-changes: ${{ steps.dotnet-format-workflow-info.outputs.has-changes }}
+      workflow: ${{ steps.dotnet-format-workflow-info.outputs.workflow }}
+      workflow-url: ${{ steps.dotnet-format-workflow-info.outputs.workflow-url }}
       can-create-pr: ${{ steps.open-pr-check.outputs.can-create-pr }}
-    env:
-      DOTNET_FORMAT_LABEL : dotnet-format
-    steps:
-    - name: Dump secrets context
-      env:
-        SECRETS_CONTEXT: ${{ toJSON(secrets) }}
-      run: $env:SECRETS_CONTEXT
-    - name: Dump github context
-      env:
-        GITHUB_CONTEXT: ${{ toJSON(github) }}
-      run: $env:GITHUB_CONTEXT
-    - name: Checkout repository
-      uses: actions/checkout@v2
-      with:
-        ref: ${{ env.WORKFLOW_HEAD_SHA }}
-    - name: Check for open dotnet format PRs
-      id: open-pr-check
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        # Only create a PR if there isn't any dotnet format PR open. This prevents multiple pull requests being open to fix dotnet format issues.
-        # Once one is merged, the workflows will create more dotnet format PRs if needed.
-
-        $openPullRequestsResult = gh pr list --state open --label ${{ env.DOTNET_FORMAT_LABEL }}
-        $canCreatePr = [string]::IsNullOrEmpty($openPullRequestsResult)
-        Write-Host "::set-output name=can-create-pr::$canCreatePr"
-
-        if($canCreatePr) {
-          Write-Host "::notice::There isn't any open dotnet format PR so one will be created."
-        }
-        else {
-          Write-Host "::warning::There's an open dotnet format PR so this workflow will NOT create a new PR."
-        }
-
-  on-push-dotnet-format:
-    name: Process dotnet format changes on push
-    needs: [on-push-check-open-pr]
-    if: needs.on-push-check-open-pr.outputs.can-create-pr == 'true'
-    environment: dotnet-format-apply-changes-workflow
-    permissions:
-      contents: write
-      pull-requests: write
-    runs-on: ubuntu-latest
+      can-apply-changes: ${{ steps.check-can-apply.outputs.can-apply-changes }}
     env:
       DOTNET_FORMAT_LABEL : dotnet-format
     steps:
@@ -108,11 +69,68 @@ jobs:
         Write-Host "::set-output name=has-changes::$hasChanges"
         Write-Host "::set-output name=workflow::$workflow"
         Write-Host "::set-output name=workflow-url::$workflowUrl"
+    - name: Check for open dotnet format PRs
+      id: open-pr-check
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        # Only create a PR if there isn't any dotnet format PR open. This prevents multiple pull requests being open to fix dotnet format issues.
+        # Once one is merged, the workflows will create more dotnet format PRs if needed.
 
-        rm $worfklowInfoFilePath # delete file so that it doesn't get pushed to the branch in the following steps
+        $openPullRequestsResult = gh pr list --state open --label ${{ env.DOTNET_FORMAT_LABEL }}
+        $canCreatePr = [string]::IsNullOrEmpty($openPullRequestsResult)
+        Write-Host "::set-output name=can-create-pr::$canCreatePr"
+    - name: Check if can apply changes
+      id: check-can-apply
+      run: |
+        $hasChanges = [System.Convert]::ToBoolean("${{ steps.dotnet-format-workflow-info.outputs.has-changes }}")
+        $canCreatePr = [System.Convert]::ToBoolean("${{ steps.open-pr-check.outputs.can-create-pr }}")
+        $canApplyChanges = $canCreatePr -and $hasChanges
+        Write-Host "::set-output name=can-apply-changes::$canApplyChanges"
+    - name: Log info
+      run: |
+        $hasChanges = [System.Convert]::ToBoolean("${{ steps.dotnet-format-workflow-info.outputs.has-changes }}")
+        $canCreatePr = [System.Convert]::ToBoolean("${{ steps.open-pr-check.outputs.can-create-pr }}")
+        $canApplyChanges = [System.Convert]::ToBoolean("${{ steps.check-can-apply.outputs.can-apply-changes }}")
+
+        if(!$hasChanges) {
+          Write-Host "::notice::dotnet format did NOT detect code guidelines violations."
+        }
+        elseif($hasChanges -and $canCreatePr) {
+          Write-Host "::notice::dotnet format detected code guidelines violations and so a PR will be created with the changes."
+        }
+        elseif($hasChanges -and !$canCreatePr) {
+          Write-Host "::warning::dotnet format detected code guidelines violations but a PR from dotnet format is already open so a new one will not be created. Only one dotnet format PR can be open at a time."
+        }
+
+  on-push-dotnet-format:
+    name: Process dotnet format changes on push
+    needs: [on-push-check]
+    if: needs.on-push-check.outputs.can-apply-changes == 'true'
+    environment: dotnet-format-apply-changes-workflow
+    permissions:
+      contents: write
+      pull-requests: write
+    runs-on: ubuntu-latest
+    env:
+      DOTNET_FORMAT_LABEL : dotnet-format
+      WORKFLOW: ${{ needs.on-push-check.outputs.workflow }}
+      WORKFLOW_URL: ${{ needs.on-push-check.outputs.workflow-url }}
+    steps:
+    - name: Dump secrets context
+      env:
+        SECRETS_CONTEXT: ${{ toJSON(secrets) }}
+      run: $env:SECRETS_CONTEXT
+    - name: Dump github context
+      env:
+        GITHUB_CONTEXT: ${{ toJSON(github) }}
+      run: $env:GITHUB_CONTEXT
+    - name: Checkout repository
+      uses: actions/checkout@v2
+      with:
+        ref: ${{ env.WORKFLOW_HEAD_SHA }}
     - name: Prepare commit info
       id: commit-info
-      if: steps.dotnet-format-workflow-info.outputs.has-changes == 'true'
       run: |
         $date = (Get-Date).ToString("dd-MMM-yyyy")
         $branchName = "dotnet-format-$date"
@@ -122,11 +140,9 @@ jobs:
         Write-Host "::set-output name=commit-message::$commitMessage"
         Write-Host "Commit message set to $commitMessage"
     - name: Git checkout new branch
-      if: steps.dotnet-format-workflow-info.outputs.has-changes == 'true'
       run: |
         git checkout -b ${{ steps.commit-info.outputs.branch-name }}
     - name: Download dotnet format changed files
-      if: steps.dotnet-format-workflow-info.outputs.has-changes == 'true'
       uses: dawidd6/action-download-artifact@v2.16.0
       with:
         workflow: ${{ env.DOTNET_FORMAT_WORKFLOW_FILENAME }}
@@ -134,31 +150,27 @@ jobs:
         run_id: ${{ github.event.workflow_run.id }}
     - name: Push dotnet format changes to branch
       id: auto-commit-action
-      if: steps.dotnet-format-workflow-info.outputs.has-changes == 'true'
       uses: stefanzweifel/git-auto-commit-action@v4.13.1
       with:
         commit_message: ${{ steps.commit-info.outputs.commit-message }}
         branch: ${{ steps.commit-info.outputs.branch-name }}
     - name: Render PR body template
       id: render-pr-body-template
-      if: steps.dotnet-format-workflow-info.outputs.has-changes == 'true'
       uses: chuhlomin/render-template@v1.4
       with:
         template: .github/workflows/templates/dotnet-format-apply-changes/on-push-found-changes.md
         vars: |
-          workflow: ${{ steps.dotnet-format-workflow-info.outputs.workflow }}
-          workflowUrl: ${{ steps.dotnet-format-workflow-info.outputs.workflow-url }}
+          workflow: ${{ env.WORKFLOW }}
+          workflowUrl: ${{ env.WORKFLOW_URL }}
           commitSha: ${{ env.WORKFLOW_HEAD_SHA }}
     - name: Sanitize PR body
       id: sanitize-pr-body
-      if: steps.dotnet-format-workflow-info.outputs.has-changes == 'true'
       run: |
         $body = "${{ steps.render-pr-body-template.outputs.result }}"
         $body = $body -replace "`n","%0A" # The content must be escaped to preserve newlines. See https://github.community/t/set-output-truncates-multiline-strings/16852/3
         Write-Host "::set-output name=pr-body::$body"
     - name: Create dotnet format PR
       id: create-pr
-      if: steps.dotnet-format-workflow-info.outputs.has-changes == 'true'
       env:
         GITHUB_TOKEN: ${{ secrets.DOTNET_FORMAT_GH_TOKEN }}
       run: |
@@ -172,15 +184,8 @@ jobs:
         Write-Host "::set-output name=pr-url::$prUrl"
     - name: Log info
       run: |
-        $hasChanges = [System.Convert]::ToBoolean("${{ steps.dotnet-format-workflow-info.outputs.has-changes }}")
         $prUrl = "${{ steps.create-pr.outputs.pr-url }}"
-
-        if($hasChanges) {
-          Write-Host "::warning title=dotnet format::dotnet format detected code guidelines violations and a created a PR at $prUrl."
-        }
-        else {
-          Write-Host "::notice title=dotnet format::dotnet format did NOT detect code guidelines violations on the PR at $prUrl."
-        }
+        Write-Host "::warning title=dotnet format::A PR with the fixes for the code guidelines violations was created at $prUrl."
 
   on-pull-request:
     name: Process dotnet format changes on pull request
