@@ -29,7 +29,7 @@ defaults:
 jobs:
   analyze:
     name: CodeQL analyze
-    runs-on: ubuntu-latest
+    environment: no-secrets-workflow
     permissions:
       actions: read
       contents: read
@@ -38,6 +38,7 @@ jobs:
       fail-fast: false
       matrix:
         language: [ 'csharp' ]
+    runs-on: ubuntu-latest
     env:
       SLN_FILEPATH : ${{ github.workspace }}/DotNet.Sdk.Extensions.sln
       DOTNET_VERSION : 6.0.x

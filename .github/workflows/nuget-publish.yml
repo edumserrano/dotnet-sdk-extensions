@@ -14,7 +14,7 @@ defaults:
 jobs:
   main:
     name: Publish NuGet packages and symbols
-    # environment: no-secrets-workflow
+    environment: nuget-push-workflow
     permissions:
       contents: read
     runs-on: ubuntu-latest

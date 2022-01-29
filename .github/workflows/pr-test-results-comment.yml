@@ -8,10 +8,6 @@ on:
     types:
     - completed
 
-permissions:
-  contents: read
-  pull-requests: write
-
 defaults:
   run:
     shell: pwsh
@@ -20,7 +16,10 @@ jobs:
   main:
     name: Add test results as PR comment
     if: github.event.workflow_run.event == 'pull_request'
-    runs-on: ubuntu-latest
+    environment: no-secrets-workflow
+    permissions:
+      contents: read
+      pull-requests: write
     strategy:
       matrix:
        include:
@@ -28,6 +27,7 @@ jobs:
            os: "ubuntu-latest"
          - test-results-artifact-name: "test-results-windows-latest"
            os: "windows-latest"
+    runs-on: ubuntu-latest
     env:
       TEST_RESULTS_ARTIFACT_NAME: ${{ matrix.test-results-artifact-name }}
     steps:
