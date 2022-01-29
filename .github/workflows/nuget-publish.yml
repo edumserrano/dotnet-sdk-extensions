@@ -28,6 +28,8 @@ jobs:
     # - the 'always()' condition: without it the step only runs if the job is successful, it's like the 'if' condition on any step always has a hidden '&& success()' clause.
     # - the '(steps.<step-id>.conclusion == 'success' || steps.<step-id>.conclusion == 'failure')' condition: to run the steps only if the <step-id> step has ran, regardless
     # if it failed or not. It won't run if the <step-id> step has been skipped or cancelled.
+    - name: Checkout repository
+      uses: actions/checkout@v2
     - name: Download NuGets artifact
       uses: dawidd6/action-download-artifact@v2.16.0
       with:
