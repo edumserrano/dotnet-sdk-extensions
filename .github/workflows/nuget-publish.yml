@@ -33,7 +33,7 @@ jobs:
       with:
         workflow: build-test-package.yml
         name:  nuget-packages-and-symbols
-        branch: master
+        branch: main
         event: push
     - name: Publish DotNet.Sdk.Extensions nuget and symbols
       id: dotnet-sdk-extensions-nuget-push
