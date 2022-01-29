@@ -27,6 +27,11 @@ namespace DotNet.Sdk.Extensions.Options
                 throw new ArgumentNullException(nameof(services));
             }
 
+            var a = DateTime.UtcNow.Day;
+            if (a == 2)
+            {
+            }
+
             return services
                 .AddOptions<T>()
                 .Bind(configuration)
