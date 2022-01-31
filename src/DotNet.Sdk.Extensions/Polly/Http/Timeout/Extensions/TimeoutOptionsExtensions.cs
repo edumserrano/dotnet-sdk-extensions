@@ -41,4 +41,3 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Timeout.Extensions
         }
     }
 }
-
