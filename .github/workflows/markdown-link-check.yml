@@ -1,0 +1,38 @@
+# When making changes to this file please update the corresponding documentation which can be found at /docs/dev-notes/workflows/markdown-link-check.md
+
+name: dotnet format
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+    paths:
+    - "**.md"
+  schedule:
+    - cron: '0 0 * * 0' # Once a week: "At 00:00 on Sunday."
+
+defaults:
+  run:
+    shell: pwsh
+
+jobs:
+  main:
+    name: markdown link check
+    environment: no-secrets-workflow
+    permissions:
+      contents: read
+      pull-requests: read
+    runs-on: ubuntu-latest
+    env:
+      WORKFLOW_INFO_ARTIFACT_FILEPATH: ${{github.workspace}}/dotnet-format-workflow-info.json
+      WORKFLOW_RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+    - uses: gaurav-nelson/github-action-markdown-link-check@v1
+      with:
+        use-verbose-mode: yes
+        # check-modified-files-only: yes
+
