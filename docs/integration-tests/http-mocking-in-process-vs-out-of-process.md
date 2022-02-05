@@ -1,6 +1,6 @@
 ﻿# Mocking HttpClient's responses using in-process vs out-of-process
 
-Both the [in-process http response mocking method](./http-mocking-in-process.md) and the [out-of-process http response mocking method](http-mocking-out-of-process.md) allow you to control the responses for outgoing http requests done via the `HttpClient` class.
+Both the [in-process http response mocking method](./http-mocking-in-process.md) and the [out-of-process http response mocking method](./http-mocking-out-of-process.md) allow you to control the responses for outgoing http requests done via the `HttpClient` class.
 
 Which one to use is really up to your preference. I will however point some differences:
 

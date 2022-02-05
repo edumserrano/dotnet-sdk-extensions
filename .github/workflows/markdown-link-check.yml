@@ -1,6 +1,6 @@
 # When making changes to this file please update the corresponding documentation which can be found at /docs/dev-notes/workflows/markdown-link-check.md
 
-name: dotnet format
+name: Markdown link check
 
 on:
   workflow_dispatch:
@@ -34,5 +34,6 @@ jobs:
     - uses: gaurav-nelson/github-action-markdown-link-check@v1
       with:
         use-verbose-mode: yes
+        config-file: .github/markdown-link-check-config.json
         # check-modified-files-only: yes
 
