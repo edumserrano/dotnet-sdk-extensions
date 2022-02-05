@@ -14,7 +14,7 @@ defaults:
 
 jobs:
   auto-merge-pr:
-    name: Auto merge dependabot PR 2
+    name: Auto merge dependabot PR
     if: github.actor == 'dependabot[bot]' && github.event.workflow_run.conclusion == 'success'
     environment: no-secrets-workflow
     permissions:
