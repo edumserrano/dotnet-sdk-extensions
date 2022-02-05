@@ -31,9 +31,29 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
-    - uses: gaurav-nelson/github-action-markdown-link-check@v1
+    - name: Markdown link check
+      id: mlc-push
+      uses: gaurav-nelson/github-action-markdown-link-check@v1
+      if: github.event_name != 'pull_request'
       with:
-        use-verbose-mode: yes
+        use-quiet-mode: yes
         config-file: .github/markdown-link-check-config.json
-        # check-modified-files-only: yes
-
+    - name: Markdown link check
+      id: mlc-pr
+      uses: gaurav-nelson/github-action-markdown-link-check@v1
+      if: github.event_name == 'pull_request'
+      with:
+        use-quiet-mode: yes
+        config-file: .github/markdown-link-check-config.json
+        check-modified-files-only: yes
+    - name: Log workflow
+      if: always()
+      run: |
+        $mlcPush = [System.Convert]::ToBoolean("${{ steps.mlc-push.conclusion == 'success' }}")
+        $mlcPr = [System.Convert]::ToBoolean("${{ steps.mlc-pr.conclusion == 'success' }}")
+        if($mlcPush -or $mlcPr) {
+          Write-Host "::notice::No broken links found on markdown files."
+        }
+        else {
+          Write-Host "::warning::Broken links were found on markdown files. For more details see the details of the 'Markdown link check' step."
+        }
