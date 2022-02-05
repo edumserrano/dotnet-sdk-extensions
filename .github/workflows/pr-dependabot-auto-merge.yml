@@ -4,7 +4,7 @@ name: PR Dependabot auto merge
 
 on:
   workflow_run:
-    workflows: ["Publish Nuget packages"]
+    workflows: ["Build, test and package"]
     types:
     - completed
 
@@ -20,6 +20,19 @@ jobs:
     permissions:
       contents: read
       pull-requests: write
+      # Actions: write
+      # Checks: write
+      # Contents: write
+      # Deployments: write
+      # Discussions: write
+      # Issues: write
+      # Metadata: read
+      # Packages: write
+      # Pages: write
+      # PullRequests: write
+      # RepositoryProjects: write
+      # SecurityEvents: write
+      # Statuses: write
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
