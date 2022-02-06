@@ -64,7 +64,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        # Only create a issue if there isn't any markdown link check issue open. This issueevents multiple pull requests being open to fix markdown issues.
+        # Only create an issue if there isn't any markdown link check issue open. This issueevents multiple pull requests being open to fix markdown issues.
         # Once one is merged, the workflows will create more markdown link check issues if needed.
 
         $openIssuesResult = gh issue list --state open --label ${{ env.MLC_LABEL }}
@@ -90,7 +90,7 @@ jobs:
           Write-Host "::warning::Markdown link check found broken links and so an issue will be created."
         }
         elseif($hasBrokenLinks -and !$canCreateIssue) {
-          Write-Host "::warning::Markdown link check found broken links but a issue from markdown link check is already open so a new one will not be created. Only one markdown link check issue can be open at a time."
+          Write-Host "::warning::Markdown link check found broken links but an issue from markdown link check is already open so a new one will not be created. Only one markdown link check issue can be open at a time."
         }
 
   on-push:
