@@ -46,6 +46,7 @@ jobs:
         use-quiet-mode: yes
         config-file: .github/markdown-link-check-config.json
         check-modified-files-only: yes
+        base-branch: main
     - name: Log workflow
       if: always()
       run: |
