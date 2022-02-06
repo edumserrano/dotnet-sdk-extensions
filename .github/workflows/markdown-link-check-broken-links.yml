@@ -16,6 +16,7 @@ env:
   MLC_WORKFLOW_FILENAME : markdown-link-check.yml
   MLC_WORKFLOW_INFO_ARTIFACT : markdown-link-check-workflow-info
   MLC_LABEL : markdown-link-check
+  WORKFLOW_HEAD_SHA : ${{ github.event.workflow_run.head_sha }}
 
 jobs:
   on-push-check:
@@ -32,6 +33,10 @@ jobs:
       can-create-issue: ${{ steps.open-issue-check.outputs.can-create-issue }}
       create-issue: ${{ steps.needs-issue-check.outputs.create-issue }}
     steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+      with:
+        ref: ${{ env.WORKFLOW_HEAD_SHA }}
     - name: Download markdown link check workflow info artifact
       uses: dawidd6/action-download-artifact@v2.16.0
       with:
@@ -98,8 +103,11 @@ jobs:
     env:
       WORKFLOW: ${{ needs.on-push-check.outputs.workflow }}
       WORKFLOW_URL: ${{ needs.on-push-check.outputs.workflow-url }}
-      WORKFLOW_HEAD_SHA : ${{ github.event.workflow_run.head_sha }}
     steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+      with:
+        ref: ${{ env.WORKFLOW_HEAD_SHA }}
     - name: Render issue body template
       id: render-issue-body-template
       uses: chuhlomin/render-template@v1.4

@@ -35,6 +35,10 @@ jobs:
       can-create-pr: ${{ steps.open-pr-check.outputs.can-create-pr }}
       can-apply-changes: ${{ steps.check-can-apply.outputs.can-apply-changes }}
     steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+      with:
+        ref: ${{ env.WORKFLOW_HEAD_SHA }}
     - name: Download dotnet format workflow info artifact
       uses: dawidd6/action-download-artifact@v2.16.0
       with:
