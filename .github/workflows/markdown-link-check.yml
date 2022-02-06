@@ -64,24 +64,12 @@ jobs:
         $hasBrokenLinks = [System.Convert]::ToBoolean("${{ steps.mlc.outputs.has-broken-links }}")
 
         $isPullRequest = "${{ github.event_name }}" -eq "pull_request"
-        if($isPullRequest) {
-          $body = @{
+        $body = @{
                     hasBrokenLinks = $hasBrokenLinks
                     workflow = "${{ github.workflow }}"
                     workflowUrl = "${{ env.WORKFLOW_RUN_URL }}"
-                    isPr = $true
-                    prNumber = "${{ github.event.pull_request.number }}"
-                    prBranchName = "${{ github.event.pull_request.head.ref }}"
-                  }
-        }
-        else {
-          $body = @{
-                    hasBrokenLinks = $hasBrokenLinks
-                    workflow = "${{ github.workflow }}"
-                    workflowUrl = "${{ env.WORKFLOW_RUN_URL }}"
-                    isPr = $false
-                  }
-        }
+                    isPr = $isPullRequest
+                 }
 
         $bodyAsJson = $body | ConvertTo-Json
         $bodyAsJson > ${{ env.WORKFLOW_INFO_ARTIFACT_FILEPATH }}
