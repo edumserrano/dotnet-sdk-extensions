@@ -24,6 +24,7 @@ jobs:
     if: github.event.workflow_run.event == 'push'
     environment: no-secrets-workflow
     permissions:
+      contents: read
       issues: read
     runs-on: ubuntu-latest
     outputs:
@@ -98,6 +99,7 @@ jobs:
     if: needs.on-push-check.outputs.create-issue == 'true'
     environment: markdown-link-check-broken-links-workflow
     permissions:
+      contents: read
       issues: write
     runs-on: ubuntu-latest
     env:
