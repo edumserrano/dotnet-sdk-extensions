@@ -21,7 +21,6 @@ jobs:
     environment: no-secrets-workflow
     permissions:
       contents: read
-      pull-requests: read
     runs-on: ubuntu-latest
     env:
       WORKFLOW_INFO_ARTIFACT_FILEPATH: ${{github.workspace}}/markdown-link-check-workflow-info.json
@@ -62,15 +61,11 @@ jobs:
       if: always()
       run: |
         $hasBrokenLinks = [System.Convert]::ToBoolean("${{ steps.mlc.outputs.has-broken-links }}")
-
-        $isPullRequest = "${{ github.event_name }}" -eq "pull_request"
         $body = @{
                     hasBrokenLinks = $hasBrokenLinks
                     workflow = "${{ github.workflow }}"
                     workflowUrl = "${{ env.WORKFLOW_RUN_URL }}"
-                    isPr = $isPullRequest
                  }
-
         $bodyAsJson = $body | ConvertTo-Json
         $bodyAsJson > ${{ env.WORKFLOW_INFO_ARTIFACT_FILEPATH }}
         cat ${{ env.WORKFLOW_INFO_ARTIFACT_FILEPATH }}
@@ -85,7 +80,7 @@ jobs:
       run: |
         $hasBrokenLinks = [System.Convert]::ToBoolean("${{ steps.mlc.outputs.has-broken-links }}")
         if($hasBrokenLinks) {
-          Write-Host "::warning::Broken links were found on markdown files. For more details see the details of the 'Markdown link check' step."
+          Write-Host "::error::Broken links were found on markdown files. For more details see the details of the 'Markdown link check' step."
         }
         else {
           Write-Host "::notice::No broken links were found on markdown files."

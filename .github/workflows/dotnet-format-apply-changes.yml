@@ -16,6 +16,7 @@ env:
   DOTNET_FORMAT_WORKFLOW_FILENAME : dotnet-format.yml
   DOTNET_FORMAT_WORKFLOW_INFO_ARTIFACT : dotnet-format-workflow-info
   DOTNET_FORMAT_FILES_ARTIFACT : dotnet-format-files
+  DOTNET_FORMAT_LABEL : dotnet-format
   WORKFLOW_HEAD_SHA : ${{ github.event.workflow_run.head_sha }}
 
 jobs:
@@ -33,13 +34,7 @@ jobs:
       workflow-url: ${{ steps.dotnet-format-workflow-info.outputs.workflow-url }}
       can-create-pr: ${{ steps.open-pr-check.outputs.can-create-pr }}
       can-apply-changes: ${{ steps.check-can-apply.outputs.can-apply-changes }}
-    env:
-      DOTNET_FORMAT_LABEL : dotnet-format
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
-      with:
-        ref: ${{ env.WORKFLOW_HEAD_SHA }}
     - name: Download dotnet format workflow info artifact
       uses: dawidd6/action-download-artifact@v2.16.0
       with:
@@ -105,7 +100,6 @@ jobs:
       pull-requests: write
     runs-on: ubuntu-latest
     env:
-      DOTNET_FORMAT_LABEL : dotnet-format
       WORKFLOW: ${{ needs.on-push-check.outputs.workflow }}
       WORKFLOW_URL: ${{ needs.on-push-check.outputs.workflow-url }}
     steps:
