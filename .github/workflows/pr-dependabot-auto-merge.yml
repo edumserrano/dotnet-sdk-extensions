@@ -13,6 +13,14 @@ defaults:
     shell: pwsh
 
 jobs:
+  debug:
+    name: Debug
+    runs-on: ubuntu-latest
+    steps:
+    - name: Dump github context
+      env:
+        GITHUB_CONTEXT: ${{ toJSON(github) }}
+      run: $env:GITHUB_CONTEXT
   auto-merge-pr:
     name: Auto merge dependabot PR
     if: github.actor == 'dependabot[bot]' && github.event.workflow_run.conclusion == 'success'
