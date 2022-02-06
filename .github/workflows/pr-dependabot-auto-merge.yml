@@ -27,7 +27,6 @@ jobs:
     environment: no-secrets-workflow
     permissions:
       contents: write
-      pull-requests: write
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
