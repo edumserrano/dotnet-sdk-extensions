@@ -56,3 +56,4 @@ jobs:
         else {
           Write-Host "::warning::Broken links were found on markdown files. For more details see the details of the 'Markdown link check' step."
         }
+
