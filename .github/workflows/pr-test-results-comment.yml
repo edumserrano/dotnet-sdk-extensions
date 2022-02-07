@@ -36,7 +36,7 @@ jobs:
       with:
         ref: ${{ github.event.workflow_run.head_sha }}
     - name: Download artifact
-      uses: dawidd6/action-download-artifact@v2.16.0
+      uses: dawidd6/action-download-artifact@v2.17.0
       continue-on-error: true
       with:
         workflow: nuget-publish.yml

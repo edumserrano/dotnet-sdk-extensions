@@ -40,7 +40,7 @@ jobs:
       with:
         ref: ${{ env.WORKFLOW_HEAD_SHA }}
     - name: Download dotnet format workflow info artifact
-      uses: dawidd6/action-download-artifact@v2.16.0
+      uses: dawidd6/action-download-artifact@v2.17.0
       with:
         workflow: ${{ env.DOTNET_FORMAT_WORKFLOW_FILENAME }}
         name:  ${{ env.DOTNET_FORMAT_WORKFLOW_INFO_ARTIFACT }}
@@ -125,7 +125,7 @@ jobs:
       run: |
         git checkout -b ${{ steps.commit-info.outputs.branch-name }}
     - name: Download dotnet format changed files
-      uses: dawidd6/action-download-artifact@v2.16.0
+      uses: dawidd6/action-download-artifact@v2.17.0
       with:
         workflow: ${{ env.DOTNET_FORMAT_WORKFLOW_FILENAME }}
         name:  ${{ env.DOTNET_FORMAT_FILES_ARTIFACT }}
@@ -183,7 +183,7 @@ jobs:
         ref: ${{ env.WORKFLOW_HEAD_SHA }}
         token: ${{ secrets.DOTNET_FORMAT_GH_TOKEN }}
     - name: Download dotnet format workflow info artifact
-      uses: dawidd6/action-download-artifact@v2.16.0
+      uses: dawidd6/action-download-artifact@v2.17.0
       with:
         workflow: ${{ env.DOTNET_FORMAT_WORKFLOW_FILENAME }}
         name:  ${{ env.DOTNET_FORMAT_WORKFLOW_INFO_ARTIFACT }}
@@ -210,7 +210,7 @@ jobs:
         Write-Host "::set-output name=pr-branch-name::$prBranchName"
     - name: Download dotnet format changed files
       if: steps.dotnet-format-workflow-info.outputs.has-changes == 'true'
-      uses: dawidd6/action-download-artifact@v2.16.0
+      uses: dawidd6/action-download-artifact@v2.17.0
       with:
         workflow: ${{ env.DOTNET_FORMAT_WORKFLOW_FILENAME }}
         name:  ${{ env.DOTNET_FORMAT_FILES_ARTIFACT }}
