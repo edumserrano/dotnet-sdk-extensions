@@ -1,0 +1,198 @@
+# When making changes to this file please update the corresponding documentation which can be found at /docs/dev-notes/workflows/nuget-release-command-handler-workflow.md
+
+name: NuGet release command handler
+
+on:
+  repository_dispatch:
+    types: [nuget-release-command]
+
+defaults:
+  run:
+    shell: pwsh
+
+env:
+  STATUS_CONTEXT : ${{ github.workflow }} / dotnet format (${{ github.event_name }}) # mimic format from github checks $workflow-name / $job-name ($event-name)
+  WORKFLOW_RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+  PR_NUMBER: ${{ github.event.client_payload.pull_request.number }}
+
+jobs:
+  main:
+    name: NuGet release
+    # if: github.event.client_payload.issue && github.event.client_payload.issue.state == 'open'
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    env:
+      DOTNET_VERSION : 6.0.x
+      SLN_FILENAME: DotNet.Sdk.Extensions.sln
+      SLN_FILEPATH : ${{ github.workspace }}/DotNet.Sdk.Extensions.sln
+      PR_HEAD_SHA: ${{ github.event.client_payload.pull_request.head.sha }}
+      WORKFLOW_INFO_ARTIFACT_FILEPATH: ${{github.workspace}}/workflow-info.json
+    steps:
+    - name: Dump github context
+      env:
+        GITHUB_CONTEXT: ${{ toJSON(github) }}
+      run: $env:GITHUB_CONTEXT
+    - name: Checkout repository
+      uses: actions/checkout@v2
+    - name: Dump slash command context
+      env:
+        SLASH_COMMAND_CONTEXT: ${{ toJSON(github.event.client_payload.slash_command) }}
+      run: $env:SLASH_COMMAND_CONTEXT
+    - name: Dump github context
+      run: |
+        Write-Host ${{ github.event.client_payload.slash_command.command }}
+        Write-Host ${{ github.event.client_payload.slash_command.args.unnamed.arg1 }}
+        Write-Host ${{ github.event.client_payload.slash_command.args.unnamed.arg2 }}
+
+
+    # - name: Set version
+    #   id: package_version
+    #   uses: KageKirin/set-csproj-version@v0
+    #   with:
+    #     file: src/a_project.csproj
+    #     version: ${{ github.ref_name }}
+
+
+
+
+
+
+
+  #   - name: Set PR status to pending
+  #     uses: ./.github/actions/create-gh-status
+  #     with:
+  #       repo: ${{ github.repository }}
+  #       pr-num: ${{ env.PR_NUMBER }}
+  #       context: ${{ env.STATUS_CONTEXT }}
+  #       state: pending
+  #       description: Waiting for status to be reported
+  #       target-url: ${{ env.WORKFLOW_RUN_URL }}
+  #       token: ${{ secrets.GITHUB_TOKEN }}
+  #   - name: Setup .NET
+  #     uses: actions/setup-dotnet@v1
+  #     with:
+  #       dotnet-version: ${{ env.DOTNET_VERSION }}
+  #   - name: Cache/Restore NuGets
+  #     uses: actions/cache@v2
+  #     with:
+  #       path:
+  #         ~/.nuget/packages
+  #       key: ${{ runner.os }}-nuget-${{ env.DOTNET_VERSION }}
+  #       restore-keys: |
+  #         ${{ runner.os }}-nuget-
+  #   - name: dotnet format
+  #     run: |
+  #       dotnet format ${{ env.SLN_FILEPATH }} --severity info --verbosity diagnostic
+  #   - name: Push dotnet format changes
+  #     id: auto-commit-action
+  #     uses: stefanzweifel/git-auto-commit-action@v4.11.0
+  #     with:
+  #       branch: ${{ env.PR_BRANCH_NAME }}
+  #       commit_message: dotnet format for PR ${{ env.PR_NUMBER }}
+  #   - name: Setup PR comment
+  #     id: setup-pr-comment
+  #     run: |
+  #       $changesDetected = [System.Convert]::ToBoolean("${{ steps.auto-commit-action.outputs.changes_detected }}")
+  #       if($changesDetected) {
+  #         Write-Host "::set-output name=pr-comment-reaction::eyes"
+  #         $commitSha = git rev-parse HEAD
+  #         Write-Host "::set-output name=commit-sha::$commitSha"
+  #         Write-Host "::set-output name=pr-comment-template::.github/workflows/templates/pr-dotnet-format-command-handler/dotnet-format-found-changes.md"
+  #       }
+  #       else {
+  #         Write-Host "::set-output name=pr-comment-reaction::hooray"
+  #         Write-Host "::set-output name=pr-comment-template::.github/workflows/templates/pr-dotnet-format-command-handler/dotnet-format-did-not-find-changes.md"
+  #       }
+  #   - name: Render comment template
+  #     id: render-pr-comment-template
+  #     uses: chuhlomin/render-template@v1.4
+  #     with:
+  #       template: ${{ steps.setup-pr-comment.outputs.pr-comment-template }}
+  #       vars: |
+  #         workflow: ${{ github.workflow }}
+  #         workflowUrl: ${{ env.WORKFLOW_RUN_URL }}
+  #         commitSha: ${{ env.PR_HEAD_SHA }}
+  #         pushedCommitSha: ${{ steps.setup-pr-comment.outputs.commit-sha }}
+  #   - name: Sanitize PR comment
+  #     id: sanitize-pr-comment
+  #     run: |
+  #       $commentBody = "${{ steps.render-pr-comment-template.outputs.result }}"
+  #       $commentBody = $commentBody -replace "`n","%0A" # The content must be escaped to preserve newlines. See https://github.community/t/set-output-truncates-multiline-strings/16852/3
+  #       Write-Host "::set-output name=pr-comment-body::$commentBody"
+  #   - name: Update PR with dotnet format result
+  #     uses: ./.github/actions/create-update-comment
+  #     with:
+  #       issue-number: ${{ env.PR_NUMBER }}
+  #       body-includes: PR dotnet format command handler
+  #       comment-author: github-actions[bot]
+  #       body: ${{ steps.sanitize-pr-comment.outputs.pr-comment-body }}
+  #       edit-mode: replace
+  #       reactions: ${{ steps.setup-pr-comment.outputs.pr-comment-reaction }}
+  #   - name: Check if there are changes
+  #     id: changes
+  #     uses: UnicornGlobal/has-changes-action@v1.0.12
+  #   - name: Upload repo
+  #     if: steps.changes.outputs.changed == 1
+  #     uses: actions/upload-artifact@v2
+  #     with:
+  #       name: repo
+  #       path: |
+  #         ${{ github.workspace }}
+  #   - name: Save workflow info
+  #     run: |
+  #       $hasChanges = [System.Convert]::ToBoolean(${{ steps.changes.outputs.changed }})
+  #       $body = @{
+  #         hasChanges = $hasChanges
+  #         workflow = "${{ github.workflow }}"
+  #         workflowUrl = "${{ env.WORKFLOW_RUN_URL }}"
+  #         prNumber = ${{ env.PR_NUMBER }}
+  #         prBranchName = "${{ github.event.client_payload.pull_request.head.ref }}"
+  #       } | ConvertTo-Json
+  #       $body > ${{ env.WORKFLOW_INFO_ARTIFACT_FILEPATH }}
+  #       cat ${{ env.WORKFLOW_INFO_ARTIFACT_FILEPATH }}
+  #   - name: Upload workflow info
+  #     uses: actions/upload-artifact@v2
+  #     with:
+  #       name: workflow-info
+  #       path: ${{ env.WORKFLOW_INFO_ARTIFACT_FILEPATH }}
+
+
+  # set-final-pr-status:
+  #   name: Set final PR status
+  #   needs: [dotnet-format]
+  #   runs-on: ubuntu-latest
+  #   env:
+  #     DOTNET_FORMAT_JOB_NAME: dotnet format
+  #   steps:
+  #   - name: Checkout # need to checkout because I'm using customs actions that exists on this repo
+  #     uses: actions/checkout@v2
+  #   - name: Get dotnet-format job execution time
+  #     id: get-job-execution-time
+  #     uses: ./.github/actions/get-gh-job-duration
+  #     with:
+  #       repo: ${{ github.repository }}
+  #       run-id: ${{ github.run_id }}
+  #       job-name: ${{ env.DOTNET_FORMAT_JOB_NAME }}
+  #       token: ${{ secrets.GITHUB_TOKEN }}
+  #   - name: Set PR status to success
+  #     uses: ./.github/actions/create-gh-status
+  #     with:
+  #       repo: ${{ github.repository }}
+  #       pr-num: ${{ env.PR_NUMBER }}
+  #       context: ${{ env.STATUS_CONTEXT }}
+  #       state: success
+  #       description: Successful in ${{ steps.get-job-execution-time.outputs.job-duration }}
+  #       target-url: ${{ env.WORKFLOW_RUN_URL }}
+  #       token: ${{ secrets.GITHUB_TOKEN }}
+  #   - name: Set PR status to failure
+  #     if: needs.dotnet-format.result != 'success' || !success()
+  #     uses: ./.github/actions/create-gh-status
+  #     with:
+  #       repo: ${{ github.repository }}
+  #       pr-num: ${{ env.PR_NUMBER }}
+  #       context: ${{ env.STATUS_CONTEXT }}
+  #       state: failure
+  #       description: Workflow failed or cancelled
+  #       target-url: ${{ env.WORKFLOW_RUN_URL }}
+  #       token: ${{ secrets.GITHUB_TOKEN }}
