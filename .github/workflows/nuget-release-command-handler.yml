@@ -45,6 +45,20 @@ jobs:
         Write-Host "nuget-version=${{ github.event.client_payload.slash_command.args.unnamed.arg2 }}"
         Write-Host "::set-output name=proj-name::${{ github.event.client_payload.slash_command.args.unnamed.arg1 }}"
         Write-Host "::set-output name=nuget-version::${{ github.event.client_payload.slash_command.args.unnamed.arg2 }}"
+    - name: Prepare commit info
+      id: commit-info
+      run: |
+        $projName = "${{ steps.slash-command-args.outputs.proj-name }}";
+        $nugetVersion = "${{ steps.slash-command-args.outputs.nuget-version }}";
+        $branchName = "nuget-release/$projName-$nugetVersion"
+        $commitMessage = "release NuGet $projName $nugetVersion"
+        Write-Host "::set-output name=branch-name::$branchName"
+        Write-Host "Branch name set to $branchName"
+        Write-Host "::set-output name=commit-message::$commitMessage"
+        Write-Host "Commit message set to $commitMessage"
+    - name: Git checkout new branch
+      run: |
+        git checkout -b ${{ steps.commit-info.outputs.branch-name }}
     - name: Set DotNet.Sdk.Extensions version
       if: steps.slash-command-args.outputs.proj-name == 'dotnet.sdk.extensions'
       uses: KageKirin/set-csproj-version@v0
@@ -57,14 +71,12 @@ jobs:
       with:
         file: src/DotNet.Sdk.Extensions/DotNet.Sdk.Extensions.Testing.csproj
         version: ${{ steps.slash-command-args.outputs.nuget-version }}
-    - name: Debug version update
-      run: cat ./src/DotNet.Sdk.Extensions/DotNet.Sdk.Extensions.csproj
     - name: Push changes to branch
       id: auto-commit-action
       uses: stefanzweifel/git-auto-commit-action@v4.13.1
       with:
-        commit_message: 'release NuGet ${{ steps.slash-command-args.outputs.proj-name }} ${{ steps.slash-command-args.outputs.nuget-version }}'
-        branch: 'nuget-release-${{ steps.slash-command-args.outputs.nuget-version }}' # ${{ steps.slash-command-args.outputs.proj-name }}
+        commit_message: ${{ steps.commit-info.outputs.commit-message }}
+        branch: ${{ steps.commit-info.outputs.branch-name }}
     - name: Render PR body template
       id: render-pr-body-template
       uses: chuhlomin/render-template@v1.4
