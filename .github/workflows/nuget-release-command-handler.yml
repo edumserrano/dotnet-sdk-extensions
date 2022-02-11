@@ -62,7 +62,7 @@ jobs:
       run: |
         $projName = "${{ steps.slash-command-args.outputs.proj-name }}";
         $nugetVersion = "${{ steps.slash-command-args.outputs.nuget-version }}";
-        $branchName = "nuget-release/$projName-$nugetVersion"
+        $branchName = "nuget-release-$nugetVersion"
         $commitMessage = "release NuGet $projName $nugetVersion"
         Write-Host "::set-output name=branch-name::$branchName"
         Write-Host "Branch name set to $branchName"
