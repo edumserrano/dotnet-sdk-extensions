@@ -14,14 +14,19 @@ jobs:
       issues: write
     runs-on: ubuntu-latest
     steps:
-      - name: Slash command dispatch
-        uses: peter-evans/slash-command-dispatch@v2.3.0
-        with:
-          issue-type: issue
-          allow-edits: false
-          reactions: true
-          dispatch-type: repository
-          permission: write
-          token: ${{ secrets.DISPATCH_COMMANDS_GH_TOKEN }}
-          commands: |
-            nuget-release
+    - name: Dump github context
+      env:
+        GITHUB_CONTEXT: ${{ toJSON(github) }}
+      run: $env:GITHUB_CONTEXT
+    - name: Issue comment command dispatch
+      uses: peter-evans/slash-command-dispatch@v2.3.0
+      # if: github.event.client_payload.github.payload.issue.state == 'open'
+      with:
+        issue-type: issue
+        allow-edits: false
+        reactions: true
+        dispatch-type: repository
+        permission: write
+        token: ${{ secrets.DISPATCH_COMMANDS_GH_TOKEN }}
+        commands: |
+          nuget-release

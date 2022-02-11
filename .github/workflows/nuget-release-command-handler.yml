@@ -11,22 +11,25 @@ defaults:
     shell: pwsh
 
 env:
+  WORKFLOW_HEAD_SHA : ${{ github.event.workflow_run.head_sha }}
+
   STATUS_CONTEXT : ${{ github.workflow }} / dotnet format (${{ github.event_name }}) # mimic format from github checks $workflow-name / $job-name ($event-name)
   WORKFLOW_RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
   PR_NUMBER: ${{ github.event.client_payload.pull_request.number }}
 
 jobs:
-  main:
-    name: NuGet release
-    # if: github.event.client_payload.issue && github.event.client_payload.issue.state == 'open'
+
+# job to check if a PR is already open before running the job to create a pr
+
+  create-pr:
+    name: NuGet release PR
+    environment: nuget-release-command-handler-workflow
     permissions:
-      contents: read
+      contents: write
+      pull-requests: write
     runs-on: ubuntu-latest
     env:
-      DOTNET_VERSION : 6.0.x
-      SLN_FILENAME: DotNet.Sdk.Extensions.sln
-      SLN_FILEPATH : ${{ github.workspace }}/DotNet.Sdk.Extensions.sln
-      PR_HEAD_SHA: ${{ github.event.client_payload.pull_request.head.sha }}
+      NUGET_RELEASE_LABEL : nuget-release
       WORKFLOW_INFO_ARTIFACT_FILEPATH: ${{github.workspace}}/workflow-info.json
     steps:
     - name: Dump github context
@@ -35,25 +38,78 @@ jobs:
       run: $env:GITHUB_CONTEXT
     - name: Checkout repository
       uses: actions/checkout@v2
-    - name: Dump slash command context
-      env:
-        SLASH_COMMAND_CONTEXT: ${{ toJSON(github.event.client_payload.slash_command) }}
-      run: $env:SLASH_COMMAND_CONTEXT
-    - name: Dump github context
+    - name: Read slash command args
+      id: slash-command-args
       run: |
-        Write-Host ${{ github.event.client_payload.slash_command.command }}
-        Write-Host ${{ github.event.client_payload.slash_command.args.unnamed.arg1 }}
-        Write-Host ${{ github.event.client_payload.slash_command.args.unnamed.arg2 }}
-
-
-    # - name: Set version
-    #   id: package_version
-    #   uses: KageKirin/set-csproj-version@v0
-    #   with:
-    #     file: src/a_project.csproj
-    #     version: ${{ github.ref_name }}
-
-
+        Write-Host "proj-name=${{ github.event.client_payload.slash_command.args.unnamed.arg2 }}"
+        Write-Host "nuget-version=${{ github.event.client_payload.slash_command.args.unnamed.arg2 }}"
+        Write-Host "::set-output name=proj-name::${{ github.event.client_payload.slash_command.args.unnamed.arg1 }}"
+        Write-Host "::set-output name=nuget-version::${{ github.event.client_payload.slash_command.args.unnamed.arg2 }}"
+    - name: Set DotNet.Sdk.Extensions version
+      if: steps.slash-command-args.outputs.proj-name == 'dotnet.sdk.extensions'
+      uses: KageKirin/set-csproj-version@v0
+      with:
+        file: src/DotNet.Sdk.Extensions/DotNet.Sdk.Extensions.csproj
+        version: ${{ steps.slash-command-args.outputs.nuget-version }}
+    - name: Set DotNet.Sdk.Extensions.Testing version
+      if: steps.slash-command-args.outputs.proj-name == 'dotnet.sdk.extensions.testing'
+      uses: KageKirin/set-csproj-version@v0
+      with:
+        file: src/DotNet.Sdk.Extensions/DotNet.Sdk.Extensions.Testing.csproj
+        version: ${{ steps.slash-command-args.outputs.nuget-version }}
+    - name: Prepare commit info
+      id: commit-info
+      run: |
+        $projName = "${{ steps.slash-command-args.outputs.proj-name }}";
+        $nugetVersion = "${{ steps.slash-command-args.outputs.nuget-version }}";
+        $branchName = "nuget-release/$projName-$nugetVersion"
+        $commitMessage = "release NuGet $projName $nugetVersion"
+        Write-Host "::set-output name=branch-name::$branchName"
+        Write-Host "Branch name set to $branchName"
+        Write-Host "::set-output name=commit-message::$commitMessage"
+        Write-Host "Commit message set to $commitMessage"
+    - name: Push changes to branch
+      id: auto-commit-action
+      uses: stefanzweifel/git-auto-commit-action@v4.13.1
+      with:
+        commit_message: ${{ steps.commit-info.outputs.commit-message }}
+        branch: ${{ steps.commit-info.outputs.branch-name }}
+    - name: Render PR body template
+      id: render-pr-body-template
+      uses: chuhlomin/render-template@v1.4
+      with:
+        template: .github/workflows/templates/nuget-release/create-nuget-release.md
+        vars: |
+          projName: ${{ steps.slash-command-args.outputs.proj-name }}
+          nugetCurrentVersion: "TODO-CURRENT-VERSION"
+          nugetNewVersion: ${{ steps.slash-command-args.outputs.nuget-version }}
+          nugetUrl: "TODO-URL"
+          issueNumber: ${{ github.event.client_payload.github.payload.issue.number }}
+          workflow: ${{ github.event.client_payload.github.workflow  }}
+          commitSha: ${{ github.event.workflow_run.head_sha }}
+    - name: Sanitize PR body
+      id: sanitize-pr-body
+      run: |
+        $body = "${{ steps.render-pr-body-template.outputs.result }}"
+        $body = $body -replace "`n","%0A" # The content must be escaped to preserve newlines. See https://github.community/t/set-output-truncates-multiline-strings/16852/3
+        Write-Host "::set-output name=pr-body::$body"
+    - name: Create NuGet release PR
+      id: create-pr
+      env:
+        GITHUB_TOKEN: ${{ secrets.NUGET_RELEASE_GH_TOKEN }}
+      run: |
+        $title = "Release NuGet ${{ steps.slash-command-args.outputs.proj-name }} ${{ steps.slash-command-args.outputs.nuget-version }}"
+        $body = "${{ steps.sanitize-pr-body.outputs.pr-body }}"
+        $prUrl = gh pr create `
+          --title $title `
+          --body $body `
+          --label ${{ env.NUGET_RELEASE_LABEL }} `
+          --label bot:robot:
+        Write-Host "::set-output name=pr-url::$prUrl"
+    - name: Log info
+      run: |
+        $prUrl = "${{ steps.create-pr.outputs.pr-url }}"
+        Write-Host "::warning title=NuGet release::A PR to release NuGet ${{ steps.slash-command-args.outputs.proj-name }} ${{ steps.slash-command-args.outputs.nuget-version }} was created at $prUrl."
 
 
 
