@@ -57,6 +57,8 @@ jobs:
       with:
         file: src/DotNet.Sdk.Extensions/DotNet.Sdk.Extensions.Testing.csproj
         version: ${{ steps.slash-command-args.outputs.nuget-version }}
+    - name: Debug version update
+      run: cat ./src/DotNet.Sdk.Extensions/DotNet.Sdk.Extensions.csproj
     - name: Push changes to branch
       id: auto-commit-action
       uses: stefanzweifel/git-auto-commit-action@v4.13.1
