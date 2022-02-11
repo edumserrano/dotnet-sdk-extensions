@@ -11,7 +11,7 @@
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <PackageId>DotNet-Sdk-Extensions</PackageId>
-    <Version>1.0.13-alpha</Version>
+    <Version>2.0.0</Version>
     <Owners>Eduardo Serrano</Owners>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -28,17 +28,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="..\..\docs\nuget\$(PackageReadmeFileName)" Pack="true" PackagePath="\" />
+    <None Include="..\..\docs\nuget\$(PackageReadmeFileName)" Pack="true" PackagePath="\"/>
   </ItemGroup>
 
   <ItemGroup>
-    <FrameworkReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Microsoft.Extensions.Http.Polly" Version="6.0.1" />
+    <FrameworkReference Include="Microsoft.AspNetCore.App"/>
+    <PackageReference Include="Microsoft.Extensions.Http.Polly" Version="6.0.1"/>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Polly.Contrib.WaitAndRetry" Version="1.1.1" />
+    <PackageReference Include="Polly.Contrib.WaitAndRetry" Version="1.1.1"/>
   </ItemGroup>
 
 </Project>
