@@ -14,13 +14,9 @@ jobs:
       issues: write
     runs-on: ubuntu-latest
     steps:
-    - name: Dump github context
-      env:
-        GITHUB_CONTEXT: ${{ toJSON(github) }}
-      run: $env:GITHUB_CONTEXT
     - name: Issue comment command dispatch
       uses: peter-evans/slash-command-dispatch@v2.3.0
-      # if: github.event.client_payload.github.payload.issue.state == 'open'
+      if: github.event.issue.state == 'open'
       with:
         issue-type: issue
         allow-edits: false
