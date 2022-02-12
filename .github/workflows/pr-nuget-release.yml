@@ -1,0 +1,25 @@
+# When making changes to this file please update the corresponding documentation which can be found at /docs/dev-notes/workflows/build-test-package-workflow.md
+
+name: PR NuGet release
+
+on:
+  pull_request:
+    branches: [ main ]
+    types: [ closed ]
+
+defaults:
+  run:
+    shell: pwsh
+
+jobs:
+  main:
+    name: Release NuGet
+    environment: no-secrets-workflow
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+    - name: Dump github context
+      env:
+        GITHUB_CONTEXT: ${{ toJSON(github) }}
+      run: $env:GITHUB_CONTEXT
