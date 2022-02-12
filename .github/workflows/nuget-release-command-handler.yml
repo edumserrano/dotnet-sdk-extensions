@@ -38,19 +38,20 @@ jobs:
         Write-Host "::set-output name=can-create-pr::$canCreatePr"
     - name: Log info
       run: |
+        $projName = "${{ github.event.client_payload.slash_command.args.unnamed.arg2 }}"
         $canCreatePr = [System.Convert]::ToBoolean("${{ steps.open-pr-check.outputs.can-create-pr }}")
 
         if($canCreatePr) {
-          Write-Host "::notice::No NuGet release PR open was found for ."
+          Write-Host "::notice::There's no open PR to release $projName NuGet."
         }
         elseif($hasChanges -and !$canCreatePr) {
-          Write-Host "::warning::A PR to release NuGet for is already open so a new one will not be created. Only one NuGet release PR can be open at a time."
+          Write-Host "::warning::A PR to release $projName NuGet is already open so a new one will not be created. Only one NuGet release PR can be open at a time."
         }
 
   create-pr:
     name: Create NuGet release PR
     needs: [check-pr]
-    if: needs.check-pr.can-create-pr == 'true'
+    if: needs.check-pr.outputs.can-create-pr == 'true'
     environment: nuget-release-command-handler-workflow
     permissions:
       contents: write
