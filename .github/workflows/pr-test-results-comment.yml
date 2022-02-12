@@ -4,7 +4,7 @@ name: PR test results comment
 
 on:
   workflow_run:
-    workflows: ["Publish Nuget packages"]
+    workflows: ["Build, test and package"]
     types:
     - completed
 
