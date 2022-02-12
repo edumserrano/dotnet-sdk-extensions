@@ -44,7 +44,7 @@ jobs:
         if($canCreatePr) {
           Write-Host "::notice::There's no open PR to release $nugetId NuGet."
         }
-        elseif($hasChanges -and !$canCreatePr) {
+        else {
           Write-Host "::warning::A PR to release $nugetId NuGet is already open so a new one will not be created. Only one NuGet release PR can be open at a time."
         }
 
@@ -127,7 +127,7 @@ jobs:
     - name: Set DotNet.Sdk.Extensions.Testing version
       if: steps.slash-command-args.outputs.nuget-id == 'dotnet-sdk-extensions-testing'
       run: |
-        $projFilePath = "${{ github.workspace }}/src/DotNet.Sdk.Extensions/DotNet.Sdk.Extensions.Testing.csproj"
+        $projFilePath = "${{ github.workspace }}/src/DotNet.Sdk.Extensions.Testing/DotNet.Sdk.Extensions.Testing.csproj"
 
         Write-Host "::group::csproj before updating version"
         cat $projFilePath
