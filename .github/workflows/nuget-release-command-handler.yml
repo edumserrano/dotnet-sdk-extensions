@@ -22,7 +22,7 @@ jobs:
 # job to check if a PR is already open before running the job to create a pr
 
   create-pr:
-    name: NuGet release PR
+    name: Create NuGet release PR
     environment: nuget-release-command-handler-workflow
     permissions:
       contents: write
