@@ -32,13 +32,13 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        $projName = "${{ github.event.client_payload.slash_command.args.unnamed.arg2 }}"
+        $projName = "${{ github.event.client_payload.slash_command.args.unnamed.arg1 }}"
         $openPullRequestsResult = gh pr list --state open --label ${{ env.NUGET_RELEASE_LABEL }} --label $projName
         $canCreatePr = [string]::IsNullOrEmpty($openPullRequestsResult)
         Write-Host "::set-output name=can-create-pr::$canCreatePr"
     - name: Log info
       run: |
-        $projName = "${{ github.event.client_payload.slash_command.args.unnamed.arg2 }}"
+        $projName = "${{ github.event.client_payload.slash_command.args.unnamed.arg1 }}"
         $canCreatePr = [System.Convert]::ToBoolean("${{ steps.open-pr-check.outputs.can-create-pr }}")
 
         if($canCreatePr) {
@@ -87,16 +87,20 @@ jobs:
         git checkout -b ${{ steps.commit-info.outputs.branch-name }}
     - name: Set DotNet.Sdk.Extensions version
       if: steps.slash-command-args.outputs.proj-name == 'dotnet.sdk.extensions'
-      uses: KageKirin/set-csproj-version@v0
-      with:
-        file: src/DotNet.Sdk.Extensions/DotNet.Sdk.Extensions.csproj
-        version: ${{ steps.slash-command-args.outputs.nuget-version }}
+      run: |
+        $xml=New-Object XML
+        $xml.PreserveWhitespace = $true
+        $xml.Load("${{ github.workspace }}/src/DotNet.Sdk.Extensions/DotNet.Sdk.Extensions.csproj")
+        $xml.Project.PropertyGroup.Version = "${{ steps.slash-command-args.outputs.nuget-version }}"
+        $xml.Save("D:\Dev\edumserrano\dot-net-sdk-extensions\src\DotNet.Sdk.Extensions\DotNet.Sdk.Extensions.csproj")
     - name: Set DotNet.Sdk.Extensions.Testing version
       if: steps.slash-command-args.outputs.proj-name == 'dotnet.sdk.extensions.testing'
-      uses: KageKirin/set-csproj-version@v0
-      with:
-        file: src/DotNet.Sdk.Extensions/DotNet.Sdk.Extensions.Testing.csproj
-        version: ${{ steps.slash-command-args.outputs.nuget-version }}
+      run: |
+        $xml=New-Object XML
+        $xml.PreserveWhitespace = $true
+        $xml.Load("${{ github.workspace }}/src/DotNet.Sdk.Extensions/DotNet.Sdk.Extensions.Testing.csproj")
+        $xml.Project.PropertyGroup.Version = "${{ steps.slash-command-args.outputs.nuget-version }}"
+        $xml.Save("D:\Dev\edumserrano\dot-net-sdk-extensions\src\DotNet.Sdk.Extensions\DotNet.Sdk.Extensions.csproj")
     - name: Push changes to branch
       id: auto-commit-action
       uses: stefanzweifel/git-auto-commit-action@v4.13.1
