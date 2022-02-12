@@ -32,20 +32,20 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        $projName = "${{ github.event.client_payload.slash_command.args.unnamed.arg1 }}"
-        $openPullRequestsResult = gh pr list --state open --label ${{ env.NUGET_RELEASE_LABEL }} --label $projName
+        $nugetId = "${{ github.event.client_payload.slash_command.args.unnamed.arg1 }}"
+        $openPullRequestsResult = gh pr list --state open --label ${{ env.NUGET_RELEASE_LABEL }} --label $nugetId
         $canCreatePr = [string]::IsNullOrEmpty($openPullRequestsResult)
         Write-Host "::set-output name=can-create-pr::$canCreatePr"
     - name: Log info
       run: |
-        $projName = "${{ github.event.client_payload.slash_command.args.unnamed.arg1 }}"
+        $nugetId = "${{ github.event.client_payload.slash_command.args.unnamed.arg1 }}"
         $canCreatePr = [System.Convert]::ToBoolean("${{ steps.open-pr-check.outputs.can-create-pr }}")
 
         if($canCreatePr) {
-          Write-Host "::notice::There's no open PR to release $projName NuGet."
+          Write-Host "::notice::There's no open PR to release $nugetId NuGet."
         }
         elseif($hasChanges -and !$canCreatePr) {
-          Write-Host "::warning::A PR to release $projName NuGet is already open so a new one will not be created. Only one NuGet release PR can be open at a time."
+          Write-Host "::warning::A PR to release $nugetId NuGet is already open so a new one will not be created. Only one NuGet release PR can be open at a time."
         }
 
   create-pr:
@@ -64,20 +64,37 @@ jobs:
       run: $env:GITHUB_CONTEXT
     - name: Checkout repository
       uses: actions/checkout@v2
-    - name: Read slash command args
+    - name: Read slash command args and setup workflow data
       id: slash-command-args
       run: |
-        Write-Host "proj-name=${{ github.event.client_payload.slash_command.args.unnamed.arg2 }}"
-        Write-Host "nuget-version=${{ github.event.client_payload.slash_command.args.unnamed.arg2 }}"
-        Write-Host "::set-output name=proj-name::${{ github.event.client_payload.slash_command.args.unnamed.arg1 }}"
-        Write-Host "::set-output name=nuget-version::${{ github.event.client_payload.slash_command.args.unnamed.arg2 }}"
+        $nugetId = "${{ github.event.client_payload.slash_command.args.unnamed.arg1 }}";
+        $nugetNewVersion = "${{ github.event.client_payload.slash_command.args.unnamed.arg2 }}";
+
+        if($nugetId -eq "dotnet-sdk-extensions") {
+          $nugetUrl = "https://www.nuget.org/packages/DotNet-Sdk-Extensions"
+        }
+        if($nugetId -eq "dotnet-sdk-extensions-testing") {
+          $nugetUrl = "https://www.nuget.org/packages/DotNet-Sdk-Extensions-Testing"
+        }
+
+        $nugetOutput = nuget list PackageId:Dotnet-Sdk-Extensions -Source nuget.org -PreRelease
+        $nugetCurrentVersion = $nugetOutput.Split(" ")[-1]
+
+        Write-Host "nuget-id=$nugetId"
+        Write-Host "nuget-new-version=$nugetNewVersion"
+        Write-Host "nuget-url=$nugetUrl"
+        Write-Host "current-nuget-new-version=$nugetCurrentVersion"
+        Write-Host "::set-output name=nuget-id::$nugetId"
+        Write-Host "::set-output name=nuget-new-version::$nugetNewVersion"
+        Write-Host "::set-output name=nuget-url::$nugetUrl"
+        Write-Host "::set-output name=nuget-current-version::$nugetCurrentVersion"
     - name: Prepare commit info
       id: commit-info
       run: |
-        $projName = "${{ steps.slash-command-args.outputs.proj-name }}";
-        $nugetVersion = "${{ steps.slash-command-args.outputs.nuget-version }}";
-        $branchName = "nuget-release/$projName-$nugetVersion"
-        $commitMessage = "release NuGet $projName $nugetVersion"
+        $nugetId = "${{ steps.slash-command-args.outputs.nuget-id }}";
+        $nugetNewVersion = "${{ steps.slash-command-args.outputs.nuget-new-version }}";
+        $branchName = "nuget-release/$nugetId-$nugetNewVersion"
+        $commitMessage = "release NuGet $nugetId $nugetNewVersion"
         Write-Host "::set-output name=branch-name::$branchName"
         Write-Host "Branch name set to $branchName"
         Write-Host "::set-output name=commit-message::$commitMessage"
@@ -86,22 +103,22 @@ jobs:
       run: |
         git checkout -b ${{ steps.commit-info.outputs.branch-name }}
     - name: Set DotNet.Sdk.Extensions version
-      if: steps.slash-command-args.outputs.proj-name == 'dotnet.sdk.extensions'
+      if: steps.slash-command-args.outputs.nuget-id == 'dotnet-sdk-extensions'
       run: |
         $projFilePath = "${{ github.workspace }}/src/DotNet.Sdk.Extensions/DotNet.Sdk.Extensions.csproj"
         $xml=New-Object XML
         $xml.PreserveWhitespace = $true
         $xml.Load($projFilePath)
-        $xml.Project.PropertyGroup.Version = "${{ steps.slash-command-args.outputs.nuget-version }}"
+        $xml.Project.PropertyGroup.Version = "${{ steps.slash-command-args.outputs.nuget-new-version }}"
         $xml.Save($projFilePath)
     - name: Set DotNet.Sdk.Extensions.Testing version
-      if: steps.slash-command-args.outputs.proj-name == 'dotnet.sdk.extensions.testing'
+      if: steps.slash-command-args.outputs.nuget-id == 'dotnet-sdk-extensions-testing'
       run: |
         $projFilePath = "${{ github.workspace }}/src/DotNet.Sdk.Extensions/DotNet.Sdk.Extensions.Testing.csproj"
         $xml=New-Object XML
         $xml.PreserveWhitespace = $true
         $xml.Load($projFilePath)
-        $xml.Project.PropertyGroup.Version = "${{ steps.slash-command-args.outputs.nuget-version }}"
+        $xml.Project.PropertyGroup.Version = "${{ steps.slash-command-args.outputs.nuget-new-version }}"
         $xml.Save($projFilePath)
     - name: Push changes to branch
       id: auto-commit-action
@@ -115,13 +132,11 @@ jobs:
       with:
         template: .github/workflows/templates/nuget-release/create-nuget-release.md
         vars: |
-          projName: ${{ steps.slash-command-args.outputs.proj-name }}
-          nugetCurrentVersion: "TODO-CURRENT-VERSION"
-          nugetNewVersion: ${{ steps.slash-command-args.outputs.nuget-version }}
-          nugetUrl: "TODO-URL"
+          nugetId: ${{ steps.slash-command-args.outputs.nuget-id }}
+          nugetCurrentVersion: ${{ steps.slash-command-args.outputs.nuget-current-version }}
+          nugetNewVersion: ${{ steps.slash-command-args.outputs.nuget-new-version }}
+          nugetUrl: '${{ steps.slash-command-args.outputs.nuget-url }}'
           issueNumber: ${{ github.event.client_payload.github.payload.issue.number }}
-          workflow: ${{ github.event.client_payload.github.workflow  }}
-          commitSha: ${{ github.event.client_payload.github.sha }}
     - name: Sanitize PR body
       id: sanitize-pr-body
       run: |
@@ -133,13 +148,13 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.CREATE_NUGET_RELEASE_PR_GH_TOKEN }}
       run: |
-        $title = "Release NuGet ${{ steps.slash-command-args.outputs.proj-name }} ${{ steps.slash-command-args.outputs.nuget-version }}"
+        $title = "Release NuGet ${{ steps.slash-command-args.outputs.nuget-id }} ${{ steps.slash-command-args.outputs.nuget-new-version }}"
         $body = "${{ steps.sanitize-pr-body.outputs.pr-body }}"
         $prUrl = gh pr create `
           --title $title `
           --body $body `
           --label ${{ env.NUGET_RELEASE_LABEL }} `
-          --label ${{ steps.slash-command-args.outputs.proj-name }} `
+          --label ${{ steps.slash-command-args.outputs.nuget-id }} `
           --label bot:robot:
         $prNumber = $prUrl.Split("/")[-1]
         Write-Host "::set-output name=pr-url::$prUrl"
@@ -147,7 +162,7 @@ jobs:
     - name: Log info
       run: |
         $prUrl = "${{ steps.create-pr.outputs.pr-url }}"
-        Write-Host "::notice title=NuGet release::A PR to release NuGet ${{ steps.slash-command-args.outputs.proj-name }} ${{ steps.slash-command-args.outputs.nuget-version }} was created at $prUrl."
+        Write-Host "::notice title=NuGet release::A PR to release NuGet ${{ steps.slash-command-args.outputs.nuget-id }} ${{ steps.slash-command-args.outputs.nuget-new-version }} was created at $prUrl."
     - name: Set auto merge PR
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
