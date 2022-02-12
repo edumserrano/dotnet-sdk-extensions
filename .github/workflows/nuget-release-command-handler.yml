@@ -77,7 +77,8 @@ jobs:
           $nugetUrl = "https://www.nuget.org/packages/DotNet-Sdk-Extensions-Testing"
         }
         else {
-          throw "Invalid NuGet ID: $nugetId. Valid options are: dotnet-sdk-extensions or dotnet-sdk-extensions-testing"
+          Write-Host "::error::Invalid NuGet ID: $nugetId. Valid options are: dotnet-sdk-extensions or dotnet-sdk-extensions-testing"
+          Exit 1
         }
 
         $nugetOutput = nuget list PackageId:Dotnet-Sdk-Extensions -Source nuget.org -PreRelease
