@@ -88,19 +88,21 @@ jobs:
     - name: Set DotNet.Sdk.Extensions version
       if: steps.slash-command-args.outputs.proj-name == 'dotnet.sdk.extensions'
       run: |
+        $projFilePath = "${{ github.workspace }}/src/DotNet.Sdk.Extensions/DotNet.Sdk.Extensions.csproj"
         $xml=New-Object XML
         $xml.PreserveWhitespace = $true
-        $xml.Load("${{ github.workspace }}/src/DotNet.Sdk.Extensions/DotNet.Sdk.Extensions.csproj")
+        $xml.Load($projFilePath)
         $xml.Project.PropertyGroup.Version = "${{ steps.slash-command-args.outputs.nuget-version }}"
-        $xml.Save("D:\Dev\edumserrano\dot-net-sdk-extensions\src\DotNet.Sdk.Extensions\DotNet.Sdk.Extensions.csproj")
+        $xml.Save($projFilePath)
     - name: Set DotNet.Sdk.Extensions.Testing version
       if: steps.slash-command-args.outputs.proj-name == 'dotnet.sdk.extensions.testing'
       run: |
+        $projFilePath = "${{ github.workspace }}/src/DotNet.Sdk.Extensions/DotNet.Sdk.Extensions.Testing.csproj"
         $xml=New-Object XML
         $xml.PreserveWhitespace = $true
-        $xml.Load("${{ github.workspace }}/src/DotNet.Sdk.Extensions/DotNet.Sdk.Extensions.Testing.csproj")
+        $xml.Load($projFilePath)
         $xml.Project.PropertyGroup.Version = "${{ steps.slash-command-args.outputs.nuget-version }}"
-        $xml.Save("D:\Dev\edumserrano\dot-net-sdk-extensions\src\DotNet.Sdk.Extensions\DotNet.Sdk.Extensions.csproj")
+        $xml.Save($projFilePath)
     - name: Push changes to branch
       id: auto-commit-action
       uses: stefanzweifel/git-auto-commit-action@v4.13.1
