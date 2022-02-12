@@ -77,7 +77,11 @@ jobs:
           $nugetUrl = "https://www.nuget.org/packages/DotNet-Sdk-Extensions-Testing"
         }
 
+        nuget list PackageId:Dotnet-Sdk-Extensions -Source nuget.org -PreRelease
         $nugetOutput = nuget list PackageId:Dotnet-Sdk-Extensions -Source nuget.org -PreRelease
+        Write-Host "==============="
+        Write-Host $nugetOutput
+        Write-Host "==============="
         $nugetCurrentVersion = $nugetOutput.Split(" ")[-1]
 
         Write-Host "nuget-id=$nugetId"
@@ -106,20 +110,38 @@ jobs:
       if: steps.slash-command-args.outputs.nuget-id == 'dotnet-sdk-extensions'
       run: |
         $projFilePath = "${{ github.workspace }}/src/DotNet.Sdk.Extensions/DotNet.Sdk.Extensions.csproj"
+
+        Write-Host "::group::csproj before updating version"
+        cat $projFilePath
+        Write-Host "::endgroup::"
+
         $xml=New-Object XML
         $xml.PreserveWhitespace = $true
         $xml.Load($projFilePath)
         $xml.Project.PropertyGroup.Version = "${{ steps.slash-command-args.outputs.nuget-new-version }}"
         $xml.Save($projFilePath)
+
+        Write-Host "::group::csproj after updating version"
+        cat $projFilePath
+        Write-Host "::endgroup::"
     - name: Set DotNet.Sdk.Extensions.Testing version
       if: steps.slash-command-args.outputs.nuget-id == 'dotnet-sdk-extensions-testing'
       run: |
         $projFilePath = "${{ github.workspace }}/src/DotNet.Sdk.Extensions/DotNet.Sdk.Extensions.Testing.csproj"
+
+        Write-Host "::group::csproj before updating version"
+        cat $projFilePath
+        Write-Host "::endgroup::"
+
         $xml=New-Object XML
         $xml.PreserveWhitespace = $true
         $xml.Load($projFilePath)
         $xml.Project.PropertyGroup.Version = "${{ steps.slash-command-args.outputs.nuget-new-version }}"
         $xml.Save($projFilePath)
+
+        Write-Host "::group::csproj after updating version"
+        cat $projFilePath
+        Write-Host "::endgroup::"
     - name: Push changes to branch
       id: auto-commit-action
       uses: stefanzweifel/git-auto-commit-action@v4.13.1
