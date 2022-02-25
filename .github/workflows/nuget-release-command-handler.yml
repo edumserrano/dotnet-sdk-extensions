@@ -193,7 +193,8 @@ jobs:
 
   release-notes:
     name: Release notes
-    needs: [create-pr]
+    needs: [check-pr]
+    if: needs.check-pr.outputs.can-create-pr == 'true'
     environment: nuget-release-command-handler-workflow
     permissions:
       contents: read
@@ -209,7 +210,8 @@ jobs:
         $clientPayload = @{
                             issueNumber = ${{ github.event.client_payload.github.payload.issue.number }}
                           }
-        $clientPayloadAsJson = $clientPayload | ConvertTo-Json
+        $clientPayloadAsJson = $clientPayload | ConvertTo-Json -Compress
+        Write-Host $clientPayloadAsJson
         Write-Host "::set-output name=payload::$clientPayloadAsJson"
     - name: Debug payload
       run: |
