@@ -199,23 +199,36 @@ jobs:
     permissions:
       contents: read
     runs-on: ubuntu-latest
+    env:
+      RELEASE_NOTES_ARTIFACT_FILEPATH: ${{github.workspace}}/release-notes.md
     steps:
     - name: Dump github context
       env:
         GITHUB_CONTEXT: ${{ toJSON(github) }}
       run: $env:GITHUB_CONTEXT
-    - name: Prepare client payload
-      id: client-payload
-      run: |
-        $clientPayload = @{
-                            issueNumber = ${{ github.event.client_payload.github.payload.issue.number }}
-                          }
-        $clientPayloadAsJson = $clientPayload | ConvertTo-Json -Compress
-        Write-Host "::set-output name=payload::$clientPayloadAsJson"
-    - name: Trigger NuGet release notes workflow
-      uses: peter-evans/repository-dispatch@v1.1.3
+    - name: Find Comment
+      uses: peter-evans/find-comment@v1.3.0
+      id: find-comment
       with:
-        token: ${{ secrets.REPOSITORY_DISPATCH_GH_TOKEN }}
-        repository: ${{ github.repository}}
-        event-type: nuget-release-notes
-        client-payload: '${{ steps.client-payload.outputs.payload }}'
+        issue-number: ${{ github.event.client_payload.github.payload.issue.number }}
+        body-includes: '<!-- release-notes -->'
+    - name: Save release notes to file
+      if: steps.find-comment.outputs.comment-id != 0
+      run: |
+        $releaseNotes = '${{ steps.find-comment.outputs.comment-body }}'
+        $releaseNotes > ${{ env.RELEASE_NOTES_ARTIFACT_FILEPATH }}
+        cat ${{ env.RELEASE_NOTES_ARTIFACT_FILEPATH }}
+    - name: Upload release notes
+      uses: actions/upload-artifact@v2
+      with:
+        name: release-notes
+        path: ${{ env.RELEASE_NOTES_ARTIFACT_FILEPATH }}
+
+# find comment in issue for the release notes
+# create file with the contents of the comment
+# upload the file as a build artifact
+# create status check with link to this workflow run
+# only set auto merge after both release notes and create PR jobs complete
+# delete REPOSITORY_DISPATCH_GH_TOKEN from the nuget-release-command-handler-workflow environment
+
+
