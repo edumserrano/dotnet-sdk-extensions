@@ -211,14 +211,7 @@ jobs:
                             issueNumber = ${{ github.event.client_payload.github.payload.issue.number }}
                           }
         $clientPayloadAsJson = $clientPayload | ConvertTo-Json -Compress
-        Write-Host $clientPayloadAsJson
         Write-Host "::set-output name=payload::$clientPayloadAsJson"
-    - name: Debug payload
-      run: |
-        $clientPayloadAsJson = '${{ steps.client-payload.outputs.payload }}'
-        Write-Host $clientPayloadAsJson
-        $clientPayload = $clientPayloadAsJson | ConvertFrom-Json
-        Write-Host $clientPayload
     - name: Trigger NuGet release notes workflow
       uses: peter-evans/repository-dispatch@v1.1.3
       with:
