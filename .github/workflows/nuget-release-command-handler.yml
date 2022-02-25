@@ -215,7 +215,7 @@ jobs:
         Write-Host "::set-output name=payload::$clientPayloadAsJson"
     - name: Debug payload
       run: |
-        $clientPayloadAsJson = "${{ steps.client-payload.outputs.payload }}"
+        $clientPayloadAsJson = '${{ steps.client-payload.outputs.payload }}'
         Write-Host $clientPayloadAsJson
         $clientPayload = $clientPayloadAsJson | ConvertFrom-Json
         Write-Host $clientPayload
