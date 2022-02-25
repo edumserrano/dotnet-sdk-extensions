@@ -219,11 +219,10 @@ jobs:
         Write-Host $clientPayloadAsJson
         $clientPayload = $clientPayloadAsJson | ConvertFrom-Json
         Write-Host $clientPayload
-
-    # - name: Trigger NuGet publish workflow
-    #   uses: peter-evans/repository-dispatch@v1.1.3
-    #   with:
-    #     token: ${{ secrets.REPOSITORY_DISPATCH_GH_TOKEN }}
-    #     repository: ${{ github.repository}}
-    #     event-type: release-nuget-pr-merged
-    #     client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
+    - name: Trigger NuGet release notes workflow
+      uses: peter-evans/repository-dispatch@v1.1.3
+      with:
+        token: ${{ secrets.REPOSITORY_DISPATCH_GH_TOKEN }}
+        repository: ${{ github.repository}}
+        event-type: nuget-release-notes
+        client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
