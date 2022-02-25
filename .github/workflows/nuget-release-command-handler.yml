@@ -225,4 +225,4 @@ jobs:
         token: ${{ secrets.REPOSITORY_DISPATCH_GH_TOKEN }}
         repository: ${{ github.repository}}
         event-type: nuget-release-notes
-        client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
+        client-payload: '${{ steps.client-payload.outputs.payload }}'
