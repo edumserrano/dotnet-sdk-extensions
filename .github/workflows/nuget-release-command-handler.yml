@@ -57,6 +57,8 @@ jobs:
       contents: write
       pull-requests: write
     runs-on: ubuntu-latest
+    outputs:
+      pr-number: ${{ steps.create-pr.outputs.pr-number }}
     steps:
     - name: Dump github context
       env:
@@ -223,11 +225,17 @@ jobs:
       with:
         name: release-notes
         path: ${{ env.RELEASE_NOTES_ARTIFACT_FILEPATH }}
+    - name: Set PR status
+      uses: ./.github/actions/create-gh-status
+      with:
+        repo: ${{ github.repository }}
+        pr-num: ${{ needs.create-pr.outputs.pr-number }}
+        context: '${{ github.workflow }} / NuGet release notes (${{ github.event_name }})' # mimic format from github
+        state: success
+        description: Waiting for status to be reported
+        target-url: 'https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}'
+        token: ${{ secrets.GITHUB_TOKEN }}
 
-# find comment in issue for the release notes
-# create file with the contents of the comment
-# upload the file as a build artifact
-# create status check with link to this workflow run
 # only set auto merge after both release notes and create PR jobs complete
 # delete REPOSITORY_DISPATCH_GH_TOKEN from the nuget-release-command-handler-workflow environment
 
