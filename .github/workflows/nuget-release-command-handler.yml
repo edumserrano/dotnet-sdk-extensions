@@ -195,8 +195,7 @@ jobs:
 
   release-notes:
     name: Release notes
-    needs: [check-pr]
-    if: needs.check-pr.outputs.can-create-pr == 'true'
+    needs: [create-pr]
     environment: nuget-release-command-handler-workflow
     permissions:
       contents: read
@@ -208,6 +207,8 @@ jobs:
       env:
         GITHUB_CONTEXT: ${{ toJSON(github) }}
       run: $env:GITHUB_CONTEXT
+    - name: Checkout repository
+      uses: actions/checkout@v2
     - name: Find Comment
       uses: peter-evans/find-comment@v1.3.0
       id: find-comment
@@ -238,5 +239,5 @@ jobs:
 
 # only set auto merge after both release notes and create PR jobs complete
 # delete REPOSITORY_DISPATCH_GH_TOKEN from the nuget-release-command-handler-workflow environment
-
+# test if release-notes job runs when a PR already exists
 
