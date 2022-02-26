@@ -187,18 +187,15 @@ jobs:
       run: |
         $prUrl = "${{ steps.create-pr.outputs.pr-url }}"
         Write-Host "::notice title=NuGet release::A PR to release NuGet ${{ steps.slash-command-args.outputs.nuget-id }} ${{ steps.slash-command-args.outputs.nuget-new-version }} was created at $prUrl."
-    - name: Set auto merge PR
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        gh pr merge --auto --squash --delete-branch ${{ steps.create-pr.outputs.pr-number }}
+
 
   release-notes:
-    name: Release notes
+    name: Create release notes
     needs: [create-pr]
     environment: nuget-release-command-handler-workflow
     permissions:
       contents: read
+      statuses: write
     runs-on: ubuntu-latest
     env:
       RELEASE_NOTES_ARTIFACT_FILEPATH: ${{github.workspace}}/release-notes.md
@@ -237,7 +234,26 @@ jobs:
         target-url: 'https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}'
         token: ${{ secrets.GITHUB_TOKEN }}
 
-# only set auto merge after both release notes and create PR jobs complete
+  merge-pr:
+    name: Set PR auto merge
+    needs: [create-pr, release-notes]
+    environment: nuget-release-command-handler-workflow
+    permissions:
+      contents: read
+      pull-requests: write
+    runs-on: ubuntu-latest
+    steps:
+    - name: Dump github context
+      env:
+        GITHUB_CONTEXT: ${{ toJSON(github) }}
+      run: $env:GITHUB_CONTEXT
+    - name: Checkout repository
+    - name: Set PR auto merge
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        gh pr merge --auto --squash --delete-branch ${{ steps.create-pr.outputs.pr-number }}
+
 # delete REPOSITORY_DISPATCH_GH_TOKEN from the nuget-release-command-handler-workflow environment
 # test if release-notes job runs when a PR already exists
 
