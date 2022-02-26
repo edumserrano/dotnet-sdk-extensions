@@ -59,7 +59,6 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       pr-number: ${{ steps.create-pr.outputs.pr-number }}
-      branch-name: ${{ steps.commit-info.outputs.branch-name }}
     steps:
     - name: Dump github context
       env:
@@ -250,15 +249,11 @@ jobs:
       run: $env:GITHUB_CONTEXT
     - name: Checkout repository
       uses: actions/checkout@v2
-    - name: Git checkout PR branch
-      run: |
-        git checkout -b ${{ steps.create-pr.outputs.branch-name }}
     - name: Set PR auto merge
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        gh pr merge --auto --squash --delete-branch ${{ steps.create-pr.outputs.pr-number }}
+        gh pr merge --auto --squash --delete-branch ${{ needs.create-pr.outputs.pr-number }}
 
-# delete REPOSITORY_DISPATCH_GH_TOKEN from the nuget-release-command-handler-workflow environment
 # test if release-notes job runs when a PR already exists
 
