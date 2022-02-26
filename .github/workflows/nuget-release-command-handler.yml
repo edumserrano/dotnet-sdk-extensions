@@ -248,6 +248,7 @@ jobs:
         GITHUB_CONTEXT: ${{ toJSON(github) }}
       run: $env:GITHUB_CONTEXT
     - name: Checkout repository
+      uses: actions/checkout@v2
     - name: Set PR auto merge
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
