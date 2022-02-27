@@ -70,9 +70,13 @@ jobs:
 
         if($nugetId -eq "dotnet-sdk-extensions") {
           $nugetArtifacts = "${{ env.EXTENSIONS_NUGET_BIN_FOLDER }}/*.nupkg,${{ env.EXTENSIONS_NUGET_BIN_FOLDER }}/*.snupkg"
+          $nugetExtensionsRelease = $true
+          $nugetExtensionsTestingRelease = $false
         }
         elseif($nugetId -eq "dotnet-sdk-extensions-testing") {
           $nugetArtifacts = "${{ env.TESTING_EXTENSIONS_BIN_FOLDER }}/*.nupkg,${{ env.TESTING_EXTENSIONS_BIN_FOLDER }}/*.snupkg"
+          $nugetExtensionsRelease = $false
+          $nugetExtensionsTestingRelease = $true
         }
 
         $releaseNotesFile = "./nuget-release-notes.md"
@@ -84,6 +88,8 @@ jobs:
         Write-Host "::set-output name=nuget-artifacts::$nugetArtifacts"
         Write-Host "::set-output name=nuget-release-notes-downloaded::$releaseNotesDownloaded"
         Write-Host "::set-output name=nuget-release-notes-file-path::$releaseNotesFile"
+        Write-Host "::set-output name=nuget-extensions-release::$nugetExtensionsRelease"
+        Write-Host "::set-output name=nuget-extensions-testing-release::$nugetExtensionsTestingRelease"
     - name: Create release with release notes
       if: steps.nuget-release-info.outputs.nuget-release-notes-downloaded == 'true'
       uses: ncipollo/release-action@v1
@@ -105,6 +111,7 @@ jobs:
         token: ${{ secrets.GITHUB_TOKEN }}
     - name: Publish dotnet-sdk-extensions nuget and symbols
       id: dotnet-sdk-extensions-nuget-push
+      if: steps.nuget-release-info.outputs.nuget-extensions-release == 'true'
       uses: ./.github/actions/nuget-push
       with:
         api-key: ${{ secrets.NUGET_PUSH_API_KEY }}
@@ -125,8 +132,9 @@ jobs:
           Write-Host "::notice title=dotnet-sdk-extensions NuGet::Successfully pushed dotnet-sdk-extensions NuGet and symbols to nuget.org. You can find the package at: https://www.nuget.org/packages/DotNet-Sdk-Extensions."
         }
     - name: Publish dotnet-sdk-extensions-testing nuget and symbols
-      uses: ./.github/actions/nuget-push
       id: dotnet-sdk-extensions-testing-nuget-push
+      if: steps.nuget-release-info.outputs.nuget-extensions-testing-release == 'true'
+      uses: ./.github/actions/nuget-push
       with:
         api-key: ${{ secrets.NUGET_PUSH_API_KEY }}
         source: https://api.nuget.org/v3/index.json
