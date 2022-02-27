@@ -140,27 +140,27 @@ jobs:
       run: |
         $nugetInfoPath = "./nuget-info.md"
         $nugetInfoJson = Get-Content $nugetInfoPath
-        Write-Host $nugetInfoJson
         $nugetInfo = $nugetInfoJson | ConvertFrom-Json
 
         $nugetId = $nugetInfo.nugetId
         $nugetVersion = $nugetInfo.nugetVersion
         $nugetUrl = $nugetInfo.nugetUrl
         if($nugetId -eq "'dotnet-sdk-extensions") {
-          $nugetArtifacts = "DotNet.Sdk.Extensions/**/*.nupkg,DotNet.Sdk.Extensions/**/*.snupkg"
+          $nugetArtifacts = "./DotNet.Sdk.Extensions/bin/Release/*"
         }
         elseif($nugetId -eq "'dotnet-sdk-extensions-testing") {
-          $nugetArtifacts = "DotNet.Sdk.Extensions.Testing/**/*.nupkg,DotNet.Sdk.Extensions.Testing/**/*.snupkg"
+          $nugetArtifacts = "./DotNet.Sdk.Extensions.Testing/bin/Release/*"
         }
-
 
         Write-Host "::set-output name=nuget-id::$nugetId"
         Write-Host "::set-output name=nuget-version::$nugetVersion"
         Write-Host "::set-output name=nuget-url::$nugetUrl"
         Write-Host "::set-output name=nuget-artifacts::$nugetArtifacts"
 
+
     - name: Debug
       run: |
+        Write-Host "${{ steps.nuget-release-info.outputs.nuget-artifacts }}"
         ls -R
 
     - uses: ncipollo/release-action@v1
@@ -170,6 +170,7 @@ jobs:
         artifacts: "${{ steps.nuget-release-info.outputs.nuget-artifacts }}"
         bodyFile: ./nuget-release-notes.md
         # omitBody: true
+        generateReleaseNotes: true
         token: ${{ secrets.GITHUB_TOKEN }}
 
     # - name: Checkout repository
