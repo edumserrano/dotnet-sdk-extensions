@@ -20,8 +20,8 @@ jobs:
       contents: write
     runs-on: ubuntu-latest
     env:
-      EXTENSIONS_BIN_FOLDER : ${{ github.workspace }}/DotNet.Sdk.Extensions/bin/Release
-      TESTING_EXTENSIONS_BIN_FOLDER : ${{ github.workspace }}/DotNet.Sdk.Extensions.Testing/bin/Release
+      EXTENSIONS_NUGET_BIN_FOLDER : ${{ github.workspace }}/DotNet.Sdk.Extensions/bin/Release
+      TESTING_EXTENSIONS_NUGET_BIN_FOLDER : ${{ github.workspace }}/DotNet.Sdk.Extensions.Testing/bin/Release
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
@@ -76,7 +76,7 @@ jobs:
           $nugetExtensionsTestingRelease = $false
         }
         elseif($nugetId -eq "dotnet-sdk-extensions-testing") {
-          $nugetArtifacts = "${{ env.TESTING_EXTENSIONS_BIN_FOLDER }}/*.nupkg,${{ env.TESTING_EXTENSIONS_BIN_FOLDER }}/*.snupkg"
+          $nugetArtifacts = "${{ env.TESTING_EXTENSIONS_NUGET_BIN_FOLDER }}/*.nupkg,${{ env.TESTING_EXTENSIONS_NUGET_BIN_FOLDER }}/*.snupkg"
           $nugetExtensionsRelease = $false
           $nugetExtensionsTestingRelease = $true
         }
