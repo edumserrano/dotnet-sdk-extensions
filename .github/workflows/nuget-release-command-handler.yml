@@ -261,4 +261,4 @@ jobs:
         gh pr merge --auto --squash --delete-branch ${{ needs.create-pr.outputs.pr-number }}
 
 # test if release-notes job runs when a PR already exists
-
+# test "Require branches to be up to date before merging" setting by creating a PR then making the PR branch out of date and see if the auto merge stops
