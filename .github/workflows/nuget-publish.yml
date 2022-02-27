@@ -13,7 +13,7 @@ defaults:
 
 jobs:
   release-variables:
-    name: Setup release variables
+    name: Publish NuGet package and symbols
     if: github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'nuget-release')
     environment: nuget-push-workflow
     permissions:
@@ -68,7 +68,6 @@ jobs:
 
         $nugetId = $nugetInfo.nugetId
         $nugetVersion = $nugetInfo.nugetVersion
-        $nugetUrl = $nugetInfo.nugetUrl
 
         if($nugetId -eq "dotnet-sdk-extensions") {
           $nugetArtifacts = "${{ env.EXTENSIONS_NUGET_BIN_FOLDER }}/*.nupkg,${{ env.EXTENSIONS_NUGET_BIN_FOLDER }}/*.snupkg"
@@ -86,13 +85,12 @@ jobs:
 
         Write-Host "::set-output name=nuget-id::$nugetId"
         Write-Host "::set-output name=nuget-version::$nugetVersion"
-        Write-Host "::set-output name=nuget-url::$nugetUrl"
         Write-Host "::set-output name=nuget-artifacts::$nugetArtifacts"
         Write-Host "::set-output name=nuget-release-notes-downloaded::$releaseNotesDownloaded"
         Write-Host "::set-output name=nuget-release-notes-file-path::$releaseNotesFile"
         Write-Host "::set-output name=nuget-extensions-release::$nugetExtensionsRelease"
         Write-Host "::set-output name=nuget-extensions-testing-release::$nugetExtensionsTestingRelease"
-    - name: Create release with release notes
+    - name: Create release with custom release notes
       if: steps.nuget-release-info.outputs.nuget-release-notes-downloaded == 'true'
       uses: ncipollo/release-action@v1
       with:
@@ -102,14 +100,14 @@ jobs:
         bodyFile: ${{ steps.nuget-release-info.outputs.nuget-release-notes-file-path }}
         generateReleaseNotes: true
         token: ${{ secrets.GITHUB_TOKEN }}
-    - name: Create release without release notes
+    - name: Create release without custom release notes
       if: steps.nuget-release-info.outputs.nuget-release-notes-downloaded == 'false'
       uses: ncipollo/release-action@v1
       with:
         commit: ${{ github.event.pull_request.merge_commit_sha }}
         tag: ${{ steps.nuget-release-info.outputs.nuget-id }}-${{ steps.nuget-release-info.outputs.nuget-version }}
         artifacts: "${{ steps.nuget-release-info.outputs.nuget-artifacts }}"
-        omitBody: true
+        generateReleaseNotes: true
         token: ${{ secrets.GITHUB_TOKEN }}
     - name: Publish dotnet-sdk-extensions nuget and symbols
       id: dotnet-sdk-extensions-nuget-push

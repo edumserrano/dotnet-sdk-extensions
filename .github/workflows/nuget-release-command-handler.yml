@@ -223,7 +223,6 @@ jobs:
         $nugetInfo = @{
           nugetId = "${{ needs.create-pr.outputs.nuget-id }}"
           nugetVersion = "${{ needs.create-pr.outputs.nuget-version }}"
-          nugetUrl = "${{ needs.create-pr.outputs.nuget-url }}"
         }
         $nugetInfoAsJson = $nugetInfo | ConvertTo-Json
         $nugetInfoAsJson > ${{ env.NUGET_INFO_ARTIFACT_FILEPATH }}
