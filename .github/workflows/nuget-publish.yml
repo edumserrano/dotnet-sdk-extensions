@@ -117,12 +117,18 @@ jobs:
 
         Write-Host "run-id=$runId"
         Write-Host "::set-output name=run-id::$runId"
-    - name: Download NuGets artifact
+    - name: Download NuGet release info artifact
       uses: dawidd6/action-download-artifact@v2.17.0
       with:
         workflow: nuget-release-command-handler.yml
         name:  nuget-info
         run_id: ${{ steps.release-info.outputs.run-id }}
+    - name: Download NuGet artifact
+      uses: dawidd6/action-download-artifact@v2.17.0
+      with:
+        workflow: build-test-package.yml
+        name:  nuget-packages-and-symbols
+        pr: ${{ github.event.pull_request.number }}
     - name: Debug
       run: |
         ls -R
