@@ -87,7 +87,7 @@ jobs:
     if: github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'nuget-release')
     environment: nuget-push-workflow
     permissions:
-      contents: read
+      contents: write
     runs-on: ubuntu-latest
     env:
       EXTENSIONS_BIN_FOLDER : ${{ github.workspace }}/DotNet.Sdk.Extensions/bin/Release
@@ -123,15 +123,54 @@ jobs:
         workflow: nuget-release-command-handler.yml
         name:  nuget-info
         run_id: ${{ steps.release-info.outputs.run-id }}
+    - name: Download NuGet release notes artifact
+      uses: dawidd6/action-download-artifact@v2.17.0
+      with:
+        workflow: nuget-release-command-handler.yml
+        name:  nuget-release-notes
+        run_id: ${{ steps.release-info.outputs.run-id }}
     - name: Download NuGet artifact
       uses: dawidd6/action-download-artifact@v2.17.0
       with:
         workflow: build-test-package.yml
         name:  nuget-packages-and-symbols
         pr: ${{ github.event.pull_request.number }}
+    - name: Read NuGet release info
+      id: nuget-release-info
+      run: |
+        $nugetInfoPath = "./nuget-info.md"
+        $nugetInfoJson = Get-Content $nugetInfoPath
+        Write-Host $nugetInfoJson
+        $nugetInfo = $nugetInfoJson | ConvertFrom-Json
+
+        $nugetId = $nugetInfo.nugetId
+        $nugetVersion = $nugetInfo.nugetVersion
+        $nugetUrl = $nugetInfo.nugetUrl
+        if($nugetId -eq "'dotnet-sdk-extensions") {
+          $nugetArtifacts = "DotNet.Sdk.Extensions/**/*.nupkg,DotNet.Sdk.Extensions/**/*.snupkg"
+        }
+        elseif($nugetId -eq "'dotnet-sdk-extensions-testing") {
+          $nugetArtifacts = "DotNet.Sdk.Extensions.Testing/**/*.nupkg,DotNet.Sdk.Extensions.Testing/**/*.snupkg"
+        }
+
+
+        Write-Host "::set-output name=nuget-id::$nugetId"
+        Write-Host "::set-output name=nuget-version::$nugetVersion"
+        Write-Host "::set-output name=nuget-url::$nugetUrl"
+        Write-Host "::set-output name=nuget-artifacts::$nugetArtifacts"
+
     - name: Debug
       run: |
         ls -R
+
+    - uses: ncipollo/release-action@v1
+      with:
+        commit: ${{ github.event.pull_request.merge_commit_sha }}
+        tag: ${{ steps.nuget-release-info.outputs.nuget-id }}-${{ steps.nuget-release-info.outputs.nuget-version }}
+        artifacts: "${{ steps.nuget-release-info.outputs.nuget-artifacts }}"
+        bodyFile: ./nuget-release-notes.md
+        # omitBody: true
+        token: ${{ secrets.GITHUB_TOKEN }}
 
     # - name: Checkout repository
     #   uses: actions/checkout@v2

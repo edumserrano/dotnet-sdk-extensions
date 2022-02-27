@@ -195,7 +195,7 @@ jobs:
       statuses: write
     runs-on: ubuntu-latest
     env:
-      RELEASE_NOTES_ARTIFACT_FILEPATH: ${{github.workspace}}/release-notes.md
+      RELEASE_NOTES_ARTIFACT_FILEPATH: ${{github.workspace}}/nuget-release-notes.md
       NUGET_INFO_ARTIFACT_FILEPATH: ${{github.workspace}}/nuget-info.md
     steps:
     - name: Checkout repository
@@ -216,7 +216,7 @@ jobs:
       if: steps.find-comment.outputs.comment-id != 0
       uses: actions/upload-artifact@v2
       with:
-        name: release-notes
+        name: nuget-release-notes
         path: ${{ env.RELEASE_NOTES_ARTIFACT_FILEPATH }}
     - name: Save NuGet info to file
       run: |
