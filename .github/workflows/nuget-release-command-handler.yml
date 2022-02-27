@@ -58,6 +58,9 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       pr-number: ${{ steps.create-pr.outputs.pr-number }}
+      nuget-id: ${{ steps.slash-command-args.outputs.nuget-id }}
+      nuget-version: ${{ steps.slash-command-args.outputs.nuget-new-version }}
+      nuget-url: ${{ steps.slash-command-args.outputs.nuget-url }}
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
@@ -183,8 +186,8 @@ jobs:
         $prUrl = "${{ steps.create-pr.outputs.pr-url }}"
         Write-Host "::notice title=NuGet release::A PR to release NuGet ${{ steps.slash-command-args.outputs.nuget-id }} ${{ steps.slash-command-args.outputs.nuget-new-version }} was created at $prUrl."
 
-  release-notes:
-    name: Create release notes
+  release-info:
+    name: Upload release info
     needs: [create-pr]
     environment: nuget-release-command-handler-workflow
     permissions:
@@ -193,6 +196,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       RELEASE_NOTES_ARTIFACT_FILEPATH: ${{github.workspace}}/release-notes.md
+      NUGET_INFO_ARTIFACT_FILEPATH: ${{github.workspace}}/nuget-info.md
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
@@ -209,16 +213,32 @@ jobs:
         $releaseNotes > ${{ env.RELEASE_NOTES_ARTIFACT_FILEPATH }}
         cat ${{ env.RELEASE_NOTES_ARTIFACT_FILEPATH }}
     - name: Upload release notes
+      if: steps.find-comment.outputs.comment-id != 0
       uses: actions/upload-artifact@v2
       with:
         name: release-notes
         path: ${{ env.RELEASE_NOTES_ARTIFACT_FILEPATH }}
+    - name: Save NuGet info to file
+      run: |
+        $nugetInfo = @{
+          nugetId = "${{ needs.create-pr.outputs.nuget-id }}"
+          nugetVersion = "${{ needs.create-pr.outputs.nuget-version }}"
+          nugetUrl = "${{ needs.create-pr.outputs.nuget-url }}"
+        }
+        $nugetInfoAsJson = $nugetInfo | ConvertTo-Json
+        $nugetInfoAsJson > ${{ env.NUGET_INFO_ARTIFACT_FILEPATH }}
+        cat ${{ env.NUGET_INFO_ARTIFACT_FILEPATH }}
+    - name: Upload NuGet info
+      uses: actions/upload-artifact@v2
+      with:
+        name: nuget-info
+        path: ${{ env.NUGET_INFO_ARTIFACT_FILEPATH }}
     - name: Set PR status
       uses: ./.github/actions/create-gh-status
       with:
         repo: ${{ github.repository }}
         pr-num: ${{ needs.create-pr.outputs.pr-number }}
-        context: '${{ github.workflow }} / NuGet release notes (${{ github.event_name }})' # mimic format from github
+        context: '${{ github.workflow }} / NuGet release info (${{ github.event_name }})' # mimic format from github
         state: success
         description: Successful
         target-url: 'https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}'
@@ -226,7 +246,7 @@ jobs:
 
   merge-pr:
     name: Set PR auto merge
-    needs: [create-pr, release-notes]
+    needs: [create-pr, release-info]
     environment: nuget-release-command-handler-workflow
     permissions:
       contents: write
