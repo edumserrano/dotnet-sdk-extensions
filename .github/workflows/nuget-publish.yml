@@ -145,10 +145,10 @@ jobs:
         $nugetId = $nugetInfo.nugetId
         $nugetVersion = $nugetInfo.nugetVersion
         $nugetUrl = $nugetInfo.nugetUrl
-        if($nugetId -eq "'dotnet-sdk-extensions") {
+        if($nugetId -eq "dotnet-sdk-extensions") {
           $nugetArtifacts = "./DotNet.Sdk.Extensions/bin/Release/*"
         }
-        elseif($nugetId -eq "'dotnet-sdk-extensions-testing") {
+        elseif($nugetId -eq "dotnet-sdk-extensions-testing") {
           $nugetArtifacts = "./DotNet.Sdk.Extensions.Testing/bin/Release/*"
         }
 
