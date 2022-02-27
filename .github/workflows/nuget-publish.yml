@@ -25,62 +25,65 @@ jobs:
       TESTING_EXTENSIONS_BIN_FOLDER : ${{ github.workspace }}/DotNet.Sdk.Extensions.Testing/bin/Release
       NUGET_ARTIFACT_NAME : nuget-packages-and-symbols
     steps:
+    - name: Dump github context
+      env:
+        GITHUB_CONTEXT: ${{ toJSON(github) }}
     # Some of the steps below provide feedback on the test run and I want to run them even if some of the previous steps failed. For that
     # I need:
     # - the 'always()' condition: without it the step only runs if the job is successful, it's like the 'if' condition on any step always has a hidden '&& success()' clause.
     # - the '(steps.<step-id>.conclusion == 'success' || steps.<step-id>.conclusion == 'failure')' condition: to run the steps only if the <step-id> step has ran, regardless
     # if it failed or not. It won't run if the <step-id> step has been skipped or cancelled.
-    - name: Checkout repository
-      uses: actions/checkout@v2
-    - name: Download NuGets artifact
-      uses: dawidd6/action-download-artifact@v2.17.0
-      with:
-        workflow: build-test-package.yml
-        name:  nuget-packages-and-symbols
-        branch: main
-        event: push
-    - name: Publish DotNet.Sdk.Extensions nuget and symbols
-      id: dotnet-sdk-extensions-nuget-push
-      uses: ./.github/actions/nuget-push
-      with:
-        api-key: ${{ secrets.NUGET_PUSH_API_KEY }}
-        source: https://api.nuget.org/v3/index.json
-        working-directory: ${{ env.EXTENSIONS_BIN_FOLDER }}
-    - name: Log DotNet.Sdk.Extensions NuGet push info
-      if: (steps.dotnet-sdk-extensions-nuget-push.conclusion == 'success' || steps.dotnet-sdk-extensions-nuget-push.conclusion == 'failure') && always()
-      run: |
-        $pushStepConclusion = '${{ steps.dotnet-sdk-extensions-nuget-push.conclusion }}'
-        $nugetAlreadyExists = [System.Convert]::ToBoolean("${{ steps.dotnet-sdk-extensions-nuget-push.outputs.nuget-already-exists }}")
-        if($nugetAlreadyExists) {
-          Write-Host "::notice title=DotNet.Sdk.Extensions NuGet::DotNet.Sdk.Extensions NuGet was NOT published to nuget.org because the version to be pushed already exists."
-        }
-        elseif($pushStepConclusion -eq 'failure') {
-          Write-Host "::error title=DotNet.Sdk.Extensions NuGet::Failed to push DotNet.Sdk.Extensions NuGet and symbols."
-        }
-        elseif($pushStepConclusion -eq 'success') {
-          Write-Host "::notice title=DotNet.Sdk.Extensions NuGet::Successfully pushed DotNet.Sdk.Extensions NuGet and symbols to nuget.org. You can find the package at: https://www.nuget.org/packages/DotNet-Sdk-Extensions."
-        }
-    - name: Publish DotNet.Sdk.Extensions.Testing nuget and symbols
-      uses: ./.github/actions/nuget-push
-      id: dotnet-sdk-extensions-testing-nuget-push
-      with:
-        api-key: ${{ secrets.NUGET_PUSH_API_KEY }}
-        source: https://api.nuget.org/v3/index.json
-        working-directory: ${{ env.TESTING_EXTENSIONS_BIN_FOLDER }}
-    - name: Log DotNet.Sdk.Extensions.Testing NuGet push info
-      if: (steps.dotnet-sdk-extensions-testing-nuget-push.conclusion == 'success' || steps.dotnet-sdk-extensions-testing-nuget-push.conclusion == 'failure') && always()
-      run: |
-        $pushStepConclusion = '${{ steps.dotnet-sdk-extensions-testing-nuget-push.conclusion }}'
-        $nugetAlreadyExists = [System.Convert]::ToBoolean("${{ steps.dotnet-sdk-extensions-testing-nuget-push.outputs.nuget-already-exists }}")
-        if($nugetAlreadyExists) {
-          Write-Host "::notice title=DotNet.Sdk.Extensions.Testing NuGet::DotNet.Sdk.Extensions.Testing NuGet was NOT published to nuget.org because the version to be pushed already exists."
-        }
-        elseif($pushStepConclusion -eq 'failure') {
-          Write-Host "::error title=DotNet.Sdk.Extensions.Testing NuGet::Failed to push DotNet.Sdk.Extensions.Testing NuGet and symbols."
-        }
-        elseif($pushStepConclusion -eq 'success') {
-          Write-Host "::notice title=DotNet.Sdk.Extensions.Testing NuGet::Successfully pushed DotNet.Sdk.Extensions.Testing NuGet and symbols to nuget.org. You can find the package at: https://www.nuget.org/packages/DotNet-Sdk-Extensions-Testing."
-        }
+    # - name: Checkout repository
+    #   uses: actions/checkout@v2
+    # - name: Download NuGets artifact
+    #   uses: dawidd6/action-download-artifact@v2.17.0
+    #   with:
+    #     workflow: build-test-package.yml
+    #     name:  nuget-packages-and-symbols
+    #     branch: main
+    #     event: push
+    # - name: Publish DotNet.Sdk.Extensions nuget and symbols
+    #   id: dotnet-sdk-extensions-nuget-push
+    #   uses: ./.github/actions/nuget-push
+    #   with:
+    #     api-key: ${{ secrets.NUGET_PUSH_API_KEY }}
+    #     source: https://api.nuget.org/v3/index.json
+    #     working-directory: ${{ env.EXTENSIONS_BIN_FOLDER }}
+    # - name: Log DotNet.Sdk.Extensions NuGet push info
+    #   if: (steps.dotnet-sdk-extensions-nuget-push.conclusion == 'success' || steps.dotnet-sdk-extensions-nuget-push.conclusion == 'failure') && always()
+    #   run: |
+    #     $pushStepConclusion = '${{ steps.dotnet-sdk-extensions-nuget-push.conclusion }}'
+    #     $nugetAlreadyExists = [System.Convert]::ToBoolean("${{ steps.dotnet-sdk-extensions-nuget-push.outputs.nuget-already-exists }}")
+    #     if($nugetAlreadyExists) {
+    #       Write-Host "::notice title=DotNet.Sdk.Extensions NuGet::DotNet.Sdk.Extensions NuGet was NOT published to nuget.org because the version to be pushed already exists."
+    #     }
+    #     elseif($pushStepConclusion -eq 'failure') {
+    #       Write-Host "::error title=DotNet.Sdk.Extensions NuGet::Failed to push DotNet.Sdk.Extensions NuGet and symbols."
+    #     }
+    #     elseif($pushStepConclusion -eq 'success') {
+    #       Write-Host "::notice title=DotNet.Sdk.Extensions NuGet::Successfully pushed DotNet.Sdk.Extensions NuGet and symbols to nuget.org. You can find the package at: https://www.nuget.org/packages/DotNet-Sdk-Extensions."
+    #     }
+    # - name: Publish DotNet.Sdk.Extensions.Testing nuget and symbols
+    #   uses: ./.github/actions/nuget-push
+    #   id: dotnet-sdk-extensions-testing-nuget-push
+    #   with:
+    #     api-key: ${{ secrets.NUGET_PUSH_API_KEY }}
+    #     source: https://api.nuget.org/v3/index.json
+    #     working-directory: ${{ env.TESTING_EXTENSIONS_BIN_FOLDER }}
+    # - name: Log DotNet.Sdk.Extensions.Testing NuGet push info
+    #   if: (steps.dotnet-sdk-extensions-testing-nuget-push.conclusion == 'success' || steps.dotnet-sdk-extensions-testing-nuget-push.conclusion == 'failure') && always()
+    #   run: |
+    #     $pushStepConclusion = '${{ steps.dotnet-sdk-extensions-testing-nuget-push.conclusion }}'
+    #     $nugetAlreadyExists = [System.Convert]::ToBoolean("${{ steps.dotnet-sdk-extensions-testing-nuget-push.outputs.nuget-already-exists }}")
+    #     if($nugetAlreadyExists) {
+    #       Write-Host "::notice title=DotNet.Sdk.Extensions.Testing NuGet::DotNet.Sdk.Extensions.Testing NuGet was NOT published to nuget.org because the version to be pushed already exists."
+    #     }
+    #     elseif($pushStepConclusion -eq 'failure') {
+    #       Write-Host "::error title=DotNet.Sdk.Extensions.Testing NuGet::Failed to push DotNet.Sdk.Extensions.Testing NuGet and symbols."
+    #     }
+    #     elseif($pushStepConclusion -eq 'success') {
+    #       Write-Host "::notice title=DotNet.Sdk.Extensions.Testing NuGet::Successfully pushed DotNet.Sdk.Extensions.Testing NuGet and symbols to nuget.org. You can find the package at: https://www.nuget.org/packages/DotNet-Sdk-Extensions-Testing."
+    #     }
 
   on-pr-merge:
     name: Publish NuGet packages and symbols
@@ -94,11 +97,6 @@ jobs:
       TESTING_EXTENSIONS_BIN_FOLDER : ${{ github.workspace }}/DotNet.Sdk.Extensions.Testing/bin/Release
       NUGET_ARTIFACT_NAME : nuget-packages-and-symbols
     steps:
-    # Some of the steps below provide feedback on the test run and I want to run them even if some of the previous steps failed. For that
-    # I need:
-    # - the 'always()' condition: without it the step only runs if the job is successful, it's like the 'if' condition on any step always has a hidden '&& success()' clause.
-    # - the '(steps.<step-id>.conclusion == 'success' || steps.<step-id>.conclusion == 'failure')' condition: to run the steps only if the <step-id> step has ran, regardless
-    # if it failed or not. It won't run if the <step-id> step has been skipped or cancelled.
     - name: Dump github context
       env:
         GITHUB_CONTEXT: ${{ toJSON(github) }}
