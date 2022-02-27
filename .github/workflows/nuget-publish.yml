@@ -3,7 +3,6 @@
 name: Publish NuGet packages
 
 on:
-  workflow_dispatch:
   pull_request:
     branches: [ main ]
     types: [ closed ]
@@ -13,80 +12,8 @@ defaults:
     shell: pwsh
 
 jobs:
-  on-dispatch:
-    name: Publish NuGet packages and symbols
-    if: github.event.pull_request.merged != true
-    environment: nuget-push-workflow
-    permissions:
-      contents: read
-    runs-on: ubuntu-latest
-    env:
-      EXTENSIONS_BIN_FOLDER : ${{ github.workspace }}/DotNet.Sdk.Extensions/bin/Release
-      TESTING_EXTENSIONS_BIN_FOLDER : ${{ github.workspace }}/DotNet.Sdk.Extensions.Testing/bin/Release
-      NUGET_ARTIFACT_NAME : nuget-packages-and-symbols
-    steps:
-    - name: Dump github context
-      env:
-        GITHUB_CONTEXT: ${{ toJSON(github) }}
-    # Some of the steps below provide feedback on the test run and I want to run them even if some of the previous steps failed. For that
-    # I need:
-    # - the 'always()' condition: without it the step only runs if the job is successful, it's like the 'if' condition on any step always has a hidden '&& success()' clause.
-    # - the '(steps.<step-id>.conclusion == 'success' || steps.<step-id>.conclusion == 'failure')' condition: to run the steps only if the <step-id> step has ran, regardless
-    # if it failed or not. It won't run if the <step-id> step has been skipped or cancelled.
-    # - name: Checkout repository
-    #   uses: actions/checkout@v2
-    # - name: Download NuGets artifact
-    #   uses: dawidd6/action-download-artifact@v2.17.0
-    #   with:
-    #     workflow: build-test-package.yml
-    #     name:  nuget-packages-and-symbols
-    #     branch: main
-    #     event: push
-    # - name: Publish DotNet.Sdk.Extensions nuget and symbols
-    #   id: dotnet-sdk-extensions-nuget-push
-    #   uses: ./.github/actions/nuget-push
-    #   with:
-    #     api-key: ${{ secrets.NUGET_PUSH_API_KEY }}
-    #     source: https://api.nuget.org/v3/index.json
-    #     working-directory: ${{ env.EXTENSIONS_BIN_FOLDER }}
-    # - name: Log DotNet.Sdk.Extensions NuGet push info
-    #   if: (steps.dotnet-sdk-extensions-nuget-push.conclusion == 'success' || steps.dotnet-sdk-extensions-nuget-push.conclusion == 'failure') && always()
-    #   run: |
-    #     $pushStepConclusion = '${{ steps.dotnet-sdk-extensions-nuget-push.conclusion }}'
-    #     $nugetAlreadyExists = [System.Convert]::ToBoolean("${{ steps.dotnet-sdk-extensions-nuget-push.outputs.nuget-already-exists }}")
-    #     if($nugetAlreadyExists) {
-    #       Write-Host "::notice title=DotNet.Sdk.Extensions NuGet::DotNet.Sdk.Extensions NuGet was NOT published to nuget.org because the version to be pushed already exists."
-    #     }
-    #     elseif($pushStepConclusion -eq 'failure') {
-    #       Write-Host "::error title=DotNet.Sdk.Extensions NuGet::Failed to push DotNet.Sdk.Extensions NuGet and symbols."
-    #     }
-    #     elseif($pushStepConclusion -eq 'success') {
-    #       Write-Host "::notice title=DotNet.Sdk.Extensions NuGet::Successfully pushed DotNet.Sdk.Extensions NuGet and symbols to nuget.org. You can find the package at: https://www.nuget.org/packages/DotNet-Sdk-Extensions."
-    #     }
-    # - name: Publish DotNet.Sdk.Extensions.Testing nuget and symbols
-    #   uses: ./.github/actions/nuget-push
-    #   id: dotnet-sdk-extensions-testing-nuget-push
-    #   with:
-    #     api-key: ${{ secrets.NUGET_PUSH_API_KEY }}
-    #     source: https://api.nuget.org/v3/index.json
-    #     working-directory: ${{ env.TESTING_EXTENSIONS_BIN_FOLDER }}
-    # - name: Log DotNet.Sdk.Extensions.Testing NuGet push info
-    #   if: (steps.dotnet-sdk-extensions-testing-nuget-push.conclusion == 'success' || steps.dotnet-sdk-extensions-testing-nuget-push.conclusion == 'failure') && always()
-    #   run: |
-    #     $pushStepConclusion = '${{ steps.dotnet-sdk-extensions-testing-nuget-push.conclusion }}'
-    #     $nugetAlreadyExists = [System.Convert]::ToBoolean("${{ steps.dotnet-sdk-extensions-testing-nuget-push.outputs.nuget-already-exists }}")
-    #     if($nugetAlreadyExists) {
-    #       Write-Host "::notice title=DotNet.Sdk.Extensions.Testing NuGet::DotNet.Sdk.Extensions.Testing NuGet was NOT published to nuget.org because the version to be pushed already exists."
-    #     }
-    #     elseif($pushStepConclusion -eq 'failure') {
-    #       Write-Host "::error title=DotNet.Sdk.Extensions.Testing NuGet::Failed to push DotNet.Sdk.Extensions.Testing NuGet and symbols."
-    #     }
-    #     elseif($pushStepConclusion -eq 'success') {
-    #       Write-Host "::notice title=DotNet.Sdk.Extensions.Testing NuGet::Successfully pushed DotNet.Sdk.Extensions.Testing NuGet and symbols to nuget.org. You can find the package at: https://www.nuget.org/packages/DotNet-Sdk-Extensions-Testing."
-    #     }
-
-  on-pr-merge:
-    name: Publish NuGet packages and symbols
+  release-variables:
+    name: Setup release variables
     if: github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'nuget-release')
     environment: nuget-push-workflow
     permissions:
@@ -95,13 +22,8 @@ jobs:
     env:
       EXTENSIONS_BIN_FOLDER : ${{ github.workspace }}/DotNet.Sdk.Extensions/bin/Release
       TESTING_EXTENSIONS_BIN_FOLDER : ${{ github.workspace }}/DotNet.Sdk.Extensions.Testing/bin/Release
-      NUGET_ARTIFACT_NAME : nuget-packages-and-symbols
     steps:
-    - name: Dump github context
-      env:
-        GITHUB_CONTEXT: ${{ toJSON(github) }}
-      run: $env:GITHUB_CONTEXT
-    - name: Get release info status
+    - name: Get release info run id
       id: release-info
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -142,15 +64,15 @@ jobs:
         $nugetInfoJson = Get-Content $nugetInfoPath
         $nugetInfo = $nugetInfoJson | ConvertFrom-Json
 
-        $nugetId = $nugetInfo.nugetId.ToLower()
+        $nugetId = $nugetInfo.nugetId
         $nugetVersion = $nugetInfo.nugetVersion
         $nugetUrl = $nugetInfo.nugetUrl
 
         if($nugetId -eq "dotnet-sdk-extensions") {
-          $nugetArtifacts = "./DotNet.Sdk.Extensions/**/*.nupkg,DotNet.Sdk.Extensions/**/*.snupkg"
+          $nugetArtifacts = "${{ env.EXTENSIONS_NUGET_BIN_FOLDER }}/*.nupkg,${{ env.EXTENSIONS_NUGET_BIN_FOLDER }}/*.snupkg"
         }
         elseif($nugetId -eq "dotnet-sdk-extensions-testing") {
-          $nugetArtifacts = "./DotNet.Sdk.Extensions.Testing/**/*.nupkg,DotNet.Sdk.Extensions.Testing/**/*.snupkg"
+          $nugetArtifacts = "${{ env.TESTING_EXTENSIONS_BIN_FOLDER }}/*.nupkg,${{ env.TESTING_EXTENSIONS_BIN_FOLDER }}/*.snupkg"
         }
 
         $releaseNotesFile = "./nuget-release-notes.md"
@@ -160,30 +82,20 @@ jobs:
         Write-Host "::set-output name=nuget-version::$nugetVersion"
         Write-Host "::set-output name=nuget-url::$nugetUrl"
         Write-Host "::set-output name=nuget-artifacts::$nugetArtifacts"
-        Write-Host "::set-output name=release-notes-downloaded::$releaseNotesDownloaded"
-    - name: Check release notes artifact download
-      id: release-notes-download-check
-      run: |
-        if(Test-Path -Path ./${{ env.TEST_RESULTS_ARTIFACT_NAME }}){
-          Write-Host "::set-output name=artifact-downloaded::true"
-          Write-Host "Set output variable artifact-downloaded to true"
-        }
-        else{
-          Write-Host "::set-output name=artifact-downloaded::false"
-          Write-Host "Set output variable artifact-downloaded to false"
-        }
+        Write-Host "::set-output name=nuget-release-notes-downloaded::$releaseNotesDownloaded"
+        Write-Host "::set-output name=nuget-release-notes-file-path::$releaseNotesFile"
     - name: Create release with release notes
-      if: steps.nuget-release-info.outputs.release-notes-downloaded == 'true'
+      if: steps.nuget-release-info.outputs.nuget-release-notes-downloaded == 'true'
       uses: ncipollo/release-action@v1
       with:
         commit: ${{ github.event.pull_request.merge_commit_sha }}
         tag: ${{ steps.nuget-release-info.outputs.nuget-id }}-${{ steps.nuget-release-info.outputs.nuget-version }}
         artifacts: "${{ steps.nuget-release-info.outputs.nuget-artifacts }}"
-        bodyFile: ./nuget-release-notes.md
+        bodyFile: ${{ steps.nuget-release-info.outputs.nuget-release-notes-file-path }}
         generateReleaseNotes: true
         token: ${{ secrets.GITHUB_TOKEN }}
     - name: Create release without release notes
-      if: steps.nuget-release-info.outputs.release-notes-downloaded == 'false'
+      if: steps.nuget-release-info.outputs.nuget-release-notes-downloaded == 'false'
       uses: ncipollo/release-action@v1
       with:
         commit: ${{ github.event.pull_request.merge_commit_sha }}
@@ -191,96 +103,45 @@ jobs:
         artifacts: "${{ steps.nuget-release-info.outputs.nuget-artifacts }}"
         omitBody: true
         token: ${{ secrets.GITHUB_TOKEN }}
-
-    # - name: Checkout repository
-    #   uses: actions/checkout@v2
-    # - name: Download NuGets artifact
-    #   uses: dawidd6/action-download-artifact@v2.17.0
-    #   with:
-    #     workflow: build-test-package.yml
-    #     name:  nuget-packages-and-symbols
-    #     branch: main
-    #     event: push
-    # - uses: ncipollo/release-action@v1
-    #   with:
-    #     commit: ${{ github.event.pull_request.merge_commit_sha }}
-    #     tag:
-    #     artifacts: "release.tar.gz,foo/*.txt"
-    #     # bodyFile: "body.md"
-    #     token: ${{ secrets.GITHUB_TOKEN }}
-
-    # - name: Publish DotNet.Sdk.Extensions nuget and symbols
-    #   id: dotnet-sdk-extensions-nuget-push
-    #   uses: ./.github/actions/nuget-push
-    #   with:
-    #     api-key: ${{ secrets.NUGET_PUSH_API_KEY }}
-    #     source: https://api.nuget.org/v3/index.json
-    #     working-directory: ${{ env.EXTENSIONS_BIN_FOLDER }}
-    # - name: Log DotNet.Sdk.Extensions NuGet push info
-    #   if: (steps.dotnet-sdk-extensions-nuget-push.conclusion == 'success' || steps.dotnet-sdk-extensions-nuget-push.conclusion == 'failure') && always()
-    #   run: |
-    #     $pushStepConclusion = '${{ steps.dotnet-sdk-extensions-nuget-push.conclusion }}'
-    #     $nugetAlreadyExists = [System.Convert]::ToBoolean("${{ steps.dotnet-sdk-extensions-nuget-push.outputs.nuget-already-exists }}")
-    #     if($nugetAlreadyExists) {
-    #       Write-Host "::notice title=DotNet.Sdk.Extensions NuGet::DotNet.Sdk.Extensions NuGet was NOT published to nuget.org because the version to be pushed already exists."
-    #     }
-    #     elseif($pushStepConclusion -eq 'failure') {
-    #       Write-Host "::error title=DotNet.Sdk.Extensions NuGet::Failed to push DotNet.Sdk.Extensions NuGet and symbols."
-    #     }
-    #     elseif($pushStepConclusion -eq 'success') {
-    #       Write-Host "::notice title=DotNet.Sdk.Extensions NuGet::Successfully pushed DotNet.Sdk.Extensions NuGet and symbols to nuget.org. You can find the package at: https://www.nuget.org/packages/DotNet-Sdk-Extensions."
-    #     }
-    # - name: Publish DotNet.Sdk.Extensions.Testing nuget and symbols
-    #   uses: ./.github/actions/nuget-push
-    #   id: dotnet-sdk-extensions-testing-nuget-push
-    #   with:
-    #     api-key: ${{ secrets.NUGET_PUSH_API_KEY }}
-    #     source: https://api.nuget.org/v3/index.json
-    #     working-directory: ${{ env.TESTING_EXTENSIONS_BIN_FOLDER }}
-    # - name: Log DotNet.Sdk.Extensions.Testing NuGet push info
-    #   if: (steps.dotnet-sdk-extensions-testing-nuget-push.conclusion == 'success' || steps.dotnet-sdk-extensions-testing-nuget-push.conclusion == 'failure') && always()
-    #   run: |
-    #     $pushStepConclusion = '${{ steps.dotnet-sdk-extensions-testing-nuget-push.conclusion }}'
-    #     $nugetAlreadyExists = [System.Convert]::ToBoolean("${{ steps.dotnet-sdk-extensions-testing-nuget-push.outputs.nuget-already-exists }}")
-    #     if($nugetAlreadyExists) {
-    #       Write-Host "::notice title=DotNet.Sdk.Extensions.Testing NuGet::DotNet.Sdk.Extensions.Testing NuGet was NOT published to nuget.org because the version to be pushed already exists."
-    #     }
-    #     elseif($pushStepConclusion -eq 'failure') {
-    #       Write-Host "::error title=DotNet.Sdk.Extensions.Testing NuGet::Failed to push DotNet.Sdk.Extensions.Testing NuGet and symbols."
-    #     }
-    #     elseif($pushStepConclusion -eq 'success') {
-    #       Write-Host "::notice title=DotNet.Sdk.Extensions.Testing NuGet::Successfully pushed DotNet.Sdk.Extensions.Testing NuGet and symbols to nuget.org. You can find the package at: https://www.nuget.org/packages/DotNet-Sdk-Extensions-Testing."
-    #     }
-
-
-# on pr merged, list all status
-# get run id from the build-test-package.yml workflow to download NuGet artifacts
-# get run id from the nuget-release-command-handler.yml workflow to download the release notes
-# get commit from ${{ github.event.pull_request.merge_commit_sha }}
-# disable workflow_dispatch trigger ???
-
-  # pull_request:
-  #   branches: [ main ]
-  #   types: [ closed ]
-
-
-    # - name: Dump github context
-    #   env:
-    #     GITHUB_CONTEXT: ${{ toJSON(github) }}
-    #   run: $env:GITHUB_CONTEXT
-
-    # if: github.event.pull_request.merged == true
-
-    # - uses: ncipollo/release-action@v1
-    #   with:
-    #     commit: ${{ github.event.pull_request.merge_commit_sha }}
-    #     tag:
-    #     artifacts: "release.tar.gz,foo/*.txt"
-    #     # bodyFile: "body.md"
-    #     token: ${{ secrets.GITHUB_TOKEN }}
-    # - name: Trigger NuGet publish workflow
-    #   uses: peter-evans/repository-dispatch@v1.1.3
-    #   with:
-    #     token: ${{ secrets.REPOSITORY_DISPATCH_GH_TOKEN }}
-    #     repository: ${{ github.repository}}
-    #     event-type: release-nuget-pr-merged
+    - name: Publish dotnet-sdk-extensions nuget and symbols
+      id: dotnet-sdk-extensions-nuget-push
+      uses: ./.github/actions/nuget-push
+      with:
+        api-key: ${{ secrets.NUGET_PUSH_API_KEY }}
+        source: https://api.nuget.org/v3/index.json
+        working-directory: ${{ env.EXTENSIONS_NUGET_BIN_FOLDER }}
+    - name: Log dotnet-sdk-extensions NuGet push info
+      if: (steps.dotnet-sdk-extensions-nuget-push.conclusion == 'success' || steps.dotnet-sdk-extensions-nuget-push.conclusion == 'failure') && always()
+      run: |
+        $pushStepConclusion = '${{ steps.dotnet-sdk-extensions-nuget-push.conclusion }}'
+        $nugetAlreadyExists = [System.Convert]::ToBoolean("${{ steps.dotnet-sdk-extensions-nuget-push.outputs.nuget-already-exists }}")
+        if($nugetAlreadyExists) {
+          Write-Host "::notice title=dotnet-sdk-extensions NuGet::dotnet-sdk-extensions NuGet was NOT published to nuget.org because the version to be pushed already exists."
+        }
+        elseif($pushStepConclusion -eq 'failure') {
+          Write-Host "::error title=dotnet-sdk-extensions NuGet::Failed to push dotnet-sdk-extensions NuGet and symbols."
+        }
+        elseif($pushStepConclusion -eq 'success') {
+          Write-Host "::notice title=dotnet-sdk-extensions NuGet::Successfully pushed dotnet-sdk-extensions NuGet and symbols to nuget.org. You can find the package at: https://www.nuget.org/packages/DotNet-Sdk-Extensions."
+        }
+    - name: Publish dotnet-sdk-extensions-testing nuget and symbols
+      uses: ./.github/actions/nuget-push
+      id: dotnet-sdk-extensions-testing-nuget-push
+      with:
+        api-key: ${{ secrets.NUGET_PUSH_API_KEY }}
+        source: https://api.nuget.org/v3/index.json
+        working-directory: ${{ env.TESTING_EXTENSIONS_NUGET_BIN_FOLDER }}
+    - name: Log dotnet-sdk-extensions-testing NuGet push info
+      if: (steps.dotnet-sdk-extensions-testing-nuget-push.conclusion == 'success' || steps.dotnet-sdk-extensions-testing-nuget-push.conclusion == 'failure') && always()
+      run: |
+        $pushStepConclusion = '${{ steps.dotnet-sdk-extensions-testing-nuget-push.conclusion }}'
+        $nugetAlreadyExists = [System.Convert]::ToBoolean("${{ steps.dotnet-sdk-extensions-testing-nuget-push.outputs.nuget-already-exists }}")
+        if($nugetAlreadyExists) {
+          Write-Host "::notice title=dotnet-sdk-extensions-testing NuGet::dotnet-sdk-extensions-testing NuGet was NOT published to nuget.org because the version to be pushed already exists."
+        }
+        elseif($pushStepConclusion -eq 'failure') {
+          Write-Host "::error title=dotnet-sdk-extensions-testing NuGet::Failed to push dotnet-sdk-extensions-testing NuGet and symbols."
+        }
+        elseif($pushStepConclusion -eq 'success') {
+          Write-Host "::notice title=dotnet-sdk-extensions-testing NuGet::Successfully pushed dotnet-sdk-extensions-testing NuGet and symbols to nuget.org. You can find the package at: https://www.nuget.org/packages/DotNet-Sdk-Extensions-Testing."
+        }

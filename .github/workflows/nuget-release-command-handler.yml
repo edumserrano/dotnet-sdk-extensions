@@ -67,7 +67,7 @@ jobs:
     - name: Read slash command args and setup workflow data
       id: slash-command-args
       run: |
-        $nugetId = "${{ github.event.client_payload.slash_command.args.unnamed.arg1 }}";
+        $nugetId = "${{ github.event.client_payload.slash_command.args.unnamed.arg1 }}".ToLower();
         $nugetNewVersion = "${{ github.event.client_payload.slash_command.args.unnamed.arg2 }}";
 
         if($nugetId -eq "dotnet-sdk-extensions") {
