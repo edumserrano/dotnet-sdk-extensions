@@ -142,7 +142,7 @@ jobs:
         $nugetInfoJson = Get-Content $nugetInfoPath
         $nugetInfo = $nugetInfoJson | ConvertFrom-Json
 
-        $nugetId = $nugetInfo.nugetId
+        $nugetId = $nugetInfo.nugetId.ToLower()
         $nugetVersion = $nugetInfo.nugetVersion
         $nugetUrl = $nugetInfo.nugetUrl
         if($nugetId -eq "dotnet-sdk-extensions") {
@@ -158,13 +158,6 @@ jobs:
         Write-Host "::set-output name=nuget-version::$nugetVersion"
         Write-Host "::set-output name=nuget-url::$nugetUrl"
         Write-Host "::set-output name=nuget-artifacts::$nugetArtifacts"
-
-
-    - name: Debug
-      run: |
-        Write-Host "${{ steps.nuget-release-info.outputs.nuget-artifacts }}"
-        ls -R
-
     - uses: ncipollo/release-action@v1
       with:
         commit: ${{ github.event.pull_request.merge_commit_sha }}
