@@ -146,10 +146,12 @@ jobs:
         $nugetVersion = $nugetInfo.nugetVersion
         $nugetUrl = $nugetInfo.nugetUrl
         if($nugetId -eq "dotnet-sdk-extensions") {
-          $nugetArtifacts = "./DotNet.Sdk.Extensions/bin/Release/*"
+          $nugetArtifacts = "./DotNet.Sdk.Extensions/**/*.nupkg,DotNet.Sdk.Extensions/**/*.snupkg"
+          # $nugetArtifacts = "./DotNet.Sdk.Extensions/bin/Release/*"
         }
         elseif($nugetId -eq "dotnet-sdk-extensions-testing") {
-          $nugetArtifacts = "./DotNet.Sdk.Extensions.Testing/bin/Release/*"
+          $nugetArtifacts = "./DotNet.Sdk.Extensions.Testing/**/*.nupkg,DotNet.Sdk.Extensions.Testing/**/*.snupkg"
+          # $nugetArtifacts = "./DotNet.Sdk.Extensions.Testing/bin/Release/*"
         }
 
         Write-Host "::set-output name=nuget-id::$nugetId"
