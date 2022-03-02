@@ -1,0 +1,37 @@
+# When making changes to this file please update the corresponding documentation which can be found at /docs/dev-notes/workflows/issue-nuget-release-workflow.md
+
+name: Issue for NuGet release
+
+on:
+  issues:
+    types: [opened, edited, reopened]
+
+jobs:
+  main:
+    name: Parse issue and trigger NuGet release
+    # environment: slash-command-dispatch-workflow
+    # permissions:
+    #   issues: write
+    runs-on: ubuntu-latest
+    steps:
+    - name: Dump github context
+      shell: pwsh
+      run: Write-Host '${{ toJson(github) }}'
+    # - name: Run Issue form parser
+    #   id: parse
+    #   uses: peter-murray/issue-forms-body-parser@v2.0.0
+    #   with:
+    #     issue_id: ${{ github.event.issue.number }}
+    #     separator: '###'
+    #     label_marker_start: '>>'
+    #     label_marker_end: '<<'
+    # - name: Show parsed data JSON
+    #   run: |
+    #     Write-Host "${{ steps.parse.outputs.payload }}"
+    - uses: stefanbuck/github-issue-parser@v2.0.0
+      id: issue-parser
+      with:
+        template-path: .github/ISSUE_TEMPLATE/nuget-release.yml
+    - name: Show parsed data JSON
+      run: |
+        Write-Host "${{ steps.issue-parser.outputs.jsonString }}"

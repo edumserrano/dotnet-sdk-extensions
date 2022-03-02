@@ -1,15 +1,19 @@
 name: Sample form
 description: Create an issue.
-title: "[Bug]: "
-labels: [bug]
+title: "Test issue form template"
+# labels: [bug]
 # assignees:
 #   - octocat
 body:
   - type: input
     id: sample-input
     attributes:
-      label: Sample Input
+      label: 'Sample Input'
       description: Write text here.
       placeholder: Here will be text
     validations:
       required: true
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
