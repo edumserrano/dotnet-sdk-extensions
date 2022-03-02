@@ -98,7 +98,7 @@ jobs:
         $nugetId = "${{ steps.slash-command-args.outputs.nuget-id }}";
         $nugetNewVersion = "${{ steps.slash-command-args.outputs.nuget-new-version }}";
         $branchName = "nuget-release/$nugetId-$nugetNewVersion"
-        $commitMessage = "release NuGet $nugetId $nugetNewVersion"
+        $commitMessage = "Release NuGet $nugetId $nugetNewVersion"
         Write-Host "::set-output name=branch-name::$branchName"
         Write-Host "Branch name set to $branchName"
         Write-Host "::set-output name=commit-message::$commitMessage"
@@ -152,7 +152,7 @@ jobs:
       id: render-pr-body-template
       uses: chuhlomin/render-template@v1.4
       with:
-        template: .github/workflows/templates/nuget-release/create-nuget-release.md
+        template: .github/workflows/templates/nuget-release-command-handler/create-nuget-release.md
         vars: |
           nugetId: ${{ steps.slash-command-args.outputs.nuget-id }}
           nugetCurrentVersion: ${{ steps.slash-command-args.outputs.nuget-current-version }}
@@ -215,6 +215,7 @@ jobs:
         $releaseInfo = @{
           nugetId = "${{ needs.create-pr.outputs.nuget-id }}"
           nugetVersion = "${{ needs.create-pr.outputs.nuget-version }}"
+          nugetUrl = "${{ needs.create-pr.outputs.nuget-url }}"
           issueNumber = ${{ github.event.client_payload.issueNumber }}
           autoGenerateReleaseNotes = "${{ github.event.client_payload.autoGenerateReleaseNotes }}"
         }

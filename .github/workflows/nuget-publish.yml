@@ -18,6 +18,7 @@ jobs:
     environment: nuget-push-workflow
     permissions:
       contents: write
+      issues: write
     runs-on: ubuntu-latest
     env:
       EXTENSIONS_NUGET_BIN_FOLDER : ${{ github.workspace }}/DotNet.Sdk.Extensions/bin/Release
@@ -68,7 +69,9 @@ jobs:
 
         $nugetId = $nugetInfo.nugetId
         $nugetVersion = $nugetInfo.nugetVersion
+        $nugetUrl = $nugetInfo.nugetUrl
         $autoGenerateReleaseNotes = $nugetInfo.autoGenerateReleaseNotes
+        $issueNumber = $nugetInfo.issueNumber
 
         if($nugetId -eq "dotnet-sdk-extensions") {
           $nugetArtifacts = "${{ env.EXTENSIONS_NUGET_BIN_FOLDER }}/*.nupkg,${{ env.EXTENSIONS_NUGET_BIN_FOLDER }}/*.snupkg"
@@ -85,12 +88,15 @@ jobs:
 
         Write-Host "::set-output name=nuget-id::$nugetId"
         Write-Host "::set-output name=nuget-version::$nugetVersion"
+        Write-Host "::set-output name=nuget-url::$nugetUrl"
         Write-Host "::set-output name=auto-generate-release-notes::$autoGenerateReleaseNotes"
         Write-Host "::set-output name=nuget-artifacts::$nugetArtifacts"
         Write-Host "::set-output name=nuget-release-notes-file-path::$releaseNotesFile"
         Write-Host "::set-output name=nuget-extensions-release::$nugetExtensionsRelease"
         Write-Host "::set-output name=nuget-extensions-testing-release::$nugetExtensionsTestingRelease"
+        Write-Host "::set-output name=issue-number::$issueNumber"
     - name: Create release
+      id: create-gh-release
       uses: ncipollo/release-action@v1
       with:
         commit: ${{ github.event.pull_request.merge_commit_sha }}
@@ -99,6 +105,11 @@ jobs:
         bodyFile: ${{ steps.nuget-release-info.outputs.nuget-release-notes-file-path }}
         generateReleaseNotes: ${{ steps.nuget-release-info.outputs.auto-generate-release-notes }}
         token: ${{ secrets.GITHUB_TOKEN }}
+    - name: Debug create release output
+      run: |
+        Write-Host ${{ steps.create-gh-release.outputs.id }}
+        Write-Host ${{ steps.create-gh-release.outputs.html_url }}
+        Write-Host ${{ steps.create-gh-release.outputs.upload_url }}
     - name: Publish dotnet-sdk-extensions nuget and symbols
       id: dotnet-sdk-extensions-nuget-push
       if: steps.nuget-release-info.outputs.nuget-extensions-release == 'true'
@@ -143,3 +154,29 @@ jobs:
         elseif($pushStepConclusion -eq 'success') {
           Write-Host "::notice title=dotnet-sdk-extensions-testing NuGet::Successfully pushed dotnet-sdk-extensions-testing NuGet and symbols to nuget.org. You can find the package at: https://www.nuget.org/packages/DotNet-Sdk-Extensions-Testing."
         }
+    - name: Render close issue comment template
+      id: render-issue-comment-template
+      uses: chuhlomin/render-template@v1.4
+      with:
+        template: .github/workflows/templates/nuget-publish/close-nuget-release-issue.md
+        vars: |
+          nugetId: '${{ steps.nuget-release-info.outputs.nuget-id }}'
+          nugetVersion: '${{ steps.nuget-release-info.outputs.nuget-version }}'
+          releaseUrl: ''
+          nugetUrl: '${{ steps.nuget-release-info.outputs.nuget-url }}'
+    - name: Sanitize issue comment
+      id: sanitize-issue-body
+      run: |
+        $body = "${{ steps.render-issue-comment-template.outputs.result }}"
+        $body = $body -replace "`n","%0A" # The content must be escaped to preserve newlines. See https://github.community/t/set-output-truncates-multiline-strings/16852/3
+        Write-Host "::set-output name=issue-comment::$body"
+    - name: Add comment to NuGet release issue
+      uses: peter-evans/create-or-update-comment@v1.4.5
+      with:
+        issue-number: ${{ steps.nuget-release-info.outputs.issue-number }}
+        body: '${{ steps.sanitize-issue-body.outputs.issue-comment }}'
+    - name: Close NuGet release issue
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        gh issue close ${{ steps.nuget-release-info.outputs.issue-number }}
