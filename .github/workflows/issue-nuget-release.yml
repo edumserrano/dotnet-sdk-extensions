@@ -17,6 +17,8 @@ jobs:
     - name: Dump github context
       shell: pwsh
       run: Write-Host '${{ toJson(github) }}'
+    - name: Checkout repository
+      uses: actions/checkout@v2
     # - name: Run Issue form parser
     #   id: parse
     #   uses: peter-murray/issue-forms-body-parser@v2.0.0
