@@ -6,6 +6,10 @@ on:
   issues:
     types: [opened, edited, reopened]
 
+defaults:
+  run:
+    shell: pwsh
+
 jobs:
   main:
     name: Parse issue and trigger NuGet release
