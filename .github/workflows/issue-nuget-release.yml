@@ -33,7 +33,7 @@ jobs:
     - name: Create client payload for repository dispatch event
       id: setup-client-payload
       run: |
-        $issueForm = "${{ steps.issue-parser.outputs.jsonString }}" | ConvertFrom-Json
+        $issueForm = '${{ steps.issue-parser.outputs.jsonString }}' | ConvertFrom-Json
         $autoGenerateReleaseNotes = $issueForm.auto-generate-release-notes -eq 'yes'
         $clientPayload = @{
           issueNumber = ${{ github.event.issue.number }}
