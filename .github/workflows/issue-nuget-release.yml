@@ -4,7 +4,7 @@ name: Issue for NuGet release
 
 on:
   issues:
-    types: [opened, edited, reopened] # only keep opened in trigger
+    types: [opened]
 
 defaults:
   run:
@@ -16,11 +16,9 @@ jobs:
     environment: issue-nuget-release-workflow
     permissions:
       contents: read
+      issues: write
     runs-on: ubuntu-latest
     steps:
-    - name: Dump github context
-      shell: pwsh
-      run: Write-Host '${{ toJson(github) }}'
     - name: Checkout repository
       uses: actions/checkout@v2
     - uses: stefanbuck/github-issue-parser@v2
@@ -36,16 +34,25 @@ jobs:
         $issueForm = '${{ steps.issue-parser.outputs.jsonString }}' | ConvertFrom-Json
         # the properties on the issueForm variable are kebab case. To access them in powershell I need to use single quotes around the property names
         $autoGenerateReleaseNotes = $issueForm.'auto-generate-release-notes' -eq 'yes'
+        $nugetId = $issueForm.'nuget-id'
+        $nugetVersion = $issueForm.'nuget-version'
         $clientPayload = @{
           issueNumber = ${{ github.event.issue.number }}
-          nugetId = $issueForm.'nuget-id'
-          nugetVersion = $issueForm.'nuget-version'
+          nugetId = $nugetId
+          nugetVersion = $nugetVersion
           customReleaseNotes = $issueForm.'custom-release-notes'
           autoGenerateReleaseNotes = $autoGenerateReleaseNotes
         }
         $clientPayloadAsJson = $clientPayload | ConvertTo-Json -Compress
         Write-Host $clientPayloadAsJson
         Write-Host "::set-output name=client-payload::$clientPayloadAsJson"
+        Write-Host "::set-output name=nuget-id::$nugetId"
+        Write-Host "::set-output name=nuget-version::$nugetVersion"
+    - name: Update issue title
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        gh issue edit ${{ github.event.issue.number }} --title "Release ${{ steps.setup-client-payload.outputs.nuget-id }} ${{ steps.setup-client-payload.outputs.nuget-version }} NuGet package"
     - name: Trigger NuGet publish workflow via repository dispatch
       uses: peter-evans/repository-dispatch@v1.1.3
       with:
