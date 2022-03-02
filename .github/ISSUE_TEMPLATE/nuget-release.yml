@@ -12,24 +12,24 @@ body:
         - dotnet-sdk-extensions-testing
     validations:
       required: true
-  # - type: input
-  #   id: nuget-version
-  #   attributes:
-  #     label: What is the new version for the NuGet package?
-  #     description: You can create pre-release versions using a suffix. For more info see https://docs.microsoft.com/en-us/nuget/concepts/package-versioning.
-  #     placeholder: 1.0.0
-  #   validations:
-  #     required: true
-  # - type: dropdown
-  #   id: auto-generate-release-notes
-  #   attributes:
-  #     label: Auto-generate release notes?
-  #     description: Automatically add the markdown for all the merged pull requests from this diff and contributors of this release.
-  #     options:
-  #       - Yes
-  #       - No
-  #   validations:
-  #     required: true
+  - type: input
+    id: nuget-version
+    attributes:
+      label: What is the new version for the NuGet package?
+      description: 'You can create pre-release versions using a suffix. For more info see https://docs.microsoft.com/en-us/nuget/concepts/package-versioning.'
+      placeholder: 1.0.0
+    validations:
+      required: true
+  - type: dropdown
+    id: auto-generate-release-notes
+    attributes:
+      label: Auto-generate release notes?
+      description: Automatically add the markdown for all the merged pull requests from this diff and contributors of this release.
+      options:
+        - Yes
+        - No
+    validations:
+      required: true
   # - type: textarea
   #   id: custom-release-notes
   #   attributes:
