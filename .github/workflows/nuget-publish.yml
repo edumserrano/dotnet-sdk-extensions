@@ -105,11 +105,6 @@ jobs:
         bodyFile: ${{ steps.nuget-release-info.outputs.nuget-release-notes-file-path }}
         generateReleaseNotes: ${{ steps.nuget-release-info.outputs.auto-generate-release-notes }}
         token: ${{ secrets.GITHUB_TOKEN }}
-    - name: Debug create release output
-      run: |
-        Write-Host ${{ steps.create-gh-release.outputs.id }}
-        Write-Host ${{ steps.create-gh-release.outputs.html_url }}
-        Write-Host ${{ steps.create-gh-release.outputs.upload_url }}
     - name: Publish dotnet-sdk-extensions nuget and symbols
       id: dotnet-sdk-extensions-nuget-push
       if: steps.nuget-release-info.outputs.nuget-extensions-release == 'true'
@@ -162,8 +157,8 @@ jobs:
         vars: |
           nugetId: '${{ steps.nuget-release-info.outputs.nuget-id }}'
           nugetVersion: '${{ steps.nuget-release-info.outputs.nuget-version }}'
-          releaseUrl: ''
           nugetUrl: '${{ steps.nuget-release-info.outputs.nuget-url }}'
+          gitHubReleaseUrl: '${{ steps.create-gh-release.outputs.html_url }}'
     - name: Sanitize issue comment
       id: sanitize-issue-body
       run: |
