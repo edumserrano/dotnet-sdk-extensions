@@ -34,12 +34,13 @@ jobs:
       id: setup-client-payload
       run: |
         $issueForm = '${{ steps.issue-parser.outputs.jsonString }}' | ConvertFrom-Json
-        $autoGenerateReleaseNotes = $issueForm.auto-generate-release-notes -eq 'yes'
+        # the properties on the issueForm variable are kebab case. To access them in powershell I need to use single quotes around the property names
+        $autoGenerateReleaseNotes = $issueForm.'auto-generate-release-notes' -eq 'yes'
         $clientPayload = @{
           issueNumber = ${{ github.event.issue.number }}
-          nugetId = $issueForm.nuget-id
-          nugetVersion = $issueForm.nuget-version
-          customReleaseNotes = $issueForm.custom-release-notes
+          nugetId = $issueForm.'nuget-id'
+          nugetVersion = $issueForm.'nuget-version'
+          customReleaseNotes = $issueForm.'custom-release-notes'
           autoGenerateReleaseNotes = $autoGenerateReleaseNotes
         }
         $clientPayloadAsJson = $clientPayload | ConvertTo-Json -Compress
