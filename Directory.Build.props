@@ -10,7 +10,7 @@
     <EnableNETAnalyzers>true</EnableNETAnalyzers>    <!-- .NET code quality analysis is only enabled by default for projects that target .NET 5.0 or later. https://docs.microsoft.com/en-us/dotnet/core/project-sdk/msbuild-props#enablenetanalyzers -->
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.0.64">
+    <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.1.46">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
