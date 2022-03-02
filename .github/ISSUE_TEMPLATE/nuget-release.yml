@@ -1,7 +1,7 @@
 name: Release NuGet package
 description: Release a NuGet package.
-title: "Release NuGet package"
-# labels: [nuget-release]
+title: Release NuGet package
+labels: [nuget-release]
 body:
   - type: dropdown
     id: nuget-id
