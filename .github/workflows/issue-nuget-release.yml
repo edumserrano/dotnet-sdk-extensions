@@ -30,7 +30,7 @@ jobs:
     # - name: Show parsed data JSON
     #   run: |
     #     Write-Host "${{ steps.parse.outputs.payload }}"
-    - uses: stefanbuck/github-issue-parser@v2.0.0
+    - uses: stefanbuck/github-issue-parser@v2
       id: issue-parser
       with:
         template-path: .github/ISSUE_TEMPLATE/nuget-release.yml
