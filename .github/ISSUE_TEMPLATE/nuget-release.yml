@@ -26,8 +26,8 @@ body:
       label: Auto-generate release notes?
       description: Automatically add the markdown for all the merged pull requests from this diff and contributors of this release.
       options:
-        - Yes
-        - No
+        - 'Yes'
+        - 'No'
     validations:
       required: true
   # - type: textarea
