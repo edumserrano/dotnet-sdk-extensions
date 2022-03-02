@@ -26,3 +26,14 @@ body:
     attributes:
       value: |
         Thanks for taking the time to fill out this bug report!
+  - type: dropdown
+    id: download
+    attributes:
+      label: How did you download the software?
+      options:
+        - Homebrew
+        - MacPorts
+        - apt-get
+        - Built from source
+    validations:
+      required: true
