@@ -35,7 +35,7 @@ body:
     attributes:
       label: Custom release notes?
       description: This is optional. If filled it will be added at the start of the release notes, before the auto generated release notes.
-      placeholder: '## Release notes\n\n'
+      placeholder: '## Release notes'
 
   # - type: markdown
   #   attributes:
