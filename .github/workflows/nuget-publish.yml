@@ -12,7 +12,7 @@ defaults:
     shell: pwsh
 
 jobs:
-  release-variables:
+  main:
     name: Publish NuGet package and symbols
     if: github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'nuget-release')
     environment: nuget-push-workflow
@@ -43,7 +43,7 @@ jobs:
       uses: dawidd6/action-download-artifact@v2.17.0
       with:
         workflow: nuget-release-command-handler.yml
-        name:  nuget-info
+        name:  nuget-release-info
         run_id: ${{ steps.release-info.outputs.run-id }}
     - name: Download NuGet release notes artifact
       id: download-release-notes
@@ -62,12 +62,13 @@ jobs:
     - name: Prepare NuGet release info
       id: nuget-release-info
       run: |
-        $nugetInfoPath = "./nuget-info.md"
+        $nugetInfoPath = "./nuget-release-info.md"
         $nugetInfoJson = Get-Content $nugetInfoPath
         $nugetInfo = $nugetInfoJson | ConvertFrom-Json
 
         $nugetId = $nugetInfo.nugetId
         $nugetVersion = $nugetInfo.nugetVersion
+        $autoGenerateReleaseNotes = $nugetInfo.autoGenerateReleaseNotes
 
         if($nugetId -eq "dotnet-sdk-extensions") {
           $nugetArtifacts = "${{ env.EXTENSIONS_NUGET_BIN_FOLDER }}/*.nupkg,${{ env.EXTENSIONS_NUGET_BIN_FOLDER }}/*.snupkg"
@@ -81,33 +82,22 @@ jobs:
         }
 
         $releaseNotesFile = "./nuget-release-notes.md"
-        $releaseNotesDownloaded = Test-Path -Path $releaseNotesFile
 
         Write-Host "::set-output name=nuget-id::$nugetId"
         Write-Host "::set-output name=nuget-version::$nugetVersion"
+        Write-Host "::set-output name=auto-generate-release-notes::$autoGenerateReleaseNotes"
         Write-Host "::set-output name=nuget-artifacts::$nugetArtifacts"
-        Write-Host "::set-output name=nuget-release-notes-downloaded::$releaseNotesDownloaded"
         Write-Host "::set-output name=nuget-release-notes-file-path::$releaseNotesFile"
         Write-Host "::set-output name=nuget-extensions-release::$nugetExtensionsRelease"
         Write-Host "::set-output name=nuget-extensions-testing-release::$nugetExtensionsTestingRelease"
-    - name: Create release with custom release notes
-      if: steps.nuget-release-info.outputs.nuget-release-notes-downloaded == 'true'
+    - name: Create release
       uses: ncipollo/release-action@v1
       with:
         commit: ${{ github.event.pull_request.merge_commit_sha }}
         tag: ${{ steps.nuget-release-info.outputs.nuget-id }}-${{ steps.nuget-release-info.outputs.nuget-version }}
         artifacts: "${{ steps.nuget-release-info.outputs.nuget-artifacts }}"
         bodyFile: ${{ steps.nuget-release-info.outputs.nuget-release-notes-file-path }}
-        generateReleaseNotes: true
-        token: ${{ secrets.GITHUB_TOKEN }}
-    - name: Create release without custom release notes
-      if: steps.nuget-release-info.outputs.nuget-release-notes-downloaded == 'false'
-      uses: ncipollo/release-action@v1
-      with:
-        commit: ${{ github.event.pull_request.merge_commit_sha }}
-        tag: ${{ steps.nuget-release-info.outputs.nuget-id }}-${{ steps.nuget-release-info.outputs.nuget-version }}
-        artifacts: "${{ steps.nuget-release-info.outputs.nuget-artifacts }}"
-        generateReleaseNotes: true
+        generateReleaseNotes: ${{ steps.nuget-release-info.outputs.auto-generate-release-notes }}
         token: ${{ secrets.GITHUB_TOKEN }}
     - name: Publish dotnet-sdk-extensions nuget and symbols
       id: dotnet-sdk-extensions-nuget-push
