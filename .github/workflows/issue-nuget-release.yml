@@ -4,7 +4,7 @@ name: Issue for NuGet release
 
 on:
   issues:
-    types: [opened, edited, reopened]
+    types: [opened, edited, reopened] # only keep opened in trigger
 
 defaults:
   run:
@@ -13,9 +13,9 @@ defaults:
 jobs:
   main:
     name: Parse issue and trigger NuGet release
-    # environment: slash-command-dispatch-workflow
-    # permissions:
-    #   issues: write
+    environment: issue-nuget-release-workflow
+    permissions:
+      contents: read
     runs-on: ubuntu-latest
     steps:
     - name: Dump github context
@@ -23,17 +23,6 @@ jobs:
       run: Write-Host '${{ toJson(github) }}'
     - name: Checkout repository
       uses: actions/checkout@v2
-    # - name: Run Issue form parser
-    #   id: parse
-    #   uses: peter-murray/issue-forms-body-parser@v2.0.0
-    #   with:
-    #     issue_id: ${{ github.event.issue.number }}
-    #     separator: '###'
-    #     label_marker_start: '>>'
-    #     label_marker_end: '<<'
-    # - name: Show parsed data JSON
-    #   run: |
-    #     Write-Host "${{ steps.parse.outputs.payload }}"
     - uses: stefanbuck/github-issue-parser@v2
       id: issue-parser
       with:
@@ -41,3 +30,25 @@ jobs:
     - name: Show parsed data JSON
       run: |
         Write-Host "${{ steps.issue-parser.outputs.jsonString }}"
+    - name: Create client payload for repository dispatch event
+      id: setup-client-payload
+      run: |
+        $issueForm = "${{ steps.issue-parser.outputs.jsonString }}" | ConvertFrom-Json
+        $autoGenerateReleaseNotes = $issueForm.auto-generate-release-notes -eq 'yes'
+        $clientPayload = @{
+          issueNumber = ${{ github.event.issue.number }}
+          nugetId = $issueForm.nuget-id
+          nugetVersion = $issueForm.nuget-version
+          customReleaseNotes = $issueForm.custom-release-notes
+          autoGenerateReleaseNotes = $autoGenerateReleaseNotes
+        }
+        $clientPayloadAsJson = $clientPayload | ConvertTo-Json -Compress
+        Write-Host $clientPayloadAsJson
+        Write-Host "::set-output name=client-payload::$clientPayloadAsJson"
+    - name: Trigger NuGet publish workflow via repository dispatch
+      uses: peter-evans/repository-dispatch@v1.1.3
+      with:
+        token: ${{ secrets.REPOSITORY_DISPATCH_GH_TOKEN }}
+        repository: ${{ github.repository}}
+        event-type: nuget-release-command
+        client-payload: '${{ steps.setup-client-payload.outputs.client-payload }}'

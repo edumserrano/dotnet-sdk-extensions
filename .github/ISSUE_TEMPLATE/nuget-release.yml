@@ -1,39 +1,43 @@
-name: Sample form
-description: Create an issue.
-title: "Test issue form template"
-# labels: [bug]
-# assignees:
-#   - octocat
+name: Release NuGet package
+description: Release a NuGet package.
+title: Release NuGet package
+labels: [nuget-release]
 body:
-  - type: input
-    id: sample-input
+  - type: dropdown
+    id: nuget-id
     attributes:
-      label: 'Sample Input'
-      description: Write text here.
-      placeholder: Here will be text
+      label: What NuGet package do you want to release?
+      options:
+        - dotnet-sdk-extensions
+        - dotnet-sdk-extensions-testing
+    validations:
+      required: true
+  - type: input
+    id: nuget-version
+    attributes:
+      label: What is the new version for the NuGet package?
+      description: You can create pre-release versions using a suffix. For more info see https://docs.microsoft.com/en-us/nuget/concepts/package-versioning.
+      placeholder: 1.0.0
+    validations:
+      required: true
+  - type: dropdown
+    id: auto-generate-release-notes
+    attributes:
+      label: Auto-generate release notes?
+      description: Automatically add the markdown for all the merged pull requests from this diff and contributors of this release.
+      options:
+        - Yes
+        - No
     validations:
       required: true
   - type: textarea
-    id: what-happened
+    id: custom-release-notes
     attributes:
-      label: What happened?
-      description: Also tell us, what did you expect to happen?
-      placeholder: Tell us what you see!
-      value: "A bug happened!"
-    validations:
-      required: true
-  - type: markdown
-    attributes:
-      value: |
-        Thanks for taking the time to fill out this bug report!
-  - type: dropdown
-    id: download
-    attributes:
-      label: How did you download the software?
-      options:
-        - Homebrew
-        - MacPorts
-        - apt-get
-        - Built from source
-    validations:
-      required: true
+      label: Custom release notes?
+      description: This is optional. If filled it will be added at the start of the release notes, before the auto generated release notes.
+      placeholder: '## Release notes\n\n'
+
+  # - type: markdown
+  #   attributes:
+  #     value: |
+  #       Thanks for taking the time to fill out this bug report!
