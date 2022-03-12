@@ -110,6 +110,7 @@ jobs:
           graphNodeStatus: '${{ steps.workflow-status.outputs.workflow-status }}'
           releaseStatus: '${{ steps.workflow-status.outputs.release-status }}'
           releaseBadgeColor: '${{ steps.workflow-status.outputs.release-badge-color }}'
+          issueNuGetReleaseUrl: 'https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}'
     - name: Sanitize issue comment
       id: sanitize-issue-comment
       run: |

@@ -4,11 +4,3 @@ The NuGet package **{{ .nugetId }}** version **{{ .nugetVersion }}** has been re
 [NuGet package]({{ .nugetUrl }}).
  
 Closing this issue.
-
-<details>
-<summary><strong>Workflow info</strong></summary>
-</br>
-
-The workflow [{{ .workflowName }}]({{ .workflowUrl }}) **completed successfully**.
-
-</details>

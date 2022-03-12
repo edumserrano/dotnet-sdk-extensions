@@ -95,6 +95,23 @@ jobs:
           Write-Host "::set-output name=release-status::failed"
           Write-Host "::set-output name=release-badge-color::red"
         }
+    - name: Find nuget release flow comment
+      uses: peter-evans/find-comment@v1.3.0
+      id: find-nuget-release-flow-comment
+      with:
+        issue-number: ${{ needs.release-info.outputs.issue-number}}
+        body-includes: '<!-- nuget-release-flow -->'
+        comment-author: github-actions[bot]
+    - name: Parse node URLs from NuGet flow comment
+      id: parse-node-urls
+      run: |
+        $commentBody = '${{ steps.find-nuget-release-flow-comment.outputs.comment-body }}'
+        $commentBody -match '<!-- issue-nuget-release-url: (?<IssueNuGetReleaseUrl>.+) -->'
+        $issueNuGetReleaseUrl = $Matches.IssueNuGetReleaseUrl
+        $commentBody -match '<!-- nuget-release-command-handler-url: (?<NugetReleaseCommandHandlerUrl>.+) -->'
+        $nugetReleaseCommandHandlerUrl = $Matches.NugetReleaseCommandHandlerUrl
+        Write-Host "::set-output name=issue-nuget-release-url::$issueNuGetReleaseUrl"
+        Write-Host "::set-output name=nuget-release-command-handler-url::$nugetReleaseCommandHandlerUrl"
     - name: Render issue comment template
       id: render-issue-comment-template
       uses: chuhlomin/render-template@v1.4
@@ -106,6 +123,9 @@ jobs:
           graphNodeStatus: '${{ steps.pr-merge-status.outputs.workflow-status }}'
           releaseStatus: '${{ steps.pr-merge-status.outputs.release-status }}'
           releaseBadgeColor: '${{ steps.pr-merge-status.outputs.release-badge-color }}'
+          issueNuGetReleaseUrl: '${{ steps.parse-node-urls.outputs.issue-nuget-release-url }}'
+          nugetReleaseCommandHandlerUrl: '${{ steps.parse-node-urls.outputs.nuget-release-command-handler-url }}'
+          nugetReleasePullRequestUrl: '${{ github.event.pull_request.html_url }}'
     - name: Sanitize issue comment
       id: sanitize-issue-comment
       run: |
@@ -232,6 +252,26 @@ jobs:
           Write-Host "::set-output name=release-status::failed"
           Write-Host "::set-output name=release-badge-color::red"
         }
+    - name: Find nuget release flow comment
+      uses: peter-evans/find-comment@v1.3.0
+      id: find-nuget-release-flow-comment
+      with:
+        issue-number: ${{ needs.release-info.outputs.issue-number}}
+        body-includes: '<!-- nuget-release-flow -->'
+        comment-author: github-actions[bot]
+    - name: Parse node URLs from NuGet flow comment
+      id: parse-node-urls
+      run: |
+        $commentBody = '${{ steps.find-nuget-release-flow-comment.outputs.comment-body }}'
+        $commentBody -match '<!-- issue-nuget-release-url: (?<IssueNuGetReleaseUrl>.+) -->'
+        $issueNuGetReleaseUrl = $Matches.IssueNuGetReleaseUrl
+        $commentBody -match '<!-- nuget-release-command-handler-url: (?<NugetReleaseCommandHandlerUrl>.+) -->'
+        $nugetReleaseCommandHandlerUrl = $Matches.NugetReleaseCommandHandlerUrl
+        $commentBody -match '<!-- nuget-release-pull-request-url: (?<NugetReleasePullRequestUrl>.+) -->'
+        $nugetReleasePullRequestUrl = $Matches.NugetReleasePullRequestUrl
+        Write-Host "::set-output name=issue-nuget-release-url::$issueNuGetReleaseUrl"
+        Write-Host "::set-output name=nuget-release-command-handler-url::$nugetReleaseCommandHandlerUrl"
+        Write-Host "::set-output name=nuget-release-pull-request-url::$nugetReleasePullRequestUrl"
     - name: Render issue comment template
       id: render-issue-comment-template
       uses: chuhlomin/render-template@v1.4
@@ -243,6 +283,10 @@ jobs:
           graphNodeStatus: '${{ steps.workflow-status.outputs.workflow-status }}'
           releaseStatus: '${{ steps.workflow-status.outputs.release-status }}'
           releaseBadgeColor: '${{ steps.workflow-status.outputs.release-badge-color }}'
+          issueNuGetReleaseUrl: '${{ steps.parse-node-urls.outputs.issue-nuget-release-url }}'
+          nugetReleaseCommandHandlerUrl: '${{ steps.parse-node-urls.outputs.nuget-release-command-handler-url }}'
+          nugetReleasePullRequestUrl: '${{ steps.parse-node-urls.outputs.nuget-release-pull-request-url }}'
+          publishNugetUrl: 'https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}'
     - name: Sanitize issue comment
       id: sanitize-issue-comment
       run: |

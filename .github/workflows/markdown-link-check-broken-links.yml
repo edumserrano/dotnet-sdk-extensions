@@ -114,7 +114,7 @@ jobs:
       id: render-issue-body-template
       uses: chuhlomin/render-template@v1.4
       with:
-        template: .github/workflows/templates/markdown-link-check-broken-links/broken-links-found.md
+        template: .github/workflows/templates/markdown-link-check-broken-links/broken-links-found-issue-body.md
         vars: |
           workflow: ${{ env.WORKFLOW }}
           workflowUrl: ${{ env.WORKFLOW_URL }}

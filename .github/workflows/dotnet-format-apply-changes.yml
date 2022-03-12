@@ -140,7 +140,7 @@ jobs:
       id: render-pr-body-template
       uses: chuhlomin/render-template@v1.4
       with:
-        template: .github/workflows/templates/dotnet-format-apply-changes/on-push-found-changes.md
+        template: .github/workflows/templates/dotnet-format-apply-changes/dotnet-format-found-changes-pr-body.md
         vars: |
           workflow: ${{ env.WORKFLOW }}
           workflowUrl: ${{ env.WORKFLOW_URL }}
@@ -233,7 +233,7 @@ jobs:
       if: steps.dotnet-format-workflow-info.outputs.has-changes == 'true'
       uses: chuhlomin/render-template@v1.4
       with:
-        template: .github/workflows/templates/dotnet-format-apply-changes/on-pr-found-changes.md
+        template: .github/workflows/templates/dotnet-format-apply-changes/dotnet-format-found-changes-pr-comment.md
         vars: |
           workflow: ${{ steps.dotnet-format-workflow-info.outputs.workflow }}
           workflowUrl: ${{ steps.dotnet-format-workflow-info.outputs.workflow-url }}
