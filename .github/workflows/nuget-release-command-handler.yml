@@ -254,3 +254,32 @@ jobs:
       run: |
         gh pr merge --auto --squash --delete-branch ${{ needs.create-pr.outputs.pr-number }}
 
+  update-release-issue:
+    name: Update NuGet release issue
+    needs: [create-pr, merge-pr]
+    if: always()
+    environment: nuget-release-command-handler-workflow
+    permissions:
+      issues: write
+    runs-on: ubuntu-latest
+    steps:
+    # - name: Checkout repository
+    #   uses: actions/checkout@v3
+    - name: Update release issue with comment
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        $workflow = '${{ github.workflow }}'
+        $workflowRunUrl = 'https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}'
+        $workflowLink = "[$workflow]($workflowRunUrl)"
+        $workflowResult = '${{ needs.merge-pr.result }}'
+        $workflowSuccessful = $workflowResult -eq 'success'
+
+        if($workflowSuccessful) {
+          $comment = "$workflowLink completed successfully. The PR #${{ needs.create-pr.outputs.pr-number }} was created for this NuGet release."
+        }
+        else {
+          $comment = "$workflowLink didn't complete successfully. The workflow status was `$workflowResult`. For more information see the workflow's logs."
+        }
+
+        gh issue comment ${{ github.event.client_payload.issueNumber }} --body $comment
