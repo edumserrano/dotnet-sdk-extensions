@@ -122,7 +122,7 @@ jobs:
     - name: Sanitize issue body
       id: sanitize-issue-body
       run: |
-        $body = "${{ steps.render-issue-body-template.outputs.result }}"
+        $body = '${{ steps.render-issue-body-template.outputs.result }}'
         $body = $body -replace "`n","%0A" # The content must be escaped to preserve newlines. See https://github.community/t/set-output-truncates-multiline-strings/16852/3
         Write-Host "::set-output name=issue-body::$body"
     - name: Create markdown issue
