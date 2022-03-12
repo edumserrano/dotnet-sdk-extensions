@@ -36,8 +36,7 @@ body:
       label: Custom release notes?
       description: This is optional. If filled it will be added at the start of the release notes, before the auto generated release notes.
       placeholder: '## Release notes'
-
-  # - type: markdown
-  #   attributes:
-  #     value: |
-  #       Thanks for taking the time to fill out this bug report!
+  - type: markdown
+    attributes:
+      value: |
+        You have triggered a NuGet package release. Shortly there will be a comment in this issue with the NuGet release flow progress.

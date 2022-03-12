@@ -172,6 +172,7 @@ jobs:
         workflow: build-test-package.yml
         name:  nuget-packages-and-symbols
         pr: ${{ github.event.pull_request.number }}
+        workflow_conclusion: success
     - name: Prepare NuGet release info
       id: nuget-release-info
       run: |
