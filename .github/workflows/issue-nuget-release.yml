@@ -4,7 +4,7 @@ name: Issue for NuGet release
 
 on:
   issues:
-    types: [opened]
+    types: [opened, reopened]
 
 defaults:
   run:
@@ -80,7 +80,7 @@ jobs:
         $workflow = '${{ github.workflow }}'
         $workflowRunUrl = 'https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}'
         $workflowLink = "[$workflow]($workflowRunUrl)"
-        $workflowResult = '${{ needs.merge-pr.result }}'
+        $workflowResult = '${{ needs.main.result }}'
         $workflowSuccessful = $workflowResult -eq 'success'
 
         if($workflowSuccessful) {
@@ -90,4 +90,4 @@ jobs:
           $comment = "The NuGet release request has been received but $workflowLink didn't complete successfully. The workflow status was `$workflowResult`. For more information see the workflow's logs."
         }
 
-        gh issue comment ${{ github.event.client_payload.issueNumber }} --body $comment
+        gh issue comment ${{ github.event.issue.number }} --body $comment
