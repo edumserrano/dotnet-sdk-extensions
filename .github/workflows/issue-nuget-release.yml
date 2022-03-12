@@ -60,3 +60,34 @@ jobs:
         repository: ${{ github.repository}}
         event-type: nuget-release-command
         client-payload: '${{ steps.setup-client-payload.outputs.client-payload }}'
+
+  update-release-issue:
+    name: Update NuGet release issue
+    needs: [main]
+    if: always()
+    environment: issue-nuget-release-workflow
+    permissions:
+      contents: read
+      issues: write
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+    - name: Update NuGet release issue with comment
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        $workflow = '${{ github.workflow }}'
+        $workflowRunUrl = 'https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}'
+        $workflowLink = "[$workflow]($workflowRunUrl)"
+        $workflowResult = '${{ needs.merge-pr.result }}'
+        $workflowSuccessful = $workflowResult -eq 'success'
+
+        if($workflowSuccessful) {
+          $comment = "The NuGet release request has been received and $workflowLink completed successfully. A repository dispatch event has been triggered to proceed with the NuGet release."
+        }
+        else {
+          $comment = "The NuGet release request has been received but $workflowLink didn't complete successfully. The workflow status was `$workflowResult`. For more information see the workflow's logs."
+        }
+
+        gh issue comment ${{ github.event.client_payload.issueNumber }} --body $comment

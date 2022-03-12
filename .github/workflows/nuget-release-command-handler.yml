@@ -260,12 +260,13 @@ jobs:
     if: always()
     environment: nuget-release-command-handler-workflow
     permissions:
+      contents: read
       issues: write
     runs-on: ubuntu-latest
     steps:
-    # - name: Checkout repository
-    #   uses: actions/checkout@v3
-    - name: Update release issue with comment
+    - name: Checkout repository
+      uses: actions/checkout@v3
+    - name: Update NuGet release issue with comment
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
