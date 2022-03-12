@@ -71,7 +71,7 @@ jobs:
   update-release-issue:
     name: Update NuGet release issue
     needs: [main]
-    if: always()
+    if: always() && needs.main.result != 'skipped'
     environment: issue-nuget-release-workflow
     permissions:
       contents: read
