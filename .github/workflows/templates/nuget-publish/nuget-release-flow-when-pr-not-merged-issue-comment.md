@@ -1,14 +1,14 @@
 <!-- nuget-release-flow -->
 ## NuGet release flow progress
 
-[![Generic badge](https://img.shields.io/badge/status-{{ .releaseStatus }}-{{ .releaseBadgeColor }}.svg)](https://shields.io/)
+[![Generic badge](https://img.shields.io/badge/status-failed-red.svg)](https://shields.io/)
 
 ``````mermaid
   graph TD
       A([Create NuGet release issue]):::ok --> B
       B[Action: Issue for NuGet release]:::ok --> C
-      C[Workflow: NuGet release command handler]:::{{ .graphNodeStatus }} --> D
-      D[Pull Request: Release NuGet {{ .nugetId }} {{ .nugetVersion }}] --> E
+      C[Workflow: NuGet release command handler]:::ok --> D
+      D[Pull Request: Release NuGet {{ .nugetId }} {{ .nugetVersion }}]:::error --> E
       E[Workflow: Publish NuGet packages] --> F([NuGet released])
   classDef ok stroke:#a5e16e 
   classDef error stroke:#ff1355

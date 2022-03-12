@@ -269,7 +269,7 @@ jobs:
     - name: Check workflow status
       id: workflow-status
       run: |
-        $workflowResult = '${{ needs.main.result }}'
+        $workflowResult = '${{ needs.merge-pr.result }}'
         $workflowSuccessful = $workflowResult -eq 'success'
         Write-Host "::set-output name=workflow-successful::$workflowSuccessful"
 
@@ -283,14 +283,14 @@ jobs:
           Write-Host "::set-output name=release-status::failed"
           Write-Host "::set-output name=release-badge-color::red"
         }
-    - name: Render close issue comment template
+    - name: Render issue comment template
       id: render-issue-comment-template
       uses: chuhlomin/render-template@v1.4
       with:
         template: .github/workflows/templates/nuget-release-command-handler/nuget-release-flow-issue-comment.md
         vars: |
-          nugetId: '${{ needs.main.outputs.nuget-id }}'
-          nugetVersion: '${{ needs.main.outputs.nuget-version }}'
+          nugetId: '${{ needs.create-pr.outputs.nuget-id }}'
+          nugetVersion: '${{ needs.create-pr.outputs.nuget-version }}'
           graphNodeStatus: '${{ steps.workflow-status.outputs.workflow-status }}'
           releaseStatus: '${{ steps.workflow-status.outputs.release-status }}'
           releaseBadgeColor: '${{ steps.workflow-status.outputs.release-badge-color }}'

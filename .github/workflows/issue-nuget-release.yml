@@ -100,7 +100,7 @@ jobs:
           Write-Host "::set-output name=release-status::failed"
           Write-Host "::set-output name=release-badge-color::red"
         }
-    - name: Render close issue comment template
+    - name: Render issue comment template
       id: render-issue-comment-template
       uses: chuhlomin/render-template@v1.4
       with:

@@ -1,7 +1,7 @@
 <!-- nuget-release-flow -->
 ## NuGet release flow progress
 
-[![Generic badge](https://img.shields.io/badge/NuGet%20release%20flow%20status-{{ .releaseStatus }}-{{ .releaseBadgeColor }}.svg)](https://shields.io/)
+[![Generic badge](https://img.shields.io/badge/status-{{ .releaseStatus }}-{{ .releaseBadgeColor }}.svg)](https://shields.io/)
 
 ``````mermaid
   graph TD
@@ -17,4 +17,3 @@
 - This shows the overall progress of the NuGet release flow. This is updated in real time, even if you retry the release.
 - If any step fails it will be highlighted in red. Click on it to find out more details from the action's logs.
 - To retry close and and reopen this issue, this will restart the NuGet release flow. Before retrying make sure to close any pull requests that might have been created by this release flow.
-
