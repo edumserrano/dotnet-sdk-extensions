@@ -13,7 +13,7 @@ defaults:
 jobs:
   main:
     name: Parse issue and trigger NuGet release
-    if: contains(github.event.pull_request.labels.*.name, 'nuget-release')
+    if: contains(github.event.issue.labels.*.name, 'nuget-release')
     environment: issue-nuget-release-workflow
     permissions:
       contents: read
