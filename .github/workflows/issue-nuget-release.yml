@@ -19,6 +19,9 @@ jobs:
       contents: read
       issues: write
     runs-on: ubuntu-latest
+    outputs:
+      nuget-id: ${{ steps.setup-client-payload.outputs.nuget-id }}
+      nuget-version: ${{ steps.setup-client-payload.outputs.nuget-version }}
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
@@ -88,10 +91,14 @@ jobs:
         Write-Host "::set-output name=workflow-successful::$workflowSuccessful"
 
         if($workflowSuccessful) {
-          Write-Host "::set-output name=status::ok"
+          Write-Host "::set-output name=workflow-status::ok"
+          Write-Host "::set-output name=release-status::in%20progress"
+          Write-Host "::set-output name=release-badge-color::blue"
         }
         else {
-          Write-Host "::set-output name=status::error"
+          Write-Host "::set-output name=workflow-status::error"
+          Write-Host "::set-output name=release-status::failed"
+          Write-Host "::set-output name=release-badge-color::red"
         }
     - name: Render close issue comment template
       id: render-issue-comment-template
@@ -101,7 +108,9 @@ jobs:
         vars: |
           nugetId: '${{ needs.main.outputs.nuget-id }}'
           nugetVersion: '${{ needs.main.outputs.nuget-version }}'
-          graphNodeStatus: '${{ steps.workflow-status.outputs.status }}'
+          graphNodeStatus: '${{ steps.workflow-status.outputs.workflow-status }}'
+          releaseStatus: '${{ steps.workflow-status.outputs.release-status }}'
+          releaseBadgeColor: '${{ steps.workflow-status.outputs.release-badge-color }}'
     - name: Sanitize issue comment
       id: sanitize-issue-comment
       run: |

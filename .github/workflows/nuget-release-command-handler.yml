@@ -152,7 +152,7 @@ jobs:
       id: render-pr-body-template
       uses: chuhlomin/render-template@v1.4
       with:
-        template: .github/workflows/templates/nuget-release-command-handler/create-nuget-release.md
+        template: .github/workflows/templates/nuget-release-command-handler/create-nuget-release-pr-body.md
         vars: |
           nugetId: ${{ steps.slash-command-args.outputs.nuget-id }}
           nugetCurrentVersion: ${{ steps.slash-command-args.outputs.nuget-current-version }}
@@ -266,21 +266,45 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
-    - name: Update NuGet release issue with comment
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Check workflow status
+      id: workflow-status
       run: |
-        $workflow = '${{ github.workflow }}'
-        $workflowRunUrl = 'https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}'
-        $workflowLink = "[$workflow]($workflowRunUrl)"
-        $workflowResult = '${{ needs.merge-pr.result }}'
+        $workflowResult = '${{ needs.main.result }}'
         $workflowSuccessful = $workflowResult -eq 'success'
+        Write-Host "::set-output name=workflow-successful::$workflowSuccessful"
 
         if($workflowSuccessful) {
-          $comment = "The workflow $workflowLink **completed successfully**. The PR #${{ needs.create-pr.outputs.pr-number }} was created for this release and is set to auto-merge.`n`nOnce all checks pass the PR will be merged and the NuGet will be published to **nuget.org** and a corresponding **GitHub release** will be created."
+          Write-Host "::set-output name=workflow-status::ok"
+          Write-Host "::set-output name=release-status::in%20progress"
+          Write-Host "::set-output name=release-badge-color::blue"
         }
         else {
-          $comment = "The workflow $workflowLink **didn't complete successfully**. The workflow status was `$workflowResult`. For more information see the workflow's logs."
+          Write-Host "::set-output name=workflow-status::error"
+          Write-Host "::set-output name=release-status::failed"
+          Write-Host "::set-output name=release-badge-color::red"
         }
-
-        gh issue comment ${{ github.event.client_payload.issueNumber }} --body $comment
+    - name: Render close issue comment template
+      id: render-issue-comment-template
+      uses: chuhlomin/render-template@v1.4
+      with:
+        template: .github/workflows/templates/nuget-release-command-handler/nuget-release-flow-issue-comment.md
+        vars: |
+          nugetId: '${{ needs.main.outputs.nuget-id }}'
+          nugetVersion: '${{ needs.main.outputs.nuget-version }}'
+          graphNodeStatus: '${{ steps.workflow-status.outputs.workflow-status }}'
+          releaseStatus: '${{ steps.workflow-status.outputs.release-status }}'
+          releaseBadgeColor: '${{ steps.workflow-status.outputs.release-badge-color }}'
+    - name: Sanitize issue comment
+      id: sanitize-issue-comment
+      run: |
+        $body = "${{ steps.render-issue-comment-template.outputs.result }}"
+        $body = $body -replace "`n","%0A" # The content must be escaped to preserve newlines. See https://github.community/t/set-output-truncates-multiline-strings/16852/3
+        Write-Host "::set-output name=body::$body"
+    - name: Update issue with NuGet flow comment
+      uses: ./.github/actions/create-update-comment
+      with:
+        issue-number: ${{ github.event.client_payload.issueNumber }}
+        body-includes: '<!-- nuget-release-flow -->'
+        comment-author: github-actions[bot]
+        body: ${{ steps.sanitize-issue-comment.outputs.body }}
+        edit-mode: replace
