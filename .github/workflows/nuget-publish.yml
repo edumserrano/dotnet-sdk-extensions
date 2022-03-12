@@ -129,7 +129,7 @@ jobs:
     - name: Sanitize issue comment
       id: sanitize-issue-comment
       run: |
-        $body = '${{ steps.render-issue-comment-template.outputs.result }}'
+        $body = "${{ steps.render-issue-comment-template.outputs.result }}"
         $body = $body -replace "`n","%0A" # The content must be escaped to preserve newlines. See https://github.community/t/set-output-truncates-multiline-strings/16852/3
         Write-Host "::set-output name=body::$body"
     - name: Update issue with NuGet flow comment
@@ -245,7 +245,7 @@ jobs:
         if($workflowSuccessful) {
           Write-Host "::set-output name=workflow-status::ok"
           Write-Host "::set-output name=release-status::completed"
-          Write-Host "::set-output name=release-badge-color::darkgreen"
+          Write-Host "::set-output name=release-badge-color::green"
         }
         else {
           Write-Host "::set-output name=workflow-status::error"
@@ -290,7 +290,7 @@ jobs:
     - name: Sanitize issue comment
       id: sanitize-issue-comment
       run: |
-        $body = '${{ steps.render-issue-comment-template.outputs.result }}'
+        $body = "${{ steps.render-issue-comment-template.outputs.result }}"
         $body = $body -replace "`n","%0A" # The content must be escaped to preserve newlines. See https://github.community/t/set-output-truncates-multiline-strings/16852/3
         Write-Host "::set-output name=body::$body"
     - name: Update issue with NuGet flow comment
