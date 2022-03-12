@@ -27,7 +27,7 @@ jobs:
       WORKFLOW_RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
     - name: Markdown link check
       id: mlc-push
       uses: gaurav-nelson/github-action-markdown-link-check@v1

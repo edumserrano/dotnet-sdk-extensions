@@ -35,7 +35,7 @@ jobs:
       create-issue: ${{ steps.needs-issue-check.outputs.create-issue }}
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         ref: ${{ env.WORKFLOW_HEAD_SHA }}
     - name: Download markdown link check workflow info artifact
@@ -107,7 +107,7 @@ jobs:
       WORKFLOW_URL: ${{ needs.on-push-check.outputs.workflow-url }}
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         ref: ${{ env.WORKFLOW_HEAD_SHA }}
     - name: Render issue body template

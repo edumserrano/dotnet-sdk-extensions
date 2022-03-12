@@ -36,7 +36,7 @@ jobs:
       can-apply-changes: ${{ steps.check-can-apply.outputs.can-apply-changes }}
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         ref: ${{ env.WORKFLOW_HEAD_SHA }}
     - name: Download dotnet format workflow info artifact
@@ -108,7 +108,7 @@ jobs:
       WORKFLOW_URL: ${{ needs.on-push-check.outputs.workflow-url }}
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         ref: ${{ env.WORKFLOW_HEAD_SHA }}
     - name: Prepare commit info
@@ -178,7 +178,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         ref: ${{ env.WORKFLOW_HEAD_SHA }}
         token: ${{ secrets.DOTNET_FORMAT_GH_TOKEN }}

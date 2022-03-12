@@ -25,7 +25,7 @@ jobs:
       TESTING_EXTENSIONS_NUGET_BIN_FOLDER : ${{ github.workspace }}/DotNet.Sdk.Extensions.Testing/bin/Release
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
     - name: Get release info run id
       id: release-info
       env:
