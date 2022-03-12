@@ -271,7 +271,6 @@ jobs:
       run: |
         $workflowResult = '${{ needs.merge-pr.result }}'
         $workflowSuccessful = $workflowResult -eq 'success'
-        Write-Host "::set-output name=workflow-successful::$workflowSuccessful"
 
         if($workflowSuccessful) {
           Write-Host "::set-output name=workflow-status::ok"

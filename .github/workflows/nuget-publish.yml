@@ -68,10 +68,10 @@ jobs:
         Write-Host "::set-output name=auto-generate-release-notes::$autoGenerateReleaseNotes"
         Write-Host "::set-output name=issue-number::$issueNumber"
 
-  update-release-issue-when-pr-not-merged:
-    name: Update NuGet release issue when PR isn't merged
+  update-release-issue-after-pr-close:
+    name: Update NuGet release issue after PR is closed
     needs: [release-info]
-    if: github.event.pull_request.merged == false && contains(github.event.pull_request.labels.*.name, 'nuget-release')
+    if: contains(github.event.pull_request.labels.*.name, 'nuget-release')
     environment: nuget-push-workflow
     permissions:
       contents: read
@@ -80,14 +80,32 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
+    - name: Check PR merge status
+      id: pr-merge-status
+      run: |
+        $prMerged = [System.Convert]::ToBoolean("${{ github.event.pull_request.merged }}")
+
+        if($prMerged) {
+          Write-Host "::set-output name=workflow-status::ok"
+          Write-Host "::set-output name=release-status::in%20progress"
+          Write-Host "::set-output name=release-badge-color::blue"
+        }
+        else {
+          Write-Host "::set-output name=workflow-status::error"
+          Write-Host "::set-output name=release-status::failed"
+          Write-Host "::set-output name=release-badge-color::red"
+        }
     - name: Render issue comment template
       id: render-issue-comment-template
       uses: chuhlomin/render-template@v1.4
       with:
-        template: .github/workflows/templates/nuget-publish/nuget-release-flow-when-pr-not-merged-issue-comment.md
+        template: .github/workflows/templates/nuget-publish/nuget-release-flow-when-pr-closed-issue-comment.md
         vars: |
           nugetId: '${{ needs.release-info.outputs.nuget-id }}'
           nugetVersion: '${{ needs.release-info.outputs.nuget-version }}'
+          graphNodeStatus: '${{ steps.pr-merge-status.outputs.workflow-status }}'
+          releaseStatus: '${{ steps.pr-merge-status.outputs.release-status }}'
+          releaseBadgeColor: '${{ steps.pr-merge-status.outputs.release-badge-color }}'
     - name: Sanitize issue comment
       id: sanitize-issue-comment
       run: |
@@ -169,7 +187,7 @@ jobs:
         api-key: ${{ secrets.NUGET_PUSH_API_KEY }}
         source: https://api.nuget.org/v3/index.json
         working-directory: '${{ steps.nuget-release-info.outputs.nuget-push-working-dir }}'
-    - name: Log dotnet-sdk-extensions NuGet push info
+    - name: Log NuGet push info
       if: always()
       run: |
         $nugetId = '${{ needs.release-info.outputs.nuget-id }}'
@@ -203,7 +221,6 @@ jobs:
       run: |
         $workflowResult = '${{ needs.publish-nuget.result }}'
         $workflowSuccessful = $workflowResult -eq 'success'
-        Write-Host "::set-output name=workflow-successful::$workflowSuccessful"
 
         if($workflowSuccessful) {
           Write-Host "::set-output name=workflow-status::ok"
