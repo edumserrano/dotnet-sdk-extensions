@@ -13,6 +13,7 @@ defaults:
 jobs:
   main:
     name: Parse issue and trigger NuGet release
+    if: contains(github.event.pull_request.labels.*.name, 'nuget-release')
     environment: issue-nuget-release-workflow
     permissions:
       contents: read
@@ -53,6 +54,12 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         gh issue edit ${{ github.event.issue.number }} --title "Release ${{ steps.setup-client-payload.outputs.nuget-id }} ${{ steps.setup-client-payload.outputs.nuget-version }} NuGet package"
+    - name: Update issue labels
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        $label = ${{ steps.setup-client-payload.outputs.nuget-id }}
+        gh issue edit ${{ github.event.issue.number }} --add-label $label
     - name: Trigger NuGet publish workflow via repository dispatch
       uses: peter-evans/repository-dispatch@v1.1.3
       with:
@@ -73,21 +80,39 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
-    - name: Update NuGet release issue with comment
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Check workflow status
+      id: workflow-status
       run: |
-        $workflow = '${{ github.workflow }}'
-        $workflowRunUrl = 'https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}'
-        $workflowLink = "[$workflow]($workflowRunUrl)"
         $workflowResult = '${{ needs.main.result }}'
         $workflowSuccessful = $workflowResult -eq 'success'
+        Write-Host "::set-output name=workflow-successful::$workflowSuccessful"
 
         if($workflowSuccessful) {
-          $comment = "The NuGet release request has been received and $workflowLink completed successfully. A repository dispatch event has been triggered to proceed with the NuGet release."
+          Write-Host "::set-output name=status::ok"
         }
         else {
-          $comment = "The NuGet release request has been received but $workflowLink didn't complete successfully. The workflow status was `$workflowResult`. For more information see the workflow's logs."
+          Write-Host "::set-output name=status::error"
         }
-
-        gh issue comment ${{ github.event.issue.number }} --body $comment
+    - name: Render close issue comment template
+      id: render-issue-comment-template
+      uses: chuhlomin/render-template@v1.4
+      with:
+        template: .github/workflows/templates/issue-nuget-release/nuget-release-flow-issue-comment.md
+        vars: |
+          nugetId: '${{ needs.main.outputs.nuget-id }}'
+          nugetVersion: '${{ needs.main.outputs.nuget-version }}'
+          graphNodeStatus: '${{ steps.workflow-status.outputs.status }}'
+    - name: Sanitize issue comment
+      id: sanitize-issue-body
+      run: |
+        $body = "${{ steps.render-issue-comment-template.outputs.result }}"
+        $body = $body -replace "`n","%0A" # The content must be escaped to preserve newlines. See https://github.community/t/set-output-truncates-multiline-strings/16852/3
+        Write-Host "::set-output name=issue-comment::$body"
+    - name: Update issue with NuGet flow comment
+      uses: ./.github/actions/create-update-comment
+      with:
+        issue-number: ${{ github.event.issue.number }}
+        body-includes: '<!-- nuget-release-flow -->'
+        comment-author: github-actions[bot]
+        body: ${{ steps.sanitize-pr-comment.outputs.pr-comment-body }}
+        edit-mode: replace
