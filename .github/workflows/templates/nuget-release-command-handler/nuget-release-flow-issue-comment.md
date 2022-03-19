@@ -12,6 +12,7 @@
       E[Action: Publish NuGet packages] --> F([NuGet released])
   classDef ok stroke:#a5e16e 
   classDef error stroke:#ff1355
+  classDef inProgress stroke:#2986cc
   click B "{{ .issueNuGetReleaseUrl }}" _blank
   click C "{{ .nugetReleaseCommandHandlerUrl }}" _blank
 ``````

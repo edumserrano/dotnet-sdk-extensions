@@ -19,6 +19,10 @@ The extensions provided by this package are:
 
 For more information on how to get started see the docs provided for each extension.
 
+## Release Notes
+
+You can find the release notes at: https://github.com/edumserrano/dot-net-sdk-extensions/releases.
+
 ## Feedback
 
 If you'd like to contribute or leave feedback please open an issue on the [package's repo](https://github.com/edumserrano/dot-net-sdk-extensions).

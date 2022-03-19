@@ -1,5 +1,3 @@
-# When making changes to this file please update the corresponding documentation which can be found at /docs/dev-notes/workflows/build-test-package-workflow.md
-
 name: Build, test and package
 
 on:

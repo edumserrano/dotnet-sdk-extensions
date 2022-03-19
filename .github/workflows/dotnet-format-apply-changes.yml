@@ -1,5 +1,3 @@
-# When making changes to this file please update the corresponding documentation which can be found at /docs/dev-notes/workflows/dotnet-format-apply-changes-workflow.md
-
 name: dotnet format - apply changes
 
 on:
