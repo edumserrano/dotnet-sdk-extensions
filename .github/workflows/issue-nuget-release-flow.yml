@@ -85,26 +85,26 @@ jobs:
         $info = $infoJson | ConvertFrom-Json
 
         # the value should be in the nuget release info artifact, if not try the parsed data from the nuget release flow comment and finally use a default if needed.
-        $issueNugetReleaseNodeStatus = [string]::IsNullOrEmpty($info.issueNugetReleaseNodeStatus) `
+        $issueNugetReleaseNodeStatus = [string]::IsNullOrWhiteSpace($info.issueNugetReleaseNodeStatus) `
           ?? "${{ steps.parse-nuget-flow-data.outputs.issue-nuget-release-node-status }}" `
           ?? "default"
-        $issueNugetReleaseUrl = [string]::IsNullOrEmpty($info.issueNugetReleaseUrl) `
-          ?? [string]::IsNullOrEmpty("${{ steps.outputs.parse-node-urls.outputs.issue-nuget-release-url }}") `
+        $issueNugetReleaseUrl = [string]::IsNullOrWhiteSpace($info.issueNugetReleaseUrl) `
+          ?? [string]::IsNullOrWhiteSpace("${{ steps.parse-node-urls.outputs.issue-nuget-release-url }}") `
           ?? "empty"
-        $nugetReleaseCommandHandlerNodeStatus = [string]::IsNullOrEmpty($info.nugetReleaseCommandHandlerNodeStatus) `
+        $nugetReleaseCommandHandlerNodeStatus = [string]::IsNullOrWhiteSpace($info.nugetReleaseCommandHandlerNodeStatus) `
           ?? "${{ steps.parse-nuget-flow-data.outputs.nuget-release-command-handler-node-status }}" `
           ?? "default"
-        $nugetReleaseCommandHandlerUrl = [string]::IsNullOrEmpty($info.nugetReleaseCommandHandlerUrl) `
-          ?? [string]::IsNullOrEmpty("${{ steps.outputs.parse-node-urls.outputs.nuget-release-command-handler-url }}") `
+        $nugetReleaseCommandHandlerUrl = [string]::IsNullOrWhiteSpace($info.nugetReleaseCommandHandlerUrl) `
+          ?? [string]::IsNullOrWhiteSpace("${{ steps.parse-node-urls.outputs.nuget-release-command-handler-url }}") `
           ?? "empty"
-        $nugetReleasePullRequestNodeStatus = [string]::IsNullOrEmpty($info.nugetReleasePullRequestNodeStatus) `
+        $nugetReleasePullRequestNodeStatus = [string]::IsNullOrWhiteSpace($info.nugetReleasePullRequestNodeStatus) `
           ?? "${{ steps.parse-nuget-flow-data.outputs.nuget-release-pull-request-node-status }}" `
           ?? "default"
-        $nugetReleasePullRequestUrl = [string]::IsNullOrEmpty($info.nugetReleasePullRequestUrl) `
-          ?? [string]::IsNullOrEmpty("${{ steps.outputs.parse-node-urls.outputs.nuget-release-pull-request-url }}") `
+        $nugetReleasePullRequestUrl = [string]::IsNullOrWhiteSpace($info.nugetReleasePullRequestUrl) `
+          ?? [string]::IsNullOrWhiteSpace("${{ steps.parse-node-urls.outputs.nuget-release-pull-request-url }}") `
           ?? "empty"
-        $publishNugetNodeStatus = [string]::IsNullOrEmpty($info.publishNugetNodeStatus) ?? "default"
-        $publishNugetUrl = [string]::IsNullOrEmpty($info.publishNugetUrl) ?? "empty"
+        $publishNugetNodeStatus = [string]::IsNullOrWhiteSpace($info.publishNugetNodeStatus) ?? "default"
+        $publishNugetUrl = [string]::IsNullOrWhiteSpace($info.publishNugetUrl) ?? "empty"
 
         Write-Host "::set-output name=nuget-id::$($info.nugetId)"
         Write-Host "::set-output name=nuget-version::$($info.nugetVersion)"
@@ -118,6 +118,10 @@ jobs:
         Write-Host "::set-output name=nuget-release-pull-request-url::$nugetReleasePullRequestUrl"
         Write-Host "::set-output name=publish-nuget-node-status::$publishNugetNodeStatus"
         Write-Host "::set-output name=publish-nuget-url::$publishNugetUrl"
+    - name: Dump output from previous step
+      env:
+        STEP_OUTPUT: ${{ toJSON(steps.nuget-release-flow-info.outputs) }}
+      run: $env:STEP_OUTPUT
     - name: Render issue comment template
       id: render-issue-comment-template
       uses: chuhlomin/render-template@v1.4
