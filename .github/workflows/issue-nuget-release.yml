@@ -134,7 +134,7 @@ jobs:
       issues: write
     runs-on: ubuntu-latest
     env:
-      NUGET_RELEASE_INFO_ARTIFACT_FILEPATH: ${{github.workspace}}/dotnet-format-workflow-info.json
+      NUGET_RELEASE_INFO_ARTIFACT_FILEPATH: ${{github.workspace}}/nuget-release-flow-info.json
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
