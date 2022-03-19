@@ -4,7 +4,6 @@ on:
   workflow_run:
     workflows: ["Issue - NuGet release"]
     types:
-    - requested
     - completed
 
 defaults:
@@ -32,6 +31,51 @@ jobs:
         workflow: ${{ github.event.workflow_run.workflow_id }}
         run_id: ${{ github.event.workflow_run.id }}
         name:  nuget-release-flow-info
+    - name: Get issue number from NuGet release flow info
+      id: get-issue-number
+      run: |
+        $infoFilePath = "./nuget-release-flow-info.json"
+        $infoJson = Get-Content $infoFilePath
+        Write-Host $infoJson
+        $info = $infoJson | ConvertFrom-Json
+        Write-Host "::set-output name=issue-number::$($info.issue-number)"
+    - name: Find NuGet release flow comment
+      uses: peter-evans/find-comment@v1.3.0
+      id: find-nuget-release-flow-comment
+      with:
+        issue-number: ${{ steps.get-issue-number.outputs.issue-number}}
+        body-includes: '<!-- nuget-release-flow -->'
+        comment-author: github-actions[bot]
+    - name: Parse data from NuGet flow comment
+      id: parse-nuget-flow-data
+      if:   steps.find-nuget-release-flow-comment.outputs.comment-id != 0
+      run: |
+        $commentBody = '${{ steps.find-nuget-release-flow-comment.outputs.comment-body }}'
+
+        $commentBody -match '<!-- issue-nuget-release-node-status: (?<IssueNugetReleaseNodeStatus>.+) -->'
+        $issueNugetReleaseNodeStatus = $Matches.IssueNugetReleaseNodeStatus
+
+        $commentBody -match '<!-- issue-nuget-release-url: (?<IssueNugetReleaseUrl>.+) -->'
+        $issueNugetReleaseUrl = $Matches.IssueNugetReleaseUrl
+
+        $commentBody -match '<!-- nuget-release-command-handler-node-status: (?<NugetReleaseCommandHandlerNodeStatus>.+) -->'
+        $nugetReleaseCommandHandlerNodeStatus = $Matches.NugetReleaseCommandHandlerNodeStatus
+
+        $commentBody -match '<!-- nuget-release-command-handler-url: (?<NugetReleaseCommandHandlerUrl>.+) -->'
+        $nugetReleaseCommandHandlerUrl = $Matches.NugetReleaseCommandHandlerUrl
+
+        $commentBody -match '<!-- nuget-release-pull-request-node-status: (?<NugetReleasePullRequestNodeStatus>.+) -->'
+        $nugetReleasePullRequestNodeStatus = $Matches.NugetReleasePullRequestNodeStatus
+
+        $commentBody -match '<!-- nuget-release-pull-request-url: (?<NugetReleasePullRequestUrl>.+) -->'
+        $nugetReleasePullRequestUrl = $Matches.NugetReleasePullRequestUrl
+
+        Write-Host "::set-output name=issue-nuget-release-node-status::$issueNugetReleaseNodeStatus"
+        Write-Host "::set-output name=issue-nuget-release-url::$issueNugetReleaseUrl"
+        Write-Host "::set-output name=nuget-release-command-handler-node-status::$nugetReleaseCommandHandlerNodeStatus"
+        Write-Host "::set-output name=nuget-release-command-handler-url::$nugetReleaseCommandHandlerUrl"
+        Write-Host "::set-output name=nuget-release-pull-request-node-status::$nugetReleasePullRequestNodeStatus"
+        Write-Host "::set-output name=nuget-release-pull-request-url::$nugetReleasePullRequestUrl"
     - name: Read nuget release flow info
       id: nuget-release-flow-info
       run: |
@@ -40,42 +84,69 @@ jobs:
         Write-Host $infoJson
         $info = $infoJson | ConvertFrom-Json
 
-        # $hasChanges = $info.hasChanges
-        # $workflow = $info.workflow
-        # $workflowUrl = $info.workflowUrl
+        # the value should be in the nuget release info artifact, if not try the parsed data from the nuget release flow comment and finally use a default if needed.
+        $issueNugetReleaseNodeStatus = [string]::IsNullOrEmpty($info.issueNugetReleaseNodeStatus) `
+          ?? "${{ steps.parse-nuget-flow-data.outputs.issue-nuget-release-node-status }}" `
+          ?? "default"
+        $issueNugetReleaseUrl = [string]::IsNullOrEmpty($info.issueNugetReleaseUrl) `
+          ?? [string]::IsNullOrEmpty("${{ steps.outputs.parse-node-urls.outputs.issue-nuget-release-url }}") `
+          ?? "empty"
+        $nugetReleaseCommandHandlerNodeStatus = [string]::IsNullOrEmpty($info.nugetReleaseCommandHandlerNodeStatus) `
+          ?? "${{ steps.parse-nuget-flow-data.outputs.nuget-release-command-handler-node-status }}" `
+          ?? "default"
+        $nugetReleaseCommandHandlerUrl = [string]::IsNullOrEmpty($info.nugetReleaseCommandHandlerUrl) `
+          ?? [string]::IsNullOrEmpty("${{ steps.outputs.parse-node-urls.outputs.nuget-release-command-handler-url }}") `
+          ?? "empty"
+        $nugetReleasePullRequestNodeStatus = [string]::IsNullOrEmpty($info.nugetReleasePullRequestNodeStatus) `
+          ?? "${{ steps.parse-nuget-flow-data.outputs. }}" `
+          ?? "default"
+        $nugetReleasePullRequestUrl = [string]::IsNullOrEmpty($info.nugetReleasePullRequestUrl) `
+          ?? [string]::IsNullOrEmpty("${{ steps.outputs.parse-node-urls.outputs.nuget-release-pull-request-url }}") `
+          ?? "empty"
+        $publishNugetNodeStatus = [string]::IsNullOrEmpty($info.publishNugetNodeStatus) ?? "default"
+        $publishNugetUrl = [string]::IsNullOrEmpty($info.publishNugetUrl) ?? "empty"
 
-        # Write-Host "::set-output name=has-changes::$hasChanges"
-        # Write-Host "::set-output name=workflow::$workflow"
-        # Write-Host "::set-output name=workflow-url::$workflowUrl"
-    # - name: Render issue comment template
-    #   id: render-issue-comment-template
-    #   uses: chuhlomin/render-template@v1.4
-    #   with:
-    #     template: .github/workflows/templates/issue-nuget-release-flow/nuget-release-flow-issue-comment.md
-    #     vars: |
-    #       nugetId: '${{ steps.nuget-release-flow-info.outputs.nuget-id }}'
-    #       nugetVersion: '${{ steps.nuget-release-flow-info.outputs.nuget-version }}'
-    #       releaseStatus: '${{ steps.nuget-release-flow-info.outputs.release-status }}'
-    #       releaseBadgeColor: '${{ steps.nuget-release-flow-info.outputs.release-badge-color }}'
-    #       issueNuGetNodeStatus: '${{ steps.nuget-release-flow-info.outputs.issue-nuget-node-status }}'
-    #       issueNuGetReleaseUrl: '${{ steps.nuget-release-flow-info.outputs.issue-nuGet-release-url }}'
-    #       nugetReleaseCommandHandlerNodeStatus: '${{ steps.nuget-release-flow-info.outputs.nuget-release-command-handler-node-status }}'
-    #       nugetReleaseCommandHandlerUrl: '${{ steps.nuget-release-flow-info.outputs.nuget-release-command-handler-url }}'
-    #       nugetReleasePullRequestNodeStatus: '${{ steps.nuget-release-flow-info.outputs.nuget-release-pull-request-node-status }}'
-    #       nugetReleasePullRequestUrl: '${{ steps.nuget-release-flow-info.outputs.nuget-release-pull-request-url }}'
-    #       publishNugetNodeStatus: '${{ steps.nuget-release-flow-info.outputs.publish-nuGet-node-status }}'
-    #       publishNugetUrl: '${{ steps.nuget-release-flow-info.outputs.publish-nuGet-url }}'
-    # - name: Sanitize issue comment
-    #   id: sanitize-issue-comment
-    #   run: |
-    #     $body = '${{ steps.render-issue-comment-template.outputs.result }}'
-    #     $body = $body -replace "`n","%0A" # The content must be escaped to preserve newlines. See https://github.community/t/set-output-truncates-multiline-strings/16852/3
-    #     Write-Host "::set-output name=body::$body"
-    # - name: Update issue with NuGet flow comment
-    #   uses: ./.github/actions/create-update-comment
-    #   with:
-    #     issue-number: ${{ steps.nuget-release-flow-info.outputs.issue-number }}
-    #     body-includes: '<!-- nuget-release-flow -->'
-    #     comment-author: github-actions[bot]
-    #     body: ${{ steps.sanitize-issue-comment.outputs.body }}
-    #     edit-mode: replace
+        Write-Host "::set-output name=nuget-id::$($info.nugetId)"
+        Write-Host "::set-output name=nuget-version::$($info.nugetVersion)"
+        Write-Host "::set-output name=release-status::$($info.releaseStatus)"
+        Write-Host "::set-output name=release-badge-color::$($info.releaseBadgeColor)"
+        Write-Host "::set-output name=issue-nuget-release-node-status::$issueNugetReleaseNodeStatus"
+        Write-Host "::set-output name=issue-nuget-release-url::$issueNugetReleaseUrl"
+        Write-Host "::set-output name=nuget-release-command-handler-node-status::$nugetReleaseCommandHandlerNodeStatus"
+        Write-Host "::set-output name=nuget-release-command-handler-url::$nugetReleaseCommandHandlerUrl"
+        Write-Host "::set-output name=nuget-release-pull-request-node-status::$nugetReleasePullRequestNodeStatus"
+        Write-Host "::set-output name=nuget-release-pull-request-url::$nugetReleasePullRequestUrl"
+        Write-Host "::set-output name=publish-nuget-node-status::$publishNugetNodeStatus"
+        Write-Host "::set-output name=publish-nuget-url::$publishNugetUrl"
+    - name: Render issue comment template
+      id: render-issue-comment-template
+      uses: chuhlomin/render-template@v1.4
+      with:
+        template: .github/workflows/templates/issue-nuget-release-flow/nuget-release-flow-issue-comment.md
+        vars: |
+          nugetId: '${{ steps.nuget-release-flow-info.outputs.nuget-id }}'
+          nugetVersion: '${{ steps.nuget-release-flow-info.outputs.nuget-version }}'
+          releaseStatus: '${{ steps.nuget-release-flow-info.outputs.release-status }}'
+          releaseBadgeColor: '${{ steps.nuget-release-flow-info.outputs.release-badge-color }}'
+          issueNugetReleaseNodeStatus: '${{ steps.nuget-release-flow-info.outputs.issue-nuget-release-node-status }}'
+          issueNugetReleaseUrl: '${{ steps.nuget-release-flow-info.outputs.issue-nuget-release-url }}'
+          nugetReleaseCommandHandlerNodeStatus: '${{ steps.nuget-release-flow-info.outputs.nuget-release-command-handler-node-status }}'
+          nugetReleaseCommandHandlerUrl: '${{ steps.nuget-release-flow-info.outputs.nuget-release-command-handler-url }}'
+          nugetReleasePullRequestNodeStatus: '${{ steps.nuget-release-flow-info.outputs.nuget-release-pull-request-node-status }}'
+          nugetReleasePullRequestUrl: '${{ steps.nuget-release-flow-info.outputs.nuget-release-pull-request-url }}'
+          publishNugetNodeStatus: '${{ steps.nuget-release-flow-info.outputs.publish-nuGet-node-status }}'
+          publishNugetUrl: '${{ steps.nuget-release-flow-info.outputs.publish-nuGet-url }}'
+    - name: Sanitize issue comment
+      id: sanitize-issue-comment
+      run: |
+        $body = '${{ steps.render-issue-comment-template.outputs.result }}'
+        $body = $body -replace "`n","%0A" # The content must be escaped to preserve newlines. See https://github.community/t/set-output-truncates-multiline-strings/16852/3
+        Write-Host "::set-output name=body::$body"
+    - name: Update issue with NuGet flow comment
+      uses: ./.github/actions/create-update-comment
+      with:
+        issue-number: ${{ steps.get-issue-number.outputs.issue-number}}
+        body-includes: '<!-- nuget-release-flow -->'
+        comment-author: github-actions[bot]
+        body: ${{ steps.sanitize-issue-comment.outputs.body }}
+        edit-mode: replace

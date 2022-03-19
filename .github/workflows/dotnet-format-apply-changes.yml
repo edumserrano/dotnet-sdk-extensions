@@ -50,14 +50,9 @@ jobs:
         $workflowInfoJson = Get-Content $worfklowInfoFilePath
         Write-Host $workflowInfoJson
         $workflowInfo = $workflowInfoJson | ConvertFrom-Json
-
-        $hasChanges = $workflowInfo.hasChanges
-        $workflow = $workflowInfo.workflow
-        $workflowUrl = $workflowInfo.workflowUrl
-
-        Write-Host "::set-output name=has-changes::$hasChanges"
-        Write-Host "::set-output name=workflow::$workflow"
-        Write-Host "::set-output name=workflow-url::$workflowUrl"
+        Write-Host "::set-output name=has-changes::$($workflowInfo.hasChanges)"
+        Write-Host "::set-output name=workflow::$($workflowInfo.workflow)"
+        Write-Host "::set-output name=workflow-url::$($workflowInfo.workflowUrl"
     - name: Check for open dotnet format PRs
       id: open-pr-check
       env:

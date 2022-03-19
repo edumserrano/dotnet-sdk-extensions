@@ -124,6 +124,51 @@ jobs:
         event-type: nuget-release-command
         client-payload: '${{ steps.setup-client-payload.outputs.client-payload }}'
 
+  nuget-release-info-output:
+    name: Create NuGet release info artifact
+    needs: [main]
+    if: always() && needs.main.result != 'skipped'
+    environment: issue-nuget-release-workflow
+    permissions:
+      contents: read
+      issues: write
+    runs-on: ubuntu-latest
+    env:
+      NUGET_RELEASE_INFO_ARTIFACT_FILEPATH: ${{github.workspace}}/dotnet-format-workflow-info.json
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+    - name: Save NuGet release info
+      run: |
+        $workflowResult = '${{ needs.main.result }}'
+        if($workflowResult -eq 'success') {
+          $workflowStatus = "ok"
+          $releaseStatus = "in%20progress"
+          $releaseBadgeColor = "blue"
+        }
+        else {
+          $workflowStatus = "error"
+          $releaseStatus = "failed"
+          $releaseBadgeColor = "red"
+        }
+
+        $body = @{
+                  nugetId = '${{ needs.main.outputs.nuget-id }}'
+                  nugetVersion = '${{ needs.main.outputs.nuget-version }}'
+                  releaseStatus = $releaseStatus
+                  releaseBadgeColor = $releaseBadgeColor
+                  issueNugetReleaseNodeStatus = $workflowStatus
+                  issueNugetReleaseUrl = 'https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}'
+                }
+        $bodyAsJson = $body | ConvertTo-Json
+        $bodyAsJson > ${{ env.NUGET_RELEASE_INFO_ARTIFACT_FILEPATH }}
+        cat ${{ env.NUGET_RELEASE_INFO_ARTIFACT_FILEPATH }}
+    - name: Upload NuGet release info
+      uses: actions/upload-artifact@v2
+      with:
+        name: nuget-release-flow-info
+        path: ${{ env.NUGET_RELEASE_INFO_ARTIFACT_FILEPATH }}
+
   # update-release-issue-finish:
   #   name: Update NuGet release issue - finish
   #   needs: [main]

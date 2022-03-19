@@ -6,8 +6,8 @@ body:
   - type: markdown
     attributes:
       value: |
-        ### Description
-        This form is used to release a NuGet package. Shortly after the issue is created there will be a comment in this issue with the NuGet release flow progress.
+        ## Description
+        This form is used to release a NuGet package. Shortly after the issue is created there will be a comment in the issue with the NuGet release flow progress.
   - type: dropdown
     id: nuget-id
     attributes:
