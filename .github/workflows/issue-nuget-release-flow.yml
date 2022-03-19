@@ -98,7 +98,7 @@ jobs:
           ?? [string]::IsNullOrEmpty("${{ steps.outputs.parse-node-urls.outputs.nuget-release-command-handler-url }}") `
           ?? "empty"
         $nugetReleasePullRequestNodeStatus = [string]::IsNullOrEmpty($info.nugetReleasePullRequestNodeStatus) `
-          ?? "${{ steps.parse-nuget-flow-data.outputs. }}" `
+          ?? "${{ steps.parse-nuget-flow-data.outputs.nuget-release-pull-request-node-status }}" `
           ?? "default"
         $nugetReleasePullRequestUrl = [string]::IsNullOrEmpty($info.nugetReleasePullRequestUrl) `
           ?? [string]::IsNullOrEmpty("${{ steps.outputs.parse-node-urls.outputs.nuget-release-pull-request-url }}") `

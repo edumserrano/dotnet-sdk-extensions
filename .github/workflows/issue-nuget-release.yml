@@ -153,6 +153,7 @@ jobs:
         }
 
         $body = @{
+                  issueNumber = '${{ github.event.issue.number }}'
                   nugetId = '${{ needs.main.outputs.nuget-id }}'
                   nugetVersion = '${{ needs.main.outputs.nuget-version }}'
                   releaseStatus = $releaseStatus
