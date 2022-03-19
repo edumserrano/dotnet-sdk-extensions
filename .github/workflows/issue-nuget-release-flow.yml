@@ -38,7 +38,7 @@ jobs:
         $infoJson = Get-Content $infoFilePath
         Write-Host $infoJson
         $info = $infoJson | ConvertFrom-Json
-        Write-Host "::set-output name=issue-number::$($info.issue-number)"
+        Write-Host "::set-output name=issue-number::$($info.issueNumber)"
     - name: Find NuGet release flow comment
       uses: peter-evans/find-comment@v1.3.0
       id: find-nuget-release-flow-comment
