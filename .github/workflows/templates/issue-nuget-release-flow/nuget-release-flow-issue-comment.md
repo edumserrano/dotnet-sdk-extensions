@@ -13,7 +13,7 @@
   classDef ok stroke:#a5e16e 
   classDef error stroke:#ff1355
   classDef default stroke:#99a095
-  click B "{{ .issueNuGetReleaseUrl }}" _blank
+  click B "{{ .issueNugetReleaseUrl }}" _blank
   click C "{{ .nugetReleaseCommandHandlerUrl }}" _blank
   click D "{{ .nugetReleasePullRequestUrl }}" _blank
   click E "{{ .publishNugetUrl }}" _blank
