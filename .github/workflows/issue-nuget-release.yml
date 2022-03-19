@@ -1,4 +1,4 @@
-name: Issue for NuGet release
+name: Issue - NuGet release
 
 on:
   issues:

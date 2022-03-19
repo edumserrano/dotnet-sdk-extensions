@@ -1,8 +1,8 @@
-name: Issue for NuGet release
+name: Issue - NuGet release flow
 
 on:
   workflow_run:
-    workflows: ["Issue for NuGet release"]
+    workflows: ["Issue - NuGet release"]
     types:
     - requested
     - completed
