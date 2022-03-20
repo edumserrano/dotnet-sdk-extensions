@@ -59,18 +59,18 @@ runs:
     run: |
       $clientPayload = @{
           issueNumber = '${{ inputs.issue-number }}'
-          nugetId = '${{ inputs.nuget-id }}'
-          nugetVersion = '${{ inputs.nuget-version }}'
-          nugetReleaseStatus = '${{ inputs.nuget-release-status }}'
-          nugetReleaseBadgeColor = '${{ inputs.nuget-release-badge-color }}'
-          issueNugetReleaseNodeStatus = '${{ inputs.issue-nuget-release-node-status }}'
-          issueNugetReleaseUrl = '${{ inputs.issue-nuget-release-url }}'
-          nugetReleaseCommandHandlerNodeStatus = '${{ inputs.nuget-release-command-handler-node-status }}'
-          nugetReleaseCommandHandlerUrl = '${{ inputs.nuget-release-command-handler-url }}'
-          nugetReleasePullRequestNodeStatus = '${{ inputs.nuget-release-pull-request-node-status}}'
-          nugetReleasePullRequestUrl = '${{ inputs.nuget-release-pull-request-url }}'
-          publishNugetNodeStatus = '${{ inputs.publish-nuget-node-status }}'
-          publishNugetUrl = '${{ inputs.publish-nuget-url }}'
+          # nugetId = '${{ inputs.nuget-id }}'
+          # nugetVersion = '${{ inputs.nuget-version }}'
+          # nugetReleaseStatus = '${{ inputs.nuget-release-status }}'
+          # nugetReleaseBadgeColor = '${{ inputs.nuget-release-badge-color }}'
+          # issueNugetReleaseNodeStatus = '${{ inputs.issue-nuget-release-node-status }}'
+          # issueNugetReleaseUrl = '${{ inputs.issue-nuget-release-url }}'
+          # nugetReleaseCommandHandlerNodeStatus = '${{ inputs.nuget-release-command-handler-node-status }}'
+          # nugetReleaseCommandHandlerUrl = '${{ inputs.nuget-release-command-handler-url }}'
+          # nugetReleasePullRequestNodeStatus = '${{ inputs.nuget-release-pull-request-node-status}}'
+          # nugetReleasePullRequestUrl = '${{ inputs.nuget-release-pull-request-url }}'
+          # publishNugetNodeStatus = '${{ inputs.publish-nuget-node-status }}'
+          # publishNugetUrl = '${{ inputs.publish-nuget-url }}'
         }
       $clientPayloadAsJson = $clientPayload | ConvertTo-Json -Compress
       Write-Host $clientPayloadAsJson
@@ -81,4 +81,4 @@ runs:
       token: '${{ inputs.repo-dispatch-token }}'
       repository: 'edumserrano/dot-net-sdk-extensions'
       event-type: 'nuget-release-flow-command'
-      # client-payload: '${{ steps.setup-client-payload.outputs.client-payload }}'
+      client-payload: '${{ steps.setup-client-payload.outputs.client-payload }}'
