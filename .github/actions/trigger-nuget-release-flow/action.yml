@@ -62,7 +62,7 @@ runs:
           nugetId = '${{ inputs.nuget-id }}'
           nugetVersion = '${{ inputs.nuget-version }}'
           releaseStatus = '${{ inputs.nuget-release-status }}'
-          releaseBadgeColor = '${{ nuget-release-badge-color }}'
+          releaseBadgeColor = '${{ inputs.nuget-release-badge-color }}'
           issueNugetReleaseNodeStatus = '${{ inputs.issue-nuget-release-node-status }}'
           issueNugetReleaseUrl = '${{ inputs.issue-nuget-release-url }}'
           nugetReleaseCommandHandlerNodeStatus = '${{ inputs.nuget-release-command-handler-node-status }}'
@@ -82,31 +82,3 @@ runs:
       repository: 'edumserrano/dot-net-sdk-extensions'
       event-type: nuget-release-flow-command
       client-payload: '${{ steps.setup-client-payload.outputs.client-payload }}'
-
-
-  # - name: Save NuGet release flow info
-  #   shell: pwsh
-  #   run: |
-  #     $body = @{
-  #               issueNumber = '${{ inputs.issue-number }}'
-  #               nugetId = '${{ inputs.nuget-id }}'
-  #               nugetVersion = '${{ inputs.nuget-version }}'
-  #               releaseStatus = '${{ inputs.nuget-release-status }}'
-  #               releaseBadgeColor = '${{ nuget-release-badge-color }}'
-  #               issueNugetReleaseNodeStatus = '${{ inputs.issue-nuget-release-node-status }}'
-  #               issueNugetReleaseUrl = '${{ inputs.issue-nuget-release-url }}'
-  #               nugetReleaseCommandHandlerNodeStatus = '${{ inputs.nuget-release-command-handler-node-status }}'
-  #               nugetReleaseCommandHandlerUrl = '${{ inputs.nuget-release-command-handler-url }}'
-  #               nugetReleasePullRequestNodeStatus = '${{ inputs.nuget-release-pull-request-node-status}}'
-  #               nugetReleasePullRequestUrl = '${{ inputs.nuget-release-pull-request-url }}'
-  #               publishNugetNodeStatus = '${{ inputs.publish-nuget-node-status }}'
-  #               publishNugetUrl = '${{ inputs.publish-nuget-url }}'
-  #             }
-  #     $bodyAsJson = $body | ConvertTo-Json
-  #     $bodyAsJson > ${{github.workspace}}/nuget-release-flow-info.json
-  #     cat ${{github.workspace}}/nuget-release-flow-info.json
-  # - name: Upload NuGet release info
-  #   uses: actions/upload-artifact@v2
-  #   with:
-  #     name: nuget-release-flow-info
-  #     path: ${{github.workspace}}/nuget-release-flow-info.json

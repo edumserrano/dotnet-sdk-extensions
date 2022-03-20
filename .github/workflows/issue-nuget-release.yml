@@ -9,61 +9,6 @@ defaults:
     shell: pwsh
 
 jobs:
-
-  # update-release-issue-start:
-  #   name: Update NuGet release issue - start
-  #   if: contains(github.event.issue.labels.*.name, 'nuget-release')
-  #   environment: issue-nuget-release-workflow
-  #   permissions:
-  #     contents: read
-  #     issues: write
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #   - name: Checkout repository
-  #     uses: actions/checkout@v3
-  #   - name: Check workflow status
-  #     id: workflow-status
-  #     run: |
-  #       $workflowResult = '${{ needs.main.result }}'
-  #       $workflowSuccessful = $workflowResult -eq 'success'
-
-  #       if($workflowSuccessful) {
-  #         Write-Host "::set-output name=workflow-status::ok"
-  #         Write-Host "::set-output name=release-status::in%20progress"
-  #         Write-Host "::set-output name=release-badge-color::blue"
-  #       }
-  #       else {
-  #         Write-Host "::set-output name=workflow-status::error"
-  #         Write-Host "::set-output name=release-status::failed"
-  #         Write-Host "::set-output name=release-badge-color::red"
-  #       }
-  #   - name: Render issue comment template
-  #     id: render-issue-comment-template
-  #     uses: chuhlomin/render-template@v1.4
-  #     with:
-  #       template: .github/workflows/templates/issue-nuget-release/nuget-release-flow-issue-comment.md
-  #       vars: |
-  #         nugetId: '${{ needs.main.outputs.nuget-id }}'
-  #         nugetVersion: '${{ needs.main.outputs.nuget-version }}'
-  #         graphNodeStatus: '${{ steps.workflow-status.outputs.workflow-status }}'
-  #         releaseStatus: '${{ steps.workflow-status.outputs.release-status }}'
-  #         releaseBadgeColor: '${{ steps.workflow-status.outputs.release-badge-color }}'
-  #         issueNuGetReleaseUrl: 'https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}'
-  #   - name: Sanitize issue comment
-  #     id: sanitize-issue-comment
-  #     run: |
-  #       $body = '${{ steps.render-issue-comment-template.outputs.result }}'
-  #       $body = $body -replace "`n","%0A" # The content must be escaped to preserve newlines. See https://github.community/t/set-output-truncates-multiline-strings/16852/3
-  #       Write-Host "::set-output name=body::$body"
-  #   - name: Update issue with NuGet flow comment
-  #     uses: ./.github/actions/create-update-comment
-  #     with:
-  #       issue-number: ${{ github.event.issue.number }}
-  #       body-includes: '<!-- nuget-release-flow -->'
-  #       comment-author: github-actions[bot]
-  #       body: ${{ steps.sanitize-issue-comment.outputs.body }}
-  #       edit-mode: replace
-
   main:
     name: Parse issue and trigger NuGet release
     if: contains(github.event.issue.labels.*.name, 'nuget-release')
@@ -125,7 +70,7 @@ jobs:
         client-payload: '${{ steps.setup-client-payload.outputs.client-payload }}'
 
   trigger-nuget-release-flow:
-    name: Create NuGet release info artifact
+    name: Trigger NuGet release flow action
     needs: [main]
     if: always() && needs.main.result != 'skipped'
     environment: issue-nuget-release-workflow
@@ -168,58 +113,3 @@ jobs:
         nuget-release-badge-color: '${{ steps.set-nuget-release-flow-info.outputs.nuget-release-badge-color }}'
         issue-nuget-release-node-status: '${{ steps.set-nuget-release-flow-info.outputs.issue-nuget-release-node-status }}'
         issue-nuget-release-url: '${{ steps.set-nuget-release-flow-info.outputs.issue-nuget-release-url }}'
-
-  # update-release-issue-finish:
-  #   name: Update NuGet release issue - finish
-  #   needs: [main]
-  #   if: always() && needs.main.result != 'skipped'
-  #   environment: issue-nuget-release-workflow
-  #   permissions:
-  #     contents: read
-  #     issues: write
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #   - name: Checkout repository
-  #     uses: actions/checkout@v3
-  #   - name: Check workflow status
-  #     id: workflow-status
-  #     run: |
-  #       $workflowResult = '${{ needs.main.result }}'
-  #       $workflowSuccessful = $workflowResult -eq 'success'
-
-  #       if($workflowSuccessful) {
-  #         Write-Host "::set-output name=workflow-status::ok"
-  #         Write-Host "::set-output name=release-status::in%20progress"
-  #         Write-Host "::set-output name=release-badge-color::blue"
-  #       }
-  #       else {
-  #         Write-Host "::set-output name=workflow-status::error"
-  #         Write-Host "::set-output name=release-status::failed"
-  #         Write-Host "::set-output name=release-badge-color::red"
-  #       }
-  #   - name: Render issue comment template
-  #     id: render-issue-comment-template
-  #     uses: chuhlomin/render-template@v1.4
-  #     with:
-  #       template: .github/workflows/templates/issue-nuget-release/nuget-release-flow-issue-comment.md
-  #       vars: |
-  #         nugetId: '${{ needs.main.outputs.nuget-id }}'
-  #         nugetVersion: '${{ needs.main.outputs.nuget-version }}'
-  #         graphNodeStatus: '${{ steps.workflow-status.outputs.workflow-status }}'
-  #         releaseStatus: '${{ steps.workflow-status.outputs.release-status }}'
-  #         releaseBadgeColor: '${{ steps.workflow-status.outputs.release-badge-color }}'
-  #         issueNuGetReleaseUrl: 'https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}'
-  #   - name: Sanitize issue comment
-  #     id: sanitize-issue-comment
-  #     run: |
-  #       $body = '${{ steps.render-issue-comment-template.outputs.result }}'
-  #       $body = $body -replace "`n","%0A" # The content must be escaped to preserve newlines. See https://github.community/t/set-output-truncates-multiline-strings/16852/3
-  #       Write-Host "::set-output name=body::$body"
-  #   - name: Update issue with NuGet flow comment
-  #     uses: ./.github/actions/create-update-comment
-  #     with:
-  #       issue-number: ${{ github.event.issue.number }}
-  #       body-includes: '<!-- nuget-release-flow -->'
-  #       comment-author: github-actions[bot]
-  #       body: ${{ steps.sanitize-issue-comment.outputs.body }}
-  #       edit-mode: replace
