@@ -81,4 +81,4 @@ runs:
       token: '${{ inputs.repo-dispatch-token }}'
       repository: 'edumserrano/dot-net-sdk-extensions'
       event-type: 'nuget-release-flow-command'
-      client-payload: '${{ steps.setup-client-payload.outputs.client-payload }}'
+      # client-payload: '${{ steps.setup-client-payload.outputs.client-payload }}'
