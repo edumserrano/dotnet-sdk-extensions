@@ -1,0 +1,112 @@
+# Why was this action created:
+#
+# This is used to upload an artifact with information required to update the NuGet release flow
+# diagram in the NuGet release issue.
+#
+
+name: 'Upload NuGet release flow info artifact'
+description: 'Uploads an artifact with information to update the NuGet release flow diagram'
+inputs:
+  repo-dispatch-token:
+    description: 'GitHub token with permissions to trigger a repository dispatch event.'
+    required: true
+  issue-number:
+    description: 'The number of the issue for the NuGet release.'
+    required: true
+  nuget-id:
+    description: 'The NuGet ID.'
+    required: false
+  nuget-version:
+    description: 'The NuGet version.'
+    required: false
+  nuget-release-status:
+    description: 'The status of the NuGet release flow.'
+    required: true
+  nuget-release-badge-color:
+    description: 'The color to use for the badge on the NuGet release flow.'
+    required: true
+  issue-nuget-release-node-status:
+    description: 'The status of the NuGet release flow node for the NuGet release GitHub issue action.'
+    required: false
+  issue-nuget-release-url:
+    description: 'The URL for the NuGet release GitHub issue action.'
+    required: false
+  nuget-release-command-handler-node-status:
+    description: 'The status of the NuGet release flow node for the NuGet release command handler action.'
+    required: false
+  nuget-release-command-handler-url:
+    description: 'The URL for the NuGet release command handler action.'
+    required: false
+  nuget-release-pull-request-node-status:
+    description: 'The status of the NuGet release flow node for the NuGet release pull request.'
+    required: false
+  nuget-release-pull-request-url:
+    description: 'The URL for the NuGet release pull request.'
+    required: false
+  publish-nuget-node-status:
+    description: 'The status of the NuGet release flow node for the NuGet release publish action.'
+    required: false
+  publish-nuget-url:
+    description: 'The URL for the NuGet release publish action.'
+    required: false
+
+runs:
+  using: "composite"
+  steps:
+  - name: Create client payload for repository dispatch event
+    id: setup-client-payload
+    shell: pwsh
+    run: |
+      $clientPayload = @{
+          issueNumber = '${{ inputs.issue-number }}'
+          nugetId = '${{ inputs.nuget-id }}'
+          nugetVersion = '${{ inputs.nuget-version }}'
+          releaseStatus = '${{ inputs.nuget-release-status }}'
+          releaseBadgeColor = '${{ nuget-release-badge-color }}'
+          issueNugetReleaseNodeStatus = '${{ inputs.issue-nuget-release-node-status }}'
+          issueNugetReleaseUrl = '${{ inputs.issue-nuget-release-url }}'
+          nugetReleaseCommandHandlerNodeStatus = '${{ inputs.nuget-release-command-handler-node-status }}'
+          nugetReleaseCommandHandlerUrl = '${{ inputs.nuget-release-command-handler-url }}'
+          nugetReleasePullRequestNodeStatus = '${{ inputs.nuget-release-pull-request-node-status}}'
+          nugetReleasePullRequestUrl = '${{ inputs.nuget-release-pull-request-url }}'
+          publishNugetNodeStatus = '${{ inputs.publish-nuget-node-status }}'
+          publishNugetUrl = '${{ inputs.publish-nuget-url }}'
+        }
+      $clientPayloadAsJson = $clientPayload | ConvertTo-Json -Compress
+      Write-Host $clientPayloadAsJson
+      Write-Host "::set-output name=client-payload::$clientPayloadAsJson"
+  - name: Trigger NuGet release flow workflow via repository dispatch
+    uses: peter-evans/repository-dispatch@v1.1.3
+    with:
+      token: ${{ inputs.repo-dispatch-token }}
+      repository: 'edumserrano/dot-net-sdk-extensions'
+      event-type: nuget-release-flow-command
+      client-payload: '${{ steps.setup-client-payload.outputs.client-payload }}'
+
+
+  # - name: Save NuGet release flow info
+  #   shell: pwsh
+  #   run: |
+  #     $body = @{
+  #               issueNumber = '${{ inputs.issue-number }}'
+  #               nugetId = '${{ inputs.nuget-id }}'
+  #               nugetVersion = '${{ inputs.nuget-version }}'
+  #               releaseStatus = '${{ inputs.nuget-release-status }}'
+  #               releaseBadgeColor = '${{ nuget-release-badge-color }}'
+  #               issueNugetReleaseNodeStatus = '${{ inputs.issue-nuget-release-node-status }}'
+  #               issueNugetReleaseUrl = '${{ inputs.issue-nuget-release-url }}'
+  #               nugetReleaseCommandHandlerNodeStatus = '${{ inputs.nuget-release-command-handler-node-status }}'
+  #               nugetReleaseCommandHandlerUrl = '${{ inputs.nuget-release-command-handler-url }}'
+  #               nugetReleasePullRequestNodeStatus = '${{ inputs.nuget-release-pull-request-node-status}}'
+  #               nugetReleasePullRequestUrl = '${{ inputs.nuget-release-pull-request-url }}'
+  #               publishNugetNodeStatus = '${{ inputs.publish-nuget-node-status }}'
+  #               publishNugetUrl = '${{ inputs.publish-nuget-url }}'
+  #             }
+  #     $bodyAsJson = $body | ConvertTo-Json
+  #     $bodyAsJson > ${{github.workspace}}/nuget-release-flow-info.json
+  #     cat ${{github.workspace}}/nuget-release-flow-info.json
+  # - name: Upload NuGet release info
+  #   uses: actions/upload-artifact@v2
+  #   with:
+  #     name: nuget-release-flow-info
+  #     path: ${{github.workspace}}/nuget-release-flow-info.json

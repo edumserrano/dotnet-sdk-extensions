@@ -1,10 +1,8 @@
 name: Issue - NuGet release flow
 
 on:
-  workflow_run:
-    workflows: ["Issue - NuGet release"]
-    types:
-    - completed
+  repository_dispatch:
+    types: [ nuget-release-flow-command ]
 
 defaults:
   run:
@@ -25,32 +23,24 @@ jobs:
       run: $env:GITHUB_CONTEXT
     - name: Checkout repository
       uses: actions/checkout@v3
-    - name: Download dotnet format workflow info artifact
-      uses: dawidd6/action-download-artifact@v2.17.0
-      with:
-        workflow: ${{ github.event.workflow_run.workflow_id }}
-        run_id: ${{ github.event.workflow_run.id }}
-        name:  nuget-release-flow-info
-    - name: Get issue number from NuGet release flow info
-      id: get-issue-number
-      run: |
-        $infoFilePath = "./nuget-release-flow-info.json"
-        $infoJson = Get-Content $infoFilePath
-        Write-Host $infoJson
-        $info = $infoJson | ConvertFrom-Json
-        Write-Host "::set-output name=issue-number::$($info.issueNumber)"
     - name: Find NuGet release flow comment
       uses: peter-evans/find-comment@v1.3.0
       id: find-nuget-release-flow-comment
       with:
-        issue-number: ${{ steps.get-issue-number.outputs.issue-number}}
+        issue-number: '${{ github.event.client_payload.issueNumber }}'
         body-includes: '<!-- nuget-release-flow -->'
         comment-author: github-actions[bot]
     - name: Parse data from NuGet flow comment
       id: parse-nuget-flow-data
-      if:   steps.find-nuget-release-flow-comment.outputs.comment-id != 0
+      if: steps.find-nuget-release-flow-comment.outputs.comment-id != 0
       run: |
         $commentBody = '${{ steps.find-nuget-release-flow-comment.outputs.comment-body }}'
+
+        $commentBody -match '<!-- nuget-id: (?<NugetId>.+) -->'
+        $nugetId = $Matches.NugetId
+
+        $commentBody -match '<!-- nuget-version: (?<NugetVersion>.+) -->'
+        $nugetVersion = $Matches.NugetVersion
 
         $commentBody -match '<!-- issue-nuget-release-node-status: (?<IssueNugetReleaseNodeStatus>.+) -->'
         $issueNugetReleaseNodeStatus = $Matches.IssueNugetReleaseNodeStatus
@@ -70,6 +60,8 @@ jobs:
         $commentBody -match '<!-- nuget-release-pull-request-url: (?<NugetReleasePullRequestUrl>.+) -->'
         $nugetReleasePullRequestUrl = $Matches.NugetReleasePullRequestUrl
 
+        Write-Host "::set-output name=issue-nuget-id::$nugetId"
+        Write-Host "::set-output name=issue-nuget-version::$nugetVersion"
         Write-Host "::set-output name=issue-nuget-release-node-status::$issueNugetReleaseNodeStatus"
         Write-Host "::set-output name=issue-nuget-release-url::$issueNugetReleaseUrl"
         Write-Host "::set-output name=nuget-release-command-handler-node-status::$nugetReleaseCommandHandlerNodeStatus"
@@ -79,13 +71,8 @@ jobs:
     - name: Read nuget release flow info
       id: nuget-release-flow-info
       run: |
-        $infoFilePath = "./nuget-release-flow-info.json"
-        $infoJson = Get-Content $infoFilePath
-        Write-Host $infoJson
-        $info = $infoJson | ConvertFrom-Json
-
         # the value is defined in the following order:
-        # 1 - if it exists in the nuget release info artifact
+        # 1 - if it exists in the client payload from the repo dispatch event
         # 2 - if it exists in the parsed data from the nuget release flow comment
         # 3 - use a default value
         $issueNugetReleaseNodeStatus = 'default'
@@ -97,54 +84,63 @@ jobs:
         $publishNugetNodeStatus = 'default'
         $publishNugetUrl = 'empty'
 
-        $issueNugetReleaseNodeStatus = [string]::IsNullOrWhiteSpace($info.issueNugetReleaseNodeStatus) `
+        $issueNugetReleaseNodeStatus = [string]::IsNullOrWhiteSpace('${{ steps.parse-nuget-flow-data.outputs.issue-nuget-release-node-status }}') `
           ? $issueNugetReleaseNodeStatus `
-          : $info.issueNugetReleaseNodeStatus
-        $issueNugetReleaseUrl = [string]::IsNullOrWhiteSpace($info.issueNugetReleaseUrl) `
+          : '${{ steps.parse-nuget-flow-data.outputs.issue-nuget-release-node-status }}'
+        $issueNugetReleaseUrl = [string]::IsNullOrWhiteSpace('${{ steps.parse-node-urls.outputs.issue-nuget-release-url }}') `
           ? $issueNugetReleaseUrl `
-          : $info.issueNugetReleaseUrl
-        $nugetReleaseCommandHandlerNodeStatus = [string]::IsNullOrWhiteSpace($info.nugetReleaseCommandHandlerNodeStatus) `
+          : '${{ steps.parse-node-urls.outputs.issue-nuget-release-url }}'
+        $nugetReleaseCommandHandlerNodeStatus = [string]::IsNullOrWhiteSpace('${{ steps.parse-nuget-flow-data.outputs.nuget-release-command-handler-node-status }}') `
           ? $nugetReleaseCommandHandlerNodeStatus `
-          : $info.nugetReleaseCommandHandlerNodeStatus
-        $nugetReleaseCommandHandlerUrl = [string]::IsNullOrWhiteSpace($info.nugetReleaseCommandHandlerUrl) `
+          : '${{ steps.parse-nuget-flow-data.outputs.nuget-release-command-handler-node-status }}'
+        $nugetReleaseCommandHandlerUrl = [string]::IsNullOrWhiteSpace('${{ steps.parse-node-urls.outputs.nuget-release-command-handler-url }}') `
           ? $nugetReleaseCommandHandlerUrl `
-          : $info.nugetReleaseCommandHandlerUrl
-        $nugetReleasePullRequestNodeStatus = [string]::IsNullOrWhiteSpace($info.nugetReleasePullRequestNodeStatus) `
+          : '${{ steps.parse-node-urls.outputs.nuget-release-command-handler-url }}'
+        $nugetReleasePullRequestNodeStatus = [string]::IsNullOrWhiteSpace('${{ steps.parse-nuget-flow-data.outputs.nuget-release-pull-request-node-status }}') `
           ? $nugetReleasePullRequestNodeStatus `
-          : $info.nugetReleasePullRequestNodeStatus
-        $nugetReleasePullRequestUrl = [string]::IsNullOrWhiteSpace($info.nugetReleasePullRequestUrl) `
+          : '${{ steps.parse-nuget-flow-data.outputs.nuget-release-pull-request-node-status }}'
+        $nugetReleasePullRequestUrl = [string]::IsNullOrWhiteSpace('${{ steps.parse-node-urls.outputs.nuget-release-pull-request-url }}') `
           ? $nugetReleasePullRequestUrl `
-          : $info.nugetReleasePullRequestUrl
-        $publishNugetNodeStatus = [string]::IsNullOrWhiteSpace($info.publishNugetNodeStatus) `
+          : '${{ steps.parse-node-urls.outputs.nuget-release-pull-request-url }}'
+
+        $issueNugetReleaseNodeStatus = [string]::IsNullOrWhiteSpace('${{ github.event.client_payload.issueNugetReleaseNodeStatus }}') `
+          ? $issueNugetReleaseNodeStatus `
+          : '${{ github.event.client_payload.issueNugetReleaseNodeStatus }}'
+        $issueNugetReleaseUrl = [string]::IsNullOrWhiteSpace('${{ github.event.client_payload.issueNugetReleaseUrl }}') `
+          ? $issueNugetReleaseUrl `
+          : '${{ github.event.client_payload.issueNugetReleaseUrl }}'
+        $nugetReleaseCommandHandlerNodeStatus = [string]::IsNullOrWhiteSpace('${{ github.event.client_payload.nugetReleaseCommandHandlerNodeStatus }}') `
+          ? $nugetReleaseCommandHandlerNodeStatus `
+          : '${{ github.event.client_payload.nugetReleaseCommandHandlerNodeStatus }}'
+        $nugetReleaseCommandHandlerUrl = [string]::IsNullOrWhiteSpace('${{ github.event.client_payload.nugetReleaseCommandHandlerUrl }}') `
+          ? $nugetReleaseCommandHandlerUrl `
+          : '${{ github.event.client_payload.nugetReleaseCommandHandlerUrl }}'
+        $nugetReleasePullRequestNodeStatus = [string]::IsNullOrWhiteSpace('${{ github.event.client_payload.nugetReleasePullRequestNodeStatus }}') `
+          ? $nugetReleasePullRequestNodeStatus `
+          : '${{ github.event.client_payload.nugetReleasePullRequestNodeStatus }}'
+        $nugetReleasePullRequestUrl = [string]::IsNullOrWhiteSpace('${{ github.event.client_payload.nugetReleasePullRequestUrl }}') `
+          ? $nugetReleasePullRequestUrl `
+          : '${{ github.event.client_payload.nugetReleasePullRequestUrl }}'
+        $publishNugetNodeStatus = [string]::IsNullOrWhiteSpace('${{ github.event.client_payload.publishNugetNodeStatus }}') `
           ? $publishNugetNodeStatus `
-          : $info.publishNugetNodeStatus
-        $publishNugetUrl = [string]::IsNullOrWhiteSpace($info.publishNugetUrl) `
+          : '${{ github.event.client_payload.publishNugetNodeStatus }}'
+        $publishNugetUrl = [string]::IsNullOrWhiteSpace('${{ github.event.client_payload.publishNugetUrl }}') `
           ? $publishNugetUrl `
-          : $info.publishNugetUrl
+          : '${{ github.event.client_payload.publishNugetUrl }}'
 
-        $issueNugetReleaseNodeStatus = [string]::IsNullOrWhiteSpace("${{ steps.parse-nuget-flow-data.outputs.issue-nuget-release-node-status }}") `
-          ? $issueNugetReleaseNodeStatus `
-          : $info.issueNugetReleaseNodeStatus
-        $issueNugetReleaseUrl = [string]::IsNullOrWhiteSpace("${{ steps.parse-node-urls.outputs.issue-nuget-release-url }}") `
-          ? $issueNugetReleaseUrl `
-          : $info.issueNugetReleaseUrl
-        $nugetReleaseCommandHandlerNodeStatus = [string]::IsNullOrWhiteSpace("${{ steps.parse-nuget-flow-data.outputs.nuget-release-command-handler-node-status }}") `
-          ? $nugetReleaseCommandHandlerNodeStatus `
-          : $info.nugetReleaseCommandHandlerNodeStatus
-        $nugetReleaseCommandHandlerUrl = [string]::IsNullOrWhiteSpace("${{ steps.parse-node-urls.outputs.nuget-release-command-handler-url }}") `
-          ? $nugetReleaseCommandHandlerUrl `
-          : $info.nugetReleaseCommandHandlerUrl
-        $nugetReleasePullRequestNodeStatus = [string]::IsNullOrWhiteSpace("${{ steps.parse-nuget-flow-data.outputs.nuget-release-pull-request-node-status }}") `
-          ? $nugetReleasePullRequestNodeStatus `
-          : $info.nugetReleasePullRequestNodeStatus
-        $nugetReleasePullRequestUrl = [string]::IsNullOrWhiteSpace("${{ steps.parse-node-urls.outputs.nuget-release-pull-request-url }}") `
-          ? $nugetReleasePullRequestUrl `
-          : $info.nugetReleasePullRequestUrl
+        # there's no default for nuget id and nuget version, they need to be passed in the first time and then
+        # their value is read from the nuget release flow comment
+        $nugetId = [string]::IsNullOrWhiteSpace('${{ steps.parse-nuget-flow-data.outputs.nuget-id }}') `
+          ? '${{ github.event.client_payload.nugetId }}' `
+          : '${{ steps.parse-nuget-flow-data.outputs.nuget-id }}'
+        $nugetVersion = [string]::IsNullOrWhiteSpace('${{ steps.parse-nuget-flow-data.outputs.nuget-version }}') `
+          ? '${{ github.event.client_payload.nugetVersion }}' `
+          : '${{ steps.parse-nuget-flow-data.outputs.nuget-version }}'
 
-        Write-Host "::set-output name=nuget-id::$($info.nugetId)"
-        Write-Host "::set-output name=nuget-version::$($info.nugetVersion)"
-        Write-Host "::set-output name=release-status::$($info.releaseStatus)"
-        Write-Host "::set-output name=release-badge-color::$($info.releaseBadgeColor)"
+        Write-Host "::set-output name=nuget-id::$nugetId"
+        Write-Host "::set-output name=nuget-version::$nugetVersion"
+        Write-Host "::set-output name=release-status::'${{ github.event.client_payload.releaseStatus }}'"
+        Write-Host "::set-output name=release-badge-color::'${{ github.event.client_payload.releaseBadgeColor }}'"
         Write-Host "::set-output name=issue-nuget-release-node-status::$issueNugetReleaseNodeStatus"
         Write-Host "::set-output name=issue-nuget-release-url::$issueNugetReleaseUrl"
         Write-Host "::set-output name=nuget-release-command-handler-node-status::$nugetReleaseCommandHandlerNodeStatus"

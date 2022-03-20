@@ -23,6 +23,8 @@
 - If any step fails it will be highlighted in red. Click on it to find out more details in the logs of the action.
 - To retry close and and reopen this issue, this will restart the NuGet release flow. Before retrying make sure to close any pull requests that might have been created by this release flow.
 
+<!-- nuget-id: {{ .nugetId }} -->
+<!-- nuget-version: {{ .nugetVersion}} -->
 <!-- issue-nuget-release-node-status: {{ .issueNugetReleaseNodeStatus }} -->
 <!-- issue-nuget-release-url: {{ .issueNugetReleaseUrl }} -->
 <!-- nuget-release-command-handler-node-status: {{ .nugetReleaseCommandHandlerNodeStatus }} -->

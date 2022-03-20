@@ -38,7 +38,6 @@ jobs:
         $nugetReleaseInfoStatus = $statuses | Where-Object {$_.context -eq "NuGet release command handler / NuGet release info (repository_dispatch)"}
         $nugetReleaseInfoWorkflowUrl = $nugetReleaseInfoStatus.target_url
         $runId = $nugetReleaseInfoWorkflowUrl.Split("/")[-1]
-
         Write-Host "run-id=$runId"
         Write-Host "::set-output name=run-id::$runId"
     - name: Download NuGet release info artifact

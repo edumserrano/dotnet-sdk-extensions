@@ -5,8 +5,8 @@
 # with the 3 to avoid the repetition.
 #
 
-name: 'Create GitHub status'
-description: 'Creates a GitHub status'
+name: 'Create/Update comment'
+description: 'Creates or updates a comment'
 inputs:
   issue-number:
     description: 'The number of the issue or pull request in which to search.'
