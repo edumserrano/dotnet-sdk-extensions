@@ -139,8 +139,8 @@ jobs:
 
         Write-Host "::set-output name=nuget-id::$nugetId"
         Write-Host "::set-output name=nuget-version::$nugetVersion"
-        Write-Host "::set-output name=release-status::'${{ github.event.client_payload.nuget.releaseStatus }}'"
-        Write-Host "::set-output name=release-badge-color::'${{ github.event.client_payload.nuget.releaseBadgeColor }}'"
+        Write-Host "::set-output name=nuget-release-status::'${{ github.event.client_payload.nuget.nugetReleaseStatus }}'"
+        Write-Host "::set-output name=nuget-release-badge-color::'${{ github.event.client_payload.nuget.nugetReleaseBadgeColor }}'"
         Write-Host "::set-output name=issue-nuget-release-node-status::$issueNugetReleaseNodeStatus"
         Write-Host "::set-output name=issue-nuget-release-url::$issueNugetReleaseUrl"
         Write-Host "::set-output name=nuget-release-command-handler-node-status::$nugetReleaseCommandHandlerNodeStatus"
@@ -161,8 +161,8 @@ jobs:
         vars: |
           nugetId: '${{ steps.nuget-release-flow-info.outputs.nuget-id }}'
           nugetVersion: '${{ steps.nuget-release-flow-info.outputs.nuget-version }}'
-          releaseStatus: '${{ steps.nuget-release-flow-info.outputs.release-status }}'
-          releaseBadgeColor: '${{ steps.nuget-release-flow-info.outputs.release-badge-color }}'
+          nugetReleaseStatus: '${{ steps.nuget-release-flow-info.outputs.nuget-release-status }}'
+          nugetReleaseBadgeColor: '${{ steps.nuget-release-flow-info.outputs.nuget-release-badge-color }}'
           issueNugetReleaseNodeStatus: '${{ steps.nuget-release-flow-info.outputs.issue-nuget-release-node-status }}'
           issueNugetReleaseUrl: '${{ steps.nuget-release-flow-info.outputs.issue-nuget-release-url }}'
           nugetReleaseCommandHandlerNodeStatus: '${{ steps.nuget-release-flow-info.outputs.nuget-release-command-handler-node-status }}'
