@@ -159,13 +159,13 @@ jobs:
       uses: ./.github/actions/trigger-nuget-release-flow
       with:
         repo-dispatch-token: ${{ secrets.REPOSITORY_DISPATCH_GH_TOKEN }}
-        issue-number: '${{ stepts.set-nuget-release-flow-info.outputs.issue-number }}'
-        nuget-id: '${{ stepts.set-nuget-release-flow-info.outputs.nuget-id }}'
-        nuget-version: '${{ stepts.set-nuget-release-flow-info.outputs.nuget-version }}'
-        nuget-release-status: '${{ stepts.set-nuget-release-flow-info.outputs.nuget-release-status }}'
-        nuget-release-badge-color: '${{ stepts.set-nuget-release-flow-info.outputs.nuget-release-badge-color }}'
-        issue-nuget-release-node-status: '${{ stepts.set-nuget-release-flow-info.outputs.issue-nuget-release-node-status }}'
-        issue-nuget-release-url: '${{ stepts.set-nuget-release-flow-info.outputs.issue-nuget-release-url }}'
+        issue-number: '${{ steps.set-nuget-release-flow-info.outputs.issue-number }}'
+        nuget-id: '${{ steps.set-nuget-release-flow-info.outputs.nuget-id }}'
+        nuget-version: '${{ steps.set-nuget-release-flow-info.outputs.nuget-version }}'
+        nuget-release-status: '${{ steps.set-nuget-release-flow-info.outputs.nuget-release-status }}'
+        nuget-release-badge-color: '${{ steps.set-nuget-release-flow-info.outputs.nuget-release-badge-color }}'
+        issue-nuget-release-node-status: '${{ steps.set-nuget-release-flow-info.outputs.issue-nuget-release-node-status }}'
+        issue-nuget-release-url: '${{ steps.set-nuget-release-flow-info.outputs.issue-nuget-release-url }}'
 
   # update-release-issue-finish:
   #   name: Update NuGet release issue - finish
