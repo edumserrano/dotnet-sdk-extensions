@@ -1,4 +1,4 @@
-name: PR t- est results comment
+name: PR - test results comment
 
 on:
   workflow_run:
