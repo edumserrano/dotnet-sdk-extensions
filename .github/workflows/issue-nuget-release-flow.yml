@@ -180,7 +180,7 @@ jobs:
     - name: Update issue with NuGet flow comment
       uses: ./.github/actions/create-update-comment
       with:
-        issue-number: ${{ steps.get-issue-number.outputs.issue-number}}
+        issue-number: ${{ github.event.client_payload.nuget.issueNumber }}
         body-includes: '<!-- nuget-release-flow -->'
         comment-author: github-actions[bot]
         body: ${{ steps.sanitize-issue-comment.outputs.body }}
