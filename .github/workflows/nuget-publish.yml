@@ -13,7 +13,7 @@ jobs:
   release-info:
     name: Get NuGet release info
     if: contains(github.event.pull_request.labels.*.name, 'nuget-release')
-    environment: nuget-push-workflow
+    environment: nuget-publish-workflow
     permissions:
       contents: read
     runs-on: ubuntu-latest
@@ -69,7 +69,7 @@ jobs:
     name: Publish NuGet package and symbols
     needs: [release-info]
     if: github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'nuget-release')
-    environment: nuget-push-workflow
+    environment: nuget-publish-workflow
     permissions:
       contents: write
       issues: write
@@ -153,7 +153,7 @@ jobs:
     name: Trigger NuGet release flow
     needs: [release-info, publish-nuget]
     if: always() && needs.publish-nuget.result != 'skipped'
-    environment: nuget-push-workflow
+    environment: nuget-publish-workflow
     permissions:
       contents: read
     runs-on: ubuntu-latest
