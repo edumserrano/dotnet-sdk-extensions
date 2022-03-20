@@ -139,8 +139,8 @@ jobs:
 
         Write-Host "::set-output name=nuget-id::$nugetId"
         Write-Host "::set-output name=nuget-version::$nugetVersion"
-        Write-Host "::set-output name=nuget-release-status::'${{ github.event.client_payload.nuget.nugetReleaseStatus }}'"
-        Write-Host "::set-output name=nuget-release-badge-color::'${{ github.event.client_payload.nuget.nugetReleaseBadgeColor }}'"
+        Write-Host "::set-output name=nuget-release-status::${{ github.event.client_payload.nuget.nugetReleaseStatus }}"
+        Write-Host "::set-output name=nuget-release-badge-color::${{ github.event.client_payload.nuget.nugetReleaseBadgeColor }}"
         Write-Host "::set-output name=issue-nuget-release-node-status::$issueNugetReleaseNodeStatus"
         Write-Host "::set-output name=issue-nuget-release-url::$issueNugetReleaseUrl"
         Write-Host "::set-output name=nuget-release-command-handler-node-status::$nugetReleaseCommandHandlerNodeStatus"
