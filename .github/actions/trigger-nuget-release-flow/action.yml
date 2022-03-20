@@ -61,8 +61,8 @@ runs:
           issueNumber = '${{ inputs.issue-number }}'
           nugetId = '${{ inputs.nuget-id }}'
           nugetVersion = '${{ inputs.nuget-version }}'
-          releaseStatus = '${{ inputs.nuget-release-status }}'
-          releaseBadgeColor = '${{ inputs.nuget-release-badge-color }}'
+          nugetReleaseStatus = '${{ inputs.nuget-release-status }}'
+          nugetReleaseBadgeColor = '${{ inputs.nuget-release-badge-color }}'
           issueNugetReleaseNodeStatus = '${{ inputs.issue-nuget-release-node-status }}'
           issueNugetReleaseUrl = '${{ inputs.issue-nuget-release-url }}'
           nugetReleaseCommandHandlerNodeStatus = '${{ inputs.nuget-release-command-handler-node-status }}'
@@ -78,7 +78,7 @@ runs:
   - name: Trigger NuGet release flow workflow via repository dispatch
     uses: peter-evans/repository-dispatch@v1.1.3
     with:
-      token: ${{ inputs.repo-dispatch-token }}
+      token: '${{ inputs.repo-dispatch-token }}'
       repository: 'edumserrano/dot-net-sdk-extensions'
-      event-type: nuget-release-flow-command
+      event-type: 'nuget-release-flow-command'
       client-payload: '${{ steps.setup-client-payload.outputs.client-payload }}'

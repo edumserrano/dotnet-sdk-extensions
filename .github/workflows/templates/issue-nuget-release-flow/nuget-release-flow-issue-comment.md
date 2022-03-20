@@ -1,7 +1,7 @@
 <!-- nuget-release-flow -->
 ## NuGet release flow progress
 
-[![Generic badge](https://img.shields.io/badge/status-{{ .releaseStatus }}-{{ .releaseBadgeColor }}.svg)](https://shields.io/)
+[![Generic badge](https://img.shields.io/badge/status-{{ .nugetReleaseStatus }}-{{ .nugetReleaseBadgeColor }}.svg)](https://shields.io/)
 
 ``````mermaid
   graph TD

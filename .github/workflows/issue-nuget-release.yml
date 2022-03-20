@@ -70,7 +70,7 @@ jobs:
         client-payload: '${{ steps.setup-client-payload.outputs.client-payload }}'
 
   trigger-nuget-release-flow:
-    name: Trigger NuGet release flow action
+    name: Trigger NuGet release flow
     needs: [main]
     if: always() && needs.main.result != 'skipped'
     environment: issue-nuget-release-workflow
@@ -98,8 +98,8 @@ jobs:
         Write-Host "::set-output name=issue-number::${{ github.event.issue.number }}"
         Write-Host "::set-output name=nuget-id::${{ needs.main.outputs.nuget-id }}"
         Write-Host "::set-output name=nuget-version::${{ needs.main.outputs.nuget-version }}"
-        Write-Host "::set-output name=release-status::$releaseStatus"
-        Write-Host "::set-output name=release-badge-color::$releaseBadgeColor"
+        Write-Host "::set-output name=nuget-release-status::$releaseStatus"
+        Write-Host "::set-output name=nuget-release-badge-color::$releaseBadgeColor"
         Write-Host "::set-output name=issue-nuget-release-node-status::$workflowStatus"
         Write-Host "::set-output name=issue-nuget-release-url::https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
     - name: Trigger NuGet release flow action
