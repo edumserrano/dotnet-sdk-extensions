@@ -57,21 +57,26 @@ runs:
     id: setup-client-payload
     shell: pwsh
     run: |
+      # The GitHub API allows a maximum of 10 top-level properties in the client-payload
+      # To solve we simply wrap the payload in a single top-level property. In this case
+      # the `nuget` property
       $clientPayload = @{
+        nuget = @{
           issueNumber = '${{ inputs.issue-number }}'
           nugetId = '${{ inputs.nuget-id }}'
           nugetVersion = '${{ inputs.nuget-version }}'
           nugetReleaseStatus = '${{ inputs.nuget-release-status }}'
           nugetReleaseBadgeColor = '${{ inputs.nuget-release-badge-color }}'
-          # issueNugetReleaseNodeStatus = '${{ inputs.issue-nuget-release-node-status }}'
-          # issueNugetReleaseUrl = '${{ inputs.issue-nuget-release-url }}'
-          # nugetReleaseCommandHandlerNodeStatus = '${{ inputs.nuget-release-command-handler-node-status }}'
-          # nugetReleaseCommandHandlerUrl = '${{ inputs.nuget-release-command-handler-url }}'
-          # nugetReleasePullRequestNodeStatus = '${{ inputs.nuget-release-pull-request-node-status}}'
-          # nugetReleasePullRequestUrl = '${{ inputs.nuget-release-pull-request-url }}'
-          # publishNugetNodeStatus = '${{ inputs.publish-nuget-node-status }}'
-          # publishNugetUrl = '${{ inputs.publish-nuget-url }}'
+          issueNugetReleaseNodeStatus = '${{ inputs.issue-nuget-release-node-status }}'
+          issueNugetReleaseUrl = '${{ inputs.issue-nuget-release-url }}'
+          nugetReleaseCommandHandlerNodeStatus = '${{ inputs.nuget-release-command-handler-node-status }}'
+          nugetReleaseCommandHandlerUrl = '${{ inputs.nuget-release-command-handler-url }}'
+          nugetReleasePullRequestNodeStatus = '${{ inputs.nuget-release-pull-request-node-status}}'
+          nugetReleasePullRequestUrl = '${{ inputs.nuget-release-pull-request-url }}'
+          publishNugetNodeStatus = '${{ inputs.publish-nuget-node-status }}'
+          publishNugetUrl = '${{ inputs.publish-nuget-url }}'
         }
+      }
       $clientPayloadAsJson = $clientPayload | ConvertTo-Json -Compress
       Write-Host $clientPayloadAsJson
       Write-Host "::set-output name=client-payload::$clientPayloadAsJson"

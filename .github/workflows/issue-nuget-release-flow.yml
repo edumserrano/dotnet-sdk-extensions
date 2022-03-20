@@ -27,7 +27,7 @@ jobs:
       uses: peter-evans/find-comment@v1.3.0
       id: find-nuget-release-flow-comment
       with:
-        issue-number: '${{ github.event.client_payload.issueNumber }}'
+        issue-number: '${{ github.event.client_payload.nuget.issueNumber }}'
         body-includes: '<!-- nuget-release-flow -->'
         comment-author: github-actions[bot]
     - name: Parse data from NuGet flow comment
@@ -103,44 +103,44 @@ jobs:
           ? $nugetReleasePullRequestUrl `
           : '${{ steps.parse-node-urls.outputs.nuget-release-pull-request-url }}'
 
-        $issueNugetReleaseNodeStatus = [string]::IsNullOrWhiteSpace('${{ github.event.client_payload.issueNugetReleaseNodeStatus }}') `
+        $issueNugetReleaseNodeStatus = [string]::IsNullOrWhiteSpace('${{ github.event.client_payload.nuget.issueNugetReleaseNodeStatus }}') `
           ? $issueNugetReleaseNodeStatus `
-          : '${{ github.event.client_payload.issueNugetReleaseNodeStatus }}'
-        $issueNugetReleaseUrl = [string]::IsNullOrWhiteSpace('${{ github.event.client_payload.issueNugetReleaseUrl }}') `
+          : '${{ github.event.client_payload.nuget.issueNugetReleaseNodeStatus }}'
+        $issueNugetReleaseUrl = [string]::IsNullOrWhiteSpace('${{ github.event.client_payload.nuget.issueNugetReleaseUrl }}') `
           ? $issueNugetReleaseUrl `
-          : '${{ github.event.client_payload.issueNugetReleaseUrl }}'
-        $nugetReleaseCommandHandlerNodeStatus = [string]::IsNullOrWhiteSpace('${{ github.event.client_payload.nugetReleaseCommandHandlerNodeStatus }}') `
+          : '${{ github.event.client_payload.nuget.issueNugetReleaseUrl }}'
+        $nugetReleaseCommandHandlerNodeStatus = [string]::IsNullOrWhiteSpace('${{ github.event.client_payload.nuget.nugetReleaseCommandHandlerNodeStatus }}') `
           ? $nugetReleaseCommandHandlerNodeStatus `
-          : '${{ github.event.client_payload.nugetReleaseCommandHandlerNodeStatus }}'
-        $nugetReleaseCommandHandlerUrl = [string]::IsNullOrWhiteSpace('${{ github.event.client_payload.nugetReleaseCommandHandlerUrl }}') `
+          : '${{ github.event.client_payload.nuget.nugetReleaseCommandHandlerNodeStatus }}'
+        $nugetReleaseCommandHandlerUrl = [string]::IsNullOrWhiteSpace('${{ github.event.client_payload.nuget.nugetReleaseCommandHandlerUrl }}') `
           ? $nugetReleaseCommandHandlerUrl `
-          : '${{ github.event.client_payload.nugetReleaseCommandHandlerUrl }}'
-        $nugetReleasePullRequestNodeStatus = [string]::IsNullOrWhiteSpace('${{ github.event.client_payload.nugetReleasePullRequestNodeStatus }}') `
+          : '${{ github.event.client_payload.nuget.nugetReleaseCommandHandlerUrl }}'
+        $nugetReleasePullRequestNodeStatus = [string]::IsNullOrWhiteSpace('${{ github.event.client_payload.nuget.nugetReleasePullRequestNodeStatus }}') `
           ? $nugetReleasePullRequestNodeStatus `
-          : '${{ github.event.client_payload.nugetReleasePullRequestNodeStatus }}'
-        $nugetReleasePullRequestUrl = [string]::IsNullOrWhiteSpace('${{ github.event.client_payload.nugetReleasePullRequestUrl }}') `
+          : '${{ github.event.client_payload.nuget.nugetReleasePullRequestNodeStatus }}'
+        $nugetReleasePullRequestUrl = [string]::IsNullOrWhiteSpace('${{ github.event.client_payload.nuget.nugetReleasePullRequestUrl }}') `
           ? $nugetReleasePullRequestUrl `
-          : '${{ github.event.client_payload.nugetReleasePullRequestUrl }}'
-        $publishNugetNodeStatus = [string]::IsNullOrWhiteSpace('${{ github.event.client_payload.publishNugetNodeStatus }}') `
+          : '${{ github.event.client_payload.nuget.nugetReleasePullRequestUrl }}'
+        $publishNugetNodeStatus = [string]::IsNullOrWhiteSpace('${{ github.event.client_payload.nuget.publishNugetNodeStatus }}') `
           ? $publishNugetNodeStatus `
-          : '${{ github.event.client_payload.publishNugetNodeStatus }}'
-        $publishNugetUrl = [string]::IsNullOrWhiteSpace('${{ github.event.client_payload.publishNugetUrl }}') `
+          : '${{ github.event.client_payload.nuget.publishNugetNodeStatus }}'
+        $publishNugetUrl = [string]::IsNullOrWhiteSpace('${{ github.event.client_payload.nuget.publishNugetUrl }}') `
           ? $publishNugetUrl `
-          : '${{ github.event.client_payload.publishNugetUrl }}'
+          : '${{ github.event.client_payload.nuget.publishNugetUrl }}'
 
         # there's no default for nuget id and nuget version, they need to be passed in the first time and then
         # their value is read from the nuget release flow comment
         $nugetId = [string]::IsNullOrWhiteSpace('${{ steps.parse-nuget-flow-data.outputs.nuget-id }}') `
-          ? '${{ github.event.client_payload.nugetId }}' `
+          ? '${{ github.event.client_payload.nuget.nugetId }}' `
           : '${{ steps.parse-nuget-flow-data.outputs.nuget-id }}'
         $nugetVersion = [string]::IsNullOrWhiteSpace('${{ steps.parse-nuget-flow-data.outputs.nuget-version }}') `
-          ? '${{ github.event.client_payload.nugetVersion }}' `
+          ? '${{ github.event.client_payload.nuget.nugetVersion }}' `
           : '${{ steps.parse-nuget-flow-data.outputs.nuget-version }}'
 
         Write-Host "::set-output name=nuget-id::$nugetId"
         Write-Host "::set-output name=nuget-version::$nugetVersion"
-        Write-Host "::set-output name=release-status::'${{ github.event.client_payload.releaseStatus }}'"
-        Write-Host "::set-output name=release-badge-color::'${{ github.event.client_payload.releaseBadgeColor }}'"
+        Write-Host "::set-output name=release-status::'${{ github.event.client_payload.nuget.releaseStatus }}'"
+        Write-Host "::set-output name=release-badge-color::'${{ github.event.client_payload.nuget.releaseBadgeColor }}'"
         Write-Host "::set-output name=issue-nuget-release-node-status::$issueNugetReleaseNodeStatus"
         Write-Host "::set-output name=issue-nuget-release-url::$issueNugetReleaseUrl"
         Write-Host "::set-output name=nuget-release-command-handler-node-status::$nugetReleaseCommandHandlerNodeStatus"
