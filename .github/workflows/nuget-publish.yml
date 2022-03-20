@@ -65,47 +65,6 @@ jobs:
         Write-Host "::set-output name=auto-generate-release-notes::$autoGenerateReleaseNotes"
         Write-Host "::set-output name=issue-number::$issueNumber"
 
-  trigger-nuget-release-flow-after-pr-close:
-    name: Trigger NuGet release flow after PR is closed
-    needs: [release-info]
-    if: contains(github.event.pull_request.labels.*.name, 'nuget-release')
-    environment: nuget-push-workflow
-    permissions:
-      contents: read
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
-    - name: Set NuGet release flow info
-      id: set-nuget-release-flow-info
-      run: |
-        $prMerged = [System.Convert]::ToBoolean('${{ github.event.pull_request.merged }}')
-        if($prMerged) {
-          $workflowStatus = "ok"
-          $releaseStatus = "in%20progress"
-          $releaseBadgeColor = "blue"
-        }
-        else {
-          $workflowStatus = "error"
-          $releaseStatus = "failed"
-          $releaseBadgeColor = "red"
-        }
-
-        Write-Host "::set-output name=issue-number::${{ github.event.client_payload.issueNumber }}"
-        Write-Host "::set-output name=nuget-release-status::$releaseStatus"
-        Write-Host "::set-output name=nuget-release-badge-color::$releaseBadgeColor"
-        Write-Host "::set-output name=nuget-release-pull-request-node-status::$workflowStatus"
-        Write-Host "::set-output name=nuget-release-pull-request-url::${{ github.event.pull_request.html_url }}"
-    - name: Trigger NuGet release flow action
-      uses: ./.github/actions/trigger-nuget-release-flow
-      with:
-        repo-dispatch-token: ${{ secrets.REPOSITORY_DISPATCH_GH_TOKEN }}
-        issue-number: '${{ needs.release-info.outputs.issue-number }}'
-        nuget-release-status: '${{ steps.set-nuget-release-flow-info.outputs.nuget-release-status }}'
-        nuget-release-badge-color: '${{ steps.set-nuget-release-flow-info.outputs.nuget-release-badge-color }}'
-        nuget-release-pull-request-node-status: '${{ steps.set-nuget-release-flow-info.outputs.nuget-release-pull-request-node-status }}'
-        nuget-release-pull-request-url: '${{ steps.set-nuget-release-flow-info.outputs.nuget-release-pull-request-url }}'
-
   publish-nuget:
     name: Publish NuGet package and symbols
     needs: [release-info]
