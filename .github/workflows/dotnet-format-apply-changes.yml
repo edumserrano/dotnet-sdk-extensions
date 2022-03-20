@@ -11,7 +11,6 @@ defaults:
     shell: pwsh
 
 env:
-  DOTNET_FORMAT_WORKFLOW_FILENAME : dotnet-format.yml
   DOTNET_FORMAT_WORKFLOW_INFO_ARTIFACT : dotnet-format-workflow-info
   DOTNET_FORMAT_FILES_ARTIFACT : dotnet-format-files
   DOTNET_FORMAT_LABEL : dotnet-format
@@ -40,7 +39,7 @@ jobs:
     - name: Download dotnet format workflow info artifact
       uses: dawidd6/action-download-artifact@v2.17.0
       with:
-        workflow: ${{ env.DOTNET_FORMAT_WORKFLOW_FILENAME }}
+        workflow: ${{ github.event.workflow_run.workflow_id }}
         name:  ${{ env.DOTNET_FORMAT_WORKFLOW_INFO_ARTIFACT }}
         run_id: ${{ github.event.workflow_run.id }}
     - name: Read dotnet format workflow info
@@ -120,7 +119,7 @@ jobs:
     - name: Download dotnet format changed files
       uses: dawidd6/action-download-artifact@v2.17.0
       with:
-        workflow: ${{ env.DOTNET_FORMAT_WORKFLOW_FILENAME }}
+        workflow: ${{ github.event.workflow_run.workflow_id }}
         name:  ${{ env.DOTNET_FORMAT_FILES_ARTIFACT }}
         run_id: ${{ github.event.workflow_run.id }}
     - name: Push dotnet format changes to branch
@@ -178,7 +177,7 @@ jobs:
     - name: Download dotnet format workflow info artifact
       uses: dawidd6/action-download-artifact@v2.17.0
       with:
-        workflow: ${{ env.DOTNET_FORMAT_WORKFLOW_FILENAME }}
+        workflow: ${{ github.event.workflow_run.workflow_id }}
         name:  ${{ env.DOTNET_FORMAT_WORKFLOW_INFO_ARTIFACT }}
         run_id: ${{ github.event.workflow_run.id }}
     - name: Read dotnet format workflow info
@@ -205,7 +204,7 @@ jobs:
       if: steps.dotnet-format-workflow-info.outputs.has-changes == 'true'
       uses: dawidd6/action-download-artifact@v2.17.0
       with:
-        workflow: ${{ env.DOTNET_FORMAT_WORKFLOW_FILENAME }}
+        workflow: ${{ github.event.workflow_run.workflow_id }}
         name:  ${{ env.DOTNET_FORMAT_FILES_ARTIFACT }}
         run_id: ${{ github.event.workflow_run.id }}
     - name: Push dotnet format changes

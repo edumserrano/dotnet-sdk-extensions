@@ -37,7 +37,7 @@ jobs:
       uses: dawidd6/action-download-artifact@v2.17.0
       continue-on-error: true
       with:
-        workflow: nuget-publish.yml
+        workflow: ${{ github.event.workflow_run.workflow_id }}
         name:  ${{ env.TEST_RESULTS_ARTIFACT_NAME }}
         run_id: ${{ github.event.workflow_run.id }}
         path: ${{ env.TEST_RESULTS_ARTIFACT_NAME }}
