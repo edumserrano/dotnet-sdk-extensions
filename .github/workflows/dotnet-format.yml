@@ -38,7 +38,7 @@ jobs:
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
     - name: Cache/Restore NuGets
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path:
           ~/.nuget/packages
