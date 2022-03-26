@@ -97,7 +97,7 @@ jobs:
           $nugetId = '${{ github.event.inputs.nuget-id }}'
           $nugetVersion = '${{ github.event.inputs.nuget-version }}'
           $autoGenerateReleaseNotes = '${{ github.event.inputs.generate-github-release-notes }}'
-          $nugetPackageRunId = '${{ github.event.inputs.generate-github-release-notes }}'
+          $nugetPackageRunId = '${{ github.event.inputs.nuget-package-workflow-run-id }}'
 
           # create empty custom release notes
           New-Item -Name ${{ env.CUSTOM_RELEASE_NOTES_FILEPATH }} -ItemType File
@@ -106,7 +106,6 @@ jobs:
         Write-Host "::set-output name=nuget-id::$nugetId"
         Write-Host "::set-output name=nuget-version::$nugetVersion"
         Write-Host "::set-output name=auto-generate-release-notes::$autoGenerateReleaseNotes"
-        Write-Host "::set-output name=nuget-package-run-id::$nugetPackageRunId"
         Write-Host "::set-output name=nuget-package-run-id::$nugetPackageRunId"
     - name: Upload custom release notes
       uses: actions/upload-artifact@v2
