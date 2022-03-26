@@ -152,6 +152,10 @@ jobs:
           $nugetArtifacts = '${{ env.TESTING_EXTENSIONS_NUGET_BIN_FOLDER }}/*.nupkg,${{ env.TESTING_EXTENSIONS_NUGET_BIN_FOLDER }}/*.snupkg'
           $nugetPushWorkingDir = '${{ env.TESTING_EXTENSIONS_NUGET_BIN_FOLDER }}'
         }
+        else {
+          Write-Host "::error::Invalid NuGet ID: $nugetId. Valid options are: dotnet-sdk-extensions or dotnet-sdk-extensions-testing"
+          Exit 1
+        }
 
         Write-Host "::set-output name=nuget-release-notes-file-path::$releaseNotesFile"
         Write-Host "::set-output name=nuget-gh-release-artifacts::$nugetArtifacts"
