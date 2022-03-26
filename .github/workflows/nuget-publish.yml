@@ -107,7 +107,7 @@ jobs:
           # get GitHub release sha from workflow run id
           $workflowRun = gh api repos/edumserrano/dot-net-sdk-extensions/actions/runs/$nugetPackageRunId | ConvertFrom-Json
           $headBranch = $workflowRun.head_branch
-          if(headBranch -ne 'main') {
+          if($headBranch -ne 'main') {
             Write-Host "::error::Invalid head branch: $headBranch. Workflow dispatch events for this workflow cannot use a NuGet package workflow run id that is not from the main branch."
             Exit 1
           }
