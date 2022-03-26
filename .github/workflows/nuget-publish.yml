@@ -26,7 +26,7 @@ defaults:
 jobs:
   workflow-args:
     name: Setup NuGet publish on PR trigger
-    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'nuget-release'))
+    if: github.event_name == 'workflow_dispatch' || (github.event.pull_request.merged == 'true' && contains(github.event.pull_request.labels.*.name, 'nuget-release'))
     environment: nuget-publish-workflow
     permissions:
       contents: read
@@ -35,10 +35,11 @@ jobs:
       CUSTOM_RELEASE_NOTES_FILEPATH: './nuget-release-notes.md'
       CUSTOM_RELEASE_NOTES_ARTIFACT_NAME: 'nuget-release-notes'
     outputs:
+      nuget-package-run-id: ${{ steps.nuget-publish-info.outputs.nuget-package-run-id }}
       nuget-id: ${{ steps.nuget-publish-info.outputs.nuget-id }}
       nuget-version: ${{ steps.nuget-publish-info.outputs.nuget-version }}
+      github-release-sha: ${{ steps.nuget-publish-info.outputs.github-release-sha }}
       auto-generate-release-notes: ${{ steps.nuget-publish-info.outputs.auto-generate-release-notes }}
-      nuget-package-run-id: ${{ steps.nuget-publish-info.outputs.nuget-package-run-id }}
       custom-release-notes-artifact-name: ${{ env.CUSTOM_RELEASE_NOTES_ARTIFACT_NAME }}
     steps:
     - name: Checkout repository
@@ -77,7 +78,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        $isPullRequest = "${{ github.event_name }}" -eq "pull_request"
+        $isPullRequest = "${{ github.event_name }}" -eq 'pull_request'
         if($isPullRequest) {
           $nugetInfoPath = './nuget-release-info.md'
           $nugetInfoJson = Get-Content $nugetInfoPath
@@ -85,6 +86,7 @@ jobs:
           $nugetId = $nugetInfo.nugetId
           $nugetVersion = $nugetInfo.nugetVersion
           $autoGenerateReleaseNotes = $nugetInfo.autoGenerateReleaseNotes
+          $githubReleaseSha = '${{ github.event.pull_request.merge_commit_sha }}'
 
           # get the workflow run id that was executed for the PR
           $prBranch =  '${{ github.event.pull_request.head.ref }}'
@@ -101,12 +103,29 @@ jobs:
 
           # create empty custom release notes
           New-Item -Name ${{ env.CUSTOM_RELEASE_NOTES_FILEPATH }} -ItemType File
+
+          # get GitHub release sha from workflow run id
+          $workflowRun = gh api repos/edumserrano/dot-net-sdk-extensions/actions/runs/$nugetPackageRunId | ConvertFrom-Json
+          $headBranch = $workflowRun.head_branch
+          if(headBranch -ne 'main') {
+            Write-Host "::error::Invalid head branch: $headBranch. Workflow dispatch events for this workflow cannot use a NuGet package workflow run id that is not from the main branch."
+            Exit 1
+          }
+
+          $githubReleaseSha = $workflowRun.head_sha
+        }
+
+        if($nugetId -ne 'dotnet-sdk-extensions' || $nugetId -ne 'dotnet-sdk-extensions-testing') {
+          Write-Host "::error::Invalid NuGet ID: $nugetId. Valid options are: dotnet-sdk-extensions or dotnet-sdk-extensions-testing"
+          Exit 1
         }
 
         Write-Host "::set-output name=nuget-id::$nugetId"
         Write-Host "::set-output name=nuget-version::$nugetVersion"
         Write-Host "::set-output name=auto-generate-release-notes::$autoGenerateReleaseNotes"
         Write-Host "::set-output name=nuget-package-run-id::$nugetPackageRunId"
+        Write-Host "::set-output name=github-release-sha::$githubReleaseSha"
+
     - name: Upload custom release notes
       uses: actions/upload-artifact@v2
       with:
@@ -152,10 +171,6 @@ jobs:
           $nugetArtifacts = '${{ env.TESTING_EXTENSIONS_NUGET_BIN_FOLDER }}/*.nupkg,${{ env.TESTING_EXTENSIONS_NUGET_BIN_FOLDER }}/*.snupkg'
           $nugetPushWorkingDir = '${{ env.TESTING_EXTENSIONS_NUGET_BIN_FOLDER }}'
         }
-        else {
-          Write-Host "::error::Invalid NuGet ID: $nugetId. Valid options are: dotnet-sdk-extensions or dotnet-sdk-extensions-testing"
-          Exit 1
-        }
 
         Write-Host "::set-output name=nuget-release-notes-file-path::$releaseNotesFile"
         Write-Host "::set-output name=nuget-gh-release-artifacts::$nugetArtifacts"
@@ -164,7 +179,7 @@ jobs:
       id: create-gh-release
       uses: ncipollo/release-action@v1
       with:
-        commit: ${{ github.event.pull_request.merge_commit_sha }}
+        commit: ${{ needs.workflow-args.outputs.github-release-sha }}
         tag: ${{ needs.workflow-args.outputs.nuget-id }}-${{ needs.workflow-args.outputs.nuget-version }}
         artifacts: '${{ steps.nuget-publish-info.outputs.nuget-gh-release-artifacts }}'
         bodyFile: ${{ steps.nuget-publish-info.outputs.nuget-release-notes-file-path }}
