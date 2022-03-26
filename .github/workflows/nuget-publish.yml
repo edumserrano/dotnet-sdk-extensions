@@ -79,7 +79,7 @@ jobs:
       run: |
         $isPullRequest = "${{ github.event_name }}" -eq "pull_request"
         if($isPullRequest) {
-          $nugetInfoPath = "./nuget-release-info.md"
+          $nugetInfoPath = './nuget-release-info.md'
           $nugetInfoJson = Get-Content $nugetInfoPath
           $nugetInfo = $nugetInfoJson | ConvertFrom-Json
           $nugetId = $nugetInfo.nugetId
@@ -87,17 +87,17 @@ jobs:
           $autoGenerateReleaseNotes = $nugetInfo.autoGenerateReleaseNotes
 
           # get the workflow run id that was executed for the PR
-          $prBranch =  ${{ github.event.pull_request.head.ref }}
+          $prBranch =  '${{ github.event.pull_request.head.ref }}'
           $workflowId = 'build-test-package.yml'
           $workflowRuns = gh api repos/${{ github.repository }}/actions/workflows/$workflowId/runs?event=pull_request`&branch=$prBranch
-          $prHeadSha = ${{ github.event.pull_request.head.sha }}
+          $prHeadSha = '${{ github.event.pull_request.head.sha }}'
           $nugetPackageRunId = $workflowRuns.workflow_runs.where{$_.head_sha -eq $prHeadSha}.id
         }
         else { # on workflow_dispatch event
-          $nugetId = ${{ github.event.inputs.nuget-id }}
-          $nugetVersion = ${{ github.event.inputs.nuget-version }}
-          $autoGenerateReleaseNotes = ${{ github.event.inputs.generate-github-release-notes }}
-          $nugetPackageRunId = ${{ github.event.inputs.generate-github-release-notes }}
+          $nugetId = '${{ github.event.inputs.nuget-id }}'
+          $nugetVersion = '${{ github.event.inputs.nuget-version }}'
+          $autoGenerateReleaseNotes = '${{ github.event.inputs.generate-github-release-notes }}'
+          $nugetPackageRunId = '${{ github.event.inputs.generate-github-release-notes }}'
 
           # create empty custom release notes
           New-Item -Name ${{ env.CUSTOM_RELEASE_NOTES_FILEPATH }} -ItemType File
