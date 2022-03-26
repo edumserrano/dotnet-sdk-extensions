@@ -17,10 +17,6 @@ jobs:
       issues: write
     runs-on: ubuntu-latest
     steps:
-    - name: Dump github context
-      env:
-        GITHUB_CONTEXT: ${{ toJSON(github) }}
-      run: $env:GITHUB_CONTEXT
     - name: Checkout repository
       uses: actions/checkout@v3
     - name: Find NuGet release flow comment

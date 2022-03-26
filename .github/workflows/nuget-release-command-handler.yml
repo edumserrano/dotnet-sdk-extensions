@@ -58,7 +58,6 @@ jobs:
       pr-number: ${{ steps.create-pr.outputs.pr-number }}
       nuget-id: ${{ steps.slash-command-args.outputs.nuget-id }}
       nuget-version: ${{ steps.slash-command-args.outputs.nuget-new-version }}
-      nuget-url: ${{ steps.slash-command-args.outputs.nuget-url }}
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
@@ -67,19 +66,9 @@ jobs:
       run: |
         $nugetId = "${{ github.event.client_payload.nugetId }}"
         $nugetNewVersion = "${{ github.event.client_payload.nugetVersion }}"
+        $nugetUrl = "https://www.nuget.org/packages/$nugetId"
 
-        if($nugetId -eq "dotnet-sdk-extensions") {
-          $nugetUrl = "https://www.nuget.org/packages/DotNet-Sdk-Extensions"
-        }
-        elseif($nugetId -eq "dotnet-sdk-extensions-testing") {
-          $nugetUrl = "https://www.nuget.org/packages/DotNet-Sdk-Extensions-Testing"
-        }
-        else {
-          Write-Host "::error::Invalid NuGet ID: $nugetId. Valid options are: dotnet-sdk-extensions or dotnet-sdk-extensions-testing"
-          Exit 1
-        }
-
-        $nugetOutput = nuget list PackageId:Dotnet-Sdk-Extensions -Source nuget.org -PreRelease
+        $nugetOutput = nuget list PackageId:$nugetId -Source nuget.org -PreRelease
         $nugetCurrentVersion = $nugetOutput.Split(" ")[-1]
 
         Write-Host "nuget-id=$nugetId"
@@ -213,7 +202,6 @@ jobs:
         $releaseInfo = @{
           nugetId = "${{ needs.create-pr.outputs.nuget-id }}"
           nugetVersion = "${{ needs.create-pr.outputs.nuget-version }}"
-          nugetUrl = "${{ needs.create-pr.outputs.nuget-url }}"
           issueNumber = ${{ github.event.client_payload.issueNumber }}
           autoGenerateReleaseNotes = "${{ github.event.client_payload.autoGenerateReleaseNotes }}"
         }
