@@ -21,7 +21,7 @@ on:
 
 defaults:
   run:
-    shell: pwshd
+    shell: pwsh
 
 jobs:
   workflow-args:
