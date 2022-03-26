@@ -1,34 +1,51 @@
 name: Publish NuGet packages
 
 on:
+  workflow_dispatch:
+    inputs:
+      nuget-package-workflow-run-id:
+        description: 'NuGet package workflow run id: the run id of the workflow that contains the NuGet package artifact to publish. The action that creates the NuGet packages is named "Build, test and package"'
+        required: true
+      nuget-id:
+        description: 'NuGet id: the id of the NuGet to publish.'
+        required: true
+      nuget-version:
+        description: 'NuGet version: the version of the NuGet to publish.'
+        required: true
+      generate-github-release-notes:
+        description: 'Generate GitHub release notes: set to "true" to auto generate release notes, set to "false" otherwise.'
+        required: true
   pull_request:
     branches: [ main ]
     types: [ closed ]
 
 defaults:
   run:
-    shell: pwsh
+    shell: pwshd
 
 jobs:
-  release-info:
-    name: Get NuGet release info
-    if: contains(github.event.pull_request.labels.*.name, 'nuget-release')
+  workflow-args:
+    name: Setup NuGet publish on PR trigger
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'nuget-release'))
     environment: nuget-publish-workflow
     permissions:
       contents: read
     runs-on: ubuntu-latest
+    env:
+      CUSTOM_RELEASE_NOTES_FILEPATH: './nuget-release-notes.md'
+      CUSTOM_RELEASE_NOTES_ARTIFACT_NAME: 'nuget-release-notes'
     outputs:
-      release-info-run-id: ${{ steps.release-info.outputs.run-id }}
-      nuget-id: ${{ steps.nuget-release-info.outputs.nuget-id }}
-      nuget-version: ${{ steps.nuget-release-info.outputs.nuget-version }}
-      nuget-url: ${{ steps.nuget-release-info.outputs.nuget-url }}
-      auto-generate-release-notes: ${{ steps.nuget-release-info.outputs.auto-generate-release-notes }}
-      issue-number: ${{ steps.nuget-release-info.outputs.issue-number }}
+      nuget-id: ${{ steps.nuget-publish-info.outputs.nuget-id }}
+      nuget-version: ${{ steps.nuget-publish-info.outputs.nuget-version }}
+      auto-generate-release-notes: ${{ steps.nuget-publish-info.outputs.auto-generate-release-notes }}
+      nuget-package-run-id: ${{ steps.nuget-publish-info.outputs.nuget-package-run-id }}
+      custom-release-notes-artifact-name: ${{ env.CUSTOM_RELEASE_NOTES_ARTIFACT_NAME }}
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
-    - name: Get release info run id
+    - name: Get release info run id from PR
       id: release-info
+      if: github.event_name == 'pull_request'
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
@@ -40,68 +57,93 @@ jobs:
         $runId = $nugetReleaseInfoWorkflowUrl.Split("/")[-1]
         Write-Host "run-id=$runId"
         Write-Host "::set-output name=run-id::$runId"
-    - name: Download NuGet release info artifact
+    - name: Download NuGet release info artifact from PR
       uses: dawidd6/action-download-artifact@v2.17.0
+      if: github.event_name == 'pull_request'
       with:
         workflow: nuget-release-command-handler.yml
         name:  nuget-release-info
         run_id: ${{ steps.release-info.outputs.run-id }}
-    - name: Prepare NuGet release info
-      id: nuget-release-info
+    - name: Download NuGet release notes artifact from PR
+      id: download-release-notes
+      if: github.event_name == 'pull_request'
+      uses: dawidd6/action-download-artifact@v2.17.0
+      with:
+        workflow: nuget-release-command-handler.yml
+        name:  ${{ env.CUSTOM_RELEASE_NOTES_ARTIFACT_NAME }}
+        run_id: ${{ steps.release-info.outputs.run-id }}
+    - name: Prepare NuGet publish info
+      id: nuget-publish-info
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        $nugetInfoPath = "./nuget-release-info.md"
-        $nugetInfoJson = Get-Content $nugetInfoPath
-        $nugetInfo = $nugetInfoJson | ConvertFrom-Json
+        $isPullRequest = "${{ github.event_name }}" -eq "pull_request"
+        if($isPullRequest) {
+          $nugetInfoPath = "./nuget-release-info.md"
+          $nugetInfoJson = Get-Content $nugetInfoPath
+          $nugetInfo = $nugetInfoJson | ConvertFrom-Json
+          $nugetId = $nugetInfo.nugetId
+          $nugetVersion = $nugetInfo.nugetVersion
+          $autoGenerateReleaseNotes = $nugetInfo.autoGenerateReleaseNotes
 
-        $nugetId = $nugetInfo.nugetId
-        $nugetVersion = $nugetInfo.nugetVersion
-        $nugetUrl = $nugetInfo.nugetUrl
-        $autoGenerateReleaseNotes = $nugetInfo.autoGenerateReleaseNotes
-        $issueNumber = $nugetInfo.issueNumber
+          # get the workflow run id that was executed for the PR
+          $prBranch =  ${{ github.event.pull_request.head.ref }}
+          $workflowId = 'build-test-package.yml'
+          $workflowRuns = gh api repos/${{ github.repository }}/actions/workflows/$workflowId/runs?event=pull_request`&branch=$prBranch
+          $prHeadSha = ${{ github.event.pull_request.head.sha }}
+          $nugetPackageRunId = $workflowRuns.workflow_runs.where{$_.head_sha -eq $prHeadSha}.id
+        }
+        else { # on workflow_dispatch event
+          $nugetId = ${{ github.event.inputs.nuget-id }}
+          $nugetVersion = ${{ github.event.inputs.nuget-version }}
+          $autoGenerateReleaseNotes = ${{ github.event.inputs.generate-github-release-notes }}
+          $nugetPackageRunId = ${{ github.event.inputs.generate-github-release-notes }}
+
+          # create empty custom release notes
+          New-Item -Name ${{ env.CUSTOM_RELEASE_NOTES_FILEPATH }} -ItemType File
+        }
 
         Write-Host "::set-output name=nuget-id::$nugetId"
         Write-Host "::set-output name=nuget-version::$nugetVersion"
-        Write-Host "::set-output name=nuget-url::$nugetUrl"
         Write-Host "::set-output name=auto-generate-release-notes::$autoGenerateReleaseNotes"
-        Write-Host "::set-output name=issue-number::$issueNumber"
+        Write-Host "::set-output name=nuget-package-run-id::$nugetPackageRunId"
+        Write-Host "::set-output name=nuget-package-run-id::$nugetPackageRunId"
+    - name: Upload custom release notes
+      uses: actions/upload-artifact@v2
+      with:
+        name: ${{ env.CUSTOM_RELEASE_NOTES_ARTIFACT_NAME }}
+        path: ${{ env.CUSTOM_RELEASE_NOTES_FILEPATH }}
 
   publish-nuget:
     name: Publish NuGet package and symbols
-    needs: [release-info]
-    if: github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'nuget-release')
+    needs: [workflow-args]
     environment: nuget-publish-workflow
     permissions:
       contents: write
-      issues: write
     runs-on: ubuntu-latest
     outputs:
-      github-release-url: ${{ steps.create-gh-release.outputs.html_url }}
+      github-release-url: ${{ steps.create-gh-release.outputs.html_url }} # TODO
     env:
       EXTENSIONS_NUGET_BIN_FOLDER : ${{ github.workspace }}/DotNet.Sdk.Extensions/bin/Release
       TESTING_EXTENSIONS_NUGET_BIN_FOLDER : ${{ github.workspace }}/DotNet.Sdk.Extensions.Testing/bin/Release
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
-    - name: Download NuGet release notes artifact
-      id: download-release-notes
-      continue-on-error: true
-      uses: dawidd6/action-download-artifact@v2.17.0
-      with:
-        workflow: nuget-release-command-handler.yml
-        name:  nuget-release-notes
-        run_id: ${{ needs.release-info.outputs.release-info-run-id }}
-    - name: Download NuGet artifact
+    - name: Download NuGet package artifact
       uses: dawidd6/action-download-artifact@v2.17.0
       with:
         workflow: build-test-package.yml
         name:  nuget-packages-and-symbols
-        pr: ${{ github.event.pull_request.number }}
-        workflow_conclusion: success
-    - name: Prepare NuGet release info
-      id: nuget-release-info
+        run_id: ${{ needs.workflow-args.outputs.nuget-package-run-id }}
+    - name: Download custom release notes artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: ${{ needs.workflow-args.outputs.custom-release-notes-artifact-name }}
+    - name: Prepare NuGet publish info
+      id: nuget-publish-info
       run: |
         $releaseNotesFile = './nuget-release-notes.md'
-        $nugetId = '${{ needs.release-info.outputs.nuget-id }}'
+        $nugetId = '${{ needs.workflow-args.outputs.nuget-id }}'
 
         if($nugetId -eq 'dotnet-sdk-extensions') {
           $nugetArtifacts = '${{ env.EXTENSIONS_NUGET_BIN_FOLDER }}/*.nupkg,${{ env.EXTENSIONS_NUGET_BIN_FOLDER }}/*.snupkg'
@@ -115,15 +157,15 @@ jobs:
         Write-Host "::set-output name=nuget-release-notes-file-path::$releaseNotesFile"
         Write-Host "::set-output name=nuget-gh-release-artifacts::$nugetArtifacts"
         Write-Host "::set-output name=nuget-push-working-dir::$nugetPushWorkingDir"
-    - name: Create release
+    - name: Create GitHub release
       id: create-gh-release
       uses: ncipollo/release-action@v1
       with:
         commit: ${{ github.event.pull_request.merge_commit_sha }}
-        tag: ${{ needs.release-info.outputs.nuget-id }}-${{ needs.release-info.outputs.nuget-version }}
-        artifacts: '${{ steps.nuget-release-info.outputs.nuget-gh-release-artifacts }}'
-        bodyFile: ${{ steps.nuget-release-info.outputs.nuget-release-notes-file-path }}
-        generateReleaseNotes: ${{ needs.release-info.outputs.auto-generate-release-notes }}
+        tag: ${{ needs.workflow-args.outputs.nuget-id }}-${{ needs.workflow-args.outputs.nuget-version }}
+        artifacts: '${{ steps.nuget-publish-info.outputs.nuget-gh-release-artifacts }}'
+        bodyFile: ${{ steps.nuget-publish-info.outputs.nuget-release-notes-file-path }}
+        generateReleaseNotes: ${{ needs.workflow-args.outputs.auto-generate-release-notes }}
         token: ${{ secrets.GITHUB_TOKEN }}
     - name: Publish NuGet and symbols
       id: nuget-push
@@ -131,12 +173,12 @@ jobs:
       with:
         api-key: ${{ secrets.NUGET_PUSH_API_KEY }}
         source: https://api.nuget.org/v3/index.json
-        working-directory: '${{ steps.nuget-release-info.outputs.nuget-push-working-dir }}'
+        working-directory: '${{ steps.nuget-publish-info.outputs.nuget-push-working-dir }}'
     - name: Log NuGet push info
       if: always()
       run: |
-        $nugetId = '${{ needs.release-info.outputs.nuget-id }}'
-        $nugetUrl = '${{ needs.release-info.outputs.nuget-url }}'
+        $nugetId = '${{ needs.workflow-args.outputs.nuget-id }}'
+        $nugetUrl = "https://www.nuget.org/packages/$nugetId"
         $pushStepConclusion = '${{ steps.nuget-push.conclusion }}'
         $nugetAlreadyExists = [System.Convert]::ToBoolean("${{ steps.nuget-push.outputs.nuget-already-exists }}")
         if($nugetAlreadyExists) {
@@ -149,46 +191,46 @@ jobs:
           Write-Host "::notice title=$nugetId NuGet::Successfully pushed $nugetId NuGet and symbols to nuget.org. You can find the package at: $nugetUrl."
         }
 
-  trigger-nuget-release-flow:
-    name: Trigger NuGet release flow
-    needs: [release-info, publish-nuget]
-    if: always() && needs.publish-nuget.result != 'skipped'
-    environment: nuget-publish-workflow
-    permissions:
-      contents: read
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
-    - name: Set NuGet release flow info
-      id: set-nuget-release-flow-info
-      run: |
-        $workflowResult = '${{ needs.publish-nuget.result }}'
-        if($workflowResult -eq 'success') {
-          $workflowStatus = "ok"
-          $releaseStatus = "completed"
-          $releaseBadgeColor = "green"
-        }
-        else {
-          $workflowStatus = "error"
-          $releaseStatus = "failed"
-          $releaseBadgeColor = "red"
-        }
+  # trigger-nuget-release-flow:
+  #   name: Trigger NuGet release flow
+  #   needs: [release-info, publish-nuget]
+  #   if: always() && needs.publish-nuget.result != 'skipped'
+  #   environment: nuget-publish-workflow
+  #   permissions:
+  #     contents: read
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - name: Checkout repository
+  #     uses: actions/checkout@v3
+  #   - name: Set NuGet release flow info
+  #     id: set-nuget-release-flow-info
+  #     run: |
+  #       $workflowResult = '${{ needs.publish-nuget.result }}'
+  #       if($workflowResult -eq 'success') {
+  #         $workflowStatus = "ok"
+  #         $releaseStatus = "completed"
+  #         $releaseBadgeColor = "green"
+  #       }
+  #       else {
+  #         $workflowStatus = "error"
+  #         $releaseStatus = "failed"
+  #         $releaseBadgeColor = "red"
+  #       }
 
-        Write-Host "::set-output name=issue-number::${{ github.event.client_payload.issueNumber }}"
-        Write-Host "::set-output name=nuget-release-status::$releaseStatus"
-        Write-Host "::set-output name=nuget-release-badge-color::$releaseBadgeColor"
-        Write-Host "::set-output name=publish-nuget-node-status::$workflowStatus"
-        Write-Host "::set-output name=publish-nuget-url::https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-    - name: Trigger NuGet release flow action
-      uses: ./.github/actions/trigger-nuget-release-flow
-      with:
-        repo-dispatch-token: ${{ secrets.REPOSITORY_DISPATCH_GH_TOKEN }}
-        issue-number: '${{ needs.release-info.outputs.issue-number }}'
-        nuget-release-status: '${{ steps.set-nuget-release-flow-info.outputs.nuget-release-status }}'
-        nuget-release-badge-color: '${{ steps.set-nuget-release-flow-info.outputs.nuget-release-badge-color }}'
-        publish-nuget-node-status: '${{ steps.set-nuget-release-flow-info.outputs.publish-nuget-node-status }}'
-        publish-nuget-url: '${{ steps.set-nuget-release-flow-info.outputs.publish-nuget-url }}'
+  #       Write-Host "::set-output name=issue-number::${{ github.event.client_payload.issueNumber }}"
+  #       Write-Host "::set-output name=nuget-release-status::$releaseStatus"
+  #       Write-Host "::set-output name=nuget-release-badge-color::$releaseBadgeColor"
+  #       Write-Host "::set-output name=publish-nuget-node-status::$workflowStatus"
+  #       Write-Host "::set-output name=publish-nuget-url::https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+  #   - name: Trigger NuGet release flow action
+  #     uses: ./.github/actions/trigger-nuget-release-flow
+  #     with:
+  #       repo-dispatch-token: ${{ secrets.REPOSITORY_DISPATCH_GH_TOKEN }}
+  #       issue-number: '${{ needs.release-info.outputs.issue-number }}'
+  #       nuget-release-status: '${{ steps.set-nuget-release-flow-info.outputs.nuget-release-status }}'
+  #       nuget-release-badge-color: '${{ steps.set-nuget-release-flow-info.outputs.nuget-release-badge-color }}'
+  #       publish-nuget-node-status: '${{ steps.set-nuget-release-flow-info.outputs.publish-nuget-node-status }}'
+  #       publish-nuget-url: '${{ steps.set-nuget-release-flow-info.outputs.publish-nuget-url }}'
 
 
 # close issue
