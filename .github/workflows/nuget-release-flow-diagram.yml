@@ -21,6 +21,7 @@ jobs:
   release-flow-args:
     name: Process NuGet release flow info artifact
     if: github.event.workflow_run.conclusion != 'skipped'
+    # && github.event_name == 'workflow_dispatch' || (github.event.pull_request.merged == 'true' && contains(github.event.pull_request.labels.*.name, 'nuget-release'))
     environment: nuget-release-flow-workflow
     permissions:
       contents: read
@@ -40,6 +41,10 @@ jobs:
       publish-nuget-node-status: ${{ steps.nuget-flow-info.outputs.publish-nuget-node-status }}
       publish-nuget-url: ${{ steps.nuget-flow-info.outputs.publish-nuget-url }}
     steps:
+    - name: Dump github context
+      env:
+        GITHUB_CONTEXT: ${{ toJSON(github) }}
+      run: $env:GITHUB_CONTEXT
     - name: Checkout repository
       uses: actions/checkout@v3
     - name: Read NuGet release flow info artifact
