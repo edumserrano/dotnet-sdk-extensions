@@ -41,13 +41,16 @@ jobs:
          Write-Host "eventName = $eventName"
 
          $merged = '${{ github.event.pull_request.merged == 'true' }}'
-         Write-Host "github.event.pull_request.merged = ${{  github.event.pull_request.merged}}"
+         Write-Host "github.event.pull_request.merged = ${{ github.event.pull_request.merged }}"
          Write-Host "merged = $merged"
+
+         $merged2 = '${{ github.event.pull_request.merged == true }}'
+         Write-Host "merged = $merged2"
 
          $containsLabel = '${{ contains(github.event.pull_request.labels.*.name, 'nuget-release') }}'
          Write-Host "containsLabel = $containsLabel"
 
-         $condition = ${{ github.event_name == 'workflow_dispatch' || (github.event.pull_request.merged == 'true' && contains(github.event.pull_request.labels.*.name, 'nuget-release')) }}
+         $condition = '${{ github.event_name == 'workflow_dispatch' || (github.event.pull_request.merged == 'true' && contains(github.event.pull_request.labels.*.name, 'nuget-release')) }}'
          Write-Host "condition = $condition"
 
   workflow-args:
