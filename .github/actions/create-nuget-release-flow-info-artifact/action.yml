@@ -69,7 +69,7 @@ runs:
         publishNugetUrl = '${{ inputs.publish-nuget-url }}'
       }
       $releaseFlowInfoAsJson = $releaseFlowInfo | ConvertTo-Json
-      $releaseInfoAsJson | Out-File nuget-release-flow-info.md
+      $releaseFlowInfoAsJson | Out-File nuget-release-flow-info.md
       Get-Content nuget-release-flow-info.md
   - name: Upload release info
     uses: actions/upload-artifact@v2
