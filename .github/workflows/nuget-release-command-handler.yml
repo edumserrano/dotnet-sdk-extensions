@@ -229,14 +229,14 @@ jobs:
     needs: [create-pr, release-info]
     environment: nuget-release-command-handler-workflow
     permissions:
-      contents: write
+      contents: read
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
     - name: Set PR auto merge
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.REPOSITORY_DISPATCH_GH_TOKEN }}
       run: |
         gh pr merge --auto --squash --delete-branch ${{ needs.create-pr.outputs.pr-number }}
 
