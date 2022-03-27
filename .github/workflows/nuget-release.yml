@@ -77,8 +77,6 @@ jobs:
     permissions:
       contents: read
     runs-on: ubuntu-latest
-    env:
-      RELEASE_FLOW_INFO_ARTIFACT_FILEPATH: ${{github.workspace}}/nuget-release-flow-info.md
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
