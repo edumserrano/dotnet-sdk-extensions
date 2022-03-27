@@ -57,6 +57,8 @@ jobs:
       contents: read
     runs-on: ubuntu-latest
     steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
     - name: Find NuGet release flow comment
       uses: peter-evans/find-comment@v1.3.0
       id: find-nuget-release-flow-comment
@@ -219,7 +221,7 @@ jobs:
       id: render-issue-comment-template
       uses: chuhlomin/render-template@v1.4
       with:
-        template: .github/workflows/templates/issue-nuget-release-flow/nuget-release-flow-issue-comment.md
+        template: .github/workflows/templates/nuget-release-flow-diagram/nuget-release-flow-issue-comment.md
         vars: |
           nugetId: '${{ steps.nuget-release-flow-info.outputs.nuget-id }}'
           nugetVersion: '${{ steps.nuget-release-flow-info.outputs.nuget-version }}'
