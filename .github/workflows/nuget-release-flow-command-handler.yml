@@ -1,4 +1,4 @@
-name: Issue - NuGet release flow
+name: NuGet release flow command handler
 
 on:
   repository_dispatch:

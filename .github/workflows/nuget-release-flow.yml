@@ -1,0 +1,134 @@
+name: NuGet release flow
+
+on:
+  workflow_run:
+    workflows: [
+      "Issue - NuGet release"
+    ]
+    types:
+    - completed
+  pull_request:
+    branches: [ main ]
+    types: [ closed ]
+
+defaults:
+  run:
+    shell: pwsh
+
+jobs:
+
+  on-wf-run-issue-nuget-release:
+    name: Trigger NuGet release flow
+    if: github.event_name == 'workflow_run'
+    # && github.event.workflow.name == 'Issue - NuGet release'
+    environment: nuget-release-flow-workflow
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+    - name: Dump github context
+      env:
+        GITHUB_CONTEXT: ${{ toJSON(github) }}
+      run: $env:GITHUB_CONTEXT
+    # - name: Checkout repository
+    #   uses: actions/checkout@v3
+    # - name: Set NuGet release flow info
+    #   id: set-nuget-release-flow-info
+    #   run: |
+    #     $workflowResult = '${{ needs.main.result }}'
+    #     if($workflowResult -eq 'success') {
+    #       $workflowStatus = "ok"
+    #       $releaseStatus = "in%20progress"
+    #       $releaseBadgeColor = "blue"
+    #     }
+    #     else {
+    #       $workflowStatus = "error"
+    #       $releaseStatus = "failed"
+    #       $releaseBadgeColor = "red"
+    #     }
+
+    #     Write-Host "::set-output name=issue-number::${{ github.event.issue.number }}"
+    #     Write-Host "::set-output name=nuget-id::${{ needs.main.outputs.nuget-id }}"
+    #     Write-Host "::set-output name=nuget-version::${{ needs.main.outputs.nuget-version }}"
+    #     Write-Host "::set-output name=nuget-release-status::$releaseStatus"
+    #     Write-Host "::set-output name=nuget-release-badge-color::$releaseBadgeColor"
+    #     Write-Host "::set-output name=issue-nuget-release-node-status::$workflowStatus"
+    #     Write-Host "::set-output name=issue-nuget-release-url::https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+    # - name: Trigger NuGet release flow action
+    #   uses: ./.github/actions/trigger-nuget-release-flow
+    #   with:
+    #     repo-dispatch-token: ${{ secrets.REPOSITORY_DISPATCH_GH_TOKEN }}
+    #     issue-number: '${{ steps.set-nuget-release-flow-info.outputs.issue-number }}'
+    #     nuget-id: '${{ steps.set-nuget-release-flow-info.outputs.nuget-id }}'
+    #     nuget-version: '${{ steps.set-nuget-release-flow-info.outputs.nuget-version }}'
+    #     nuget-release-status: '${{ steps.set-nuget-release-flow-info.outputs.nuget-release-status }}'
+    #     nuget-release-badge-color: '${{ steps.set-nuget-release-flow-info.outputs.nuget-release-badge-color }}'
+    #     issue-nuget-release-node-status: '${{ steps.set-nuget-release-flow-info.outputs.issue-nuget-release-node-status }}'
+    #     issue-nuget-release-url: '${{ steps.set-nuget-release-flow-info.outputs.issue-nuget-release-url }}'
+
+  on-pr-closed:
+    name: Trigger NuGet release flow update when PR is closed
+    if: contains(github.event.pull_request.labels.*.name, 'nuget-release')
+    environment: nuget-release-flow-workflow
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+    - name: Get release info run id
+      id: release-info
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        $statusesAsJson = gh api repos/${{ github.repository }}/commits/${{ github.event.pull_request.head.sha }}/statuses
+        $statuses = $statusesAsJson | ConvertFrom-Json
+        Write-Host $statuses
+        $nugetReleaseInfoStatus = $statuses | Where-Object {$_.context -eq "NuGet release command handler / NuGet release info (repository_dispatch)"}
+        $nugetReleaseInfoWorkflowUrl = $nugetReleaseInfoStatus.target_url
+        $runId = $nugetReleaseInfoWorkflowUrl.Split("/")[-1]
+        Write-Host "run-id=$runId"
+        Write-Host "::set-output name=run-id::$runId"
+    - name: Download NuGet release info artifact
+      uses: dawidd6/action-download-artifact@v2.17.0
+      with:
+        workflow: nuget-release-command-handler.yml
+        name:  nuget-release-info
+        run_id: ${{ steps.release-info.outputs.run-id }}
+    - name: Prepare NuGet release info
+      id: nuget-release-info
+      run: |
+        $nugetInfoPath = "./nuget-release-info.md"
+        $nugetInfoJson = Get-Content $nugetInfoPath
+        $nugetInfo = $nugetInfoJson | ConvertFrom-Json
+        $issueNumber = $nugetInfo.issueNumber
+        Write-Host "::set-output name=issue-number::$issueNumber"
+    - name: Set NuGet release flow info
+      id: set-nuget-release-flow-info
+      run: |
+        $prMerged = [System.Convert]::ToBoolean('${{ github.event.pull_request.merged }}')
+        if($prMerged) {
+          $workflowStatus = "ok"
+          $releaseStatus = "in%20progress"
+          $releaseBadgeColor = "blue"
+        }
+        else {
+          $workflowStatus = "error"
+          $releaseStatus = "failed"
+          $releaseBadgeColor = "red"
+        }
+
+        Write-Host "::set-output name=issue-number::${{ steps.nuget-release-info.outputs.issue-number }}"
+        Write-Host "::set-output name=nuget-release-status::$releaseStatus"
+        Write-Host "::set-output name=nuget-release-badge-color::$releaseBadgeColor"
+        Write-Host "::set-output name=nuget-release-pull-request-node-status::$workflowStatus"
+        Write-Host "::set-output name=nuget-release-pull-request-url::${{ github.event.pull_request.html_url }}"
+    - name: Trigger NuGet release flow action
+      uses: ./.github/actions/trigger-nuget-release-flow
+      with:
+        repo-dispatch-token: ${{ secrets.REPOSITORY_DISPATCH_GH_TOKEN }}
+        issue-number: '${{ needs.release-info.outputs.issue-number }}'
+        nuget-release-status: '${{ steps.set-nuget-release-flow-info.outputs.nuget-release-status }}'
+        nuget-release-badge-color: '${{ steps.set-nuget-release-flow-info.outputs.nuget-release-badge-color }}'
+        nuget-release-pull-request-node-status: '${{ steps.set-nuget-release-flow-info.outputs.nuget-release-pull-request-node-status }}'
+        nuget-release-pull-request-url: '${{ steps.set-nuget-release-flow-info.outputs.nuget-release-pull-request-url }}'
