@@ -35,6 +35,7 @@ jobs:
       CUSTOM_RELEASE_NOTES_FILEPATH: './nuget-release-notes.md'
       CUSTOM_RELEASE_NOTES_ARTIFACT_NAME: 'nuget-release-notes'
     outputs:
+      issue-number: ${{ steps.nuget-publish-info.outputs.issue-number }}
       nuget-package-run-id: ${{ steps.nuget-publish-info.outputs.nuget-package-run-id }}
       nuget-id: ${{ steps.nuget-publish-info.outputs.nuget-id }}
       nuget-version: ${{ steps.nuget-publish-info.outputs.nuget-version }}
@@ -243,7 +244,6 @@ jobs:
           $releaseBadgeColor = "red"
         }
 
-        Write-Host "::set-output name=issue-number::${{ github.event.client_payload.issueNumber }}"
         Write-Host "::set-output name=nuget-release-status::$releaseStatus"
         Write-Host "::set-output name=nuget-release-badge-color::$releaseBadgeColor"
         Write-Host "::set-output name=publish-nuget-node-status::$workflowStatus"
