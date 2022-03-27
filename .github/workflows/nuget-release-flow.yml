@@ -252,7 +252,7 @@ jobs:
 
   close-release-issue:
     name: Close NuGet release issue
-    needs: [release-flow-args, update-release-flow-diagram]
+    needs: [update-release-flow-diagram]
     if: github.event.workflow_run.conclusion != 'skipped' && github.event.workflow_run.name == 'NuGet publish'
     environment: nuget-release-flow-workflow
     permissions:
@@ -273,6 +273,9 @@ jobs:
       shell: pwsh
       run: |
         $githubReleaseInfo = Get-Content ./github-release-info.md | ConvertFrom-Json
+        Write-Host "::set-output name=issue-number::$($githubReleaseInfo.issueNumber)"
+        Write-Host "::set-output name=nuget-id::$($githubReleaseInfo.nugetId)"
+        Write-Host "::set-output name=nuget-version::$($githubReleaseInfo.nugetVersion)"
         Write-Host "::set-output name=github-release-url::$($githubReleaseInfo.githubReleaseUrl)"
     - name: Render close issue comment template
       id: render-issue-comment-template
@@ -280,9 +283,9 @@ jobs:
       with:
         template: .github/workflows/templates/nuget-release-flow/nuget-released-successfully-issue-comment.md
         vars: |
-          nugetId: '${{ needs.release-flow-args.outputs.nuget-id }}'
-          nugetVersion: '${{ needs.release-flow-args.outputs.nuget-version }}'
-          nugetUrl: 'https://www.nuget.org/packages/${{ needs.release-flow-args.outputs.nuget-id }}'
+          nugetId: '${{ steps.github-release-info.outputs.nuget-id }}'
+          nugetVersion: '${{ steps.github-release-info.outputs.nuget-version }}'
+          nugetUrl: 'https://www.nuget.org/packages/${{ steps.github-release-info.outputs.nuget-id }}'
           gitHubReleaseUrl: '${{ steps.github-release-info.outputs.github-release-url }}'
     - name: Sanitize issue comment
       id: sanitize-issue-comment
@@ -293,7 +296,7 @@ jobs:
     - name: Update issue with NuGet released comment
       uses: ./.github/actions/create-update-comment
       with:
-        issue-number: ${{ needs.release-flow-args.outputs.issue-number }}
+        issue-number: ${{ steps.github-release-info.outputs.issue-number }}
         body-includes: '<!-- nuget-released -->'
         comment-author: github-actions[bot]
         body: ${{ steps.sanitize-issue-comment.outputs.body }}
@@ -302,4 +305,4 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.REPOSITORY_DISPATCH_GH_TOKEN }}
       run: |
-        gh issue close ${{ needs.release-flow-args.outputs.issue-number }}
+        gh issue close ${{ steps.github-release-info.outputs.issue-number }}

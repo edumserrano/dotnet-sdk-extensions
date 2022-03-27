@@ -259,6 +259,9 @@ jobs:
       shell: pwsh
       run: |
         $githubRelease = @{
+          issueNumber = '${{ needs.workflow-args.outputs.issue-number }}'
+          nugetId = '${{ needs.workflow-args.outputs.nuget-id }}'
+          nugetVersion = '${{ needs.workflow-args.outputs.nuget-version }}'
           githubReleaseUrl = '${{ needs.publish-nuget.outputs.github-release-url }}'
         }
         $githubReleaseAsJson = $githubRelease | ConvertTo-Json
