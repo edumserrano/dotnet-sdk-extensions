@@ -69,19 +69,20 @@ jobs:
         event-type: nuget-release-command
         client-payload: '${{ steps.setup-client-payload.outputs.client-payload }}'
 
-  trigger-nuget-release-flow:
-    name: Trigger NuGet release flow
+  output-artifacts:
+    name: Create output artifacts
     needs: [main]
     if: always() && needs.main.result != 'skipped'
     environment: issue-nuget-release-workflow
     permissions:
       contents: read
     runs-on: ubuntu-latest
+    env:
+      RELEASE_FLOW_INFO_ARTIFACT_FILEPATH: ${{github.workspace}}/nuget-release-flow-info.md
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
-    - name: Set NuGet release flow info
-      id: set-nuget-release-flow-info
+    - name: Save NuGet release flow info to file
       run: |
         $workflowResult = '${{ needs.main.result }}'
         if($workflowResult -eq 'success') {
@@ -95,21 +96,21 @@ jobs:
           $releaseBadgeColor = "red"
         }
 
-        Write-Host "::set-output name=issue-number::${{ github.event.issue.number }}"
-        Write-Host "::set-output name=nuget-id::${{ needs.main.outputs.nuget-id }}"
-        Write-Host "::set-output name=nuget-version::${{ needs.main.outputs.nuget-version }}"
-        Write-Host "::set-output name=nuget-release-status::$releaseStatus"
-        Write-Host "::set-output name=nuget-release-badge-color::$releaseBadgeColor"
-        Write-Host "::set-output name=issue-nuget-release-node-status::$workflowStatus"
-        Write-Host "::set-output name=issue-nuget-release-url::https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-    - name: Trigger NuGet release flow action
-      uses: ./.github/actions/trigger-nuget-release-flow
+        $releaseFlowInfo = @{
+          issueNumber = '${{ github.event.issue.number }}'
+          nugetId = '${{ needs.main.outputs.nuget-id }}'
+          nugetVersion = '${{ needs.main.outputs.nuget-version }}'
+          nugetReleaseStatus = $releaseStatus
+          nugetReleaseBadgeColor = $releaseBadgeColor
+          issueNugetReleaseNodeStatus = $workflowStatus
+          issueNugetReleaseUrl = 'https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}'
+        }
+
+        $releaseFlowInfoAsJson = $releaseFlowInfo | ConvertTo-Json
+        $releaseInfoAsJson | Out-File ${{ env.RELEASE_FLOW_INFO_ARTIFACT_FILEPATH }}
+        Get-Content ${{ env.RELEASE_FLOW_INFO_ARTIFACT_FILEPATH }}
+    - name: Upload release info
+      uses: actions/upload-artifact@v2
       with:
-        repo-dispatch-token: ${{ secrets.REPOSITORY_DISPATCH_GH_TOKEN }}
-        issue-number: '${{ steps.set-nuget-release-flow-info.outputs.issue-number }}'
-        nuget-id: '${{ steps.set-nuget-release-flow-info.outputs.nuget-id }}'
-        nuget-version: '${{ steps.set-nuget-release-flow-info.outputs.nuget-version }}'
-        nuget-release-status: '${{ steps.set-nuget-release-flow-info.outputs.nuget-release-status }}'
-        nuget-release-badge-color: '${{ steps.set-nuget-release-flow-info.outputs.nuget-release-badge-color }}'
-        issue-nuget-release-node-status: '${{ steps.set-nuget-release-flow-info.outputs.issue-nuget-release-node-status }}'
-        issue-nuget-release-url: '${{ steps.set-nuget-release-flow-info.outputs.issue-nuget-release-url }}'
+        name: nuget-release-flow-info
+        path: ${{ env.RELEASE_FLOW_INFO_ARTIFACT_FILEPATH }}

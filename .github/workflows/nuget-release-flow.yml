@@ -19,8 +19,7 @@ jobs:
 
   on-wf-run-issue-nuget-release:
     name: Trigger NuGet release flow
-    if: github.event_name == 'workflow_run'
-    # && github.event.workflow.name == 'Issue - NuGet release'
+    if: github.event_name == 'workflow_run'&& github.event.workflow.name == 'Issue - NuGet release'
     environment: nuget-release-flow-workflow
     permissions:
       contents: read
