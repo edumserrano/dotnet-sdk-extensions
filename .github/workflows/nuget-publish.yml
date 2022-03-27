@@ -149,7 +149,7 @@ jobs:
       contents: write
     runs-on: ubuntu-latest
     outputs:
-      github-release-url: ${{ steps.create-gh-release.outputs.html_url }} # TODO
+      github-release-url: ${{ steps.create-gh-release.outputs.html_url }}
     env:
       EXTENSIONS_NUGET_BIN_FOLDER : ${{ github.workspace }}/DotNet.Sdk.Extensions/bin/Release
       TESTING_EXTENSIONS_NUGET_BIN_FOLDER : ${{ github.workspace }}/DotNet.Sdk.Extensions.Testing/bin/Release
@@ -255,32 +255,18 @@ jobs:
         nuget-release-badge-color: '${{ steps.set-nuget-release-flow-info.outputs.nuget-release-badge-color }}'
         publish-nuget-node-status: '${{ steps.set-nuget-release-flow-info.outputs.publish-nuget-node-status }}'
         publish-nuget-url: 'https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}'
+    - name: Save GitHub release info to file
+      shell: pwsh
+      run: |
+        $githubRelease = @{
+          githubReleaseUrl = '${{ needs.publish-nuget.outputs.github-release-url }}'
+        }
+        $githubReleaseAsJson = $githubRelease | ConvertTo-Json
+        $githubReleaseAsJson | Out-File github-release-info.md
+        Get-Content github-release-info.md
+    - name: Upload GitHub release info
+      uses: actions/upload-artifact@v2
+      with:
+        name: github-release-info
+        path: github-release-info.md
 
-# close issue
-
-#  - name: Render close issue comment template
-#       id: render-issue-comment-template
-#       uses: chuhlomin/render-template@v1.4
-#       with:
-#         template: .github/workflows/templates/nuget-publish/close-nuget-release-issue.md
-#         vars: |
-#           nugetId: '${{ steps.nuget-release-info.outputs.nuget-id }}'
-#           nugetVersion: '${{ steps.nuget-release-info.outputs.nuget-version }}'
-#           nugetUrl: '${{ steps.nuget-release-info.outputs.nuget-url }}'
-#           gitHubReleaseUrl: '${{ steps.create-gh-release.outputs.html_url }}'
-#     - name: Sanitize issue comment
-#       id: sanitize-issue-body
-#       run: |
-#         $body = "${{ steps.render-issue-comment-template.outputs.result }}"
-#         $body = $body -replace "`n","%0A" # The content must be escaped to preserve newlines. See https://github.community/t/set-output-truncates-multiline-strings/16852/3
-#         Write-Host "::set-output name=issue-comment::$body"
-#     - name: Add comment to NuGet release issue
-#       uses: peter-evans/create-or-update-comment@v1.4.5
-#       with:
-#         issue-number: ${{ steps.nuget-release-info.outputs.issue-number }}
-#         body: '${{ steps.sanitize-issue-body.outputs.issue-comment }}'
-#     - name: Close NuGet release issue
-#       env:
-#         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#       run: |
-#         gh issue close ${{ steps.nuget-release-info.outputs.issue-number }}

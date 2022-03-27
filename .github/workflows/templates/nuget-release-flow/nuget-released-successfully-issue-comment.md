@@ -4,3 +4,5 @@ The NuGet package **{{ .nugetId }}** version **{{ .nugetVersion }}** has been re
 [NuGet package]({{ .nugetUrl }}).
  
 Closing this issue.
+
+<!-- nuget-released -->

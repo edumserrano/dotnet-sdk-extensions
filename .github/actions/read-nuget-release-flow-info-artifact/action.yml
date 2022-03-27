@@ -69,9 +69,7 @@ runs:
     id: nuget-release-flow-info
     shell: pwsh
     run: |
-      $releaseFlowInfoPath = "./nuget-release-flow-info.md"
-      $releaseFlowInfoJson = Get-Content $releaseFlowInfoPath
-      $releaseFlowInfo = $releaseFlowInfoJson | ConvertFrom-Json
+      $releaseFlowInfo = Get-Content ./nuget-release-flow-info.md | ConvertFrom-Json
       Write-Host "::set-output name=issue-number::$($releaseFlowInfo.issueNumber)"
       Write-Host "::set-output name=nuget-id::$($releaseFlowInfo.nugetId)"
       Write-Host "::set-output name=nuget-version::$($releaseFlowInfo.nugetVersion)"

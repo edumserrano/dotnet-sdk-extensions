@@ -1,4 +1,4 @@
-name: NuGet release flow diagram
+name: NuGet release flow
 
 on:
   workflow_run:
@@ -44,11 +44,11 @@ jobs:
       id: nuget-flow-info
       uses: ./.github/actions/read-nuget-release-flow-info-artifact
       with:
-        workflow-id: '${{ github.event.workflow_run.workflow_id }}'
-        workflow-run-id: '${{ github.event.workflow_run.id }}'
+        workflow-id: ${{ github.event.workflow_run.workflow_id }}
+        workflow-run-id: ${{ github.event.workflow_run.id }}
 
-  main:
-    name: Trigger NuGet release flow
+  update-release-flow-diagram:
+    name: Update NuGet release flow diagram
     needs: [release-flow-args]
     if: needs.release-flow-args.outputs.issue-number != '' # manually triggered workflows might not have an issue to update, example when using workflow_dispatch on the nuget-publish workflow
     environment: nuget-release-flow-workflow
@@ -221,7 +221,7 @@ jobs:
       id: render-issue-comment-template
       uses: chuhlomin/render-template@v1.4
       with:
-        template: .github/workflows/templates/nuget-release-flow-diagram/nuget-release-flow-issue-comment.md
+        template: .github/workflows/templates/nuget-release-flow/nuget-release-flow-issue-comment.md
         vars: |
           nugetId: '${{ steps.nuget-release-flow-info.outputs.nuget-id }}'
           nugetVersion: '${{ steps.nuget-release-flow-info.outputs.nuget-version }}'
@@ -249,3 +249,60 @@ jobs:
         comment-author: github-actions[bot]
         body: ${{ steps.sanitize-issue-comment.outputs.body }}
         edit-mode: replace
+
+  close-release-issue:
+    name: Close NuGet release issue
+    needs: [release-flow-args]
+    if: github.event.workflow_run.conclusion != 'skipped'
+    environment: nuget-release-flow-workflow
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+    - name: Dump github context
+      env:
+        GITHUB_CONTEXT: ${{ toJSON(github) }}
+      run: $env:GITHUB_CONTEXT
+    - name: Checkout repository
+      uses: actions/checkout@v3
+    - name: Download GitHub release info artifact
+      uses: dawidd6/action-download-artifact@v2.17.0
+      with:
+        workflow: ${{ github.event.workflow_run.workflow_id }}
+        name:  github-release-info
+        run_id: ${{ github.event.workflow_run.id }}
+    - name: Read GitHub release info artifact
+      id: github-release-info
+      shell: pwsh
+      run: |
+        $githubReleaseInfo = Get-Content ./github-release-info.md | ConvertFrom-Json
+        Write-Host "::set-output name=github-release-url::$($githubReleaseInfo.githubReleaseUrl)"
+    - name: Render close issue comment template
+      id: render-issue-comment-template
+      uses: chuhlomin/render-template@v1.4
+      with:
+        template: .github/workflows/templates/nuget-release-flow/nuget-released-successfully-issue-comment.md
+        vars: |
+          nugetId: '${{ needs.release-flow-args.outputs.nuget-id }}'
+          nugetVersion: '${{ needs.release-flow-args.outputs.nuget-version }}'
+          nugetUrl: 'https://www.nuget.org/packages/${{ needs.release-flow-args.outputs.nuget-id }}'
+          gitHubReleaseUrl: '${{ steps.github-release-info.outputs.github-release-url }}'
+    - name: Sanitize issue comment
+      id: sanitize-issue-comment
+      run: |
+        $body = "${{ steps.render-issue-comment-template.outputs.result }}"
+        $body = $body -replace "`n","%0A" # The content must be escaped to preserve newlines. See https://github.community/t/set-output-truncates-multiline-strings/16852/3
+        Write-Host "::set-output name=issue-comment::$body"
+    - name: Update issue with NuGet released comment
+      uses: ./.github/actions/create-update-comment
+      with:
+        issue-number: ${{ needs.release-flow-args.outputs.issue-number }}
+        body-includes: '<!-- nuget-released -->'
+        comment-author: github-actions[bot]
+        body: ${{ steps.sanitize-issue-comment.outputs.body }}
+        edit-mode: replace
+    - name: Close NuGet release issue
+      env:
+        GITHUB_TOKEN: ${{ secrets.REPOSITORY_DISPATCH_GH_TOKEN }}
+      run: |
+        gh issue close ${{ needs.release-flow-args.outputs.issue-number }}
