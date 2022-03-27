@@ -5,13 +5,11 @@ on:
     workflows: [
       "NuGet release",
       "NuGet release command handler",
+      "PR - NuGet release flow diagram",
       "NuGet publish"
     ]
     types:
     - completed
-  pull_request:
-    branches: [ main ]
-    types: [ closed ]
 
 defaults:
   run:
@@ -21,7 +19,6 @@ jobs:
   release-flow-args:
     name: Process NuGet release flow info artifact
     if: github.event.workflow_run.conclusion != 'skipped'
-    # && github.event_name == 'workflow_dispatch' || (github.event.pull_request.merged == 'true' && contains(github.event.pull_request.labels.*.name, 'nuget-release'))
     environment: nuget-release-flow-workflow
     permissions:
       contents: read
