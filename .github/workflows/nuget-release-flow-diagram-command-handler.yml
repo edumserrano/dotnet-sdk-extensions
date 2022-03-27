@@ -69,8 +69,11 @@ jobs:
       run: |
         # the value is defined in the following order:
         # 1 - if it exists in the client payload from the repo dispatch event
+        # 2 - use default value for a node if the node from the client payload is an ancestor node
         # 2 - if it exists in the parsed data from the nuget release flow comment
         # 3 - use a default value
+
+        # default values
         $issueNugetReleaseNodeStatus = 'default'
         $issueNugetReleaseUrl = 'empty'
         $nugetReleaseCommandHandlerNodeStatus = 'default'
@@ -80,6 +83,7 @@ jobs:
         $publishNugetNodeStatus = 'default'
         $publishNugetUrl = 'empty'
 
+        # use parsed data from nuget release flow if exists
         $issueNugetReleaseNodeStatus = [string]::IsNullOrWhiteSpace('${{ steps.parse-nuget-flow-data.outputs.issue-nuget-release-node-status }}') `
           ? $issueNugetReleaseNodeStatus `
           : '${{ steps.parse-nuget-flow-data.outputs.issue-nuget-release-node-status }}'
@@ -99,6 +103,7 @@ jobs:
           ? $nugetReleasePullRequestUrl `
           : '${{ steps.parse-node-urls.outputs.nuget-release-pull-request-url }}'
 
+        # use data from the client playload if exists
         $issueNugetReleaseNodeStatus = [string]::IsNullOrWhiteSpace('${{ github.event.client_payload.nuget.issueNugetReleaseNodeStatus }}') `
           ? $issueNugetReleaseNodeStatus `
           : '${{ github.event.client_payload.nuget.issueNugetReleaseNodeStatus }}'
@@ -123,6 +128,29 @@ jobs:
         $publishNugetUrl = [string]::IsNullOrWhiteSpace('${{ github.event.client_payload.nuget.publishNugetUrl }}') `
           ? $publishNugetUrl `
           : '${{ github.event.client_payload.nuget.publishNugetUrl }}'
+
+        # reset nodes to default if the client payload is an ancestor node
+        $isIssueNugetReleaseNode = ![string]::IsNullOrWhiteSpace('${{ github.event.client_payload.nuget.issueNugetReleaseNodeStatus }}')
+        $isNugetReleaseCommandHandlerNode = ![string]::IsNullOrWhiteSpace('${{ github.event.client_payload.nuget.nugetReleaseCommandHandlerNodeStatus }}')
+        $isNugetReleasePullRequestNode = ![string]::IsNullOrWhiteSpace('${{ github.event.client_payload.nuget.nugetReleasePullRequestNodeStatus }}')
+        if($isIssueNugetReleaseNode) {
+          $nugetReleaseCommandHandlerNodeStatus = 'default'
+          $nugetReleaseCommandHandlerUrl = 'empty'
+          $nugetReleasePullRequestNodeStatus = 'default'
+          $nugetReleasePullRequestUrl = 'empty'
+          $publishNugetNodeStatus = 'default'
+          $publishNugetUrl = 'empty'
+        }
+        elseif($isNugetReleaseCommandHandlerNode) {
+          $nugetReleasePullRequestNodeStatus = 'default'
+          $nugetReleasePullRequestUrl = 'empty'
+          $publishNugetNodeStatus = 'default'
+          $publishNugetUrl = 'empty'
+        }
+        elseif($isNugetReleasePullRequestNode) {
+          $publishNugetNodeStatus = 'default'
+          $publishNugetUrl = 'empty'
+        }
 
         # there's no default for nuget id and nuget version, they need to be passed in the first time and then
         # their value is read from the nuget release flow comment

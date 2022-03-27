@@ -4,7 +4,7 @@ on:
   workflow_run:
     workflows: [
       "NuGet release",
-      "NuGet release flow command handler",
+      "NuGet release flow diagram command handler",
       "NuGet publish"
     ]
     types:
