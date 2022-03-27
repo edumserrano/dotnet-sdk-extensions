@@ -252,17 +252,13 @@ jobs:
 
   close-release-issue:
     name: Close NuGet release issue
-    needs: [release-flow-args]
-    if: github.event.workflow_run.conclusion != 'skipped'
+    needs: [release-flow-args, update-release-flow-diagram]
+    if: github.event.workflow_run.conclusion != 'skipped' && github.event.workflow_run.name == 'NuGet publish'
     environment: nuget-release-flow-workflow
     permissions:
       contents: read
     runs-on: ubuntu-latest
     steps:
-    - name: Dump github context
-      env:
-        GITHUB_CONTEXT: ${{ toJSON(github) }}
-      run: $env:GITHUB_CONTEXT
     - name: Checkout repository
       uses: actions/checkout@v3
     - name: Download GitHub release info artifact
@@ -292,7 +288,7 @@ jobs:
       run: |
         $body = "${{ steps.render-issue-comment-template.outputs.result }}"
         $body = $body -replace "`n","%0A" # The content must be escaped to preserve newlines. See https://github.community/t/set-output-truncates-multiline-strings/16852/3
-        Write-Host "::set-output name=issue-comment::$body"
+        Write-Host "::set-output name=body::$body"
     - name: Update issue with NuGet released comment
       uses: ./.github/actions/create-update-comment
       with:
