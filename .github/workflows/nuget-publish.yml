@@ -17,13 +17,42 @@ on:
         required: true
   pull_request:
     branches: [ main ]
-    types: [ closed ]
+    types: [
+      assigned,
+      unassigned,
+      labeled,
+      unlabeled,
+      opened,
+      edited,
+      closed,
+      reopened,
+      synchronize,
+      converted_to_draft,
+      ready_for_review,
+      locked,
+      unlocked,
+      review_requested,
+      review_request_removed,
+      auto_merge_enabled,
+      auto_merge_disabled
+    ]
 
 defaults:
   run:
     shell: pwsh
 
 jobs:
+  debug:
+    name: Debug
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+    - name: Dump github context
+      env:
+        GITHUB_CONTEXT: ${{ toJSON(github) }}
+      run: $env:GITHUB_CONTEXT
+
   workflow-args:
     name: Process workflow input data
     if: github.event_name == 'workflow_dispatch' || (github.event.pull_request.merged == 'true' && contains(github.event.pull_request.labels.*.name, 'nuget-release'))
