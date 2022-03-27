@@ -54,8 +54,7 @@ jobs:
           $releaseBadgeColor = "red"
         }
 
-        $nugetInfoPath = "./nuget-release-info.md"
-        $nugetInfoJson = Get-Content $nugetInfoPath
+        $nugetInfoJson = Get-Content ./nuget-release-info.md
         $nugetInfo = $nugetInfoJson | ConvertFrom-Json
         $issueNumber = $nugetInfo.issueNumber
 
@@ -66,7 +65,7 @@ jobs:
     - name: Upload NuGet release flow info artifact
       uses: ./.github/actions/create-nuget-release-flow-info-artifact
       with:
-        issue-number: '${{ needs.set-nuget-release-flow-info.outputs.issue-number }}'
+        issue-number: '${{ steps.set-nuget-release-flow-info.outputs.issue-number }}'
         nuget-release-status: '${{ steps.set-nuget-release-flow-info.outputs.nuget-release-status }}'
         nuget-release-badge-color: '${{ steps.set-nuget-release-flow-info.outputs.nuget-release-badge-color }}'
         issue-nuget-release-node-status: '${{ steps.set-nuget-release-flow-info.outputs.nuget-release-pull-request-node-status }}'
