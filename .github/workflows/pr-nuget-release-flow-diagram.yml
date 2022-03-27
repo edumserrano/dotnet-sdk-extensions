@@ -68,5 +68,5 @@ jobs:
         issue-number: '${{ steps.set-nuget-release-flow-info.outputs.issue-number }}'
         nuget-release-status: '${{ steps.set-nuget-release-flow-info.outputs.nuget-release-status }}'
         nuget-release-badge-color: '${{ steps.set-nuget-release-flow-info.outputs.nuget-release-badge-color }}'
-        issue-nuget-release-node-status: '${{ steps.set-nuget-release-flow-info.outputs.nuget-release-pull-request-node-status }}'
-        issue-nuget-release-url: '${{ github.event.pull_request.html_url }}'
+        nuget-release-pull-request-node-status: '${{ steps.set-nuget-release-flow-info.outputs.nuget-release-pull-request-node-status }}'
+        nuget-release-pull-request-url: '${{ github.event.pull_request.html_url }}'
