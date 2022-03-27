@@ -145,7 +145,7 @@ jobs:
         Write-Host "::set-output name=nuget-release-pull-request-url::$nugetReleasePullRequestUrl"
         Write-Host "::set-output name=publish-nuget-node-status::$publishNugetNodeStatus"
         Write-Host "::set-output name=publish-nuget-url::$publishNugetUrl"
-    - name: Dump output from previous step
+    - name: Dump outputs from previous step
       env:
         STEP_OUTPUT: ${{ toJSON(steps.nuget-release-flow-info.outputs) }}
       run: $env:STEP_OUTPUT

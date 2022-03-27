@@ -25,7 +25,7 @@ defaults:
 
 jobs:
   workflow-args:
-    name: Setup NuGet publish on PR trigger
+    name: Process workflow input data
     if: github.event_name == 'workflow_dispatch' || (github.event.pull_request.merged == 'true' && contains(github.event.pull_request.labels.*.name, 'nuget-release'))
     environment: nuget-publish-workflow
     permissions:
@@ -105,7 +105,7 @@ jobs:
           New-Item -Name ${{ env.CUSTOM_RELEASE_NOTES_FILEPATH }} -ItemType File
 
           # get GitHub release sha from workflow run id
-          $workflowRun = gh api repos/edumserrano/dot-net-sdk-extensions/actions/runs/$nugetPackageRunId | ConvertFrom-Json
+          $workflowRun = gh api repos/${{ github.repository }}/actions/runs/$nugetPackageRunId | ConvertFrom-Json
           $headBranch = $workflowRun.head_branch
           if($headBranch -ne 'main') {
             Write-Host "::error::Invalid head branch: $headBranch. Workflow dispatch events for this workflow cannot use a NuGet package workflow run id that is not from the main branch."
@@ -125,7 +125,10 @@ jobs:
         Write-Host "::set-output name=auto-generate-release-notes::$autoGenerateReleaseNotes"
         Write-Host "::set-output name=nuget-package-run-id::$nugetPackageRunId"
         Write-Host "::set-output name=github-release-sha::$githubReleaseSha"
-
+    - name: Dump outputs from previous step
+      env:
+        STEP_OUTPUT: ${{ toJSON(steps.nuget-publish-info.outputs) }}
+      run: $env:STEP_OUTPUT
     - name: Upload custom release notes
       uses: actions/upload-artifact@v2
       with:

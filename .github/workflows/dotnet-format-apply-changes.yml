@@ -20,7 +20,7 @@ jobs:
   on-push-check:
     name: Check for dotnet format open PR
     if: github.event.workflow_run.event == 'push'
-    environment: no-secrets-workflow
+    environment: dotnet-format-apply-changes-workflow
     permissions:
       contents: read
       pull-requests: read
@@ -51,7 +51,7 @@ jobs:
         $workflowInfo = $workflowInfoJson | ConvertFrom-Json
         Write-Host "::set-output name=has-changes::$($workflowInfo.hasChanges)"
         Write-Host "::set-output name=workflow::$($workflowInfo.workflow)"
-        Write-Host "::set-output name=workflow-url::$($workflowInfo.workflowUrl"
+        Write-Host "::set-output name=workflow-url::$($workflowInfo.workflowUrl)"
     - name: Check for open dotnet format PRs
       id: open-pr-check
       env:
