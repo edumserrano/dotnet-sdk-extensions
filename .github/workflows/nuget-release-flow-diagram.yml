@@ -40,7 +40,7 @@ jobs:
         workflow-run-id: '${{ github.event.workflow_run.id }}'
     - name: Trigger NuGet release flow action
       if: steps.nuget-flow-info.outputs.issue-number != '' # manually triggered workflows might not have an issue to update, example when using workflow_dispatch on the nuget-publish workflow
-      uses: ./.github/actions/trigger-nuget-release-flow
+      uses: ./.github/actions/trigger-nuget-release-flow-diagram-update
       with:
         repo-dispatch-token: ${{ secrets.REPOSITORY_DISPATCH_GH_TOKEN }}
         issue-number: '${{ steps.nuget-flow-info.outputs.issue-number }}'
