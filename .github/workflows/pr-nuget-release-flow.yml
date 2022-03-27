@@ -67,7 +67,7 @@ jobs:
         Write-Host "::set-output name=nuget-release-badge-color::$releaseBadgeColor"
         Write-Host "::set-output name=nuget-release-pull-request-node-status::$workflowStatus"
         Write-Host "::set-output name=nuget-release-pull-request-url::${{ github.event.pull_request.html_url }}"
-    - name: Trigger NuGet release flow action
+    - name: Trigger NuGet release flow
       uses: ./.github/actions/trigger-nuget-release-flow
       with:
         repo-dispatch-token: ${{ secrets.REPOSITORY_DISPATCH_GH_TOKEN }}

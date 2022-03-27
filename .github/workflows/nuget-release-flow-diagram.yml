@@ -1,9 +1,11 @@
-name: NuGet release flow
+name: NuGet release flow diagram
 
 on:
   workflow_run:
     workflows: [
-      "Issue - NuGet release"
+      "NuGet release",
+      "NuGet release flow command handler",
+      "NuGet publish"
     ]
     types:
     - completed
@@ -16,10 +18,9 @@ defaults:
     shell: pwsh
 
 jobs:
-
-  on-wf-run-issue-nuget-release:
+  on-workflow-run:
     name: Trigger NuGet release flow
-    if: github.event_name == 'workflow_run'&& github.event.workflow.name == 'Issue - NuGet release'
+    if: github.event_name == 'workflow_run'
     environment: nuget-release-flow-workflow
     permissions:
       contents: read
@@ -29,41 +30,30 @@ jobs:
       env:
         GITHUB_CONTEXT: ${{ toJSON(github) }}
       run: $env:GITHUB_CONTEXT
-    # - name: Checkout repository
-    #   uses: actions/checkout@v3
-    # - name: Set NuGet release flow info
-    #   id: set-nuget-release-flow-info
-    #   run: |
-    #     $workflowResult = '${{ needs.main.result }}'
-    #     if($workflowResult -eq 'success') {
-    #       $workflowStatus = "ok"
-    #       $releaseStatus = "in%20progress"
-    #       $releaseBadgeColor = "blue"
-    #     }
-    #     else {
-    #       $workflowStatus = "error"
-    #       $releaseStatus = "failed"
-    #       $releaseBadgeColor = "red"
-    #     }
-
-    #     Write-Host "::set-output name=issue-number::${{ github.event.issue.number }}"
-    #     Write-Host "::set-output name=nuget-id::${{ needs.main.outputs.nuget-id }}"
-    #     Write-Host "::set-output name=nuget-version::${{ needs.main.outputs.nuget-version }}"
-    #     Write-Host "::set-output name=nuget-release-status::$releaseStatus"
-    #     Write-Host "::set-output name=nuget-release-badge-color::$releaseBadgeColor"
-    #     Write-Host "::set-output name=issue-nuget-release-node-status::$workflowStatus"
-    #     Write-Host "::set-output name=issue-nuget-release-url::https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-    # - name: Trigger NuGet release flow action
-    #   uses: ./.github/actions/trigger-nuget-release-flow
-    #   with:
-    #     repo-dispatch-token: ${{ secrets.REPOSITORY_DISPATCH_GH_TOKEN }}
-    #     issue-number: '${{ steps.set-nuget-release-flow-info.outputs.issue-number }}'
-    #     nuget-id: '${{ steps.set-nuget-release-flow-info.outputs.nuget-id }}'
-    #     nuget-version: '${{ steps.set-nuget-release-flow-info.outputs.nuget-version }}'
-    #     nuget-release-status: '${{ steps.set-nuget-release-flow-info.outputs.nuget-release-status }}'
-    #     nuget-release-badge-color: '${{ steps.set-nuget-release-flow-info.outputs.nuget-release-badge-color }}'
-    #     issue-nuget-release-node-status: '${{ steps.set-nuget-release-flow-info.outputs.issue-nuget-release-node-status }}'
-    #     issue-nuget-release-url: '${{ steps.set-nuget-release-flow-info.outputs.issue-nuget-release-url }}'
+    - name: Checkout repository
+      uses: actions/checkout@v3
+    - name: Read NuGet release flow info artifact
+      id: nuget-flow-info
+      uses: ./.github/actions/read-nuget-release-flow-info-artifact
+      with:
+        workflow-id: '${{ github.event.workflow_run.workflow_id }}'
+        workflow-run-id: '${{ github.event.workflow_run.id }}'
+    - name: Trigger NuGet release flow action
+      if: steps.nuget-flow-info.outputs.issue-number != '' # manually triggered workflows might not have an issue to update, example when using workflow_dispatch on the nuget-publish workflow
+      uses: ./.github/actions/trigger-nuget-release-flow
+      with:
+        repo-dispatch-token: ${{ secrets.REPOSITORY_DISPATCH_GH_TOKEN }}
+        issue-number: '${{ steps.nuget-flow-info.outputs.issue-number }}'
+        nuget-id: '${{ steps.nuget-flow-info.outputs.nuget-id }}'
+        nuget-version: '${{ steps.nuget-flow-info.outputs.nuget-version }}'
+        nuget-release-status: '${{ steps.nuget-flow-info.outputs.nuget-release-status }}'
+        nuget-release-badge-color: '${{ steps.nuget-flow-info.outputs.nuget-release-badge-color }}'
+        issue-nuget-release-node-status: '${{ steps.nuget-flow-info.outputs.issue-nuget-release-node-status }}'
+        issue-nuget-release-url: '${{ steps.nuget-flow-info.outputs.issue-nuget-release-url }}'
+        nuget-release-command-handler-node-status: '${{ steps.nuget-flow-info.outputs.nuget-release-command-handler-node-status }}'
+        nuget-release-command-handler-url: '${{ steps.nuget-flow-info.outputs.nuget-release-command-handler-url }}'
+        publish-nuget-node-status: '${{ steps.nuget-flow-info.outputs.publish-nuget-node-status }}'
+        publish-nuget-url: '${{ steps.nuget-flow-info.outputs.publish-nuget-url }}'
 
   on-pr-closed:
     name: Trigger NuGet release flow update when PR is closed
@@ -122,8 +112,8 @@ jobs:
         Write-Host "::set-output name=nuget-release-badge-color::$releaseBadgeColor"
         Write-Host "::set-output name=nuget-release-pull-request-node-status::$workflowStatus"
         Write-Host "::set-output name=nuget-release-pull-request-url::${{ github.event.pull_request.html_url }}"
-    - name: Trigger NuGet release flow action
-      uses: ./.github/actions/trigger-nuget-release-flow
+    - name: Update NuGet release flow diagram
+      uses: ./.github/actions/trigger-nuget-release-flow-diagram-update
       with:
         repo-dispatch-token: ${{ secrets.REPOSITORY_DISPATCH_GH_TOKEN }}
         issue-number: '${{ needs.release-info.outputs.issue-number }}'

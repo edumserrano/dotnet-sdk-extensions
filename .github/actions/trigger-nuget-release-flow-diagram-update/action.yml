@@ -1,10 +1,10 @@
 # Why was this action created:
 #
-# This is used to upload an artifact with information required to update the NuGet release flow
+# This is used to trigger the workflow that will update the NuGet release flow
 # diagram in the NuGet release issue.
 #
 
-name: 'Upload NuGet release flow info artifact'
+name: 'Trigger NuGet release flow'
 description: 'Uploads an artifact with information to update the NuGet release flow diagram'
 inputs:
   repo-dispatch-token:
@@ -85,5 +85,5 @@ runs:
     with:
       token: '${{ inputs.repo-dispatch-token }}'
       repository: 'edumserrano/dot-net-sdk-extensions'
-      event-type: 'nuget-release-flow-command'
+      event-type: 'nuget-release-flow-diagram-command'
       client-payload: '${{ steps.setup-client-payload.outputs.client-payload }}'

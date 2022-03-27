@@ -1,8 +1,8 @@
-name: NuGet release flow command handler
+name: NuGet release flow diagram command handler
 
 on:
   repository_dispatch:
-    types: [ nuget-release-flow-command ]
+    types: [ nuget-release-flow-diagram-command ]
 
 defaults:
   run:

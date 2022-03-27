@@ -200,9 +200,9 @@ jobs:
     - name: Save release info to file
       run: |
         $releaseInfo = @{
+          issueNumber = ${{ github.event.client_payload.issueNumber }}
           nugetId = "${{ needs.create-pr.outputs.nuget-id }}"
           nugetVersion = "${{ needs.create-pr.outputs.nuget-version }}"
-          issueNumber = ${{ github.event.client_payload.issueNumber }}
           autoGenerateReleaseNotes = "${{ github.event.client_payload.autoGenerateReleaseNotes }}"
         }
         $releaseInfoAsJson = $releaseInfo | ConvertTo-Json
@@ -240,8 +240,8 @@ jobs:
       run: |
         gh pr merge --auto --squash --delete-branch ${{ needs.create-pr.outputs.pr-number }}
 
-  trigger-nuget-release-flow:
-    name: Trigger NuGet release flow
+  output-artifacts:
+    name: Create output artifacts
     needs: [create-pr, merge-pr]
     if: always()
     environment: nuget-release-command-handler-workflow
@@ -251,7 +251,7 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
-    - name: Set NuGet release flow info
+    - name: Setup NuGet release flow info
       id: set-nuget-release-flow-info
       run: |
         $workflowResult = '${{ needs.merge-pr.result }}'
@@ -266,18 +266,14 @@ jobs:
           $releaseBadgeColor = "red"
         }
 
-        Write-Host "::set-output name=issue-number::${{ github.event.client_payload.issueNumber }}"
         Write-Host "::set-output name=nuget-release-status::$releaseStatus"
         Write-Host "::set-output name=nuget-release-badge-color::$releaseBadgeColor"
         Write-Host "::set-output name=nuget-release-command-handler-node-status::$workflowStatus"
-        Write-Host "::set-output name=nuget-release-command-handler-url::https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-    - name: Trigger NuGet release flow action
-      uses: ./.github/actions/trigger-nuget-release-flow
+    - name: Upload NuGet release flow info artifact
+      uses: ./.github/actions/create-nuget-release-flow-info-artifact
       with:
-        repo-dispatch-token: ${{ secrets.REPOSITORY_DISPATCH_GH_TOKEN }}
-        issue-number: '${{ steps.set-nuget-release-flow-info.outputs.issue-number }}'
+        issue-number: '${{ github.event.client_payload.issueNumber }}'
         nuget-release-status: '${{ steps.set-nuget-release-flow-info.outputs.nuget-release-status }}'
         nuget-release-badge-color: '${{ steps.set-nuget-release-flow-info.outputs.nuget-release-badge-color }}'
         nuget-release-command-handler-node-status: '${{ steps.set-nuget-release-flow-info.outputs.nuget-release-command-handler-node-status }}'
-        nuget-release-command-handler-url: '${{ steps.set-nuget-release-flow-info.outputs.nuget-release-command-handler-url }}'
-
+        nuget-release-command-handler-url: 'https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}'
