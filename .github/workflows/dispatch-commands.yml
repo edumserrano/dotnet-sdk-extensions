@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Issue comment command dispatch
-      uses: peter-evans/slash-command-dispatch@v2.3.0
+      uses: peter-evans/slash-command-dispatch@v3
       if: github.event.issue.state == 'open'
       with:
         issue-type: issue
