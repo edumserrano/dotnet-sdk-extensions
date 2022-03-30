@@ -3,12 +3,31 @@ name: NuGet release
 on:
   issues:
     types: [opened, reopened]
+  repository_dispatch:
+    types: [retry-nuget-release-command]
 
 defaults:
   run:
     shell: pwsh
 
 jobs:
+  debug:
+    name: Debug
+    # if: contains(github.event.issue.labels.*.name, 'nuget-release')
+    environment: issue-nuget-release-workflow
+    permissions:
+      contents: read
+      issues: write
+    runs-on: ubuntu-latest
+    # outputs:
+    #   nuget-id: ${{ steps.setup-client-payload.outputs.nuget-id }}
+    #   nuget-version: ${{ steps.setup-client-payload.outputs.nuget-version }}
+    steps:
+    - name: Dump github context
+      env:
+        GITHUB_CONTEXT: ${{ toJSON(github) }}
+      run: $env:GITHUB_CONTEXT
+
   main:
     name: Parse issue and trigger NuGet release
     if: contains(github.event.issue.labels.*.name, 'nuget-release')

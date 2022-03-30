@@ -12,7 +12,7 @@ jobs:
       issues: write
     runs-on: ubuntu-latest
     steps:
-    - name: Issue comment command dispatch
+    - name: Issues - dispatch commands
       uses: peter-evans/slash-command-dispatch@v3
       if: github.event.issue.state == 'open'
       with:
@@ -23,4 +23,4 @@ jobs:
         permission: write
         token: ${{ secrets.DISPATCH_COMMANDS_GH_TOKEN }}
         commands: |
-          nuget-release
+          retry-nuget-release
