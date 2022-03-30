@@ -11,26 +11,42 @@ defaults:
     shell: pwsh
 
 jobs:
-  debug:
-    name: Debug
-    # if: contains(github.event.issue.labels.*.name, 'nuget-release')
+  workflow-args:
+    name: Process workflow input data
+    if: (github.event_name == 'issues' && contains(github.event.issue.labels.*.name, 'nuget-release')) || (github.event_name == 'repository_dispatch' && contains(github.event.client_payload.github.payload.issue.labels.*.name, 'nuget-release'))
     environment: issue-nuget-release-workflow
     permissions:
       contents: read
-      issues: write
     runs-on: ubuntu-latest
-    # outputs:
-    #   nuget-id: ${{ steps.setup-client-payload.outputs.nuget-id }}
-    #   nuget-version: ${{ steps.setup-client-payload.outputs.nuget-version }}
+    outputs:
+      issue-number: ${{ steps.get-args.outputs.issue-number }}
     steps:
-    - name: Dump github context
+    - name: Get required arguments for NuGet release workflow
+      id: get-args
+      run: |
+        $isRepositoryDispatchEvent = '${{ github.event_name }}' -eq 'repository_dispatch'
+        $isissueEvent = '${{ github.event_name }}' -eq 'issues'
+
+        if($isissueEvent) {
+          $issueNumber = '${{ github.event.issue.number }}'
+        }
+        elseif($isRepositoryDispatchEvent) {
+          $issueNumber = '${{ github.event.client_payload.github.payload.issue.number }}'
+        }
+        else {
+          Write-Host "::error::Invalid GitHub event: ${{ github.event_name }}. Valid options are: issues or repository_dispatch"
+          Exit 1
+        }
+
+        Write-Host "::set-output name=issue-number::$issueNumber"
+    - name: Dump outputs from previous step
       env:
-        GITHUB_CONTEXT: ${{ toJSON(github) }}
-      run: $env:GITHUB_CONTEXT
+        STEP_OUTPUT: ${{ toJSON(steps.get-args.outputs) }}
+      run: $env:STEP_OUTPUT
 
   main:
     name: Parse issue and trigger NuGet release
-    if: contains(github.event.issue.labels.*.name, 'nuget-release')
+    needs: [workflow-args]
     environment: issue-nuget-release-workflow
     permissions:
       contents: read
@@ -58,7 +74,7 @@ jobs:
         $nugetId = $issueForm.'nuget-id'
         $nugetVersion = $issueForm.'nuget-version'
         $clientPayload = @{
-          issueNumber = ${{ github.event.issue.number }}
+          issueNumber = ${{ needs.workflow-args.outputs.issue-number }}
           nugetId = $nugetId
           nugetVersion = $nugetVersion
           customReleaseNotes = $issueForm.'custom-release-notes'
@@ -73,13 +89,13 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        gh issue edit ${{ github.event.issue.number }} --title "Release ${{ steps.setup-client-payload.outputs.nuget-id }} ${{ steps.setup-client-payload.outputs.nuget-version }} NuGet package"
+        gh issue edit ${{ needs.workflow-args.outputs.issue-number }} --title "Release ${{ steps.setup-client-payload.outputs.nuget-id }} ${{ steps.setup-client-payload.outputs.nuget-version }} NuGet package"
     - name: Update issue labels
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         $label = '${{ steps.setup-client-payload.outputs.nuget-id }}'
-        gh issue edit ${{ github.event.issue.number }} --add-label $label
+        gh issue edit ${{ needs.workflow-args.outputs.issue-number }} --add-label $label
     - name: Trigger NuGet release command via repository dispatch
       uses: peter-evans/repository-dispatch@v2
       with:
@@ -90,7 +106,7 @@ jobs:
 
   output-artifacts:
     name: Create output artifacts
-    needs: [main]
+    needs: [ workflow-args, main ]
     if: always() && needs.main.result != 'skipped'
     environment: issue-nuget-release-workflow
     permissions:
@@ -120,7 +136,7 @@ jobs:
     - name: Upload NuGet release flow info artifact
       uses: ./.github/actions/create-nuget-release-flow-info-artifact
       with:
-        issue-number: '${{ github.event.issue.number }}'
+        issue-number: '${{ needs.workflow-args.outputs.issue-number }}'
         nuget-id: '${{ needs.main.outputs.nuget-id }}'
         nuget-version: '${{ needs.main.outputs.nuget-version }}'
         nuget-release-status: '${{ steps.set-nuget-release-flow-info.outputs.nuget-release-status }}'
