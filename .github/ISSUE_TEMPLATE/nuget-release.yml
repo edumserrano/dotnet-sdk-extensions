@@ -17,7 +17,7 @@ body:
         - dotnet-sdk-extensions-testing
     validations:
       required: false
-- type: dropdown
+  - type: dropdown
     id: nuget-id
     attributes:
       label: What NuGet package do you want to release?
