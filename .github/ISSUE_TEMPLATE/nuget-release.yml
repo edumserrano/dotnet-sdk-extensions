@@ -41,12 +41,3 @@ body:
       label: Custom release notes?
       description: This is optional. If filled it will be added at the start of the release notes, before the auto generated release notes.
       placeholder: '## Release notes'
-  - type: checkboxes
-    id: operating-systems
-    attributes:
-      label: Which operating systems have you used?
-      description: You may select more than one.
-      options:
-        - label: macOS
-        - label: Windows
-        - label: Linux
