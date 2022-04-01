@@ -11,6 +11,19 @@ defaults:
     shell: pwsh
 
 jobs:
+  debug:
+    name: Debug
+    environment: issue-nuget-release-workflow
+    permissions:
+      contents: read
+      issues: write
+    runs-on: ubuntu-latest
+    steps:
+    - name: Dump github context
+      env:
+        GITHUB_CONTEXT: ${{ toJSON(github) }}
+      run: $env:GITHUB_CONTEXT
+
   workflow-args:
     name: Process workflow input data
     if: (github.event_name == 'issues' && contains(github.event.issue.labels.*.name, 'nuget-release')) || (github.event_name == 'repository_dispatch' && contains(github.event.client_payload.github.payload.issue.labels.*.name, 'nuget-release'))
@@ -81,10 +94,13 @@ jobs:
           autoGenerateReleaseNotes = $autoGenerateReleaseNotes
         }
         $clientPayloadAsJson = $clientPayload | ConvertTo-Json -Compress
-        Write-Host $clientPayloadAsJson
         Write-Host "::set-output name=client-payload::$clientPayloadAsJson"
         Write-Host "::set-output name=nuget-id::$nugetId"
         Write-Host "::set-output name=nuget-version::$nugetVersion"
+    - name: Dump outputs from previous step
+      env:
+        STEP_OUTPUT: ${{ toJSON(steps.setup-client-payload.outputs) }}
+      run: $env:STEP_OUTPUT
     - name: Update issue title
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
