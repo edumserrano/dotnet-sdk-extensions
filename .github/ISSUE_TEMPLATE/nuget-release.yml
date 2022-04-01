@@ -9,15 +9,6 @@ body:
         ## Description
         This form is used to release a NuGet package. Shortly after the issue is created there will be a comment in the issue with the NuGet release flow progress.
   - type: dropdown
-    id: nuget-id-2
-    attributes:
-      label: What NuGet package do you want to release?
-      options:
-        - dotnet-sdk-extensions
-        - dotnet-sdk-extensions-testing
-    validations:
-      required: false
-  - type: dropdown
     id: nuget-id
     attributes:
       label: What NuGet package do you want to release?
