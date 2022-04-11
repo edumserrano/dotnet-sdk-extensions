@@ -99,7 +99,7 @@ jobs:
       run: dotnet pack ${{ env.TESTING_EXTENSIONS_CSPROJ_FILEPATH }} -c Release --no-build
     - name: Upload NuGets and symbols to artifacts
       id: upload-nuget-artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       if: matrix.os == 'ubuntu-latest'  # this job is on a matrix run but I only want to upload NuGets as artifacts once
       with:
         name: ${{ env.NUGET_ARTIFACT_NAME }}
@@ -132,7 +132,7 @@ jobs:
           -reportTypes:htmlInline
     - name: Upload code coverage report to artifacts
       if: (steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure') && always()
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: ${{ env.CODE_COVERAGE_ARTIFACT_NAME }}
         path: ${{ env.TEST_COVERAGE_REPORT_DIR }}
@@ -143,7 +143,7 @@ jobs:
         Write-Host "::notice title=Code coverage (${{ matrix.os }})::Code coverage has been uploaded to Codecov at $codeCoveUrl. You can download the code coverage report from the workflow artifact named: ${{ env.CODE_COVERAGE_ARTIFACT_NAME }}."
     - name: Upload test results to artifacts
       if: (steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure') && always()
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: ${{ env.TEST_RESULTS_ARTIFACT_NAME }}
         path: ${{ steps.dotnet-test.outputs.test-results-dir }}
