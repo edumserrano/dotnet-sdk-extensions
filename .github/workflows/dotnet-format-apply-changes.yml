@@ -124,7 +124,7 @@ jobs:
         run_id: ${{ github.event.workflow_run.id }}
     - name: Push dotnet format changes to branch
       id: auto-commit-action
-      uses: stefanzweifel/git-auto-commit-action@v4.14.0
+      uses: stefanzweifel/git-auto-commit-action@v4.14.1
       with:
         commit_message: ${{ steps.commit-info.outputs.commit-message }}
         branch: ${{ steps.commit-info.outputs.branch-name }}
@@ -210,7 +210,7 @@ jobs:
     - name: Push dotnet format changes
       id: auto-commit-action
       if: steps.dotnet-format-workflow-info.outputs.has-changes == 'true'
-      uses: stefanzweifel/git-auto-commit-action@v4.14.0
+      uses: stefanzweifel/git-auto-commit-action@v4.14.1
       with:
         branch: ${{ steps.dotnet-format-workflow-info.outputs.pr-branch-name }}
         commit_message: dotnet format from workflow for PR ${{ steps.dotnet-format-workflow-info.outputs.pr-number }}
