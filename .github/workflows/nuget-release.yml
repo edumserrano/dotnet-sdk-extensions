@@ -55,6 +55,7 @@ jobs:
         }
 
         Write-Host "::set-output name=issue-number::$issueNumber"
+        Write-Host "::set-output name=issue-body::$issueBody"
     - name: Dump outputs from previous step
       env:
         STEP_OUTPUT: ${{ toJSON(steps.get-args.outputs) }}
