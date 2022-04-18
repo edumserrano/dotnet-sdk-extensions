@@ -59,13 +59,12 @@ jobs:
         }
         $issue | ConvertTo-Json
 
+        $issueBody = $issueBody -replace "`r`n","%0A" # The content must be escaped to preserve newlines. See https://github.community/t/set-output-truncates-multiline-strings/16852/3
         $issueBody = $issueBody -replace "`n","%0A" # The content must be escaped to preserve newlines. See https://github.community/t/set-output-truncates-multiline-strings/16852/3
         $issue = @{
           body = $issueBody
         }
         $issue | ConvertTo-Json
-
-        Write-Output $issueBody
         Write-Output "::set-output name=issue-number::$issueNumber"
         Write-Output "::set-output name=issue-body::$issueBody"
     - name: Dump outputs from previous step
