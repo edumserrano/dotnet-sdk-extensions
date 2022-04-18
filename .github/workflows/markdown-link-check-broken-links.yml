@@ -36,7 +36,7 @@ jobs:
       with:
         ref: ${{ env.WORKFLOW_HEAD_SHA }}
     - name: Download markdown link check workflow info artifact
-      uses: dawidd6/action-download-artifact@v2.17.0
+      uses: dawidd6/action-download-artifact@v2.19.0
       with:
         workflow: ${{ github.event.workflow_run.workflow_id }}
         name:  ${{ env.MLC_WORKFLOW_INFO_ARTIFACT }}

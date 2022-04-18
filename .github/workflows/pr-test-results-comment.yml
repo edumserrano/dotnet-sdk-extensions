@@ -34,7 +34,7 @@ jobs:
       with:
         ref: ${{ github.event.workflow_run.head_sha }}
     - name: Download artifact
-      uses: dawidd6/action-download-artifact@v2.17.0
+      uses: dawidd6/action-download-artifact@v2.19.0
       continue-on-error: true
       with:
         workflow: ${{ github.event.workflow_run.workflow_id }}
