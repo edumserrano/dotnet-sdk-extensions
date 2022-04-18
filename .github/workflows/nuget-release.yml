@@ -54,6 +54,7 @@ jobs:
           Exit 1
         }
 
+        $issueBody = $issueBody -replace "`n","%0A" # The content must be escaped to preserve newlines. See https://github.community/t/set-output-truncates-multiline-strings/16852/3
         Write-Host "::set-output name=issue-number::$issueNumber"
         Write-Host "::set-output name=issue-body::$issueBody"
     - name: Dump outputs from previous step
