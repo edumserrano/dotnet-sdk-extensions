@@ -54,17 +54,10 @@ jobs:
           Exit 1
         }
 
-        $issue = @{
-          body = $issueBody
-        }
-        $issue | ConvertTo-Json
-
+        # I noticed when I edit the issue form the line endings became `\r\n`, likely because I edited on a Windows OS
         $issueBody = $issueBody -replace "`r`n","%0A" # The content must be escaped to preserve newlines. See https://github.community/t/set-output-truncates-multiline-strings/16852/3
+        # the default line endings on the issue form would be `\n`
         $issueBody = $issueBody -replace "`n","%0A" # The content must be escaped to preserve newlines. See https://github.community/t/set-output-truncates-multiline-strings/16852/3
-        $issue = @{
-          body = $issueBody
-        }
-        $issue | ConvertTo-Json
         Write-Output "::set-output name=issue-number::$issueNumber"
         Write-Output "::set-output name=issue-body::$issueBody"
     - name: Dump outputs from previous step
@@ -97,7 +90,7 @@ jobs:
     - name: Create client payload for repository dispatch event
       id: setup-client-payload
       run: |
-        $issueForm = '${{ steps.issue-parser.outputs.jsonString }}' | ConvertFrom-Json
+        $issueForm = '${{ steps.issue-parser.outputs.parsed-issue }}' | ConvertFrom-Json
         # the properties on the issueForm variable are kebab case. To access them in powershell I need to use single quotes around the property names
         $autoGenerateReleaseNotes = $issueForm.'auto-generate-release-notes' -eq 'yes'
         $nugetId = $issueForm.'nuget-id'
