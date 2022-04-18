@@ -118,7 +118,7 @@ jobs:
       run: |
         Write-Host "::notice title=NuGets::You can download the NuGet packages and symbols from the worfklow artifact named: ${{ env.NUGET_ARTIFACT_NAME }}."
     - name: Upload test coverage to Codecov
-      uses: codecov/codecov-action@v2.1.0
+      uses: codecov/codecov-action@v3.0.0
       if: matrix.os == 'ubuntu-latest'  # this job is on a matrix run but I only want to upload code coverage to Codecov once
       with:
         files: ${{ env.TEST_COVERAGE_FILE }}
