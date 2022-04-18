@@ -60,8 +60,9 @@ jobs:
         $issue | ConvertTo-Json
 
         $issueBody = $issueBody -replace "`n","%0A" # The content must be escaped to preserve newlines. See https://github.community/t/set-output-truncates-multiline-strings/16852/3
-        Write-Host "::set-output name=issue-number::$issueNumber"
-        Write-Host "::set-output name=issue-body::$issueBody"
+        Write-Output $issueBody
+        Write-Output "::set-output name=issue-number::$issueNumber"
+        Write-Output "::set-output name=issue-body::$issueBody"
     - name: Dump outputs from previous step
       env:
         STEP_OUTPUT: ${{ toJSON(steps.get-args.outputs) }}
