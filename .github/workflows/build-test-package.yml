@@ -89,7 +89,7 @@ jobs:
           Write-Host "::notice title=Tests (${{ matrix.os }})::Tests passed on ${{ matrix.os }}. $downloadArtifactMessage"
         }
         else {
-          Write-Host "::error title=Tests (${{ matrix.os }})::Tests failed on  ${{ matrix.os }}. $downloadArtifactMessage"
+          Write-Host "::error title=Tests (${{ matrix.os }})::Tests failed on ${{ matrix.os }}. $downloadArtifactMessage"
         }
     - name: Package DotNet.Sdk.Extensions
       if: matrix.os == 'ubuntu-latest'  # this job is on a matrix run but I only want to build the NuGet once

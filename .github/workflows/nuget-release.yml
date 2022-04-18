@@ -33,18 +33,21 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       issue-number: ${{ steps.get-args.outputs.issue-number }}
+      issue-body: ${{ steps.get-args.outputs.issue-body }}
     steps:
     - name: Get required arguments for NuGet release workflow
       id: get-args
       run: |
         $isRepositoryDispatchEvent = '${{ github.event_name }}' -eq 'repository_dispatch'
-        $isissueEvent = '${{ github.event_name }}' -eq 'issues'
+        $isIssueEvent = '${{ github.event_name }}' -eq 'issues'
 
-        if($isissueEvent) {
+        if($isIssueEvent) {
           $issueNumber = '${{ github.event.issue.number }}'
+          $issueBody = '${{ github.event.issue.body }}'
         }
         elseif($isRepositoryDispatchEvent) {
           $issueNumber = '${{ github.event.client_payload.github.payload.issue.number }}'
+          $issueBody = '${{ github.event.client_payload.github.payload.issue.body }}'
         }
         else {
           Write-Host "::error::Invalid GitHub event: ${{ github.event_name }}. Valid options are: issues or repository_dispatch"
@@ -71,10 +74,11 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
-    - uses: stefanbuck/github-issue-parser@v2
+    - uses: edumserrano/github-issue-forms-parser@v1
       id: issue-parser
       with:
-        template-path: .github/ISSUE_TEMPLATE/nuget-release.yml
+        template-filepath: .github/ISSUE_TEMPLATE/nuget-release.yml
+        issue-form-body:  ${{ needs.workflow-args.outputs.issue-body }}
     - name: Show parsed data JSON
       run: |
         Write-Host "${{ steps.issue-parser.outputs.jsonString }}"
