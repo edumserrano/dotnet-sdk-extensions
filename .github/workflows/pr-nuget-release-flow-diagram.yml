@@ -34,7 +34,7 @@ jobs:
         Write-Host "run-id=$runId"
         Write-Host "::set-output name=run-id::$runId"
     - name: Download NuGet release info artifact
-      uses: dawidd6/action-download-artifact@v2.17.0
+      uses: dawidd6/action-download-artifact@v2.19.0
       with:
         workflow: nuget-release-command-handler.yml
         name:  nuget-release-info
