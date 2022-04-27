@@ -38,6 +38,10 @@ jobs:
       publish-nuget-node-status: ${{ steps.nuget-flow-info.outputs.publish-nuget-node-status }}
       publish-nuget-url: ${{ steps.nuget-flow-info.outputs.publish-nuget-url }}
     steps:
+    - name: Dump github context for debug purposes
+      env:
+        GITHUB_CONTEXT: ${{ toJSON(github) }}
+      run: $env:GITHUB_CONTEXT
     - name: Checkout repository
       uses: actions/checkout@v3
     - name: Read NuGet release flow info artifact

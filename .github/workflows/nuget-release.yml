@@ -2,7 +2,7 @@ name: NuGet release
 
 on:
   issues:
-    types: [opened, reopened]
+    types: [opened]
   repository_dispatch:
     types: [retry-nuget-release-command]
 
@@ -11,19 +11,6 @@ defaults:
     shell: pwsh
 
 jobs:
-  debug:
-    name: Debug
-    environment: issue-nuget-release-workflow
-    permissions:
-      contents: read
-      issues: write
-    runs-on: ubuntu-latest
-    steps:
-    - name: Dump github context
-      env:
-        GITHUB_CONTEXT: ${{ toJSON(github) }}
-      run: $env:GITHUB_CONTEXT
-
   workflow-args:
     name: Process workflow input data
     if: (github.event_name == 'issues' && contains(github.event.issue.labels.*.name, 'nuget-release')) || (github.event_name == 'repository_dispatch' && contains(github.event.client_payload.github.payload.issue.labels.*.name, 'nuget-release'))
