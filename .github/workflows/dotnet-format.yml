@@ -47,12 +47,12 @@ jobs:
           ${{ runner.os }}-nuget-
     - name: dotnet format
       run: |
-        Write-Host "::group::Running dotnet format"
+        Write-Output "::group::Running dotnet format"
         dotnet format ${{ github.workspace }}/DotNet.Sdk.Extensions.sln `
           --severity info `
           --verbosity diagnostic `
           --report ${{ env.DOTNET_FORMAT_REPORT_FILEPATH }}
-        Write-Host "::endgroup::"
+        Write-Output "::endgroup::"
     - name: Parse dotnet format
       id: dotnet-format-parse
       run: |
@@ -60,7 +60,7 @@ jobs:
         $filePaths = $dotnetFormatReport.FilePath | Get-Unique
         $dotnetFormatHasChanges =  $filePaths.Count -ne 0
         $dotnetFormatHasChangesAsString =  $dotnetFormatHasChanges.ToString()
-        Write-Host "::set-output name=has-changes::$dotnetFormatHasChangesAsString"
+        Write-Output "::set-output name=has-changes::$dotnetFormatHasChangesAsString"
     - name: Delete all files without dotnet format changes
       if: steps.dotnet-format-parse.outputs.has-changes == 'true'
       run: |
@@ -123,10 +123,10 @@ jobs:
       run: |
         $hasChanges = [System.Convert]::ToBoolean("${{ steps.dotnet-format-parse.outputs.has-changes }}")
         if($hasChanges) {
-          Write-Host "::warning title=dotnet format::dotnet format detected code guidelines violations. The files resulting from dotnet format have been published as a workflow artifact with the name: dotnet-format-files."
+          Write-Output "::warning title=dotnet format::dotnet format detected code guidelines violations. The files resulting from dotnet format have been published as a workflow artifact with the name: dotnet-format-files."
         }
         else {
-          Write-Host "::notice title=dotnet format::dotnet format did NOT detect code guidelines violations."
+          Write-Output "::notice title=dotnet format::dotnet format did NOT detect code guidelines violations."
         }
 
-        Write-Host "::notice title=workflow info::Information about this workflow has been published as a workflow artifact named: dotnet-format-workflow-info."
+        Write-Output "::notice title=workflow info::Information about this workflow has been published as a workflow artifact named: dotnet-format-workflow-info."

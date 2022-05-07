@@ -27,4 +27,4 @@ runs:
       run: |
         $gitStatus = git status --porcelain
         $hasChanges = [string]::IsNullOrEmpty($a).ToString()
-        Write-Host "::set-output name=has-changes::$hasChanges"
+        Write-Output "::set-output name=has-changes::$hasChanges"

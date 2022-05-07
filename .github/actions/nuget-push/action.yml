@@ -48,10 +48,10 @@ runs:
       id: nuget-push
       working-directory: ${{ inputs.working-directory }}
       run: |
-        Write-Host "Pushing the following nuget packages and symbols:"
+        Write-Output "Pushing the following nuget packages and symbols:"
         ls ./*.*nupkg # show the nuget package(s) and symbol(s) that will be pushed
 
-        Write-Host "Pushing the nuget package"
+        Write-Output "Pushing the nuget package"
         $nugetResponse = dotnet nuget push ./*.nupkg --api-key ${{ inputs.api-key }} --source ${{ inputs.source }} --no-symbols true
         $nugetPushExitCode = $LastExitCode
 
@@ -64,20 +64,20 @@ runs:
         # - understand which .nupgk succeeded and push the corresponding symbols packages (.snupkg).
 
         $nugetAlreadyExists = ($nugetResponse | ?{$_.Contains("Response status code does not indicate success: 409")}).Length -gt 0
-        Write-Host "::set-output name=nuget-already-exists::$nugetAlreadyExists"
+        Write-Output "::set-output name=nuget-already-exists::$nugetAlreadyExists"
         if($nugetAlreadyExists) {
-          Write-Host "The nuget package already exists. The output from nuget push was:"
+          Write-Output "The nuget package already exists. The output from nuget push was:"
           $nugetResponse # this will print out the output from the 'dotnet nuget push' command
           exit 0
         }
         elseif($nugetPushExitCode -ne 0) {
-          Write-Host "Nuget push failed. The output from nuget push was:"
+          Write-Output "Nuget push failed. The output from nuget push was:"
           $nugetResponse # this will print out the output from the 'dotnet nuget push' command
           exit $nugetPushExitCode
         }
         else {
-          Write-Host "Nuget push was successful. The output from nuget push was:"
+          Write-Output "Nuget push was successful. The output from nuget push was:"
           $nugetResponse # this will print out the output from the 'dotnet nuget push' command
-          Write-Host "Pushing nuget symbols package"
+          Write-Output "Pushing nuget symbols package"
           dotnet nuget push ./*.snupkg --api-key ${{ inputs.api-key }} --source ${{ inputs.source }}
         }

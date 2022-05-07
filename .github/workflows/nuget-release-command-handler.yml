@@ -32,17 +32,17 @@ jobs:
         $nugetId = "${{ github.event.client_payload.nugetId }}"
         $openPullRequestsResult = gh pr list --state open --label ${{ env.NUGET_RELEASE_LABEL }} --label $nugetId
         $canCreatePr = [string]::IsNullOrEmpty($openPullRequestsResult)
-        Write-Host "::set-output name=can-create-pr::$canCreatePr"
+        Write-Output "::set-output name=can-create-pr::$canCreatePr"
     - name: Log info
       run: |
         $nugetId = "${{ github.event.client_payload.nugetId }}"
         $canCreatePr = [System.Convert]::ToBoolean("${{ steps.open-pr-check.outputs.can-create-pr }}")
 
         if($canCreatePr) {
-          Write-Host "::notice::There's no open PR to release $nugetId NuGet."
+          Write-Output "::notice::There's no open PR to release $nugetId NuGet."
         }
         else {
-          Write-Host "::warning::A PR to release $nugetId NuGet is already open so a new one will not be created. Only one NuGet release PR can be open at a time."
+          Write-Output "::warning::A PR to release $nugetId NuGet is already open so a new one will not be created. Only one NuGet release PR can be open at a time."
         }
 
   create-pr:
@@ -71,14 +71,14 @@ jobs:
         $nugetOutput = nuget list PackageId:$nugetId -Source nuget.org -PreRelease
         $nugetCurrentVersion = $nugetOutput.Split(" ")[-1]
 
-        Write-Host "nuget-id=$nugetId"
-        Write-Host "nuget-new-version=$nugetNewVersion"
-        Write-Host "nuget-url=$nugetUrl"
-        Write-Host "current-nuget-new-version=$nugetCurrentVersion"
-        Write-Host "::set-output name=nuget-id::$nugetId"
-        Write-Host "::set-output name=nuget-new-version::$nugetNewVersion"
-        Write-Host "::set-output name=nuget-url::$nugetUrl"
-        Write-Host "::set-output name=nuget-current-version::$nugetCurrentVersion"
+        Write-Output "nuget-id=$nugetId"
+        Write-Output "nuget-new-version=$nugetNewVersion"
+        Write-Output "nuget-url=$nugetUrl"
+        Write-Output "current-nuget-new-version=$nugetCurrentVersion"
+        Write-Output "::set-output name=nuget-id::$nugetId"
+        Write-Output "::set-output name=nuget-new-version::$nugetNewVersion"
+        Write-Output "::set-output name=nuget-url::$nugetUrl"
+        Write-Output "::set-output name=nuget-current-version::$nugetCurrentVersion"
     - name: Prepare commit info
       id: commit-info
       run: |
@@ -86,10 +86,10 @@ jobs:
         $nugetNewVersion = "${{ steps.slash-command-args.outputs.nuget-new-version }}";
         $branchName = "nuget-release/$nugetId-$nugetNewVersion"
         $commitMessage = "Release NuGet $nugetId $nugetNewVersion"
-        Write-Host "::set-output name=branch-name::$branchName"
-        Write-Host "Branch name set to $branchName"
-        Write-Host "::set-output name=commit-message::$commitMessage"
-        Write-Host "Commit message set to $commitMessage"
+        Write-Output "::set-output name=branch-name::$branchName"
+        Write-Output "Branch name set to $branchName"
+        Write-Output "::set-output name=commit-message::$commitMessage"
+        Write-Output "Commit message set to $commitMessage"
     - name: Git checkout new branch
       run: |
         git checkout -b ${{ steps.commit-info.outputs.branch-name }}
@@ -98,9 +98,9 @@ jobs:
       run: |
         $projFilePath = "${{ github.workspace }}/src/DotNet.Sdk.Extensions/DotNet.Sdk.Extensions.csproj"
 
-        Write-Host "::group::csproj before updating version"
+        Write-Output "::group::csproj before updating version"
         cat $projFilePath
-        Write-Host "::endgroup::"
+        Write-Output "::endgroup::"
 
         $xml=New-Object XML
         $xml.PreserveWhitespace = $true
@@ -108,17 +108,17 @@ jobs:
         $xml.Project.PropertyGroup.Version = "${{ steps.slash-command-args.outputs.nuget-new-version }}"
         $xml.Save($projFilePath)
 
-        Write-Host "::group::csproj after updating version"
+        Write-Output "::group::csproj after updating version"
         cat $projFilePath
-        Write-Host "::endgroup::"
+        Write-Output "::endgroup::"
     - name: Set DotNet.Sdk.Extensions.Testing version
       if: steps.slash-command-args.outputs.nuget-id == 'dotnet-sdk-extensions-testing'
       run: |
         $projFilePath = "${{ github.workspace }}/src/DotNet.Sdk.Extensions.Testing/DotNet.Sdk.Extensions.Testing.csproj"
 
-        Write-Host "::group::csproj before updating version"
+        Write-Output "::group::csproj before updating version"
         cat $projFilePath
-        Write-Host "::endgroup::"
+        Write-Output "::endgroup::"
 
         $xml=New-Object XML
         $xml.PreserveWhitespace = $true
@@ -126,9 +126,9 @@ jobs:
         $xml.Project.PropertyGroup.Version = "${{ steps.slash-command-args.outputs.nuget-new-version }}"
         $xml.Save($projFilePath)
 
-        Write-Host "::group::csproj after updating version"
+        Write-Output "::group::csproj after updating version"
         cat $projFilePath
-        Write-Host "::endgroup::"
+        Write-Output "::endgroup::"
     - name: Push changes to branch
       id: auto-commit-action
       uses: stefanzweifel/git-auto-commit-action@v4.14.1
@@ -151,7 +151,7 @@ jobs:
       run: |
         $body = "${{ steps.render-pr-body-template.outputs.result }}"
         $body = $body -replace "`n","%0A" # The content must be escaped to preserve newlines. See https://github.community/t/set-output-truncates-multiline-strings/16852/3
-        Write-Host "::set-output name=pr-body::$body"
+        Write-Output "::set-output name=pr-body::$body"
     - name: Create NuGet release PR
       id: create-pr
       env:
@@ -166,12 +166,12 @@ jobs:
           --label ${{ steps.slash-command-args.outputs.nuget-id }} `
           --label bot:robot:
         $prNumber = $prUrl.Split("/")[-1]
-        Write-Host "::set-output name=pr-url::$prUrl"
-        Write-Host "::set-output name=pr-number::$prNumber"
+        Write-Output "::set-output name=pr-url::$prUrl"
+        Write-Output "::set-output name=pr-number::$prNumber"
     - name: Log info
       run: |
         $prUrl = "${{ steps.create-pr.outputs.pr-url }}"
-        Write-Host "::notice title=NuGet release::A PR to release NuGet ${{ steps.slash-command-args.outputs.nuget-id }} ${{ steps.slash-command-args.outputs.nuget-new-version }} was created at $prUrl."
+        Write-Output "::notice title=NuGet release::A PR to release NuGet ${{ steps.slash-command-args.outputs.nuget-id }} ${{ steps.slash-command-args.outputs.nuget-new-version }} was created at $prUrl."
 
   release-info:
     name: Upload release info
@@ -266,9 +266,9 @@ jobs:
           $releaseBadgeColor = "red"
         }
 
-        Write-Host "::set-output name=nuget-release-status::$releaseStatus"
-        Write-Host "::set-output name=nuget-release-badge-color::$releaseBadgeColor"
-        Write-Host "::set-output name=nuget-release-command-handler-node-status::$workflowStatus"
+        Write-Output "::set-output name=nuget-release-status::$releaseStatus"
+        Write-Output "::set-output name=nuget-release-badge-color::$releaseBadgeColor"
+        Write-Output "::set-output name=nuget-release-command-handler-node-status::$workflowStatus"
     - name: Upload NuGet release flow info artifact
       uses: ./.github/actions/create-nuget-release-flow-info-artifact
       with:

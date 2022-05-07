@@ -46,16 +46,16 @@ jobs:
       run: |
         $worfklowInfoFilePath = "./markdown-link-check-workflow-info.json"
         $workflowInfoJson = Get-Content $worfklowInfoFilePath
-        Write-Host $workflowInfoJson
+        Write-Output $workflowInfoJson
         $workflowInfo = $workflowInfoJson | ConvertFrom-Json
 
         $hasBrokenLinks = $workflowInfo.hasBrokenLinks
         $workflow = $workflowInfo.workflow
         $workflowUrl = $workflowInfo.workflowUrl
 
-        Write-Host "::set-output name=has-broken-links::$hasBrokenLinks"
-        Write-Host "::set-output name=workflow::$workflow"
-        Write-Host "::set-output name=workflow-url::$workflowUrl"
+        Write-Output "::set-output name=has-broken-links::$hasBrokenLinks"
+        Write-Output "::set-output name=workflow::$workflow"
+        Write-Output "::set-output name=workflow-url::$workflowUrl"
     - name: Check for open markdown link check issues
       id: open-issue-check
       env:
@@ -66,14 +66,14 @@ jobs:
 
         $openIssuesResult = gh issue list --state open --label ${{ env.MLC_LABEL }}
         $canCreateIssue = [string]::IsNullOrEmpty($openIssuesResult)
-        Write-Host "::set-output name=can-create-issue::$canCreateIssue"
+        Write-Output "::set-output name=can-create-issue::$canCreateIssue"
     - name: Check if an issue needs to be created
       id: needs-issue-check
       run: |
         $hasBrokenLinks = [System.Convert]::ToBoolean("${{ steps.mlc-workflow-info.outputs.has-broken-links }}")
         $canCreateIssue = [System.Convert]::ToBoolean("${{ steps.open-issue-check.outputs.can-create-issue }}")
         $createIssue = $canCreateIssue -and $hasBrokenLinks
-        Write-Host "::set-output name=create-issue::$createIssue"
+        Write-Output "::set-output name=create-issue::$createIssue"
     - name: Log info
       run: |
         $hasBrokenLinks = [System.Convert]::ToBoolean("${{ steps.mlc-workflow-info.outputs.has-broken-links }}")
@@ -81,13 +81,13 @@ jobs:
         $createIssue = [System.Convert]::ToBoolean("${{ steps.needs-issue-check.outputs.create-issue }}")
 
         if(!$hasBrokenLinks) {
-          Write-Host "::notice::Markdown link check did NOT find any broken links."
+          Write-Output "::notice::Markdown link check did NOT find any broken links."
         }
         elseif($hasBrokenLinks -and $canCreateIssue) {
-          Write-Host "::warning::Markdown link check found broken links and so an issue will be created."
+          Write-Output "::warning::Markdown link check found broken links and so an issue will be created."
         }
         elseif($hasBrokenLinks -and !$canCreateIssue) {
-          Write-Host "::warning::Markdown link check found broken links but an issue from markdown link check is already open so a new one will not be created. Only one markdown link check issue can be open at a time."
+          Write-Output "::warning::Markdown link check found broken links but an issue from markdown link check is already open so a new one will not be created. Only one markdown link check issue can be open at a time."
         }
 
   on-push:
@@ -121,7 +121,7 @@ jobs:
       run: |
         $body = "${{ steps.render-issue-body-template.outputs.result }}"
         $body = $body -replace "`n","%0A" # The content must be escaped to preserve newlines. See https://github.community/t/set-output-truncates-multiline-strings/16852/3
-        Write-Host "::set-output name=issue-body::$body"
+        Write-Output "::set-output name=issue-body::$body"
     - name: Create markdown issue
       id: create-issue
       env:
@@ -134,8 +134,8 @@ jobs:
           --body $body `
           --label ${{ env.MLC_LABEL }} `
           --label bot:robot:
-        Write-Host "::set-output name=issue-url::$issueUrl"
+        Write-Output "::set-output name=issue-url::$issueUrl"
     - name: Log info
       run: |
         $issueUrl = "${{ steps.create-issue.outputs.issue-url }}"
-        Write-Host "::warning title=Markdown link check::An issue to report broken markdown links was created at $issueUrl."
+        Write-Output "::warning title=Markdown link check::An issue to report broken markdown links was created at $issueUrl."

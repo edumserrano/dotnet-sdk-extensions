@@ -70,19 +70,19 @@ runs:
     shell: pwsh
     run: |
       $releaseFlowInfo = Get-Content ./nuget-release-flow-info.md | ConvertFrom-Json
-      Write-Host "::set-output name=issue-number::$($releaseFlowInfo.issueNumber)"
-      Write-Host "::set-output name=nuget-id::$($releaseFlowInfo.nugetId)"
-      Write-Host "::set-output name=nuget-version::$($releaseFlowInfo.nugetVersion)"
-      Write-Host "::set-output name=nuget-release-status::$($releaseFlowInfo.nugetReleaseStatus)"
-      Write-Host "::set-output name=nuget-release-badge-color::$($releaseFlowInfo.nugetReleaseBadgeColor)"
-      Write-Host "::set-output name=issue-nuget-release-node-status::$($releaseFlowInfo.issueNugetReleaseNodeStatus)"
-      Write-Host "::set-output name=issue-nuget-release-url::$($releaseFlowInfo.issueNugetReleaseUrl)"
-      Write-Host "::set-output name=nuget-release-command-handler-node-status::$($releaseFlowInfo.nugetReleaseCommandHandlerNodeStatus)"
-      Write-Host "::set-output name=nuget-release-command-handler-url::$($releaseFlowInfo.nugetReleaseCommandHandlerUrl)"
-      Write-Host "::set-output name=nuget-release-pull-request-node-status::$($releaseFlowInfo.nugetReleasePullRequestNodeStatus)"
-      Write-Host "::set-output name=nuget-release-pull-request-url::$($releaseFlowInfo.nugetReleasePullRequestUrl)"
-      Write-Host "::set-output name=publish-nuget-node-status::$($releaseFlowInfo.publishNugetNodeStatus)"
-      Write-Host "::set-output name=publish-nuget-url::$($releaseFlowInfo.publishNugetUrl)"
+      Write-Output "::set-output name=issue-number::$($releaseFlowInfo.issueNumber)"
+      Write-Output "::set-output name=nuget-id::$($releaseFlowInfo.nugetId)"
+      Write-Output "::set-output name=nuget-version::$($releaseFlowInfo.nugetVersion)"
+      Write-Output "::set-output name=nuget-release-status::$($releaseFlowInfo.nugetReleaseStatus)"
+      Write-Output "::set-output name=nuget-release-badge-color::$($releaseFlowInfo.nugetReleaseBadgeColor)"
+      Write-Output "::set-output name=issue-nuget-release-node-status::$($releaseFlowInfo.issueNugetReleaseNodeStatus)"
+      Write-Output "::set-output name=issue-nuget-release-url::$($releaseFlowInfo.issueNugetReleaseUrl)"
+      Write-Output "::set-output name=nuget-release-command-handler-node-status::$($releaseFlowInfo.nugetReleaseCommandHandlerNodeStatus)"
+      Write-Output "::set-output name=nuget-release-command-handler-url::$($releaseFlowInfo.nugetReleaseCommandHandlerUrl)"
+      Write-Output "::set-output name=nuget-release-pull-request-node-status::$($releaseFlowInfo.nugetReleasePullRequestNodeStatus)"
+      Write-Output "::set-output name=nuget-release-pull-request-url::$($releaseFlowInfo.nugetReleasePullRequestUrl)"
+      Write-Output "::set-output name=publish-nuget-node-status::$($releaseFlowInfo.publishNugetNodeStatus)"
+      Write-Output "::set-output name=publish-nuget-url::$($releaseFlowInfo.publishNugetUrl)"
   - name: Dump outputs from previous step
     shell: pwsh
     env:

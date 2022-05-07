@@ -50,10 +50,10 @@ jobs:
         $mlcPr = [System.Convert]::ToBoolean("${{ steps.mlc-pr.conclusion == 'success' }}")
         $noBrokenLinks = $mlcPush -or $mlcPr
         if($noBrokenLinks) {
-          Write-Host "::set-output name=has-broken-links::false"
+          Write-Output "::set-output name=has-broken-links::false"
         }
         else {
-          Write-Host "::set-output name=has-broken-links::true"
+          Write-Output "::set-output name=has-broken-links::true"
         }
     - name: Save workflow info
       if: always()
@@ -78,8 +78,8 @@ jobs:
       run: |
         $hasBrokenLinks = [System.Convert]::ToBoolean("${{ steps.mlc.outputs.has-broken-links }}")
         if($hasBrokenLinks) {
-          Write-Host "::error::Broken links were found on markdown files. For more details see the details of the 'Markdown link check' step."
+          Write-Output "::error::Broken links were found on markdown files. For more details see the details of the 'Markdown link check' step."
         }
         else {
-          Write-Host "::notice::No broken links were found on markdown files."
+          Write-Output "::notice::No broken links were found on markdown files."
         }

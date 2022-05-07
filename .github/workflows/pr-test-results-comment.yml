@@ -45,12 +45,12 @@ jobs:
       id: artifact-download-check
       run: |
         if(Test-Path -Path ./${{ env.TEST_RESULTS_ARTIFACT_NAME }}){
-          Write-Host "::set-output name=artifact-downloaded::true"
-          Write-Host "Set output variable artifact-downloaded to true"
+          Write-Output "::set-output name=artifact-downloaded::true"
+          Write-Output "Set output variable artifact-downloaded to true"
         }
         else{
-          Write-Host "::set-output name=artifact-downloaded::false"
-          Write-Host "Set output variable artifact-downloaded to false"
+          Write-Output "::set-output name=artifact-downloaded::false"
+          Write-Output "Set output variable artifact-downloaded to false"
         }
     - name: Sanitize PR test results comment
       id: sanitize-pr-comment
@@ -61,7 +61,7 @@ jobs:
         # The content must be escaped to preserve newlines. See https://github.community/t/set-output-truncates-multiline-strings/16852/3
         $commentBody = $commentBody -replace "`n","%0A"
         $commentBody = $commentBody -replace "`r","%0D"
-        Write-Host "::set-output name=pr-comment-body::$commentBody"
+        Write-Output "::set-output name=pr-comment-body::$commentBody"
     - name: Update PR with test results
       uses: ./.github/actions/create-update-comment
       if: steps.artifact-download-check.outputs.artifact-downloaded == 'true'

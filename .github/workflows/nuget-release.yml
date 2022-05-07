@@ -37,7 +37,7 @@ jobs:
           $issueBody = '${{ github.event.client_payload.github.payload.issue.body }}'
         }
         else {
-          Write-Host "::error::Invalid GitHub event: ${{ github.event_name }}. Valid options are: issues or repository_dispatch"
+          Write-Output "::error::Invalid GitHub event: ${{ github.event_name }}. Valid options are: issues or repository_dispatch"
           Exit 1
         }
 
@@ -73,7 +73,7 @@ jobs:
         issue-form-body:  ${{ needs.workflow-args.outputs.issue-body }}
     - name: Show parsed data JSON
       run: |
-        Write-Host "${{ steps.issue-parser.outputs.jsonString }}"
+        Write-Output "${{ steps.issue-parser.outputs.jsonString }}"
     - name: Create client payload for repository dispatch event
       id: setup-client-payload
       run: |
@@ -90,9 +90,9 @@ jobs:
           autoGenerateReleaseNotes = $autoGenerateReleaseNotes
         }
         $clientPayloadAsJson = $clientPayload | ConvertTo-Json -Compress
-        Write-Host "::set-output name=client-payload::$clientPayloadAsJson"
-        Write-Host "::set-output name=nuget-id::$nugetId"
-        Write-Host "::set-output name=nuget-version::$nugetVersion"
+        Write-Output "::set-output name=client-payload::$clientPayloadAsJson"
+        Write-Output "::set-output name=nuget-id::$nugetId"
+        Write-Output "::set-output name=nuget-version::$nugetVersion"
     - name: Dump outputs from previous step
       env:
         STEP_OUTPUT: ${{ toJSON(steps.setup-client-payload.outputs) }}
@@ -142,9 +142,9 @@ jobs:
           $releaseBadgeColor = "red"
         }
 
-        Write-Host "::set-output name=nuget-release-status::$releaseStatus"
-        Write-Host "::set-output name=nuget-release-badge-color::$releaseBadgeColor"
-        Write-Host "::set-output name=issue-nuget-release-node-status::$workflowStatus"
+        Write-Output "::set-output name=nuget-release-status::$releaseStatus"
+        Write-Output "::set-output name=nuget-release-badge-color::$releaseBadgeColor"
+        Write-Output "::set-output name=issue-nuget-release-node-status::$workflowStatus"
     - name: Upload NuGet release flow info artifact
       uses: ./.github/actions/create-nuget-release-flow-info-artifact
       with:

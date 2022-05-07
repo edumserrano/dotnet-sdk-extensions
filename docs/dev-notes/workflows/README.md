@@ -46,7 +46,7 @@ Example with a step running powershell:
 ```powershell
 - name: Dump github context
   shell: pwsh
-  run: Write-Host '${{ toJson(github) }}'
+  run: Write-Output '${{ toJson(github) }}'
 ```
 
 It's useful to look at the [workflow run logs](https://docs.github.com/en/actions/managing-workflow-runs/using-workflow-run-logs), specially at the `set up job` section which is were you can find for example the permissions assigned to the `GITHUB_TOKEN` that the job will use.

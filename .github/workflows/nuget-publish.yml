@@ -53,12 +53,12 @@ jobs:
       run: |
         $statusesAsJson = gh api repos/${{ github.repository }}/commits/${{ github.event.pull_request.head.sha }}/statuses
         $statuses = $statusesAsJson | ConvertFrom-Json
-        Write-Host $statuses
+        Write-Output $statuses
         $nugetReleaseInfoStatus = $statuses | Where-Object {$_.context -eq "NuGet release command handler / NuGet release info (repository_dispatch)"}
         $nugetReleaseInfoWorkflowUrl = $nugetReleaseInfoStatus.target_url
         $runId = $nugetReleaseInfoWorkflowUrl.Split("/")[-1]
-        Write-Host "run-id=$runId"
-        Write-Host "::set-output name=run-id::$runId"
+        Write-Output "run-id=$runId"
+        Write-Output "::set-output name=run-id::$runId"
     - name: Download NuGet release info artifact from PR
       uses: dawidd6/action-download-artifact@v2.19.0
       if: github.event_name == 'pull_request'
@@ -113,7 +113,7 @@ jobs:
           $workflowRun = gh api repos/${{ github.repository }}/actions/runs/$nugetPackageRunId | ConvertFrom-Json
           $headBranch = $workflowRun.head_branch
           if($headBranch -ne 'main') {
-            Write-Host "::error::Invalid head branch: $headBranch. Workflow dispatch events for this workflow cannot use a NuGet package workflow run id that is not from the main branch."
+            Write-Output "::error::Invalid head branch: $headBranch. Workflow dispatch events for this workflow cannot use a NuGet package workflow run id that is not from the main branch."
             Exit 1
           }
 
@@ -121,16 +121,16 @@ jobs:
         }
 
         if($nugetId -ne 'dotnet-sdk-extensions' || $nugetId -ne 'dotnet-sdk-extensions-testing') {
-          Write-Host "::error::Invalid NuGet ID: $nugetId. Valid options are: dotnet-sdk-extensions or dotnet-sdk-extensions-testing"
+          Write-Output "::error::Invalid NuGet ID: $nugetId. Valid options are: dotnet-sdk-extensions or dotnet-sdk-extensions-testing"
           Exit 1
         }
 
-        Write-Host "::set-output name=issue-number::$issueNumber"
-        Write-Host "::set-output name=nuget-id::$nugetId"
-        Write-Host "::set-output name=nuget-version::$nugetVersion"
-        Write-Host "::set-output name=auto-generate-release-notes::$autoGenerateReleaseNotes"
-        Write-Host "::set-output name=nuget-package-run-id::$nugetPackageRunId"
-        Write-Host "::set-output name=github-release-sha::$githubReleaseSha"
+        Write-Output "::set-output name=issue-number::$issueNumber"
+        Write-Output "::set-output name=nuget-id::$nugetId"
+        Write-Output "::set-output name=nuget-version::$nugetVersion"
+        Write-Output "::set-output name=auto-generate-release-notes::$autoGenerateReleaseNotes"
+        Write-Output "::set-output name=nuget-package-run-id::$nugetPackageRunId"
+        Write-Output "::set-output name=github-release-sha::$githubReleaseSha"
     - name: Dump outputs from previous step
       env:
         STEP_OUTPUT: ${{ toJSON(steps.nuget-publish-info.outputs) }}
@@ -181,9 +181,9 @@ jobs:
           $nugetPushWorkingDir = '${{ env.TESTING_EXTENSIONS_NUGET_BIN_FOLDER }}'
         }
 
-        Write-Host "::set-output name=nuget-release-notes-file-path::$releaseNotesFile"
-        Write-Host "::set-output name=nuget-gh-release-artifacts::$nugetArtifacts"
-        Write-Host "::set-output name=nuget-push-working-dir::$nugetPushWorkingDir"
+        Write-Output "::set-output name=nuget-release-notes-file-path::$releaseNotesFile"
+        Write-Output "::set-output name=nuget-gh-release-artifacts::$nugetArtifacts"
+        Write-Output "::set-output name=nuget-push-working-dir::$nugetPushWorkingDir"
     - name: Create GitHub release
       id: create-gh-release
       uses: ncipollo/release-action@v1
@@ -209,13 +209,13 @@ jobs:
         $pushStepConclusion = '${{ steps.nuget-push.conclusion }}'
         $nugetAlreadyExists = [System.Convert]::ToBoolean("${{ steps.nuget-push.outputs.nuget-already-exists }}")
         if($nugetAlreadyExists) {
-          Write-Host "::notice title=$nugetId NuGet::$nugetId NuGet was NOT published to nuget.org because the version to be pushed already exists."
+          Write-Output "::notice title=$nugetId NuGet::$nugetId NuGet was NOT published to nuget.org because the version to be pushed already exists."
         }
         elseif($pushStepConclusion -eq 'failure') {
-          Write-Host "::error title=$nugetIdNuGet::Failed to push $nugetId NuGet and symbols."
+          Write-Output "::error title=$nugetIdNuGet::Failed to push $nugetId NuGet and symbols."
         }
         elseif($pushStepConclusion -eq 'success') {
-          Write-Host "::notice title=$nugetId NuGet::Successfully pushed $nugetId NuGet and symbols to nuget.org. You can find the package at: $nugetUrl."
+          Write-Output "::notice title=$nugetId NuGet::Successfully pushed $nugetId NuGet and symbols to nuget.org. You can find the package at: $nugetUrl."
         }
 
   output-artifacts:
@@ -244,9 +244,9 @@ jobs:
           $releaseBadgeColor = "red"
         }
 
-        Write-Host "::set-output name=nuget-release-status::$releaseStatus"
-        Write-Host "::set-output name=nuget-release-badge-color::$releaseBadgeColor"
-        Write-Host "::set-output name=publish-nuget-node-status::$workflowStatus"
+        Write-Output "::set-output name=nuget-release-status::$releaseStatus"
+        Write-Output "::set-output name=nuget-release-badge-color::$releaseBadgeColor"
+        Write-Output "::set-output name=publish-nuget-node-status::$workflowStatus"
     - name: Upload NuGet release flow info artifact
       uses: ./.github/actions/create-nuget-release-flow-info-artifact
       with:

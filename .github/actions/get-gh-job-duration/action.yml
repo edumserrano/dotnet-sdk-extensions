@@ -51,4 +51,4 @@ runs:
           $jobDurationAsString = "${jobDurationInMinutes}m"
         }
 
-        Write-Host "::set-output name=job-duration::$jobDurationAsString"
+        Write-Output "::set-output name=job-duration::$jobDurationAsString"

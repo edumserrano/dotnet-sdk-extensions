@@ -54,12 +54,12 @@ runs:
 
         $response = Invoke-RestMethod -Method 'Get' -Uri $uri -Headers $headers
         $sha = $response.head.sha
-        Write-Host "::set-output name=pr-sha::$sha"
-        Write-Host "PR head sha is $sha"
+        Write-Output "::set-output name=pr-sha::$sha"
+        Write-Output "PR head sha is $sha"
     - name: Dump 'Get Pull request SHA' step outputs
       shell: pwsh
       run: |
-        Write-Host '${{ toJson(steps.get-pr-sha.outputs) }}'
+        Write-Output '${{ toJson(steps.get-pr-sha.outputs) }}'
     - name: Create GitHub status
       shell: pwsh
       run: |

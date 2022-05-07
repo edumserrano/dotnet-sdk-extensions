@@ -47,11 +47,11 @@ jobs:
       run: |
         $worfklowInfoFilePath = "./dotnet-format-workflow-info.json"
         $workflowInfoJson = Get-Content $worfklowInfoFilePath
-        Write-Host $workflowInfoJson
+        Write-Output $workflowInfoJson
         $workflowInfo = $workflowInfoJson | ConvertFrom-Json
-        Write-Host "::set-output name=has-changes::$($workflowInfo.hasChanges)"
-        Write-Host "::set-output name=workflow::$($workflowInfo.workflow)"
-        Write-Host "::set-output name=workflow-url::$($workflowInfo.workflowUrl)"
+        Write-Output "::set-output name=has-changes::$($workflowInfo.hasChanges)"
+        Write-Output "::set-output name=workflow::$($workflowInfo.workflow)"
+        Write-Output "::set-output name=workflow-url::$($workflowInfo.workflowUrl)"
     - name: Check for open dotnet format PRs
       id: open-pr-check
       env:
@@ -62,14 +62,14 @@ jobs:
 
         $openPullRequestsResult = gh pr list --state open --label ${{ env.DOTNET_FORMAT_LABEL }}
         $canCreatePr = [string]::IsNullOrEmpty($openPullRequestsResult)
-        Write-Host "::set-output name=can-create-pr::$canCreatePr"
+        Write-Output "::set-output name=can-create-pr::$canCreatePr"
     - name: Check if can apply changes
       id: check-can-apply
       run: |
         $hasChanges = [System.Convert]::ToBoolean("${{ steps.dotnet-format-workflow-info.outputs.has-changes }}")
         $canCreatePr = [System.Convert]::ToBoolean("${{ steps.open-pr-check.outputs.can-create-pr }}")
         $canApplyChanges = $canCreatePr -and $hasChanges
-        Write-Host "::set-output name=can-apply-changes::$canApplyChanges"
+        Write-Output "::set-output name=can-apply-changes::$canApplyChanges"
     - name: Log info
       run: |
         $hasChanges = [System.Convert]::ToBoolean("${{ steps.dotnet-format-workflow-info.outputs.has-changes }}")
@@ -77,13 +77,13 @@ jobs:
         $canApplyChanges = [System.Convert]::ToBoolean("${{ steps.check-can-apply.outputs.can-apply-changes }}")
 
         if(!$hasChanges) {
-          Write-Host "::notice::dotnet format did NOT detect code guidelines violations."
+          Write-Output "::notice::dotnet format did NOT detect code guidelines violations."
         }
         elseif($hasChanges -and $canCreatePr) {
-          Write-Host "::warning::dotnet format detected code guidelines violations and so a PR will be created with the changes."
+          Write-Output "::warning::dotnet format detected code guidelines violations and so a PR will be created with the changes."
         }
         elseif($hasChanges -and !$canCreatePr) {
-          Write-Host "::warning::dotnet format detected code guidelines violations but a PR from dotnet format is already open so a new one will not be created. Only one dotnet format PR can be open at a time."
+          Write-Output "::warning::dotnet format detected code guidelines violations but a PR from dotnet format is already open so a new one will not be created. Only one dotnet format PR can be open at a time."
         }
 
   on-push-dotnet-format:
@@ -109,10 +109,10 @@ jobs:
         $date = (Get-Date).ToString("dd-MMM-yyyy")
         $branchName = "dotnet-format-$date"
         $commitMessage = "auto dotnet format $date"
-        Write-Host "::set-output name=branch-name::$branchName"
-        Write-Host "Branch name set to $branchName"
-        Write-Host "::set-output name=commit-message::$commitMessage"
-        Write-Host "Commit message set to $commitMessage"
+        Write-Output "::set-output name=branch-name::$branchName"
+        Write-Output "Branch name set to $branchName"
+        Write-Output "::set-output name=commit-message::$commitMessage"
+        Write-Output "Commit message set to $commitMessage"
     - name: Git checkout new branch
       run: |
         git checkout -b ${{ steps.commit-info.outputs.branch-name }}
@@ -142,7 +142,7 @@ jobs:
       run: |
         $body = "${{ steps.render-pr-body-template.outputs.result }}"
         $body = $body -replace "`n","%0A" # The content must be escaped to preserve newlines. See https://github.community/t/set-output-truncates-multiline-strings/16852/3
-        Write-Host "::set-output name=pr-body::$body"
+        Write-Output "::set-output name=pr-body::$body"
     - name: Create dotnet format PR
       id: create-pr
       env:
@@ -155,11 +155,11 @@ jobs:
           --body $body `
           --label ${{ env.DOTNET_FORMAT_LABEL }} `
           --label bot:robot:
-        Write-Host "::set-output name=pr-url::$prUrl"
+        Write-Output "::set-output name=pr-url::$prUrl"
     - name: Log info
       run: |
         $prUrl = "${{ steps.create-pr.outputs.pr-url }}"
-        Write-Host "::warning title=dotnet format::A PR with the fixes for the code guidelines violations was created at $prUrl."
+        Write-Output "::warning title=dotnet format::A PR with the fixes for the code guidelines violations was created at $prUrl."
 
   on-pull-request:
     name: Process dotnet format changes on pull request
@@ -186,7 +186,7 @@ jobs:
         $worfklowInfoFilePath = "./dotnet-format-workflow-info.json"
         $workflowInfoJson = Get-Content $worfklowInfoFilePath
         rm $worfklowInfoFilePath # delete file so that it doesn't get pushed to the branch in the following steps
-        Write-Host $workflowInfoJson
+        Write-Output $workflowInfoJson
         $workflowInfo = $workflowInfoJson | ConvertFrom-Json
 
         $hasChanges = $workflowInfo.hasChanges
@@ -195,11 +195,11 @@ jobs:
         $prNumber = $workflowInfo.prNumber
         $prBranchName = $workflowInfo.prBranchName
 
-        Write-Host "::set-output name=has-changes::$hasChanges"
-        Write-Host "::set-output name=workflow::$workflow"
-        Write-Host "::set-output name=workflow-url::$workflowUrl"
-        Write-Host "::set-output name=pr-number::$prNumber"
-        Write-Host "::set-output name=pr-branch-name::$prBranchName"
+        Write-Output "::set-output name=has-changes::$hasChanges"
+        Write-Output "::set-output name=workflow::$workflow"
+        Write-Output "::set-output name=workflow-url::$workflowUrl"
+        Write-Output "::set-output name=pr-number::$prNumber"
+        Write-Output "::set-output name=pr-branch-name::$prBranchName"
     - name: Download dotnet format changed files
       if: steps.dotnet-format-workflow-info.outputs.has-changes == 'true'
       uses: dawidd6/action-download-artifact@v2.19.0
@@ -219,7 +219,7 @@ jobs:
       if: steps.dotnet-format-workflow-info.outputs.has-changes == 'true'
       run: |
           $commitSha = git rev-parse HEAD
-          Write-Host "::set-output name=commit-sha::$commitSha"
+          Write-Output "::set-output name=commit-sha::$commitSha"
     - name: Render comment template
       id: render-pr-comment-template
       if: steps.dotnet-format-workflow-info.outputs.has-changes == 'true'
@@ -237,7 +237,7 @@ jobs:
       run: |
         $commentBody = "${{ steps.render-pr-comment-template.outputs.result }}"
         $commentBody = $commentBody -replace "`n","%0A" # The content must be escaped to preserve newlines. See https://github.community/t/set-output-truncates-multiline-strings/16852/3
-        Write-Host "::set-output name=pr-comment-body::$commentBody"
+        Write-Output "::set-output name=pr-comment-body::$commentBody"
     - name: Update PR with dotnet format result
       if: steps.dotnet-format-workflow-info.outputs.has-changes == 'true'
       uses: ./.github/actions/create-update-comment
@@ -254,8 +254,8 @@ jobs:
         $prUrl = "https://github.com/${{ github.repository }}/pull/${{ steps.dotnet-format-workflow-info.outputs.pr-number }}"
 
         if($hasChanges) {
-          Write-Host "::warning title=dotnet format::dotnet format detected code guidelines violations and a commit was pushed to a PR at $prUrl."
+          Write-Output "::warning title=dotnet format::dotnet format detected code guidelines violations and a commit was pushed to a PR at $prUrl."
         }
         else {
-          Write-Host "::notice title=dotnet format::dotnet format did NOT detect code guidelines violations on the PR at $prUrl."
+          Write-Output "::notice title=dotnet format::dotnet format did NOT detect code guidelines violations on the PR at $prUrl."
         }
