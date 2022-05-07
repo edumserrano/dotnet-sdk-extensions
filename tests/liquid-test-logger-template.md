@@ -35,7 +35,7 @@
 <strong>Date:</strong> {{ run.started | local_time | date: '%Y-%m-%d %H:%M:%S' }} - {{ run.finished | local_time | date: '%Y-%m-%d %H:%M:%S' }} <br />
 <strong>Run Duration:</strong> {{ run.elapsed_time_in_running_tests | format_duration }} <br />
 <p></p>
-<strong>GitHub Runner OS:</strong> {{ parameters.matrixOs }} <br />
+<strong>GitHub Runner OS:</strong> {{ parameters.runnerOS }} <br />
 <strong>Operating System:</strong> {{ parameters.os }} <br />
 <strong>Framework:</strong> {{ parameters.TargetFramework }} <br />
 <strong>Assembly:</strong> {{ test_dll }} <br />
@@ -226,4 +226,4 @@ Source:
 
 </details>
 
-<!-- on-pr-test-results-{{ parameters.matrixOs }} -->
+<!-- on-pr-test-results-{{ parameters.runnerOS }} -->

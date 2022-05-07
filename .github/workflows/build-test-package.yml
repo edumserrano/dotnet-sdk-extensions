@@ -76,7 +76,7 @@ jobs:
           --no-build `
           --logger "trx;LogFilePrefix=framework" `
           --logger GitHubActions `
-          --logger "liquid.custom;Template=${{github.workspace}}/tests/liquid-test-logger-template.md;matrixOs=${{ matrix.os }};os=$os;LogFilePrefix=framework" `
+          --logger "liquid.custom;Template=${{github.workspace}}/tests/liquid-test-logger-template.md;runnerOS=${{ matrix.os }};os=$os;LogFilePrefix=framework" `
           --results-directory "$testResultsDir" `
           /p:CollectCoverage=true `
           /p:CoverletOutput="$(Join-Path -Path (Get-Location) -ChildPath "${{ env.TEST_COVERAGE_DIR }}/")" `
