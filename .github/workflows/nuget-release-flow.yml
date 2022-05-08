@@ -42,6 +42,12 @@ jobs:
       env:
         GITHUB_CONTEXT: ${{ toJSON(github) }}
       run: $env:GITHUB_CONTEXT
+    - name: Output trigger info
+      run: |
+        $workflowRunName = '${{ github.event.workflow_run.name }}'
+        $workflowRunId = '${{ github.event.workflow_run.id }}'
+        $headBranch = '${{ github.event.workflow_run.head_branch }}'
+        Write-Output "::notice::This workflows was triggered by the completion of '$workflowRunName' with run id '$workflowRunId' on the branch '$headBranch'."
     - name: Checkout repository
       uses: actions/checkout@v3
     - name: Read NuGet release flow info artifact
