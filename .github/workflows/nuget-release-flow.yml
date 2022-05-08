@@ -131,21 +131,21 @@ jobs:
         $issueNugetReleaseNodeStatus = [string]::IsNullOrWhiteSpace('${{ steps.parse-nuget-flow-data.outputs.issue-nuget-release-node-status }}') `
           ? $issueNugetReleaseNodeStatus `
           : '${{ steps.parse-nuget-flow-data.outputs.issue-nuget-release-node-status }}'
-        $issueNugetReleaseUrl = [string]::IsNullOrWhiteSpace('${{ steps.parse-node-urls.outputs.issue-nuget-release-url }}') `
+        $issueNugetReleaseUrl = [string]::IsNullOrWhiteSpace('${{ steps.parse-nuget-flow-data.outputs.outputs.issue-nuget-release-url }}') `
           ? $issueNugetReleaseUrl `
-          : '${{ steps.parse-node-urls.outputs.issue-nuget-release-url }}'
+          : '${{ steps.parse-nuget-flow-data.outputs.outputs.issue-nuget-release-url }}'
         $nugetReleaseCommandHandlerNodeStatus = [string]::IsNullOrWhiteSpace('${{ steps.parse-nuget-flow-data.outputs.nuget-release-command-handler-node-status }}') `
           ? $nugetReleaseCommandHandlerNodeStatus `
           : '${{ steps.parse-nuget-flow-data.outputs.nuget-release-command-handler-node-status }}'
-        $nugetReleaseCommandHandlerUrl = [string]::IsNullOrWhiteSpace('${{ steps.parse-node-urls.outputs.nuget-release-command-handler-url }}') `
+        $nugetReleaseCommandHandlerUrl = [string]::IsNullOrWhiteSpace('${{ steps.parse-nuget-flow-data.outputs.outputs.nuget-release-command-handler-url }}') `
           ? $nugetReleaseCommandHandlerUrl `
-          : '${{ steps.parse-node-urls.outputs.nuget-release-command-handler-url }}'
+          : '${{ steps.parse-nuget-flow-data.outputs.outputs.nuget-release-command-handler-url }}'
         $nugetReleasePullRequestNodeStatus = [string]::IsNullOrWhiteSpace('${{ steps.parse-nuget-flow-data.outputs.nuget-release-pull-request-node-status }}') `
           ? $nugetReleasePullRequestNodeStatus `
           : '${{ steps.parse-nuget-flow-data.outputs.nuget-release-pull-request-node-status }}'
-        $nugetReleasePullRequestUrl = [string]::IsNullOrWhiteSpace('${{ steps.parse-node-urls.outputs.nuget-release-pull-request-url }}') `
+        $nugetReleasePullRequestUrl = [string]::IsNullOrWhiteSpace('${{ steps.parse-nuget-flow-data.outputs.outputs.nuget-release-pull-request-url }}') `
           ? $nugetReleasePullRequestUrl `
-          : '${{ steps.parse-node-urls.outputs.nuget-release-pull-request-url }}'
+          : '${{ steps.parse-nuget-flow-data.outputs.outputs.nuget-release-pull-request-url }}'
 
         # use data from the NuGet release flow info artifact if exists
         $issueNugetReleaseNodeStatus = [string]::IsNullOrWhiteSpace('${{ needs.release-flow-args.outputs.issue-nuget-release-node-status }}') `

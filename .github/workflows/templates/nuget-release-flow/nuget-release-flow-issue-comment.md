@@ -6,11 +6,11 @@
 ``````mermaid
   graph TD
       A([Create NuGet release issue]):::ok --> B
-      B[Action: Issue for NuGet release]:::{{ .issueNugetReleaseNodeStatus }} --> C
+      B[Action: NuGet release]:::{{ .issueNugetReleaseNodeStatus }} --> C
       C[Action: NuGet release command handler]:::{{ .nugetReleaseCommandHandlerNodeStatus }} --> D
       D[Pull Request: Release NuGet {{ .nugetId }} {{ .nugetVersion }}]:::{{ .nugetReleasePullRequestNodeStatus }} --> E
-      E[Action: Publish NuGet packages]:::{{ .publishNugetNodeStatus }} --> F([NuGet released]):::{{ .publishNugetNodeStatus }}
-  classDef ok stroke:#a5e16e 
+      E[Action: NuGet publish]:::{{ .publishNugetNodeStatus }} --> F([NuGet released]):::{{ .publishNugetNodeStatus }}
+  classDef ok stroke:#a5e16e
   classDef error stroke:#ff1355
   classDef default stroke:#99a095
   click B "{{ .issueNugetReleaseUrl }}" _blank
