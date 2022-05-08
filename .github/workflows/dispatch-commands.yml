@@ -12,6 +12,10 @@ jobs:
       issues: write
     runs-on: ubuntu-latest
     steps:
+    - name: Dump github context for debug purposes
+      env:
+        GITHUB_CONTEXT: ${{ toJSON(github) }}
+      run: $env:GITHUB_CONTEXT
     - name: Issues - dispatch commands
       uses: peter-evans/slash-command-dispatch@v3
       if: github.event.issue.state == 'open'

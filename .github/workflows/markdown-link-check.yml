@@ -24,6 +24,10 @@ jobs:
       WORKFLOW_INFO_ARTIFACT_FILEPATH: ${{github.workspace}}/markdown-link-check-workflow-info.json
       WORKFLOW_RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
     steps:
+    - name: Dump github context for debug purposes
+      env:
+        GITHUB_CONTEXT: ${{ toJSON(github) }}
+      run: $env:GITHUB_CONTEXT
     - name: Checkout repository
       uses: actions/checkout@v3
     - name: Markdown link check

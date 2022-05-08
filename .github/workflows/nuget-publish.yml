@@ -43,6 +43,10 @@ jobs:
       auto-generate-release-notes: ${{ steps.nuget-publish-info.outputs.auto-generate-release-notes }}
       custom-release-notes-artifact-name: ${{ env.CUSTOM_RELEASE_NOTES_ARTIFACT_NAME }}
     steps:
+    - name: Dump github context for debug purposes
+      env:
+        GITHUB_CONTEXT: ${{ toJSON(github) }}
+      run: $env:GITHUB_CONTEXT
     - name: Checkout repository
       uses: actions/checkout@v3
     - name: Get release info run id from PR

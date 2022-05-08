@@ -41,6 +41,10 @@ jobs:
       SLN_FILEPATH : ${{ github.workspace }}/DotNet.Sdk.Extensions.sln
       DOTNET_VERSION : 6.0.x
     steps:
+    - name: Dump github context for debug purposes
+      env:
+        GITHUB_CONTEXT: ${{ toJSON(github) }}
+      run: $env:GITHUB_CONTEXT
     - name: Checkout repository
       uses: actions/checkout@v3
     - name: Setup .NET

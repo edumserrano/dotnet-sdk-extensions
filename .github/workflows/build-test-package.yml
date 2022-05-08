@@ -42,6 +42,10 @@ jobs:
       CODE_COVERAGE_ARTIFACT_NAME: code-coverage-report-${{ matrix.os }}
       NUGET_ARTIFACT_NAME : nuget-packages-and-symbols
     steps:
+    - name: Dump github context for debug purposes
+      env:
+        GITHUB_CONTEXT: ${{ toJSON(github) }}
+      run: $env:GITHUB_CONTEXT
     - name: Checkout repository
       uses: actions/checkout@v3
     - name: Setup .NET

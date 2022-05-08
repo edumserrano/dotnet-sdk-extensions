@@ -22,6 +22,10 @@ jobs:
       issue-number: ${{ steps.get-args.outputs.issue-number }}
       issue-body: ${{ steps.get-args.outputs.issue-body }}
     steps:
+    - name: Dump github context for debug purposes
+      env:
+        GITHUB_CONTEXT: ${{ toJSON(github) }}
+      run: $env:GITHUB_CONTEXT
     - name: Get required arguments for NuGet release workflow
       id: get-args
       run: |

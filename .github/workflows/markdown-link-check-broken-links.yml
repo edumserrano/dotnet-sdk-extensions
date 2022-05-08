@@ -31,6 +31,10 @@ jobs:
       can-create-issue: ${{ steps.open-issue-check.outputs.can-create-issue }}
       create-issue: ${{ steps.needs-issue-check.outputs.create-issue }}
     steps:
+    - name: Dump github context for debug purposes
+      env:
+        GITHUB_CONTEXT: ${{ toJSON(github) }}
+      run: $env:GITHUB_CONTEXT
     - name: Checkout repository
       uses: actions/checkout@v3
       with:

@@ -32,6 +32,10 @@ jobs:
       can-create-pr: ${{ steps.open-pr-check.outputs.can-create-pr }}
       can-apply-changes: ${{ steps.check-can-apply.outputs.can-apply-changes }}
     steps:
+    - name: Dump github context for debug purposes
+      env:
+        GITHUB_CONTEXT: ${{ toJSON(github) }}
+      run: $env:GITHUB_CONTEXT
     - name: Checkout repository
       uses: actions/checkout@v3
       with:
@@ -169,6 +173,10 @@ jobs:
       pull-requests: write
     runs-on: ubuntu-latest
     steps:
+    - name: Dump github context for debug purposes
+      env:
+        GITHUB_CONTEXT: ${{ toJSON(github) }}
+      run: $env:GITHUB_CONTEXT
     - name: Checkout repository
       uses: actions/checkout@v3
       with:

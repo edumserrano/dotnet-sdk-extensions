@@ -22,6 +22,10 @@ jobs:
     outputs:
       can-create-pr: ${{ steps.open-pr-check.outputs.can-create-pr }}
     steps:
+    - name: Dump github context for debug purposes
+      env:
+        GITHUB_CONTEXT: ${{ toJSON(github) }}
+      run: $env:GITHUB_CONTEXT
     - name: Checkout repository
       uses: actions/checkout@v3
     - name: Check for open dotnet format PRs
