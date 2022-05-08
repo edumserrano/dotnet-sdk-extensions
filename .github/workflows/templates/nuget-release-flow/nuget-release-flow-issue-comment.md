@@ -19,7 +19,7 @@
   click E "{{ .publishNugetUrl }}" _blank
 ``````
 
-- This shows the overall progress of the NuGet release flow. This is updated in real time, even if you retry the release.
+- This shows the overall progress of the NuGet release flow. It might take some time for the diagram state to update, please be patient.
 - If any step fails it will be highlighted in red. Click on it to find out more details in the logs of the action.
 - To retry add a comment in this issue with `/retry-nuget-release`, this will restart the NuGet release flow. Before retrying make sure to close any pull requests that might have been created by this release flow.
 

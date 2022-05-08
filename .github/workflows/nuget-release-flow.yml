@@ -108,6 +108,10 @@ jobs:
         Write-Output "::set-output name=nuget-release-command-handler-url::$nugetReleaseCommandHandlerUrl"
         Write-Output "::set-output name=nuget-release-pull-request-node-status::$nugetReleasePullRequestNodeStatus"
         Write-Output "::set-output name=nuget-release-pull-request-url::$nugetReleasePullRequestUrl"
+    - name: Dump outputs from previous step
+      env:
+        STEP_OUTPUT: ${{ toJSON(steps.parse-nuget-flow-data.outputs) }}
+      run: $env:STEP_OUTPUT
     - name: Read nuget release flow info
       id: nuget-release-flow-info
       run: |
@@ -131,9 +135,9 @@ jobs:
         $issueNugetReleaseNodeStatus = [string]::IsNullOrWhiteSpace('${{ steps.parse-nuget-flow-data.outputs.issue-nuget-release-node-status }}') `
           ? $issueNugetReleaseNodeStatus `
           : '${{ steps.parse-nuget-flow-data.outputs.issue-nuget-release-node-status }}'
-        $issueNugetReleaseUrl = [string]::IsNullOrWhiteSpace('${{ steps.parse-nuget-flow-data.outputs.outputs.issue-nuget-release-url }}') `
+        $issueNugetReleaseUrl = [string]::IsNullOrWhiteSpace('${{ steps.parse-nuget-flow-data.outputs.issue-nuget-release-url }}') `
           ? $issueNugetReleaseUrl `
-          : '${{ steps.parse-nuget-flow-data.outputs.outputs.issue-nuget-release-url }}'
+          : '${{ steps.parse-nuget-flow-data.outputs.issue-nuget-release-url }}'
         $nugetReleaseCommandHandlerNodeStatus = [string]::IsNullOrWhiteSpace('${{ steps.parse-nuget-flow-data.outputs.nuget-release-command-handler-node-status }}') `
           ? $nugetReleaseCommandHandlerNodeStatus `
           : '${{ steps.parse-nuget-flow-data.outputs.nuget-release-command-handler-node-status }}'
