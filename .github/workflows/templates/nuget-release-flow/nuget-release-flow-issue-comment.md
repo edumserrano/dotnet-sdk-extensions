@@ -21,7 +21,7 @@
 
 - This shows the overall progress of the NuGet release flow. This is updated in real time, even if you retry the release.
 - If any step fails it will be highlighted in red. Click on it to find out more details in the logs of the action.
-- To retry close and and reopen this issue, this will restart the NuGet release flow. Before retrying make sure to close any pull requests that might have been created by this release flow.
+- To retry add a comment in this issue with `/retry-nuget-release`, this will restart the NuGet release flow. Before retrying make sure to close any pull requests that might have been created by this release flow.
 
 <!-- nuget-id: {{ .nugetId }} -->
 <!-- nuget-version: {{ .nugetVersion}} -->
