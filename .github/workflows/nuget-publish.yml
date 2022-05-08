@@ -51,8 +51,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        $statusesAsJson = gh api repos/${{ github.repository }}/commits/${{ github.event.pull_request.head.sha }}/statuses
-        $statuses = $statusesAsJson | ConvertFrom-Json
+        $statuses = gh api repos/${{ github.repository }}/commits/${{ github.event.pull_request.head.sha }}/statuses | ConvertFrom-Json
         Write-Output $statuses
         $nugetReleaseInfoStatus = $statuses | Where-Object {$_.context -eq "NuGet release command handler / NuGet release info (repository_dispatch)"}
         $nugetReleaseInfoWorkflowUrl = $nugetReleaseInfoStatus.target_url
@@ -93,7 +92,7 @@ jobs:
           # get the workflow run id that was executed for the PR
           $prBranch =  '${{ github.event.pull_request.head.ref }}'
           $workflowId = 'build-test-package.yml'
-          $workflowRuns = gh api repos/${{ github.repository }}/actions/workflows/$workflowId/runs?event=pull_request`&branch=$prBranch
+          $workflowRuns = gh api repos/${{ github.repository }}/actions/workflows/$workflowId/runs?event=pull_request`&branch=$prBranch | ConvertFrom-Json
           $prHeadSha = '${{ github.event.pull_request.head.sha }}'
           $nugetPackageRunId = $workflowRuns.workflow_runs.where{$_.head_sha -eq $prHeadSha}.id
 
