@@ -1,9 +1,11 @@
 # Extensions for .NET SDK
 
+[![codecov](https://codecov.io/gh/edumserrano/dot-net-sdk-extensions/branch/main/graph/badge.svg?token=KYW77A6UV9)](https://codecov.io/gh/edumserrano/dot-net-sdk-extensions)
+[![Build, test and package](https://github.com/edumserrano/dot-net-sdk-extensions/actions/workflows/build-test-package.yml/badge.svg)](https://github.com/edumserrano/dot-net-sdk-extensions/actions/workflows/build-test-package.yml)
 [![Build Status](https://github.com/edumserrano/dot-net-sdk-extensions/actions/workflows/nuget-publish.yml/badge.svg)](https://github.com/edumserrano/dot-net-sdk-extensions/actions/workflows/nuget-publish.yml)
 [![dotnet format](https://github.com/edumserrano/dot-net-sdk-extensions/actions/workflows/dotnet-format.yml/badge.svg)](https://github.com/edumserrano/dot-net-sdk-extensions/actions/workflows/dotnet-format.yml)
 [![CodeQL](https://github.com/edumserrano/dot-net-sdk-extensions/actions/workflows/codeql.yml/badge.svg)](https://github.com/edumserrano/dot-net-sdk-extensions/actions/workflows/codeql.yml)
-[![codecov](https://codecov.io/gh/edumserrano/dot-net-sdk-extensions/branch/main/graph/badge.svg?token=KYW77A6UV9)](https://codecov.io/gh/edumserrano/dot-net-sdk-extensions)
+[![Markdown link check](https://github.com/edumserrano/dot-net-sdk-extensions/actions/workflows/markdown-link-check.yml/badge.svg)](https://github.com/edumserrano/dot-net-sdk-extensions/actions/workflows/markdown-link-check.yml)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
 [![GitHub Sponsors](https://img.shields.io/github/sponsors/edumserrano)](https://github.com/sponsors/edumserrano)
