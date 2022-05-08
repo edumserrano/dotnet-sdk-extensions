@@ -96,6 +96,11 @@ jobs:
           $workflowRuns = gh api repos/${{ github.repository }}/actions/workflows/$workflowId/runs?event=pull_request`&branch=$prBranch
           $prHeadSha = '${{ github.event.pull_request.head.sha }}'
           $nugetPackageRunId = $workflowRuns.workflow_runs.where{$_.head_sha -eq $prHeadSha}.id
+
+          if([string]::IsNullOrWhiteSpace($nugetPackageRunId)) {
+            Write-Output "::error::Couldn't find workflow run id for branch '$prBranch' and head commit '$prHeadSha'."
+            Exit 1
+          }
         }
         else { # on workflow_dispatch event
           $nugetId = '${{ github.event.inputs.nuget-id }}'
