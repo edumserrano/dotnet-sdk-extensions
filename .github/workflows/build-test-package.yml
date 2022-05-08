@@ -69,8 +69,14 @@ jobs:
       id: dotnet-test
       run: |
         $os = $PSVersionTable.OS
+
+        # setup test results dir
         $testResultsDir = $(Join-Path -Path (Get-Location) -ChildPath "${{ env.TEST_RESULTS_DIR }}")
         Write-Output "::set-output name=test-results-dir::$testResultsDir"
+        # make sure directory does not have any files. Shouldn't be needed but I had a scenario when I reran a failed job and the results from the previous run where still present.
+        Get-ChildItem -Path $testResultsDir -File -Recurse -Force | Remove-Item
+
+        #run tests
         dotnet test ${{ env.SLN_FILEPATH }} `
           -c Release `
           --no-build `
