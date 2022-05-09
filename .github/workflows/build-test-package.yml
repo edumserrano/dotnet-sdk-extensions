@@ -73,14 +73,8 @@ jobs:
       id: dotnet-test
       run: |
         $os = $PSVersionTable.OS
-
-        # setup test results dir
         $testResultsDir = $(Join-Path -Path (Get-Location) -ChildPath "${{ env.TEST_RESULTS_DIR }}")
         Write-Output "::set-output name=test-results-dir::$testResultsDir"
-        # make sure directory does not have any files. Shouldn't be needed but I had a scenario when I reran a failed job and the results from the previous run where still present.
-        if(Test-Path -Path $testResultsDir) {
-          Get-ChildItem -Path $testResultsDir -File -Recurse -Force | Remove-Item
-        }
 
         #run tests
         dotnet test ${{ env.SLN_FILEPATH }} `
@@ -153,6 +147,14 @@ jobs:
       run: |
         $codeCoveUrl = "https://app.codecov.io/gh/${{ github.repository }}/"
         Write-Output "::notice title=Code coverage (${{ matrix.os }})::Code coverage has been uploaded to Codecov at $codeCoveUrl. You can download the code coverage report from the workflow artifact named: ${{ env.CODE_COVERAGE_ARTIFACT_NAME }}."
+    # When re-running a failed job it might upload the test results artifact multiple times.
+    # The artifacts work as a share so if the files have the same name they get overwriten, if not they get added to.
+    # If I don't run this delete step then on job reruns I get acumulating test results from past runs because the filenames for the test results are all different
+    # I only care about the last one.
+    - name: Delete test results artifac
+      uses: geekyeggo/delete-artifact@v1
+      with:
+        name: ${{ env.TEST_RESULTS_ARTIFACT_NAME }}
     - name: Upload test results to artifacts
       if: (steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure') && always()
       uses: actions/upload-artifact@v3
