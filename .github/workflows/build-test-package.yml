@@ -152,7 +152,7 @@ jobs:
     # If I don't run this delete step then on job reruns I get acumulating test results from past runs because the filenames for the test results are all different
     # I only care about the last one.
     - name: Delete test results artifac
-      uses: joutvhu/delete-artifact@v1.0.1
+      uses: geekyeggo/delete-artifact@v1
       with:
         name: ${{ env.TEST_RESULTS_ARTIFACT_NAME }}
     - name: Upload test results to artifacts
