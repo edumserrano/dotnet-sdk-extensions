@@ -151,10 +151,20 @@ jobs:
     # The artifacts work as a share so if the files have the same name they get overwriten, if not they get added to.
     # If I don't run this delete step then on job reruns I get acumulating test results from past runs because the filenames for the test results are all different
     # I only care about the last one.
-    - name: Delete test results artifac
-      uses: geekyeggo/delete-artifact@v1
-      with:
-        name: ${{ env.TEST_RESULTS_ARTIFACT_NAME }}
+    - name: Delete test results artifact
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        $testArtifactName = '${{ env.TEST_RESULTS_ARTIFACT_NAME }}'
+        $workflowArtifacts = gh api repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts | ConvertFrom-Json
+        $testResultsArtifactId = $workflowArtifacts.artifacts.where{$_.name -eq $testArtifactName }.id
+        if([string]::IsNullOrEmpty($testResultsArtifactId)) {
+          Write-Output "Found test results artifact with name '$testArtifactName'. Deleting it to avoid accumulating test results from previous run attempts."
+          gh api repos/${{ github.repository }}/actions/artifacts/$testResultsArtifactId --method DELETE
+        }
+        else {
+          Write-Output "Test results artifact with name '$testArtifactName' was not found. Nothing to delete."
+        }
     - name: Upload test results to artifacts
       if: (steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure') && always()
       uses: actions/upload-artifact@v3
