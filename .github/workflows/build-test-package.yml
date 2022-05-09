@@ -158,7 +158,7 @@ jobs:
         $testArtifactName = '${{ env.TEST_RESULTS_ARTIFACT_NAME }}'
         $workflowArtifacts = gh api repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts | ConvertFrom-Json
         $testResultsArtifactId = $workflowArtifacts.artifacts.where{$_.name -eq $testArtifactName }.id
-        if([string]::IsNullOrEmpty($testResultsArtifactId)) {
+        if(![string]::IsNullOrEmpty($testResultsArtifactId)) {
           Write-Output "Found test results artifact with name '$testArtifactName'. Deleting it to avoid accumulating test results from previous run attempts."
           gh api repos/${{ github.repository }}/actions/artifacts/$testResultsArtifactId --method DELETE
         }
