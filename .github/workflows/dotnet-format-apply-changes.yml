@@ -222,6 +222,7 @@ jobs:
 
   on-pull-request-format:
     name: Process dotnet format changes on PR
+    needs: [on-pull-request-check]
     if: needs.on-pull-request-check.outputs.has-changes == 'true'
     environment: dotnet-format-apply-changes-workflow
     permissions:
