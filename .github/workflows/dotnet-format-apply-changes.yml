@@ -290,6 +290,7 @@ jobs:
   update-pr-status-check:
     name: Update PR status check
     needs: [on-pull-request-check, on-pull-request-format]
+    if: always()
     environment: dotnet-format-apply-changes-workflow
     permissions:
       statuses: write
