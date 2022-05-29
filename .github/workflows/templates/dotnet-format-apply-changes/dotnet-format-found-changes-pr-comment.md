@@ -1,6 +1,6 @@
 # [{{ .workflow }}]({{ .workflowUrl }}) for commit {{ .commitSha }}
 
-:exclamation: **dotnet format** found files that did not respect the code guidelines and pushed commit {{ .pushedCommitSha }}. Please review it before merging the PR.
+:exclamation: **dotnet format** found files that did not respect the code guidelines and pushed commit {{ .pushedCommitSha }}. Please review it before merging the PR. You can review the workflow that pushed this commit [here]([{{ .pushWorkflowUrl }}]).
 
 :warning: dotnet format does **NOT** remove unused references. You have to do this manually. Please check that there isn't any unused reference.
 

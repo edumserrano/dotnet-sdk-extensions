@@ -257,6 +257,7 @@ jobs:
           workflowUrl: ${{ needs.on-pull-request-check.outputs.workflow-url }}
           commitSha: ${{ env.WORKFLOW_HEAD_SHA }}
           pushedCommitSha: ${{ steps.dotnet-format-commit.outputs.commit-sha }}
+          pushWorkflowUrl: 'https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}'
     - name: Sanitize PR comment
       id: sanitize-pr-comment
       run: |
