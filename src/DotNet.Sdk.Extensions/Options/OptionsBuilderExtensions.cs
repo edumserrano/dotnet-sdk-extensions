@@ -23,7 +23,9 @@ namespace DotNet.Sdk.Extensions.Options
             where T : class, new()
         {
             if (services is null)
+            {
                 throw new ArgumentNullException(nameof(services));
+            }
 
             return services
                 .AddOptions<T>()
