@@ -223,7 +223,6 @@ jobs:
     environment: dotnet-format-apply-changes-workflow
     permissions:
       pull-requests: write
-      statuses: write
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
@@ -287,3 +286,44 @@ jobs:
       run: |
         $prUrl = "https://github.com/${{ github.repository }}/pull/${{ needs.on-pull-request-check.outputs.pr-number }}"
         Write-Output "::warning title=dotnet format::dotnet format detected code guidelines violations and a commit was pushed to the PR at $prUrl."
+
+  update-pr-status-check:
+    name: Update PR status check
+    needs: [on-pull-request-check, on-pull-request-format]
+    environment: dotnet-format-apply-changes-workflow
+    permissions:
+      statuses: write
+    runs-on: ubuntu-latest
+    steps:
+    - name: Set status check description
+      id: status-check-description
+      run: |
+        $hasChanges = [System.Convert]::ToBoolean("${{ needs.on-pull-request-check.outputs.has-changes }}")
+        if($hasChanges) {
+          $statusCheckDescription = 'Successful'
+        }
+        else {
+          $statusCheckDescription = 'Skipped'
+        }
+
+        Write-Output "::set-output name=description::$statusCheckDescription"
+    - name: Set PR status
+      uses: ./.github/actions/create-gh-status
+      with:
+        repo: ${{ github.repository }}
+        pr-num: ${{ needs.on-pull-request-check.outputs.pr-number }}
+        context: '${{ github.workflow }} / apply dotnet format (${{ github.event_name }})' # mimic format from github
+        state: success
+        description: '${{ steps.status-check-description.outputs.description }}'
+        target-url: 'https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}'
+        token: ${{ secrets.GITHUB_TOKEN }}
+    - name: Log info
+      run: |
+        $hasChanges = [System.Convert]::ToBoolean("${{ needs.on-pull-request-check.outputs.has-changes }}")
+        $prUrl = "https://github.com/${{ github.repository }}/pull/${{ needs.on-pull-request-check.outputs.pr-number }}"
+        if($hasChanges) {
+          Write-Output "::warning title=dotnet format::dotnet format detected code guidelines violations and a commit was pushed to the PR at $prUrl."
+        }
+        else {
+          Write-Output "::notice title=dotnet format::dotnet format did NOT detect code guidelines violations on the PR at $prUrl."
+        }
