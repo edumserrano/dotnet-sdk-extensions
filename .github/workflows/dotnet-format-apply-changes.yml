@@ -208,6 +208,13 @@ jobs:
         Write-Output "::set-output name=workflow-url::$workflowUrl"
         Write-Output "::set-output name=pr-number::$prNumber"
         Write-Output "::set-output name=pr-branch-name::$prBranchName"
+    - name: Log info
+      run: |
+        $hasChanges = [System.Convert]::ToBoolean("${{ steps.dotnet-format-workflow-info.outputs.has-changes }}")
+        $prUrl = "https://github.com/${{ github.repository }}/pull/${{ steps.dotnet-format-workflow-info.outputs.pr-number }}"
+        if(!$hasChanges) {
+          Write-Output "::notice title=dotnet format::dotnet format did NOT detect code guidelines violations on the PR at $prUrl."
+        }
 
   on-pull-request-format:
     name: Process dotnet format changes on PR
@@ -265,16 +272,10 @@ jobs:
         body: ${{ steps.sanitize-pr-comment.outputs.pr-comment-body }}
         edit-mode: replace
         reactions: eyes
-    - name: Set PR status
-      uses: ./.github/actions/create-gh-status
-      with:
-        repo: ${{ github.repository }}
-        pr-num: ${{ needs.on-pull-request-check.outputs.pr-number }}
-        context: '${{ github.workflow }} / apply dotnet format (${{ github.event_name }})' # mimic format from github
-        state: success
-        description: Successful
-        target-url: 'https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}'
-        token: ${{ secrets.GITHUB_TOKEN }}
+    - name: Log info
+      run: |
+        $prUrl = "https://github.com/${{ github.repository }}/pull/${{ needs.on-pull-request-check.outputs.pr-number }}"
+        Write-Output "::warning title=dotnet format::dotnet format detected code guidelines violations and a commit was pushed to the PR at $prUrl."
 
   on-pull-request-update-status-check:
     name: Update PR status check
@@ -324,13 +325,3 @@ jobs:
         description: '${{ steps.status-check-data.outputs.description }}'
         target-url: 'https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}'
         token: ${{ secrets.GITHUB_TOKEN }}
-    - name: Log info
-      run: |
-        $hasChanges = [System.Convert]::ToBoolean("${{ needs.on-pull-request-check.outputs.has-changes }}")
-        $prUrl = "https://github.com/${{ github.repository }}/pull/${{ needs.on-pull-request-check.outputs.pr-number }}"
-        if($hasChanges) {
-          Write-Output "::warning title=dotnet format::dotnet format detected code guidelines violations and a commit was pushed to the PR at $prUrl."
-        }
-        else {
-          Write-Output "::notice title=dotnet format::dotnet format did NOT detect code guidelines violations on the PR at $prUrl."
-        }
