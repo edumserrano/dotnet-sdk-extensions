@@ -296,6 +296,10 @@ jobs:
       statuses: write
     runs-on: ubuntu-latest
     steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      with:
+        ref: ${{ env.WORKFLOW_HEAD_SHA }}
     - name: Set status check data
       id: status-check-data
       run: |
