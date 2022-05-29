@@ -212,11 +212,7 @@ jobs:
       run: |
         $hasChanges = [System.Convert]::ToBoolean("${{ steps.dotnet-format-workflow-info.outputs.has-changes }}")
         $prUrl = "https://github.com/${{ github.repository }}/pull/${{ steps.dotnet-format-workflow-info.outputs.pr-number }}"
-
-        if($hasChanges) {
-          Write-Output "::notice title=dotnet format::dotnet format detected code guidelines violations and a commit will be pushed to the PR at $prUrl."
-        }
-        else {
+        if(!$hasChanges) {
           Write-Output "::notice title=dotnet format::dotnet format did NOT detect code guidelines violations on the PR at $prUrl."
         }
 
