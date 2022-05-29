@@ -227,6 +227,7 @@ jobs:
     environment: dotnet-format-apply-changes-workflow
     permissions:
       pull-requests: write
+      statuses: write
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
