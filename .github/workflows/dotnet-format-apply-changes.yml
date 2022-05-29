@@ -287,35 +287,48 @@ jobs:
         $prUrl = "https://github.com/${{ github.repository }}/pull/${{ needs.on-pull-request-check.outputs.pr-number }}"
         Write-Output "::warning title=dotnet format::dotnet format detected code guidelines violations and a commit was pushed to the PR at $prUrl."
 
-  update-pr-status-check:
+  on-pull-request-update-status-check:
     name: Update PR status check
     needs: [on-pull-request-check, on-pull-request-format]
-    if: always()
+    if: github.event.workflow_run.event == 'pull_request' && always() # only run on PRs but run even if the previous steps weren't all executed/sucessful
     environment: dotnet-format-apply-changes-workflow
     permissions:
       statuses: write
     runs-on: ubuntu-latest
     steps:
-    - name: Set status check description
-      id: status-check-description
+    - name: Set status check data
+      id: status-check-data
       run: |
-        $hasChanges = [System.Convert]::ToBoolean("${{ needs.on-pull-request-check.outputs.has-changes }}")
-        if($hasChanges) {
-          $statusCheckDescription = 'Successful'
+        $prCheckJobResult = '${{ needs.on-pull-request-check.result }}'
+        $prFormatJobResult = '${{ needs.on-pull-request-format.result }}'
+
+        if($prCheckJobResult -eq 'failure' -or $prFormatJobResult -eq 'failure' -or $prCheckJobResult -eq 'cancelled' -or $prFormatJobResult -eq 'cancelled') {
+          $state = 'error'
+          $description = 'Error'
         }
-        else {
-          $statusCheckDescription = 'Skipped'
+        elseif($prFormatJobResult -eq 'skipped') {
+          $state = 'success'
+          $description = 'Skipped'
+        }
+        elseif($prFormatJobResult -eq 'success') {
+          $state = 'success'
+          $description = 'Successful'
+        }
+        else{
+          Write-Output "::error::Couldn't define the status check for the PR. Unexpected combination of results from dependant jobs."
+          Exit 1
         }
 
-        Write-Output "::set-output name=description::$statusCheckDescription"
+        Write-Output "::set-output name=state::$state"
+        Write-Output "::set-output name=description::$description"
     - name: Set PR status
       uses: ./.github/actions/create-gh-status
       with:
         repo: ${{ github.repository }}
         pr-num: ${{ needs.on-pull-request-check.outputs.pr-number }}
         context: '${{ github.workflow }} / apply dotnet format (${{ github.event_name }})' # mimic format from github
-        state: success
-        description: '${{ steps.status-check-description.outputs.description }}'
+        state: '${{ steps.status-check-data.outputs.state }}'
+        description: '${{ steps.status-check-data.outputs.description }}'
         target-url: 'https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}'
         token: ${{ secrets.GITHUB_TOKEN }}
     - name: Log info
