@@ -165,23 +165,24 @@ jobs:
         $prUrl = "${{ steps.create-pr.outputs.pr-url }}"
         Write-Output "::warning title=dotnet format::A PR with the fixes for the code guidelines violations was created at $prUrl."
 
-  on-pull-request:
-    name: Process dotnet format changes on pull request
+  on-pull-request-check:
+    name: Check if there are dotnet format changes for the PR
     if: github.event.workflow_run.event == 'pull_request'
     environment: dotnet-format-apply-changes-workflow
     permissions:
-      pull-requests: write
+      contents: read
     runs-on: ubuntu-latest
+    outputs:
+      has-changes: ${{ steps.dotnet-format-workflow-info.outputs.has-changes }}
+      workflow: ${{ steps.dotnet-format-workflow-info.outputs.workflow }}
+      workflow-url: ${{ steps.dotnet-format-workflow-info.outputs.workflow-url }}
+      pr-number: ${{ steps.dotnet-format-workflow-info.outputs.pr-number }}
+      pr-branch-name: ${{ steps.dotnet-format-workflow-info.outputs.pr-branch-name }}
     steps:
     - name: Dump github context for debug purposes
       env:
         GITHUB_CONTEXT: ${{ toJSON(github) }}
       run: $env:GITHUB_CONTEXT
-    - name: Checkout repository
-      uses: actions/checkout@v3
-      with:
-        ref: ${{ env.WORKFLOW_HEAD_SHA }}
-        token: ${{ secrets.DOTNET_FORMAT_GH_TOKEN }}
     - name: Download dotnet format workflow info artifact
       uses: dawidd6/action-download-artifact@v2.19.0
       with:
@@ -193,7 +194,6 @@ jobs:
       run: |
         $worfklowInfoFilePath = "./dotnet-format-workflow-info.json"
         $workflowInfoJson = Get-Content $worfklowInfoFilePath
-        rm $worfklowInfoFilePath # delete file so that it doesn't get pushed to the branch in the following steps
         Write-Output $workflowInfoJson
         $workflowInfo = $workflowInfoJson | ConvertFrom-Json
 
@@ -208,8 +208,30 @@ jobs:
         Write-Output "::set-output name=workflow-url::$workflowUrl"
         Write-Output "::set-output name=pr-number::$prNumber"
         Write-Output "::set-output name=pr-branch-name::$prBranchName"
+    - name: Log info
+      run: |
+        $hasChanges = [System.Convert]::ToBoolean("${{ steps.dotnet-format-workflow-info.outputs.has-changes }}")
+        $prUrl = "https://github.com/${{ github.repository }}/pull/${{ steps.dotnet-format-workflow-info.outputs.pr-number }}"
+        if(!$hasChanges) {
+          Write-Output "::notice title=dotnet format::dotnet format did NOT detect code guidelines violations on the PR at $prUrl."
+        }
+
+  on-pull-request-format:
+    name: Process dotnet format changes on PR
+    needs: [on-pull-request-check]
+    if: needs.on-pull-request-check.outputs.has-changes == 'true'
+    environment: dotnet-format-apply-changes-workflow
+    permissions:
+      pull-requests: write
+      statuses: write
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      with:
+        ref: ${{ env.WORKFLOW_HEAD_SHA }}
+        token: ${{ secrets.DOTNET_FORMAT_GH_TOKEN }}
     - name: Download dotnet format changed files
-      if: steps.dotnet-format-workflow-info.outputs.has-changes == 'true'
       uses: dawidd6/action-download-artifact@v2.19.0
       with:
         workflow: ${{ github.event.workflow_run.workflow_id }}
@@ -217,53 +239,51 @@ jobs:
         run_id: ${{ github.event.workflow_run.id }}
     - name: Push dotnet format changes
       id: auto-commit-action
-      if: steps.dotnet-format-workflow-info.outputs.has-changes == 'true'
       uses: stefanzweifel/git-auto-commit-action@v4.14.1
       with:
-        branch: ${{ steps.dotnet-format-workflow-info.outputs.pr-branch-name }}
-        commit_message: dotnet format from workflow for PR ${{ steps.dotnet-format-workflow-info.outputs.pr-number }}
+        branch: ${{ needs.on-pull-request-check.outputs.pr-branch-name }}
+        commit_message: dotnet format from workflow for PR ${{ needs.on-pull-request-check.outputs.pr-number }}
     - name: Get dotnet format commit SHA
       id: dotnet-format-commit
-      if: steps.dotnet-format-workflow-info.outputs.has-changes == 'true'
       run: |
           $commitSha = git rev-parse HEAD
           Write-Output "::set-output name=commit-sha::$commitSha"
     - name: Render comment template
       id: render-pr-comment-template
-      if: steps.dotnet-format-workflow-info.outputs.has-changes == 'true'
       uses: chuhlomin/render-template@v1.4
       with:
         template: .github/workflows/templates/dotnet-format-apply-changes/dotnet-format-found-changes-pr-comment.md
         vars: |
-          workflow: ${{ steps.dotnet-format-workflow-info.outputs.workflow }}
-          workflowUrl: ${{ steps.dotnet-format-workflow-info.outputs.workflow-url }}
+          workflow: ${{ needs.on-pull-request-check.outputs.workflow }}
+          workflowUrl: ${{ needs.on-pull-request-check.outputs.workflow-url }}
           commitSha: ${{ env.WORKFLOW_HEAD_SHA }}
           pushedCommitSha: ${{ steps.dotnet-format-commit.outputs.commit-sha }}
     - name: Sanitize PR comment
       id: sanitize-pr-comment
-      if: steps.dotnet-format-workflow-info.outputs.has-changes == 'true'
       run: |
         $commentBody = "${{ steps.render-pr-comment-template.outputs.result }}"
         $commentBody = $commentBody -replace "`n","%0A" # The content must be escaped to preserve newlines. See https://github.community/t/set-output-truncates-multiline-strings/16852/3
         Write-Output "::set-output name=pr-comment-body::$commentBody"
     - name: Update PR with dotnet format result
-      if: steps.dotnet-format-workflow-info.outputs.has-changes == 'true'
       uses: ./.github/actions/create-update-comment
       with:
-        issue-number: ${{ steps.dotnet-format-workflow-info.outputs.pr-number }}
+        issue-number: ${{ needs.on-pull-request-check.outputs.pr-number }}
         body-includes: '<!-- on-pr-dotnet-format -->'
         comment-author: github-actions[bot]
         body: ${{ steps.sanitize-pr-comment.outputs.pr-comment-body }}
         edit-mode: replace
         reactions: eyes
+    - name: Set PR status
+      uses: ./.github/actions/create-gh-status
+      with:
+        repo: ${{ github.repository }}
+        pr-num: ${{ needs.on-pull-request-check.outputs.pr-number }}
+        context: '${{ github.workflow }} / apply dotnet format (${{ github.event_name }})' # mimic format from github
+        state: success
+        description: Successful
+        target-url: 'https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}'
+        token: ${{ secrets.GITHUB_TOKEN }}
     - name: Log info
       run: |
-        $hasChanges = [System.Convert]::ToBoolean("${{ steps.dotnet-format-workflow-info.outputs.has-changes }}")
-        $prUrl = "https://github.com/${{ github.repository }}/pull/${{ steps.dotnet-format-workflow-info.outputs.pr-number }}"
-
-        if($hasChanges) {
-          Write-Output "::warning title=dotnet format::dotnet format detected code guidelines violations and a commit was pushed to a PR at $prUrl."
-        }
-        else {
-          Write-Output "::notice title=dotnet format::dotnet format did NOT detect code guidelines violations on the PR at $prUrl."
-        }
+        $prUrl = "https://github.com/${{ github.repository }}/pull/${{ needs.on-pull-request-check.outputs.pr-number }}"
+        Write-Output "::warning title=dotnet format::dotnet format detected code guidelines violations and a commit was pushed to the PR at $prUrl."
