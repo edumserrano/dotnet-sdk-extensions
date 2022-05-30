@@ -141,7 +141,7 @@ jobs:
         branch: ${{ steps.commit-info.outputs.branch-name }}
     - name: Render PR body template
       id: render-pr-body-template
-      uses: chuhlomin/render-template@v1.4
+      uses: chuhlomin/render-template@v1.5
       with:
         template: .github/workflows/templates/nuget-release-command-handler/create-nuget-release-pr-body.md
         vars: |
