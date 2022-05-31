@@ -177,6 +177,7 @@ csharp_new_line_before_finally = true
 csharp_new_line_before_members_in_object_initializers = true
 csharp_new_line_before_members_in_anonymous_types = true
 csharp_new_line_between_query_expression_clauses = true
+csharp_style_namespace_declarations = file_scoped
 # Indentation options
 # https://docs.microsoft.com/visualstudio/ide/editorconfig-formatting-conventions#indentation-options
 csharp_indent_case_contents = true
@@ -395,18 +396,13 @@ dotnet_diagnostic.VSTHRD111.severity = none         # VSTHRD111 Use .ConfigureAw
 # See https://github.com/JosefPihrt/Roslynator/blob/master/src/Analyzers/README.md
 ##########################################
 [*.cs]
-# Design
 dotnet_diagnostic.RCS1090.severity = none   # RCS1090: Add call to 'ConfigureAwait' (or vice versa)
 dotnet_diagnostic.RCS1194.severity = none   # RCS1194: Implement exception constructors
 dotnet_diagnostic.RCS1224.severity = none   # RCS1224: Make method an extension method
-# General
 dotnet_diagnostic.RCS1181.severity = none   # RCS1181: Convert comment to documentation comment
-# Maintainability
 dotnet_diagnostic.RCS1140.severity = none   # RCS1140: Add exception to documentation comment
-# Readability
 dotnet_diagnostic.RCS1161.severity = none   # RCS1161: Enum should declare explicit values
 dotnet_diagnostic.RCS1238.severity = none   # RCS1238: Avoid nested ?: operators
-# Redundancy
 dotnet_diagnostic.RCS1031.severity = suggestion     # RCS1031: Remove unnecessary braces
 dotnet_diagnostic.RCS1032.severity = suggestion     # RCS1032: Remove redundant parentheses
 dotnet_diagnostic.RCS1035.severity = none           # RCS1035: Remove redundant comma in initializer
@@ -414,10 +410,8 @@ dotnet_diagnostic.RCS1036.severity = suggestion     # RCS1036: Remove redundant 
 dotnet_diagnostic.RCS1037.severity = suggestion     # RCS1037: Remove trailing white-space
 dotnet_diagnostic.RCS1039.severity = suggestion     # RCS1039: Remove argument list from attribute
 dotnet_diagnostic.RCS1070.severity = none           # RCS1070: Remove redundant default switch section	Redundancy	Hidden
-# Simplification
 dotnet_diagnostic.RCS1021.severity = none   # RCS1021: Convert lambda expression body to expression-body
 dotnet_diagnostic.RCS1201.severity = none   # RCS1201: Use method chaining
-# Style
 dotnet_diagnostic.RCS1001.severity = suggestion     # RCS1001: Add braces (when expression spans over multiple lines)
 dotnet_diagnostic.RCS1002.severity = none           # RCS1002: Remove braces
 dotnet_diagnostic.RCS1003.severity = suggestion     # RCS1003: Add braces to if-else (when expression spans over multiple lines)
@@ -430,12 +424,12 @@ dotnet_diagnostic.RCS1051.severity = none           # RCS1051: Parenthesize cond
 dotnet_diagnostic.RCS1063.severity = suggestion     # RCS1063: Avoid usage of do statement to create an infinite loop
 dotnet_diagnostic.RCS1064.severity = suggestion     # RCS1064: Avoid usage of for statement to create an infinite loop
 dotnet_diagnostic.RCS1065.severity = none           # RCS1065: Avoid usage of while statement to create an infinite loop
+dotnet_diagnostic.RCS1069.severity = none           # RCS1069: Remove unnecessary case label
 dotnet_diagnostic.RCS1111.severity = none           # RCS1111: Add braces to switch section with multiple statements
 dotnet_diagnostic.RCS1126.severity = suggestion     # RCS1126: Add braces to if-else
 dotnet_diagnostic.RCS1196.severity = suggestion     # RCS1196: Call extension method as instance method
 dotnet_diagnostic.RCS1208.severity = none           # RCS1208: Reduce 'if' nesting
 dotnet_diagnostic.RCS1248.severity = suggestion     # RCS1248: Use pattern matching to check for null (or vice versa)
-# Usage
 dotnet_diagnostic.RCS1221.severity = none           # RCS1221: Use pattern matching instead of combination of 'as' operator and null check
 
 ##########################################
@@ -600,12 +594,6 @@ dotnet_diagnostic.SA1651.severity = suggestion      # SA1651: Do not use placeho
 # Reliability rules https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/reliability-warnings
 ##########################################
 dotnet_diagnostic.CA2000.severity = silent          # CA2000: Dispose objects before losing scope (in tests you might not need to care about disposing or in some tests it might be impractical.)
-
-##########################################
-# Rules for AsyncFixer
-# See https://github.com/semihokur/AsyncFixer
-##########################################
-dotnet_diagnostic.AsyncFixer01.severity = silent    # AsyncFixer01: Await is the last statement of the method so you can return Task and await in the caller method. (some asserts are async in nature and they must be awaited.)
 
 ##########################################
 # Rules for Microsoft.VisualStudio.Threading.Analyzers
