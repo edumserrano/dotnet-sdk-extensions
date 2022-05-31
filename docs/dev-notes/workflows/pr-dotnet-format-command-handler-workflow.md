@@ -1,6 +1,6 @@
 # pr-dotnet-format-command-handler worflow
 
-[![PR dotnet format command handler](https://github.com/edumserrano/dot-net-sdk-extensions/actions/workflows/pr-dotnet-format-command-handler.yml/badge.svg)](https://github.com/edumserrano/dot-net-sdk-extensions/actions/workflows/pr-dotnet-format-command-handler.yml)
+[![PR dotnet format command handler](https://github.com/edumserrano/dotnet-sdk-extensions/actions/workflows/pr-dotnet-format-command-handler.yml/badge.svg)](https://github.com/edumserrano/dotnet-sdk-extensions/actions/workflows/pr-dotnet-format-command-handler.yml)
 
 [This workflow](/.github/workflows/pr-dotnet-format-command-handler.yml) is triggered when someone adds a comment on a PR with the following body: `/dotnet-format`.
 

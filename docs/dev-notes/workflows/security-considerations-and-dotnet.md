@@ -36,12 +36,12 @@ For completeness here is how the output from `dotnet format` looks like on a pro
 
 ```
 The dotnet runtime version is '6.0.1'.
-Formatting code files in workspace 'D:\Dev\edumserrano\dot-net-sdk-extensions\src\DotNet.Sdk.Extensions.Testing\DotNet.Sdk.Extensions.Testing.csproj'.
+Formatting code files in workspace 'D:\Dev\edumserrano\dotnet-sdk-extensions\src\DotNet.Sdk.Extensions.Testing\DotNet.Sdk.Extensions.Testing.csproj'.
   Determining projects to restore...
 THIS GETS CALLED FROM DOTNET FORMAT
-Restored D:\Dev\edumserrano\dot-net-sdk-extensions\src\DotNet.Sdk.Extensions.Testing\DotNet.Sdk.Extensions.Testing.csproj (in 299 ms).
-Project DotNet.Sdk.Extensions.Testing(net6.0) is using configuration from 'D:\Dev\edumserrano\dot-net-sdk-extensions\.editorconfig'.
-Project DotNet.Sdk.Extensions.Testing(net6.0) is using configuration from 'D:\Dev\edumserrano\dot-net-sdk-extensions\src\DotNet.Sdk.Extensions.Testing\obj\Debug\net6.0\DotNet.Sdk.Extensions.Testing.GeneratedMSBuildEditorConfig.editorconfig'.
+Restored D:\Dev\edumserrano\dotnet-sdk-extensions\src\DotNet.Sdk.Extensions.Testing\DotNet.Sdk.Extensions.Testing.csproj (in 299 ms).
+Project DotNet.Sdk.Extensions.Testing(net6.0) is using configuration from 'D:\Dev\edumserrano\dotnet-sdk-extensions\.editorconfig'.
+Project DotNet.Sdk.Extensions.Testing(net6.0) is using configuration from 'D:\Dev\edumserrano\dotnet-sdk-extensions\src\DotNet.Sdk.Extensions.Testing\obj\Debug\net6.0\DotNet.Sdk.Extensions.Testing.GeneratedMSBuildEditorConfig.editorconfig'.
 Project DotNet.Sdk.Extensions.Testing(net6.0) is using configuration from 'C:\Program Files\dotnet\sdk\6.0.101\Sdks\Microsoft.NET.Sdk\analyzers\build\config\analysislevel_6_all.editorconfig'.
 Running 76 analyzers on DotNet.Sdk.Extensions.Testing(net6.0).
 Running 507 analyzers on DotNet.Sdk.Extensions.Testing(net6.0).

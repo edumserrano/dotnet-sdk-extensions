@@ -1,6 +1,6 @@
 # dotnet-format workflow
 
-[![dotnet format](https://github.com/edumserrano/dot-net-sdk-extensions/actions/workflows/dotnet-format.yml/badge.svg)](https://github.com/edumserrano/dot-net-sdk-extensions/actions/workflows/dotnet-format.yml)
+[![dotnet format](https://github.com/edumserrano/dotnet-sdk-extensions/actions/workflows/dotnet-format.yml/badge.svg)](https://github.com/edumserrano/dotnet-sdk-extensions/actions/workflows/dotnet-format.yml)
 
 [This workflow](/.github/workflows/dotnet-format.yml) runs [dotnet format](https://github.com/dotnet/format) on pushes to the main branch and creates a pull request when changes are required. The PR is created with a label `dotnet-format`. To avoid creating multiple pull requests about formatting issues, this workflow will only create a pull request if there is no open pull request with the `dotnet-format` label.
 

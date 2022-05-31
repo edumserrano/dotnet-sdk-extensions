@@ -1,6 +1,6 @@
 # nuget-publish workflow
 
-[![Publish Nuget packages](https://github.com/edumserrano/dot-net-sdk-extensions/actions/workflows/nuget-publish.yml/badge.svg)](https://github.com/edumserrano/dot-net-sdk-extensions/actions/workflows/nuget-publish.yml)
+[![Publish Nuget packages](https://github.com/edumserrano/dotnet-sdk-extensions/actions/workflows/nuget-publish.yml/badge.svg)](https://github.com/edumserrano/dotnet-sdk-extensions/actions/workflows/nuget-publish.yml)
 
 [This workflow](/.github/workflows/nuget-publish.yml):
 
@@ -19,7 +19,7 @@ This workflow uses a custom secret `NUGET_PUSH_API_KEY`. The secret contains a N
 
 Codecov integration does not require any secret, it was done via the [Codecov GitHub app](https://github.com/apps/codecov).
 
-Besides the information available on the [Codecov web app](https://app.codecov.io/gh/edumserrano/dot-net-sdk-extensions), this integration enables Codecov to:
+Besides the information available on the [Codecov web app](https://app.codecov.io/gh/edumserrano/dotnet-sdk-extensions), this integration enables Codecov to:
 
 - [add status checks on pull requests](https://docs.codecov.com/docs/commit-status)
 - [display coverage on pull requests via comments](https://docs.codecov.com/docs/pull-request-comments)

@@ -1,6 +1,6 @@
 # pr-test-results-comment worflow
 
-[![PR test results comment](https://github.com/edumserrano/dot-net-sdk-extensions/actions/workflows/pr-test-results-comment.yml/badge.svg)](https://github.com/edumserrano/dot-net-sdk-extensions/actions/workflows/pr-test-results-comment.yml)
+[![PR test results comment](https://github.com/edumserrano/dotnet-sdk-extensions/actions/workflows/pr-test-results-comment.yml/badge.svg)](https://github.com/edumserrano/dotnet-sdk-extensions/actions/workflows/pr-test-results-comment.yml)
 
 [This workflow](/.github/workflows/pr-pr-test-results-comment.yml) is triggered when the [nuget-publish workflow](/docs/dev-notes/workflows/nuget-publish-workflow.md) completes on Pull Requests.
 
