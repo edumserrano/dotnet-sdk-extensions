@@ -188,7 +188,7 @@ jobs:
         }
 
         $nugetArtifacts = "$baseDir/*.nupkg,$baseDir/*.snupkg"
-        $nugetPushWorkingDir = $$baseDir
+        $nugetPushWorkingDir = $baseDir
         $nugetPackage =  Get-ChildItem $baseDir | Where-Object {$_.Extension -eq '.nupkg' } | Select-Object -First 1
         $nugetSymbols =  Get-ChildItem $baseDir | Where-Object {$_.Extension -eq '.snupkg' } | Select-Object -First 1
 
