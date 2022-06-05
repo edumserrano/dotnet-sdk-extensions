@@ -142,7 +142,7 @@ runs:
 
         # set action output
         $outputAsJson = $output | ConvertTo-Json -compress
-        Write-Output "::set-output name=output::$outputAsJson"
+        Write-Output "::set-output name=push-result::$outputAsJson"
         Write-Output "::set-output name=status::$($output.status)"
 
         if($allOk) {
