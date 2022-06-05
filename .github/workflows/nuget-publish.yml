@@ -209,11 +209,10 @@ jobs:
         api-key: ${{ secrets.NUGET_PUSH_API_KEY }}
         working-directory: '${{ steps.nuget-publish-info.outputs.nuget-push-working-dir }}'
     - name: Log NuGet push info
-      if: always()
+      if: steps.nuget-push.conclusion != 'skipped' && always()
       run: |
         $nugetId = '${{ needs.workflow-args.outputs.nuget-id }}'
         $nugetUrl = "https://www.nuget.org/packages/$nugetId"
-        $pushStepConclusion = '${{ steps.nuget-push.conclusion }}'
         $nugetPushResult = '${{ steps.nuget-push.outputs.push-result }}' | ConvertFrom-Json
         $package = $nugetPushResult.packages[0] # we are only using the nuget push action to push one package so I don't need to iterate the packages, I can just get the first
 
