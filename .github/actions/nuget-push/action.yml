@@ -36,10 +36,10 @@ inputs:
 outputs:
   status:
     description: "The overall status of pushing the NuGet packages and corresponding symbols. It will be 'ok' if all packages where pushed successfully or already existed and 'error' otherwise."
-    value: ${{ steps.main.status }}
+    value: ${{ steps.main.outputs.status }}
   push-result:
     description: "The result of pushing the NuGet packages and corresponding symbols as a JSON string."
-    value: ${{ steps.main.push-result }}
+    value: ${{ steps.main.outputs.push-result }}
 
 runs:
   using: "composite"
@@ -146,9 +146,6 @@ runs:
         Write-Output "::set-output name=push-result::$outputAsJson"
         Write-Output "::set-output name=status::$($output.status)"
 
-        Write-Output "$($output.status)"
-        Write-Output "$outputAsJson"
-
         if($allOk) {
           Write-Output "All NuGet packages uploaded successfully."
           Exit 0
@@ -157,8 +154,3 @@ runs:
           Write-Output "Some NuGet packages weren't uploaded successfully."
           Exit 1
         }
-    - name: Dump outputs from previous step (from action)
-      shell: pwsh
-      env:
-        STEP_OUTPUT: ${{ toJSON(steps.main.outputs) }}
-      run: $env:STEP_OUTPUT
