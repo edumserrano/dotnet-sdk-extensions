@@ -181,17 +181,21 @@ jobs:
         $nugetId = '${{ needs.workflow-args.outputs.nuget-id }}'
 
         if($nugetId -eq 'dotnet-sdk-extensions') {
-          $nugetArtifacts = '${{ env.EXTENSIONS_NUGET_BIN_FOLDER }}/*.nupkg,${{ env.EXTENSIONS_NUGET_BIN_FOLDER }}/*.snupkg'
-          $nugetPushWorkingDir = '${{ env.EXTENSIONS_NUGET_BIN_FOLDER }}'
+          $baseDir = '${{ env.EXTENSIONS_NUGET_BIN_FOLDER }}'
         }
         elseif($nugetId -eq "dotnet-sdk-extensions-testing") {
-          $nugetArtifacts = '${{ env.TESTING_EXTENSIONS_NUGET_BIN_FOLDER }}/*.nupkg,${{ env.TESTING_EXTENSIONS_NUGET_BIN_FOLDER }}/*.snupkg'
-          $nugetPushWorkingDir = '${{ env.TESTING_EXTENSIONS_NUGET_BIN_FOLDER }}'
+          $baseDir = '${{ env.TESTING_EXTENSIONS_NUGET_BIN_FOLDER }}'
         }
+
+        $nugetPushWorkingDir = $baseDir
+        $nugetPackage =  Get-ChildItem $baseDir | Where-Object {$_.Extension -eq '.nupkg' } | Select-Object -First 1
+        $nugetSymbols =  Get-ChildItem $baseDir | Where-Object {$_.Extension -eq '.snupkg' } | Select-Object -First 1
+        $nugetArtifacts = "$nugetPackage,$nugetSymbols"
 
         Write-Output "::set-output name=nuget-release-notes-file-path::$releaseNotesFile"
         Write-Output "::set-output name=nuget-gh-release-artifacts::$nugetArtifacts"
-        Write-Output "::set-output name=nuget-push-working-dir::$nugetPushWorkingDir"
+        Write-Output "::set-output name=nuget-package::$nugetPackage"
+        Write-Output "::set-output name=nuget-symbols::$nugetSymbols"
     - name: Create GitHub release
       id: create-gh-release
       uses: ncipollo/release-action@v1
@@ -207,23 +211,30 @@ jobs:
       uses: ./.github/actions/nuget-push
       with:
         api-key: ${{ secrets.NUGET_PUSH_API_KEY }}
-        source: https://api.nuget.org/v3/index.json
-        working-directory: '${{ steps.nuget-publish-info.outputs.nuget-push-working-dir }}'
+        nuget-package: '${{ steps.nuget-publish-info.outputs.nuget-package }}'
+        symbols-package: '${{ steps.nuget-publish-info.outputs.nuget-symbols }}'
     - name: Log NuGet push info
-      if: always()
+      if: steps.nuget-push.conclusion != 'skipped' && always()
       run: |
         $nugetId = '${{ needs.workflow-args.outputs.nuget-id }}'
         $nugetUrl = "https://www.nuget.org/packages/$nugetId"
-        $pushStepConclusion = '${{ steps.nuget-push.conclusion }}'
-        $nugetAlreadyExists = [System.Convert]::ToBoolean("${{ steps.nuget-push.outputs.nuget-already-exists }}")
-        if($nugetAlreadyExists) {
+        $nugetPushResult = '${{ steps.nuget-push.outputs.push-result }}' | ConvertFrom-Json
+        $package = $nugetPushResult.packages[0] # we are only using the nuget push action to push one package so I don't need to iterate the packages list, I can just get the first
+
+        if($package.status -eq 'ok') {
+          Write-Output "::notice title=$nugetId NuGet::Successfully pushed $nugetId NuGet and symbols to nuget.org. You can find the package at: $nugetUrl."
+        }
+        elseif($package.status -eq 'nuget-already-exists') {
           Write-Output "::notice title=$nugetId NuGet::$nugetId NuGet was NOT published to nuget.org because the version to be pushed already exists."
         }
-        elseif($pushStepConclusion -eq 'failure') {
-          Write-Output "::error title=$nugetIdNuGet::Failed to push $nugetId NuGet and symbols."
+        elseif($package.status -eq 'nuget-push-failed') {
+          Write-Output "::error title=$nugetIdNuGet::Failed to push NuGet $nugetId."
         }
-        elseif($pushStepConclusion -eq 'success') {
-          Write-Output "::notice title=$nugetId NuGet::Successfully pushed $nugetId NuGet and symbols to nuget.org. You can find the package at: $nugetUrl."
+        elseif($package.status -eq 'symbols-push-failed') {
+          Write-Output "::error title=$nugetIdNuGet::Failed to push symbols for $nugetId."
+        }
+        else{
+          Write-Output "::error title=$nugetIdNuGet::Unexpected nuget push result status: $($package.status)."
         }
 
   output-artifacts:
