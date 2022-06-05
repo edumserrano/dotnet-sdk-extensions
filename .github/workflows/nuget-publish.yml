@@ -213,7 +213,6 @@ jobs:
         api-key: ${{ secrets.NUGET_PUSH_API_KEY }}
         nuget-package: '${{ steps.nuget-publish-info.outputs.nuget-package }}'
         symbols-package: '${{ steps.nuget-publish-info.outputs.nuget-symbols }}'
-        fail-if-exists: 'true'
     - name: Log NuGet push info
       if: steps.nuget-push.conclusion != 'skipped' && always()
       run: |
