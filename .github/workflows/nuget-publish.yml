@@ -208,6 +208,11 @@ jobs:
       with:
         api-key: ${{ secrets.NUGET_PUSH_API_KEY }}
         working-directory: '${{ steps.nuget-publish-info.outputs.nuget-push-working-dir }}'
+    - name: Dump outputs from previous step
+      shell: pwsh
+      env:
+        STEP_OUTPUT: ${{ toJSON(steps.nuget-push.outputs) }}
+      run: $env:STEP_OUTPUT
     - name: Log NuGet push info
       if: steps.nuget-push.conclusion != 'skipped' && always()
       run: |

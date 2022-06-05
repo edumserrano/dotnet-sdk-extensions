@@ -39,7 +39,7 @@ outputs:
     value: ${{ steps.nuget-push.status }}
   push-result:
     description: "The result of pushing the NuGet packages and corresponding symbols as a JSON string."
-    value: ${{ steps.nuget-push.output }}
+    value: ${{ steps.nuget-push.push-result }}
 
 runs:
   using: "composite"
