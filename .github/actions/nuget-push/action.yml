@@ -32,24 +32,40 @@ inputs:
     required: true
   working-directory:
     description: 'The directory that will be used to push nuget packages. It will push all *.nupkg and corresponding symbol packages present in the directory.'
-    required: true
+    required: false
+  nuget-package:
+    description: 'The filepath for the NuGet package to be pushed.'
+    required: false
+  symbols-package:
+    description: 'The filepath for the symbols package to be pushed.'
+    required: false
 outputs:
   status:
     description: "The overall status of pushing the NuGet packages and corresponding symbols. It will be 'ok' if all packages where pushed successfully or already existed and 'error' otherwise."
-    value: ${{ steps.main.outputs.status }}
+    value: ${{ steps.set-outputs.outputs.status }}
   push-result:
     description: "The result of pushing the NuGet packages and corresponding symbols as a JSON string."
-    value: ${{ steps.main.outputs.push-result }}
+    value: ${{ steps.set-outputs.outputs.push-result }}
 
 runs:
   using: "composite"
   steps:
-    - name: Push NuGet and Symbols
+    - name: Setup variables
       shell: pwsh
-      id: main
+      id: setup
+      run: |
+        Write-Output "::set-output name=nuget-server-url::https://api.nuget.org/v3/index.json"
+        Write-Output "::set-output name=nuget-push-ok-status::ok"
+        Write-Output "::set-output name=nuget-push-already-exists-status::nuget-already-exists"
+        Write-Output "::set-output name=nuget-push-failed-status::nuget-push-failed"
+        Write-Output "::set-output name=symbols-push-failed-status::symbols-push-failed"
+    - name: Push all NuGet and Symbols from working directory
+      shell: pwsh
+      id: push-workding-dir
+      if: inputs.working-directory != ''
       working-directory: ${{ inputs.working-directory }}
       run: |
-        $nugetServerUrl = 'https://api.nuget.org/v3/index.json'
+        $nugetServerUrl = '${{ steps.setup.outputs.nuget-server-url }}'
         $output = @{
           status = ''
           packages = [System.Collections.ArrayList]::new()
@@ -69,82 +85,177 @@ runs:
         }
         Write-Output "::endgroup::"
 
-        $nugetPushOkStatus = 'ok'
-        $nugetPushAlreadyExistsStatus = 'nuget-already-exists'
-        $nugetPushFailedStatus = 'nuget-push-failed'
-        $symbolsPushFailedStatus = 'symbols-push-failed'
+        $nugetPushOkStatus = '${{ steps.setup.outputs.nuget-push-ok-status }}'
+        $nugetPushAlreadyExistsStatus = '${{ steps.setup.outputs.nuget-push-already-exists-status }}'
+        $nugetPushFailedStatus = '${{ steps.setup.outputs.nuget-push-failed-status }}'
+        $symbolsPushFailedStatus = '${{ steps.setup.outputs.symbols-push-failed-status }}'
         # for each group we will try to push the NuGet package and if that is successfull we will then push the symbols package.
         foreach($group in $groups) {
-            # each group will be a group of '.nupgk' and corresponding '.snupkg'
-            # try to upload the nuget package and if is successful then upload its symbols if they exists.
-            $files = $group.Group
-            $package = $files | Where-Object {$_.Extension -eq '.nupkg' } | Select-Object -First 1
-            $symbols = $files | Where-Object {$_.Extension -eq '.snupkg' } | Select-Object -First 1
-            $packageOutput = @{
-                package = $package.PSChildName
-                symbols = $symbols.PSChildName
-                status = ''
+          # each group will be a group of '.nupgk' and corresponding '.snupkg'
+          # try to upload the nuget package and if is successful then upload its symbols if available.
+          $files = $group.Group
+          $package = $files | Where-Object {$_.Extension -eq '.nupkg' } | Select-Object -First 1
+          $symbols = $files | Where-Object {$_.Extension -eq '.snupkg' } | Select-Object -First 1
+          $packageOutput = @{
+              package = $package.PSChildName
+              symbols = $symbols.PSChildName
+              status = ''
+          }
+
+          # upload NuGet package if exists
+          if($package -ne $null) {
+            Write-Output "::group::Pushing $package NuGet package."
+            $nugetResponse = dotnet nuget push $package --api-key ${{ inputs.api-key }} --source $nugetServerUrl --no-symbols --force-english-output
+            $nugetPushExitCode = $LastExitCode
+            $nugetAlreadyExists = ($nugetResponse | ?{$_.Contains("Response status code does not indicate success: 409")}).Length -gt 0
+
+            if($nugetAlreadyExists) {
+              $packageOutput.status = $nugetPushAlreadyExistsStatus
+              Write-Output "The NuGet package $package already exists. The output from nuget push was:"
+              Write-Output $nugetResponse
             }
+            elseif($nugetPushExitCode -ne 0) {
+              $packageOutput.status = $nugetPushFailedStatus
+              Write-Output "::error::Failed to push NuGet package $package. See the action logs for more information."
+              Write-Output "NuGet push failed. The output from nuget push was:"
+              Write-Output $nugetResponse
+            }
+            else {
+              $packageOutput.status = $nugetPushOkStatus
+              Write-Output "NuGet push was successful. The output from nuget push was:"
+              Write-Output $nugetResponse
 
-            # upload NuGet package if exists
-            if($package -ne $null) {
-              Write-Output "::group::Pushing $package NuGet package."
-              $nugetResponse = dotnet nuget push $package --api-key ${{ inputs.api-key }} --source $nugetServerUrl --no-symbols --force-english-output
-              $nugetPushExitCode = $LastExitCode
-              $nugetAlreadyExists = ($nugetResponse | ?{$_.Contains("Response status code does not indicate success: 409")}).Length -gt 0
+              # upload symbols if exists
+              if($symbols -ne $null) {
+                Write-Output "Pushing NuGet symbols package $symbols"
+                $symbolsResponse = dotnet nuget push $symbols --api-key ${{ inputs.api-key }} --source $nugetServerUrl
+                $symbolsPushExitCode = $LastExitCode
+                Write-Output $symbolsResponse
 
-              if($nugetAlreadyExists) {
-                $packageOutput.status = $nugetPushAlreadyExistsStatus
-                Write-Output "The NuGet package $package already exists. The output from nuget push was:"
-                Write-Output $nugetResponse
-              }
-              elseif($nugetPushExitCode -ne 0) {
-                $packageOutput.status = $nugetPushFailedStatus
-                Write-Output "::error::Failed to push NuGet package $package. See the action logs for more information."
-                Write-Output "NuGet push failed. The output from nuget push was:"
-                Write-Output $nugetResponse
-              }
-              else {
-                $packageOutput.status = $nugetPushOkStatus
-                Write-Output "NuGet push was successful. The output from nuget push was:"
-                Write-Output $nugetResponse
-
-                # upload symbols if exists
-                if($symbols -ne $null) {
-                  Write-Output "Pushing NuGet symbols package $symbols"
-                  $symbolsResponse = dotnet nuget push $symbols --api-key ${{ inputs.api-key }} --source $nugetServerUrl
-                  $symbolsPushExitCode = $LastExitCode
-                  Write-Output $symbolsResponse
-
-                  if($symbolsPushExitCode -ne 0) {
-                    $packageOutput.status = $symbolsPushFailedStatus
-                    Write-Output "::error::Failed to push NuGet symbols package $symbols. See the action logs for more information."
-                  }
+                if($symbolsPushExitCode -ne 0) {
+                  $packageOutput.status = $symbolsPushFailedStatus
+                  Write-Output "::error::Failed to push NuGet symbols package $symbols. See the action logs for more information."
                 }
               }
-
-              $output.packages.Add($packageOutput)
-              Write-Output "::endgroup::"
             }
+
+            $output.packages.Add($packageOutput)
+            Write-Output "::endgroup::"
+          }
         }
 
-        $packagesFailed = $output.packages | Where-Object {$_.status -eq $nugetPushFailedStatus -or $_.status -eq $symbolsPushFailedStatus }
-        $allOk = $packagesFailed.count -eq 0
-        if($allOk) {
-          $output.status = 'ok'
+        $outputAsJson = $output | ConvertTo-Json -compress
+        Write-Output "::set-output name=push-result::$outputAsJson"
+        Exit 0 # always exit sucessfully regardless of the exit codes from 'dotnet nuget push' command, the exit code for the action will be set in the next step
+    - name: Push specific NuGet and Symbols
+      shell: pwsh
+      id: push-specific-files
+      if: inputs.nuget-package != ''
+      run: |
+        $nugetServerUrl = '${{ steps.setup.outputs.nuget-server-url }}'
+        $nugetPushOkStatus = '${{ steps.setup.outputs.nuget-push-ok-status }}'
+        $nugetPushAlreadyExistsStatus = '${{ steps.setup.outputs.nuget-push-already-exists-status }}'
+        $nugetPushFailedStatus = '${{ steps.setup.outputs.nuget-push-failed-status }}'
+        $symbolsPushFailedStatus = '${{ steps.setup.outputs.symbols-push-failed-status }}'
+        $output = @{
+          status = ''
+          packages = [System.Collections.ArrayList]::new()
+        }
+        $packageOutput = @{
+            package = ''
+            symbols = ''
+            status = ''
+        }
+
+        # output the packages and symbols that will be uploaded
+        Write-Output "::group::Pushing the following NuGet packages and symbols to $nugetServerUrl"
+        Write-Output '${{ inputs.nuget-package }}'
+        Write-Output '${{ inputs.symbols-package }}'
+        Write-Output "::endgroup::"
+
+        # try to upload the nuget package and if is successful then upload its symbols if available.
+        # upload NuGet package if exists
+        if('${{ inputs.nuget-package }}' -ne '') {
+          $package = Get-Item '${{ inputs.nuget-package }}'
+          $packageOutput.package = $package.PSChildName
+          Write-Output "::group::Pushing $package NuGet package."
+          $nugetResponse = dotnet nuget push $package --api-key ${{ inputs.api-key }} --source $nugetServerUrl --no-symbols --force-english-output
+          $nugetPushExitCode = $LastExitCode
+          $nugetAlreadyExists = ($nugetResponse | ?{$_.Contains("Response status code does not indicate success: 409")}).Length -gt 0
+
+          if($nugetAlreadyExists) {
+            $packageOutput.status = $nugetPushAlreadyExistsStatus
+            Write-Output "The NuGet package $package already exists. The output from nuget push was:"
+            Write-Output $nugetResponse
+          }
+          elseif($nugetPushExitCode -ne 0) {
+            $packageOutput.status = $nugetPushFailedStatus
+            Write-Output "::error::Failed to push NuGet package $package. See the action logs for more information."
+            Write-Output "NuGet push failed. The output from nuget push was:"
+            Write-Output $nugetResponse
+          }
+          else {
+            $packageOutput.status = $nugetPushOkStatus
+            Write-Output "NuGet push was successful. The output from nuget push was:"
+            Write-Output $nugetResponse
+
+            # upload symbols if exists
+            if('${{ inputs.symbols-package }}' -ne '') {
+              $symbols = Get-Item '${{ inputs.symbols-package }}'
+              $packageOutput.symbols = $symbols.PSChildName
+              Write-Output "Pushing NuGet symbols package $symbols"
+              $symbolsResponse = dotnet nuget push $symbols --api-key ${{ inputs.api-key }} --source $nugetServerUrl
+              $symbolsPushExitCode = $LastExitCode
+              Write-Output $symbolsResponse
+
+              if($symbolsPushExitCode -ne 0) {
+                $packageOutput.status = $symbolsPushFailedStatus
+                Write-Output "::error::Failed to push NuGet symbols package $symbols. See the action logs for more information."
+              }
+            }
+          }
+
+          $output.packages.Add($packageOutput)
+          Write-Output "::endgroup::"
+        }
+
+        $outputAsJson = $output | ConvertTo-Json -compress
+        Write-Output "::set-output name=push-result::$outputAsJson"
+        Exit 0 # always exit sucessfully regardless of the exit codes from 'dotnet nuget push' command, the exit code for the action will be set in the next step
+    - name: Set action outputs
+      shell: pwsh
+      id: set-outputs
+      run: |
+        $pushWorkingDirOutput = '${{ steps.push-workding-dir.outputs.push-result }}'
+        $pushSpecificFilesOutput = '${{ steps.push-specific-files.outputs.push-result }}'
+        if($pushWorkingDirOutput -ne '') {
+          $pushResult = $pushWorkingDirOutput | ConvertFrom-Json
+        }
+        elseif($pushWorkingDirOutput -ne '') {
+          $pushResult = $pushWorkingDirOutput | ConvertFrom-Json
         }
         else {
-          $output.status = 'error'
+          Write-Output "::error::Unexpected empty output from nuget push step. See action logs for more details."
+          Exit 1
+        }
+
+        $packagesFailed = $pushResult.packages | Where-Object {$_.status -eq $nugetPushFailedStatus -or $_.status -eq $symbolsPushFailedStatus }
+        $allOk = $packagesFailed.count -eq 0
+        if($allOk) {
+          $pushResult.status = 'ok'
+        }
+        else {
+          $pushResult.status = 'error'
         }
 
         Write-Output "::group::Action output"
-        $output | ConvertTo-Json
+        $pushResult | ConvertTo-Json
         Write-Output "::endgroup::"
 
         # set action output
-        $outputAsJson = $output | ConvertTo-Json -compress
-        Write-Output "::set-output name=push-result::$outputAsJson"
-        Write-Output "::set-output name=status::$($output.status)"
+        $pushResultAsJson = $pushResult | ConvertTo-Json -compress
+        Write-Output "::set-output name=push-result::$pushResultAsJson"
+        Write-Output "::set-output name=status::$($pushResult.status)"
 
         if($allOk) {
           Write-Output "All NuGet packages uploaded successfully."
