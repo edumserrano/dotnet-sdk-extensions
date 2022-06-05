@@ -169,11 +169,11 @@ runs:
             status = ''
         }
 
-        if(nugePackageSpecified) {
+        if($nugePackageSpecified) {
           $package = Get-Item '${{ inputs.nuget-package }}'
           $packageOutput.package = "$package"
         }
-        if(symbolsSpecified) {
+        if($symbolsSpecified) {
           $symbols = Get-Item '${{ inputs.symbols-package }}'
           $packageOutput.symbols = "$symbols"
         }
@@ -186,7 +186,7 @@ runs:
 
         # try to upload the nuget package and if is successful then upload its symbols if available.
         # upload NuGet package if exists
-        if(nugePackageSpecified) {
+        if($nugePackageSpecified) {
           Write-Output "::group::Pushing $package NuGet package."
           $nugetResponse = dotnet nuget push $package --api-key ${{ inputs.api-key }} --source $nugetServerUrl --no-symbols --force-english-output
           $nugetPushExitCode = $LastExitCode
@@ -209,7 +209,7 @@ runs:
             Write-Output $nugetResponse
 
             # upload symbols if exists
-            if(symbolsSpecified) {
+            if($symbolsSpecified) {
               Write-Output "Pushing NuGet symbols package $symbols"
               $symbolsResponse = dotnet nuget push $symbols --api-key ${{ inputs.api-key }} --source $nugetServerUrl
               $symbolsPushExitCode = $LastExitCode
