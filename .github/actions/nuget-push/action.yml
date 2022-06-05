@@ -62,8 +62,8 @@ runs:
         Write-Output "::group::Pushing the following NuGet packages and symbols to $nugetServerUrl"
         foreach($group in $groups) {
           Write-Output "The package with filename $($group.Name) will have the following files uploaded:"
-          foreach($file in $group.Groups) {
-            Write-Output $file
+          foreach($file in $group.Group) {
+            Write-Output "$file"
           }
         }
         Write-Output "::endgroup::"

@@ -214,6 +214,10 @@ jobs:
         $nugetId = '${{ needs.workflow-args.outputs.nuget-id }}'
         $nugetUrl = "https://www.nuget.org/packages/$nugetId"
         $nugetPushResult = '${{ steps.nuget-push.outputs.push-result }}' | ConvertFrom-Json
+
+        Write-Output '${{ steps.nuget-push.outputs.push-result }}'
+        Write-Output $nugetPushResult
+
         $package = $nugetPushResult.packages[0] # we are only using the nuget push action to push one package so I don't need to iterate the packages, I can just get the first
 
         if($package.status -eq 'ok') {
