@@ -194,7 +194,6 @@ jobs:
 
         Write-Output "::set-output name=nuget-release-notes-file-path::$releaseNotesFile"
         Write-Output "::set-output name=nuget-gh-release-artifacts::$nugetArtifacts"
-        Write-Output "::set-output name=nuget-push-working-dir::$nugetPushWorkingDir"
         Write-Output "::set-output name=nuget-package::$nugetPackage"
         Write-Output "::set-output name=nuget-symbols::$nugetSymbols"
     - name: Create GitHub release
@@ -212,7 +211,8 @@ jobs:
       uses: ./.github/actions/nuget-push
       with:
         api-key: ${{ secrets.NUGET_PUSH_API_KEY }}
-        working-directory: '${{ steps.nuget-publish-info.outputs.nuget-push-working-dir }}'
+        nuget-package: '${{ steps.nuget-publish-info.outputs.nuget-package }}'
+        symbols-package: '${{ steps.nuget-publish-info.outputs.nuget-symbols }}'
     - name: Log NuGet push info
       if: steps.nuget-push.conclusion != 'skipped' && always()
       run: |
