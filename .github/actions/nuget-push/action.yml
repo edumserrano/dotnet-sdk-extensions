@@ -61,8 +61,10 @@ runs:
         # output the packages and symbols that will be uploaded
         Write-Output "::group::Pushing the following NuGet packages and symbols to $nugetServerUrl"
         foreach($group in $groups) {
-           Write-Output "The package with filename $group.Name will have the following files uploaded:"
-           $group.Group # outputs the file names to be pushed
+          Write-Output "The package with filename $($group.Name) will have the following files uploaded:"
+          foreach($file in $group.Groups) {
+            Write-Output $file.FullName
+          }
         }
         Write-Output "::endgroup::"
 
@@ -93,24 +95,25 @@ runs:
               if($nugetAlreadyExists) {
                 $packageOutput.state = $nugetPushAlreadyExistsState
                 Write-Output "The NuGet package $package already exists. The output from nuget push was:"
-                $nugetResponse # this will print out the output from the 'dotnet nuget push' command
+                Write-Output $nugetResponse
               }
               elseif($nugetPushExitCode -ne 0) {
                 $packageOutput.state = $nugetPushFailedState
                 Write-Output "::error::Failed to push NuGet package $package. See the action logs for more information."
                 Write-Output "NuGet push failed. The output from nuget push was:"
-                $nugetResponse # this will print out the output from the 'dotnet nuget push' command
+                Write-Output $nugetResponse
               }
               else {
                 $packageOutput.state = $nugetPushOkState
                 Write-Output "NuGet push was successful. The output from nuget push was:"
-                $nugetResponse # this will print out the output from the 'dotnet nuget push' command
+                Write-Output $nugetResponse
 
                 # upload symbols if exists
                 if($symbols -ne $null) {
                   Write-Output "Pushing NuGet symbols package $symbols"
-                  dotnet nuget push $symbols --api-key ${{ inputs.api-key }} --source $nugetServerUrl
+                  $symbolsResponse = dotnet nuget push $symbols --api-key ${{ inputs.api-key }} --source $nugetServerUrl
                   $symbolsPushExitCode = $LastExitCode
+                  Write-Output $symbolsResponse
 
                   if($symbolsPushExitCode -ne 0) {
                     $packageOutput.state = $symbolsPushFailedState
@@ -125,7 +128,7 @@ runs:
         }
 
         $packagesFailed = $output.packages | Where-Object {$_.state -eq $nugetPushFailedState -or $_.state -eq $symbolsPushFailedState }
-        $allOk = packagesFailed.count -eq 0
+        $allOk = $packagesFailed.count -eq 0
         if(allOk) {
           $output.status = 'ok'
         }
