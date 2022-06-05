@@ -197,11 +197,6 @@ jobs:
         Write-Output "::set-output name=nuget-push-working-dir::$nugetPushWorkingDir"
         Write-Output "::set-output name=nuget-package::$nugetPackage"
         Write-Output "::set-output name=nuget-symbols::$nugetSymbols"
-    - name: Dump outputs from previous step
-      shell: pwsh
-      env:
-        STEP_OUTPUT: ${{ toJSON(steps.nuget-publish-info.outputs) }}
-      run: $env:STEP_OUTPUT
     - name: Create GitHub release
       id: create-gh-release
       uses: ncipollo/release-action@v1
@@ -217,15 +212,14 @@ jobs:
       uses: ./.github/actions/nuget-push
       with:
         api-key: ${{ secrets.NUGET_PUSH_API_KEY }}
-        nuget-package: '${{ steps.nuget-publish-info.outputs.nuget-package }}'
-        symbols-package: '${{ steps.nuget-publish-info.outputs.nuget-symbols }}'
+        working-directory: '${{ steps.nuget-publish-info.outputs.nuget-push-working-dir }}'
     - name: Log NuGet push info
       if: steps.nuget-push.conclusion != 'skipped' && always()
       run: |
         $nugetId = '${{ needs.workflow-args.outputs.nuget-id }}'
         $nugetUrl = "https://www.nuget.org/packages/$nugetId"
         $nugetPushResult = '${{ steps.nuget-push.outputs.push-result }}' | ConvertFrom-Json
-        $package = $nugetPushResult.packages[0] # we are only using the nuget push action to push one package so I don't need to iterate the packages, I can just get the first
+        $package = $nugetPushResult.packages[0] # we are only using the nuget push action to push one package so I don't need to iterate the packages list, I can just get the first
 
         if($package.status -eq 'ok') {
           Write-Output "::notice title=$nugetId NuGet::Successfully pushed $nugetId NuGet and symbols to nuget.org. You can find the package at: $nugetUrl."
