@@ -97,8 +97,8 @@ runs:
           $package = $files | Where-Object {$_.Extension -eq '.nupkg' } | Select-Object -First 1
           $symbols = $files | Where-Object {$_.Extension -eq '.snupkg' } | Select-Object -First 1
           $packageOutput = @{
-              package = $package.PSChildName
-              symbols = $symbols.PSChildName
+              package = "$package"
+              symbols = "$symbols"
               status = ''
           }
 
@@ -152,6 +152,8 @@ runs:
       id: push-specific-files
       if: inputs.nuget-package != ''
       run: |
+        $nugePackageSpecified = '${{ inputs.nuget-package }}' -ne ''
+        $symbolsSpecified = '${{ inputs.symbols-package }}' -ne ''
         $nugetServerUrl = '${{ steps.setup.outputs.nuget-server-url }}'
         $nugetPushOkStatus = '${{ steps.setup.outputs.nuget-push-ok-status }}'
         $nugetPushAlreadyExistsStatus = '${{ steps.setup.outputs.nuget-push-already-exists-status }}'
@@ -167,17 +169,24 @@ runs:
             status = ''
         }
 
+        if(nugePackageSpecified) {
+          $package = Get-Item '${{ inputs.nuget-package }}'
+          $packageOutput.package = "$package"
+        }
+        if(symbolsSpecified) {
+          $symbols = Get-Item '${{ inputs.symbols-package }}'
+          $packageOutput.symbols = "$symbols"
+        }
+
         # output the packages and symbols that will be uploaded
         Write-Output "::group::Pushing the following NuGet packages and symbols to $nugetServerUrl"
-        Write-Output '${{ inputs.nuget-package }}'
-        Write-Output '${{ inputs.symbols-package }}'
+        Write-Output "$package"
+        Write-Output "$symbols"
         Write-Output "::endgroup::"
 
         # try to upload the nuget package and if is successful then upload its symbols if available.
         # upload NuGet package if exists
-        if('${{ inputs.nuget-package }}' -ne '') {
-          $package = Get-Item '${{ inputs.nuget-package }}'
-          $packageOutput.package = $package.PSChildName
+        if(nugePackageSpecified) {
           Write-Output "::group::Pushing $package NuGet package."
           $nugetResponse = dotnet nuget push $package --api-key ${{ inputs.api-key }} --source $nugetServerUrl --no-symbols --force-english-output
           $nugetPushExitCode = $LastExitCode
@@ -200,9 +209,7 @@ runs:
             Write-Output $nugetResponse
 
             # upload symbols if exists
-            if('${{ inputs.symbols-package }}' -ne '') {
-              $symbols = Get-Item '${{ inputs.symbols-package }}'
-              $packageOutput.symbols = $symbols.PSChildName
+            if(symbolsSpecified) {
               Write-Output "Pushing NuGet symbols package $symbols"
               $symbolsResponse = dotnet nuget push $symbols --api-key ${{ inputs.api-key }} --source $nugetServerUrl
               $symbolsPushExitCode = $LastExitCode
