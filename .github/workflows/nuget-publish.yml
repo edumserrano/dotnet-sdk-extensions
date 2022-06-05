@@ -187,10 +187,10 @@ jobs:
           $baseDir = '${{ env.TESTING_EXTENSIONS_NUGET_BIN_FOLDER }}'
         }
 
-        $nugetArtifacts = "$baseDir/*.nupkg,$baseDir/*.snupkg"
         $nugetPushWorkingDir = $baseDir
         $nugetPackage =  Get-ChildItem $baseDir | Where-Object {$_.Extension -eq '.nupkg' } | Select-Object -First 1
         $nugetSymbols =  Get-ChildItem $baseDir | Where-Object {$_.Extension -eq '.snupkg' } | Select-Object -First 1
+        $nugetArtifacts = "$nugetPackage,$nugetSymbols"
 
         Write-Output "::set-output name=nuget-release-notes-file-path::$releaseNotesFile"
         Write-Output "::set-output name=nuget-gh-release-artifacts::$nugetArtifacts"

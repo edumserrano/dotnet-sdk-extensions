@@ -231,8 +231,8 @@ runs:
         if($pushWorkingDirOutput -ne '') {
           $pushResult = $pushWorkingDirOutput | ConvertFrom-Json
         }
-        elseif($pushWorkingDirOutput -ne '') {
-          $pushResult = $pushWorkingDirOutput | ConvertFrom-Json
+        elseif($pushSpecificFilesOutput -ne '') {
+          $pushResult = $pushSpecificFilesOutput | ConvertFrom-Json
         }
         else {
           Write-Output "::error::Unexpected empty output from nuget push step. See action logs for more details."
