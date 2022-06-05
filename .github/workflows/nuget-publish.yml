@@ -181,17 +181,27 @@ jobs:
         $nugetId = '${{ needs.workflow-args.outputs.nuget-id }}'
 
         if($nugetId -eq 'dotnet-sdk-extensions') {
-          $nugetArtifacts = '${{ env.EXTENSIONS_NUGET_BIN_FOLDER }}/*.nupkg,${{ env.EXTENSIONS_NUGET_BIN_FOLDER }}/*.snupkg'
-          $nugetPushWorkingDir = '${{ env.EXTENSIONS_NUGET_BIN_FOLDER }}'
+          $baseDir = '${{ env.EXTENSIONS_NUGET_BIN_FOLDER }}'
         }
         elseif($nugetId -eq "dotnet-sdk-extensions-testing") {
-          $nugetArtifacts = '${{ env.TESTING_EXTENSIONS_NUGET_BIN_FOLDER }}/*.nupkg,${{ env.TESTING_EXTENSIONS_NUGET_BIN_FOLDER }}/*.snupkg'
-          $nugetPushWorkingDir = '${{ env.TESTING_EXTENSIONS_NUGET_BIN_FOLDER }}'
+          $baseDir = '${{ env.TESTING_EXTENSIONS_NUGET_BIN_FOLDER }}'
         }
+
+        $nugetArtifacts = "$baseDir/*.nupkg,$baseDir/*.snupkg"
+        $nugetPushWorkingDir = $$baseDir
+        $nugetPackage =  Get-ChildItem $baseDir | Where-Object {$_.Extension -eq '.nupkg' } | Select-Object -First 1
+        $nugetSymbols =  Get-ChildItem $baseDir | Where-Object {$_.Extension -eq '.snupkg' } | Select-Object -First 1
 
         Write-Output "::set-output name=nuget-release-notes-file-path::$releaseNotesFile"
         Write-Output "::set-output name=nuget-gh-release-artifacts::$nugetArtifacts"
         Write-Output "::set-output name=nuget-push-working-dir::$nugetPushWorkingDir"
+        Write-Output "::set-output name=nuget-package::$nugetPackage"
+        Write-Output "::set-output name=nuget-symbols::$nugetSymbols"
+    - name: Dump outputs from previous step
+      shell: pwsh
+      env:
+        STEP_OUTPUT: ${{ toJSON(steps.nuget-publish-info.outputs) }}
+      run: $env:STEP_OUTPUT
     - name: Create GitHub release
       id: create-gh-release
       uses: ncipollo/release-action@v1
@@ -207,7 +217,8 @@ jobs:
       uses: ./.github/actions/nuget-push
       with:
         api-key: ${{ secrets.NUGET_PUSH_API_KEY }}
-        working-directory: '${{ steps.nuget-publish-info.outputs.nuget-push-working-dir }}'
+        nuget-package: '${{ steps.nuget-publish-info.outputs.nuget-package }}'
+        symbols-package: '${{ steps.nuget-publish-info.outputs.nuget-symbols }}'
     - name: Log NuGet push info
       if: steps.nuget-push.conclusion != 'skipped' && always()
       run: |
