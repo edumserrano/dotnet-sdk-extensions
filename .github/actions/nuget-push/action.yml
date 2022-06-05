@@ -63,15 +63,15 @@ runs:
         foreach($group in $groups) {
           Write-Output "The package with filename $($group.Name) will have the following files uploaded:"
           foreach($file in $group.Groups) {
-            Write-Output $file.FullName
+            Write-Output $file
           }
         }
         Write-Output "::endgroup::"
 
-        $nugetPushOkState = 'ok'
-        $nugetPushAlreadyExistsState = 'nuget-already-exists'
-        $nugetPushFailedState = 'nuget-push-failed'
-        $symbolsPushFailedState = 'symbols-push-failed'
+        $nugetPushOkStatus = 'ok'
+        $nugetPushAlreadyExistsStatus = 'nuget-already-exists'
+        $nugetPushFailedStatus = 'nuget-push-failed'
+        $symbolsPushFailedStatus = 'symbols-push-failed'
         # for each group we will try to push the NuGet package and if that is successfull we will then push the symbols package.
         foreach($group in $groups) {
             # each group will be a group of '.nupgk' and corresponding '.snupkg'
@@ -82,7 +82,7 @@ runs:
             $packageOutput = @{
                 package = $package
                 symbols = $symbols
-                state = ''
+                status = ''
             }
 
             # upload NuGet package if exists
@@ -93,18 +93,18 @@ runs:
               $nugetAlreadyExists = ($nugetResponse | ?{$_.Contains("Response status code does not indicate success: 409")}).Length -gt 0
 
               if($nugetAlreadyExists) {
-                $packageOutput.state = $nugetPushAlreadyExistsState
+                $packageOutput.status = $nugetPushAlreadyExistsStatus
                 Write-Output "The NuGet package $package already exists. The output from nuget push was:"
                 Write-Output $nugetResponse
               }
               elseif($nugetPushExitCode -ne 0) {
-                $packageOutput.state = $nugetPushFailedState
+                $packageOutput.status = $nugetPushFailedStatus
                 Write-Output "::error::Failed to push NuGet package $package. See the action logs for more information."
                 Write-Output "NuGet push failed. The output from nuget push was:"
                 Write-Output $nugetResponse
               }
               else {
-                $packageOutput.state = $nugetPushOkState
+                $packageOutput.status = $nugetPushOkStatus
                 Write-Output "NuGet push was successful. The output from nuget push was:"
                 Write-Output $nugetResponse
 
@@ -116,7 +116,7 @@ runs:
                   Write-Output $symbolsResponse
 
                   if($symbolsPushExitCode -ne 0) {
-                    $packageOutput.state = $symbolsPushFailedState
+                    $packageOutput.status = $symbolsPushFailedStatus
                     Write-Output "::error::Failed to push NuGet symbols package $symbols. See the action logs for more information."
                   }
                 }
@@ -127,9 +127,9 @@ runs:
             }
         }
 
-        $packagesFailed = $output.packages | Where-Object {$_.state -eq $nugetPushFailedState -or $_.state -eq $symbolsPushFailedState }
+        $packagesFailed = $output.packages | Where-Object {$_.status -eq $nugetPushFailedStatus -or $_.status -eq $symbolsPushFailedStatus }
         $allOk = $packagesFailed.count -eq 0
-        if(allOk) {
+        if($allOk) {
           $output.status = 'ok'
         }
         else {

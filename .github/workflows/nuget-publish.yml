@@ -214,15 +214,23 @@ jobs:
         $nugetId = '${{ needs.workflow-args.outputs.nuget-id }}'
         $nugetUrl = "https://www.nuget.org/packages/$nugetId"
         $pushStepConclusion = '${{ steps.nuget-push.conclusion }}'
-        $nugetAlreadyExists = [System.Convert]::ToBoolean("${{ steps.nuget-push.outputs.nuget-already-exists }}")
-        if($nugetAlreadyExists) {
+        $nugetPushResult = '${{ steps.nuget-push.outputs.push-result }}' | ConvertFrom-Json
+        $package = $nugetPushResult.packages[0] # we are only using the nuget push action to push one package so I don't need to iterate the packages, I can just get the first
+
+        if($package.status -eq 'ok') {
+          Write-Output "::notice title=$nugetId NuGet::Successfully pushed $nugetId NuGet and symbols to nuget.org. You can find the package at: $nugetUrl."
+        }
+        elseif($package.status -eq 'nuget-already-exists') {
           Write-Output "::notice title=$nugetId NuGet::$nugetId NuGet was NOT published to nuget.org because the version to be pushed already exists."
         }
-        elseif($pushStepConclusion -eq 'failure') {
-          Write-Output "::error title=$nugetIdNuGet::Failed to push $nugetId NuGet and symbols."
+        elseif($package.status -eq 'nuget-push-failed') {
+          Write-Output "::error title=$nugetIdNuGet::Failed to push NuGet $nugetId."
         }
-        elseif($pushStepConclusion -eq 'success') {
-          Write-Output "::notice title=$nugetId NuGet::Successfully pushed $nugetId NuGet and symbols to nuget.org. You can find the package at: $nugetUrl."
+        elseif($package.status -eq 'symbols-push-failed') {
+          Write-Output "::error title=$nugetIdNuGet::Failed to push symbols for $nugetId."
+        }
+        else{
+          Write-Output "::error title=$nugetIdNuGet::Unexpected nuget push result status: $($package.status)."
         }
 
   output-artifacts:
