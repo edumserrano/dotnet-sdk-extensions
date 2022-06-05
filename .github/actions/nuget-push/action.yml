@@ -36,16 +36,16 @@ inputs:
 outputs:
   status:
     description: "The overall status of pushing the NuGet packages and corresponding symbols. It will be 'ok' if all packages where pushed successfully or already existed and 'error' otherwise."
-    value: ${{ steps.nuget-push.status }}
+    value: ${{ steps.main.status }}
   push-result:
     description: "The result of pushing the NuGet packages and corresponding symbols as a JSON string."
-    value: ${{ steps.nuget-push.push-result }}
+    value: ${{ steps.main.push-result }}
 
 runs:
   using: "composite"
   steps:
     - shell: pwsh
-      id: nuget-push
+      id: main
       working-directory: ${{ inputs.working-directory }}
       run: |
         $nugetServerUrl = 'https://api.nuget.org/v3/index.json'
@@ -144,6 +144,9 @@ runs:
         $outputAsJson = $output | ConvertTo-Json -compress
         Write-Output "::set-output name=push-result::$outputAsJson"
         Write-Output "::set-output name=status::$($output.status)"
+
+        Write-Output "$($output.status)"
+        Write-Output "$outputAsJson"
 
         if($allOk) {
           Write-Output "All NuGet packages uploaded successfully."
