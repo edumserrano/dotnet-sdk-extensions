@@ -80,8 +80,8 @@ runs:
             $package = $files | Where-Object {$_.Extension -eq '.nupkg' } | Select-Object -First 1
             $symbols = $files | Where-Object {$_.Extension -eq '.snupkg' } | Select-Object -First 1
             $packageOutput = @{
-                package = "$package"
-                symbols = "$symbols"
+                package = $package.PSChildName
+                symbols = $symbols.PSChildName
                 status = ''
             }
 
@@ -144,7 +144,13 @@ runs:
         $outputAsJson = $output | ConvertTo-Json -compress
         Write-Output "::set-output name=output::$outputAsJson"
         Write-Output "::set-output name=status::$($output.status)"
-        if(!$allOk) {
+
+        if($allOk) {
+          Write-Output "All NuGet packages uploaded successfully."
+          Exit 0
+        }
+        else {
+          Write-Output "Some NuGet packages weren't uploaded successfully."
           Exit 1
         }
 
