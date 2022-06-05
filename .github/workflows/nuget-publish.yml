@@ -207,7 +207,6 @@ jobs:
       uses: ./.github/actions/nuget-push
       with:
         api-key: ${{ secrets.NUGET_PUSH_API_KEY }}
-        source: https://api.nuget.org/v3/index.json
         working-directory: '${{ steps.nuget-publish-info.outputs.nuget-push-working-dir }}'
     - name: Log NuGet push info
       if: always()

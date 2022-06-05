@@ -30,16 +30,16 @@ inputs:
   api-key:
     description: 'The API key for the NuGet server.'
     required: true
-  source:
-    description: 'Specifies the NuGet server URL.'
-    required: true
   working-directory:
     description: 'The directory that will be used to push nuget packages. It will push all *.nupkg and corresponding symbol packages present in the directory.'
     required: true
 outputs:
-  nuget-already-exists:
-    description: "Indicates if any of the NuGet packages failed to be uploaded because they already existed on the server."
-    value: ${{ steps.nuget-push.outputs.nuget-already-exists }}
+  status:
+    description: "The overall status of pushing the NuGet packages and corresponding symbols. It will be 'ok' if all packages where pushed successfully or already existed and 'error' otherwise."
+    value: ${{ steps.nuget-push.status }}
+  push-result:
+    description: "The result of pushing the NuGet packages and corresponding symbols as a JSON string."
+    value: ${{ steps.nuget-push.output }}
 
 runs:
   using: "composite"
@@ -48,36 +48,100 @@ runs:
       id: nuget-push
       working-directory: ${{ inputs.working-directory }}
       run: |
-        Write-Output "Pushing the following nuget packages and symbols:"
-        ls ./*.*nupkg # show the nuget package(s) and symbol(s) that will be pushed
-
-        Write-Output "Pushing the nuget package"
-        $nugetResponse = dotnet nuget push ./*.nupkg --api-key ${{ inputs.api-key }} --source ${{ inputs.source }} --no-symbols true
-        $nugetPushExitCode = $LastExitCode
-
-        # If there is more than 1 .nupkg and corresponding .snupgk in this directory the action will not work as expected
-        # because of how the check for 'does the package already exist?' is done.
-        # The check for 'does the package already exist?' is done by checking if any part of the response of the nuget push command
-        # for *.nupkg returned a 409. So if there are for instance 2 .nupkg packages and only 1 resulted in 409 then the way this action
-        # is coded NONE of the symbol packages (*.snupkg) will be pushed. This action could be improved to either:
-        # - accept the .nupgk and .snupgk filenames and push just those
-        # - understand which .nupgk succeeded and push the corresponding symbols packages (.snupkg).
-
-        $nugetAlreadyExists = ($nugetResponse | ?{$_.Contains("Response status code does not indicate success: 409")}).Length -gt 0
-        Write-Output "::set-output name=nuget-already-exists::$nugetAlreadyExists"
-        if($nugetAlreadyExists) {
-          Write-Output "The nuget package already exists. The output from nuget push was:"
-          $nugetResponse # this will print out the output from the 'dotnet nuget push' command
-          exit 0
+        $nugetServerUrl = 'https://api.nuget.org/v3/index.json'
+        $output = @{
+          status = ''
+          packages = [System.Collections.ArrayList]::new()
         }
-        elseif($nugetPushExitCode -ne 0) {
-          Write-Output "Nuget push failed. The output from nuget push was:"
-          $nugetResponse # this will print out the output from the 'dotnet nuget push' command
-          exit $nugetPushExitCode
+
+        # group '.nupgk' and '.snupkg' by filename. This assumes each package (.nupgk) and corresponding symbols (.snupkg)
+        # have the same filename, only the extension is different.
+        $groups = Get-ChildItem -Path .\ -Filter *.*nupkg | Group-Object -Property BaseName
+
+        # output the packages and symbols that will be uploaded
+        Write-Output "::group::Pushing the following NuGet packages and symbols to $nugetServerUrl"
+        foreach($group in $groups) {
+           Write-Output "The package with filename $group.Name will have the following files uploaded:"
+           $group.Group # outputs the file names to be pushed
+        }
+        Write-Output "::endgroup::"
+
+        $nugetPushOkState = 'ok'
+        $nugetPushAlreadyExistsState = 'nuget-already-exists'
+        $nugetPushFailedState = 'nuget-push-failed'
+        $symbolsPushFailedState = 'symbols-push-failed'
+        # for each group we will try to push the NuGet package and if that is successfull we will then push the symbols package.
+        foreach($group in $groups) {
+            # each group will be a group of '.nupgk' and corresponding '.snupkg'
+            # try to upload the nuget package and if is successful then upload its symbols if they exists.
+            $files = $group.Group
+            $package = $files | Where-Object {$_.Extension -eq '.nupkg' } | Select-Object -First 1
+            $symbols = $files | Where-Object {$_.Extension -eq '.snupkg' } | Select-Object -First 1
+            $packageOutput = @{
+                package = $package
+                symbols = $symbols
+                state = ''
+            }
+
+            # upload NuGet package if exists
+            if($package -ne $null) {
+              Write-Output "::group::Pushing $package NuGet package."
+              $nugetResponse = dotnet nuget push $package --api-key ${{ inputs.api-key }} --source $nugetServerUrl --no-symbols --force-english-output
+              $nugetPushExitCode = $LastExitCode
+              $nugetAlreadyExists = ($nugetResponse | ?{$_.Contains("Response status code does not indicate success: 409")}).Length -gt 0
+
+              if($nugetAlreadyExists) {
+                $packageOutput.state = $nugetPushAlreadyExistsState
+                Write-Output "The NuGet package $package already exists. The output from nuget push was:"
+                $nugetResponse # this will print out the output from the 'dotnet nuget push' command
+              }
+              elseif($nugetPushExitCode -ne 0) {
+                $packageOutput.state = $nugetPushFailedState
+                Write-Output "::error::Failed to push NuGet package $package. See the action logs for more information."
+                Write-Output "NuGet push failed. The output from nuget push was:"
+                $nugetResponse # this will print out the output from the 'dotnet nuget push' command
+              }
+              else {
+                $packageOutput.state = $nugetPushOkState
+                Write-Output "NuGet push was successful. The output from nuget push was:"
+                $nugetResponse # this will print out the output from the 'dotnet nuget push' command
+
+                # upload symbols if exists
+                if($symbols -ne $null) {
+                  Write-Output "Pushing NuGet symbols package $symbols"
+                  dotnet nuget push $symbols --api-key ${{ inputs.api-key }} --source $nugetServerUrl
+                  $symbolsPushExitCode = $LastExitCode
+
+                  if($symbolsPushExitCode -ne 0) {
+                    $packageOutput.state = $symbolsPushFailedState
+                    Write-Output "::error::Failed to push NuGet symbols package $symbols. See the action logs for more information."
+                  }
+                }
+              }
+
+              $output.packages.Add($packageOutput)
+              Write-Output "::endgroup::"
+            }
+        }
+
+        $packagesFailed = $output.packages | Where-Object {$_.state -eq $nugetPushFailedState -or $_.state -eq $symbolsPushFailedState }
+        $allOk = packagesFailed.count -eq 0
+        if(allOk) {
+          $output.status = 'ok'
         }
         else {
-          Write-Output "Nuget push was successful. The output from nuget push was:"
-          $nugetResponse # this will print out the output from the 'dotnet nuget push' command
-          Write-Output "Pushing nuget symbols package"
-          dotnet nuget push ./*.snupkg --api-key ${{ inputs.api-key }} --source ${{ inputs.source }}
+          $output.status = 'error'
         }
+
+        Write-Output "::group::Action output"
+        $output | ConvertTo-Json
+        Write-Output "::endgroup::"
+
+        # set action output
+        $outputAsJson = $output | ConvertTo-Json -compress
+        Write-Output "::set-output name=output::$outputAsJson"
+        Write-Output "::set-output name=status::$($output.status)"
+        if(!$allOk) {
+          Exit 1
+        }
+
