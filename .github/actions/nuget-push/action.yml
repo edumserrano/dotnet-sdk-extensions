@@ -80,8 +80,8 @@ runs:
             $package = $files | Where-Object {$_.Extension -eq '.nupkg' } | Select-Object -First 1
             $symbols = $files | Where-Object {$_.Extension -eq '.snupkg' } | Select-Object -First 1
             $packageOutput = @{
-                package = $package
-                symbols = $symbols
+                package = "$package"
+                symbols = "$symbols"
                 status = ''
             }
 
