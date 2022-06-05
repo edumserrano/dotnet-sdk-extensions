@@ -44,7 +44,8 @@ outputs:
 runs:
   using: "composite"
   steps:
-    - shell: pwsh
+    - name: Push NuGet and Symbols
+      shell: pwsh
       id: main
       working-directory: ${{ inputs.working-directory }}
       run: |
@@ -156,4 +157,8 @@ runs:
           Write-Output "Some NuGet packages weren't uploaded successfully."
           Exit 1
         }
-
+    - name: Dump outputs from previous step (from action)
+      shell: pwsh
+      env:
+        STEP_OUTPUT: ${{ toJSON(steps.main.outputs) }}
+      run: $env:STEP_OUTPUT
