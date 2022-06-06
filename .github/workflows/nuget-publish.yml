@@ -63,7 +63,7 @@ jobs:
         Write-Output "run-id=$runId"
         Write-Output "::set-output name=run-id::$runId"
     - name: Download NuGet release info artifact from PR
-      uses: dawidd6/action-download-artifact@v2.19.0
+      uses: dawidd6/action-download-artifact@v2.21.0
       if: github.event_name == 'pull_request'
       with:
         workflow: nuget-release-command-handler.yml
@@ -72,7 +72,7 @@ jobs:
     - name: Download NuGet release notes artifact from PR
       id: download-release-notes
       if: github.event_name == 'pull_request'
-      uses: dawidd6/action-download-artifact@v2.19.0
+      uses: dawidd6/action-download-artifact@v2.21.0
       with:
         workflow: nuget-release-command-handler.yml
         name:  ${{ env.CUSTOM_RELEASE_NOTES_ARTIFACT_NAME }}
@@ -162,10 +162,8 @@ jobs:
       EXTENSIONS_NUGET_BIN_FOLDER : ${{ github.workspace }}/DotNet.Sdk.Extensions/bin/Release
       TESTING_EXTENSIONS_NUGET_BIN_FOLDER : ${{ github.workspace }}/DotNet.Sdk.Extensions.Testing/bin/Release
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
     - name: Download NuGet package artifact
-      uses: dawidd6/action-download-artifact@v2.19.0
+      uses: dawidd6/action-download-artifact@v2.21.0
       with:
         workflow: build-test-package.yml
         name:  nuget-packages-and-symbols
@@ -208,7 +206,7 @@ jobs:
         token: ${{ secrets.GITHUB_TOKEN }}
     - name: Publish NuGet and symbols
       id: nuget-push
-      uses: ./.github/actions/nuget-push
+      uses: edumserrano/nuget-push@v1
       with:
         api-key: ${{ secrets.NUGET_PUSH_API_KEY }}
         nuget-package: '${{ steps.nuget-publish-info.outputs.nuget-package }}'
