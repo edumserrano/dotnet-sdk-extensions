@@ -208,7 +208,7 @@ jobs:
         token: ${{ secrets.GITHUB_TOKEN }}
     - name: Publish NuGet and symbols
       id: nuget-push
-      uses: ./.github/actions/nuget-push
+      uses: edumserrano/nuget-push@v1
       with:
         api-key: ${{ secrets.NUGET_PUSH_API_KEY }}
         nuget-package: '${{ steps.nuget-publish-info.outputs.nuget-package }}'
