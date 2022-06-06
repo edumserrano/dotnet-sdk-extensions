@@ -162,8 +162,6 @@ jobs:
       EXTENSIONS_NUGET_BIN_FOLDER : ${{ github.workspace }}/DotNet.Sdk.Extensions/bin/Release
       TESTING_EXTENSIONS_NUGET_BIN_FOLDER : ${{ github.workspace }}/DotNet.Sdk.Extensions.Testing/bin/Release
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
     - name: Download NuGet package artifact
       uses: dawidd6/action-download-artifact@v2.21.0
       with:
