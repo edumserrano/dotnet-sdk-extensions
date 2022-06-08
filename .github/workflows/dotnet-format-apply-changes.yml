@@ -141,19 +141,15 @@ jobs:
           workflow: ${{ env.WORKFLOW }}
           workflowUrl: ${{ env.WORKFLOW_URL }}
           commitSha: ${{ env.WORKFLOW_HEAD_SHA }}
-    - name: Sanitize PR body
-      id: sanitize-pr-body
-      run: |
-        $body = "${{ steps.render-pr-body-template.outputs.result }}"
-        $body = $body -replace "`n","%0A" # The content must be escaped to preserve newlines. See https://github.community/t/set-output-truncates-multiline-strings/16852/3
-        Write-Output "::set-output name=pr-body::$body"
     - name: Create dotnet format PR
       id: create-pr
       env:
         GITHUB_TOKEN: ${{ secrets.DOTNET_FORMAT_GH_TOKEN }}
       run: |
         $title = "${{ steps.commit-info.outputs.branch-name }}: fix code guidelines violations"
-        $body = "${{ steps.sanitize-pr-body.outputs.pr-body }}"
+        $body = @'
+        ${{ steps.render-pr-body-template.outputs.result }}
+        '@
         $prUrl = gh pr create `
           --title $title `
           --body $body `
