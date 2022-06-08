@@ -261,7 +261,9 @@ jobs:
     - name: Debug escaping
       run: |
         $commentBody = "${{ steps.render-pr-comment-template.outputs.result }}"
-        $commentBody2 = '${{ steps.render-pr-comment-template.outputs.result }}'
+        $commentBody2 = @'
+        ${{ steps.render-pr-comment-template.outputs.result }}
+        '@
 
         Write-Output "-------------------------"
         Write-Output $commentBody
