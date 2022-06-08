@@ -258,19 +258,12 @@ jobs:
           commitSha: ${{ env.WORKFLOW_HEAD_SHA }}
           pushedCommitSha: ${{ steps.dotnet-format-commit.outputs.commit-sha }}
           pushWorkflowUrl: 'https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}'
-    # - name: Sanitize PR comment
-    #   id: sanitize-pr-comment
-    #   run: |
-    #     $commentBody = "${{ steps.render-pr-comment-template.outputs.result }}"
-    #     $commentBody = $commentBody -replace "`n","%0A" # The content must be escaped to preserve newlines. See https://github.community/t/set-output-truncates-multiline-strings/16852/3
-    #     Write-Output "::set-output name=pr-comment-body::$commentBody"
     - name: Update PR with dotnet format result
       uses: ./.github/actions/create-update-comment
       with:
         issue-number: ${{ needs.on-pull-request-check.outputs.pr-number }}
         body-includes: '<!-- on-pr-dotnet-format -->'
         comment-author: github-actions[bot]
-        # body: ${{ steps.sanitize-pr-comment.outputs.pr-comment-body }}
         body: ${{ steps.render-pr-comment-template.outputs.result }}
         edit-mode: replace
         reactions: eyes
