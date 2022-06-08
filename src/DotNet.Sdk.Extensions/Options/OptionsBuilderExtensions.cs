@@ -22,7 +22,24 @@ namespace DotNet.Sdk.Extensions.Options
         public static OptionsBuilder<T> AddOptionsValue<T>(this IServiceCollection services, IConfiguration configuration)
             where T : class, new()
         {
+
+/* Unmerged change from project 'DotNet.Sdk.Extensions(net5.0)'
+Before:
             if (services is null) {
+After:
+            if (services is null)
+            {
+*/
+
+/* Unmerged change from project 'DotNet.Sdk.Extensions(net6.0)'
+Before:
+            if (services is null) {
+After:
+            if (services is null)
+            {
+*/
+            if (services is null)
+            {
                 throw new ArgumentNullException(nameof(services));
             }
 
