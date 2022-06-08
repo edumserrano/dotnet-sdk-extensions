@@ -259,7 +259,6 @@ jobs:
           pushedCommitSha: ${{ steps.dotnet-format-commit.outputs.commit-sha }}
           pushWorkflowUrl: 'https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}'
     - name: Debug escaping
-      id: sanitize-pr-comment
       run: |
         $commentBody = "${{ steps.render-pr-comment-template.outputs.result }}"
         $commentBody2 = '${{ steps.render-pr-comment-template.outputs.result }}'
