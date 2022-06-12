@@ -2,7 +2,17 @@
   "replacementPatterns": [
     {
       "pattern": "^/",
-      "replacement": "{{BASEURL}}/"
+      "replacement": "{{BASEURL}}/",
+      "description": "Make relative markdown URLs work"
+    }
+  ],
+  "httpHeaders": [
+    {
+      "urls": ["https://docs.github.com"],
+      "headers": {
+        "Accept-Encoding": "gzip, deflate, br"
+      },
+      "description": "Avoids 403s from GitHub docs"
     }
   ]
 }
