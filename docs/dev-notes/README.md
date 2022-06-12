@@ -52,7 +52,7 @@ Following the guide from [Source Link](https://github.com/dotnet/sourcelink) the
 These values are configured on the projects that produce NuGet packages:
 
 - [DotNet.Sdk.Extensions.csproj](/src/DotNet.Sdk.Extensions/DotNet.Sdk.Extensions.csproj)
-- [DotNet.Sdk.Extensions.Testing.csproj](/src/Dotnet.Sdk.Extensions.Testing/DotNet.Sdk.Extensions.Testing.csproj)
+- [DotNet.Sdk.Extensions.Testing.csproj](/src/DotNet.Sdk.Extensions.Testing/DotNet.Sdk.Extensions.Testing.csproj)
 
 In addition, as per the documentation, both the above projects include the `Microsoft.SourceLink.GitHub` NuGet.
 
