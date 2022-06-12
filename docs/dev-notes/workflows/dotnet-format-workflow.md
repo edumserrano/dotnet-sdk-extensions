@@ -4,7 +4,7 @@
 
 [This workflow](/.github/workflows/dotnet-format.yml) runs [dotnet format](https://github.com/dotnet/format) on pushes to the main branch and creates a pull request when changes are required. The PR is created with a label `dotnet-format`. To avoid creating multiple pull requests about formatting issues, this workflow will only create a pull request if there is no open pull request with the `dotnet-format` label.
 
-The dotnet format will report violations based on the [.editorconfig](/.editorconfig) file and the analyzers included in each project. Note that in addition to the analyzers each `csproj` has, the [Directory.Build.props](/docs/dev-notes/dev-notes-main.md#projects-wide-configuration) files also add several analyzers added to the projects.
+The dotnet format will report violations based on the [.editorconfig](/.editorconfig) file and the analyzers included in each project. Note that in addition to the analyzers each `csproj` has, the [Directory.Build.props](/docs/dev-notes/README.md#projects-wide-configuration) files also add several analyzers added to the projects.
 
 ## Secrets
 

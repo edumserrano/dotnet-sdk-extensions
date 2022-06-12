@@ -11,7 +11,7 @@ There are two workflows setup on this repo:
 | [pr-dependabot-auto-merge](/.github/workflows/pr-dependabot-auto-merge.yml) | [![PR Dependabot auto merge](https://github.com/edumserrano/dotnet-sdk-extensions/actions/workflows/pr-dependabot-auto-merge.yml/badge.svg)](https://github.com/edumserrano/dotnet-sdk-extensions/actions/workflows/pr-dependabot-auto-merge.yml) |                                                Automatically merges Dependabot PRs.                                                |
 | [pr-dotnet-format-check](/.github/workflows/pr-dotnet-format-check.yml)     | [![PR dotnet format check](https://github.com/edumserrano/dotnet-sdk-extensions/actions/workflows/pr-dotnet-format-check.yml/badge.svg)](https://github.com/edumserrano/dotnet-sdk-extensions/actions/workflows/pr-dotnet-format-check.yml)       | Runs [dotnet format](https://github.com/dotnet/format) on pull requests and creates a comment on the PR when changes are required. |
 | [pr-dotnet-format-command-handler](/.github/workflows/pr-dotnet-format-command-handler.yml) | [![PR dotnet format command handler](https://github.com/edumserrano/dotnet-sdk-extensions/actions/workflows/pr-dotnet-format-command-handler.yml/badge.svg)](https://github.com/edumserrano/dotnet-sdk-extensions/actions/workflows/pr-dotnet-format-command-handler.yml)       | Handles `/dotnet-format` comments on pull requests and updates them with the results from running [dotnet format](https://github.com/dotnet/format). |
-| [pr-test-results-comment](/.github/workflows/pr-pr-test-results-comment.yml) | [![PR test results comment](https://github.com/edumserrano/dotnet-sdk-extensions/actions/workflows/pr-test-results-comment.yml/badge.svg)](https://github.com/edumserrano/dotnet-sdk-extensions/actions/workflows/pr-test-results-comment.yml)   |                                     Adds test results as comments on Pull Requests                                                 |
+| [pr-test-results-comment](/.github/workflows/pr-test-results-comment.yml) | [![PR test results comment](https://github.com/edumserrano/dotnet-sdk-extensions/actions/workflows/pr-test-results-comment.yml/badge.svg)](https://github.com/edumserrano/dotnet-sdk-extensions/actions/workflows/pr-test-results-comment.yml)   |                                     Adds test results as comments on Pull Requests                                                 |
 
 ## Workflows' documentation
 
@@ -22,14 +22,14 @@ There are two workflows setup on this repo:
 - [pr-dependabot-auto-merge](/docs/dev-notes/workflows/pr-dependabot-auto-merge-workflow.md)
 - [pr-dotnet-format-check](/docs/dev-notes/workflows/pr-dotnet-format-check-workflow.md)
 - [pr-dotnet-format-command-handler](/docs/dev-notes/workflows/pr-dotnet-format-command-handler-workflow.md)
-- [pr-test-results-comment](/docs/dev-notes/workflows/pr-pr-test-results-comment-workflow.md)
+- [pr-test-results-comment](/docs/dev-notes/workflows/pr-test-results-comment-workflow.md)
 
 ## Workflow's security
 
 All the workflows have the minimum required `GITHUB_TOKEN` permissions. Furthermore, the workflows that require priviliged context are separated from the ones that could potentially executed malicious code. The main purpose is to protect from the threat of malicious pull requests. For more information see:
 
 - [Security considerations on GitHub workflows](/docs/dev-notes/workflows/security-considerations.md)
-- [Security considerations on GitHub workflows regarding dotnet CLI](/docs/dev-notes/workflows/security-considerations-security-considerations-and-dotnet.md)
+- [Security considerations on GitHub workflows regarding dotnet CLI](/docs/dev-notes/workflows/security-considerations-and-dotnet.md)
 
 Other relevant links:
 
