@@ -129,7 +129,6 @@ jobs:
         $body = @'
         ${{ steps.render-issue-body-template.outputs.result }}
         '@
-        $prU
         $issueUrl = gh issue create `
           --title $title `
           --body $body `
