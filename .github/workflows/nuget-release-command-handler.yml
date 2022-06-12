@@ -150,19 +150,15 @@ jobs:
           nugetNewVersion: ${{ steps.slash-command-args.outputs.nuget-new-version }}
           nugetUrl: '${{ steps.slash-command-args.outputs.nuget-url }}'
           issueNumber: ${{ github.event.client_payload.issueNumber }}
-    - name: Sanitize PR body
-      id: sanitize-pr-body
-      run: |
-        $body = "${{ steps.render-pr-body-template.outputs.result }}"
-        $body = $body -replace "`n","%0A" # The content must be escaped to preserve newlines. See https://github.community/t/set-output-truncates-multiline-strings/16852/3
-        Write-Output "::set-output name=pr-body::$body"
     - name: Create NuGet release PR
       id: create-pr
       env:
         GITHUB_TOKEN: ${{ secrets.CREATE_NUGET_RELEASE_PR_GH_TOKEN }}
       run: |
         $title = "Release NuGet ${{ steps.slash-command-args.outputs.nuget-id }} ${{ steps.slash-command-args.outputs.nuget-new-version }}"
-        $body = "${{ steps.sanitize-pr-body.outputs.pr-body }}"
+        $body = @'
+        ${{ steps.render-pr-body-template.outputs.result }}
+        '@
         $prUrl = gh pr create `
           --title $title `
           --body $body `

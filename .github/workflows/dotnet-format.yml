@@ -132,5 +132,3 @@ jobs:
         else {
           Write-Output "::notice title=dotnet format::dotnet format did NOT detect code guidelines violations."
         }
-
-        Write-Output "::notice title=workflow info::Information about this workflow has been published as a workflow artifact named: dotnet-format-workflow-info."

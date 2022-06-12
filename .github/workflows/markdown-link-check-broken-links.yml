@@ -120,19 +120,15 @@ jobs:
           workflow: ${{ env.WORKFLOW }}
           workflowUrl: ${{ env.WORKFLOW_URL }}
           commitSha: ${{ env.WORKFLOW_HEAD_SHA }}
-    - name: Sanitize issue body
-      id: sanitize-issue-body
-      run: |
-        $body = "${{ steps.render-issue-body-template.outputs.result }}"
-        $body = $body -replace "`n","%0A" # The content must be escaped to preserve newlines. See https://github.community/t/set-output-truncates-multiline-strings/16852/3
-        Write-Output "::set-output name=issue-body::$body"
     - name: Create markdown issue
       id: create-issue
       env:
         GITHUB_TOKEN: ${{ secrets.MARKDOWN_LINK_CHECK_GH_TOKEN }}
       run: |
         $title = "Markdown link check found broken links"
-        $body = "${{ steps.sanitize-issue-body.outputs.issue-body }}"
+        $body = @'
+        ${{ steps.render-issue-body-template.outputs.result }}
+        '@
         $issueUrl = gh issue create `
           --title $title `
           --body $body `

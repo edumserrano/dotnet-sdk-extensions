@@ -249,19 +249,13 @@ jobs:
           nugetReleasePullRequestUrl: '${{ steps.nuget-release-flow-info.outputs.nuget-release-pull-request-url }}'
           publishNugetNodeStatus: '${{ steps.nuget-release-flow-info.outputs.publish-nuGet-node-status }}'
           publishNugetUrl: '${{ steps.nuget-release-flow-info.outputs.publish-nuGet-url }}'
-    - name: Sanitize issue comment
-      id: sanitize-issue-comment
-      run: |
-        $body = '${{ steps.render-issue-comment-template.outputs.result }}'
-        $body = $body -replace "`n","%0A" # The content must be escaped to preserve newlines. See https://github.community/t/set-output-truncates-multiline-strings/16852/3
-        Write-Output "::set-output name=body::$body"
     - name: Update issue with NuGet flow comment
       uses: ./.github/actions/create-update-comment
       with:
         issue-number: ${{ needs.release-flow-args.outputs.issue-number }}
         body-includes: '<!-- nuget-release-flow -->'
         comment-author: github-actions[bot]
-        body: ${{ steps.sanitize-issue-comment.outputs.body }}
+        body: ${{ steps.render-issue-comment-template.outputs.result }}
         edit-mode: replace
 
   close-release-issue:
@@ -301,19 +295,13 @@ jobs:
           nugetVersion: '${{ steps.github-release-info.outputs.nuget-version }}'
           nugetUrl: 'https://www.nuget.org/packages/${{ steps.github-release-info.outputs.nuget-id }}'
           gitHubReleaseUrl: '${{ steps.github-release-info.outputs.github-release-url }}'
-    - name: Sanitize issue comment
-      id: sanitize-issue-comment
-      run: |
-        $body = "${{ steps.render-issue-comment-template.outputs.result }}"
-        $body = $body -replace "`n","%0A" # The content must be escaped to preserve newlines. See https://github.community/t/set-output-truncates-multiline-strings/16852/3
-        Write-Output "::set-output name=body::$body"
     - name: Update issue with NuGet released comment
       uses: ./.github/actions/create-update-comment
       with:
         issue-number: ${{ steps.github-release-info.outputs.issue-number }}
         body-includes: '<!-- nuget-released -->'
         comment-author: github-actions[bot]
-        body: ${{ steps.sanitize-issue-comment.outputs.body }}
+        body: ${{ steps.render-issue-comment-template.outputs.result }}
         edit-mode: replace
     - name: Close NuGet release issue
       env:

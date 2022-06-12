@@ -45,10 +45,11 @@ jobs:
           Exit 1
         }
 
-        # I noticed when I edit the issue form the line endings became `\r\n`, likely because I edited on a Windows OS
-        $issueBody = $issueBody -replace "`r`n","%0A" # The content must be escaped to preserve newlines. See https://github.community/t/set-output-truncates-multiline-strings/16852/3
-        # the default line endings on the issue form would be `\n`
-        $issueBody = $issueBody -replace "`n","%0A" # The content must be escaped to preserve newlines. See https://github.community/t/set-output-truncates-multiline-strings/16852/3
+        # The sanitization step below will escape the newlines, whether they're windows newlines or unix newlines, to preserve them when sharing this data over the step's output.
+        # By default the newlines will be unix newlines but I noticed that if I edit the issue form the line endings became `\r\n`, likely because I edited on a Windows OS.
+        # For more info see: See https://github.community/t/set-output-truncates-multiline-strings/16852/3
+        $issueBody = $issueBody -replace "`r`n","%0A" # deal with windows line endings
+        $issueBody = $issueBody -replace "`n","%0A" # deal with unix line endings
         Write-Output "::set-output name=issue-number::$issueNumber"
         Write-Output "::set-output name=issue-body::$issueBody"
     - name: Dump outputs from previous step

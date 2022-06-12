@@ -2,7 +2,7 @@ The NuGet package **{{ .nugetId }}** version **{{ .nugetVersion }}** has been re
 
 - [GitHub release]({{ .gitHubReleaseUrl }}).
 - [NuGet package]({{ .nugetUrl }}).
- 
+
 Closing this issue.
 
 <!-- nuget-released -->
