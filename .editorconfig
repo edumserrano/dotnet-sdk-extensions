@@ -428,6 +428,7 @@ dotnet_diagnostic.RCS1064.severity = suggestion     # RCS1064: Avoid usage of fo
 dotnet_diagnostic.RCS1065.severity = none           # RCS1065: Avoid usage of while statement to create an infinite loop
 dotnet_diagnostic.RCS1069.severity = none           # RCS1069: Remove unnecessary case label
 dotnet_diagnostic.RCS1111.severity = none           # RCS1111: Add braces to switch section with multiple statements
+dotnet_diagnostic.RCS1124.severity = none           # RCS1124: Inline local variable
 dotnet_diagnostic.RCS1126.severity = suggestion     # RCS1126: Add braces to if-else
 dotnet_diagnostic.RCS1196.severity = suggestion     # RCS1196: Call extension method as instance method
 dotnet_diagnostic.RCS1208.severity = none           # RCS1208: Reduce 'if' nesting
