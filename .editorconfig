@@ -143,6 +143,8 @@ dotnet_diagnostic.IDE0061.severity = silent             # Use expression body fo
 # Expression-level preferences
 csharp_style_implicit_object_creation_when_type_is_apparent = false:silent
 dotnet_diagnostic.IDE0090.severity = suggestion
+# Expression-level preferences
+dotnet_diagnostic.IDE0046.severity = silent
 
 ##########################################
 # Unnecessary Code Rules
