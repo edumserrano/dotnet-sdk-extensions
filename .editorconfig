@@ -81,7 +81,7 @@ dotnet_analyzer_diagnostic.severity = warning
 #
 # The following is an opt out configuration for setting AnalysisMode to AllEnabledByDefault.
 # This is the most aggressive mode. All rules are enabled as build warnings. You can selectively opt out
-# of individual rules to disable them.#
+# of individual rules to disable them.
 # https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/overview#enable-additional-rules
 ##########################################
 [*.cs]
@@ -110,6 +110,7 @@ dotnet_diagnostic.CA2234.severity = silent      # CA2234: Pass System.Uri object
 # Parentheses preferences
 dotnet_style_parentheses_in_other_operators = never_if_unnecessary:suggestion
 # Expression-level preferences
+dotnet_diagnostic.IDE0010.severity = silent     # Add missing cases to switch statement (IDE0010)
 dotnet_style_prefer_conditional_expression_over_assignment = true:silent
 dotnet_diagnostic.IDE0045.severity = suggestion # Use conditional expression for assignment (IDE0045)
 dotnet_style_prefer_conditional_expression_over_return = true:silent
@@ -141,10 +142,9 @@ dotnet_diagnostic.IDE0053.severity = silent             # Use expression body fo
 csharp_style_expression_bodied_local_functions = true:silent
 dotnet_diagnostic.IDE0061.severity = silent             # Use expression body for local functions (IDE0061)
 # Expression-level preferences
+dotnet_diagnostic.IDE0057.severity = none                # Use range operator (IDE0057)
 csharp_style_implicit_object_creation_when_type_is_apparent = false:silent
-dotnet_diagnostic.IDE0090.severity = suggestion
-# Expression-level preferences
-dotnet_diagnostic.IDE0046.severity = silent
+dotnet_diagnostic.IDE0090.severity = suggestion          # Simplify new expression (IDE0090)
 
 ##########################################
 # Unnecessary Code Rules
@@ -505,6 +505,7 @@ dotnet_diagnostic.SA1027.severity = suggestion  # SA1027: Use tabs correctly
 dotnet_diagnostic.SA1028.severity = suggestion  # SA1028: Code should not contain trailing whitespace
 # Readability Rules (SA1100-)
 dotnet_diagnostic.SA1101.severity = none        # SA1101: Prefix local calls with this
+dotnet_diagnostic.SA1108.severity = none        # SA1108: Block statements should not contain embedded comments
 dotnet_diagnostic.SA1116.severity = none        # SA1116: The parameters should begin on the line after the declaration, whenever the parameter span across multiple lines
 # Ordering Rules (SA1200-)
 dotnet_diagnostic.SA1200.severity = none        # SA1200: Using directive should appear within a namespace declaration
