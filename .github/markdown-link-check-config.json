@@ -1,4 +1,10 @@
 {
+  "ignorePatterns": [
+    {
+      "pattern": "^https://www.linkedin.com/in/eduardomserrano/",
+      "description": "Linkedin returns 999, can't figure out how to make this work past Linkedin's 'are you a human?' check."
+    }
+  ],
   "replacementPatterns": [
     {
       "pattern": "^/",
