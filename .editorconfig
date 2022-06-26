@@ -114,7 +114,7 @@ dotnet_diagnostic.IDE0010.severity = silent     # Add missing cases to switch st
 dotnet_style_prefer_conditional_expression_over_assignment = true:silent
 dotnet_diagnostic.IDE0045.severity = suggestion # Use conditional expression for assignment (IDE0045)
 dotnet_style_prefer_conditional_expression_over_return = true:silent
-dotnet_diagnostic.IDE0046.severity = silent     # Use conditional expression for return (IDE0046)
+dotnet_diagnostic.IDE0046.severity = none       # Use conditional expression for return (IDE0046)
 # Undocumented
 dotnet_style_operator_placement_when_wrapping = beginning_of_line
 
