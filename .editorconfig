@@ -460,7 +460,7 @@ dotnet_diagnostic.RCS0034.severity = suggestion      # RCS0034: Add newline befo
 dotnet_diagnostic.RCS0039.severity = suggestion      # RCS0039: Remove newline before base list
 dotnet_diagnostic.RCS0041.severity = suggestion      # RCS0041: Remove newline between 'if' keyword and 'else' keyword
 dotnet_diagnostic.RCS0042.severity = suggestion      # RCS0042: Remove newlines from accessor list of auto-property
-dotnet_diagnostic.RCS0043.severity = suggestion      # RCS0043: Remove newlines from accessor with single-line expression
+dotnet_diagnostic.RCS0043.severity = none            # RCS0043: Format accessor's braces on a single line when expression is on single line
 dotnet_diagnostic.RCS0050.severity = suggestion      # RCS0050: Add empty line before top declaration
 dotnet_diagnostic.RCS0051.severity = suggestion      # RCS0051: Add newline between closing brace and 'while' keyword (or vice versa)
 dotnet_diagnostic.RCS0054.severity = suggestion      # RCS0054: Fix formatting of a call chain
@@ -533,8 +533,8 @@ dotnet_diagnostic.SA1511.severity = suggestion  # SA1511: While-do footer should
 dotnet_diagnostic.SA1512.severity = none        # SA1512: Single-line comments should not be followed by blank line
 dotnet_diagnostic.SA1513.severity = suggestion  # SA1513: Closing brace should be followed by blank line
 dotnet_diagnostic.SA1514.severity = suggestion  # SA1514: Element documentation header should be preceded by blank line
-dotnet_diagnostic.SA1515.severity = suggestion  # SA1515: Single-line comment should be preceded by blank line
-dotnet_diagnostic.SA1516.severity = suggestion  # SA1516: Elements should be separated by blank line
+dotnet_diagnostic.SA1515.severity = none        # SA1515: Single-line comment should be preceded by blank line
+dotnet_diagnostic.SA1516.severity = none        # SA1516: Elements should be separated by blank line
 dotnet_diagnostic.SA1517.severity = suggestion  # SA1517: Code should not contain blank lines at start of file
 dotnet_diagnostic.SA1518.severity = none        # SA1518: Use line endings correctly at end of file
 dotnet_diagnostic.SA1519.severity = suggestion  # SA1519: Braces should not be omitted from multi-line child statement
@@ -623,7 +623,6 @@ dotnet_diagnostic.RCS1243.severity = none       # RCS1243: Duplicate word in a c
 # Rules for StyleCop.Analyzers
 # See https://dotnetanalyzers.github.io/StyleCopAnalyzers/ or https://github.com/DotNetAnalyzers/StyleCopAnalyzers/tree/master/documentation
 ##########################################
-dotnet_diagnostic.SA1515.severity = none        # SA1515: Single-line comment should be preceded by blank line
 dotnet_diagnostic.CS1591.severity = none        # CS1591: Missing XML comment for publicly visible type or member
 dotnet_diagnostic.SA1611.severity = none        # SA1611: The documentation for parameter is missing
 dotnet_diagnostic.SA1615.severity = none        # SA1615: Element return value should be documented.
