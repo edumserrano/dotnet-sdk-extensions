@@ -120,7 +120,6 @@ jobs:
         run-id: '${{ github.event.workflow_run.id }}'
         job-name: 'Markdown link check'
         step-name: 'Markdown link check'
-        only-errors: 'false'
         output: 'step-md'
     - name: Render issue body template
       id: render-issue-body-template
