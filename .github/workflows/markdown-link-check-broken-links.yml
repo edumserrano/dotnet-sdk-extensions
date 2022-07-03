@@ -111,6 +111,15 @@ jobs:
       uses: actions/checkout@v3
       with:
         ref: ${{ env.WORKFLOW_HEAD_SHA }}
+    - name: Render issue body template
+      id: render-issue-body-template
+      uses: chuhlomin/render-template@v1.5
+      with:
+        template: .github/workflows/templates/markdown-link-check-broken-links/broken-links-found-issue-body.md
+        vars: |
+          workflow: ${{ env.WORKFLOW }}
+          workflowUrl: ${{ env.WORKFLOW_URL }}
+          commitSha: ${{ env.WORKFLOW_HEAD_SHA }}
     - name: Run markdown link check log parser
       id: mlc-log-parser
       uses: edumserrano/markdown-link-check-log-parser@v1
@@ -121,15 +130,6 @@ jobs:
         job-name: 'Markdown link check'
         step-name: 'Markdown link check'
         output: 'step-md'
-    - name: Render issue body template
-      id: render-issue-body-template
-      uses: chuhlomin/render-template@v1.5
-      with:
-        template: .github/workflows/templates/markdown-link-check-broken-links/broken-links-found-issue-body.md
-        vars: |
-          workflow: ${{ env.WORKFLOW }}
-          workflowUrl: ${{ env.WORKFLOW_URL }}
-          commitSha: ${{ env.WORKFLOW_HEAD_SHA }}
     - name: Create markdown issue
       id: create-issue
       env:
