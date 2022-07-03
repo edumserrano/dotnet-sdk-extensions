@@ -131,7 +131,7 @@ jobs:
           workflow: ${{ env.WORKFLOW }}
           workflowUrl: ${{ env.WORKFLOW_URL }}
           commitSha: ${{ env.WORKFLOW_HEAD_SHA }}
-          mlcResult: ${{ steps.mlc-log-parser.outputs.mlc-result }}
+          mlcResult: '${{ steps.mlc-log-parser.outputs.mlc-result }}'
     - name: Create markdown issue
       id: create-issue
       env:
