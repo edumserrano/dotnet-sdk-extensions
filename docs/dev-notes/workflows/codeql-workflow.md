@@ -15,3 +15,4 @@ Initially this workflow was configured to ignore some paths but [as per document
 
 This is a [broken link test](https://docs.github.com/en/what-is-going-on)
 This is a [broken link test2](https://docs.github.com/en/what-is-going-on2)
+This is a [broken link test3](https://docs.github.com/en/what-is-going-on3)
