@@ -12,3 +12,5 @@ This workflow produces status checks on pull requests and the repo is configured
 
 Initially this workflow was configured to ignore some paths but [as per documentation](https://docs.github.com/en/code-security/secure-coding/automatically-scanning-your-code-for-vulnerabilities-and-errors/configuring-code-scanning#avoiding-unnecessary-scans-of-pull-requests):
 >For CodeQL code scanning workflow files, don't use the paths-ignore or paths keywords with the on:push event as this is likely to cause missing analyses. For accurate results, CodeQL code scanning needs to be able to compare new changes with the analysis of the previous commit.
+
+This is a [broken link test](https://docs.github.com/en/what-is-going-on)
