@@ -1,6 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
-using Microsoft.Extensions.Hosting;
-
 namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers;
 
 internal abstract class HttpMockServer : IHttpMockServer

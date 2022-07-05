@@ -1,8 +1,3 @@
-using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers;
-using DotNet.Sdk.Extensions.Testing.HttpMocking.InProcess.ResponseMocking;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Http;
-
 namespace DotNet.Sdk.Extensions.Testing.HttpMocking.InProcess;
 
 /// <summary>

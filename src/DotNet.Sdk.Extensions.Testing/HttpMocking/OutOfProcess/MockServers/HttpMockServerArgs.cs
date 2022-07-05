@@ -1,5 +1,3 @@
-using System.Text;
-
 namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers;
 
 internal class HttpMockServerArgs

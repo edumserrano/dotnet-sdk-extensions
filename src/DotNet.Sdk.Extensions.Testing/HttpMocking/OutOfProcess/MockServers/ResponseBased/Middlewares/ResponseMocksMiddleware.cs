@@ -1,8 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
-using DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.ResponseMocking;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-
 namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers.ResponseBased.Middlewares;
 
 internal static class ResponseMocksMiddlewareExtensions

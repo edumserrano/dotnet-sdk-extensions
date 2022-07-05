@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http;
-
 namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers;
 
 /// <summary>

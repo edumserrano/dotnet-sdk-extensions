@@ -1,5 +1,3 @@
-using System.Diagnostics;
-
 namespace DotNet.Sdk.Extensions.Testing.HostedServices;
 
 /// <summary>

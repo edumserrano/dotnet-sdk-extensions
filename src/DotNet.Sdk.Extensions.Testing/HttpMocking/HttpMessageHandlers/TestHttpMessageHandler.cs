@@ -1,5 +1,3 @@
-using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.ResponseMocking;
-
 namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers;
 
 /// <summary>

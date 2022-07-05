@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Mvc.Testing;
-
 namespace DotNet.Sdk.Extensions.Testing.HostedServices;
 
 /// <summary>

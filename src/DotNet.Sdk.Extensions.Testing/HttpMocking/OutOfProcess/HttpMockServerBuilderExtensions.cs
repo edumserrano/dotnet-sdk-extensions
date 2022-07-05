@@ -1,5 +1,3 @@
-using Microsoft.Extensions.Logging;
-
 namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess;
 
 /// <summary>

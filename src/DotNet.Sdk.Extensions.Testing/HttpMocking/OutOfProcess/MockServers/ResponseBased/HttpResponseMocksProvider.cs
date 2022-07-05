@@ -1,5 +1,3 @@
-using DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.ResponseMocking;
-
 namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers.ResponseBased;
 
 internal class HttpResponseMocksProvider

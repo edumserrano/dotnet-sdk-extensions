@@ -1,7 +1,3 @@
-using DotNet.Sdk.Extensions.Testing.HttpMocking.InProcess.ResponseMocking;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.TestHost;
-
 namespace DotNet.Sdk.Extensions.Testing.HttpMocking.InProcess;
 
 /// <summary>

@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Http;
-
 namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.ResponseMocking;
 
 /// <summary>
