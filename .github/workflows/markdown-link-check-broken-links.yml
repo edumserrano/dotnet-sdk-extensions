@@ -222,11 +222,14 @@ jobs:
     - name: Add marker to MLC result
       id: pr-comment-body
       run: |
-        $comment = @'
+        $commentBody = @'
         <!-- on-pr-markdown-link-check -->
         ${{ steps.mlc-log-parser.outputs.mlc-result }}
         '@
-        Write-Output "::set-output name=pr-comment-body::$comment"
+        # The content must be escaped to preserve newlines. See https://github.community/t/set-output-truncates-multiline-strings/16852/3
+        $commentBody = $commentBody -replace "`n","%0A"
+        $commentBody = $commentBody -replace "`r","%0D"
+        Write-Output "::set-output name=pr-comment-body::$commentBody"
     - name: Update PR with dotnet format result
       uses: ./.github/actions/create-update-comment
       with:
