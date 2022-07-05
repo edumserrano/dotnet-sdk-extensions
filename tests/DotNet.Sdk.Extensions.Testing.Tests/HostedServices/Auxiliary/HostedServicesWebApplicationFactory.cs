@@ -1,9 +1,3 @@
-using DotNet.Sdk.Extensions.Testing.Configuration;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-
 namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices.Auxiliary;
 
 // For more information on why this custom WebApplicationFactory<T> is configured as below

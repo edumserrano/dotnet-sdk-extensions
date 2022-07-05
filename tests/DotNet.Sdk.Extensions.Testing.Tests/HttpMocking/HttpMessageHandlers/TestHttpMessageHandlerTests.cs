@@ -1,9 +1,3 @@
-using System.Net;
-using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers;
-using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.ResponseMocking;
-using Shouldly;
-using Xunit;
-
 namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers;
 
 [Trait("Category", XUnitCategories.HttpMockingHttpMessageHandlers)]

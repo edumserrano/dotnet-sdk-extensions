@@ -1,5 +1,3 @@
-using Microsoft.Extensions.Hosting;
-
 namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices.Auxiliary;
 
 public class MyBackgroundService : BackgroundService

@@ -1,8 +1,3 @@
-using Microsoft.Extensions.DependencyInjection;
-#if !NETCOREAPP3_1 && !NET5_0
-using Microsoft.Extensions.Hosting;
-#endif
-
 namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices.Auxiliary;
 
 internal static class ConfigureHostExtensions

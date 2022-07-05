@@ -1,13 +1,3 @@
-using DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess;
-using DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers;
-using Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Shouldly;
-using Xunit;
-
 namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess;
 
 [Trait("Category", XUnitCategories.HttpMockingOutOfProcess)]

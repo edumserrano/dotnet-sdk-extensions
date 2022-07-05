@@ -1,10 +1,3 @@
-using DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Shouldly;
-using Xunit;
-
 namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess;
 
 [Trait("Category", XUnitCategories.HttpMockingOutOfProcess)]

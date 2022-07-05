@@ -1,11 +1,3 @@
-using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.ResponseMocking;
-using DotNet.Sdk.Extensions.Testing.HttpMocking.InProcess;
-using DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess.Auxiliary.Timeout;
-using Microsoft.Extensions.DependencyInjection;
-using Polly.Timeout;
-using Shouldly;
-using Xunit;
-
 namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess;
 
 [Trait("Category", XUnitCategories.HttpMockingInProcess)]

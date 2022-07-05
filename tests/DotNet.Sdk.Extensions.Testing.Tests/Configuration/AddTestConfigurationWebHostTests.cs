@@ -1,14 +1,3 @@
-using DotNet.Sdk.Extensions.Testing.Configuration;
-using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Configuration.CommandLine;
-using Microsoft.Extensions.Configuration.EnvironmentVariables;
-using Microsoft.Extensions.Configuration.Json;
-using Microsoft.Extensions.DependencyInjection;
-using Shouldly;
-using Xunit;
-
 namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration;
 
 [Trait("Category", XUnitCategories.Configuration)]

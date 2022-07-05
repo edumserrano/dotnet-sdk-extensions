@@ -1,13 +1,3 @@
-using DotNet.Sdk.Extensions.Testing.HostedServices;
-using DotNet.Sdk.Extensions.Testing.Tests.HostedServices.Auxiliary;
-using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.AspNetCore.TestHost;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using NSubstitute;
-using Shouldly;
-using Xunit;
-
 namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices;
 
 /// <summary>

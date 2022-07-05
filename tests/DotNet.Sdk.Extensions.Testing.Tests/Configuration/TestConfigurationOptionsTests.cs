@@ -1,7 +1,3 @@
-using DotNet.Sdk.Extensions.Testing.Configuration;
-using Shouldly;
-using Xunit;
-
 namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration;
 
 [Trait("Category", XUnitCategories.Configuration)]

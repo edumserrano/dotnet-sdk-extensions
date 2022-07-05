@@ -1,8 +1,3 @@
-using DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.ResponseMocking;
-using Microsoft.AspNetCore.Http;
-using Shouldly;
-using Xunit;
-
 namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess.ResponseMocking;
 
 [Trait("Category", XUnitCategories.HttpMockingOutOfProcess)]

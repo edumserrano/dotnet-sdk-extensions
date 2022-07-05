@@ -1,14 +1,3 @@
-using System.Net;
-using DotNet.Sdk.Extensions.Testing.HttpMocking.InProcess;
-using DotNet.Sdk.Extensions.Testing.HttpMocking.InProcess.ResponseMocking;
-using DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess.Auxiliary.UseHttpMocks;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Shouldly;
-using Xunit;
-
 namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess;
 
 [Trait("Category", XUnitCategories.HttpMockingInProcess)]

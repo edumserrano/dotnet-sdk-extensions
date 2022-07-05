@@ -1,7 +1,3 @@
-using DotNet.Sdk.Extensions.Testing.HostedServices;
-using Shouldly;
-using Xunit;
-
 namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices;
 
 [Trait("Category", XUnitCategories.HostedServices)]
