@@ -219,13 +219,21 @@ jobs:
         job-name: 'Markdown link check'
         step-name: 'Markdown link check'
         output: 'step-md'
+    - name: Add marker to MLC result
+      id: pr-comment-body
+      run: |
+        $comment = @'
+        '<!-- on-pr-markdown-link-check -->'
+        ${{ steps.mlc-log-parser.outputs.mlc-result }}
+        '@
+        Write-Output "::set-output name=pr-comment-body::$comment"
     - name: Update PR with dotnet format result
       uses: ./.github/actions/create-update-comment
       with:
         issue-number: ${{ needs.workflow-info.outputs.pr-number }}
         body-includes: '<!-- on-pr-markdown-link-check -->'
         comment-author: github-actions[bot]
-        body: ${{ steps.mlc-log-parser.outputs.mlc-result }}
+        body: ${{ steps.pr-comment-body.outputs.pr-comment-body }}
         edit-mode: replace
     - name: Log info
       run: |
