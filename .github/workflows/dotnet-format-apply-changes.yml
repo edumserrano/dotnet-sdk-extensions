@@ -262,7 +262,6 @@ jobs:
         comment-author: github-actions[bot]
         body: ${{ steps.render-pr-comment-template.outputs.result }}
         edit-mode: replace
-        reactions: eyes
     - name: Log info
       run: |
         $prUrl = "https://github.com/${{ github.repository }}/pull/${{ needs.on-pull-request-check.outputs.pr-number }}"
