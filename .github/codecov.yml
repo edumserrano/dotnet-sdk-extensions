@@ -24,6 +24,4 @@ coverage:
     project:
       default:
         target: auto
-        threshold: 3%
-        branches:
-          - main
+        threshold: 2%
