@@ -27,8 +27,6 @@ jobs:
       WORKFLOW: ${{ needs.on-push-check.outputs.workflow }}
       WORKFLOW_URL: ${{ needs.on-push-check.outputs.workflow-url }}
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
     - name: Run markdown link check log parser
       id: mlc-log-parser
       uses: edumserrano/markdown-link-check-log-parser@v1
@@ -47,7 +45,7 @@ jobs:
         $mlcResult > $env:GITHUB_STEP_SUMMARY
 
   on-push-check:
-    name: Check for markdown link check open issue
+    name: Check for open issue
     if: github.event.workflow_run.event == 'push'
     environment: no-secrets-workflow
     permissions:
@@ -125,7 +123,7 @@ jobs:
         }
 
   on-push:
-    name: Process markdown link check on push
+    name: Handle MLC on push
     needs: [on-push-check]
     if: needs.on-push-check.outputs.create-issue == 'true'
     environment: markdown-link-check-broken-links-workflow
@@ -180,3 +178,48 @@ jobs:
       run: |
         $issueUrl = "${{ steps.create-issue.outputs.issue-url }}"
         Write-Output "::warning title=Markdown link check::An issue to report broken markdown links was created at $issueUrl."
+
+  on-pr:
+    name: Handle MLC on PR
+    if: github.event.workflow_run.event == 'pull_request' # && needs.on-push-check.outputs.create-issue == 'true'
+    environment: markdown-link-check-broken-links-workflow
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    # env:
+    #   WORKFLOW: ${{ needs.on-push-check.outputs.workflow }}
+    #   WORKFLOW_URL: ${{ needs.on-push-check.outputs.workflow-url }}
+    steps:
+    - name: Dump github context for debug purposes
+      env:
+        GITHUB_CONTEXT: ${{ toJSON(github) }}
+    # - name: Run markdown link check log parser
+    #   id: mlc-log-parser
+    #   uses: edumserrano/markdown-link-check-log-parser@v1
+    #   with:
+    #     auth-token:  '${{ secrets.GITHUB_TOKEN }}'
+    #     repo: '${{ github.repository }}'
+    #     run-id: '${{ github.event.workflow_run.id }}'
+    #     job-name: 'Markdown link check'
+    #     step-name: 'Markdown link check'
+    #     output: 'step-md'
+    # - name: Create markdown issue
+    #   id: create-issue
+    #   env:
+    #     GITHUB_TOKEN: ${{ secrets.MARKDOWN_LINK_CHECK_GH_TOKEN }}
+    #   run: |
+    #     $title = "Markdown link check found broken links"
+    #     $body = @'
+    #     ${{ steps.render-issue-body-template.outputs.result }}
+    #     ${{ steps.mlc-log-parser.outputs.mlc-result }}
+    #     '@
+    #     $issueUrl = gh issue create `
+    #       --title $title `
+    #       --body $body `
+    #       --label ${{ env.MLC_LABEL }} `
+    #       --label bot:robot:
+    #     Write-Output "::set-output name=issue-url::$issueUrl"
+    # - name: Log info
+    #   run: |
+    #     $issueUrl = "${{ steps.create-issue.outputs.issue-url }}"
+    #     Write-Output "::warning title=Markdown link check::An issue to report broken markdown links was created at $issueUrl."
