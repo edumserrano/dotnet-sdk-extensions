@@ -16,29 +16,50 @@ env:
   WORKFLOW_HEAD_SHA : ${{ github.event.workflow_run.head_sha }}
 
 jobs:
-  on-push-check:
-    name: Check for markdown link check open issue
-    if: github.event.workflow_run.event == 'push'
-    environment: no-secrets-workflow
+
+  summary:
+    name: Set workflow summary
+    environment: markdown-link-check-broken-links-workflow
     permissions:
       contents: read
-      issues: read
+    runs-on: ubuntu-latest
+    env:
+      WORKFLOW: ${{ needs.on-push-check.outputs.workflow }}
+      WORKFLOW_URL: ${{ needs.on-push-check.outputs.workflow-url }}
+    steps:
+    - name: Run markdown link check log parser
+      id: mlc-log-parser
+      uses: edumserrano/markdown-link-check-log-parser@v1
+      with:
+        auth-token: '${{ secrets.GITHUB_TOKEN }}'
+        repo: '${{ github.repository }}'
+        run-id: '${{ github.event.workflow_run.id }}'
+        job-name: 'Markdown link check'
+        step-name: 'Markdown link check'
+        output: 'step-md'
+    - name: Set workflow summary
+      run: |
+        $mlcResult = @'
+        ${{ steps.mlc-log-parser.outputs.mlc-result }}
+        '@
+        $mlcResult > $env:GITHUB_STEP_SUMMARY
+
+  workflow-info:
+    name: Read trigger workflow info
+    environment: markdown-link-check-broken-links-workflow
+    permissions:
+      contents: read
     runs-on: ubuntu-latest
     outputs:
       has-broken-links: ${{ steps.mlc-workflow-info.outputs.has-broken-links }}
       workflow: ${{ steps.mlc-workflow-info.outputs.workflow }}
       workflow-url: ${{ steps.mlc-workflow-info.outputs.workflow-url }}
-      can-create-issue: ${{ steps.open-issue-check.outputs.can-create-issue }}
-      create-issue: ${{ steps.needs-issue-check.outputs.create-issue }}
+      pr-number: ${{ steps.mlc-workflow-info.outputs.pr-number }}
     steps:
     - name: Dump github context for debug purposes
       env:
         GITHUB_CONTEXT: ${{ toJSON(github) }}
       run: $env:GITHUB_CONTEXT
-    - name: Checkout repository
-      uses: actions/checkout@v3
-      with:
-        ref: ${{ env.WORKFLOW_HEAD_SHA }}
     - name: Download markdown link check workflow info artifact
       uses: dawidd6/action-download-artifact@v2.21.1
       with:
@@ -57,9 +78,35 @@ jobs:
         $workflow = $workflowInfo.workflow
         $workflowUrl = $workflowInfo.workflowUrl
 
+        $isPullRequest = "${{ github.event.workflow_run.event }}" -eq "pull_request"
+        if($isPullRequest)
+        {
+          $prNumber = $workflowInfo.prNumber
+        }
+
         Write-Output "::set-output name=has-broken-links::$hasBrokenLinks"
         Write-Output "::set-output name=workflow::$workflow"
         Write-Output "::set-output name=workflow-url::$workflowUrl"
+        Write-Output "::set-output name=pr-number::$prNumber"
+        Write-Output "::set-output name=pr-branch-name::$prBranchName"
+
+  on-push-check:
+    name: Check for open issue
+    needs: [workflow-info]
+    if: github.event.workflow_run.event == 'push'
+    environment: no-secrets-workflow
+    permissions:
+      contents: read
+      issues: read
+    runs-on: ubuntu-latest
+    outputs:
+      can-create-issue: ${{ steps.open-issue-check.outputs.can-create-issue }}
+      create-issue: ${{ steps.needs-issue-check.outputs.create-issue }}
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      with:
+        ref: ${{ env.WORKFLOW_HEAD_SHA }}
     - name: Check for open markdown link check issues
       id: open-issue-check
       env:
@@ -74,13 +121,13 @@ jobs:
     - name: Check if an issue needs to be created
       id: needs-issue-check
       run: |
-        $hasBrokenLinks = [System.Convert]::ToBoolean("${{ steps.mlc-workflow-info.outputs.has-broken-links }}")
+        $hasBrokenLinks = [System.Convert]::ToBoolean("${{ needs.workflow-info.outputs.has-broken-links }}")
         $canCreateIssue = [System.Convert]::ToBoolean("${{ steps.open-issue-check.outputs.can-create-issue }}")
         $createIssue = $canCreateIssue -and $hasBrokenLinks
         Write-Output "::set-output name=create-issue::$createIssue"
     - name: Log info
       run: |
-        $hasBrokenLinks = [System.Convert]::ToBoolean("${{ steps.mlc-workflow-info.outputs.has-broken-links }}")
+        $hasBrokenLinks = [System.Convert]::ToBoolean("${{ needs.workflow-info.outputs.has-broken-links }}")
         $canCreateIssue = [System.Convert]::ToBoolean("${{ steps.open-issue-check.outputs.can-create-issue }}")
         $createIssue = [System.Convert]::ToBoolean("${{ steps.needs-issue-check.outputs.create-issue }}")
 
@@ -95,8 +142,8 @@ jobs:
         }
 
   on-push:
-    name: Process markdown link check on push
-    needs: [on-push-check]
+    name: Handle MLC on push
+    needs: [workflow-info, on-push-check]
     if: needs.on-push-check.outputs.create-issue == 'true'
     environment: markdown-link-check-broken-links-workflow
     permissions:
@@ -104,24 +151,13 @@ jobs:
       issues: write
     runs-on: ubuntu-latest
     env:
-      WORKFLOW: ${{ needs.on-push-check.outputs.workflow }}
-      WORKFLOW_URL: ${{ needs.on-push-check.outputs.workflow-url }}
+      WORKFLOW: ${{ needs.workflow-info.outputs.workflow }}
+      WORKFLOW_URL: ${{ needs.workflow-info.outputs.workflow-url }}
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
       with:
         ref: ${{ env.WORKFLOW_HEAD_SHA }}
-    - name: Run markdown link check log parser
-      id: mlc-log-parser
-      uses: edumserrano/markdown-link-check-log-parser@v1
-      with:
-        auth-token:  '${{ secrets.GITHUB_TOKEN }}'
-        repo: '${{ github.repository }}'
-        run-id: '${{ github.event.workflow_run.id }}'
-        job-name: 'Markdown link check'
-        step-name: 'Markdown link check'
-        only-errors: 'false'
-        output: 'step-md'
     - name: Render issue body template
       id: render-issue-body-template
       uses: chuhlomin/render-template@v1.5
@@ -131,7 +167,16 @@ jobs:
           workflow: ${{ env.WORKFLOW }}
           workflowUrl: ${{ env.WORKFLOW_URL }}
           commitSha: ${{ env.WORKFLOW_HEAD_SHA }}
-          mlcResult: ${{ steps.mlc-log-parser.outputs.mlc-result }}
+    - name: Run markdown link check log parser
+      id: mlc-log-parser
+      uses: edumserrano/markdown-link-check-log-parser@v1
+      with:
+        auth-token:  '${{ secrets.GITHUB_TOKEN }}'
+        repo: '${{ github.repository }}'
+        run-id: '${{ github.event.workflow_run.id }}'
+        job-name: 'Markdown link check'
+        step-name: 'Markdown link check'
+        output: 'step-md'
     - name: Create markdown issue
       id: create-issue
       env:
@@ -140,6 +185,7 @@ jobs:
         $title = "Markdown link check found broken links"
         $body = @'
         ${{ steps.render-issue-body-template.outputs.result }}
+        ${{ steps.mlc-log-parser.outputs.mlc-result }}
         '@
         $issueUrl = gh issue create `
           --title $title `
@@ -151,3 +197,48 @@ jobs:
       run: |
         $issueUrl = "${{ steps.create-issue.outputs.issue-url }}"
         Write-Output "::warning title=Markdown link check::An issue to report broken markdown links was created at $issueUrl."
+
+  on-pr:
+    name: Handle MLC on PR
+    needs: [workflow-info]
+    if: github.event.workflow_run.event == 'pull_request' && needs.workflow-info.outputs.has-broken-links == 'true'
+    environment: markdown-link-check-broken-links-workflow
+    permissions:
+      pull-requests: write
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+    - name: Run markdown link check log parser
+      id: mlc-log-parser
+      uses: edumserrano/markdown-link-check-log-parser@v1
+      with:
+        auth-token:  '${{ secrets.GITHUB_TOKEN }}'
+        repo: '${{ github.repository }}'
+        run-id: '${{ github.event.workflow_run.id }}'
+        job-name: 'Markdown link check'
+        step-name: 'Markdown link check'
+        output: 'step-md'
+    - name: Add marker to MLC result
+      id: pr-comment-body
+      run: |
+        $commentBody = @'
+        <!-- on-pr-markdown-link-check -->
+        ${{ steps.mlc-log-parser.outputs.mlc-result }}
+        '@
+        # The content must be escaped to preserve newlines. See https://github.community/t/set-output-truncates-multiline-strings/16852/3
+        $commentBody = $commentBody -replace "`n","%0A"
+        $commentBody = $commentBody -replace "`r","%0D"
+        Write-Output "::set-output name=pr-comment-body::$commentBody"
+    - name: Update PR with dotnet format result
+      uses: ./.github/actions/create-update-comment
+      with:
+        issue-number: ${{ needs.workflow-info.outputs.pr-number }}
+        body-includes: '<!-- on-pr-markdown-link-check -->'
+        comment-author: github-actions[bot]
+        body: ${{ steps.pr-comment-body.outputs.pr-comment-body }}
+        edit-mode: replace
+    - name: Log info
+      run: |
+        $prUrl = "https://github.com/${{ github.repository }}/pull/${{ needs.workflow-info.outputs.pr-number }}"
+        Write-Output "::warning title=Markdown Link Check::Markdown Link Check detected broken links and a comment was added to the PR at $prUrl."
