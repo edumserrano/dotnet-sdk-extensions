@@ -1,10 +1,3 @@
-using System.Net;
-using DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker;
-using DotNet.Sdk.Extensions.Polly.Http.Fallback.FallbackHttpResponseMessages;
-using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers;
-using DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary;
-using Polly.CircuitBreaker;
-
 namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary;
 
 /// <summary>

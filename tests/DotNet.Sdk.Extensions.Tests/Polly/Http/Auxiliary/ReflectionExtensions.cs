@@ -1,5 +1,3 @@
-using System.Reflection;
-
 namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary;
 
 public static class ReflectionExtensions

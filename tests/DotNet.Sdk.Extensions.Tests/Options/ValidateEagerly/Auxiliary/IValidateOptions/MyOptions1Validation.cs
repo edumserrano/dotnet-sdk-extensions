@@ -1,6 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-using Microsoft.Extensions.Options;
-
 namespace DotNet.Sdk.Extensions.Tests.Options.ValidateEagerly.Auxiliary.IValidateOptions;
 
 public class MyOptions1Validation : IValidateOptions<MyOptions1>

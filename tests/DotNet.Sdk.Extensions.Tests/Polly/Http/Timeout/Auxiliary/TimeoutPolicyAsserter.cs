@@ -1,9 +1,3 @@
-using DotNet.Sdk.Extensions.Polly.Http.Timeout;
-using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers;
-using DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary;
-using Polly.Timeout;
-using Shouldly;
-
 namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Auxiliary;
 
 internal static class TimeoutPolicyAsserterExtensions

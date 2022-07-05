@@ -12,24 +12,24 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.InProcess.ResponseMocking;
 /// Defines methods to configure and build an <see cref="HttpResponseMessageMock"/> when mocking HTTP responses using the
 /// <see cref="HttpMockingWebHostBuilderExtensions.UseHttpMocks(IWebHostBuilder, Action{HttpMessageHandlersReplacer})"/> method.
 /// </summary>
-public class HttpResponseMessageMockBuilder
+public class InProcessHttpResponseMessageMockBuilder
 {
-    private readonly HttpMessageHandlers.ResponseMocking.HttpResponseMessageMockBuilder _builder;
+    private readonly HttpResponseMessageMockBuilder _builder;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="HttpResponseMessageMockBuilder"/> class.
+    /// Initializes a new instance of the <see cref="InProcessHttpResponseMessageMockBuilder"/> class.
     /// </summary>
-    public HttpResponseMessageMockBuilder()
+    public InProcessHttpResponseMessageMockBuilder()
     {
-        _builder = new HttpMessageHandlers.ResponseMocking.HttpResponseMessageMockBuilder();
+        _builder = new HttpResponseMessageMockBuilder();
     }
 
     /// <summary>
     /// Define the condition for the <see cref="HttpResponseMessageMock"/> to be executed.
     /// </summary>
     /// <param name="predicate">The predicate that determines if the <see cref="HttpResponseMessageMock"/> is executed or not.</param>
-    /// <returns>The <see cref="HttpResponseMessageMockBuilder"/> for chaining.</returns>
-    public HttpResponseMessageMockBuilder Where(Func<HttpRequestMessage, bool> predicate)
+    /// <returns>The <see cref="InProcessHttpResponseMessageMockBuilder"/> for chaining.</returns>
+    public InProcessHttpResponseMessageMockBuilder Where(Func<HttpRequestMessage, bool> predicate)
     {
         _builder.Where(predicate);
         return this;
@@ -39,8 +39,8 @@ public class HttpResponseMessageMockBuilder
     /// Define the condition for the <see cref="HttpResponseMessageMock"/> to be executed.
     /// </summary>
     /// <param name="predicate">The predicate that determines if the <see cref="HttpResponseMessageMock"/> is executed or not.</param>
-    /// <returns>The <see cref="HttpResponseMessageMockBuilder"/> for chaining.</returns>
-    public HttpResponseMessageMockBuilder Where(HttpResponseMessageMockPredicateDelegate predicate)
+    /// <returns>The <see cref="InProcessHttpResponseMessageMockBuilder"/> for chaining.</returns>
+    public InProcessHttpResponseMessageMockBuilder Where(HttpResponseMessageMockPredicateDelegate predicate)
     {
         _builder.Where(predicate);
         return this;
@@ -50,8 +50,8 @@ public class HttpResponseMessageMockBuilder
     /// Configure the <see cref="HttpResponseMessage"/> produced by the mock.
     /// </summary>
     /// <param name="httpResponseMessage">The <see cref="HttpResponseMessage"/> that the mock returns when executed.</param>
-    /// <returns>The <see cref="HttpResponseMessageMockBuilder"/> for chaining.</returns>
-    public HttpResponseMessageMockBuilder RespondWith(HttpResponseMessage httpResponseMessage)
+    /// <returns>The <see cref="InProcessHttpResponseMessageMockBuilder"/> for chaining.</returns>
+    public InProcessHttpResponseMessageMockBuilder RespondWith(HttpResponseMessage httpResponseMessage)
     {
         _builder.RespondWith(httpResponseMessage);
         return this;
@@ -61,8 +61,8 @@ public class HttpResponseMessageMockBuilder
     /// Configure the <see cref="HttpResponseMessage"/> produced by the mock.
     /// </summary>
     /// <param name="handler">Function to configure the <see cref="HttpResponseMessage"/> produced by the mock.</param>
-    /// <returns>The <see cref="HttpResponseMessageMockBuilder"/> for chaining.</returns>
-    public HttpResponseMessageMockBuilder RespondWith(Func<HttpRequestMessage, HttpResponseMessage> handler)
+    /// <returns>The <see cref="InProcessHttpResponseMessageMockBuilder"/> for chaining.</returns>
+    public InProcessHttpResponseMessageMockBuilder RespondWith(Func<HttpRequestMessage, HttpResponseMessage> handler)
     {
         _builder.RespondWith(handler);
         return this;
@@ -72,8 +72,8 @@ public class HttpResponseMessageMockBuilder
     /// Configure the <see cref="HttpResponseMessage"/> produced by the mock.
     /// </summary>
     /// <param name="handler">Function to configure the <see cref="HttpResponseMessage"/> produced by the mock.</param>
-    /// <returns>The <see cref="HttpResponseMessageMockBuilder"/> for chaining.</returns>
-    public HttpResponseMessageMockBuilder RespondWith(HttpResponseMessageMockHandlerDelegate handler)
+    /// <returns>The <see cref="InProcessHttpResponseMessageMockBuilder"/> for chaining.</returns>
+    public InProcessHttpResponseMessageMockBuilder RespondWith(HttpResponseMessageMockHandlerDelegate handler)
     {
         _builder.RespondWith(handler);
         return this;
@@ -87,17 +87,13 @@ public class HttpResponseMessageMockBuilder
     /// than the <paramref name="timeout"/> value passed in.
     /// </remarks>
     /// <param name="timeout">The value for the timeout.</param>
-    /// <returns>The <see cref="HttpResponseMessageMockBuilder"/> for chaining.</returns>
-    public HttpResponseMessageMockBuilder TimesOut(TimeSpan timeout)
+    /// <returns>The <see cref="InProcessHttpResponseMessageMockBuilder"/> for chaining.</returns>
+    public InProcessHttpResponseMessageMockBuilder TimesOut(TimeSpan timeout)
     {
         _builder.TimesOut(timeout);
         return this;
     }
 
-    /// <summary>
-    /// Builds an instance of <see cref="HttpResponseMessageMock"/>.
-    /// </summary>
-    /// <returns>The <see cref="HttpResponseMessageMock"/> instance.</returns>
     internal HttpResponseMessageMock Build()
     {
         return _builder.Build();

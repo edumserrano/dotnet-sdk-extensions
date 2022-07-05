@@ -1,5 +1,3 @@
-using DotNet.Sdk.Extensions.Polly.Http.Fallback.Events;
-
 namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Fallback.Auxiliary;
 
 public class TestFallbackPolicyEventHandler : IFallbackPolicyEventHandler

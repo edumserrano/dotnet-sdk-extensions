@@ -1,11 +1,3 @@
-using DotNet.Sdk.Extensions.Polly.Http.Fallback.FallbackHttpResponseMessages;
-using DotNet.Sdk.Extensions.Polly.Policies;
-using NSubstitute;
-using Polly;
-using Polly.CircuitBreaker;
-using Shouldly;
-using Xunit;
-
 namespace DotNet.Sdk.Extensions.Tests.Polly.Policies;
 
 [Trait("Category", XUnitCategories.Polly)]

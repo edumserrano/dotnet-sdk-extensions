@@ -1,11 +1,3 @@
-using System.Net;
-using DotNet.Sdk.Extensions.Polly.Http.Fallback.FallbackHttpResponseMessages;
-using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers;
-using DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary;
-using Polly.CircuitBreaker;
-using Polly.Timeout;
-using Shouldly;
-
 namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Fallback.Auxiliary;
 
 internal static class FallbackPolicyAsserterExtensions

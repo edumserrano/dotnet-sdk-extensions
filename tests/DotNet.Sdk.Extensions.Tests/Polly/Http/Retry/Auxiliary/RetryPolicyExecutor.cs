@@ -1,8 +1,3 @@
-using System.Net;
-using DotNet.Sdk.Extensions.Polly.Http.Fallback.FallbackHttpResponseMessages;
-using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers;
-using DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary;
-
 namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Auxiliary;
 
 public class RetryPolicyExecutor

@@ -1,13 +1,3 @@
-using DotNet.Sdk.Extensions.Polly.Http.Fallback.Events;
-using DotNet.Sdk.Extensions.Polly.Http.Fallback.Extensions;
-using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers;
-using DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary;
-using DotNet.Sdk.Extensions.Tests.Polly.Http.Fallback.Auxiliary;
-using Microsoft.Extensions.DependencyInjection;
-using Polly.Wrap;
-using Shouldly;
-using Xunit;
-
 namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Fallback.Extensions;
 
 /// <summary>

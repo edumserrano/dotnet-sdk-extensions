@@ -1,11 +1,3 @@
-using DotNet.Sdk.Extensions.Polly.Http.Timeout;
-using DotNet.Sdk.Extensions.Polly.Http.Timeout.Extensions;
-using DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-using Shouldly;
-using Xunit;
-
 namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions;
 
 /// <summary>

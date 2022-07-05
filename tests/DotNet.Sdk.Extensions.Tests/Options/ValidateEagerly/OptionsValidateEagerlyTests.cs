@@ -1,8 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
-using DotNet.Sdk.Extensions.Options;
-using Shouldly;
-using Xunit;
-
 namespace DotNet.Sdk.Extensions.Tests.Options.ValidateEagerly;
 
 [Trait("Category", XUnitCategories.Options)]

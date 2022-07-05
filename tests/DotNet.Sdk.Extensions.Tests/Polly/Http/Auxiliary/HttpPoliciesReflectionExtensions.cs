@@ -1,8 +1,3 @@
-using Microsoft.Extensions.Http;
-using Polly;
-using Polly.CircuitBreaker;
-using Polly.Wrap;
-
 namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary;
 
 public static class HttpPoliciesReflectionExtensions

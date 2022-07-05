@@ -1,13 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-using DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker;
-using DotNet.Sdk.Extensions.Polly.Http.Resilience;
-using DotNet.Sdk.Extensions.Polly.Http.Resilience.Extensions;
-using DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-using Shouldly;
-using Xunit;
-
 namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions;
 
 /// <summary>

@@ -1,6 +1,3 @@
-using System.Net;
-using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers;
-
 namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary;
 
 public static class TestHttpMessageHandlerExtensions

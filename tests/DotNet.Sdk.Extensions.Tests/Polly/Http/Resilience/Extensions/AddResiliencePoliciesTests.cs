@@ -1,16 +1,3 @@
-using DotNet.Sdk.Extensions.Polly.Http.Resilience;
-using DotNet.Sdk.Extensions.Polly.Http.Resilience.Events;
-using DotNet.Sdk.Extensions.Polly.Http.Resilience.Extensions;
-using DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary;
-using DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Auxiliary;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Http;
-using Polly.Retry;
-using Polly.Timeout;
-using Polly.Wrap;
-using Shouldly;
-using Xunit;
-
 namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions;
 
 /// <summary>

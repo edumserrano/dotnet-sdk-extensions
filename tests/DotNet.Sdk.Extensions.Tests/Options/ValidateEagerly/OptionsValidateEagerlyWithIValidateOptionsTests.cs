@@ -1,14 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-using DotNet.Sdk.Extensions.Testing.Configuration;
-using DotNet.Sdk.Extensions.Tests.Options.ValidateEagerly.Auxiliary;
-using DotNet.Sdk.Extensions.Tests.Options.ValidateEagerly.Auxiliary.IValidateOptions;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration.Memory;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Shouldly;
-using Xunit;
-
 namespace DotNet.Sdk.Extensions.Tests.Options.ValidateEagerly;
 
 [Trait("Category", XUnitCategories.Options)]

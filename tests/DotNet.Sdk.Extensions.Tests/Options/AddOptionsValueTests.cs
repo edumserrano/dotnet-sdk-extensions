@@ -1,11 +1,3 @@
-using DotNet.Sdk.Extensions.Options;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Configuration.Memory;
-using Microsoft.Extensions.DependencyInjection;
-using Shouldly;
-using Xunit;
-using OptionsBuilderExtensions = DotNet.Sdk.Extensions.Options.OptionsBuilderExtensions;
-
 namespace DotNet.Sdk.Extensions.Tests.Options;
 
 [Trait("Category", XUnitCategories.Options)]

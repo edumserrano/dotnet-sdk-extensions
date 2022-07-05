@@ -1,11 +1,3 @@
-using DotNet.Sdk.Extensions.Polly.Http.Retry;
-using DotNet.Sdk.Extensions.Polly.Http.Retry.Extensions;
-using DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-using Shouldly;
-using Xunit;
-
 namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Extensions;
 
 /// <summary>

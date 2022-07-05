@@ -1,15 +1,3 @@
-using DotNet.Sdk.Extensions.Polly.Http.Resilience;
-using DotNet.Sdk.Extensions.Polly.Http.Resilience.Events;
-using DotNet.Sdk.Extensions.Polly.Http.Resilience.Extensions;
-using DotNet.Sdk.Extensions.Polly.Http.Timeout;
-using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers;
-using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.ResponseMocking;
-using DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary;
-using DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Auxiliary;
-using Microsoft.Extensions.DependencyInjection;
-using Shouldly;
-using Xunit;
-
 namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions;
 
 /// <summary>

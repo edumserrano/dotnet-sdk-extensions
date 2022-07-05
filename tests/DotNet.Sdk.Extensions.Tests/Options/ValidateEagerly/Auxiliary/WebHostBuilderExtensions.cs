@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Hosting;
-
 namespace DotNet.Sdk.Extensions.Tests.Options.ValidateEagerly.Auxiliary;
 
 internal static class WebHostBuilderExtensions

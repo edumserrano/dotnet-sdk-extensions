@@ -13,7 +13,7 @@ public class HttpResponseMessageMockDescriptorBuilder
     private Type? _httpClientType;
     private string? _httpClientName;
     private HttpClientMockTypes _httpClientMockType;
-    private readonly HttpResponseMessageMockBuilder _httpResponseMockBuilder;
+    private readonly InProcessHttpResponseMessageMockBuilder _httpResponseMessageMockBuilder;
 
     private enum HttpClientMockTypes
     {
@@ -28,7 +28,7 @@ public class HttpResponseMessageMockDescriptorBuilder
     /// </summary>
     public HttpResponseMessageMockDescriptorBuilder()
     {
-        _httpResponseMockBuilder = new HttpResponseMessageMockBuilder();
+        _httpResponseMessageMockBuilder = new InProcessHttpResponseMessageMockBuilder();
         _httpClientMockType = HttpClientMockTypes.Undefined;
     }
 
@@ -37,22 +37,22 @@ public class HttpResponseMessageMockDescriptorBuilder
     /// </summary>
     /// <typeparam name="TClient">The <see cref="Type"/> of the <see cref="HttpClient"/> produced via the <see cref="IHttpClientFactory"/>.</typeparam>
     /// <param name="name">The name of the typed <see cref="HttpClient"/>.</param>
-    /// <returns>An instance of <see cref="HttpResponseMessageMockBuilder"/> to customize the <see cref="HttpResponseMessage"/> to mock.</returns>
-    public HttpResponseMessageMockBuilder ForTypedClient<TClient>(string name = "")
+    /// <returns>An instance of <see cref="InProcessHttpResponseMessageMockBuilder"/> to customize the <see cref="HttpResponseMessage"/> to mock.</returns>
+    public InProcessHttpResponseMessageMockBuilder ForTypedClient<TClient>(string name = "")
     {
         EnsureHttpClientMockTypeIsDefinedOnlyOnce();
         _httpClientType = typeof(TClient);
         _httpClientName = name;
         _httpClientMockType = HttpClientMockTypes.Typed;
-        return _httpResponseMockBuilder;
+        return _httpResponseMessageMockBuilder;
     }
 
     /// <summary>
     /// Indicates that the <see cref="HttpResponseMessage"/> will be mocked for a named instance of HttpClient.
     /// </summary>
     /// <param name="name">The name the <see cref="IHttpClientFactory"/> uses to create the HttpClient instance.</param>
-    /// <returns>An instance of <see cref="HttpResponseMessageMockBuilder"/> to customize the <see cref="HttpResponseMessage"/> to mock.</returns>
-    public HttpResponseMessageMockBuilder ForNamedClient(string name)
+    /// <returns>An instance of <see cref="InProcessHttpResponseMessageMockBuilder"/> to customize the <see cref="HttpResponseMessage"/> to mock.</returns>
+    public InProcessHttpResponseMessageMockBuilder ForNamedClient(string name)
     {
         if (string.IsNullOrWhiteSpace(name))
         {
@@ -62,18 +62,18 @@ public class HttpResponseMessageMockDescriptorBuilder
         EnsureHttpClientMockTypeIsDefinedOnlyOnce();
         _httpClientName = name;
         _httpClientMockType = HttpClientMockTypes.Named;
-        return _httpResponseMockBuilder;
+        return _httpResponseMessageMockBuilder;
     }
 
     /// <summary>
     /// Indicates that the <see cref="HttpResponseMessage"/> will be mocked for a basic instance of HttpClient.
     /// </summary>
-    /// <returns>An instance of <see cref="HttpResponseMessageMockBuilder"/> to customize the <see cref="HttpResponseMessage"/> to mock.</returns>
-    public HttpResponseMessageMockBuilder ForBasicClient()
+    /// <returns>An instance of <see cref="InProcessHttpResponseMessageMockBuilder"/> to customize the <see cref="HttpResponseMessage"/> to mock.</returns>
+    public InProcessHttpResponseMessageMockBuilder ForBasicClient()
     {
         EnsureHttpClientMockTypeIsDefinedOnlyOnce();
         _httpClientMockType = HttpClientMockTypes.Basic;
-        return _httpResponseMockBuilder;
+        return _httpResponseMessageMockBuilder;
     }
 
     internal HttpResponseMessageMockDescriptor Build()
@@ -81,9 +81,9 @@ public class HttpResponseMessageMockDescriptorBuilder
         return _httpClientMockType switch
         {
             HttpClientMockTypes.Undefined => throw new InvalidOperationException($"Client type not configured for {nameof(HttpResponseMock)}. Use {nameof(HttpResponseMessageMockDescriptorBuilder)}.{nameof(ForTypedClient)}, {nameof(HttpResponseMessageMockDescriptorBuilder)}.{nameof(ForNamedClient)} or {nameof(HttpResponseMessageMockDescriptorBuilder)}.{nameof(ForBasicClient)} to configure it."),
-            HttpClientMockTypes.Typed => HttpResponseMessageMockDescriptor.Typed(_httpClientType!, _httpClientName!, _httpResponseMockBuilder),
-            HttpClientMockTypes.Named => HttpResponseMessageMockDescriptor.Named(_httpClientName!, _httpResponseMockBuilder),
-            HttpClientMockTypes.Basic => HttpResponseMessageMockDescriptor.Basic(_httpResponseMockBuilder),
+            HttpClientMockTypes.Typed => HttpResponseMessageMockDescriptor.Typed(_httpClientType!, _httpClientName!, _httpResponseMessageMockBuilder),
+            HttpClientMockTypes.Named => HttpResponseMessageMockDescriptor.Named(_httpClientName!, _httpResponseMessageMockBuilder),
+            HttpClientMockTypes.Basic => HttpResponseMessageMockDescriptor.Basic(_httpResponseMessageMockBuilder),
             _ => throw new InvalidOperationException($"Unexpected value for {typeof(HttpClientMockTypes)}: {_httpClientMockType}")
         };
     }

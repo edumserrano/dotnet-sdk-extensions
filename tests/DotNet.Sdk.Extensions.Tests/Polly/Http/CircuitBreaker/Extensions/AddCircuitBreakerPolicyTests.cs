@@ -1,18 +1,3 @@
-using System.Net;
-using DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker;
-using DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker.Events;
-using DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker.Extensions;
-using DotNet.Sdk.Extensions.Polly.Http.Fallback.FallbackHttpResponseMessages;
-using DotNet.Sdk.Extensions.Polly.Policies;
-using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers;
-using DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary;
-using DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary;
-using Microsoft.Extensions.DependencyInjection;
-using Polly.CircuitBreaker;
-using Polly.Wrap;
-using Shouldly;
-using Xunit;
-
 namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Extensions;
 
 /// <summary>

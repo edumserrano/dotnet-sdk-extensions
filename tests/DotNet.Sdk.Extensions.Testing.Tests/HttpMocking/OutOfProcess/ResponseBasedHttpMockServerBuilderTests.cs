@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http;
+
 namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess;
 
 [Trait("Category", XUnitCategories.HttpMockingOutOfProcess)]

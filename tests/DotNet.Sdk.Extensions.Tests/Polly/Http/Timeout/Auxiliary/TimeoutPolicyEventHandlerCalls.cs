@@ -1,5 +1,3 @@
-using DotNet.Sdk.Extensions.Polly.Http.Timeout.Events;
-
 namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Auxiliary;
 
 public class TimeoutPolicyEventHandlerCalls

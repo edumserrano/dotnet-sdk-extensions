@@ -1,9 +1,3 @@
-using DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary;
-using Microsoft.Extensions.Http;
-using Polly.Retry;
-using Polly.Timeout;
-using Polly.Wrap;
-
 namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Auxiliary;
 
 internal class ResiliencePolicies

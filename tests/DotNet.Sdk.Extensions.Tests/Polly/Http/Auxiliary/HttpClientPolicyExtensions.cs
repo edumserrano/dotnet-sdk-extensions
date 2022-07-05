@@ -1,11 +1,3 @@
-using DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker;
-using DotNet.Sdk.Extensions.Polly.Http.Timeout;
-using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers;
-using DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary;
-using DotNet.Sdk.Extensions.Tests.Polly.Http.Fallback.Auxiliary;
-using DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Auxiliary;
-using DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Auxiliary;
-
 namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary;
 
 public static class HttpClientPolicyExtensions

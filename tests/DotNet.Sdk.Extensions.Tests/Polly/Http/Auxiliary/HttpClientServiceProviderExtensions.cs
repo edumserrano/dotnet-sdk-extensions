@@ -1,5 +1,3 @@
-using Microsoft.Extensions.DependencyInjection;
-
 namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary;
 
 public static class HttpClientServiceProviderExtensions
