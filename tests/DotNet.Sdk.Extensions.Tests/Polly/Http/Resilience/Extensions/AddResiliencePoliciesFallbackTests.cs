@@ -118,7 +118,7 @@ public class AddResiliencePoliciesFallbackTests
         var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
         var resiliencePoliciesAsserter = httpClient.ResiliencePoliciesAsserter(resilienceOptions, testHttpMessageHandler);
         await resiliencePoliciesAsserter.Fallback.HttpClientShouldContainFallbackPolicyAsync();
-        Fallback.Auxiliary.FallbackPolicyAsserter.EventHandlerShouldReceiveExpectedEvents(
+        FallbackPolicyAsserter.EventHandlerShouldReceiveExpectedEvents(
             onHttpRequestExceptionCount: 1,
             onTimeoutCallsCount: 1,
             onBrokenCircuitCallsCount: 1,
@@ -168,7 +168,7 @@ public class AddResiliencePoliciesFallbackTests
         var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
         var resiliencePoliciesAsserter = httpClient.ResiliencePoliciesAsserter(resilienceOptions, testHttpMessageHandler);
         await resiliencePoliciesAsserter.Fallback.HttpClientShouldContainFallbackPolicyAsync();
-        Fallback.Auxiliary.FallbackPolicyAsserter.EventHandlerShouldReceiveExpectedEvents(
+        FallbackPolicyAsserter.EventHandlerShouldReceiveExpectedEvents(
             onHttpRequestExceptionCount: 1,
             onTimeoutCallsCount: 1,
             onBrokenCircuitCallsCount: 1,
@@ -220,7 +220,7 @@ public class AddResiliencePoliciesFallbackTests
         var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
         var resiliencePoliciesAsserter = httpClient.ResiliencePoliciesAsserter(resilienceOptions, testHttpMessageHandler);
         await resiliencePoliciesAsserter.Fallback.HttpClientShouldContainFallbackPolicyAsync();
-        Fallback.Auxiliary.FallbackPolicyAsserter.EventHandlerShouldReceiveExpectedEvents(
+        FallbackPolicyAsserter.EventHandlerShouldReceiveExpectedEvents(
             onHttpRequestExceptionCount: 1,
             onTimeoutCallsCount: 1,
             onBrokenCircuitCallsCount: 1,
@@ -269,7 +269,7 @@ public class AddResiliencePoliciesFallbackTests
         var httpClient = serviceProvider.InstantiateNamedHttpClient(httpClientName);
         var resiliencePoliciesAsserter = httpClient.ResiliencePoliciesAsserter(resilienceOptions, testHttpMessageHandler);
         await resiliencePoliciesAsserter.Fallback.HttpClientShouldContainFallbackPolicyAsync();
-        Fallback.Auxiliary.FallbackPolicyAsserter.EventHandlerShouldReceiveExpectedEvents(
+        FallbackPolicyAsserter.EventHandlerShouldReceiveExpectedEvents(
             onHttpRequestExceptionCount: 1,
             onTimeoutCallsCount: 1,
             onBrokenCircuitCallsCount: 1,
