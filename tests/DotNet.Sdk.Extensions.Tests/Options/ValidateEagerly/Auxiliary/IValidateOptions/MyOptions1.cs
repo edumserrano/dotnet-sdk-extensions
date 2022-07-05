@@ -1,10 +1,9 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace DotNet.Sdk.Extensions.Tests.Options.ValidateEagerly.Auxiliary.IValidateOptions
+namespace DotNet.Sdk.Extensions.Tests.Options.ValidateEagerly.Auxiliary.IValidateOptions;
+
+public class MyOptions1
 {
-    public class MyOptions1
-    {
-        [Required]
-        public string SomeOption { get; set; } = default!;
-    }
+    [Required]
+    public string SomeOption { get; set; } = default!;
 }

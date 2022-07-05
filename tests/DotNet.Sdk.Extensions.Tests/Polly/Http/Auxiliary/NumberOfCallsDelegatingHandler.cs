@@ -1,22 +1,17 @@
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
+namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary;
 
-namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary
+internal class NumberOfCallsDelegatingHandler : DelegatingHandler
 {
-    internal class NumberOfCallsDelegatingHandler : DelegatingHandler
+    public int NumberOfHttpRequests { get; private set; }
+
+    protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {
-        public int NumberOfHttpRequests { get; private set; }
+        NumberOfHttpRequests++;
+        return base.SendAsync(request, cancellationToken);
+    }
 
-        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
-        {
-            NumberOfHttpRequests++;
-            return base.SendAsync(request, cancellationToken);
-        }
-
-        public void Reset()
-        {
-            NumberOfHttpRequests = 0;
-        }
+    public void Reset()
+    {
+        NumberOfHttpRequests = 0;
     }
 }

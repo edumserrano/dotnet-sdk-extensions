@@ -1,21 +1,19 @@
-using System.Threading.Tasks;
 using DotNet.Sdk.Extensions.Polly.Http.Timeout.Events;
 
-namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Auxiliary
+namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Auxiliary;
+
+public class TestTimeoutPolicyEventHandler : ITimeoutPolicyEventHandler
 {
-    public class TestTimeoutPolicyEventHandler : ITimeoutPolicyEventHandler
+    private readonly TimeoutPolicyEventHandlerCalls _timeoutPolicyEventHandlerCalls;
+
+    public TestTimeoutPolicyEventHandler(TimeoutPolicyEventHandlerCalls timeoutPolicyEventHandlerCalls)
     {
-        private readonly TimeoutPolicyEventHandlerCalls _timeoutPolicyEventHandlerCalls;
+        _timeoutPolicyEventHandlerCalls = timeoutPolicyEventHandlerCalls;
+    }
 
-        public TestTimeoutPolicyEventHandler(TimeoutPolicyEventHandlerCalls timeoutPolicyEventHandlerCalls)
-        {
-            _timeoutPolicyEventHandlerCalls = timeoutPolicyEventHandlerCalls;
-        }
-
-        public Task OnTimeoutAsync(TimeoutEvent timeoutEvent)
-        {
-            _timeoutPolicyEventHandlerCalls.AddOnTimeout(timeoutEvent);
-            return Task.CompletedTask;
-        }
+    public Task OnTimeoutAsync(TimeoutEvent timeoutEvent)
+    {
+        _timeoutPolicyEventHandlerCalls.AddOnTimeout(timeoutEvent);
+        return Task.CompletedTask;
     }
 }
