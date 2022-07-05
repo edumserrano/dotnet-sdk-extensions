@@ -223,7 +223,7 @@ jobs:
       id: pr-comment-body
       run: |
         $comment = @'
-        '<!-- on-pr-markdown-link-check -->'
+        <!-- on-pr-markdown-link-check -->
         ${{ steps.mlc-log-parser.outputs.mlc-result }}
         '@
         Write-Output "::set-output name=pr-comment-body::$comment"
