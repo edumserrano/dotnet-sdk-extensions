@@ -16,6 +16,36 @@ env:
   WORKFLOW_HEAD_SHA : ${{ github.event.workflow_run.head_sha }}
 
 jobs:
+
+  always:
+    name: Set workflow summary
+    environment: markdown-link-check-broken-links-workflow
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    env:
+      WORKFLOW: ${{ needs.on-push-check.outputs.workflow }}
+      WORKFLOW_URL: ${{ needs.on-push-check.outputs.workflow-url }}
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+    - name: Run markdown link check log parser
+      id: mlc-log-parser
+      uses: edumserrano/markdown-link-check-log-parser@v1
+      with:
+        auth-token: '${{ secrets.GITHUB_TOKEN }}'
+        repo: '${{ github.repository }}'
+        run-id: '${{ github.event.workflow_run.id }}'
+        job-name: 'Markdown link check'
+        step-name: 'Markdown link check'
+        output: 'step-md'
+    - name: Set workflow summary
+      run: |
+        $mlcResult = @'
+        ${{ steps.mlc-log-parser.outputs.mlc-result }}
+        '@
+        $mlcResult > $env:GITHUB_STEP_SUMMARY
+
   on-push-check:
     name: Check for markdown link check open issue
     if: github.event.workflow_run.event == 'push'
@@ -150,7 +180,3 @@ jobs:
       run: |
         $issueUrl = "${{ steps.create-issue.outputs.issue-url }}"
         Write-Output "::warning title=Markdown link check::An issue to report broken markdown links was created at $issueUrl."
-        $mlcResult = @'
-        ${{ steps.mlc-log-parser.outputs.mlc-result }}
-        '@
-        $mlcResult > $env:GITHUB_STEP_SUMMARY
