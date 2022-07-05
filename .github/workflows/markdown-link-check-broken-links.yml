@@ -150,6 +150,7 @@ jobs:
       run: |
         $issueUrl = "${{ steps.create-issue.outputs.issue-url }}"
         Write-Output "::warning title=Markdown link check::An issue to report broken markdown links was created at $issueUrl."
-        $env:GITHUB_STEP_SUMMARY = @'
+        $mlcResult = @'
         ${{ steps.mlc-log-parser.outputs.mlc-result }}
         '@
+        $mlcResult > $env:GITHUB_STEP_SUMMARY
