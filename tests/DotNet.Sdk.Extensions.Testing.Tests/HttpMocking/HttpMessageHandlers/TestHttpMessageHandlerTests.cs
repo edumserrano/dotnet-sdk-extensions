@@ -33,8 +33,8 @@ public class TestHttpMessageHandlerTests
     public async Task NoMockDefined()
     {
         var handler = new TestHttpMessageHandler();
-        var request = new HttpRequestMessage(HttpMethod.Get, "https://test.com");
-        var httpClient = new HttpClient(handler);
+        using var request = new HttpRequestMessage(HttpMethod.Get, "https://test.com");
+        using var httpClient = new HttpClient(handler);
         var exception = await Should.ThrowAsync<InvalidOperationException>(httpClient.SendAsync(request));
         exception.Message.ShouldBe("No response mock defined for GET to https://test.com/.");
     }
@@ -55,8 +55,8 @@ public class TestHttpMessageHandlerTests
                 .RespondWith(httpMockResponseMessage);
         });
 
-        var request = new HttpRequestMessage(HttpMethod.Get, "https://test.com");
-        var httpClient = new HttpClient(handler);
+        using var request = new HttpRequestMessage(HttpMethod.Get, "https://test.com");
+        using var httpClient = new HttpClient(handler);
         var exception = await Should.ThrowAsync<InvalidOperationException>(httpClient.SendAsync(request));
         exception.Message.ShouldBe("No response mock defined for GET to https://test.com/.");
     }
@@ -77,8 +77,8 @@ public class TestHttpMessageHandlerTests
         var handler = new TestHttpMessageHandler();
         handler.MockHttpResponse(httpResponseMessageMock);
 
-        var request = new HttpRequestMessage(HttpMethod.Get, "https://test.com");
-        var httpClient = new HttpClient(handler);
+        using var request = new HttpRequestMessage(HttpMethod.Get, "https://test.com");
+        using var httpClient = new HttpClient(handler);
         var httpResponseMessage = await httpClient.SendAsync(request);
         httpResponseMessage.StatusCode.ShouldBe(HttpStatusCode.Created);
     }
@@ -95,8 +95,8 @@ public class TestHttpMessageHandlerTests
         var handler = new TestHttpMessageHandler();
         handler.MockHttpResponse(builder => builder.RespondWith(new HttpResponseMessage(HttpStatusCode.Created)));
 
-        var request = new HttpRequestMessage(HttpMethod.Get, "https://test.com");
-        var httpClient = new HttpClient(handler);
+        using var request = new HttpRequestMessage(HttpMethod.Get, "https://test.com");
+        using var httpClient = new HttpClient(handler);
         var httpResponseMessage = await httpClient.SendAsync(request);
         httpResponseMessage.StatusCode.ShouldBe(HttpStatusCode.Created);
     }
@@ -122,8 +122,8 @@ public class TestHttpMessageHandlerTests
                     .Where(httpRequestMessage => httpRequestMessage.RequestUri!.Host.Equals("test.com", StringComparison.Ordinal))
                     .RespondWith(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             });
-        var request = new HttpRequestMessage(HttpMethod.Get, "https://test.com");
-        var httpClient = new HttpClient(handler);
+        using var request = new HttpRequestMessage(HttpMethod.Get, "https://test.com");
+        using var httpClient = new HttpClient(handler);
         var httpResponseMessage = await httpClient.SendAsync(request);
         httpResponseMessage.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
     }
@@ -149,12 +149,12 @@ public class TestHttpMessageHandlerTests
                     .RespondWith(new HttpResponseMessage(HttpStatusCode.InternalServerError));
             });
 
-        var httpClient = new HttpClient(handler);
-        var request1 = new HttpRequestMessage(HttpMethod.Get, "https://google.com");
+        using var httpClient = new HttpClient(handler);
+        using var request1 = new HttpRequestMessage(HttpMethod.Get, "https://google.com");
         var httpResponseMessage1 = await httpClient.SendAsync(request1);
         httpResponseMessage1.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
 
-        var request2 = new HttpRequestMessage(HttpMethod.Get, "https://microsoft.com");
+        using var request2 = new HttpRequestMessage(HttpMethod.Get, "https://microsoft.com");
         var httpResponseMessage2 = await httpClient.SendAsync(request2);
         httpResponseMessage2.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
     }
@@ -167,11 +167,11 @@ public class TestHttpMessageHandlerTests
     {
         var handler = new TestHttpMessageHandler();
         handler.MockHttpResponse(builder => builder.TimesOut(TimeSpan.FromSeconds(2)));
-        var httpClient = new HttpClient(handler)
+        using var httpClient = new HttpClient(handler)
         {
             Timeout = TimeSpan.FromMilliseconds(250),
         };
-        var request = new HttpRequestMessage(HttpMethod.Get, "https://google.com");
+        using var request = new HttpRequestMessage(HttpMethod.Get, "https://google.com");
 
         // for some reason the exception returned by Should.ThrowAsync is missing the InnerException so
         // we are using the try/catch code as a workaround
