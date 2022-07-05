@@ -14,3 +14,4 @@ Initially this workflow was configured to ignore some paths but [as per document
 >For CodeQL code scanning workflow files, don't use the paths-ignore or paths keywords with the on:push event as this is likely to cause missing analyses. For accurate results, CodeQL code scanning needs to be able to compare new changes with the analysis of the previous commit.
 
 This is a [broken link test](https://docs.github.com/en/what-is-going-on)
+This is a [broken link test2](https://docs.github.com/en/what-is-going-on2)
