@@ -207,6 +207,8 @@ jobs:
       pull-requests: write
     runs-on: ubuntu-latest
     steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
     - name: Run markdown link check log parser
       id: mlc-log-parser
       uses: edumserrano/markdown-link-check-log-parser@v1
