@@ -1,5 +1,3 @@
-using Polly;
-
 namespace DotNet.Sdk.Extensions.Polly.Http.Retry.Events;
 
 /// <summary>

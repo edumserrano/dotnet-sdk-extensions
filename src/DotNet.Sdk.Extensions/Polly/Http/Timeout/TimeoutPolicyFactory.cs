@@ -1,7 +1,3 @@
-using DotNet.Sdk.Extensions.Polly.Http.Timeout.Events;
-using Polly;
-using Polly.Timeout;
-
 namespace DotNet.Sdk.Extensions.Polly.Http.Timeout;
 
 internal static class TimeoutPolicyFactory

@@ -1,5 +1,3 @@
-using System.Net;
-
 namespace DotNet.Sdk.Extensions.Polly.Http.Fallback.FallbackHttpResponseMessages;
 
 /// <summary>

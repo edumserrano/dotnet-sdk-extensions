@@ -1,6 +1,3 @@
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-
 namespace DotNet.Sdk.Extensions.Polly.Http.Timeout.Extensions;
 
 /// <summary>

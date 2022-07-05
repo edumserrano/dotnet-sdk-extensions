@@ -1,6 +1,3 @@
-using System.Net;
-using Polly.CircuitBreaker;
-
 namespace DotNet.Sdk.Extensions.Polly.Http.Fallback.FallbackHttpResponseMessages;
 
 /// <summary>

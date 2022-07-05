@@ -1,13 +1,3 @@
-using DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker;
-using DotNet.Sdk.Extensions.Polly.Http.Fallback;
-using DotNet.Sdk.Extensions.Polly.Http.Resilience.Events;
-using DotNet.Sdk.Extensions.Polly.Http.Retry;
-using DotNet.Sdk.Extensions.Polly.Http.Timeout;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Http;
-using Microsoft.Extensions.Options;
-
 namespace DotNet.Sdk.Extensions.Polly.Http.Resilience.Extensions;
 
 /// <summary>

@@ -1,11 +1,3 @@
-using System.Net;
-using DotNet.Sdk.Extensions.Polly.Http.Fallback.FallbackHttpResponseMessages;
-using DotNet.Sdk.Extensions.Polly.Http.Retry.Events;
-using Polly;
-using Polly.Contrib.WaitAndRetry;
-using Polly.Retry;
-using Polly.Timeout;
-
 namespace DotNet.Sdk.Extensions.Polly.Http.Retry;
 
 internal static class RetryPolicyFactory

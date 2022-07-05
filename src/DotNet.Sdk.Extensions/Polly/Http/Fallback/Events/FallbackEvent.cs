@@ -1,5 +1,3 @@
-using Polly;
-
 namespace DotNet.Sdk.Extensions.Polly.Http.Fallback.Events;
 
 /// <summary>

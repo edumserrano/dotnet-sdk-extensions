@@ -1,8 +1,3 @@
-using DotNet.Sdk.Extensions.Polly.Http.Retry.Events;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Http;
-
 namespace DotNet.Sdk.Extensions.Polly.Http.Retry.Extensions;
 
 /// <summary>

@@ -1,7 +1,3 @@
-using DotNet.Sdk.Extensions.Polly.Http.Fallback.FallbackHttpResponseMessages;
-using Polly;
-using Polly.CircuitBreaker;
-
 namespace DotNet.Sdk.Extensions.Polly.Policies;
 
 /// <summary>

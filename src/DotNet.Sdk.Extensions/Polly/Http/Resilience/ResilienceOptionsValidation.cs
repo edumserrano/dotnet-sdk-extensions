@@ -1,7 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
-using Microsoft.Extensions.Options;
-
 namespace DotNet.Sdk.Extensions.Polly.Http.Resilience;
 
 [SuppressMessage("Performance", "CA1812:Avoid uninstantiated internal classes", Justification = "Ignore for IValidateOptions implementations. Used as generic type param.")]

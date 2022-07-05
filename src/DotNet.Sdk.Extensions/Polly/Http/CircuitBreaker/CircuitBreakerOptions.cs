@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker;
 
 /// <summary>

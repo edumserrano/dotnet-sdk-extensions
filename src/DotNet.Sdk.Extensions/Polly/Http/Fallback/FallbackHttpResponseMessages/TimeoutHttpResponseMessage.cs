@@ -1,6 +1,3 @@
-using System.Net;
-using Polly.Timeout;
-
 namespace DotNet.Sdk.Extensions.Polly.Http.Fallback.FallbackHttpResponseMessages;
 
 /// <summary>

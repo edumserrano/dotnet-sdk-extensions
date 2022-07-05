@@ -1,6 +1,3 @@
-using Polly;
-using Polly.CircuitBreaker;
-
 namespace DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker.Events;
 
 /// <summary>

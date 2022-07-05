@@ -1,10 +1,3 @@
-using DotNet.Sdk.Extensions.Polly.Http.Fallback.Events;
-using DotNet.Sdk.Extensions.Polly.Http.Fallback.FallbackHttpResponseMessages;
-using Polly;
-using Polly.CircuitBreaker;
-using Polly.Timeout;
-using Polly.Wrap;
-
 namespace DotNet.Sdk.Extensions.Polly.Http.Fallback;
 
 internal static class FallbackPolicyFactory
