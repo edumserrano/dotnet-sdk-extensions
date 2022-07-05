@@ -193,6 +193,7 @@ jobs:
     - name: Dump github context for debug purposes
       env:
         GITHUB_CONTEXT: ${{ toJSON(github) }}
+      run: $env:GITHUB_CONTEXT
     # - name: Run markdown link check log parser
     #   id: mlc-log-parser
     #   uses: edumserrano/markdown-link-check-log-parser@v1
