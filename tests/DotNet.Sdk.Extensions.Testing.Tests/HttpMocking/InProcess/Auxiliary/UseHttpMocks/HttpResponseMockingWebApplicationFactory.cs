@@ -1,33 +1,26 @@
-using DotNet.Sdk.Extensions.Testing.Configuration;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess.Auxiliary.UseHttpMocks;
 
-namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess.Auxiliary.UseHttpMocks
+// For more information on why this custom WebApplicationFactory<T> is configured as below
+// please see the doc at /docs/integration-tests/web-application-factory.md
+public class HttpResponseMockingWebApplicationFactory : WebApplicationFactory<StartupHttpResponseMocking>
 {
-    // For more information on why this custom WebApplicationFactory<T> is configured as below
-    // please see the doc at /docs/integration-tests/web-application-factory.md
-    public class HttpResponseMockingWebApplicationFactory : WebApplicationFactory<StartupHttpResponseMocking>
+    protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
-        protected override void ConfigureWebHost(IWebHostBuilder builder)
-        {
-            builder
-                .UseContentRoot(".")
-                .UseStartup<StartupHttpResponseMocking>();
-        }
+        builder
+            .UseContentRoot(".")
+            .UseStartup<StartupHttpResponseMocking>();
+    }
 
-        protected override IHostBuilder CreateHostBuilder()
-        {
-            /*
-             * ConfigureWebHostDefaults is required to make sure all default web related services are
-             * registered in the container
-             */
-            return Host.CreateDefaultBuilder()
-                .UseDefaultLogLevel(LogLevel.Critical)
-                .ConfigureWebHostDefaults(_ =>
-                {
-                });
-        }
+    protected override IHostBuilder CreateHostBuilder()
+    {
+        /*
+         * ConfigureWebHostDefaults is required to make sure all default web related services are
+         * registered in the container
+         */
+        return Host.CreateDefaultBuilder()
+            .UseDefaultLogLevel(LogLevel.Critical)
+            .ConfigureWebHostDefaults(_ =>
+            {
+            });
     }
 }

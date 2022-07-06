@@ -1,59 +1,55 @@
-using System;
-using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.ResponseMocking;
+namespace DotNet.Sdk.Extensions.Testing.HttpMocking.InProcess.ResponseMocking;
 
-namespace DotNet.Sdk.Extensions.Testing.HttpMocking.InProcess.ResponseMocking
+internal sealed class HttpResponseMessageMockDescriptor
 {
-    internal sealed class HttpResponseMessageMockDescriptor
+    private HttpResponseMessageMockDescriptor(
+        HttpResponseMessageMockTypes httpResponseMockType,
+        string httpClientName,
+        InProcessHttpResponseMessageMockBuilder httpResponseMessageMockBuilder)
     {
-        private HttpResponseMessageMockDescriptor(
-            HttpResponseMessageMockTypes httpResponseMockType,
-            string httpClientName,
-            HttpResponseMessageMockBuilder httpResponseMockBuilder)
+        if (httpResponseMessageMockBuilder is null)
         {
-            if (httpResponseMockBuilder is null)
-            {
-                throw new ArgumentNullException(nameof(httpResponseMockBuilder));
-            }
-
-            HttpResponseMockType = httpResponseMockType;
-            HttpClientName = httpClientName;
-            HttpResponseMock = httpResponseMockBuilder.Build();
+            throw new ArgumentNullException(nameof(httpResponseMessageMockBuilder));
         }
 
-        public HttpResponseMessageMockTypes HttpResponseMockType { get; }
+        HttpResponseMockType = httpResponseMockType;
+        HttpClientName = httpClientName;
+        HttpResponseMock = httpResponseMessageMockBuilder.Build();
+    }
 
-        public string HttpClientName { get; }
+    public HttpResponseMessageMockTypes HttpResponseMockType { get; }
 
-        public HttpResponseMessageMock HttpResponseMock { get; }
+    public string HttpClientName { get; }
 
-        public static HttpResponseMessageMockDescriptor Typed(
-            Type httpClientType,
-            string name,
-            HttpResponseMessageMockBuilder httpResponseMockBuilder)
-        {
-            var httpClientName = string.IsNullOrWhiteSpace(name) ? httpClientType.Name : name;
-            return new HttpResponseMessageMockDescriptor(
-                HttpResponseMessageMockTypes.TypedClient,
-                httpClientName,
-                httpResponseMockBuilder);
-        }
+    public HttpResponseMessageMock HttpResponseMock { get; }
 
-        public static HttpResponseMessageMockDescriptor Named(
-            string httpClientName,
-            HttpResponseMessageMockBuilder httpResponseMockBuilder)
-        {
-            return new HttpResponseMessageMockDescriptor(
-                HttpResponseMessageMockTypes.NamedClient,
-                httpClientName,
-                httpResponseMockBuilder);
-        }
+    public static HttpResponseMessageMockDescriptor Typed(
+        Type httpClientType,
+        string name,
+        InProcessHttpResponseMessageMockBuilder httpResponseMessageMockBuilder)
+    {
+        var httpClientName = string.IsNullOrWhiteSpace(name) ? httpClientType.Name : name;
+        return new HttpResponseMessageMockDescriptor(
+            HttpResponseMessageMockTypes.TypedClient,
+            httpClientName,
+            httpResponseMessageMockBuilder);
+    }
 
-        public static HttpResponseMessageMockDescriptor Basic(HttpResponseMessageMockBuilder httpResponseMockBuilder)
-        {
-            return new HttpResponseMessageMockDescriptor(
-                HttpResponseMessageMockTypes.Basic,
-                string.Empty,
-                httpResponseMockBuilder);
-        }
+    public static HttpResponseMessageMockDescriptor Named(
+        string httpClientName,
+        InProcessHttpResponseMessageMockBuilder httpResponseMessageMockBuilder)
+    {
+        return new HttpResponseMessageMockDescriptor(
+            HttpResponseMessageMockTypes.NamedClient,
+            httpClientName,
+            httpResponseMessageMockBuilder);
+    }
+
+    public static HttpResponseMessageMockDescriptor Basic(InProcessHttpResponseMessageMockBuilder httpResponseMessageMockBuilder)
+    {
+        return new HttpResponseMessageMockDescriptor(
+            HttpResponseMessageMockTypes.Basic,
+            string.Empty,
+            httpResponseMessageMockBuilder);
     }
 }

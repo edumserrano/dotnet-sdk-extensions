@@ -1,18 +1,14 @@
-using System;
-using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers;
+namespace DotNet.Sdk.Extensions.Testing.HttpMocking.InProcess.ResponseMocking;
 
-namespace DotNet.Sdk.Extensions.Testing.HttpMocking.InProcess.ResponseMocking
+internal class TestHttpMessageHandlerDescriptor
 {
-    internal class TestHttpMessageHandlerDescriptor
+    public TestHttpMessageHandlerDescriptor(string httpClientName, TestHttpMessageHandler httpMessageHandler)
     {
-        public TestHttpMessageHandlerDescriptor(string httpClientName, TestHttpMessageHandler httpMessageHandler)
-        {
-            HttpClientName = httpClientName;
-            HttpMessageHandler = httpMessageHandler ?? throw new ArgumentNullException(nameof(httpMessageHandler));
-        }
-
-        public string HttpClientName { get; }
-
-        public TestHttpMessageHandler HttpMessageHandler { get; }
+        HttpClientName = httpClientName;
+        HttpMessageHandler = httpMessageHandler ?? throw new ArgumentNullException(nameof(httpMessageHandler));
     }
+
+    public string HttpClientName { get; }
+
+    public TestHttpMessageHandler HttpMessageHandler { get; }
 }

@@ -81,7 +81,7 @@ dotnet_analyzer_diagnostic.severity = warning
 #
 # The following is an opt out configuration for setting AnalysisMode to AllEnabledByDefault.
 # This is the most aggressive mode. All rules are enabled as build warnings. You can selectively opt out
-# of individual rules to disable them.#
+# of individual rules to disable them.
 # https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/overview#enable-additional-rules
 ##########################################
 [*.cs]
@@ -110,10 +110,11 @@ dotnet_diagnostic.CA2234.severity = silent      # CA2234: Pass System.Uri object
 # Parentheses preferences
 dotnet_style_parentheses_in_other_operators = never_if_unnecessary:suggestion
 # Expression-level preferences
+dotnet_diagnostic.IDE0010.severity = silent     # Add missing cases to switch statement (IDE0010)
 dotnet_style_prefer_conditional_expression_over_assignment = true:silent
 dotnet_diagnostic.IDE0045.severity = suggestion # Use conditional expression for assignment (IDE0045)
 dotnet_style_prefer_conditional_expression_over_return = true:silent
-dotnet_diagnostic.IDE0046.severity = silent     # Use conditional expression for return (IDE0046)
+dotnet_diagnostic.IDE0046.severity = none       # Use conditional expression for return (IDE0046)
 # Undocumented
 dotnet_style_operator_placement_when_wrapping = beginning_of_line
 
@@ -141,8 +142,9 @@ dotnet_diagnostic.IDE0053.severity = silent             # Use expression body fo
 csharp_style_expression_bodied_local_functions = true:silent
 dotnet_diagnostic.IDE0061.severity = silent             # Use expression body for local functions (IDE0061)
 # Expression-level preferences
+dotnet_diagnostic.IDE0057.severity = none                # Use range operator (IDE0057)
 csharp_style_implicit_object_creation_when_type_is_apparent = false:silent
-dotnet_diagnostic.IDE0090.severity = suggestion
+dotnet_diagnostic.IDE0090.severity = suggestion          # Simplify new expression (IDE0090)
 
 ##########################################
 # Unnecessary Code Rules
@@ -177,6 +179,7 @@ csharp_new_line_before_finally = true
 csharp_new_line_before_members_in_object_initializers = true
 csharp_new_line_before_members_in_anonymous_types = true
 csharp_new_line_between_query_expression_clauses = true
+csharp_style_namespace_declarations = file_scoped
 # Indentation options
 # https://docs.microsoft.com/visualstudio/ide/editorconfig-formatting-conventions#indentation-options
 csharp_indent_case_contents = true
@@ -395,18 +398,13 @@ dotnet_diagnostic.VSTHRD111.severity = none         # VSTHRD111 Use .ConfigureAw
 # See https://github.com/JosefPihrt/Roslynator/blob/master/src/Analyzers/README.md
 ##########################################
 [*.cs]
-# Design
 dotnet_diagnostic.RCS1090.severity = none   # RCS1090: Add call to 'ConfigureAwait' (or vice versa)
 dotnet_diagnostic.RCS1194.severity = none   # RCS1194: Implement exception constructors
 dotnet_diagnostic.RCS1224.severity = none   # RCS1224: Make method an extension method
-# General
 dotnet_diagnostic.RCS1181.severity = none   # RCS1181: Convert comment to documentation comment
-# Maintainability
 dotnet_diagnostic.RCS1140.severity = none   # RCS1140: Add exception to documentation comment
-# Readability
 dotnet_diagnostic.RCS1161.severity = none   # RCS1161: Enum should declare explicit values
 dotnet_diagnostic.RCS1238.severity = none   # RCS1238: Avoid nested ?: operators
-# Redundancy
 dotnet_diagnostic.RCS1031.severity = suggestion     # RCS1031: Remove unnecessary braces
 dotnet_diagnostic.RCS1032.severity = suggestion     # RCS1032: Remove redundant parentheses
 dotnet_diagnostic.RCS1035.severity = none           # RCS1035: Remove redundant comma in initializer
@@ -414,10 +412,8 @@ dotnet_diagnostic.RCS1036.severity = suggestion     # RCS1036: Remove redundant 
 dotnet_diagnostic.RCS1037.severity = suggestion     # RCS1037: Remove trailing white-space
 dotnet_diagnostic.RCS1039.severity = suggestion     # RCS1039: Remove argument list from attribute
 dotnet_diagnostic.RCS1070.severity = none           # RCS1070: Remove redundant default switch section	Redundancy	Hidden
-# Simplification
 dotnet_diagnostic.RCS1021.severity = none   # RCS1021: Convert lambda expression body to expression-body
 dotnet_diagnostic.RCS1201.severity = none   # RCS1201: Use method chaining
-# Style
 dotnet_diagnostic.RCS1001.severity = suggestion     # RCS1001: Add braces (when expression spans over multiple lines)
 dotnet_diagnostic.RCS1002.severity = none           # RCS1002: Remove braces
 dotnet_diagnostic.RCS1003.severity = suggestion     # RCS1003: Add braces to if-else (when expression spans over multiple lines)
@@ -430,12 +426,13 @@ dotnet_diagnostic.RCS1051.severity = none           # RCS1051: Parenthesize cond
 dotnet_diagnostic.RCS1063.severity = suggestion     # RCS1063: Avoid usage of do statement to create an infinite loop
 dotnet_diagnostic.RCS1064.severity = suggestion     # RCS1064: Avoid usage of for statement to create an infinite loop
 dotnet_diagnostic.RCS1065.severity = none           # RCS1065: Avoid usage of while statement to create an infinite loop
+dotnet_diagnostic.RCS1069.severity = none           # RCS1069: Remove unnecessary case label
 dotnet_diagnostic.RCS1111.severity = none           # RCS1111: Add braces to switch section with multiple statements
+dotnet_diagnostic.RCS1124.severity = none           # RCS1124: Inline local variable
 dotnet_diagnostic.RCS1126.severity = suggestion     # RCS1126: Add braces to if-else
 dotnet_diagnostic.RCS1196.severity = suggestion     # RCS1196: Call extension method as instance method
 dotnet_diagnostic.RCS1208.severity = none           # RCS1208: Reduce 'if' nesting
 dotnet_diagnostic.RCS1248.severity = suggestion     # RCS1248: Use pattern matching to check for null (or vice versa)
-# Usage
 dotnet_diagnostic.RCS1221.severity = none           # RCS1221: Use pattern matching instead of combination of 'as' operator and null check
 
 ##########################################
@@ -463,7 +460,7 @@ dotnet_diagnostic.RCS0034.severity = suggestion      # RCS0034: Add newline befo
 dotnet_diagnostic.RCS0039.severity = suggestion      # RCS0039: Remove newline before base list
 dotnet_diagnostic.RCS0041.severity = suggestion      # RCS0041: Remove newline between 'if' keyword and 'else' keyword
 dotnet_diagnostic.RCS0042.severity = suggestion      # RCS0042: Remove newlines from accessor list of auto-property
-dotnet_diagnostic.RCS0043.severity = suggestion      # RCS0043: Remove newlines from accessor with single-line expression
+dotnet_diagnostic.RCS0043.severity = none            # RCS0043: Format accessor's braces on a single line when expression is on single line
 dotnet_diagnostic.RCS0050.severity = suggestion      # RCS0050: Add empty line before top declaration
 dotnet_diagnostic.RCS0051.severity = suggestion      # RCS0051: Add newline between closing brace and 'while' keyword (or vice versa)
 dotnet_diagnostic.RCS0054.severity = suggestion      # RCS0054: Fix formatting of a call chain
@@ -508,6 +505,7 @@ dotnet_diagnostic.SA1027.severity = suggestion  # SA1027: Use tabs correctly
 dotnet_diagnostic.SA1028.severity = suggestion  # SA1028: Code should not contain trailing whitespace
 # Readability Rules (SA1100-)
 dotnet_diagnostic.SA1101.severity = none        # SA1101: Prefix local calls with this
+dotnet_diagnostic.SA1108.severity = none        # SA1108: Block statements should not contain embedded comments
 dotnet_diagnostic.SA1116.severity = none        # SA1116: The parameters should begin on the line after the declaration, whenever the parameter span across multiple lines
 # Ordering Rules (SA1200-)
 dotnet_diagnostic.SA1200.severity = none        # SA1200: Using directive should appear within a namespace declaration
@@ -535,8 +533,8 @@ dotnet_diagnostic.SA1511.severity = suggestion  # SA1511: While-do footer should
 dotnet_diagnostic.SA1512.severity = none        # SA1512: Single-line comments should not be followed by blank line
 dotnet_diagnostic.SA1513.severity = suggestion  # SA1513: Closing brace should be followed by blank line
 dotnet_diagnostic.SA1514.severity = suggestion  # SA1514: Element documentation header should be preceded by blank line
-dotnet_diagnostic.SA1515.severity = suggestion  # SA1515: Single-line comment should be preceded by blank line
-dotnet_diagnostic.SA1516.severity = suggestion  # SA1516: Elements should be separated by blank line
+dotnet_diagnostic.SA1515.severity = none        # SA1515: Single-line comment should be preceded by blank line
+dotnet_diagnostic.SA1516.severity = none        # SA1516: Elements should be separated by blank line
 dotnet_diagnostic.SA1517.severity = suggestion  # SA1517: Code should not contain blank lines at start of file
 dotnet_diagnostic.SA1518.severity = none        # SA1518: Use line endings correctly at end of file
 dotnet_diagnostic.SA1519.severity = suggestion  # SA1519: Braces should not be omitted from multi-line child statement
@@ -602,12 +600,6 @@ dotnet_diagnostic.SA1651.severity = suggestion      # SA1651: Do not use placeho
 dotnet_diagnostic.CA2000.severity = silent          # CA2000: Dispose objects before losing scope (in tests you might not need to care about disposing or in some tests it might be impractical.)
 
 ##########################################
-# Rules for AsyncFixer
-# See https://github.com/semihokur/AsyncFixer
-##########################################
-dotnet_diagnostic.AsyncFixer01.severity = silent    # AsyncFixer01: Await is the last statement of the method so you can return Task and await in the caller method. (some asserts are async in nature and they must be awaited.)
-
-##########################################
 # Rules for Microsoft.VisualStudio.Threading.Analyzers
 # See https://github.com/microsoft/vs-threading/blob/main/doc/analyzers/index.md
 ##########################################
@@ -631,7 +623,6 @@ dotnet_diagnostic.RCS1243.severity = none       # RCS1243: Duplicate word in a c
 # Rules for StyleCop.Analyzers
 # See https://dotnetanalyzers.github.io/StyleCopAnalyzers/ or https://github.com/DotNetAnalyzers/StyleCopAnalyzers/tree/master/documentation
 ##########################################
-dotnet_diagnostic.SA1515.severity = none        # SA1515: Single-line comment should be preceded by blank line
 dotnet_diagnostic.CS1591.severity = none        # CS1591: Missing XML comment for publicly visible type or member
 dotnet_diagnostic.SA1611.severity = none        # SA1611: The documentation for parameter is missing
 dotnet_diagnostic.SA1615.severity = none        # SA1615: Element return value should be documented.

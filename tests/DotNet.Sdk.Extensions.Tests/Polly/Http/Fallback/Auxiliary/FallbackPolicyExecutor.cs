@@ -1,32 +1,25 @@
-using System;
-using System.Net.Http;
-using System.Threading.Tasks;
-using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers;
-using DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary;
+namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Fallback.Auxiliary;
 
-namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Fallback.Auxiliary
+public class FallbackPolicyExecutor
 {
-    public class FallbackPolicyExecutor
+    private readonly HttpClient _httpClient;
+    private readonly TestHttpMessageHandler _testHttpMessageHandler;
+
+    public FallbackPolicyExecutor(HttpClient httpClient, TestHttpMessageHandler testHttpMessageHandler)
     {
-        private readonly HttpClient _httpClient;
-        private readonly TestHttpMessageHandler _testHttpMessageHandler;
+        _httpClient = httpClient;
+        _testHttpMessageHandler = testHttpMessageHandler;
+    }
 
-        public FallbackPolicyExecutor(HttpClient httpClient, TestHttpMessageHandler testHttpMessageHandler)
+    public Task<HttpResponseMessage> TriggerFromExceptionAsync(Exception exception)
+    {
+        if (exception is null)
         {
-            _httpClient = httpClient;
-            _testHttpMessageHandler = testHttpMessageHandler;
+            throw new ArgumentNullException(nameof(exception));
         }
 
-        public Task<HttpResponseMessage> TriggerFromExceptionAsync(Exception exception)
-        {
-            if (exception is null)
-            {
-                throw new ArgumentNullException(nameof(exception));
-            }
-
-            var requestPath = $"/fallback/exception/{exception.GetHashCode()}";
-            _testHttpMessageHandler.HandleException(requestPath, exception);
-            return _httpClient.GetAsync(requestPath);
-        }
+        var requestPath = $"/fallback/exception/{exception.GetHashCode()}";
+        _testHttpMessageHandler.HandleException(requestPath, exception);
+        return _httpClient.GetAsync(requestPath);
     }
 }

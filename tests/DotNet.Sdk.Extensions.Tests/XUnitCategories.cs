@@ -1,8 +1,7 @@
-namespace DotNet.Sdk.Extensions.Tests
+namespace DotNet.Sdk.Extensions.Tests;
+
+public static class XUnitCategories
 {
-    public static class XUnitCategories
-    {
-        public const string Options = "Options";
-        public const string Polly = "Polly";
-    }
+    public const string Options = "Options";
+    public const string Polly = "Polly";
 }

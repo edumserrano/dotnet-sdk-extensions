@@ -1,8 +1,7 @@
-namespace DotNet.Sdk.Extensions.Testing.HostedServices
+namespace DotNet.Sdk.Extensions.Testing.HostedServices;
+
+internal enum RunUntilResult
 {
-    internal enum RunUntilResult
-    {
-        TimedOut,
-        PredicateReturnedTrue,
-    }
+    TimedOut,
+    PredicateReturnedTrue,
 }
