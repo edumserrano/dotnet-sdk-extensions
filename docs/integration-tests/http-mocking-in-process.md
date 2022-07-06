@@ -125,7 +125,7 @@ httpResponseMock
 
 ## Mock responses conditionally
 
-You can mock responses conditially by using the `HttpResponseMessageMockBuilder.Where` method.
+You can mock responses conditially by using the `InProcessHttpResponseMessageMockBuilder.Where` method.
 
 Imagine that you have a typed client which implemented 3 different API calls but you only wanted to mock the response for one of them. You can do:
 
@@ -145,7 +145,7 @@ httpResponseMock
 
 The above will mock http responses to the `IMyApiClient` typed `HttpClient` when the request path is `/Users`.
 
-By default, if `HttpResponseMessageMockBuilder.Where` method is not used, it will always apply the mock.
+By default, if `InProcessHttpResponseMessageMockBuilder.Where` method is not used, it will always apply the mock.
 
 If multiple http response mocks implement the same condition then only the response from the first mock is returned.
 
