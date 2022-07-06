@@ -16,12 +16,16 @@
 #
 # For more info read https://docs.codecov.com/docs/comparing-commits#pseudo-comparison.
 #
+codecov:
+  allow_coverage_offsets: True
+
 coverage:
   status:
-    # pull-requests only
-    patch:
+    project: # main
+      default:
+        threshold: 0.5% # allow code coverage to go down by 0.5%
+    patch: # pull-requests
       default:
         threshold: 0.5% # allow code coverage to go down by 0.5% in comparison with main branch.
 
-codecov:
-  allow_coverage_offsets: True
+
