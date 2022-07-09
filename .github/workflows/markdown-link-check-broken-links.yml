@@ -88,7 +88,6 @@ jobs:
         Write-Output "::set-output name=workflow::$workflow"
         Write-Output "::set-output name=workflow-url::$workflowUrl"
         Write-Output "::set-output name=pr-number::$prNumber"
-        Write-Output "::set-output name=pr-branch-name::$prBranchName"
 
   on-push-check:
     name: Check for open issue

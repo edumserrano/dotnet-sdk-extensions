@@ -1,5 +1,18 @@
 # Dev notes
 
+- [Building](#building)
+  - [Building with Visual Studio](#building-with-visual-studio)
+  - [Building with dotnet CLI](#building-with-dotnet-cli)
+- [Running tests](#running-tests)
+  - [Run tests with Visual Studio](#run-tests-with-visual-studio)
+  - [Run tests with dotnet CLI](#run-tests-with-dotnet-cli)
+- [Projects wide configuration](#projects-wide-configuration)
+- [Deterministic Build configuration](#deterministic-build-configuration)
+- [Source Link configuration](#source-link-configuration)
+- [Repository configuration](#repository-configuration)
+- [GitHub Workflows](#github-workflows)
+- [Other notes](#other-notes)
+
 ## Building
 
 ### Building with Visual Studio
