@@ -128,7 +128,7 @@ jobs:
           $githubReleaseSha = $workflowRun.head_sha
         }
 
-        if($nugetId -ne 'dotnet-sdk-extensions' && $nugetId -ne 'dotnet-sdk-extensions-testing') {
+        if($nugetId -ne 'dotnet-sdk-extensions' -and $nugetId -ne 'dotnet-sdk-extensions-testing') {
           Write-Output "::error::Invalid NuGet ID: $nugetId. Valid options are: dotnet-sdk-extensions or dotnet-sdk-extensions-testing"
           Exit 1
         }
