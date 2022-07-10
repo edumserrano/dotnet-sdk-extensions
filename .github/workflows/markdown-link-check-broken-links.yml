@@ -153,6 +153,10 @@ jobs:
       WORKFLOW: ${{ needs.workflow-info.outputs.workflow }}
       WORKFLOW_URL: ${{ needs.workflow-info.outputs.workflow-url }}
     steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      with:
+        ref: ${{ env.WORKFLOW_HEAD_SHA }}
     - name: Render issue body template
       id: render-issue-body-template
       uses: chuhlomin/render-template@v1.5
