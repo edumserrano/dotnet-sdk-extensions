@@ -33,10 +33,6 @@ jobs:
       env:
         GITHUB_CONTEXT: ${{ toJSON(github) }}
       run: $env:GITHUB_CONTEXT
-    - name: Checkout repository
-      uses: actions/checkout@v3
-      with:
-        ref: ${{ github.event.workflow_run.head_sha }}
     - name: Download artifact
       uses: dawidd6/action-download-artifact@v2.21.1
       with:
@@ -54,7 +50,7 @@ jobs:
         $commentBody = $commentBody -replace "`r","%0D"
         Write-Output "::set-output name=pr-comment-body::$commentBody"
     - name: Update PR with test results
-      uses: ./.github/actions/create-update-comment
+      uses: edumserrano/find-create-or-update-comment@v1
       with:
         issue-number: ${{ github.event.workflow_run.pull_requests[0].number }}
         body-includes: '<!-- on-pr-test-results-${{ matrix.os }} -->'

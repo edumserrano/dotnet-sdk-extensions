@@ -67,8 +67,6 @@ jobs:
       issues: write
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
     - name: Find NuGet release flow comment
       uses: peter-evans/find-comment@v2
       id: find-nuget-release-flow-comment
@@ -250,7 +248,7 @@ jobs:
           publishNugetNodeStatus: '${{ steps.nuget-release-flow-info.outputs.publish-nuGet-node-status }}'
           publishNugetUrl: '${{ steps.nuget-release-flow-info.outputs.publish-nuGet-url }}'
     - name: Update issue with NuGet flow comment
-      uses: ./.github/actions/create-update-comment
+      uses: edumserrano/find-create-or-update-comment@v1
       with:
         issue-number: ${{ needs.release-flow-args.outputs.issue-number }}
         body-includes: '<!-- nuget-release-flow -->'
@@ -268,8 +266,6 @@ jobs:
       issues: write
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
     - name: Download GitHub release info artifact
       uses: dawidd6/action-download-artifact@v2.21.1
       with:
@@ -296,7 +292,7 @@ jobs:
           nugetUrl: 'https://www.nuget.org/packages/${{ steps.github-release-info.outputs.nuget-id }}'
           gitHubReleaseUrl: '${{ steps.github-release-info.outputs.github-release-url }}'
     - name: Update issue with NuGet released comment
-      uses: ./.github/actions/create-update-comment
+      uses: edumserrano/find-create-or-update-comment@v1
       with:
         issue-number: ${{ steps.github-release-info.outputs.issue-number }}
         body-includes: '<!-- nuget-released -->'
