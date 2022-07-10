@@ -69,6 +69,8 @@ jobs:
       nuget-id: ${{ steps.setup-client-payload.outputs.nuget-id }}
       nuget-version: ${{ steps.setup-client-payload.outputs.nuget-version }}
     steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
     - uses: edumserrano/github-issue-forms-parser@v1
       id: issue-parser
       with:
