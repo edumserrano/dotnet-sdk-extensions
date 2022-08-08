@@ -7,6 +7,13 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices;
 [Trait("Category", XUnitCategories.HostedServices)]
 public class RunUntilTimeoutTests : IClassFixture<HostedServicesWebApplicationFactory>
 {
+    private readonly DotNet.Sdk.Extensions.Testing.Tests.HostedServices.Auxiliary.HostedServicesWebApplicationFactory _hostedServicesWebApplicationFactory;
+
+    RunUntilTimeoutTests(DotNet.Sdk.Extensions.Testing.Tests.HostedServices.Auxiliary.HostedServicesWebApplicationFactory hostedServicesWebApplicationFactory)
+    {
+        _hostedServicesWebApplicationFactory = hostedServicesWebApplicationFactory;
+    }
+
     /// <summary>
     /// Validates the arguments for the <seealso cref="RunUntilExtensions.RunUntilTimeoutAsync{T}(WebApplicationFactory{T},TimeSpan)"/>
     /// extension method.
