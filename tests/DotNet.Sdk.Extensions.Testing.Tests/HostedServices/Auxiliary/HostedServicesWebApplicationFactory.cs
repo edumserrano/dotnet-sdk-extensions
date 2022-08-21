@@ -17,7 +17,7 @@ public class HostedServicesWebApplicationFactory : WebApplicationFactory<Startup
             .UseDefaultLogLevel(LogLevel.Critical)
             .ConfigureServices(services =>
             {
-                services.DisableHostStoppingLogs();
+                services.IgnoreBackgroundServiceExceptions();
             })
             .ConfigureWebHostDefaults(_ =>
             {

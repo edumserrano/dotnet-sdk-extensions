@@ -23,7 +23,7 @@ internal static class ConfigureHostExtensions
     /// </para>
     /// </remarks>
     /// <param name="services">The <see cref="IServiceCollection"/> to configure.</param>
-    public static IServiceCollection DisableHostStoppingLogs(this IServiceCollection services)
+    public static IServiceCollection IgnoreBackgroundServiceExceptions(this IServiceCollection services)
     {
 #if NETCOREAPP3_1 || NET5_0
         // do nothing
