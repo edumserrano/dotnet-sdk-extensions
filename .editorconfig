@@ -90,6 +90,7 @@ dotnet_diagnostic.CA1014.severity = none        # CA1014: Mark assemblies with C
 dotnet_diagnostic.CA1030.severity = silent      # CA1030: Use events where appropriate
 dotnet_diagnostic.CA1032.severity = none        # CA1032: Implement standard exception constructors
 # Globalization rules https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/globalization-warnings
+dotnet_diagnostic.CA1303.severity = none        # CA1303: Do not pass literals as localized parameters
 dotnet_diagnostic.CA1308.severity = none        # CA1308: Normalize strings to uppercase
 # Maintainability rules https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/maintainability-warnings
 dotnet_diagnostic.CA1508.severity = none        # CA1508: Avoid dead conditional code # This one seems to flag false positives in some cases
