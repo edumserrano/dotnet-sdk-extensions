@@ -41,7 +41,7 @@ jobs:
       with:
         ref: ${{ env.WORKFLOW_HEAD_SHA }}
     - name: Download dotnet format workflow info artifact
-      uses: dawidd6/action-download-artifact@v2.21.1
+      uses: dawidd6/action-download-artifact@v2.22.0
       with:
         workflow: ${{ github.event.workflow_run.workflow_id }}
         name:  ${{ env.DOTNET_FORMAT_WORKFLOW_INFO_ARTIFACT }}
@@ -121,7 +121,7 @@ jobs:
       run: |
         git checkout -b ${{ steps.commit-info.outputs.branch-name }}
     - name: Download dotnet format changed files
-      uses: dawidd6/action-download-artifact@v2.21.1
+      uses: dawidd6/action-download-artifact@v2.22.0
       with:
         workflow: ${{ github.event.workflow_run.workflow_id }}
         name:  ${{ env.DOTNET_FORMAT_FILES_ARTIFACT }}
@@ -180,7 +180,7 @@ jobs:
         GITHUB_CONTEXT: ${{ toJSON(github) }}
       run: $env:GITHUB_CONTEXT
     - name: Download dotnet format workflow info artifact
-      uses: dawidd6/action-download-artifact@v2.21.1
+      uses: dawidd6/action-download-artifact@v2.22.0
       with:
         workflow: ${{ github.event.workflow_run.workflow_id }}
         name:  ${{ env.DOTNET_FORMAT_WORKFLOW_INFO_ARTIFACT }}
@@ -227,7 +227,7 @@ jobs:
         ref: ${{ env.WORKFLOW_HEAD_SHA }}
         token: ${{ secrets.DOTNET_FORMAT_GH_TOKEN }}
     - name: Download dotnet format changed files
-      uses: dawidd6/action-download-artifact@v2.21.1
+      uses: dawidd6/action-download-artifact@v2.22.0
       with:
         workflow: ${{ github.event.workflow_run.workflow_id }}
         name:  ${{ env.DOTNET_FORMAT_FILES_ARTIFACT }}
