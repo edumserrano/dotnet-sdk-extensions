@@ -7,11 +7,11 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices;
 [Trait("Category", XUnitCategories.HostedServices)]
 public class RunUntilTimeoutTests : IClassFixture<HostedServicesWebApplicationFactory>
 {
-    private readonly DotNet.Sdk.Extensions.Testing.Tests.HostedServices.Auxiliary.HostedServicesWebApplicationFactory _hostedServicesWebApplicationFactory;
+    private readonly HostedServicesWebApplicationFactory _hostedServicesWebAppFactory;
 
-    RunUntilTimeoutTests(DotNet.Sdk.Extensions.Testing.Tests.HostedServices.Auxiliary.HostedServicesWebApplicationFactory hostedServicesWebApplicationFactory)
+    public RunUntilTimeoutTests(HostedServicesWebApplicationFactory hostedServicesWebApplicationFactory)
     {
-        _hostedServicesWebApplicationFactory = hostedServicesWebApplicationFactory;
+        _hostedServicesWebAppFactory = hostedServicesWebApplicationFactory;
     }
 
     /// <summary>
@@ -61,9 +61,8 @@ public class RunUntilTimeoutTests : IClassFixture<HostedServicesWebApplicationFa
                 ++callCount;
             });
 
-        var webApplicationFactory = new HostedServicesWebApplicationFactory();
         var sw = Stopwatch.StartNew();
-        await webApplicationFactory
+        await _hostedServicesWebAppFactory
             .WithWebHostBuilder(builder =>
             {
                 builder
