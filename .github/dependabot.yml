@@ -1,0 +1,17 @@
+
+# see docs at https://docs.github.com/en/code-security/supply-chain-security/keeping-your-dependencies-updated-automatically/enabling-and-disabling-version-updates
+
+version: 2
+updates:
+  - package-ecosystem: "nuget"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    labels:
+    - 'dependabot'
+    - 'bot:robot:'
+    ignore:
+    # Ignored because the csproj using this  NuGet supports multiple target frameworks and dependabot does not handle this well.
+    # This NuGet needs to be manually updated for each target framework
+    - dependency-name: "Microsoft.AspNetCore.Mvc.Testing"
+
