@@ -53,7 +53,7 @@ public class HttpClientMocksDemoTests : IClassFixture<WebApplicationFactory<Star
 
         // in this example the sut.DoSomeHttpCall method call will do a GET request to the path /some-http-call
         // so it will match our mock conditions defined above and the mock response will be returned
-        var response = await sut.DoSomeHttpCall(); 
+        var response = await sut.DoSomeHttpCall();
         response.StatusCode.ShouldBe(HttpStatusCode.Created);
         var responseBody = await response.Content.ReadAsStringAsync();
         responseBody.ShouldBe("mocked value");
@@ -114,7 +114,7 @@ Mocking the responses inline looks like this:
 var handler = new TestHttpMessageHandler();
 handler.MockHttpResponse(builder =>
 {
-    builder.Where(httpRequestMessage => 
+    builder.Where(httpRequestMessage =>
     {
         return httpRequestMessage.Method == HttpMethod.Get &&
                 httpRequestMessage.RequestUri.PathAndQuery.Equals("/some-http-call");
@@ -168,7 +168,7 @@ The value added by `HttpResponseMessageMockBuilder.TimesOut` is not only the syn
 ## Notes
 
 * When no mock is configured on the `TestHttpMessageHandler` or when no configured mock matches the incoming request,  the `HttpClient` will throw an `InvalidOperationException` with information about the request being made which lacks mocking.
-  
+
 * When no predicate is defined on the http response mock via the `HttpResponseMessageMockBuilder.Where` method, the default predicate is an *always true* which means the mock will always match the incoming request. In code, the below two http mocks are equal:
 
 Explicit predicate with the `HttpResponseMessageMockBuilder.Where` method:
@@ -177,7 +177,7 @@ Explicit predicate with the `HttpResponseMessageMockBuilder.Where` method:
 var handler = new TestHttpMessageHandler();
 handler.MockHttpResponse(builder =>
 {
-    builder.Where(httpRequestMessage => 
+    builder.Where(httpRequestMessage =>
     {
         return true;
     })
@@ -209,20 +209,20 @@ var handler = new TestHttpMessageHandler()
     {
         builder
             .Where(httpRequestMessage => httpRequestMessage.RequestUri.Host.Equals("test.com"))
-            .RespondWith(new HttpResponseMessage(HttpStatusCode.BadRequest));
+            .RespondWith(() => new HttpResponseMessage(HttpStatusCode.BadRequest));
     })
     .MockHttpResponse(builder =>
     {
         builder
             .Where(httpRequestMessage => httpRequestMessage.RequestUri.Host.Equals("test.com"))
-            .RespondWith(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+            .RespondWith(() => new HttpResponseMessage(HttpStatusCode.InternalServerError));
     });
 
 var httpClient = new HttpClient(handler);
 var httpResponseMessage = await httpClient.GetAsync("https://test.com");
 /*
 * the httpResponseMessage.StatusCode property will be HttpStatusCode.BadRequest
-* and not HttpStatusCode.InternalServerError because although both mocks match 
+* and not HttpStatusCode.InternalServerError because although both mocks match
 * the predicate specified on the HttpResponseMessageMockBuilder.Where method
 * only the first mock is executed
 */

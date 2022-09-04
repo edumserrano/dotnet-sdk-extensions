@@ -44,16 +44,17 @@ public class HttpResponseMessageMockBuilder
     /// <summary>
     /// Configure the <see cref="HttpResponseMessage"/> produced by the mock.
     /// </summary>
-    /// <param name="httpResponseMessage">The <see cref="HttpResponseMessage"/> that the mock returns when executed.</param>
+    /// <param name="handler">Function to configure the <see cref="HttpResponseMessage"/> produced by the mock.</param>
     /// <returns>The <see cref="HttpResponseMessageMockBuilder"/> for chaining.</returns>
-    public HttpResponseMessageMockBuilder RespondWith(HttpResponseMessage httpResponseMessage)
+    public HttpResponseMessageMockBuilder RespondWith(Func<HttpResponseMessage> handler)
     {
-        if (httpResponseMessage is null)
+        if (handler is null)
         {
-            throw new ArgumentNullException(nameof(httpResponseMessage));
+            throw new ArgumentNullException(nameof(handler));
         }
 
-        return RespondWith(_ => httpResponseMessage);
+        // convert to 'async' handler
+        return RespondWith((_, _) => Task.FromResult(handler()));
     }
 
     /// <summary>

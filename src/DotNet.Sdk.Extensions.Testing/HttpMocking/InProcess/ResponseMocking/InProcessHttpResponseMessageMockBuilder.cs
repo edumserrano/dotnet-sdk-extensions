@@ -49,11 +49,11 @@ public class InProcessHttpResponseMessageMockBuilder
     /// <summary>
     /// Configure the <see cref="HttpResponseMessage"/> produced by the mock.
     /// </summary>
-    /// <param name="httpResponseMessage">The <see cref="HttpResponseMessage"/> that the mock returns when executed.</param>
+    /// <param name="handler">Function to configure the <see cref="HttpResponseMessage"/> produced by the mock.</param>
     /// <returns>The <see cref="InProcessHttpResponseMessageMockBuilder"/> for chaining.</returns>
-    public InProcessHttpResponseMessageMockBuilder RespondWith(HttpResponseMessage httpResponseMessage)
+    public InProcessHttpResponseMessageMockBuilder RespondWith(Func<HttpResponseMessage> handler)
     {
-        _builder.RespondWith(httpResponseMessage);
+        _builder.RespondWith(handler);
         return this;
     }
 

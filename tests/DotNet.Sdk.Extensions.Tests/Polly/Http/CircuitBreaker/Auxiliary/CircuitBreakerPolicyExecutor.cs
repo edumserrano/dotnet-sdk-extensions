@@ -112,7 +112,7 @@ public sealed class CircuitBreakerPolicyExecutor : IAsyncDisposable
         {
             builder
                 .Where(httpRequestMessage => httpRequestMessage.RequestUri!.ToString().Contains(handledRequestPath, StringComparison.OrdinalIgnoreCase))
-                .RespondWith(new HttpResponseMessage(HttpStatusCode.OK));
+                .RespondWith(() => new HttpResponseMessage(HttpStatusCode.OK));
         });
         return handledRequestPath;
     }

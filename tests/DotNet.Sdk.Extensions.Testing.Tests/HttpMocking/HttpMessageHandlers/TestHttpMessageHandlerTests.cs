@@ -46,13 +46,12 @@ public class TestHttpMessageHandlerTests
     [Fact]
     public async Task NoMockMatches()
     {
-        using var httpMockResponseMessage = new HttpResponseMessage(HttpStatusCode.OK);
         using var handler = new TestHttpMessageHandler();
         handler.MockHttpResponse(builder =>
         {
             builder
                 .Where(httpRequestMessage => httpRequestMessage.RequestUri!.Host.Equals("microsoft", StringComparison.Ordinal))
-                .RespondWith(httpMockResponseMessage);
+                .RespondWith(() => new HttpResponseMessage(HttpStatusCode.OK));
         });
 
         using var request = new HttpRequestMessage(HttpMethod.Get, "https://test.com");
@@ -70,9 +69,8 @@ public class TestHttpMessageHandlerTests
     [Fact]
     public async Task DefaultPredicate1()
     {
-        using var httpMockResponseMessage = new HttpResponseMessage(HttpStatusCode.Created);
         var httpResponseMessageMock = new HttpResponseMessageMockBuilder()
-            .RespondWith(httpMockResponseMessage)
+            .RespondWith(() => new HttpResponseMessage(HttpStatusCode.Created))
             .Build();
         using var handler = new TestHttpMessageHandler();
         handler.MockHttpResponse(httpResponseMessageMock);
@@ -93,7 +91,7 @@ public class TestHttpMessageHandlerTests
     public async Task DefaultPredicate2()
     {
         using var handler = new TestHttpMessageHandler();
-        handler.MockHttpResponse(builder => builder.RespondWith(new HttpResponseMessage(HttpStatusCode.Created)));
+        handler.MockHttpResponse(builder => builder.RespondWith(() => new HttpResponseMessage(HttpStatusCode.Created)));
 
         using var request = new HttpRequestMessage(HttpMethod.Get, "https://test.com");
         using var httpClient = new HttpClient(handler);
@@ -114,13 +112,13 @@ public class TestHttpMessageHandlerTests
             {
                 builder
                     .Where(httpRequestMessage => httpRequestMessage.RequestUri!.Host.Equals("test.com", StringComparison.Ordinal))
-                    .RespondWith(new HttpResponseMessage(HttpStatusCode.BadRequest));
+                    .RespondWith(() => new HttpResponseMessage(HttpStatusCode.BadRequest));
             })
             .MockHttpResponse(builder =>
             {
                 builder
                     .Where(httpRequestMessage => httpRequestMessage.RequestUri!.Host.Equals("test.com", StringComparison.Ordinal))
-                    .RespondWith(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+                    .RespondWith(() => new HttpResponseMessage(HttpStatusCode.InternalServerError));
             });
         using var request = new HttpRequestMessage(HttpMethod.Get, "https://test.com");
         using var httpClient = new HttpClient(handler);
@@ -140,13 +138,16 @@ public class TestHttpMessageHandlerTests
             {
                 builder
                     .Where(httpRequestMessage => httpRequestMessage.RequestUri!.Host.Equals("google.com", StringComparison.Ordinal))
-                    .RespondWith(new HttpResponseMessage(HttpStatusCode.BadRequest));
+                    .RespondWith(() =>
+                    {
+                        return new HttpResponseMessage(HttpStatusCode.BadRequest);
+                    });
             })
             .MockHttpResponse(builder =>
             {
                 builder
                     .Where(httpRequestMessage => httpRequestMessage.RequestUri!.Host.Equals("microsoft.com", StringComparison.Ordinal))
-                    .RespondWith(new HttpResponseMessage(HttpStatusCode.InternalServerError));
+                    .RespondWith(() => new HttpResponseMessage(HttpStatusCode.InternalServerError));
             });
 
         using var httpClient = new HttpClient(handler);

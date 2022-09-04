@@ -40,13 +40,12 @@ public class RetryPolicyExecutor
 
     public async Task<HttpResponseMessage> ExecuteCircuitBrokenHttpResponseMessageAsync()
     {
-        using var response = new CircuitBrokenHttpResponseMessage(CircuitBreakerState.Open);
-        var requestPath = $"/retry/circuit-broken-response/{response.GetHashCode()}";
+        var requestPath = $"/retry/circuit-broken-response/{Guid.NewGuid()}";
         _testHttpMessageHandler.MockHttpResponse(builder =>
         {
             builder
                 .Where(httpRequestMessage => httpRequestMessage.RequestUri!.ToString().Contains(requestPath, StringComparison.OrdinalIgnoreCase))
-                .RespondWith(response);
+                .RespondWith(() => new CircuitBrokenHttpResponseMessage(CircuitBreakerState.Open));
         });
         return await _httpClient.GetAsync(requestPath);
     }

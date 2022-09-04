@@ -17,7 +17,7 @@ public static class TestHttpMessageHandlerExtensions
         {
             builder
                 .Where(httpRequestMessage => httpRequestMessage.RequestUri!.ToString().Contains(handledRequestPath, StringComparison.OrdinalIgnoreCase))
-                .RespondWith(new HttpResponseMessage(responseHttpStatusCode));
+                .RespondWith(() => new HttpResponseMessage(responseHttpStatusCode));
         });
         return handledRequestPath;
     }

@@ -50,7 +50,7 @@ public sealed class UseHttpMocksTests : IClassFixture<HttpResponseMockingWebAppl
                     {
                         httpResponseMessageBuilder
                             .ForBasicClient()
-                            .RespondWith(new HttpResponseMessage(HttpStatusCode.OK));
+                            .RespondWith(() => new HttpResponseMessage(HttpStatusCode.OK));
                     });
                 });
             })
@@ -77,7 +77,7 @@ public sealed class UseHttpMocksTests : IClassFixture<HttpResponseMockingWebAppl
                     {
                         httpResponseMessageBuilder
                             .ForNamedClient("my-named-client")
-                            .RespondWith(new HttpResponseMessage(HttpStatusCode.OK));
+                            .RespondWith(() => new HttpResponseMessage(HttpStatusCode.OK));
                     });
                 });
             })
@@ -104,7 +104,7 @@ public sealed class UseHttpMocksTests : IClassFixture<HttpResponseMockingWebAppl
                     {
                         httpResponseMessageBuilder
                             .ForTypedClient<MyApiClient>()
-                            .RespondWith(new HttpResponseMessage(HttpStatusCode.OK));
+                            .RespondWith(() => new HttpResponseMessage(HttpStatusCode.OK));
                     });
                 });
             })
@@ -135,7 +135,7 @@ public sealed class UseHttpMocksTests : IClassFixture<HttpResponseMockingWebAppl
                     {
                         httpResponseMessageBuilder
                             .ForTypedClient<MyApiClient>("my-typed-client")
-                            .RespondWith(new HttpResponseMessage(HttpStatusCode.OK));
+                            .RespondWith(() => new HttpResponseMessage(HttpStatusCode.OK));
                     });
                 });
             })
@@ -159,7 +159,7 @@ public sealed class UseHttpMocksTests : IClassFixture<HttpResponseMockingWebAppl
     [Fact]
     public async Task TypedHttpClientWithCustomName2()
     {
-        var httpClient = _webApplicationFactory
+        using var httpClient = _webApplicationFactory
             .WithWebHostBuilder(builder =>
             {
                 builder.UseHttpMocks(handlers =>
@@ -168,7 +168,7 @@ public sealed class UseHttpMocksTests : IClassFixture<HttpResponseMockingWebAppl
                     {
                         httpResponseMessageBuilder
                             .ForTypedClient<MyApiClient>("my-typed-client-2")
-                            .RespondWith(new HttpResponseMessage(HttpStatusCode.OK));
+                            .RespondWith(() => new HttpResponseMessage(HttpStatusCode.OK));
                     });
                 });
             })
@@ -186,15 +186,14 @@ public sealed class UseHttpMocksTests : IClassFixture<HttpResponseMockingWebAppl
     [Fact]
     public async Task MockHttpResponseNonInlineMocking()
     {
-        using var httpResponse = new HttpResponseMessage(HttpStatusCode.OK);
         var httpResponseMock1 = new HttpResponseMessageMockDescriptorBuilder();
         httpResponseMock1
             .ForBasicClient()
-            .RespondWith(httpResponse);
+            .RespondWith(() => new HttpResponseMessage(HttpStatusCode.OK));
         var httpResponseMock2 = new HttpResponseMessageMockDescriptorBuilder();
         httpResponseMock2
             .ForNamedClient("my-named-client")
-            .RespondWith(httpResponse);
+            .RespondWith(() => new HttpResponseMessage(HttpStatusCode.OK));
 
         var httpClient = _webApplicationFactory
             .WithWebHostBuilder(webHostBuilder =>
@@ -223,15 +222,14 @@ public sealed class UseHttpMocksTests : IClassFixture<HttpResponseMockingWebAppl
     [Fact]
     public async Task UseHttpMocksNonInlineMocking()
     {
-        using var httpResponse = new HttpResponseMessage(HttpStatusCode.OK);
         var httpResponseMock1 = new HttpResponseMessageMockDescriptorBuilder();
         httpResponseMock1
             .ForBasicClient()
-            .RespondWith(httpResponse);
+            .RespondWith(() => new HttpResponseMessage(HttpStatusCode.OK));
         var httpResponseMock2 = new HttpResponseMessageMockDescriptorBuilder();
         httpResponseMock2
             .ForNamedClient("my-named-client")
-            .RespondWith(httpResponse);
+            .RespondWith(() => new HttpResponseMessage(HttpStatusCode.OK));
 
         var httpClient = _webApplicationFactory
             .WithWebHostBuilder(webHostBuilder =>
