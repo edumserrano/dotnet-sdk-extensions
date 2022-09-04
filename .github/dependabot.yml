@@ -15,7 +15,28 @@ updates:
     # This NuGet needs to be manually updated for each target framework
     - dependency-name: "Microsoft.AspNetCore.Mvc.Testing"
   - package-ecosystem: github-actions
-    directory: '/'
+    directory: '/github/workflows'
+    schedule:
+      interval: "weekly"
+    labels:
+    - 'dependabot'
+    - 'bot:robot:'
+  - package-ecosystem: github-actions
+    directory: '/github/actions/create-gh-status'
+    schedule:
+      interval: "weekly"
+    labels:
+    - 'dependabot'
+    - 'bot:robot:'
+  - package-ecosystem: github-actions
+    directory: '/github/actions/create-nuget-release-flow-info-artifact'
+    schedule:
+      interval: "weekly"
+    labels:
+    - 'dependabot'
+    - 'bot:robot:'
+  - package-ecosystem: github-actions
+    directory: '/github/actions/read-nuget-release-flow-info-artifact'
     schedule:
       interval: "weekly"
     labels:
