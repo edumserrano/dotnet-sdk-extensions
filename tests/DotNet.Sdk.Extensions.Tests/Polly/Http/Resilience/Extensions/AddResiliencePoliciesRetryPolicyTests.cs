@@ -16,7 +16,7 @@ public class AddResiliencePoliciesRetryPolicyTests
     [Fact]
     public async Task AddResiliencePoliciesAddsRetryPolicy1()
     {
-        var numberOfCallsDelegatingHandler = new NumberOfCallsDelegatingHandler();
+        using var numberOfCallsDelegatingHandler = new NumberOfCallsDelegatingHandler();
         var testHttpMessageHandler = new TestHttpMessageHandler();
         const string httpClientName = "GitHub";
         var resilienceOptions = new ResilienceOptions
@@ -63,7 +63,7 @@ public class AddResiliencePoliciesRetryPolicyTests
     public async Task AddResiliencePoliciesAddsRetryPolicy3()
     {
         var resiliencePoliciesEventHandlerCalls = new ResiliencePoliciesEventHandlerCalls();
-        var numberOfCallsDelegatingHandler = new NumberOfCallsDelegatingHandler();
+        using var numberOfCallsDelegatingHandler = new NumberOfCallsDelegatingHandler();
         var testHttpMessageHandler = new TestHttpMessageHandler();
         const string httpClientName = "GitHub";
         var resilienceOptions = new ResilienceOptions
@@ -113,7 +113,7 @@ public class AddResiliencePoliciesRetryPolicyTests
     public async Task AddResiliencePoliciesAddsRetryPolicy4()
     {
         var resiliencePoliciesEventHandlerCalls = new ResiliencePoliciesEventHandlerCalls();
-        var numberOfCallsDelegatingHandler = new NumberOfCallsDelegatingHandler();
+        using var numberOfCallsDelegatingHandler = new NumberOfCallsDelegatingHandler();
         var testHttpMessageHandler = new TestHttpMessageHandler();
         const string httpClientName = "GitHub";
         var resilienceOptions = new ResilienceOptions
@@ -167,7 +167,7 @@ public class AddResiliencePoliciesRetryPolicyTests
     public async Task AddResiliencePoliciesAddsRetryPolicy5()
     {
         var resiliencePoliciesEventHandlerCalls = new ResiliencePoliciesEventHandlerCalls();
-        var numberOfCallsDelegatingHandler = new NumberOfCallsDelegatingHandler();
+        using var numberOfCallsDelegatingHandler = new NumberOfCallsDelegatingHandler();
         var testHttpMessageHandler = new TestHttpMessageHandler();
         const string httpClientName = "GitHub";
         var resilienceOptions = new ResilienceOptions
@@ -223,7 +223,7 @@ public class AddResiliencePoliciesRetryPolicyTests
     public async Task AddResiliencePoliciesAddsRetryPolicy6()
     {
         var resiliencePoliciesEventHandlerCalls = new ResiliencePoliciesEventHandlerCalls();
-        var numberOfCallsDelegatingHandler = new NumberOfCallsDelegatingHandler();
+        using var numberOfCallsDelegatingHandler = new NumberOfCallsDelegatingHandler();
         var testHttpMessageHandler = new TestHttpMessageHandler();
         const string httpClientName = "GitHub";
         var resilienceOptions = new ResilienceOptions
@@ -274,7 +274,7 @@ public class AddResiliencePoliciesRetryPolicyTests
     [Fact]
     public async Task AddResiliencePoliciesAddsRetryPolicy7()
     {
-        var numberOfCallsDelegatingHandler = new NumberOfCallsDelegatingHandler();
+        using var numberOfCallsDelegatingHandler = new NumberOfCallsDelegatingHandler();
         var testHttpMessageHandler = new TestHttpMessageHandler();
         const string httpClientName = "GitHub";
         var resilienceOptions = new ResilienceOptions

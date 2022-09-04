@@ -9,7 +9,7 @@ public class TestHttpMessageHandlerTests
     [Fact]
     public void ValidateArguments1()
     {
-        var handler = new TestHttpMessageHandler();
+        using var handler = new TestHttpMessageHandler();
         var exception = Should.Throw<ArgumentNullException>(() => handler.MockHttpResponse((HttpResponseMessageMock)null!));
         exception.Message.ShouldBe("Value cannot be null. (Parameter 'httpResponseMock')");
     }
@@ -20,7 +20,7 @@ public class TestHttpMessageHandlerTests
     [Fact]
     public void ValidateArguments2()
     {
-        var handler = new TestHttpMessageHandler();
+        using var handler = new TestHttpMessageHandler();
         var exception = Should.Throw<ArgumentNullException>(() => handler.MockHttpResponse((Action<HttpResponseMessageMockBuilder>)null!));
         exception.Message.ShouldBe("Value cannot be null. (Parameter 'configure')");
     }
@@ -32,7 +32,7 @@ public class TestHttpMessageHandlerTests
     [Fact]
     public async Task NoMockDefined()
     {
-        var handler = new TestHttpMessageHandler();
+        using var handler = new TestHttpMessageHandler();
         using var request = new HttpRequestMessage(HttpMethod.Get, "https://test.com");
         using var httpClient = new HttpClient(handler);
         var exception = await Should.ThrowAsync<InvalidOperationException>(httpClient.SendAsync(request));
@@ -46,8 +46,8 @@ public class TestHttpMessageHandlerTests
     [Fact]
     public async Task NoMockMatches()
     {
-        var httpMockResponseMessage = new HttpResponseMessage(HttpStatusCode.OK);
-        var handler = new TestHttpMessageHandler();
+        using var httpMockResponseMessage = new HttpResponseMessage(HttpStatusCode.OK);
+        using var handler = new TestHttpMessageHandler();
         handler.MockHttpResponse(builder =>
         {
             builder
@@ -70,11 +70,11 @@ public class TestHttpMessageHandlerTests
     [Fact]
     public async Task DefaultPredicate1()
     {
-        var httpMockResponseMessage = new HttpResponseMessage(HttpStatusCode.Created);
+        using var httpMockResponseMessage = new HttpResponseMessage(HttpStatusCode.Created);
         var httpResponseMessageMock = new HttpResponseMessageMockBuilder()
             .RespondWith(httpMockResponseMessage)
             .Build();
-        var handler = new TestHttpMessageHandler();
+        using var handler = new TestHttpMessageHandler();
         handler.MockHttpResponse(httpResponseMessageMock);
 
         using var request = new HttpRequestMessage(HttpMethod.Get, "https://test.com");
@@ -92,7 +92,7 @@ public class TestHttpMessageHandlerTests
     [Fact]
     public async Task DefaultPredicate2()
     {
-        var handler = new TestHttpMessageHandler();
+        using var handler = new TestHttpMessageHandler();
         handler.MockHttpResponse(builder => builder.RespondWith(new HttpResponseMessage(HttpStatusCode.Created)));
 
         using var request = new HttpRequestMessage(HttpMethod.Get, "https://test.com");
@@ -108,7 +108,7 @@ public class TestHttpMessageHandlerTests
     [Fact]
     public async Task FirstMatchWins()
     {
-        var handler = new TestHttpMessageHandler();
+        using var handler = new TestHttpMessageHandler();
         handler
             .MockHttpResponse(builder =>
             {
@@ -134,7 +134,7 @@ public class TestHttpMessageHandlerTests
     [Fact]
     public async Task MultipleMocks()
     {
-        var handler = new TestHttpMessageHandler();
+        using var handler = new TestHttpMessageHandler();
         handler
             .MockHttpResponse(builder =>
             {
@@ -165,7 +165,7 @@ public class TestHttpMessageHandlerTests
     [Fact]
     public async Task TimesOut()
     {
-        var handler = new TestHttpMessageHandler();
+        using var handler = new TestHttpMessageHandler();
         handler.MockHttpResponse(builder => builder.TimesOut(TimeSpan.FromSeconds(2)));
         using var httpClient = new HttpClient(handler)
         {

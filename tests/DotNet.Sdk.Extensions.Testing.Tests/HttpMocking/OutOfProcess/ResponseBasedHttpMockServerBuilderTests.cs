@@ -25,7 +25,7 @@ public class ResponseBasedHttpMockServerBuilderTests
         var urls = await httpMockServer.StartAsync();
         var httpUrl = urls.First(x => x.Scheme == HttpScheme.Http);
 
-        var httpClient = new HttpClient();
+        using var httpClient = new HttpClient();
         var helloHttpResponse = await httpClient.GetAsync($"{httpUrl}/hello");
         helloHttpResponse.StatusCode.ShouldBe(HttpStatusCode.Created);
         var helloHttpContent = await helloHttpResponse.Content.ReadAsStringAsync();
@@ -68,7 +68,7 @@ public class ResponseBasedHttpMockServerBuilderTests
         var urls = await httpMockServer.StartAsync();
         var httpUrl = urls.First(x => x.Scheme == HttpScheme.Http);
 
-        var httpClient = new HttpClient();
+        using var httpClient = new HttpClient();
         var defaultHttpResponse = await httpClient.GetAsync($"{httpUrl}/default");
         defaultHttpResponse.StatusCode.ShouldBe(HttpStatusCode.NotFound);
         defaultHttpResponse.Content.Headers.ContentLength.ShouldBe(0);
@@ -105,7 +105,7 @@ public class ResponseBasedHttpMockServerBuilderTests
             .MockHttpResponse(httpResponseMock2)
             .Build();
         var urls = await httpMockServer.StartAsync();
-        var httpClient = new HttpClient();
+        using var httpClient = new HttpClient();
         var helloResponse = await httpClient.GetAsync($"{urls[0]}/hello");
         helloResponse.StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
 
@@ -118,7 +118,7 @@ public class ResponseBasedHttpMockServerBuilderTests
             .MockHttpResponse(httpResponseMock1)
             .Build();
         var urls2 = await mock2.StartAsync();
-        var httpClient2 = new HttpClient();
+        using var httpClient2 = new HttpClient();
         var helloResponse2 = await httpClient2.GetAsync($"{urls2[0]}/hello");
         helloResponse2.StatusCode.ShouldBe(HttpStatusCode.Forbidden);
     }
@@ -148,7 +148,7 @@ public class ResponseBasedHttpMockServerBuilderTests
             .MockHttpResponse(httpResponseMock2)
             .Build();
         var urls = await httpMockServer.StartAsync();
-        var httpClient = new HttpClient();
+        using var httpClient = new HttpClient();
         var defaultResponse = await httpClient.GetAsync($"{urls[0]}/no-match");
         defaultResponse.StatusCode.ShouldBe(HttpStatusCode.NotImplemented);
         var defaultResponseBody = await defaultResponse.Content.ReadAsStringAsync();

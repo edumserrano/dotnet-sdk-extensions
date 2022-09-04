@@ -7,12 +7,14 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices;
 [Trait("Category", XUnitCategories.HostedServices)]
 public class RunUntilWebApplicationFactoryExtensionsWithSyncPredicateTests
 {
+#pragma warning disable CA2000 // Dispose objects before losing scope - the test method will do the dispose
     public static TheoryData<HostedServicesWebApplicationFactory, RunUntilPredicate, Type, string> ValidateArgumentsData =>
         new TheoryData<HostedServicesWebApplicationFactory, RunUntilPredicate, Type, string>
         {
             { null!, () => true, typeof(ArgumentNullException), "Value cannot be null. (Parameter 'webApplicationFactory')" },
             { new HostedServicesWebApplicationFactory(), null!, typeof(ArgumentNullException), "Value cannot be null. (Parameter 'predicate')" },
         };
+#pragma warning disable CA2000 // Dispose objects before losing scope - the test method will do the dispose
 
     /// <summary>
     /// Validates the arguments for the <seealso cref="RunUntilExtensions.RunUntilAsync{T}(WebApplicationFactory{T},RunUntilPredicate)"/>
@@ -21,15 +23,16 @@ public class RunUntilWebApplicationFactoryExtensionsWithSyncPredicateTests
     [Theory]
     [MemberData(nameof(ValidateArgumentsData))]
     public void ValidatesArguments(
-        HostedServicesWebApplicationFactory webApplicationFactory,
+        HostedServicesWebApplicationFactory? webApplicationFactory,
         RunUntilPredicate predicate,
         Type exceptionType,
         string exceptionMessage)
     {
         var exception = Should.Throw(
-            actual: () => webApplicationFactory.RunUntilAsync(predicate),
+            actual: () => webApplicationFactory!.RunUntilAsync(predicate),
             exceptionType: exceptionType);
         exception.Message.ShouldBe(exceptionMessage);
+        webApplicationFactory?.Dispose();
     }
 
     public static TheoryData<HostedServicesWebApplicationFactory, RunUntilPredicate, Action<RunUntilOptions>, Type, string> ValidateArgumentsWithOptionsData =>

@@ -186,14 +186,15 @@ public sealed class UseHttpMocksTests : IClassFixture<HttpResponseMockingWebAppl
     [Fact]
     public async Task MockHttpResponseNonInlineMocking()
     {
+        using var httpResponse = new HttpResponseMessage(HttpStatusCode.OK);
         var httpResponseMock1 = new HttpResponseMessageMockDescriptorBuilder();
         httpResponseMock1
             .ForBasicClient()
-            .RespondWith(new HttpResponseMessage(HttpStatusCode.OK));
+            .RespondWith(httpResponse);
         var httpResponseMock2 = new HttpResponseMessageMockDescriptorBuilder();
         httpResponseMock2
             .ForNamedClient("my-named-client")
-            .RespondWith(new HttpResponseMessage(HttpStatusCode.OK));
+            .RespondWith(httpResponse);
 
         var httpClient = _webApplicationFactory
             .WithWebHostBuilder(webHostBuilder =>
@@ -222,14 +223,15 @@ public sealed class UseHttpMocksTests : IClassFixture<HttpResponseMockingWebAppl
     [Fact]
     public async Task UseHttpMocksNonInlineMocking()
     {
+        using var httpResponse = new HttpResponseMessage(HttpStatusCode.OK);
         var httpResponseMock1 = new HttpResponseMessageMockDescriptorBuilder();
         httpResponseMock1
             .ForBasicClient()
-            .RespondWith(new HttpResponseMessage(HttpStatusCode.OK));
+            .RespondWith(httpResponse);
         var httpResponseMock2 = new HttpResponseMessageMockDescriptorBuilder();
         httpResponseMock2
             .ForNamedClient("my-named-client")
-            .RespondWith(new HttpResponseMessage(HttpStatusCode.OK));
+            .RespondWith(httpResponse);
 
         var httpClient = _webApplicationFactory
             .WithWebHostBuilder(webHostBuilder =>

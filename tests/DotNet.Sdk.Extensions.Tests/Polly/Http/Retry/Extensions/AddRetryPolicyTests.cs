@@ -13,7 +13,7 @@ public class AddRetryPolicyTests
     [Fact]
     public async Task AddRetryPolicy1()
     {
-        var numberOfCallsDelegatingHandler = new NumberOfCallsDelegatingHandler();
+        using var numberOfCallsDelegatingHandler = new NumberOfCallsDelegatingHandler();
         var testHttpMessageHandler = new TestHttpMessageHandler();
         const string httpClientName = "GitHub";
         var retryOptions = new RetryOptions
@@ -47,7 +47,7 @@ public class AddRetryPolicyTests
     [Fact]
     public async Task AddRetryPolicy2()
     {
-        var numberOfCallsDelegatingHandler = new NumberOfCallsDelegatingHandler();
+        using var numberOfCallsDelegatingHandler = new NumberOfCallsDelegatingHandler();
         var testHttpMessageHandler = new TestHttpMessageHandler();
         const string httpClientName = "GitHub";
         var retryOptions = new RetryOptions
@@ -88,7 +88,7 @@ public class AddRetryPolicyTests
     public async Task AddRetryPolicy3()
     {
         var retryPolicyEventHandlerCalls = new RetryPolicyEventHandlerCalls();
-        var numberOfCallsDelegatingHandler = new NumberOfCallsDelegatingHandler();
+        using var numberOfCallsDelegatingHandler = new NumberOfCallsDelegatingHandler();
         var testHttpMessageHandler = new TestHttpMessageHandler();
         const string httpClientName = "GitHub";
         var retryOptions = new RetryOptions
@@ -129,7 +129,7 @@ public class AddRetryPolicyTests
     public async Task AddRetryPolicy4()
     {
         var retryPolicyEventHandlerCalls = new RetryPolicyEventHandlerCalls();
-        var numberOfCallsDelegatingHandler = new NumberOfCallsDelegatingHandler();
+        using var numberOfCallsDelegatingHandler = new NumberOfCallsDelegatingHandler();
         var testHttpMessageHandler = new TestHttpMessageHandler();
         const string httpClientName = "GitHub";
         var retryOptions = new RetryOptions
@@ -174,7 +174,7 @@ public class AddRetryPolicyTests
     public async Task AddRetryPolicy5()
     {
         var retryPolicyEventHandlerCalls = new RetryPolicyEventHandlerCalls();
-        var numberOfCallsDelegatingHandler = new NumberOfCallsDelegatingHandler();
+        using var numberOfCallsDelegatingHandler = new NumberOfCallsDelegatingHandler();
         var testHttpMessageHandler = new TestHttpMessageHandler();
         const string httpClientName = "GitHub";
         var retryOptions = new RetryOptions
@@ -221,7 +221,7 @@ public class AddRetryPolicyTests
     public async Task AddRetryPolicy6()
     {
         var retryPolicyEventHandlerCalls = new RetryPolicyEventHandlerCalls();
-        var numberOfCallsDelegatingHandler = new NumberOfCallsDelegatingHandler();
+        using var numberOfCallsDelegatingHandler = new NumberOfCallsDelegatingHandler();
         var testHttpMessageHandler = new TestHttpMessageHandler();
         const string httpClientName = "GitHub";
         var retryOptions = new RetryOptions

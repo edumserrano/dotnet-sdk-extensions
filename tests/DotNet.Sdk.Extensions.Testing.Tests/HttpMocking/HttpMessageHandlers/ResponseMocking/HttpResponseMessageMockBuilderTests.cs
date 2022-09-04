@@ -76,8 +76,9 @@ public class HttpResponseMessageMockBuilderTests
     [Fact]
     public void RespondWithCanOnlyBeDefinedOnce()
     {
+        using var httpResponse = new HttpResponseMessage(HttpStatusCode.OK);
         var builder = new HttpResponseMessageMockBuilder();
-        builder.RespondWith(new HttpResponseMessage(HttpStatusCode.OK));
+        builder.RespondWith(httpResponse);
         var exception = Should.Throw<InvalidOperationException>(() => builder.RespondWith(new HttpResponseMessage(HttpStatusCode.BadRequest)));
         exception.Message.ShouldBe("Response behavior already configured.");
     }
@@ -101,15 +102,17 @@ public class HttpResponseMessageMockBuilderTests
     [Fact]
     public void TimesOutCanOnlyBeDefinedOnce2()
     {
+        using var httpResponse = new HttpResponseMessage(HttpStatusCode.OK);
+
         // try first setting a timeout then a response
         var builder = new HttpResponseMessageMockBuilder();
         builder.TimesOut(TimeSpan.FromSeconds(1));
-        var exception = Should.Throw<InvalidOperationException>(() => builder.RespondWith(new HttpResponseMessage(HttpStatusCode.OK)));
+        var exception = Should.Throw<InvalidOperationException>(() => builder.RespondWith(httpResponse));
         exception.Message.ShouldBe("Response behavior already configured.");
 
         // now invert, try first setting a response then a timeout
         var builder2 = new HttpResponseMessageMockBuilder();
-        builder2.RespondWith(new HttpResponseMessage(HttpStatusCode.OK));
+        builder2.RespondWith(httpResponse);
         var exception2 = Should.Throw<InvalidOperationException>(() => builder2.TimesOut(TimeSpan.FromSeconds(1)));
         exception2.Message.ShouldBe("Response behavior already configured.");
     }

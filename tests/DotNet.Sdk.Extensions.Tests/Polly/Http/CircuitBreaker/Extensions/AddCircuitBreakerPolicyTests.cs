@@ -425,7 +425,7 @@ public class AddCircuitBreakerPolicyTests
 
         var serviceProvider = services.BuildServiceProvider();
         var httpClient = serviceProvider.InstantiateNamedHttpClient("GitHub");
-        var circuitBreaker = httpClient.CircuitBreakerExecutor(circuitBreakerOptions, testHttpMessageHandler);
+        await using var circuitBreaker = httpClient.CircuitBreakerExecutor(circuitBreakerOptions, testHttpMessageHandler);
         await circuitBreaker.TriggerFromTransientHttpStatusCodeAsync(HttpStatusCode.ServiceUnavailable);
         // after the above the circuit state is now open which means the following http request, if it hit the
         // circuit breaker policy, would throw a BrokenCircuitException/IsolatedCircuitException; however,

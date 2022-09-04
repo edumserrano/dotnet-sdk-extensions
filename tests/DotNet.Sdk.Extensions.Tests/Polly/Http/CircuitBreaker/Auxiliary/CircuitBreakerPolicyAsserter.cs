@@ -85,9 +85,11 @@ internal class CircuitBreakerPolicyAsserter
     {
         foreach (var transientHttpStatusCode in HttpStatusCodesExtensions.GetTransientHttpStatusCodes())
         {
+#pragma warning disable CA2000 // Dispose objects before losing scope - false warning, _httpClient should not be disposed here
             await using var circuitBreaker = _httpClient
                 .CircuitBreakerExecutor(_options, _testHttpMessageHandler)
                 .WithReset(_resetType);
+#pragma warning restore CA2000 // Dispose objects before losing scope - false warning, _httpClient should not be disposed here
             await circuitBreaker.TriggerFromTransientHttpStatusCodeAsync(transientHttpStatusCode);
             await circuitBreaker.ShouldBeOpenAsync($"/circuit-breaker/transient-http-status-code/{transientHttpStatusCode}");
         }
@@ -103,9 +105,11 @@ internal class CircuitBreakerPolicyAsserter
     private async Task CircuitBreakerPolicyHandlesException<TException>(TException exception)
         where TException : Exception
     {
+#pragma warning disable CA2000 // Dispose objects before losing scope - false warning, _httpClient should not be disposed here
         await using var circuitBreaker = _httpClient
             .CircuitBreakerExecutor(_options, _testHttpMessageHandler)
             .WithReset(_resetType);
+#pragma warning restore CA2000 // Dispose objects before losing scope - false warning, _httpClient should not be disposed here
         await circuitBreaker.TriggerFromExceptionAsync<TException>(exception);
         await circuitBreaker.ShouldBeOpenAsync($"/circuit-breaker/exception/{exception.GetType().Name}");
     }

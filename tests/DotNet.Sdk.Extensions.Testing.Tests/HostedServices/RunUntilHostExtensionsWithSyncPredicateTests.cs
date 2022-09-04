@@ -7,12 +7,14 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices;
 [Trait("Category", XUnitCategories.HostedServices)]
 public class RunUntilHostExtensionsWithSyncPredicateTests
 {
+#pragma warning disable CA2000 // Dispose objects before losing scope - the test method will do the dispose
     public static TheoryData<IHost, RunUntilPredicate, Type, string> ValidateArgumentsData =>
         new TheoryData<IHost, RunUntilPredicate, Type, string>
         {
             { null!, () => true, typeof(ArgumentNullException), "Value cannot be null. (Parameter 'host')" },
             { CreateHost(), null!, typeof(ArgumentNullException), "Value cannot be null. (Parameter 'predicate')" },
         };
+#pragma warning disable CA2000 // Dispose objects before losing scope - the test method will do the dispose
 
     private static IHost CreateHost()
     {
@@ -29,13 +31,13 @@ public class RunUntilHostExtensionsWithSyncPredicateTests
     [Theory]
     [MemberData(nameof(ValidateArgumentsData))]
     public void ValidatesArguments(
-        IHost host,
+        IHost? host,
         RunUntilPredicate predicate,
         Type exceptionType,
         string exceptionMessage)
     {
         var exception = Should.Throw(
-            actual: () => RunUntilExtensions.RunUntilAsync(host, predicate),
+            actual: () => host!.RunUntilAsync(predicate),
             exceptionType: exceptionType);
         exception.Message.ShouldBe(exceptionMessage);
         host?.Dispose();

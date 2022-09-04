@@ -300,7 +300,7 @@ public class AddResiliencePoliciesTimeoutPolicyTests
     [Fact]
     public async Task AddResiliencePoliciesAddsTimeoutPolicy7()
     {
-        var testHttpMessageHandler = new TestHttpMessageHandler();
+        using var testHttpMessageHandler = new TestHttpMessageHandler();
         const string httpClientName = "GitHub";
         var resilienceOptions = new ResilienceOptions
         {

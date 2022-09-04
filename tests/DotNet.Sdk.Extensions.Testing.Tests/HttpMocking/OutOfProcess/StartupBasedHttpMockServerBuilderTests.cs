@@ -15,7 +15,7 @@ public class StartupBasedHttpMockServerBuilderTests
             .Build();
         var urls = await httpMockServer.StartAsync();
 
-        var httpClient = new HttpClient();
+        using var httpClient = new HttpClient();
         var helloResponse = await httpClient.GetAsync($"{urls[0]}/hello");
         helloResponse.StatusCode.ShouldBe(HttpStatusCode.Created);
         var helloResponseBody = await helloResponse.Content.ReadAsStringAsync();

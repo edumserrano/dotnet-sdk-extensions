@@ -290,9 +290,9 @@ public class AddResiliencePoliciesFallbackTests
     [Fact]
     public async Task AddResiliencePoliciesAddsFallbackPolicy7()
     {
-        var numberOfCallsDelegatingHandler = new NumberOfCallsDelegatingHandler();
+        using var numberOfCallsDelegatingHandler = new NumberOfCallsDelegatingHandler();
         var resiliencePoliciesEventHandlerCalls = new ResiliencePoliciesEventHandlerCalls();
-        var testHttpMessageHandler = new TestHttpMessageHandler();
+        using var testHttpMessageHandler = new TestHttpMessageHandler();
         const string httpClientName = "GitHub";
         var resilienceOptions = new ResilienceOptions
         {

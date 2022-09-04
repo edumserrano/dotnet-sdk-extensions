@@ -38,9 +38,9 @@ public class RetryPolicyExecutor
         return _httpClient.GetAsync(requestPath);
     }
 
-    public Task<HttpResponseMessage> ExecuteCircuitBrokenHttpResponseMessageAsync()
+    public async Task<HttpResponseMessage> ExecuteCircuitBrokenHttpResponseMessageAsync()
     {
-        var response = new CircuitBrokenHttpResponseMessage(CircuitBreakerState.Open);
+        using var response = new CircuitBrokenHttpResponseMessage(CircuitBreakerState.Open);
         var requestPath = $"/retry/circuit-broken-response/{response.GetHashCode()}";
         _testHttpMessageHandler.MockHttpResponse(builder =>
         {
@@ -48,6 +48,6 @@ public class RetryPolicyExecutor
                 .Where(httpRequestMessage => httpRequestMessage.RequestUri!.ToString().Contains(requestPath, StringComparison.OrdinalIgnoreCase))
                 .RespondWith(response);
         });
-        return _httpClient.GetAsync(requestPath);
+        return await _httpClient.GetAsync(requestPath);
     }
 }

@@ -597,12 +597,6 @@ dotnet_diagnostic.SA1651.severity = suggestion      # SA1651: Do not use placeho
 [tests/**/*.cs]
 
 ##########################################
-# .NET Code quality rules https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/
-# Reliability rules https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/reliability-warnings
-##########################################
-dotnet_diagnostic.CA2000.severity = silent          # CA2000: Dispose objects before losing scope (in tests you might not need to care about disposing or in some tests it might be impractical.)
-
-##########################################
 # Rules for Microsoft.VisualStudio.Threading.Analyzers
 # See https://github.com/microsoft/vs-threading/blob/main/doc/analyzers/index.md
 ##########################################
@@ -620,7 +614,6 @@ dotnet_diagnostic.RCS1196.severity = silent     # RCS1196: Call extension method
 dotnet_diagnostic.RCS1226.severity = none       # RCS1226: Add paragraph to documentation comment
 dotnet_diagnostic.RCS1228.severity = none       # RCS1228: Unused element in documentation comment
 dotnet_diagnostic.RCS1232.severity = none       # RCS1232: Order elements in documentation comment
-dotnet_diagnostic.RCS1243.severity = none       # RCS1243: Duplicate word in a comment
 
 ##########################################
 # Rules for StyleCop.Analyzers
