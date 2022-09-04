@@ -10,8 +10,41 @@ updates:
     labels:
       - 'dependabot'
       - 'bot:robot:'
+      - 'nuget'
     ignore:
-    # Ignored because the csproj using this  NuGet supports multiple target frameworks and dependabot does not handle this well.
-    # This NuGet needs to be manually updated for each target framework
+      # Ignored because the csproj using this  NuGet supports multiple target frameworks and dependabot does not handle this well.
+      # This NuGet needs to be manually updated for each target framework
       - dependency-name: "Microsoft.AspNetCore.Mvc.Testing"
+  - package-ecosystem: github-actions
+    directory: '.github/workflows'
+    schedule:
+      interval: "weekly"
+    labels:
+      - 'dependabot'
+      - 'bot:robot:'
+      - 'github-workflows:'
+  - package-ecosystem: github-actions
+    directory: '.github/actions/create-gh-status'
+    schedule:
+      interval: "weekly"
+    labels:
+      - 'dependabot'
+      - 'bot:robot:'
+      - 'github-custom-action'
+  - package-ecosystem: github-actions
+    directory: '.github/actions/create-nuget-release-flow-info-artifact'
+    schedule:
+      interval: "weekly"
+    labels:
+      - 'dependabot'
+      - 'bot:robot:'
+      - 'github-custom-action'
+  - package-ecosystem: github-actions
+    directory: '.github/actions/read-nuget-release-flow-info-artifact'
+    schedule:
+      interval: "weekly"
+    labels:
+      - 'dependabot'
+      - 'bot:robot:'
+      - 'github-custom-action'
 
