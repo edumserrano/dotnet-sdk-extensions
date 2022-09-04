@@ -176,25 +176,24 @@ public class TestHttpMessageHandlerTests
         // for some reason the exception returned by Should.ThrowAsync is missing the InnerException so
         // we are using the try/catch code as a workaround
         // I've raised an issue at https://github.com/shouldly/shouldly/issues/817
-        TaskCanceledException? expectedException = null;
         try
         {
             await httpClient.SendAsync(request);
         }
         catch (TaskCanceledException exception)
         {
-            expectedException = exception;
+            exception.ShouldNotBeNull("Expected TaskCanceledException but didn't get any.");
+            exception.ShouldBeOfType<TaskCanceledException>();
+#if NETCOREAPP3_1
+        exception.Message.ShouldBe("A task was canceled.");
+        exception.InnerException.ShouldBeNull();
+#else
+            exception.Message.ShouldBe("The request was canceled due to the configured HttpClient.Timeout of 0.25 seconds elapsing.");
+            exception.InnerException.ShouldBeOfType<TimeoutException>();
+            exception.InnerException.Message.ShouldBe("A task was canceled.");
+#endif
         }
 
-        expectedException.ShouldNotBeNull("Expected TaskCanceledException but didn't get any.");
-        expectedException.ShouldBeOfType<TaskCanceledException>();
-#if NETCOREAPP3_1
-        expectedException.Message.ShouldBe("A task was canceled.");
-        expectedException.InnerException.ShouldBeNull();
-#else
-        expectedException.Message.ShouldBe("The request was canceled due to the configured HttpClient.Timeout of 0.25 seconds elapsing.");
-        expectedException.InnerException.ShouldBeOfType<TimeoutException>();
-        expectedException.InnerException.Message.ShouldBe("A task was canceled.");
-#endif
+        Assert.Fail("Expected exception but didn't get one.");
     }
 }
