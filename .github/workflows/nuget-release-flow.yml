@@ -49,7 +49,7 @@ jobs:
         $headBranch = '${{ github.event.workflow_run.head_branch }}'
         Write-Output "::notice::This workflows was triggered by the completion of '$workflowRunName' with run id '$workflowRunId' on the branch '$headBranch'."
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v3.0.2
     - name: Read NuGet release flow info artifact
       id: nuget-flow-info
       uses: ./.github/actions/read-nuget-release-flow-info-artifact
@@ -68,9 +68,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v3.0.2
     - name: Find NuGet release flow comment
-      uses: peter-evans/find-comment@v2
+      uses: peter-evans/find-comment@v2.0.0
       id: find-nuget-release-flow-comment
       with:
         issue-number: '${{ needs.release-flow-args.outputs.issue-number }}'
@@ -250,7 +250,7 @@ jobs:
           publishNugetNodeStatus: '${{ steps.nuget-release-flow-info.outputs.publish-nuGet-node-status }}'
           publishNugetUrl: '${{ steps.nuget-release-flow-info.outputs.publish-nuGet-url }}'
     - name: Update issue with NuGet flow comment
-      uses: edumserrano/find-create-or-update-comment@v1
+      uses: edumserrano/find-create-or-update-comment@v1.0.0
       with:
         issue-number: ${{ needs.release-flow-args.outputs.issue-number }}
         body-includes: '<!-- nuget-release-flow -->'
@@ -269,7 +269,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v3.0.2
     - name: Download GitHub release info artifact
       uses: dawidd6/action-download-artifact@v2.23.0
       with:
@@ -296,7 +296,7 @@ jobs:
           nugetUrl: 'https://www.nuget.org/packages/${{ steps.github-release-info.outputs.nuget-id }}'
           gitHubReleaseUrl: '${{ steps.github-release-info.outputs.github-release-url }}'
     - name: Update issue with NuGet released comment
-      uses: edumserrano/find-create-or-update-comment@v1
+      uses: edumserrano/find-create-or-update-comment@v1.0.0
       with:
         issue-number: ${{ steps.github-release-info.outputs.issue-number }}
         body-includes: '<!-- nuget-released -->'

@@ -29,7 +29,7 @@ jobs:
     steps:
     - name: Run markdown link check log parser
       id: mlc-log-parser
-      uses: edumserrano/markdown-link-check-log-parser@v1.3
+      uses: edumserrano/markdown-link-check-log-parser@v1.3.0
       with:
         auth-token: '${{ secrets.GITHUB_TOKEN }}'
         repo: '${{ github.repository }}'
@@ -103,7 +103,7 @@ jobs:
       create-issue: ${{ steps.needs-issue-check.outputs.create-issue }}
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v3.0.2
       with:
         ref: ${{ env.WORKFLOW_HEAD_SHA }}
     - name: Check for open markdown link check issues
@@ -154,7 +154,7 @@ jobs:
       WORKFLOW_URL: ${{ needs.workflow-info.outputs.workflow-url }}
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v3.0.2
       with:
         ref: ${{ env.WORKFLOW_HEAD_SHA }}
     - name: Render issue body template
@@ -168,7 +168,7 @@ jobs:
           commitSha: ${{ env.WORKFLOW_HEAD_SHA }}
     - name: Run markdown link check log parser
       id: mlc-log-parser
-      uses: edumserrano/markdown-link-check-log-parser@v1.3
+      uses: edumserrano/markdown-link-check-log-parser@v1.3.0
       with:
         auth-token:  '${{ secrets.GITHUB_TOKEN }}'
         repo: '${{ github.repository }}'
@@ -208,7 +208,7 @@ jobs:
     steps:
     - name: Run markdown link check log parser
       id: mlc-log-parser
-      uses: edumserrano/markdown-link-check-log-parser@v1.3
+      uses: edumserrano/markdown-link-check-log-parser@v1.3.0
       with:
         auth-token:  '${{ secrets.GITHUB_TOKEN }}'
         repo: '${{ github.repository }}'
@@ -228,7 +228,7 @@ jobs:
         $commentBody = $commentBody -replace "`r","%0D"
         Write-Output "::set-output name=pr-comment-body::$commentBody"
     - name: Update PR with dotnet format result
-      uses: edumserrano/find-create-or-update-comment@v1
+      uses: edumserrano/find-create-or-update-comment@v1.0.0
       with:
         issue-number: ${{ needs.workflow-info.outputs.pr-number }}
         body-includes: '<!-- on-pr-markdown-link-check -->'

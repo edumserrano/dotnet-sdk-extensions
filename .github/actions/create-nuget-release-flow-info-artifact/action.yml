@@ -72,7 +72,7 @@ runs:
       $releaseFlowInfoAsJson | Out-File nuget-release-flow-info.md
       Get-Content nuget-release-flow-info.md
   - name: Upload release info
-    uses: actions/upload-artifact@v2
+    uses: actions/upload-artifact@v3.1.0.1.0
     with:
       name: nuget-release-flow-info
       path: nuget-release-flow-info.md

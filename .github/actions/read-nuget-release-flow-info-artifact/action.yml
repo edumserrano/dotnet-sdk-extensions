@@ -60,7 +60,7 @@ runs:
   using: "composite"
   steps:
   - name: Download NuGet release flow info artifact
-    uses: dawidd6/action-download-artifact@v2.17.0
+    uses: dawidd6/action-download-artifact@v2.23.0
     with:
       workflow: ${{ inputs.workflow-id }}
       name:  nuget-release-flow-info

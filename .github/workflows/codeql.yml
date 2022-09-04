@@ -44,13 +44,13 @@ jobs:
         GITHUB_CONTEXT: ${{ toJSON(github) }}
       run: $env:GITHUB_CONTEXT
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v3.0.2
     - name: Setup .NET
-      uses: actions/setup-dotnet@v2
+      uses: actions/setup-dotnet@v2.1.0
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
     - name: Cache/Restore NuGets
-      uses: actions/cache@v3
+      uses: actions/cache@v3.0.8
       with:
         path:
           ~/.nuget/packages
@@ -58,7 +58,7 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-nuget-
     - name: Initialize CodeQL
-      uses: github/codeql-action/init@v2
+      uses: github/codeql-action/init@v2.10.4
       with:
         languages: ${{ matrix.language }}
         queries: security-and-quality
@@ -67,9 +67,9 @@ jobs:
     - name: Build
       run: dotnet build ${{ env.SLN_FILEPATH }} -c Release -warnaserror --no-restore --no-incremental
     - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v2
+      uses: github/codeql-action/analyze@v2.10.4
     - name: Upload SARIF file
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v3.1.0
       with:
         name: csharp-sarif
         path: ${{runner.workspace}}/results/csharp.sarif

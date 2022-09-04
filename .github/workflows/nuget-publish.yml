@@ -48,7 +48,7 @@ jobs:
         GITHUB_CONTEXT: ${{ toJSON(github) }}
       run: $env:GITHUB_CONTEXT
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v3.0.2
     - name: Get release info run id from PR
       id: release-info
       if: github.event_name == 'pull_request'
@@ -144,7 +144,7 @@ jobs:
         STEP_OUTPUT: ${{ toJSON(steps.nuget-publish-info.outputs) }}
       run: $env:STEP_OUTPUT
     - name: Upload custom release notes
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v3.1.0
       with:
         name: ${{ env.CUSTOM_RELEASE_NOTES_ARTIFACT_NAME }}
         path: ${{ env.CUSTOM_RELEASE_NOTES_FILEPATH }}
@@ -196,7 +196,7 @@ jobs:
         Write-Output "::set-output name=nuget-symbols::$nugetSymbols"
     - name: Create GitHub release
       id: create-gh-release
-      uses: ncipollo/release-action@v1
+      uses: ncipollo/release-action@v1.10.0
       with:
         commit: ${{ needs.workflow-args.outputs.github-release-sha }}
         tag: ${{ needs.workflow-args.outputs.nuget-id }}-${{ needs.workflow-args.outputs.nuget-version }}
@@ -206,7 +206,7 @@ jobs:
         token: ${{ secrets.GITHUB_TOKEN }}
     - name: Publish NuGet and symbols
       id: nuget-push
-      uses: edumserrano/nuget-push@v1
+      uses: edumserrano/nuget-push@v1.1.0
       with:
         api-key: ${{ secrets.NUGET_PUSH_API_KEY }}
         nuget-package: '${{ steps.nuget-publish-info.outputs.nuget-package }}'
@@ -245,7 +245,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v3.0.2
     - name: Setup NuGet release flow info
       id: set-nuget-release-flow-info
       run: |
@@ -285,7 +285,7 @@ jobs:
         $githubReleaseAsJson | Out-File github-release-info.md
         Get-Content github-release-info.md
     - name: Upload GitHub release info
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v3.1.0
       with:
         name: github-release-info
         path: github-release-info.md

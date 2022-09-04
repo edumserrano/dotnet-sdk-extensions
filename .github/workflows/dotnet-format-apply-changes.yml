@@ -37,7 +37,7 @@ jobs:
         GITHUB_CONTEXT: ${{ toJSON(github) }}
       run: $env:GITHUB_CONTEXT
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v3.0.2
       with:
         ref: ${{ env.WORKFLOW_HEAD_SHA }}
     - name: Download dotnet format workflow info artifact
@@ -104,7 +104,7 @@ jobs:
       WORKFLOW_URL: ${{ needs.on-push-check.outputs.workflow-url }}
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v3.0.2
       with:
         ref: ${{ env.WORKFLOW_HEAD_SHA }}
     - name: Prepare commit info
@@ -222,7 +222,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v3.0.2
       with:
         ref: ${{ env.WORKFLOW_HEAD_SHA }}
         token: ${{ secrets.DOTNET_FORMAT_GH_TOKEN }}
@@ -255,7 +255,7 @@ jobs:
           pushedCommitSha: ${{ steps.dotnet-format-commit.outputs.commit-sha }}
           pushWorkflowUrl: 'https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}'
     - name: Update PR with dotnet format result
-      uses: edumserrano/find-create-or-update-comment@v1
+      uses: edumserrano/find-create-or-update-comment@v1.0.0
       with:
         issue-number: ${{ needs.on-pull-request-check.outputs.pr-number }}
         body-includes: '<!-- on-pr-dotnet-format -->'
@@ -277,7 +277,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v3.0.2
       with:
         ref: ${{ env.WORKFLOW_HEAD_SHA }}
     - name: Set status check data
