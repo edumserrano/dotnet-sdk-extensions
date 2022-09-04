@@ -58,14 +58,14 @@ public class RunUntilHostExtensionsWithSyncPredicateTests
     [Theory]
     [MemberData(nameof(ValidateArgumentsWithOptionsData))]
     public void ValidatesArgumentsWithOptions(
-        IHost host,
+        IHost? host,
         RunUntilPredicate predicate,
         Action<RunUntilOptions> configureOptions,
         Type exceptionType,
         string exceptionMessage)
     {
         var exception = Should.Throw(
-            actual: () => RunUntilExtensions.RunUntilAsync(host, predicate, configureOptions),
+            actual: () => host!.RunUntilAsync(predicate, configureOptions),
             exceptionType: exceptionType);
         exception.Message.ShouldBe(exceptionMessage);
         host?.Dispose();
