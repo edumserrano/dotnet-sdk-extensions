@@ -29,7 +29,7 @@ jobs:
     steps:
     - name: Run markdown link check log parser
       id: mlc-log-parser
-      uses: edumserrano/markdown-link-check-log-parser@v1.0
+      uses: edumserrano/markdown-link-check-log-parser@v1.3
       with:
         auth-token: '${{ secrets.GITHUB_TOKEN }}'
         repo: '${{ github.repository }}'
@@ -168,7 +168,7 @@ jobs:
           commitSha: ${{ env.WORKFLOW_HEAD_SHA }}
     - name: Run markdown link check log parser
       id: mlc-log-parser
-      uses: edumserrano/markdown-link-check-log-parser@v1.0
+      uses: edumserrano/markdown-link-check-log-parser@v1.3
       with:
         auth-token:  '${{ secrets.GITHUB_TOKEN }}'
         repo: '${{ github.repository }}'
@@ -208,7 +208,7 @@ jobs:
     steps:
     - name: Run markdown link check log parser
       id: mlc-log-parser
-      uses: edumserrano/markdown-link-check-log-parser@v1.0
+      uses: edumserrano/markdown-link-check-log-parser@v1.3
       with:
         auth-token:  '${{ secrets.GITHUB_TOKEN }}'
         repo: '${{ github.repository }}'
