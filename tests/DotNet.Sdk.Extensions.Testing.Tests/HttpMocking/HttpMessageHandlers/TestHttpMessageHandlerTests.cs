@@ -192,6 +192,7 @@ public class TestHttpMessageHandlerTests
             exception.InnerException.ShouldBeOfType<TimeoutException>();
             exception.InnerException.Message.ShouldBe("A task was canceled.");
 #endif
+            return;
         }
 
         Assert.Fail("Expected exception but didn't get one.");
