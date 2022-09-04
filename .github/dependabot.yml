@@ -8,10 +8,10 @@ updates:
     schedule:
       interval: "weekly"
     labels:
-    - 'dependabot'
-    - 'bot:robot:'
+      - 'dependabot'
+      - 'bot:robot:'
     ignore:
     # Ignored because the csproj using this  NuGet supports multiple target frameworks and dependabot does not handle this well.
     # This NuGet needs to be manually updated for each target framework
-    - dependency-name: "Microsoft.AspNetCore.Mvc.Testing"
+      - dependency-name: "Microsoft.AspNetCore.Mvc.Testing"
 
