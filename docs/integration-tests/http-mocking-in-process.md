@@ -168,7 +168,7 @@ usersHttpResponseMock
         return new HttpResponseMessage(HttpStatusCode.BadRequest);
     });
 
-    var adminsHttpResponseMock = new HttpResponseMessageMockDescriptorBuilder();
+var adminsHttpResponseMock = new HttpResponseMessageMockDescriptorBuilder();
     adminsHttpResponseMock
     .ForTypedClient<IMyApiClient>()
     .Where(HttpRequestMessage =>
