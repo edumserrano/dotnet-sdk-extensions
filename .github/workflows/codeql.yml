@@ -46,7 +46,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3.0.2
     - name: Setup .NET
-      uses: actions/setup-dotnet@v2.1.0
+      uses: actions/setup-dotnet@v2.1.1
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
     - name: Cache/Restore NuGets
