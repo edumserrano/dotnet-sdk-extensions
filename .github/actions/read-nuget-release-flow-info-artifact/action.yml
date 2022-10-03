@@ -59,30 +59,15 @@ outputs:
 runs:
   using: "composite"
   steps:
-  - name: Download NuGet release flow info artifact
-    uses: dawidd6/action-download-artifact@v2.23.0
-    with:
-      workflow: ${{ inputs.workflow-id }}
-      name:  nuget-release-flow-info
-      run_id: ${{ inputs.workflow-run-id }}
-  - name: Read NuGet release flow info artifact
+  - name: Read NuGet release flow info data
     id: nuget-release-flow-info
-    shell: pwsh
-    run: |
-      $releaseFlowInfo = Get-Content ./nuget-release-flow-info.md | ConvertFrom-Json
-      Write-Output "::set-output name=issue-number::$($releaseFlowInfo.issueNumber)"
-      Write-Output "::set-output name=nuget-id::$($releaseFlowInfo.nugetId)"
-      Write-Output "::set-output name=nuget-version::$($releaseFlowInfo.nugetVersion)"
-      Write-Output "::set-output name=nuget-release-status::$($releaseFlowInfo.nugetReleaseStatus)"
-      Write-Output "::set-output name=nuget-release-badge-color::$($releaseFlowInfo.nugetReleaseBadgeColor)"
-      Write-Output "::set-output name=issue-nuget-release-node-status::$($releaseFlowInfo.issueNugetReleaseNodeStatus)"
-      Write-Output "::set-output name=issue-nuget-release-url::$($releaseFlowInfo.issueNugetReleaseUrl)"
-      Write-Output "::set-output name=nuget-release-command-handler-node-status::$($releaseFlowInfo.nugetReleaseCommandHandlerNodeStatus)"
-      Write-Output "::set-output name=nuget-release-command-handler-url::$($releaseFlowInfo.nugetReleaseCommandHandlerUrl)"
-      Write-Output "::set-output name=nuget-release-pull-request-node-status::$($releaseFlowInfo.nugetReleasePullRequestNodeStatus)"
-      Write-Output "::set-output name=nuget-release-pull-request-url::$($releaseFlowInfo.nugetReleasePullRequestUrl)"
-      Write-Output "::set-output name=publish-nuget-node-status::$($releaseFlowInfo.publishNugetNodeStatus)"
-      Write-Output "::set-output name=publish-nuget-url::$($releaseFlowInfo.publishNugetUrl)"
+    uses: edumserrano/share-jobs-data@v1.0.0
+    with:
+      command: read-data-different-workflow
+      artifact-name: nuget-release-flow-info
+      data-filename: nuget-release-flow-info.json
+      run-id: ${{ inputs.workflow-run-id }}
+      output: github-step-json
   - name: Dump outputs from previous step
     shell: pwsh
     env:
