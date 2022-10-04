@@ -70,7 +70,7 @@ jobs:
       nuget-version: ${{ steps.setup-client-payload.outputs.nuget-version }}
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3.0.2
+      uses: actions/checkout@v3.1.0
     - uses: edumserrano/github-issue-forms-parser@v1.2.0
       id: issue-parser
       with:
@@ -131,7 +131,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3.0.2
+      uses: actions/checkout@v3.1.0
     - name: Setup NuGet release flow info
       id: set-nuget-release-flow-info
       run: |

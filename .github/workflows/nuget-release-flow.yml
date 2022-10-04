@@ -49,7 +49,7 @@ jobs:
         $headBranch = '${{ github.event.workflow_run.head_branch }}'
         Write-Output "::notice::This workflows was triggered by the completion of '$workflowRunName' with run id '$workflowRunId' on the branch '$headBranch'."
     - name: Checkout repository
-      uses: actions/checkout@v3.0.2
+      uses: actions/checkout@v3.1.0
     - name: Read NuGet release flow info artifact
       id: nuget-flow-info
       uses: ./.github/actions/read-nuget-release-flow-info-artifact
@@ -68,7 +68,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3.0.2
+      uses: actions/checkout@v3.1.0
     - name: Find NuGet release flow comment
       uses: peter-evans/find-comment@v2.0.0
       id: find-nuget-release-flow-comment
@@ -269,7 +269,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3.0.2
+      uses: actions/checkout@v3.1.0
     - name: Download GitHub release info artifact
       uses: dawidd6/action-download-artifact@v2.23.0
       with:

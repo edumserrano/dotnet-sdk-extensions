@@ -45,7 +45,7 @@ jobs:
         GITHUB_CONTEXT: ${{ toJSON(github) }}
       run: $env:GITHUB_CONTEXT
     - name: Checkout repository
-      uses: actions/checkout@v3.0.2
+      uses: actions/checkout@v3.1.0
     - name: Setup .NET
       uses: actions/setup-dotnet@v3.0.0
       with:
