@@ -61,7 +61,7 @@ jobs:
         GITHUB_CONTEXT: ${{ toJSON(github) }}
       run: $env:GITHUB_CONTEXT
     - name: Download markdown link check workflow info artifact
-      uses: dawidd6/action-download-artifact@v2.23.0
+      uses: dawidd6/action-download-artifact@v2.24.0
       with:
         workflow: ${{ github.event.workflow_run.workflow_id }}
         name:  ${{ env.MLC_WORKFLOW_INFO_ARTIFACT }}
