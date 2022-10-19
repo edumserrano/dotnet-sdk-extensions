@@ -70,7 +70,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3.1.0
     - name: Find NuGet release flow comment
-      uses: peter-evans/find-comment@v2.0.0
+      uses: peter-evans/find-comment@v2.0.1
       id: find-nuget-release-flow-comment
       with:
         issue-number: '${{ needs.release-flow-args.outputs.issue-number }}'
