@@ -114,7 +114,7 @@ jobs:
         $label = '${{ steps.setup-client-payload.outputs.nuget-id }}'
         gh issue edit ${{ needs.workflow-args.outputs.issue-number }} --add-label $label
     - name: Trigger NuGet release command via repository dispatch
-      uses: peter-evans/repository-dispatch@v2.0.0
+      uses: peter-evans/repository-dispatch@v2.1.0
       with:
         token: ${{ secrets.REPOSITORY_DISPATCH_GH_TOKEN }}
         repository: ${{ github.repository}}
