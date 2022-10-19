@@ -21,7 +21,7 @@ jobs:
         GITHUB_CONTEXT: ${{ toJSON(github) }}
       run: $env:GITHUB_CONTEXT
     - name: Issues - dispatch commands
-      uses: peter-evans/slash-command-dispatch@v3.0.0
+      uses: peter-evans/slash-command-dispatch@v3.0.1
       if: github.event.issue.state == 'open'
       with:
         issue-type: issue
