@@ -134,7 +134,7 @@ jobs:
         branch: ${{ steps.commit-info.outputs.branch-name }}
     - name: Render PR body template
       id: render-pr-body-template
-      uses: chuhlomin/render-template@v1.5
+      uses: chuhlomin/render-template@v1.6
       with:
         template: .github/workflows/templates/dotnet-format-apply-changes/dotnet-format-found-changes-pr-body.md
         vars: |
@@ -245,7 +245,7 @@ jobs:
           Write-Output "::set-output name=commit-sha::$commitSha"
     - name: Render comment template
       id: render-pr-comment-template
-      uses: chuhlomin/render-template@v1.5
+      uses: chuhlomin/render-template@v1.6
       with:
         template: .github/workflows/templates/dotnet-format-apply-changes/dotnet-format-found-changes-pr-comment.md
         vars: |

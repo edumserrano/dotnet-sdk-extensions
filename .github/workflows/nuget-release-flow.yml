@@ -233,7 +233,7 @@ jobs:
       run: $env:STEP_OUTPUT
     - name: Render issue comment template
       id: render-issue-comment-template
-      uses: chuhlomin/render-template@v1.5
+      uses: chuhlomin/render-template@v1.6
       with:
         template: .github/workflows/templates/nuget-release-flow/nuget-release-flow-issue-comment.md
         vars: |
@@ -287,7 +287,7 @@ jobs:
         Write-Output "::set-output name=github-release-url::$($githubReleaseInfo.githubReleaseUrl)"
     - name: Render close issue comment template
       id: render-issue-comment-template
-      uses: chuhlomin/render-template@v1.5
+      uses: chuhlomin/render-template@v1.6
       with:
         template: .github/workflows/templates/nuget-release-flow/nuget-released-successfully-issue-comment.md
         vars: |
