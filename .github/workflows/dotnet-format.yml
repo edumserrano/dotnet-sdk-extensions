@@ -87,7 +87,7 @@ jobs:
             Remove-Item -Force
     - name: Upload files changed by dotnet format
       if: steps.dotnet-format-parse.outputs.has-changes == 'true'
-      uses: actions/upload-artifact@v3.1.0
+      uses: actions/upload-artifact@v3.1.1
       with:
         name: dotnet-format-files
         path: ${{ github.workspace }}
@@ -117,7 +117,7 @@ jobs:
         $bodyAsJson > ${{ env.WORKFLOW_INFO_ARTIFACT_FILEPATH }}
         cat ${{ env.WORKFLOW_INFO_ARTIFACT_FILEPATH }}
     - name: Upload workflow info
-      uses: actions/upload-artifact@v3.1.0
+      uses: actions/upload-artifact@v3.1.1
       with:
         name: dotnet-format-workflow-info
         path: ${{ env.WORKFLOW_INFO_ARTIFACT_FILEPATH }}
