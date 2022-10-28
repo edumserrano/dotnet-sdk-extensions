@@ -159,7 +159,7 @@ jobs:
         ref: ${{ env.WORKFLOW_HEAD_SHA }}
     - name: Render issue body template
       id: render-issue-body-template
-      uses: chuhlomin/render-template@v1.5
+      uses: chuhlomin/render-template@v1.6
       with:
         template: .github/workflows/templates/markdown-link-check-broken-links/broken-links-found-issue-body.md
         vars: |
