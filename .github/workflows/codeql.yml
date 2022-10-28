@@ -69,7 +69,7 @@ jobs:
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v2.1.28
     - name: Upload SARIF file
-      uses: actions/upload-artifact@v3.1.0
+      uses: actions/upload-artifact@v3.1.1
       with:
         name: csharp-sarif
         path: ${{runner.workspace}}/results/csharp.sarif

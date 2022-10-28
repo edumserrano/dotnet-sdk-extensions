@@ -193,7 +193,7 @@ jobs:
         $releaseNotes > ${{ env.RELEASE_NOTES_ARTIFACT_FILEPATH }}
         cat ${{ env.RELEASE_NOTES_ARTIFACT_FILEPATH }}
     - name: Upload release notes
-      uses: actions/upload-artifact@v3.1.0
+      uses: actions/upload-artifact@v3.1.1
       with:
         name: nuget-release-notes
         path: ${{ env.RELEASE_NOTES_ARTIFACT_FILEPATH }}
@@ -209,7 +209,7 @@ jobs:
         $releaseInfoAsJson > ${{ env.RELEASE_INFO_ARTIFACT_FILEPATH }}
         cat ${{ env.RELEASE_INFO_ARTIFACT_FILEPATH }}
     - name: Upload release info
-      uses: actions/upload-artifact@v3.1.0
+      uses: actions/upload-artifact@v3.1.1
       with:
         name: nuget-release-info
         path: ${{ env.RELEASE_INFO_ARTIFACT_FILEPATH }}
