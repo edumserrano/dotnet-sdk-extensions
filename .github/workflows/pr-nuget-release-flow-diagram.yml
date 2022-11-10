@@ -37,7 +37,7 @@ jobs:
         Write-Output "run-id=$runId"
         Write-Output "::set-output name=run-id::$runId"
     - name: Download NuGet release info artifact
-      uses: dawidd6/action-download-artifact@v2.24.0
+      uses: dawidd6/action-download-artifact@v2.24.2
       with:
         workflow: nuget-release-command-handler.yml
         name:  nuget-release-info
