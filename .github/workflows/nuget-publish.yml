@@ -196,7 +196,7 @@ jobs:
         Write-Output "::set-output name=nuget-symbols::$nugetSymbols"
     - name: Create GitHub release
       id: create-gh-release
-      uses: ncipollo/release-action@v1.11.1
+      uses: ncipollo/release-action@v1.11.2
       with:
         commit: ${{ needs.workflow-args.outputs.github-release-sha }}
         tag: ${{ needs.workflow-args.outputs.nuget-id }}-${{ needs.workflow-args.outputs.nuget-version }}
