@@ -121,7 +121,7 @@ public class HttpResponseMessageMockBuilderTests
     public void ResponseConfigurationIsMandatory()
     {
         var builder = new HttpResponseMessageMockBuilder();
-        var exception = Should.Throw<InvalidOperationException>(() => builder.Build());
+        var exception = Should.Throw<InvalidOperationException>(builder.Build);
         exception.Message.ShouldBe("Response behavior not configured for HttpResponseMock. Use HttpResponseMessageMockBuilder.RespondWith or HttpResponseMessageMockBuilder.TimesOut to configure it.");
     }
 }

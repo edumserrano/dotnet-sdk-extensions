@@ -1,6 +1,6 @@
 namespace DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker.Events;
 
-internal class DefaultCircuitBreakerPolicyEventHandler : ICircuitBreakerPolicyEventHandler
+internal sealed class DefaultCircuitBreakerPolicyEventHandler : ICircuitBreakerPolicyEventHandler
 {
     public Task OnBreakAsync(BreakEvent breakEvent)
     {
