@@ -1,6 +1,6 @@
 namespace DotNet.Sdk.Extensions.Polly.Http.Retry.Events;
 
-internal class DefaultRetryPolicyEventHandler : IRetryPolicyEventHandler
+internal sealed class DefaultRetryPolicyEventHandler : IRetryPolicyEventHandler
 {
     public Task OnRetryAsync(RetryEvent retryEvent)
     {

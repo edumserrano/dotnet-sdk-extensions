@@ -10,7 +10,7 @@ internal static class FallbackPolicyAsserterExtensions
     }
 }
 
-internal class FallbackPolicyAsserter
+internal sealed class FallbackPolicyAsserter
 {
     private readonly HttpClient _httpClient;
     private readonly TestHttpMessageHandler _testHttpMessageHandler;
