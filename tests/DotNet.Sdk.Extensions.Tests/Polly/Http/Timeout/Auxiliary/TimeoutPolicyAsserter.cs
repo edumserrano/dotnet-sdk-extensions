@@ -11,7 +11,7 @@ internal static class TimeoutPolicyAsserterExtensions
     }
 }
 
-internal class TimeoutPolicyAsserter
+internal sealed class TimeoutPolicyAsserter
 {
     private readonly HttpClient _httpClient;
     private readonly TimeoutOptions _options;

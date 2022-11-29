@@ -2,7 +2,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers.Res
 
 [SuppressMessage("Performance", "CA1812:Avoid uninstantiated internal classes", Justification = "Ignore for Startup type classes. Used as generic type param.")]
 [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Ignore for Startup type classes.")]
-internal class HttpMockServerStartup
+internal sealed class HttpMockServerStartup
 {
     public void ConfigureServices(IServiceCollection services)
     {

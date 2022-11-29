@@ -1,7 +1,7 @@
 namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess.Auxiliary.Timeout;
 
 [SuppressMessage("Performance", "CA1812:Avoid uninstantiated internal classes", Justification = "Used as generic type param.")]
-internal class ExceptionService
+internal sealed class ExceptionService
 {
     private readonly List<Exception> _exceptions = new List<Exception>();
 
