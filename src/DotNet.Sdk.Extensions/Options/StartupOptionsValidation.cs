@@ -1,7 +1,7 @@
 namespace DotNet.Sdk.Extensions.Options;
 
 [SuppressMessage("Performance", "CA1812:Avoid uninstantiated internal classes", Justification = "Ignore for IStartupFilter implementations. Used as generic type param.")]
-internal class StartupOptionsValidation<T> : IStartupFilter
+internal sealed class StartupOptionsValidation<T> : IStartupFilter
 {
     public Action<IApplicationBuilder> Configure(Action<IApplicationBuilder> next)
     {
