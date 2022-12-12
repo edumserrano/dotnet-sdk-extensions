@@ -1,6 +1,6 @@
 namespace DotNet.Sdk.Extensions.Polly.Http.Resilience.Events;
 
-internal class DefaultResiliencePoliciesEventHandler : IResiliencePoliciesEventHandler
+internal sealed class DefaultResiliencePoliciesEventHandler : IResiliencePoliciesEventHandler
 {
     public Task OnTimeoutAsync(TimeoutEvent timeoutEvent)
     {

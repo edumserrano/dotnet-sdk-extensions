@@ -1,6 +1,6 @@
 namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Auxiliary;
 
-internal class NumberOfCallsDelegatingHandler : DelegatingHandler
+internal sealed class NumberOfCallsDelegatingHandler : DelegatingHandler
 {
     public int NumberOfHttpRequests { get; private set; }
 

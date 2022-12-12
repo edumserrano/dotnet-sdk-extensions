@@ -1,6 +1,6 @@
 namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Auxiliary;
 
-internal class ResiliencePolicies
+internal sealed class ResiliencePolicies
 {
     public ResiliencePolicies(List<PolicyHttpMessageHandler> policyHttpMessageHandlers)
     {

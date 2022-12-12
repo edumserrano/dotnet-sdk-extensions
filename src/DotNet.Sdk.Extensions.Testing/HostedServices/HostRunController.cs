@@ -1,6 +1,6 @@
 namespace DotNet.Sdk.Extensions.Testing.HostedServices;
 
-internal class HostRunController
+internal sealed class HostRunController
 {
     private readonly RunUntilOptions _options;
 
