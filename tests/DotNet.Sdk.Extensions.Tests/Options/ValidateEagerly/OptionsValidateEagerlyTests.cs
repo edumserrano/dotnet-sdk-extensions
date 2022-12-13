@@ -18,7 +18,7 @@ public class OptionsValidateEagerlyTests
 
     [SuppressMessage("Performance", "CA1812:Avoid uninstantiated internal classes", Justification = "Ignore for Options types. Used as generic type param.")]
     // ReSharper disable once ClassNeverInstantiated.Local
-    private class SomeOptions
+    private sealed class SomeOptions
     {
         public string? Value { get; set; }
     }

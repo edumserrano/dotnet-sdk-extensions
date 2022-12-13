@@ -9,7 +9,7 @@ internal abstract class HostRunner : IDisposable
     public abstract void Dispose();
 }
 
-internal class DefaultHostRunner : HostRunner
+internal sealed class DefaultHostRunner : HostRunner
 {
     private readonly IHost _host;
 
@@ -34,7 +34,7 @@ internal class DefaultHostRunner : HostRunner
     }
 }
 
-internal class WebApplicationFactoryHostRunner<T> : HostRunner
+internal sealed class WebApplicationFactoryHostRunner<T> : HostRunner
     where T : class
 {
     private readonly WebApplicationFactory<T> _webApplicationFactory;

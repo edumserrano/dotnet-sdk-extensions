@@ -111,7 +111,7 @@ public class AddOptionsValueTests
         optionsBuilderArgumentNullException.Message.ShouldBe("Value cannot be null. (Parameter 'optionsBuilder')");
     }
 
-    private class MyOptions
+    private sealed class MyOptions
     {
         public string? SomeOption { get; set; }
     }

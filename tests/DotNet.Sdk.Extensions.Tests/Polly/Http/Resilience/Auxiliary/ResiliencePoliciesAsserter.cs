@@ -18,7 +18,7 @@ internal static class ResiliencePoliciesAsserterExtensions
 /// This is done in this way because the Resilience Policies is a wrapped policy for several policies
 /// that have their own tests so we can re-use the assertion logic from those tests.
 /// </summary>
-internal class ResiliencePoliciesAsserter
+internal sealed class ResiliencePoliciesAsserter
 {
     public ResiliencePoliciesAsserter(
         HttpClient httpClient,
