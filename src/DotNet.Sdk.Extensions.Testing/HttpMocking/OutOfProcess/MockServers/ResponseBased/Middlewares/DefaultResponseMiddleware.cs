@@ -14,7 +14,7 @@ internal static class DefaultResponseMiddlewareExtensions
 }
 
 [SuppressMessage("Performance", "CA1812:Avoid uninstantiated internal classes", Justification = "Ignore for IMiddleware implementations. Used as generic type param.")]
-internal class DefaultResponseMiddleware : IMiddleware
+internal sealed class DefaultResponseMiddleware : IMiddleware
 {
     public Task InvokeAsync(HttpContext context, RequestDelegate next)
     {

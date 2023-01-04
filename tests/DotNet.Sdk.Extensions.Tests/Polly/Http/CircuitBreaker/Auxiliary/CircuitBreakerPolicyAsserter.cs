@@ -11,7 +11,7 @@ internal static class CircuitBreakerPolicyAsserterExtensions
     }
 }
 
-internal class CircuitBreakerPolicyAsserter
+internal sealed class CircuitBreakerPolicyAsserter
 {
     private readonly HttpClient _httpClient;
     private readonly CircuitBreakerOptions _options;
