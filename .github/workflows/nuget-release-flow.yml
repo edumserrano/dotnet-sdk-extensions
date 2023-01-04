@@ -271,7 +271,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3.1.0
     - name: Download GitHub release info artifact
-      uses: dawidd6/action-download-artifact@v2.24.0
+      uses: dawidd6/action-download-artifact@v2.24.3
       with:
         workflow: ${{ github.event.workflow_run.workflow_id }}
         name:  github-release-info
