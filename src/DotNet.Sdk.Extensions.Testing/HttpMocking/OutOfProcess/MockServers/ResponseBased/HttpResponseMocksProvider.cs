@@ -1,6 +1,6 @@
 namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers.ResponseBased;
 
-internal class HttpResponseMocksProvider
+internal sealed class HttpResponseMocksProvider
 {
     public HttpResponseMocksProvider(IReadOnlyCollection<HttpResponseMock> httpResponseMocks)
     {
