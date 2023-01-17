@@ -1,6 +1,6 @@
 namespace DotNet.Sdk.Extensions.Testing.HttpMocking.InProcess.ResponseMocking;
 
-internal class TestHttpMessageHandlerDescriptor
+internal sealed class TestHttpMessageHandlerDescriptor
 {
     public TestHttpMessageHandlerDescriptor(string httpClientName, TestHttpMessageHandler httpMessageHandler)
     {
