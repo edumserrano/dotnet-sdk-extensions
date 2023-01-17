@@ -33,7 +33,7 @@ public class StartupBasedHttpMockServerBuilderTests
     /// </summary>
     [SuppressMessage("Performance", "CA1812:Avoid uninstantiated internal classes", Justification = "Ignore for Startup type classes. Used as generic type param.")]
     [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Ignore for Startup type classes.")]
-    private class MyMockStartup
+    private sealed class MyMockStartup
     {
 #pragma warning disable IDE0060 // Remove unused parameter
 #pragma warning disable RCS1163 // Unused parameter
