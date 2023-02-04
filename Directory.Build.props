@@ -15,8 +15,8 @@
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <!-- .NET code quality analysis is only enabled by default for projects that target .NET 5.0 or later. https://docs.microsoft.com/en-us/dotnet/core/project-sdk/msbuild-props#enablenetanalyzers -->
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
-    <!-- Temporarily ignore errors from dotnet target framework being out of support. When I decide to stop supporting older frameworks I need to remove this WarningsNotAsErrors settings -->
-    <WarningsNotAsErrors>1138</WarningsNotAsErrors>
+    <!-- Temporarily ignore warnings from dotnet target framework being out of support. When I decide to stop supporting older frameworks I need to remove this setting. For more info see https://andrewlock.net/fixing-build-warning-netsdk1138-when-building-end-of-life-projects-with-dotnet-5/ -->
+    <CheckEolTargetFramework>false</CheckEolTargetFramework>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.3.48">
