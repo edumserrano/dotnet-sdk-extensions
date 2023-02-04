@@ -11,7 +11,7 @@ internal static class RetryPolicyAsserterExtensions
     }
 }
 
-internal class RetryPolicyAsserter
+internal sealed class RetryPolicyAsserter
 {
     private readonly HttpClient _httpClient;
     private readonly RetryOptions _options;
