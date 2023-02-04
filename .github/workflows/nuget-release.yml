@@ -71,7 +71,7 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3.1.0
-    - uses: edumserrano/github-issue-forms-parser@v1.2.0
+    - uses: edumserrano/github-issue-forms-parser@v1
       id: issue-parser
       with:
         template-filepath: .github/ISSUE_TEMPLATE/nuget-release.yml

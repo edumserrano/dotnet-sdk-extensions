@@ -255,7 +255,7 @@ jobs:
           pushedCommitSha: ${{ steps.dotnet-format-commit.outputs.commit-sha }}
           pushWorkflowUrl: 'https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}'
     - name: Update PR with dotnet format result
-      uses: edumserrano/find-create-or-update-comment@v1.0.0
+      uses: edumserrano/find-create-or-update-comment@v1
       with:
         issue-number: ${{ needs.on-pull-request-check.outputs.pr-number }}
         body-includes: '<!-- on-pr-dotnet-format -->'

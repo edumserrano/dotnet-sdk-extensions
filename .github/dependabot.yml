@@ -24,7 +24,7 @@ updates:
     labels:
       - 'dependabot'
       - 'bot:robot:'
-      - 'github-workflows:'
+      - 'github-workflows'
   - package-ecosystem: github-actions
     directory: '.github/actions/create-gh-status'
     schedule:

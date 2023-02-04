@@ -250,7 +250,7 @@ jobs:
           publishNugetNodeStatus: '${{ steps.nuget-release-flow-info.outputs.publish-nuGet-node-status }}'
           publishNugetUrl: '${{ steps.nuget-release-flow-info.outputs.publish-nuGet-url }}'
     - name: Update issue with NuGet flow comment
-      uses: edumserrano/find-create-or-update-comment@v1.0.0
+      uses: edumserrano/find-create-or-update-comment@v1
       with:
         issue-number: ${{ needs.release-flow-args.outputs.issue-number }}
         body-includes: '<!-- nuget-release-flow -->'
@@ -296,7 +296,7 @@ jobs:
           nugetUrl: 'https://www.nuget.org/packages/${{ steps.github-release-info.outputs.nuget-id }}'
           gitHubReleaseUrl: '${{ steps.github-release-info.outputs.github-release-url }}'
     - name: Update issue with NuGet released comment
-      uses: edumserrano/find-create-or-update-comment@v1.0.0
+      uses: edumserrano/find-create-or-update-comment@v1
       with:
         issue-number: ${{ steps.github-release-info.outputs.issue-number }}
         body-includes: '<!-- nuget-released -->'

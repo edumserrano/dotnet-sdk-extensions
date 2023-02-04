@@ -56,7 +56,7 @@ runs:
         $sha = $response.head.sha
         Write-Output "::set-output name=pr-sha::$sha"
         Write-Output "PR head sha is $sha"
-    - name: Dump 'Get Pull request SHA' step outputs
+    - name: Dump outputs from previous step
       shell: pwsh
       run: |
         Write-Output '${{ toJson(steps.get-pr-sha.outputs) }}'
