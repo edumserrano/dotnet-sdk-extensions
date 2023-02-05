@@ -89,7 +89,7 @@ public class HttpResponseMockBuilderTests
     public void RespondWithIsMandatory()
     {
         var builder = new HttpResponseMockBuilder();
-        var exception = Should.Throw<InvalidOperationException>(() => builder.Build());
+        var exception = Should.Throw<InvalidOperationException>(builder.Build);
         exception.Message.ShouldBe("HttpResponse not configured for HttpResponseMock. Use HttpResponseMockBuilder.RespondWith to configure it.");
     }
 }
