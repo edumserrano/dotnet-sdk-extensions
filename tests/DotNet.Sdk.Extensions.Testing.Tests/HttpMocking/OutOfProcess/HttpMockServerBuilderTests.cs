@@ -50,19 +50,19 @@ public class HttpMockServerBuilderTests
         var runtimeMajorVersion = Environment.Version.Major;
         await using var httpMockServer = new HttpMockServerBuilder()
             .UseDefaultLogLevel(LogLevel.Critical)
-            .UseUrl(HttpScheme.Http, 9011 + runtimeMajorVersion)
-            .UseUrl(HttpScheme.Http, 9012 + runtimeMajorVersion)
-            .UseUrl(HttpScheme.Https, 9022 + runtimeMajorVersion)
-            .UseUrl(HttpScheme.Https, 9023 + runtimeMajorVersion)
+            .UseUrl(HttpScheme.Http, 9020 + runtimeMajorVersion)
+            .UseUrl(HttpScheme.Http, 9030 + runtimeMajorVersion)
+            .UseUrl(HttpScheme.Https, 9040 + runtimeMajorVersion)
+            .UseUrl(HttpScheme.Https, 9050 + runtimeMajorVersion)
             .UseHttpResponseMocks()
             .Build();
         var urls = await httpMockServer.StartAsync();
 
         urls.Count.ShouldBe(4);
-        urls[0].ToString().ShouldBe($"http://localhost:{9011 + runtimeMajorVersion}");
-        urls[1].ToString().ShouldBe($"http://localhost:{9012 + runtimeMajorVersion}");
-        urls[2].ToString().ShouldBe($"https://localhost:{9022 + runtimeMajorVersion}");
-        urls[3].ToString().ShouldBe($"https://localhost:{9023 + runtimeMajorVersion}");
+        urls[0].ToString().ShouldBe($"http://localhost:{9020 + runtimeMajorVersion}");
+        urls[1].ToString().ShouldBe($"http://localhost:{9030 + runtimeMajorVersion}");
+        urls[2].ToString().ShouldBe($"https://localhost:{9040 + runtimeMajorVersion}");
+        urls[3].ToString().ShouldBe($"https://localhost:{9050 + runtimeMajorVersion}");
     }
 
     /// <summary>
@@ -77,14 +77,14 @@ public class HttpMockServerBuilderTests
         var runtimeMajorVersion = Environment.Version.Major;
         await using var httpMockServer = new HttpMockServerBuilder()
             .UseDefaultLogLevel(LogLevel.Critical)
-            .UseHostArgs("--urls", $"http://*:{9041 + runtimeMajorVersion};https://*:{9052 + runtimeMajorVersion}")
+            .UseHostArgs("--urls", $"http://*:{9060 + runtimeMajorVersion};https://*:{9070 + runtimeMajorVersion}")
             .UseHttpResponseMocks()
             .Build();
         var urls = await httpMockServer.StartAsync();
 
         urls.Count.ShouldBe(2);
-        urls[0].ToString().ShouldBe($"http://localhost:{9041 + runtimeMajorVersion}");
-        urls[1].ToString().ShouldBe($"https://localhost:{9052 + runtimeMajorVersion}");
+        urls[0].ToString().ShouldBe($"http://localhost:{9060 + runtimeMajorVersion}");
+        urls[1].ToString().ShouldBe($"https://localhost:{9070 + runtimeMajorVersion}");
     }
 
     /// <summary>
@@ -146,7 +146,7 @@ public class HttpMockServerBuilderTests
         {
             new HttpMockServerBuilder()
                 .UseUrl(HttpScheme.Http, 7777)
-                .UseHostArgs("--urls", $"http://*:{9061 + runtimeMajorVersion};https://*:{9071 + runtimeMajorVersion}")
+                .UseHostArgs("--urls", $"http://*:{9080 + runtimeMajorVersion};https://*:{9090 + runtimeMajorVersion}")
                 .UseHttpResponseMocks()
                 .Build();
         });

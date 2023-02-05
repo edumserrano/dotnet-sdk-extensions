@@ -42,9 +42,9 @@ public class AddOptionsValueTests
     {
         var memoryConfigurationSource = new MemoryConfigurationSource
         {
-            InitialData = new List<KeyValuePair<string, string>>
+            InitialData = new List<KeyValuePair<string, string?>>
             {
-                new KeyValuePair<string, string>("MyOptionsSection:SomeOption", "some value"),
+                new KeyValuePair<string, string?>("MyOptionsSection:SomeOption", "some value"),
             },
         };
         var memoryConfigurationProvider = new MemoryConfigurationProvider(memoryConfigurationSource);
