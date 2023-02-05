@@ -15,6 +15,7 @@ updates:
       # Ignored because the csproj using this  NuGet supports multiple target frameworks and dependabot does not handle this well.
       # This NuGet needs to be manually updated for each target framework
       - dependency-name: "Microsoft.AspNetCore.Mvc.Testing"
+      - dependency-name: "Microsoft.Extensions.Http.Polly"
   - package-ecosystem: github-actions
     # Workflow files stored in the
     # default location of `.github/workflows`
