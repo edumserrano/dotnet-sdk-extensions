@@ -51,7 +51,7 @@ runs:
   using: "composite"
   steps:
   - name: Set NuGet release flow info data
-    uses: edumserrano/share-jobs-data@v1.0.0
+    uses: edumserrano/share-jobs-data@v1
     with:
       command: set-data
       artifact-name: nuget-release-flow-info

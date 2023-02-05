@@ -61,7 +61,7 @@ runs:
   steps:
   - name: Read NuGet release flow info data
     id: nuget-release-flow-info
-    uses: edumserrano/share-jobs-data@v1.0.0
+    uses: edumserrano/share-jobs-data@v1
     with:
       command: read-data-different-workflow
       artifact-name: nuget-release-flow-info

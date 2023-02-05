@@ -45,16 +45,16 @@ jobs:
         GITHUB_CONTEXT: ${{ toJSON(github) }}
       run: $env:GITHUB_CONTEXT
     - name: Checkout repository
-      uses: actions/checkout@v3.1.0
+      uses: actions/checkout@v3
     - name: Setup .NET
-      uses: actions/setup-dotnet@v3.0.3
+      uses: actions/setup-dotnet@v3
       with:
         dotnet-version: |
           3.1.x
           5.0.x
           6.0.x
     - name: Cache/Restore NuGets
-      uses: actions/cache@v3.0.11
+      uses: actions/cache@v3
       with:
         path:
           ~/.nuget/packages
@@ -103,7 +103,7 @@ jobs:
       run: dotnet pack ${{ env.TESTING_EXTENSIONS_CSPROJ_FILEPATH }} -c Release --no-build
     - name: Upload NuGets and symbols to artifacts
       id: upload-nuget-artifacts
-      uses: actions/upload-artifact@v3.1.1
+      uses: actions/upload-artifact@v3
       if: matrix.os == 'ubuntu-latest'  # this job is on a matrix run but I only want to upload NuGets as artifacts once
       with:
         name: ${{ env.NUGET_ARTIFACT_NAME }}
@@ -122,7 +122,7 @@ jobs:
       run: |
         Write-Output "::notice title=NuGets::You can download the NuGet packages and symbols from the worfklow artifact named: ${{ env.NUGET_ARTIFACT_NAME }}."
     - name: Upload test coverage to Codecov
-      uses: codecov/codecov-action@v3.1.1
+      uses: codecov/codecov-action@v3
       if: matrix.os == 'ubuntu-latest'  # this job is on a matrix run but I only want to upload code coverage to Codecov once
       with:
         files: ${{ env.TEST_COVERAGE_FILE }}
@@ -136,7 +136,7 @@ jobs:
           -reportTypes:htmlInline
     - name: Upload code coverage report to artifacts
       if: (steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure') && always()
-      uses: actions/upload-artifact@v3.1.1
+      uses: actions/upload-artifact@v3
       with:
         name: ${{ env.CODE_COVERAGE_ARTIFACT_NAME }}
         path: ${{ env.TEST_COVERAGE_REPORT_DIR }}
@@ -171,7 +171,7 @@ jobs:
         }
     - name: Upload test results to artifacts
       if: (steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure') && always()
-      uses: actions/upload-artifact@v3.1.1
+      uses: actions/upload-artifact@v3
       with:
         name: ${{ env.TEST_RESULTS_ARTIFACT_NAME }}
         path: ${{ steps.dotnet-test.outputs.test-results-dir }}
