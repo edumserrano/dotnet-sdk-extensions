@@ -1,6 +1,6 @@
 namespace DotNet.Sdk.Extensions.Polly.Http.Fallback.Events;
 
-internal class DefaultFallbackPolicyEventHandler : IFallbackPolicyEventHandler
+internal sealed class DefaultFallbackPolicyEventHandler : IFallbackPolicyEventHandler
 {
     public Task OnHttpRequestExceptionFallbackAsync(FallbackEvent fallbackEvent)
     {
