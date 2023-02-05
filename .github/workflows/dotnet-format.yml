@@ -62,7 +62,7 @@ jobs:
         $filePaths = $dotnetFormatReport.FilePath | Get-Unique
         $dotnetFormatHasChanges =  $filePaths.Count -ne 0
         $dotnetFormatHasChangesAsString =  $dotnetFormatHasChanges.ToString()
-        Write-Output "::set-output name=has-changes::$dotnetFormatHasChangesAsString"
+        Write-Output "has-changes=$dotnetFormatHasChangesAsString" >> $env:GITHUB_OUTPUT
     - name: Delete all files without dotnet format changes
       if: steps.dotnet-format-parse.outputs.has-changes == 'true'
       run: |

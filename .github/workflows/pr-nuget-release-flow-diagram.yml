@@ -35,7 +35,7 @@ jobs:
         $nugetReleaseInfoWorkflowUrl = $nugetReleaseInfoStatus.target_url
         $runId = $nugetReleaseInfoWorkflowUrl.Split("/")[-1]
         Write-Output "run-id=$runId"
-        Write-Output "::set-output name=run-id::$runId"
+        Write-Output "run-id=$runId" >> $env:GITHUB_OUTPUT
     - name: Download NuGet release info artifact
       uses: dawidd6/action-download-artifact@v2
       with:
@@ -61,10 +61,10 @@ jobs:
         $nugetInfo = $nugetInfoJson | ConvertFrom-Json
         $issueNumber = $nugetInfo.issueNumber
 
-        Write-Output "::set-output name=issue-number::$issueNumber"
-        Write-Output "::set-output name=nuget-release-status::$releaseStatus"
-        Write-Output "::set-output name=nuget-release-badge-color::$releaseBadgeColor"
-        Write-Output "::set-output name=nuget-release-pull-request-node-status::$workflowStatus"
+        Write-Output "issue-number=$issueNumber" >> $env:GITHUB_OUTPUT
+        Write-Output "nuget-release-status=$releaseStatus" >> $env:GITHUB_OUTPUT
+        Write-Output "nuget-release-badge-color=$releaseBadgeColor" >> $env:GITHUB_OUTPUT
+        Write-Output "nuget-release-pull-request-node-status=$workflowStatus" >> $env:GITHUB_OUTPUT
     - name: Upload NuGet release flow info artifact
       uses: ./.github/actions/create-nuget-release-flow-info-artifact
       with:

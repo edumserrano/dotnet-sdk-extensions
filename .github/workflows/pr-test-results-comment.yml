@@ -45,10 +45,12 @@ jobs:
       run: |
         $commentBody = "# [Test runs on ${{ matrix.os }}](${{ github.event.workflow_run.html_url }}) for commit ${{ github.event.workflow_run.head_sha }}`n`n"
         $commentBody += Get-Content ./${{ env.TEST_RESULTS_ARTIFACT_NAME }}/*.md -Raw # without the -Raw the escaping that happens next does not work. Not sure why.
-        # The content must be escaped to preserve newlines. See https://github.community/t/set-output-truncates-multiline-strings/16852/3
-        $commentBody = $commentBody -replace "`n","%0A"
-        $commentBody = $commentBody -replace "`r","%0D"
-        Write-Output "::set-output name=pr-comment-body::$commentBody"
+
+        $random = Get-Random
+        $delimiter = "EOF_$random"
+        Write-Output "pr-comment-body<<$delimiter" >> $env:GITHUB_OUTPUT
+        Write-Output $commentBody >> $env:GITHUB_OUTPUT
+        Write-Output $delimiter >> $env:GITHUB_OUTPUT
     - name: Update PR with test results
       uses: edumserrano/find-create-or-update-comment@v1
       with:

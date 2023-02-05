@@ -36,7 +36,7 @@ jobs:
         $nugetId = "${{ github.event.client_payload.nugetId }}"
         $openPullRequestsResult = gh pr list --state open --label ${{ env.NUGET_RELEASE_LABEL }} --label $nugetId
         $canCreatePr = [string]::IsNullOrEmpty($openPullRequestsResult)
-        Write-Output "::set-output name=can-create-pr::$canCreatePr"
+        Write-Output "can-create-pr=$canCreatePr" >> $env:GITHUB_OUTPUT
     - name: Log info
       run: |
         $nugetId = "${{ github.event.client_payload.nugetId }}"
@@ -79,10 +79,10 @@ jobs:
         Write-Output "nuget-new-version=$nugetNewVersion"
         Write-Output "nuget-url=$nugetUrl"
         Write-Output "current-nuget-new-version=$nugetCurrentVersion"
-        Write-Output "::set-output name=nuget-id::$nugetId"
-        Write-Output "::set-output name=nuget-new-version::$nugetNewVersion"
-        Write-Output "::set-output name=nuget-url::$nugetUrl"
-        Write-Output "::set-output name=nuget-current-version::$nugetCurrentVersion"
+        Write-Output "nuget-id=$nugetId" >> $env:GITHUB_OUTPUT
+        Write-Output "nuget-new-version=$nugetNewVersion" >> $env:GITHUB_OUTPUT
+        Write-Output "nuget-url=$nugetUrl" >> $env:GITHUB_OUTPUT
+        Write-Output "nuget-current-version=$nugetCurrentVersion" >> $env:GITHUB_OUTPUT
     - name: Prepare commit info
       id: commit-info
       run: |
@@ -90,9 +90,9 @@ jobs:
         $nugetNewVersion = "${{ steps.slash-command-args.outputs.nuget-new-version }}";
         $branchName = "nuget-release/$nugetId-$nugetNewVersion"
         $commitMessage = "Release NuGet $nugetId $nugetNewVersion"
-        Write-Output "::set-output name=branch-name::$branchName"
+        Write-Output "branch-name=$branchName" >> $env:GITHUB_OUTPUT
         Write-Output "Branch name set to $branchName"
-        Write-Output "::set-output name=commit-message::$commitMessage"
+        Write-Output "commit-message=$commitMessage" >> $env:GITHUB_OUTPUT
         Write-Output "Commit message set to $commitMessage"
     - name: Git checkout new branch
       run: |
@@ -166,8 +166,8 @@ jobs:
           --label ${{ steps.slash-command-args.outputs.nuget-id }} `
           --label bot:robot:
         $prNumber = $prUrl.Split("/")[-1]
-        Write-Output "::set-output name=pr-url::$prUrl"
-        Write-Output "::set-output name=pr-number::$prNumber"
+        Write-Output "pr-url=$prUrl" >> $env:GITHUB_OUTPUT
+        Write-Output "pr-number=$prNumber" >> $env:GITHUB_OUTPUT
     - name: Log info
       run: |
         $prUrl = "${{ steps.create-pr.outputs.pr-url }}"
@@ -266,9 +266,9 @@ jobs:
           $releaseBadgeColor = "red"
         }
 
-        Write-Output "::set-output name=nuget-release-status::$releaseStatus"
-        Write-Output "::set-output name=nuget-release-badge-color::$releaseBadgeColor"
-        Write-Output "::set-output name=nuget-release-command-handler-node-status::$workflowStatus"
+        Write-Output "nuget-release-status=$releaseStatus" >> $env:GITHUB_OUTPUT
+        Write-Output "nuget-release-badge-color=$releaseBadgeColor" >> $env:GITHUB_OUTPUT
+        Write-Output "nuget-release-command-handler-node-status=$workflowStatus" >> $env:GITHUB_OUTPUT
     - name: Upload NuGet release flow info artifact
       uses: ./.github/actions/create-nuget-release-flow-info-artifact
       with:

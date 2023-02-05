@@ -61,7 +61,7 @@ jobs:
         $nugetReleaseInfoWorkflowUrl = $nugetReleaseInfoStatus.target_url
         $runId = $nugetReleaseInfoWorkflowUrl.Split("/")[-1]
         Write-Output "run-id=$runId"
-        Write-Output "::set-output name=run-id::$runId"
+        Write-Output "run-id=$runId" >> $env:GITHUB_OUTPUT
     - name: Download NuGet release info artifact from PR
       uses: dawidd6/action-download-artifact@v2
       if: github.event_name == 'pull_request'
@@ -133,12 +133,13 @@ jobs:
           Exit 1
         }
 
-        Write-Output "::set-output name=issue-number::$issueNumber"
-        Write-Output "::set-output name=nuget-id::$nugetId"
-        Write-Output "::set-output name=nuget-version::$nugetVersion"
-        Write-Output "::set-output name=auto-generate-release-notes::$autoGenerateReleaseNotes"
-        Write-Output "::set-output name=nuget-package-run-id::$nugetPackageRunId"
-        Write-Output "::set-output name=github-release-sha::$githubReleaseSha"
+        Write-Output "issue-number=$issueNumber" >> $env:GITHUB_OUTPUT
+        Write-Output "nuget-id=$nugetId" >> $env:GITHUB_OUTPUT
+        Write-Output "nuget-version=$nugetVersion" >> $env:GITHUB_OUTPUT
+        Write-Output "auto-generate-release-notes=$autoGenerateReleaseNotes" >> $env:GITHUB_OUTPUT
+        Write-Output "nuget-package-run-id=$nugetPackageRunId" >> $env:GITHUB_OUTPUT
+        Write-Output "github-release-sha=$githubReleaseSha" >> $env:GITHUB_OUTPUT
+
     - name: Dump outputs from previous step
       env:
         STEP_OUTPUT: ${{ toJSON(steps.nuget-publish-info.outputs) }}
@@ -190,10 +191,10 @@ jobs:
         $nugetSymbols =  Get-ChildItem $baseDir | Where-Object {$_.Extension -eq '.snupkg' } | Select-Object -First 1
         $nugetArtifacts = "$nugetPackage,$nugetSymbols"
 
-        Write-Output "::set-output name=nuget-release-notes-file-path::$releaseNotesFile"
-        Write-Output "::set-output name=nuget-gh-release-artifacts::$nugetArtifacts"
-        Write-Output "::set-output name=nuget-package::$nugetPackage"
-        Write-Output "::set-output name=nuget-symbols::$nugetSymbols"
+        Write-Output "nuget-release-notes-file-path=$releaseNotesFile" >> $env:GITHUB_OUTPUT
+        Write-Output "nuget-gh-release-artifacts=$nugetArtifacts" >> $env:GITHUB_OUTPUT
+        Write-Output "nuget-package=$nugetPackage" >> $env:GITHUB_OUTPUT
+        Write-Output "nuget-symbols=$nugetSymbols" >> $env:GITHUB_OUTPUT
     - name: Create GitHub release
       id: create-gh-release
       uses: ncipollo/release-action@v1
@@ -261,9 +262,9 @@ jobs:
           $releaseBadgeColor = "red"
         }
 
-        Write-Output "::set-output name=nuget-release-status::$releaseStatus"
-        Write-Output "::set-output name=nuget-release-badge-color::$releaseBadgeColor"
-        Write-Output "::set-output name=publish-nuget-node-status::$workflowStatus"
+        Write-Output "nuget-release-status=$releaseStatus" >> $env:GITHUB_OUTPUT
+        Write-Output "nuget-release-badge-color=$releaseBadgeColor" >> $env:GITHUB_OUTPUT
+        Write-Output "publish-nuget-node-status=$workflowStatus" >> $env:GITHUB_OUTPUT
     - name: Upload NuGet release flow info artifact
       uses: ./.github/actions/create-nuget-release-flow-info-artifact
       with:

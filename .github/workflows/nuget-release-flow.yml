@@ -106,14 +106,14 @@ jobs:
         $commentBody -match '<!-- nuget-release-pull-request-url: (?<NugetReleasePullRequestUrl>.+) -->'
         $nugetReleasePullRequestUrl = $Matches.NugetReleasePullRequestUrl
 
-        Write-Output "::set-output name=issue-nuget-id::$nugetId"
-        Write-Output "::set-output name=issue-nuget-version::$nugetVersion"
-        Write-Output "::set-output name=issue-nuget-release-node-status::$issueNugetReleaseNodeStatus"
-        Write-Output "::set-output name=issue-nuget-release-url::$issueNugetReleaseUrl"
-        Write-Output "::set-output name=nuget-release-command-handler-node-status::$nugetReleaseCommandHandlerNodeStatus"
-        Write-Output "::set-output name=nuget-release-command-handler-url::$nugetReleaseCommandHandlerUrl"
-        Write-Output "::set-output name=nuget-release-pull-request-node-status::$nugetReleasePullRequestNodeStatus"
-        Write-Output "::set-output name=nuget-release-pull-request-url::$nugetReleasePullRequestUrl"
+        Write-Output "issue-nuget-id=$nugetId" >> $env:GITHUB_OUTPUT
+        Write-Output "issue-nuget-version=$nugetVersion" >> $env:GITHUB_OUTPUT
+        Write-Output "issue-nuget-release-node-status=$issueNugetReleaseNodeStatus" >> $env:GITHUB_OUTPUT
+        Write-Output "issue-nuget-release-url=$issueNugetReleaseUrl" >> $env:GITHUB_OUTPUT
+        Write-Output "nuget-release-command-handler-node-status=$nugetReleaseCommandHandlerNodeStatus" >> $env:GITHUB_OUTPUT
+        Write-Output "nuget-release-command-handler-url=$nugetReleaseCommandHandlerUrl" >> $env:GITHUB_OUTPUT
+        Write-Output "nuget-release-pull-request-node-status=$nugetReleasePullRequestNodeStatus" >> $env:GITHUB_OUTPUT
+        Write-Output "nuget-release-pull-request-url=$nugetReleasePullRequestUrl" >> $env:GITHUB_OUTPUT
     - name: Dump outputs from previous step
       env:
         STEP_OUTPUT: ${{ toJSON(steps.parse-nuget-flow-data.outputs) }}
@@ -215,18 +215,18 @@ jobs:
           ? '${{ needs.release-flow-args.outputs.nuget-version }}' `
           : '${{ steps.parse-nuget-flow-data.outputs.nuget-version }}'
 
-        Write-Output "::set-output name=nuget-id::$nugetId"
-        Write-Output "::set-output name=nuget-version::$nugetVersion"
-        Write-Output "::set-output name=nuget-release-status::${{ needs.release-flow-args.outputs.nuget-release-status }}"
-        Write-Output "::set-output name=nuget-release-badge-color::${{ needs.release-flow-args.outputs.nuget-release-badge-color }}"
-        Write-Output "::set-output name=issue-nuget-release-node-status::$issueNugetReleaseNodeStatus"
-        Write-Output "::set-output name=issue-nuget-release-url::$issueNugetReleaseUrl"
-        Write-Output "::set-output name=nuget-release-command-handler-node-status::$nugetReleaseCommandHandlerNodeStatus"
-        Write-Output "::set-output name=nuget-release-command-handler-url::$nugetReleaseCommandHandlerUrl"
-        Write-Output "::set-output name=nuget-release-pull-request-node-status::$nugetReleasePullRequestNodeStatus"
-        Write-Output "::set-output name=nuget-release-pull-request-url::$nugetReleasePullRequestUrl"
-        Write-Output "::set-output name=publish-nuget-node-status::$publishNugetNodeStatus"
-        Write-Output "::set-output name=publish-nuget-url::$publishNugetUrl"
+        Write-Output "nuget-id=$nugetId" >> $env:GITHUB_OUTPUT
+        Write-Output "nuget-version=$nugetVersion" >> $env:GITHUB_OUTPUT
+        Write-Output "nuget-release-status=${{ needs.release-flow-args.outputs.nuget-release-status }}" >> $env:GITHUB_OUTPUT
+        Write-Output "nuget-release-badge-color=${{ needs.release-flow-args.outputs.nuget-release-badge-color }}" >> $env:GITHUB_OUTPUT
+        Write-Output "issue-nuget-release-node-status=$issueNugetReleaseNodeStatus" >> $env:GITHUB_OUTPUT
+        Write-Output "issue-nuget-release-url=$issueNugetReleaseUrl" >> $env:GITHUB_OUTPUT
+        Write-Output "nuget-release-command-handler-node-status=$nugetReleaseCommandHandlerNodeStatus" >> $env:GITHUB_OUTPUT
+        Write-Output "nuget-release-command-handler-url=$nugetReleaseCommandHandlerUrl" >> $env:GITHUB_OUTPUT
+        Write-Output "nuget-release-pull-request-node-status=$nugetReleasePullRequestNodeStatus" >> $env:GITHUB_OUTPUT
+        Write-Output "nuget-release-pull-request-url=$nugetReleasePullRequestUrl" >> $env:GITHUB_OUTPUT
+        Write-Output "publish-nuget-node-status=$publishNugetNodeStatus" >> $env:GITHUB_OUTPUT
+        Write-Output "publish-nuget-url=$publishNugetUrl" >> $env:GITHUB_OUTPUT
     - name: Dump outputs from previous step
       env:
         STEP_OUTPUT: ${{ toJSON(steps.nuget-release-flow-info.outputs) }}
@@ -281,10 +281,10 @@ jobs:
       shell: pwsh
       run: |
         $githubReleaseInfo = Get-Content ./github-release-info.md | ConvertFrom-Json
-        Write-Output "::set-output name=issue-number::$($githubReleaseInfo.issueNumber)"
-        Write-Output "::set-output name=nuget-id::$($githubReleaseInfo.nugetId)"
-        Write-Output "::set-output name=nuget-version::$($githubReleaseInfo.nugetVersion)"
-        Write-Output "::set-output name=github-release-url::$($githubReleaseInfo.githubReleaseUrl)"
+        Write-Output "issue-number=$($githubReleaseInfo.issueNumber)" >> $env:GITHUB_OUTPUT
+        Write-Output "nuget-id=$($githubReleaseInfo.nugetId)" >> $env:GITHUB_OUTPUT
+        Write-Output "nuget-version=$($githubReleaseInfo.nugetVersion)" >> $env:GITHUB_OUTPUT
+        Write-Output "github-release-url=$($githubReleaseInfo.githubReleaseUrl)" >> $env:GITHUB_OUTPUT
     - name: Render close issue comment template
       id: render-issue-comment-template
       uses: chuhlomin/render-template@v1

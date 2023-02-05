@@ -72,7 +72,7 @@ jobs:
       run: |
         $os = $PSVersionTable.OS
         $testResultsDir = $(Join-Path -Path (Get-Location) -ChildPath "${{ env.TEST_RESULTS_DIR }}")
-        Write-Output "::set-output name=test-results-dir::$testResultsDir"
+        Write-Output "test-results-dir=$testResultsDir" >> $env:GITHUB_OUTPUT
 
         #run tests
         dotnet test ${{ env.SLN_FILEPATH }} `

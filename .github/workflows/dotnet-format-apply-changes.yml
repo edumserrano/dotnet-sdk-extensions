@@ -53,9 +53,9 @@ jobs:
         $workflowInfoJson = Get-Content $worfklowInfoFilePath
         Write-Output $workflowInfoJson
         $workflowInfo = $workflowInfoJson | ConvertFrom-Json
-        Write-Output "::set-output name=has-changes::$($workflowInfo.hasChanges)"
-        Write-Output "::set-output name=workflow::$($workflowInfo.workflow)"
-        Write-Output "::set-output name=workflow-url::$($workflowInfo.workflowUrl)"
+        Write-Output "has-changes=$($workflowInfo.hasChanges)" >> $env:GITHUB_OUTPUT
+        Write-Output "workflow=$($workflowInfo.workflow)" >> $env:GITHUB_OUTPUT
+        Write-Output "workflow-url=$($workflowInfo.workflowUrl)" >> $env:GITHUB_OUTPUT
     - name: Check for open dotnet format PRs
       id: open-pr-check
       env:
@@ -66,14 +66,14 @@ jobs:
 
         $openPullRequestsResult = gh pr list --state open --label ${{ env.DOTNET_FORMAT_LABEL }}
         $canCreatePr = [string]::IsNullOrEmpty($openPullRequestsResult)
-        Write-Output "::set-output name=can-create-pr::$canCreatePr"
+        Write-Output "can-create-pr=$canCreatePr" >> $env:GITHUB_OUTPUT
     - name: Check if can apply changes
       id: check-can-apply
       run: |
         $hasChanges = [System.Convert]::ToBoolean("${{ steps.dotnet-format-workflow-info.outputs.has-changes }}")
         $canCreatePr = [System.Convert]::ToBoolean("${{ steps.open-pr-check.outputs.can-create-pr }}")
         $canApplyChanges = $canCreatePr -and $hasChanges
-        Write-Output "::set-output name=can-apply-changes::$canApplyChanges"
+        Write-Output "can-apply-changes=$canApplyChanges" >> $env:GITHUB_OUTPUT
     - name: Log info
       run: |
         $hasChanges = [System.Convert]::ToBoolean("${{ steps.dotnet-format-workflow-info.outputs.has-changes }}")
@@ -113,9 +113,9 @@ jobs:
         $date = (Get-Date).ToString("dd-MMM-yyyy")
         $branchName = "dotnet-format-$date"
         $commitMessage = "auto dotnet format $date"
-        Write-Output "::set-output name=branch-name::$branchName"
+        Write-Output "branch-name=$branchName" >> $env:GITHUB_OUTPUT
         Write-Output "Branch name set to $branchName"
-        Write-Output "::set-output name=commit-message::$commitMessage"
+        Write-Output "commit-message=$commitMessage" >> $env:GITHUB_OUTPUT
         Write-Output "Commit message set to $commitMessage"
     - name: Git checkout new branch
       run: |
@@ -155,7 +155,7 @@ jobs:
           --body $body `
           --label ${{ env.DOTNET_FORMAT_LABEL }} `
           --label bot:robot:
-        Write-Output "::set-output name=pr-url::$prUrl"
+        Write-Output "pr-url=$prUrl" >> $env:GITHUB_OUTPUT
     - name: Log info
       run: |
         $prUrl = "${{ steps.create-pr.outputs.pr-url }}"
@@ -199,11 +199,11 @@ jobs:
         $prNumber = $workflowInfo.prNumber
         $prBranchName = $workflowInfo.prBranchName
 
-        Write-Output "::set-output name=has-changes::$hasChanges"
-        Write-Output "::set-output name=workflow::$workflow"
-        Write-Output "::set-output name=workflow-url::$workflowUrl"
-        Write-Output "::set-output name=pr-number::$prNumber"
-        Write-Output "::set-output name=pr-branch-name::$prBranchName"
+        Write-Output "has-changes=$hasChanges" >> $env:GITHUB_OUTPUT
+        Write-Output "workflow=$workflow" >> $env:GITHUB_OUTPUT
+        Write-Output "workflow-url=$workflowUrl" >> $env:GITHUB_OUTPUT
+        Write-Output "pr-number=$prNumber" >> $env:GITHUB_OUTPUT
+        Write-Output "pr-branch-name=$prBranchName" >> $env:GITHUB_OUTPUT
     - name: Log info
       run: |
         $hasChanges = [System.Convert]::ToBoolean("${{ steps.dotnet-format-workflow-info.outputs.has-changes }}")
@@ -242,7 +242,7 @@ jobs:
       id: dotnet-format-commit
       run: |
           $commitSha = git rev-parse HEAD
-          Write-Output "::set-output name=commit-sha::$commitSha"
+          Write-Output "commit-sha=$commitSha" >> $env:GITHUB_OUTPUT
     - name: Render comment template
       id: render-pr-comment-template
       uses: chuhlomin/render-template@v1
@@ -303,8 +303,8 @@ jobs:
           Exit 1
         }
 
-        Write-Output "::set-output name=state::$state"
-        Write-Output "::set-output name=description::$description"
+        Write-Output "state=$state" >> $env:GITHUB_OUTPUT
+        Write-Output "description=$description" >> $env:GITHUB_OUTPUT
     - name: Set PR status
       uses: ./.github/actions/create-gh-status
       with:

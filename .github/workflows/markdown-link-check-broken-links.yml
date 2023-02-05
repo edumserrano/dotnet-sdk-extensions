@@ -84,10 +84,10 @@ jobs:
           $prNumber = $workflowInfo.prNumber
         }
 
-        Write-Output "::set-output name=has-broken-links::$hasBrokenLinks"
-        Write-Output "::set-output name=workflow::$workflow"
-        Write-Output "::set-output name=workflow-url::$workflowUrl"
-        Write-Output "::set-output name=pr-number::$prNumber"
+        Write-Output "has-broken-links=$hasBrokenLinks" >> $env:GITHUB_OUTPUT
+        Write-Output "workflow=$workflow" >> $env:GITHUB_OUTPUT
+        Write-Output "workflow-url=$workflowUrl" >> $env:GITHUB_OUTPUT
+        Write-Output "pr-number=$prNumber" >> $env:GITHUB_OUTPUT
 
   on-push-check:
     name: Check for open issue
@@ -116,14 +116,14 @@ jobs:
 
         $openIssuesResult = gh issue list --state open --label ${{ env.MLC_LABEL }}
         $canCreateIssue = [string]::IsNullOrEmpty($openIssuesResult)
-        Write-Output "::set-output name=can-create-issue::$canCreateIssue"
+        Write-Output "can-create-issue=$canCreateIssue" >> $env:GITHUB_OUTPUT
     - name: Check if an issue needs to be created
       id: needs-issue-check
       run: |
         $hasBrokenLinks = [System.Convert]::ToBoolean("${{ needs.workflow-info.outputs.has-broken-links }}")
         $canCreateIssue = [System.Convert]::ToBoolean("${{ steps.open-issue-check.outputs.can-create-issue }}")
         $createIssue = $canCreateIssue -and $hasBrokenLinks
-        Write-Output "::set-output name=create-issue::$createIssue"
+        Write-Output "create-issue=$createIssue" >> $env:GITHUB_OUTPUT
     - name: Log info
       run: |
         $hasBrokenLinks = [System.Convert]::ToBoolean("${{ needs.workflow-info.outputs.has-broken-links }}")
@@ -191,7 +191,7 @@ jobs:
           --body $body `
           --label ${{ env.MLC_LABEL }} `
           --label bot:robot:
-        Write-Output "::set-output name=issue-url::$issueUrl"
+        Write-Output "issue-url=$issueUrl" >> $env:GITHUB_OUTPUT
     - name: Log info
       run: |
         $issueUrl = "${{ steps.create-issue.outputs.issue-url }}"
@@ -223,10 +223,13 @@ jobs:
         <!-- on-pr-markdown-link-check -->
         ${{ steps.mlc-log-parser.outputs.mlc-result }}
         '@
-        # The content must be escaped to preserve newlines. See https://github.community/t/set-output-truncates-multiline-strings/16852/3
-        $commentBody = $commentBody -replace "`n","%0A"
-        $commentBody = $commentBody -replace "`r","%0D"
-        Write-Output "::set-output name=pr-comment-body::$commentBody"
+
+        $random = Get-Random
+        $delimiter = "EOF_$random"
+        Write-Output "pr-comment-body<<$delimiter" >> $env:GITHUB_OUTPUT
+        Write-Output $commentBody >> $env:GITHUB_OUTPUT
+        Write-Output $delimiter >> $env:GITHUB_OUTPUT
+
     - name: Update PR with dotnet format result
       uses: edumserrano/find-create-or-update-comment@v1
       with:

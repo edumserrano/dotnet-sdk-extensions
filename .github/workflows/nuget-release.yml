@@ -45,13 +45,12 @@ jobs:
           Exit 1
         }
 
-        # The sanitization step below will escape the newlines, whether they're windows newlines or unix newlines, to preserve them when sharing this data over the step's output.
-        # By default the newlines will be unix newlines but I noticed that if I edit the issue form the line endings became `\r\n`, likely because I edited on a Windows OS.
-        # For more info see: See https://github.community/t/set-output-truncates-multiline-strings/16852/3
-        $issueBody = $issueBody -replace "`r`n","%0A" # deal with windows line endings
-        $issueBody = $issueBody -replace "`n","%0A" # deal with unix line endings
-        Write-Output "::set-output name=issue-number::$issueNumber"
-        Write-Output "::set-output name=issue-body::$issueBody"
+        Write-Output "issue-number=$issueNumber" >> $env:GITHUB_OUTPUT
+        $random = Get-Random
+        $delimiter = "EOF_$random"
+        Write-Output "issue-body<<$delimiter" >> $env:GITHUB_OUTPUT
+        Write-Output $issueBody >> $env:GITHUB_OUTPUT
+        Write-Output $delimiter >> $env:GITHUB_OUTPUT
     - name: Dump outputs from previous step
       env:
         STEP_OUTPUT: ${{ toJSON(steps.get-args.outputs) }}
@@ -95,9 +94,9 @@ jobs:
           autoGenerateReleaseNotes = $autoGenerateReleaseNotes
         }
         $clientPayloadAsJson = $clientPayload | ConvertTo-Json -Compress
-        Write-Output "::set-output name=client-payload::$clientPayloadAsJson"
-        Write-Output "::set-output name=nuget-id::$nugetId"
-        Write-Output "::set-output name=nuget-version::$nugetVersion"
+        Write-Output "client-payload=$clientPayloadAsJson" >> $env:GITHUB_OUTPUT
+        Write-Output "nuget-id=$nugetId" >> $env:GITHUB_OUTPUT
+        Write-Output "nuget-version=$nugetVersion" >> $env:GITHUB_OUTPUT
     - name: Dump outputs from previous step
       env:
         STEP_OUTPUT: ${{ toJSON(steps.setup-client-payload.outputs) }}
@@ -136,20 +135,22 @@ jobs:
       id: set-nuget-release-flow-info
       run: |
         $workflowResult = '${{ needs.main.result }}'
-        if($workflowResult -eq 'success') {
+        if($workflowResult -eq 'success')
+        {
           $workflowStatus = "ok"
           $releaseStatus = "in%20progress"
           $releaseBadgeColor = "blue"
         }
-        else {
+        else
+        {
           $workflowStatus = "error"
           $releaseStatus = "failed"
           $releaseBadgeColor = "red"
         }
 
-        Write-Output "::set-output name=nuget-release-status::$releaseStatus"
-        Write-Output "::set-output name=nuget-release-badge-color::$releaseBadgeColor"
-        Write-Output "::set-output name=issue-nuget-release-node-status::$workflowStatus"
+        Write-Output "nuget-release-status=$releaseStatus" >> $env:GITHUB_OUTPUT
+        Write-Output "nuget-release-badge-color=$releaseBadgeColor" >> $env:GITHUB_OUTPUT
+        Write-Output "issue-nuget-release-node-status=$workflowStatus" >> $env:GITHUB_OUTPUT
     - name: Upload NuGet release flow info artifact
       uses: ./.github/actions/create-nuget-release-flow-info-artifact
       with:

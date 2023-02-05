@@ -53,11 +53,13 @@ jobs:
         $mlcPush = [System.Convert]::ToBoolean("${{ steps.mlc-push.conclusion == 'success' }}")
         $mlcPr = [System.Convert]::ToBoolean("${{ steps.mlc-pr.conclusion == 'success' }}")
         $noBrokenLinks = $mlcPush -or $mlcPr
-        if($noBrokenLinks) {
-          Write-Output "::set-output name=has-broken-links::false"
+        if($noBrokenLinks)
+        {
+          Write-Output "has-broken-links=false" >> $env:GITHUB_OUTPUT
         }
-        else {
-          Write-Output "::set-output name=has-broken-links::true"
+        else
+        {
+          Write-Output "has-broken-links=true" >> $env:GITHUB_OUTPUT
         }
     - name: Save workflow info
       if: always()

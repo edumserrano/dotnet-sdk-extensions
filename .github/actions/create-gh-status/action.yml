@@ -54,7 +54,7 @@ runs:
 
         $response = Invoke-RestMethod -Method 'Get' -Uri $uri -Headers $headers
         $sha = $response.head.sha
-        Write-Output "::set-output name=pr-sha::$sha"
+        Write-Output "pr-sha=$sha" >> $env:GITHUB_OUTPUT
         Write-Output "PR head sha is $sha"
     - name: Dump outputs from previous step
       shell: pwsh
