@@ -48,7 +48,7 @@ jobs:
         GITHUB_CONTEXT: ${{ toJSON(github) }}
       run: $env:GITHUB_CONTEXT
     - name: Checkout repository
-      uses: actions/checkout@v3.1.0
+      uses: actions/checkout@v3
     - name: Get release info run id from PR
       id: release-info
       if: github.event_name == 'pull_request'
@@ -63,7 +63,7 @@ jobs:
         Write-Output "run-id=$runId"
         Write-Output "::set-output name=run-id::$runId"
     - name: Download NuGet release info artifact from PR
-      uses: dawidd6/action-download-artifact@v2.24.0
+      uses: dawidd6/action-download-artifact@v2
       if: github.event_name == 'pull_request'
       with:
         workflow: nuget-release-command-handler.yml
@@ -72,7 +72,7 @@ jobs:
     - name: Download NuGet release notes artifact from PR
       id: download-release-notes
       if: github.event_name == 'pull_request'
-      uses: dawidd6/action-download-artifact@v2.24.0
+      uses: dawidd6/action-download-artifact@v2
       with:
         workflow: nuget-release-command-handler.yml
         name:  ${{ env.CUSTOM_RELEASE_NOTES_ARTIFACT_NAME }}
@@ -144,7 +144,7 @@ jobs:
         STEP_OUTPUT: ${{ toJSON(steps.nuget-publish-info.outputs) }}
       run: $env:STEP_OUTPUT
     - name: Upload custom release notes
-      uses: actions/upload-artifact@v3.1.1
+      uses: actions/upload-artifact@v3
       with:
         name: ${{ env.CUSTOM_RELEASE_NOTES_ARTIFACT_NAME }}
         path: ${{ env.CUSTOM_RELEASE_NOTES_FILEPATH }}
@@ -163,7 +163,7 @@ jobs:
       TESTING_EXTENSIONS_NUGET_BIN_FOLDER : ${{ github.workspace }}/DotNet.Sdk.Extensions.Testing/bin/Release
     steps:
     - name: Download NuGet package artifact
-      uses: dawidd6/action-download-artifact@v2.24.0
+      uses: dawidd6/action-download-artifact@v2
       with:
         workflow: build-test-package.yml
         name:  nuget-packages-and-symbols
@@ -196,7 +196,7 @@ jobs:
         Write-Output "::set-output name=nuget-symbols::$nugetSymbols"
     - name: Create GitHub release
       id: create-gh-release
-      uses: ncipollo/release-action@v1.11.1
+      uses: ncipollo/release-action@v1
       with:
         commit: ${{ needs.workflow-args.outputs.github-release-sha }}
         tag: ${{ needs.workflow-args.outputs.nuget-id }}-${{ needs.workflow-args.outputs.nuget-version }}
@@ -245,7 +245,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3.1.0
+      uses: actions/checkout@v3
     - name: Setup NuGet release flow info
       id: set-nuget-release-flow-info
       run: |
@@ -285,7 +285,7 @@ jobs:
         $githubReleaseAsJson | Out-File github-release-info.md
         Get-Content github-release-info.md
     - name: Upload GitHub release info
-      uses: actions/upload-artifact@v3.1.1
+      uses: actions/upload-artifact@v3
       with:
         name: github-release-info
         path: github-release-info.md

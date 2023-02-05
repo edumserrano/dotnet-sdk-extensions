@@ -61,7 +61,7 @@ jobs:
         GITHUB_CONTEXT: ${{ toJSON(github) }}
       run: $env:GITHUB_CONTEXT
     - name: Download markdown link check workflow info artifact
-      uses: dawidd6/action-download-artifact@v2.24.0
+      uses: dawidd6/action-download-artifact@v2
       with:
         workflow: ${{ github.event.workflow_run.workflow_id }}
         name:  ${{ env.MLC_WORKFLOW_INFO_ARTIFACT }}
@@ -103,7 +103,7 @@ jobs:
       create-issue: ${{ steps.needs-issue-check.outputs.create-issue }}
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3.1.0
+      uses: actions/checkout@v3
       with:
         ref: ${{ env.WORKFLOW_HEAD_SHA }}
     - name: Check for open markdown link check issues
@@ -154,12 +154,12 @@ jobs:
       WORKFLOW_URL: ${{ needs.workflow-info.outputs.workflow-url }}
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3.1.0
+      uses: actions/checkout@v3
       with:
         ref: ${{ env.WORKFLOW_HEAD_SHA }}
     - name: Render issue body template
       id: render-issue-body-template
-      uses: chuhlomin/render-template@v1.6
+      uses: chuhlomin/render-template@v1
       with:
         template: .github/workflows/templates/markdown-link-check-broken-links/broken-links-found-issue-body.md
         vars: |

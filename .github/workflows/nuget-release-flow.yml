@@ -49,7 +49,7 @@ jobs:
         $headBranch = '${{ github.event.workflow_run.head_branch }}'
         Write-Output "::notice::This workflows was triggered by the completion of '$workflowRunName' with run id '$workflowRunId' on the branch '$headBranch'."
     - name: Checkout repository
-      uses: actions/checkout@v3.1.0
+      uses: actions/checkout@v3
     - name: Read NuGet release flow info artifact
       id: nuget-flow-info
       uses: ./.github/actions/read-nuget-release-flow-info-artifact
@@ -68,9 +68,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3.1.0
+      uses: actions/checkout@v3
     - name: Find NuGet release flow comment
-      uses: peter-evans/find-comment@v2.0.1
+      uses: peter-evans/find-comment@v2
       id: find-nuget-release-flow-comment
       with:
         issue-number: '${{ needs.release-flow-args.outputs.issue-number }}'
@@ -233,7 +233,7 @@ jobs:
       run: $env:STEP_OUTPUT
     - name: Render issue comment template
       id: render-issue-comment-template
-      uses: chuhlomin/render-template@v1.6
+      uses: chuhlomin/render-template@v1
       with:
         template: .github/workflows/templates/nuget-release-flow/nuget-release-flow-issue-comment.md
         vars: |
@@ -269,9 +269,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3.1.0
+      uses: actions/checkout@v3
     - name: Download GitHub release info artifact
-      uses: dawidd6/action-download-artifact@v2.24.0
+      uses: dawidd6/action-download-artifact@v2
       with:
         workflow: ${{ github.event.workflow_run.workflow_id }}
         name:  github-release-info
@@ -287,7 +287,7 @@ jobs:
         Write-Output "::set-output name=github-release-url::$($githubReleaseInfo.githubReleaseUrl)"
     - name: Render close issue comment template
       id: render-issue-comment-template
-      uses: chuhlomin/render-template@v1.6
+      uses: chuhlomin/render-template@v1
       with:
         template: .github/workflows/templates/nuget-release-flow/nuget-released-successfully-issue-comment.md
         vars: |

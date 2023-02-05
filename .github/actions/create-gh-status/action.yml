@@ -1,7 +1,7 @@
 # Why was this action created:
 #
 # This is used to add status checks on Pull Requests.
-# I was using the niteoweb/pull_request_status_action@v1.0.0 action to create GitHub status.
+# I was using the niteoweb/pull_request_status_action@v1 action to create GitHub status.
 # However this action adds a step at the start of the workflow where it builds a container:
 #
 # - This step has some python warnings: "WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour
