@@ -27,7 +27,7 @@ jobs:
         GITHUB_CONTEXT: ${{ toJSON(github) }}
       run: $env:GITHUB_CONTEXT
     - name: Checkout repository
-      uses: actions/checkout@v3.1.0
+      uses: actions/checkout@v3
     - name: Check for open dotnet format PRs
       id: open-pr-check
       env:
@@ -64,7 +64,7 @@ jobs:
       nuget-version: ${{ steps.slash-command-args.outputs.nuget-new-version }}
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3.1.0
+      uses: actions/checkout@v3
     - name: Read slash command args and setup workflow data
       id: slash-command-args
       run: |
@@ -135,13 +135,13 @@ jobs:
         Write-Output "::endgroup::"
     - name: Push changes to branch
       id: auto-commit-action
-      uses: stefanzweifel/git-auto-commit-action@v4.15.4
+      uses: stefanzweifel/git-auto-commit-action@v4
       with:
         commit_message: ${{ steps.commit-info.outputs.commit-message }}
         branch: ${{ steps.commit-info.outputs.branch-name }}
     - name: Render PR body template
       id: render-pr-body-template
-      uses: chuhlomin/render-template@v1.6
+      uses: chuhlomin/render-template@v1
       with:
         template: .github/workflows/templates/nuget-release-command-handler/create-nuget-release-pr-body.md
         vars: |
@@ -186,14 +186,14 @@ jobs:
       RELEASE_INFO_ARTIFACT_FILEPATH: ${{github.workspace}}/nuget-release-info.md
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3.1.0
+      uses: actions/checkout@v3
     - name: Save release notes to file
       run: |
         $releaseNotes = '${{ github.event.client_payload.customReleaseNotes }}'
         $releaseNotes > ${{ env.RELEASE_NOTES_ARTIFACT_FILEPATH }}
         cat ${{ env.RELEASE_NOTES_ARTIFACT_FILEPATH }}
     - name: Upload release notes
-      uses: actions/upload-artifact@v3.1.1
+      uses: actions/upload-artifact@v3
       with:
         name: nuget-release-notes
         path: ${{ env.RELEASE_NOTES_ARTIFACT_FILEPATH }}
@@ -209,7 +209,7 @@ jobs:
         $releaseInfoAsJson > ${{ env.RELEASE_INFO_ARTIFACT_FILEPATH }}
         cat ${{ env.RELEASE_INFO_ARTIFACT_FILEPATH }}
     - name: Upload release info
-      uses: actions/upload-artifact@v3.1.1
+      uses: actions/upload-artifact@v3
       with:
         name: nuget-release-info
         path: ${{ env.RELEASE_INFO_ARTIFACT_FILEPATH }}
@@ -233,7 +233,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3.1.0
+      uses: actions/checkout@v3
     - name: Set PR auto merge
       env:
         GITHUB_TOKEN: ${{ secrets.REPOSITORY_DISPATCH_GH_TOKEN }}
@@ -250,7 +250,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3.1.0
+      uses: actions/checkout@v3
     - name: Setup NuGet release flow info
       id: set-nuget-release-flow-info
       run: |
