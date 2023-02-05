@@ -38,10 +38,10 @@ public class OptionsValidateEagerlyWithStartupValidationTests
             {
                 var memoryConfigurationSource = new MemoryConfigurationSource
                 {
-                    InitialData = new List<KeyValuePair<string, string>>
-                        {
-                            new KeyValuePair<string, string>("SomeOption", "2"),
-                        },
+                    InitialData = new List<KeyValuePair<string, string?>>
+                    {
+                        new KeyValuePair<string, string?>("SomeOption", "2"),
+                    },
                 };
                 builder.Add(memoryConfigurationSource);
             })

@@ -34,9 +34,9 @@ public static partial class TestConfigurationBuilderExtensions
         {
             var memoryConfigurationSource = new MemoryConfigurationSource
             {
-                InitialData = new List<KeyValuePair<string, string>>
+                InitialData = new List<KeyValuePair<string, string?>>
                 {
-                    new KeyValuePair<string, string>(key, value),
+                    new KeyValuePair<string, string?>(key, value),
                 },
             };
             builder.Add(memoryConfigurationSource);

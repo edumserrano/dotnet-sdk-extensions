@@ -34,9 +34,9 @@ public static partial class TestConfigurationBuilderExtensions
         {
             var memoryConfigurationSource = new MemoryConfigurationSource
             {
-                InitialData = new List<KeyValuePair<string, string>>
+                InitialData = new List<KeyValuePair<string, string?>>
                 {
-                    new KeyValuePair<string, string>(key, value),
+                    new KeyValuePair<string, string?>(key, value),
                 },
             };
             appConfigBuilder.Add(memoryConfigurationSource);
@@ -187,18 +187,24 @@ public static partial class TestConfigurationBuilderExtensions
          * could be incorrectly calculated.
          *
          */
-        var testAppSettingsJsonConfigurationSourceIndex = config.Sources
-            .IndexOf(config.Sources.OfType<JsonConfigurationSource>().FirstOrDefault());
+        var firstJsonConfigurationSource = config.Sources.OfType<JsonConfigurationSource>().FirstOrDefault();
+        var testAppSettingsJsonConfigurationSourceIndex = firstJsonConfigurationSource is null
+            ? -1
+            : config.Sources.IndexOf(firstJsonConfigurationSource);
         if (testAppSettingsJsonConfigurationSourceIndex == -1)
         {
-            testAppSettingsJsonConfigurationSourceIndex = config.Sources
-                .IndexOf(config.Sources.OfType<EnvironmentVariablesConfigurationSource>().FirstOrDefault());
+            var firstEnvironmentVariablesConfigurationSource = config.Sources.OfType<EnvironmentVariablesConfigurationSource>().FirstOrDefault();
+            testAppSettingsJsonConfigurationSourceIndex = firstEnvironmentVariablesConfigurationSource is null
+                ? -1
+                : config.Sources.IndexOf(firstEnvironmentVariablesConfigurationSource);
         }
 
         if (testAppSettingsJsonConfigurationSourceIndex == -1)
         {
-            testAppSettingsJsonConfigurationSourceIndex = config.Sources
-                .IndexOf(config.Sources.OfType<CommandLineConfigurationSource>().FirstOrDefault());
+            var firstCommandLineConfigurationSource = config.Sources.OfType<CommandLineConfigurationSource>().FirstOrDefault();
+            testAppSettingsJsonConfigurationSourceIndex = firstCommandLineConfigurationSource is null
+                ? -1
+                : config.Sources.IndexOf(firstCommandLineConfigurationSource);
         }
 
         if (testAppSettingsJsonConfigurationSourceIndex == -1)

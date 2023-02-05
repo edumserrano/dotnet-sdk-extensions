@@ -21,7 +21,7 @@ public class OptionsValidateEagerlyWithValidateDataAnnotationsTests
             })
             .Build();
         var validationException = await Should.ThrowAsync<OptionsValidationException>(host.StartAsync());
-#if NET6_0
+#if NET6_0 || NET7_0
         validationException.Message.ShouldBe("DataAnnotation validation failed for 'MyOptions2' members: 'SomeOption' with the error: 'The SomeOption field is required.'.");
 #else
         validationException.Message.ShouldBe("DataAnnotation validation failed for members: 'SomeOption' with the error: 'The SomeOption field is required.'.");
@@ -42,9 +42,9 @@ public class OptionsValidateEagerlyWithValidateDataAnnotationsTests
             {
                 var memoryConfigurationSource = new MemoryConfigurationSource
                 {
-                    InitialData = new List<KeyValuePair<string, string>>
+                    InitialData = new List<KeyValuePair<string, string?>>
                     {
-                        new KeyValuePair<string, string>("SomeOption", "some value"),
+                        new KeyValuePair<string, string?>("SomeOption", "some value"),
                     },
                 };
                 builder.Add(memoryConfigurationSource);

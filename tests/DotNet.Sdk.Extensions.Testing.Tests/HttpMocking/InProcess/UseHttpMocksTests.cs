@@ -278,7 +278,7 @@ public sealed class UseHttpMocksTests : IClassFixture<HttpResponseMockingWebAppl
                             .ForBasicClient()
                             .RespondWith(_ =>
                             {
-                                return valueFromConfiguration.Equals("my-option-value", StringComparison.OrdinalIgnoreCase)
+                                return string.Equals(valueFromConfiguration, "my-option-value", StringComparison.OrdinalIgnoreCase)
                                     ? new HttpResponseMessage(HttpStatusCode.OK)
                                     : new HttpResponseMessage(HttpStatusCode.InternalServerError);
                             });
