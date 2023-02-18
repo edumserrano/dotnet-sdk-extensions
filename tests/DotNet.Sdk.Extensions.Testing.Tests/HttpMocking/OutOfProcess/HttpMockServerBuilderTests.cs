@@ -53,7 +53,7 @@ public class HttpMockServerBuilderTests
             .UseUrl(HttpScheme.Http, 9020 + runtimeMajorVersion)
             .UseUrl(HttpScheme.Http, 9030 + runtimeMajorVersion)
             .UseUrl(HttpScheme.Https, 9040 + runtimeMajorVersion)
-            .UseUrl(HttpScheme.Https, 9050 + runtimeMajorVersion)
+            .UseUrl(HttpScheme.Https, 9060 + runtimeMajorVersion)
             .UseHttpResponseMocks()
             .Build();
         var urls = await httpMockServer.StartAsync();
@@ -62,7 +62,7 @@ public class HttpMockServerBuilderTests
         urls[0].ToString().ShouldBe($"http://localhost:{9020 + runtimeMajorVersion}");
         urls[1].ToString().ShouldBe($"http://localhost:{9030 + runtimeMajorVersion}");
         urls[2].ToString().ShouldBe($"https://localhost:{9040 + runtimeMajorVersion}");
-        urls[3].ToString().ShouldBe($"https://localhost:{9050 + runtimeMajorVersion}");
+        urls[3].ToString().ShouldBe($"https://localhost:{9060 + runtimeMajorVersion}");
     }
 
     /// <summary>
