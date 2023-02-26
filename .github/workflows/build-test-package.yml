@@ -47,12 +47,11 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
-        global-json-file: global.json
         dotnet-version: |
           3.1.x
           5.0.x
           6.0.x
-        #   7.0.x
+          7.0.x
     - name: Cache/Restore NuGets
       uses: actions/cache@v3
       with:
@@ -71,31 +70,35 @@ jobs:
       id: dotnet-test
       run: |
         $os = $PSVersionTable.OS
-        $testResultsDir = $(Join-Path -Path (Get-Location) -ChildPath "${{ env.TEST_RESULTS_DIR }}")
-        Write-Output "test-results-dir=$testResultsDir" >> $env:GITHUB_OUTPUT
-
 
         $testResultsDir = $(Join-Path -Path (Get-Location) -ChildPath "tests/${{ matrix.os }}/test-results")
         $testCoverageDir = $(Join-Path -Path (Get-Location) -ChildPath "tests/${{ matrix.os }}/coverage-results/")
-        $testCoverageMergeFile = $(Join-Path -Path $testCoverageDir -ChildPath "coverage.net6.0.json")
-        $testCoverageFile = $(Join-Path -Path $testCoverageDir -ChildPath "coverage.net6.0.opencover.xml")
+        $testCoverageFile = $(Join-Path -Path $testCoverageDir -ChildPath "coverage.net7.0.opencover.xml")
         Write-Output "test-results-dir=$testResultsDir" >> $env:GITHUB_OUTPUT
         Write-Output "test-coverage-dir=$testCoverageDir" >> $env:GITHUB_OUTPUT
         Write-Output "test-coverage-file=$testCoverageFile" >> $env:GITHUB_OUTPUT
 
-        #run tests
-        dotnet test ${{ env.SLN_FILEPATH }} `
-          -c Release `
-          --no-build `
-          --logger "trx;LogFilePrefix=framework" `
-          --logger GitHubActions `
-          --logger "liquid.custom;Template=${{github.workspace}}/tests/liquid-test-logger-template.md;runnerOS=${{ matrix.os }};os=$os;LogFilePrefix=framework" `
-          --results-directory "$testResultsDir" `
-          /p:CollectCoverage=true `
-          /p:CoverletOutput="$testCoverageDir" `
-          /p:MergeWith="$testCoverageMergeFile" `
-          /p:CoverletOutputFormat="json%2copencover" `
-          -m:1
+        $frameworkMonikers = @('netcoreapp3.1','net5.0','net6.0','net7.0')
+        foreach($frameworkMoniker in $frameworkMonikers)
+        {
+          Write-Output "::group::Running dotnet test for target framework $frameworkMoniker."
+          $testCoverageMergeFile = $(Join-Path -Path $testCoverageDir -ChildPath "coverage.$frameworkMoniker.json")
+          Write-Output "testCoverageMergeFile=$testCoverageMergeFile"
+          dotnet test ${{ env.SLN_FILEPATH }} `
+            -c Release `
+            --no-build `
+            --framework $frameworkMoniker `
+            --logger "trx;LogFilePrefix=framework" `
+            --logger GitHubActions `
+            --logger "liquid.custom;Template=${{github.workspace}}/tests/liquid-test-logger-template.md;runnerOS=${{ matrix.os }};os=$os;LogFilePrefix=framework" `
+            --results-directory "$testResultsDir" `
+            /p:CollectCoverage=true `
+            /p:CoverletOutput="$testCoverageDir" `
+            /p:MergeWith="$testCoverageMergeFile" `
+            /p:CoverletOutputFormat="json%2copencover" `
+            -m:1
+          Write-Output "::endgroup::"
+        }
 
         Write-Output "test-results-dir is set to $testResultsDir"
         Write-Output "test-coverage-dir is set to $testCoverageDir"
@@ -108,6 +111,10 @@ jobs:
         else {
           Write-Output "::error title=Tests (${{ matrix.os }})::Tests failed on ${{ matrix.os }}. $downloadArtifactMessage"
         }
+
+        Write-Output "::group::Debug directories"
+        Get-ChildItem -Path ./tests -Recurse
+        Write-Output "::endgroup::"
     - name: Package DotNet.Sdk.Extensions
       if: matrix.os == 'ubuntu-latest'  # this job is on a matrix run but I only want to build the NuGet once
       run: dotnet pack ${{ env.EXTENSIONS_CSPROJ_FILEPATH }} -c Release --no-build
@@ -174,13 +181,16 @@ jobs:
         $testResultsDir = '${{ steps.dotnet-test.outputs.test-results-dir }}'
         # rename test result files for all frameworks
         $frameworkFilters = @('framework_netcoreapp3.1*','framework_net5.0*','framework_net6.0*','framework_net7.0*')
-        foreach($frameworkFilter in $frameworkFilters) {
+        foreach($frameworkFilter in $frameworkFilters)
+        {
             # for each framework group the files by extension. There will be .md and .trx file groups
             $frameworkFiles = Get-ChildItem -Path $testResultsDir -Recurse -Filter $frameworkFilter | Group-Object -Property Extension
-            foreach($extensionFilesGroup in $frameworkFiles) {
+            foreach($extensionFilesGroup in $frameworkFiles)
+            {
                 # rename all the files in each group by adding a deterministic suffix. Since the count of the files in each group does not change
                 # between workflow runs we can use that as a deterministic suffix.
-                for ($i = 0; $i -lt $extensionFilesGroup.Count; $i++) {
+                for ($i = 0; $i -lt $extensionFilesGroup.Count; $i++)
+                {
                     $file = $extensionFilesGroup.Group[$i]
                     $extension = $file.Extension
                     $frameworkPrefix = $frameworkFilter -replace '\*', ''
