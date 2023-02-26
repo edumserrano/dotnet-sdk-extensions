@@ -27,15 +27,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     env:
       SLN_FILEPATH: ${{github.workspace}}/DotNet.Sdk.Extensions.sln
-      EXTENSIONS_CSPROJ_FILEPATH : ${{ github.workspace }}/src/DotNet.Sdk.Extensions/DotNet.Sdk.Extensions.csproj
       EXTENSIONS_BIN_FOLDER : ${{ github.workspace }}/src/DotNet.Sdk.Extensions/bin/Release
-      TESTING_EXTENSIONS_CSPROJ_FILEPATH : ${{ github.workspace }}/src/DotNet.Sdk.Extensions.Testing/DotNet.Sdk.Extensions.Testing.csproj
       TESTING_EXTENSIONS_BIN_FOLDER : ${{ github.workspace }}/src/DotNet.Sdk.Extensions.Testing/bin/Release
-      TEST_RESULTS_DIR: tests/${{ matrix.os }}/test-results
-      TEST_COVERAGE_DIR: tests/${{ matrix.os }}/coverage-results
-      TEST_COVERAGE_MERGE_FILE: tests/${{ matrix.os }}/coverage-results/coverage.net6.0.json
-      TEST_COVERAGE_FILE: tests/${{ matrix.os }}/coverage-results/coverage.net6.0.opencover.xml
-      TEST_COVERAGE_REPORT_DIR: tests/${{ matrix.os }}/coverage-results/report
       TEST_RESULTS_ARTIFACT_NAME: test-results-${{ matrix.os }}
       CODE_COVERAGE_ARTIFACT_NAME: code-coverage-report-${{ matrix.os }}
       NUGET_ARTIFACT_NAME : nuget-packages-and-symbols
@@ -72,36 +65,158 @@ jobs:
       id: dotnet-test
       run: |
         $os = $PSVersionTable.OS
-        $testResultsDir = $(Join-Path -Path (Get-Location) -ChildPath "${{ env.TEST_RESULTS_DIR }}")
-        Write-Output "test-results-dir=$testResultsDir" >> $env:GITHUB_OUTPUT
 
-        #run tests
-        dotnet test ${{ env.SLN_FILEPATH }} `
-          -c Release `
-          --no-build `
-          --logger "trx;LogFilePrefix=framework" `
-          --logger GitHubActions `
-          --logger "liquid.custom;Template=${{github.workspace}}/tests/liquid-test-logger-template.md;runnerOS=${{ matrix.os }};os=$os;LogFilePrefix=framework" `
-          --results-directory "$testResultsDir" `
-          /p:CollectCoverage=true `
-          /p:CoverletOutput="$(Join-Path -Path (Get-Location) -ChildPath "${{ env.TEST_COVERAGE_DIR }}/")" `
-          /p:MergeWith="$(Join-Path -Path (Get-Location) -ChildPath "${{ env.TEST_COVERAGE_MERGE_FILE }}")" `
-          /p:CoverletOutputFormat="json%2copencover" `
-          -m:1
+        $testResultsDir = $(Join-Path -Path (Get-Location) -ChildPath "tests/${{ matrix.os }}/test-results")
+        $testCoverageDir = $(Join-Path -Path (Get-Location) -ChildPath "tests/${{ matrix.os }}/coverage-results/")
+        $testCoverageFile = $(Join-Path -Path $testCoverageDir -ChildPath "coverage.net7.0.opencover.xml")
+        Write-Output "test-results-dir=$testResultsDir" >> $env:GITHUB_OUTPUT
+        Write-Output "test-coverage-dir=$testCoverageDir" >> $env:GITHUB_OUTPUT
+        Write-Output "test-coverage-file=$testCoverageFile" >> $env:GITHUB_OUTPUT
+
+        Write-Output "::group::Test output directories."
+        Write-Output "test-results-dir is set to $testResultsDir"
+        Write-Output "test-coverage-dir is set to $testCoverageDir"
+        Write-Output "test-coverage-file is set to $testCoverageFile"
+        Write-Output "::endgroup::"
 
         $downloadArtifactMessage = "You can inspect the test results by downloading the workflow artifact named: ${{ env.TEST_RESULTS_ARTIFACT_NAME }}."
-        if($LASTEXITCODE -eq 0) {
-          Write-Output "::notice title=Tests (${{ matrix.os }})::Tests passed on ${{ matrix.os }}. $downloadArtifactMessage"
+        $frameworkMonikers = @('netcoreapp3.1','net5.0','net6.0','net7.0')
+        foreach($frameworkMoniker in $frameworkMonikers)
+        {
+          Write-Output "::group::Running dotnet test for target framework $frameworkMoniker."
+          $testCoverageMergeFile = $(Join-Path -Path $testCoverageDir -ChildPath "coverage.$frameworkMoniker.json")
+          dotnet test ${{ env.SLN_FILEPATH }} `
+            -c Release `
+            --no-build `
+            --framework $frameworkMoniker `
+            --logger "trx;LogFilePrefix=framework" `
+            --logger GitHubActions `
+            --logger "liquid.custom;Template=${{github.workspace}}/tests/liquid-test-logger-template.md;runnerOS=${{ matrix.os }};os=$os;LogFilePrefix=framework" `
+            --results-directory "$testResultsDir" `
+            /p:CollectCoverage=true `
+            /p:CoverletOutput="$testCoverageDir" `
+            /p:MergeWith="$testCoverageMergeFile" `
+            /p:CoverletOutputFormat="json%2copencover" `
+            -m:1
+          Write-Output "::endgroup::"
+          if($LASTEXITCODE -ne 0)
+          {
+            Write-Output "::error title=Tests (${{ matrix.os }})::Tests failed on ${{ matrix.os }}. $downloadArtifactMessage"
+            Exit 1
+          }
         }
-        else {
-          Write-Output "::error title=Tests (${{ matrix.os }})::Tests failed on ${{ matrix.os }}. $downloadArtifactMessage"
+
+        Write-Output "::notice title=Tests (${{ matrix.os }})::Tests passed on ${{ matrix.os }}. $downloadArtifactMessage"
+    - name: Set run even if tests fail conditions
+      id: even-if-tests-fail
+      if: always()
+      run: |
+        # Some of the steps below provide feedback on the test run and I want to run them even if
+        # some of the previous steps failed. For that I need:
+        # - the 'always()' condition: without it the step only runs if the job is successful, it's like the 'if' condition on any step always has a hidden '&& success()' clause.
+        # - the '(steps.<step-id>.conclusion == 'success' || steps.<step-id>.conclusion == 'failure')' condition: to run the steps only if the <step-id> step has ran, regardless
+        # if it failed or not. It won't run if the <step-id> step has been skipped or cancelled.
+        #
+        # As such, the output from this step is meant to be used on the 'if' property of steps as follows:
+        # if: steps.even-if-tests-fail.outputs.condition == 'true' && always()
+
+        $condition = '${{ (steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure') }}'
+        Write-Output "condition=$condition" >> $env:GITHUB_OUTPUT
+        Write-Output "condition is set to $condition"
+    - name: Generate code coverage report
+      id: code-coverage-report-generator
+      if: steps.even-if-tests-fail.outputs.condition == 'true' && always()
+      run: |
+        $testCoverageReportDir = $(Join-Path -Path ${{ steps.dotnet-test.outputs.test-coverage-dir }} -ChildPath "report")
+        Write-Output "test-coverage-report-dir=$testCoverageReportDir" >> $env:GITHUB_OUTPUT
+        reportgenerator `
+          "-reports:${{ steps.dotnet-test.outputs.test-coverage-file }}" `
+          "-targetdir:$testCoverageReportDir" `
+          -reportTypes:htmlInline
+    - name: Upload code coverage report to artifacts
+      if: steps.even-if-tests-fail.outputs.condition == 'true' && always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ env.CODE_COVERAGE_ARTIFACT_NAME }}
+        path: ${{ steps.code-coverage-report-generator.outputs.test-coverage-report-dir }}
+    - name: Rename test results files
+      if: steps.even-if-tests-fail.outputs.condition == 'true' && always()
+      run: |
+        # I have another workflow that will get all test result markdown files and add them as comments to a Pull Request.
+        # If I don't rename the test results file there is an edge case that will cause the test results comments on the Pull Request to be incorrect.
+        #
+        # The edge case is when this job is re-run. When the job is re-run, it will upload the test results artifact multiple times.
+        # The artifacts work as a share so if the files have the same name they get overwriten, if not they get added to the existing artifact.
+        # By default, all the test results files will be unique due to a timestamp being part of their name so when re-running the job I will get the test results
+        # from ALL runs in the artifact with name env.TEST_RESULTS_ARTIFACT_NAME.
+        # Then when the workflow to add the test results to the Pull Request runs it will get ALL the mardown files in the env.TEST_RESULTS_ARTIFACT_NAME and
+        # add them as a Pull Request. The end result being I will have more test results showing on the PR than intended. Only the test results from the last run should be displayed
+        # on the Pull Request.
+        #
+        # By running this step, I make sure the test result filenames are deterministic so that on job reruns I will only get the latest test results on the the artifact with name env.TEST_RESULTS_ARTIFACT_NAME.
+        # Example:
+        # As of writing this I have 2 test projects and after running tests I will have one markdown file and one trx file per test project and framework. Let's consider the files for .net7.0:
+        # - one md and trx file for DotNet.Sdk.Extensions.Tests.csproj and another md and trx file for DotNet.Sdk.Extensions.Testing.Tests.csproj. Which for this example let's assume would be named:
+        #    - framework_net7.0_20230226152259.md
+        #    - framework_net7.0_20230226152312.md
+        #    - framework_net7.0_20230226152259.trx
+        #    - framework_net7.0_20230226152312.trx
+        #
+        # The filenames contain only the framework and a timestamp. Unfortunately the assembly name is not part of the filename so it's not possible to know which test project the file belongs without viewing its content.
+        # After renaming we would have the following filenames:
+        # - framework_net7.0_0.md
+        # - framework_net7.0_1.md
+        # - framework_net7.0_0.trx
+        # - framework_net7.0_1.trx
+        #
+        # This way when re-running the job the test result filenames are deterministic and will always override existing files in the artifact with name env.TEST_RESULTS_ARTIFACT_NAME.
+        # This does mean that the artifact with name env.TEST_RESULTS_ARTIFACT_NAME will always only contain the test results from the latest run.
+        #
+
+        $testResultsDir = '${{ steps.dotnet-test.outputs.test-results-dir }}'
+        # rename test result files for all frameworks
+        $frameworkFilters = @('framework_netcoreapp3.1*','framework_net5.0*','framework_net6.0*','framework_net7.0*')
+        foreach($frameworkFilter in $frameworkFilters)
+        {
+            # for each framework group the files by extension. There will be .md and .trx file groups
+            $frameworkFiles = Get-ChildItem -Path $testResultsDir -Recurse -Filter $frameworkFilter | Group-Object -Property Extension
+            foreach($extensionFilesGroup in $frameworkFiles)
+            {
+                # rename all the files in each group by adding a deterministic suffix. Since the count of the files in each group does not change
+                # between workflow runs we can use that as a deterministic suffix.
+                for ($i = 0; $i -lt $extensionFilesGroup.Count; $i++)
+                {
+                    $file = $extensionFilesGroup.Group[$i]
+                    $extension = $file.Extension
+                    $frameworkPrefix = $frameworkFilter -replace '\*', ''
+                    $newFilename = "$frameworkPrefix`_$i$extension"
+                    Write-Output "Renaming $file to $newFilename"
+                    Rename-Item -Path $file -NewName "$newFilename"
+                }
+            }
         }
+    - name: Upload test results to artifacts
+      if: steps.even-if-tests-fail.outputs.condition == 'true' && always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ env.TEST_RESULTS_ARTIFACT_NAME }}
+        path: ${{ steps.dotnet-test.outputs.test-results-dir }}
+    - name: Upload test coverage to Codecov
+      uses: codecov/codecov-action@v3
+      if: matrix.os == 'ubuntu-latest'  # this job is on a matrix run but I only want to upload code coverage to Codecov once
+      with:
+        files: ${{ steps.dotnet-test.outputs.test-coverage-file }}
+        fail_ci_if_error: true
+    - name: Log Codecov info
+      run: |
+        $codeCoveUrl = "https://app.codecov.io/gh/${{ github.repository }}/"
+        Write-Output "::notice title=Code coverage (${{ matrix.os }})::Code coverage has been uploaded to Codecov at $codeCoveUrl. You can download the code coverage report from the workflow artifact named: ${{ env.CODE_COVERAGE_ARTIFACT_NAME }}."
     - name: Package DotNet.Sdk.Extensions
       if: matrix.os == 'ubuntu-latest'  # this job is on a matrix run but I only want to build the NuGet once
-      run: dotnet pack ${{ env.EXTENSIONS_CSPROJ_FILEPATH }} -c Release --no-build
+      run: dotnet pack src/DotNet.Sdk.Extensions/DotNet.Sdk.Extensions.csproj -c Release --no-build
     - name: Package DotNet.Sdk.Extensions.Testing
       if: matrix.os == 'ubuntu-latest'  # this job is on a matrix run but I only want to build the NuGet once
-      run: dotnet pack ${{ env.TESTING_EXTENSIONS_CSPROJ_FILEPATH }} -c Release --no-build
+      run: dotnet pack src/DotNet.Sdk.Extensions.Testing/DotNet.Sdk.Extensions.Testing.csproj -c Release --no-build
     - name: Upload NuGets and symbols to artifacts
       id: upload-nuget-artifacts
       uses: actions/upload-artifact@v3
@@ -113,66 +228,7 @@ jobs:
           ${{ env.EXTENSIONS_BIN_FOLDER }}/*.snupkg
           ${{ env.TESTING_EXTENSIONS_BIN_FOLDER }}/*.nupkg
           ${{ env.TESTING_EXTENSIONS_BIN_FOLDER }}/*.snupkg
-    # Some of the steps below provide feedback on the test run and I want to run them even if some of the previous steps failed. For that
-    # I need:
-    # - the 'always()' condition: without it the step only runs if the job is successful, it's like the 'if' condition on any step always has a hidden '&& success()' clause.
-    # - the '(steps.<step-id>.conclusion == 'success' || steps.<step-id>.conclusion == 'failure')' condition: to run the steps only if the <step-id> step has ran, regardless
-    # if it failed or not. It won't run if the <step-id> step has been skipped or cancelled.
     - name: Log NuGet artifacts info
-      if: (steps.upload-nuget-artifacts.conclusion == 'success' || steps.upload-nuget-artifacts.conclusion == 'failure') && always()
+      if: matrix.os == 'ubuntu-latest' # this job is on a matrix run but I only want to log this messages to the build summary once
       run: |
         Write-Output "::notice title=NuGets::You can download the NuGet packages and symbols from the worfklow artifact named: ${{ env.NUGET_ARTIFACT_NAME }}."
-    - name: Upload test coverage to Codecov
-      uses: codecov/codecov-action@v3
-      if: matrix.os == 'ubuntu-latest'  # this job is on a matrix run but I only want to upload code coverage to Codecov once
-      with:
-        files: ${{ env.TEST_COVERAGE_FILE }}
-        fail_ci_if_error: true
-    - name: Generate code coverage report
-      if: (steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure') && always()
-      run: |
-        reportgenerator `
-          "-reports:${{ env.TEST_COVERAGE_FILE }}" `
-          "-targetdir:${{ env.TEST_COVERAGE_REPORT_DIR }}" `
-          -reportTypes:htmlInline
-    - name: Upload code coverage report to artifacts
-      if: (steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure') && always()
-      uses: actions/upload-artifact@v3
-      with:
-        name: ${{ env.CODE_COVERAGE_ARTIFACT_NAME }}
-        path: ${{ env.TEST_COVERAGE_REPORT_DIR }}
-    - name: Log Codecov info
-      if: (steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure') && always()
-      run: |
-        $codeCoveUrl = "https://app.codecov.io/gh/${{ github.repository }}/"
-        Write-Output "::notice title=Code coverage (${{ matrix.os }})::Code coverage has been uploaded to Codecov at $codeCoveUrl. You can download the code coverage report from the workflow artifact named: ${{ env.CODE_COVERAGE_ARTIFACT_NAME }}."
-    - name: Rename test results files
-      if: (steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure') && always()
-      run: |
-        # When re-running a job it will upload the test results artifact multiple times.
-        # The artifacts work as a share so if the files have the same name they get overwriten, if not they get added to.
-        # If I don't run this to make sure the filenames are deterministic then on job reruns I get acumulating test results from past runs because the filenames for the test results are all different.
-
-        $testResultsDir = '${{ steps.dotnet-test.outputs.test-results-dir }}'
-        # rename test result files for all frameworks
-        $frameworkFilters = @('framework_netcoreapp3.1*','framework_net5.0*','framework_net6.0*')
-        foreach($frameworkFilter in $frameworkFilters) {
-            # for each framework group the files by extension. There will be .md and .trx file groups
-            $frameworkFiles = Get-ChildItem -Path $testResultsDir -Recurse -Filter $frameworkFilter | Group-Object -Property Extension
-            foreach($extensionFilesGroup in $frameworkFiles) {
-                # rename all the files in each group by adding a deterministic suffix. Since the count of the files in each group does not change
-                # between workflow runs we can use that as a deterministic suffix.
-                for ($i = 0; $i -lt $extensionFilesGroup.Count; $i++) {
-                    $file = $extensionFilesGroup.Group[$i]
-                    $extension = $file.Extension
-                    $frameworkPrefix = $frameworkFilter -replace '\*', ''
-                    Rename-Item -Path $file -NewName "$frameworkPrefix`_$i$extension"
-                }
-            }
-        }
-    - name: Upload test results to artifacts
-      if: (steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure') && always()
-      uses: actions/upload-artifact@v3
-      with:
-        name: ${{ env.TEST_RESULTS_ARTIFACT_NAME }}
-        path: ${{ steps.dotnet-test.outputs.test-results-dir }}

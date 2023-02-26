@@ -43,11 +43,11 @@ The test projects run against multiple frameworks and the [workflow to build and
 
 ## Projects wide configuration
 
-The [Directory.Build.props](/Directory.Build.props) at the root of the repo enables for all projects several settings as well as adds some common NuGet packages.
+- The [Directory.Build.props](/Directory.Build.props) at the root of the repo enables for all projects several settings as well as adds some common NuGet packages. Furthermore, just for test projects, there is another [Directory.Build.props](/tests/Directory.Build.props) that applies some NuGet packages that should be part of all test projects. The props file for tests is merged with the root level props file so all test projects obey to the same set of settings defined by the root level props file.
 
-Furthermore, just for test projects, there is another [Directory.Build.props](/tests/Directory.Build.props) that applies some NuGet packages that should be part of all test projects.
+- When running `dotnet` CLI commands make sure you are at the root of the repo so that the `global.json` is respected. If you don't you might get unexpected results when building the solution. As explained in [global.json overview](https://learn.microsoft.com/en-us/dotnet/core/tools/global-json):
 
-The props file for tests is merged with the root level props file so all test projects obey to the same set of settings defined by the root level props file.
+> The .NET SDK looks for a global.json file in the current working directory (which isn't necessarily the same as the project directory) or one of its parent directories.
 
 ## Deterministic Build configuration
 
