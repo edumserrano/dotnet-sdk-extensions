@@ -2,22 +2,16 @@
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <!-- Enable deterministic builds as per https://github.com/clairernovotny/DeterministicBuilds. Recommended when using sourcelink -->
-    <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
-    <!-- treat all nullable reference warnings as errors -->
-    <WarningsAsErrors>nullable;</WarningsAsErrors>
-    <!-- Use the latest code analyzers that have been released are used. https://docs.microsoft.com/en-us/dotnet/core/project-sdk/msbuild-props#analysislevel -->
-    <AnalysisLevel>latest</AnalysisLevel>
-    <!-- Aggressive or opt-out mode, where all rules are enabled by default as build warnings. https://docs.microsoft.com/en-us/dotnet/core/project-sdk/msbuild-props#analysismode -->
-    <AnalysisMode>AllEnabledByDefault</AnalysisMode>
-    <!-- Force code analysis to run on build. If this starts to slow down the build or Visual Studio consider enabling it only in CI. https://docs.microsoft.com/en-us/dotnet/core/project-sdk/msbuild-props#enforcecodestyleinbuild -->
-    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-    <!-- .NET code quality analysis is only enabled by default for projects that target .NET 5.0 or later. https://docs.microsoft.com/en-us/dotnet/core/project-sdk/msbuild-props#enablenetanalyzers -->
-    <EnableNETAnalyzers>true</EnableNETAnalyzers>
-    <!-- Temporarily ignore warnings from dotnet target framework being out of support. When I decide to stop supporting older frameworks I need to remove this setting. For more info see https://andrewlock.net/fixing-build-warning-netsdk1138-when-building-end-of-life-projects-with-dotnet-5/ -->
-    <CheckEolTargetFramework>false</CheckEolTargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings> <!-- Enable deterministic builds as per https://github.com/clairernovotny/DeterministicBuilds. Recommended when using sourcelink -->
+    <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild> <!-- treat all nullable reference warnings as errors -->
+    <WarningsAsErrors>nullable;</WarningsAsErrors> <!-- Use the latest code analyzers that have been released are used. https://docs.microsoft.com/en-us/dotnet/core/project-sdk/msbuild-props#analysislevel -->
+    <AnalysisLevel>latest</AnalysisLevel> <!-- Aggressive or opt-out mode, where all rules are enabled by default as build warnings. https://docs.microsoft.com/en-us/dotnet/core/project-sdk/msbuild-props#analysismode -->
+    <AnalysisMode>AllEnabledByDefault</AnalysisMode> <!-- Force code analysis to run on build. If this starts to slow down the build or Visual Studio consider enabling it only in CI. https://docs.microsoft.com/en-us/dotnet/core/project-sdk/msbuild-props#enforcecodestyleinbuild -->
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild> <!-- .NET code quality analysis is only enabled by default for projects that target .NET 5.0 or later. https://docs.microsoft.com/en-us/dotnet/core/project-sdk/msbuild-props#enablenetanalyzers -->
+    <EnableNETAnalyzers>true</EnableNETAnalyzers> <!-- Temporarily ignore warnings from dotnet target framework being out of support. When I decide to stop supporting older frameworks I need to remove this setting. For more info see https://andrewlock.net/fixing-build-warning-netsdk1138-when-building-end-of-life-projects-with-dotnet-5/ -->
+    <CheckEolTargetFramework>false</CheckEolTargetFramework> <!-- Ignore warnings from supporting frameworks that are end of life -->
   </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.5.22">
       <PrivateAssets>all</PrivateAssets>
@@ -40,4 +34,18 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
+
+  <ItemGroup Condition="'$(IsTestProject)' == 'true'">
+    <PackageReference Include="coverlet.msbuild" Version="3.2.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="NSubstitute" Version="5.0.0" />
+    <PackageReference Include="Shouldly" Version="4.1.0" />
+    <PackageReference Include="xunit.analyzers" Version="1.1.0" />
+    <PackageReference Include="NSubstitute.Analyzers.CSharp" Version="1.0.16" />
+    <PackageReference Include="GitHubActionsTestLogger" Version="2.0.1" />
+    <PackageReference Include="LiquidTestReports.Custom" Version="1.0.9" />
+  </ItemGroup>
+
 </Project>
