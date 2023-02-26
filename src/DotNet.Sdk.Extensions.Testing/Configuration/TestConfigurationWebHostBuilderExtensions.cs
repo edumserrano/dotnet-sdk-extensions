@@ -159,6 +159,7 @@ public static partial class TestConfigurationBuilderExtensions
         });
     }
 
+#pragma warning disable MA0051 // Method is too long
     private static IConfigurationBuilder AddTestAppSettings(
         this IConfigurationBuilder config,
         TestConfigurationOptions options,
@@ -244,4 +245,5 @@ public static partial class TestConfigurationBuilderExtensions
 
         return config;
     }
+#pragma warning restore MA0051 // Method is too long
 }

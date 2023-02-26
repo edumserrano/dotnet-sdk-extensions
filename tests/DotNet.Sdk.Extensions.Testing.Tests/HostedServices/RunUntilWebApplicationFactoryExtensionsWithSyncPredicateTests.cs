@@ -78,17 +78,21 @@ public class RunUntilWebApplicationFactoryExtensionsWithSyncPredicateTests
             .Returns(1)
             .AndDoes(_ => ++callCount);
 
-        var webApplicationFactory = new HostedServicesWebApplicationFactory();
-        await webApplicationFactory
+        var hostedServicesWebAppFactory = new HostedServicesWebApplicationFactory();
+#if NET6_0 || NET7_0
+        await using var webApplicationFactory = hostedServicesWebAppFactory
+#else
+        using var webApplicationFactory = hostedServicesWebAppFactory
+#endif
             .WithWebHostBuilder(builder =>
             {
                 builder.ConfigureTestServices(services =>
                 {
                     services.AddSingleton(calculator);
                 });
-            })
-            .RunUntilAsync(() => callCount >= 3);
+            });
 
+        await webApplicationFactory.RunUntilAsync(() => callCount >= 3);
         callCount.ShouldBeGreaterThanOrEqualTo(3);
     }
 
@@ -108,7 +112,12 @@ public class RunUntilWebApplicationFactoryExtensionsWithSyncPredicateTests
             .Returns(1)
             .AndDoes(_ => ++callCount);
 
-        var webApplicationFactory = new HostedServicesWebApplicationFactory()
+        using var hostedServicesWebApplicationFactory = new HostedServicesWebApplicationFactory();
+#if NET6_0 || NET7_0
+        await using var webApplicationFactory = hostedServicesWebApplicationFactory
+#else
+        using var webApplicationFactory = hostedServicesWebApplicationFactory
+#endif
             .WithWebHostBuilder(builder =>
             {
                 builder.ConfigureTestServices(services =>
@@ -141,7 +150,12 @@ public class RunUntilWebApplicationFactoryExtensionsWithSyncPredicateTests
             .Returns(1)
             .AndDoes(_ => ++callCount);
 
-        var webApplicationFactory = new HostedServicesWebApplicationFactory()
+        using var hostedServicesWebApplicationFactory = new HostedServicesWebApplicationFactory();
+#if NET6_0 || NET7_0
+        await using var webApplicationFactory = hostedServicesWebApplicationFactory
+#else
+        using var webApplicationFactory = hostedServicesWebApplicationFactory
+#endif
             .WithWebHostBuilder(builder =>
             {
                 builder.ConfigureTestServices(services =>

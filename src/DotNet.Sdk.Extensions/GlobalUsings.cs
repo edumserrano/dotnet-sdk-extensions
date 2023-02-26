@@ -23,6 +23,7 @@ global using Polly;
 global using Polly.CircuitBreaker;
 global using Polly.Contrib.WaitAndRetry;
 global using Polly.Extensions.Http;
+global using Polly.Fallback;
 global using Polly.Retry;
 global using Polly.Timeout;
 global using Polly.Wrap;

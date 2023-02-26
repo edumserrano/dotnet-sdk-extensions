@@ -6,38 +6,45 @@ internal static class FallbackPolicyFactory
         string httpClientName,
         IFallbackPolicyEventHandler policyEventHandler)
     {
-        // handle HttpRequestException thrown by the HttpClient
-        var httpRequestExceptionFallback = Policy<HttpResponseMessage>
-            .Handle<HttpRequestException>()
+        var httpRequestExceptionFallback = CreateFallbackPolicyForHttpRequestException(httpClientName, policyEventHandler);
+        var timeoutFallback = CreateFallbackPolicyForTimeouts(httpClientName, policyEventHandler);
+        var brokenCircuitFallback = CreateFallbackPolicyForBrokenCircuit(httpClientName, policyEventHandler);
+        var abortedFallback = CreateFallbackPolicyForAbortedRequests(httpClientName, policyEventHandler);
+        return Policy.WrapAsync(
+            httpRequestExceptionFallback,
+            timeoutFallback,
+            brokenCircuitFallback,
+            abortedFallback);
+    }
+
+    private static AsyncFallbackPolicy<HttpResponseMessage> CreateFallbackPolicyForAbortedRequests(string httpClientName, IFallbackPolicyEventHandler policyEventHandler)
+    {
+        // handle TaskCanceledException thrown by HttpClient when it times out with a fallback response
+        return Policy<HttpResponseMessage>
+            .Handle<TaskCanceledException>()
             .FallbackAsync(
                 fallbackAction: (delegateResult, _, _) =>
                 {
-                    var response = new ExceptionHttpResponseMessage(delegateResult.Exception);
-                    return Task.FromResult<HttpResponseMessage>(response);
+                    // on newer versions .NET still throws TaskCanceledException but the inner exception is of type System.TimeoutException.
+                    // see https://devblogs.microsoft.com/dotnet/net-5-new-networking-improvements/#better-error-handling
+                    var exception = delegateResult.Exception;
+                    return exception switch
+                    {
+                        { InnerException: TimeoutException } => Task.FromResult<HttpResponseMessage>(new TimeoutHttpResponseMessage(exception)),
+                        _ => Task.FromResult<HttpResponseMessage>(new AbortedHttpResponseMessage(exception))
+                    };
                 },
                 onFallbackAsync: (outcome, context) =>
                 {
                     var fallbackEvent = new FallbackEvent(httpClientName, outcome, context);
-                    return policyEventHandler.OnHttpRequestExceptionFallbackAsync(fallbackEvent);
+                    return policyEventHandler.OnTaskCancelledFallbackAsync(fallbackEvent);
                 });
+    }
 
-        // handle TimeoutRejectedException thrown by a timeout policy
-        var timeoutFallback = Policy<HttpResponseMessage>
-            .Handle<TimeoutRejectedException>()
-            .FallbackAsync(
-                fallbackAction: (delegateResult, _, _) =>
-                {
-                    var response = new TimeoutHttpResponseMessage(delegateResult.Exception);
-                    return Task.FromResult<HttpResponseMessage>(response);
-                },
-                onFallbackAsync: (outcome, context) =>
-                {
-                    var fallbackEvent = new FallbackEvent(httpClientName, outcome, context);
-                    return policyEventHandler.OnTimeoutFallbackAsync(fallbackEvent);
-                });
-
+    private static AsyncFallbackPolicy<HttpResponseMessage> CreateFallbackPolicyForBrokenCircuit(string httpClientName, IFallbackPolicyEventHandler policyEventHandler)
+    {
         // handle BrokenCircuitException thrown by a circuit breaker policy
-        var brokenCircuitFallback = Policy<HttpResponseMessage>
+        return Policy<HttpResponseMessage>
             .Handle<BrokenCircuitException>()
             .Or<IsolatedCircuitException>()
             .FallbackAsync(
@@ -57,31 +64,41 @@ internal static class FallbackPolicyFactory
                     var fallbackEvent = new FallbackEvent(httpClientName, outcome, context);
                     return policyEventHandler.OnBrokenCircuitFallbackAsync(fallbackEvent);
                 });
+    }
 
-        // handle TaskCanceledException thrown by HttpClient when it times out.
-        var abortedFallback = Policy<HttpResponseMessage>
-            .Handle<TaskCanceledException>()
+    private static AsyncFallbackPolicy<HttpResponseMessage> CreateFallbackPolicyForTimeouts(string httpClientName, IFallbackPolicyEventHandler policyEventHandler)
+    {
+        // handle TimeoutRejectedException thrown by a timeout policy
+        return Policy<HttpResponseMessage>
+            .Handle<TimeoutRejectedException>()
             .FallbackAsync(
                 fallbackAction: (delegateResult, _, _) =>
                 {
-                    // on newer versions .NET still throws TaskCanceledException but the inner exception is of type System.TimeoutException.
-                    // see https://devblogs.microsoft.com/dotnet/net-5-new-networking-improvements/#better-error-handling
-                    var exception = delegateResult.Exception;
-                    return exception switch
-                    {
-                        { InnerException: TimeoutException } => Task.FromResult<HttpResponseMessage>(new TimeoutHttpResponseMessage(exception)),
-                        _ => Task.FromResult<HttpResponseMessage>(new AbortedHttpResponseMessage(exception))
-                    };
+                    var response = new TimeoutHttpResponseMessage(delegateResult.Exception);
+                    return Task.FromResult<HttpResponseMessage>(response);
                 },
                 onFallbackAsync: (outcome, context) =>
                 {
                     var fallbackEvent = new FallbackEvent(httpClientName, outcome, context);
-                    return policyEventHandler.OnTaskCancelledFallbackAsync(fallbackEvent);
+                    return policyEventHandler.OnTimeoutFallbackAsync(fallbackEvent);
                 });
+    }
 
-        return Policy.WrapAsync(httpRequestExceptionFallback,
-            timeoutFallback,
-            brokenCircuitFallback,
-            abortedFallback);
+    private static AsyncFallbackPolicy<HttpResponseMessage> CreateFallbackPolicyForHttpRequestException(string httpClientName, IFallbackPolicyEventHandler policyEventHandler)
+    {
+        // handle HttpRequestException thrown by the HttpClient
+        return Policy<HttpResponseMessage>
+            .Handle<HttpRequestException>()
+            .FallbackAsync(
+                fallbackAction: (delegateResult, _, _) =>
+                {
+                    var response = new ExceptionHttpResponseMessage(delegateResult.Exception);
+                    return Task.FromResult<HttpResponseMessage>(response);
+                },
+                onFallbackAsync: (outcome, context) =>
+                {
+                    var fallbackEvent = new FallbackEvent(httpClientName, outcome, context);
+                    return policyEventHandler.OnHttpRequestExceptionFallbackAsync(fallbackEvent);
+                });
     }
 }

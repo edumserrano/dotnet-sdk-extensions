@@ -16,7 +16,7 @@ public class UseDefaultLogLevelTests
             .Build();
         var configuration = (ConfigurationRoot)host.Services.GetRequiredService<IConfiguration>();
         var logLevel = configuration.GetValue<string>(key: "Logging:LogLevel:Default");
-        logLevel.ShouldBe(null);
+        logLevel.ShouldBeNull();
     }
 
     /// <summary>
@@ -37,7 +37,7 @@ public class UseDefaultLogLevelTests
             .Build();
         var configuration = (ConfigurationRoot)host.Services.GetRequiredService<IConfiguration>();
         var logLevel = configuration.GetValue<string>(key: "Logging:LogLevel:Default");
-        logLevel.ShouldBe(null);
+        logLevel.ShouldBeNull();
     }
 
     /// <summary>

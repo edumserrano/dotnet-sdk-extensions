@@ -1,5 +1,8 @@
+using System.Runtime.InteropServices;
+
 namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers;
 
+[StructLayout(LayoutKind.Auto)]
 internal readonly struct HttpMockServerUrlDescriptor
 {
     public HttpMockServerUrlDescriptor(HttpScheme scheme, int port)

@@ -41,7 +41,11 @@ public sealed class UseHttpMocksTests : IClassFixture<HttpResponseMockingWebAppl
     [Fact]
     public async Task BasicClient()
     {
-        var httpClient = _webApplicationFactory
+#if NET6_0 || NET7_0
+        await using var webAppFactory = _webApplicationFactory
+#else
+        using var webAppFactory = _webApplicationFactory
+#endif
             .WithWebHostBuilder(webHostBuilder =>
             {
                 webHostBuilder.UseHttpMocks(handlers =>
@@ -53,8 +57,8 @@ public sealed class UseHttpMocksTests : IClassFixture<HttpResponseMockingWebAppl
                             .RespondWith(() => new HttpResponseMessage(HttpStatusCode.OK));
                     });
                 });
-            })
-            .CreateClient();
+            });
+        var httpClient = webAppFactory.CreateClient();
 
         var response = await httpClient.GetAsync("/basic-client");
         var message = await response.Content.ReadAsStringAsync();
@@ -68,7 +72,11 @@ public sealed class UseHttpMocksTests : IClassFixture<HttpResponseMockingWebAppl
     [Fact]
     public async Task NamedHttpClient()
     {
-        var httpClient = _webApplicationFactory
+#if NET6_0 || NET7_0
+        await using var webAppFactory = _webApplicationFactory
+#else
+        using var webAppFactory = _webApplicationFactory
+#endif
             .WithWebHostBuilder(builder =>
             {
                 builder.UseHttpMocks(handlers =>
@@ -80,8 +88,8 @@ public sealed class UseHttpMocksTests : IClassFixture<HttpResponseMockingWebAppl
                             .RespondWith(() => new HttpResponseMessage(HttpStatusCode.OK));
                     });
                 });
-            })
-            .CreateClient();
+            });
+        var httpClient = webAppFactory.CreateClient();
 
         var response = await httpClient.GetAsync("/named-client");
         var message = await response.Content.ReadAsStringAsync();
@@ -95,7 +103,11 @@ public sealed class UseHttpMocksTests : IClassFixture<HttpResponseMockingWebAppl
     [Fact]
     public async Task TypedHttpClient()
     {
-        var httpClient = _webApplicationFactory
+#if NET6_0 || NET7_0
+        await using var webAppFactory = _webApplicationFactory
+#else
+        using var webAppFactory = _webApplicationFactory
+#endif
             .WithWebHostBuilder(builder =>
             {
                 builder.UseHttpMocks(handlers =>
@@ -107,8 +119,8 @@ public sealed class UseHttpMocksTests : IClassFixture<HttpResponseMockingWebAppl
                             .RespondWith(() => new HttpResponseMessage(HttpStatusCode.OK));
                     });
                 });
-            })
-            .CreateClient();
+            });
+        var httpClient = webAppFactory.CreateClient();
 
         var response = await httpClient.GetAsync("/typed-client");
         var message = await response.Content.ReadAsStringAsync();
@@ -126,7 +138,11 @@ public sealed class UseHttpMocksTests : IClassFixture<HttpResponseMockingWebAppl
     [Fact]
     public async Task TypedHttpClientWithCustomName()
     {
-        var httpClient = _webApplicationFactory
+#if NET6_0 || NET7_0
+        await using var webAppFactory = _webApplicationFactory
+#else
+        using var webAppFactory = _webApplicationFactory
+#endif
             .WithWebHostBuilder(builder =>
             {
                 builder.UseHttpMocks(handlers =>
@@ -138,8 +154,8 @@ public sealed class UseHttpMocksTests : IClassFixture<HttpResponseMockingWebAppl
                             .RespondWith(() => new HttpResponseMessage(HttpStatusCode.OK));
                     });
                 });
-            })
-            .CreateClient();
+            });
+        var httpClient = webAppFactory.CreateClient();
 
         var response = await httpClient.GetAsync("/typed-client-with-custom-name");
         var message = await response.Content.ReadAsStringAsync();
@@ -159,7 +175,11 @@ public sealed class UseHttpMocksTests : IClassFixture<HttpResponseMockingWebAppl
     [Fact]
     public async Task TypedHttpClientWithCustomName2()
     {
-        using var httpClient = _webApplicationFactory
+#if NET6_0 || NET7_0
+        await using var webAppFactory = _webApplicationFactory
+#else
+        using var webAppFactory = _webApplicationFactory
+#endif
             .WithWebHostBuilder(builder =>
             {
                 builder.UseHttpMocks(handlers =>
@@ -171,8 +191,8 @@ public sealed class UseHttpMocksTests : IClassFixture<HttpResponseMockingWebAppl
                             .RespondWith(() => new HttpResponseMessage(HttpStatusCode.OK));
                     });
                 });
-            })
-            .CreateClient();
+            });
+        var httpClient = webAppFactory.CreateClient();
 
         var response = await httpClient.GetAsync("/typed-client-with-custom-name-2");
         var message = await response.Content.ReadAsStringAsync();
@@ -195,7 +215,11 @@ public sealed class UseHttpMocksTests : IClassFixture<HttpResponseMockingWebAppl
             .ForNamedClient("my-named-client")
             .RespondWith(() => new HttpResponseMessage(HttpStatusCode.OK));
 
-        var httpClient = _webApplicationFactory
+#if NET6_0 || NET7_0
+        await using var webAppFactory = _webApplicationFactory
+#else
+        using var webAppFactory = _webApplicationFactory
+#endif
             .WithWebHostBuilder(webHostBuilder =>
             {
                 webHostBuilder.UseHttpMocks(handlers =>
@@ -203,8 +227,8 @@ public sealed class UseHttpMocksTests : IClassFixture<HttpResponseMockingWebAppl
                     handlers.MockHttpResponse(httpResponseMock1);
                     handlers.MockHttpResponse(httpResponseMock2);
                 });
-            })
-            .CreateClient();
+            });
+        var httpClient = webAppFactory.CreateClient();
 
         var response = await httpClient.GetAsync("/basic-client");
         var message = await response.Content.ReadAsStringAsync();
@@ -231,12 +255,16 @@ public sealed class UseHttpMocksTests : IClassFixture<HttpResponseMockingWebAppl
             .ForNamedClient("my-named-client")
             .RespondWith(() => new HttpResponseMessage(HttpStatusCode.OK));
 
-        var httpClient = _webApplicationFactory
+#if NET6_0 || NET7_0
+        await using var webAppFactory = _webApplicationFactory
+#else
+        using var webAppFactory = _webApplicationFactory
+#endif
             .WithWebHostBuilder(webHostBuilder =>
             {
                 webHostBuilder.UseHttpMocks(httpResponseMock1, httpResponseMock2);
-            })
-            .CreateClient();
+            });
+        var httpClient = webAppFactory.CreateClient();
 
         var response1 = await httpClient.GetAsync("/basic-client");
         var message1 = await response1.Content.ReadAsStringAsync();
@@ -261,7 +289,11 @@ public sealed class UseHttpMocksTests : IClassFixture<HttpResponseMockingWebAppl
     [Fact]
     public async Task MockHttpResponseOverloadWithServiceProvider()
     {
-        var httpClient = _webApplicationFactory
+#if NET6_0 || NET7_0
+        await using var webAppFactory = _webApplicationFactory
+#else
+        using var webAppFactory = _webApplicationFactory
+#endif
             .WithWebHostBuilder(webHostBuilder =>
             {
                 // Add a test setting to have something to retrieve from the service provider below.
@@ -284,8 +316,8 @@ public sealed class UseHttpMocksTests : IClassFixture<HttpResponseMockingWebAppl
                             });
                     });
                 });
-            })
-            .CreateClient();
+            });
+        var httpClient = webAppFactory.CreateClient();
 
         var response = await httpClient.GetAsync("/basic-client");
         var message = await response.Content.ReadAsStringAsync();

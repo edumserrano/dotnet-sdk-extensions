@@ -25,7 +25,7 @@ public class HttpMockServerBuilderExtensionTests
         _ = await httpMockServer.StartAsync();
 
         var configuration = httpMockServer.Host!.Services.GetRequiredService<IConfiguration>();
-        configuration["Logging:LogLevel:Default"].ShouldBe(null);
+        configuration["Logging:LogLevel:Default"].ShouldBeNull();
     }
 
     /// <summary>

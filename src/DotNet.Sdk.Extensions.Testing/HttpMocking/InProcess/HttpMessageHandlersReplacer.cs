@@ -85,7 +85,7 @@ public class HttpMessageHandlersReplacer
 
         var testHttpMessageHandlerDescriptors = _httpResponseMockBuilders
             .Select(x => x.Build())
-            .GroupBy(x => x.HttpClientName)
+            .GroupBy(x => x.HttpClientName, StringComparer.InvariantCulture)
             .Select(CreateTestHttpMessageHandlers);
         foreach (var testHttpMessageHandlerDescriptor in testHttpMessageHandlerDescriptors)
         {
@@ -106,7 +106,7 @@ public class HttpMessageHandlersReplacer
         }
     }
 
-    private TestHttpMessageHandlerDescriptor CreateTestHttpMessageHandlers(IGrouping<string, HttpResponseMessageMockDescriptor> httpResponseMockDescriptorsGrouping)
+    private static TestHttpMessageHandlerDescriptor CreateTestHttpMessageHandlers(IGrouping<string, HttpResponseMessageMockDescriptor> httpResponseMockDescriptorsGrouping)
     {
         if (httpResponseMockDescriptorsGrouping is null)
         {
