@@ -78,6 +78,7 @@ jobs:
         Write-Output "test-coverage-dir=$testCoverageDir" >> $env:GITHUB_OUTPUT
         Write-Output "test-coverage-file=$testCoverageFile" >> $env:GITHUB_OUTPUT
 
+        $downloadArtifactMessage = "You can inspect the test results by downloading the workflow artifact named: ${{ env.TEST_RESULTS_ARTIFACT_NAME }}."
         $frameworkMonikers = @('netcoreapp3.1','net5.0','net6.0','net7.0')
         foreach($frameworkMoniker in $frameworkMonikers)
         {
@@ -97,24 +98,22 @@ jobs:
             /p:MergeWith="$testCoverageMergeFile" `
             /p:CoverletOutputFormat="json%2copencover" `
             -m:1
+
+          if($LASTEXITCODE -ne 0)
+          {
+            Write-Output "::error title=Tests (${{ matrix.os }})::Tests failed on ${{ matrix.os }}. $downloadArtifactMessage"
+          }
+
           Write-Output "::endgroup::"
         }
 
+        Write-Output "::group::Test output directories."
         Write-Output "test-results-dir is set to $testResultsDir"
         Write-Output "test-coverage-dir is set to $testCoverageDir"
         Write-Output "test-coverage-file is set to $testCoverageFile"
-
-        $downloadArtifactMessage = "You can inspect the test results by downloading the workflow artifact named: ${{ env.TEST_RESULTS_ARTIFACT_NAME }}."
-        if($LASTEXITCODE -eq 0) {
-          Write-Output "::notice title=Tests (${{ matrix.os }})::Tests passed on ${{ matrix.os }}. $downloadArtifactMessage"
-        }
-        else {
-          Write-Output "::error title=Tests (${{ matrix.os }})::Tests failed on ${{ matrix.os }}. $downloadArtifactMessage"
-        }
-
-        Write-Output "::group::Debug directories"
-        Get-ChildItem -Path ./tests -Recurse
         Write-Output "::endgroup::"
+
+        Write-Output "::notice title=Tests (${{ matrix.os }})::Tests passed on ${{ matrix.os }}. $downloadArtifactMessage"
     - name: Package DotNet.Sdk.Extensions
       if: matrix.os == 'ubuntu-latest'  # this job is on a matrix run but I only want to build the NuGet once
       run: dotnet pack ${{ env.EXTENSIONS_CSPROJ_FILEPATH }} -c Release --no-build
