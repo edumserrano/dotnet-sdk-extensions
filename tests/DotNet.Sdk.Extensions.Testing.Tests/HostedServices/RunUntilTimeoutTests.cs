@@ -65,17 +65,16 @@ public class RunUntilTimeoutTests : IClassFixture<HostedServicesWebApplicationFa
         await _hostedServicesWebAppFactory
             .WithWebHostBuilder(builder =>
             {
-                builder
-                    .ConfigureTestServices(services =>
-                    {
-                        services.AddSingleton(calculator);
-                    });
+                builder.ConfigureTestServices(services =>
+                {
+                    services.AddSingleton(calculator);
+                });
             })
-            .RunUntilTimeoutAsync(TimeSpan.FromSeconds(2));
+            .RunUntilTimeoutAsync(TimeSpan.FromMilliseconds(2300));
         sw.Stop();
 
-        sw.Elapsed.ShouldBeGreaterThanOrEqualTo(TimeSpan.FromMilliseconds(1900));
-        callCount.ShouldBeGreaterThanOrEqualTo(3);
+        sw.Elapsed.ShouldBeGreaterThanOrEqualTo(TimeSpan.FromMilliseconds(2000));
+        callCount.ShouldBeGreaterThanOrEqualTo(5);
     }
 
     /// <summary>
@@ -122,6 +121,6 @@ public class RunUntilTimeoutTests : IClassFixture<HostedServicesWebApplicationFa
         sw.Stop();
 
         sw.Elapsed.ShouldBeGreaterThanOrEqualTo(TimeSpan.FromMilliseconds(2000));
-        callCount.ShouldBeGreaterThanOrEqualTo(3);
+        callCount.ShouldBeGreaterThanOrEqualTo(5);
     }
 }
