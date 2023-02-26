@@ -157,10 +157,10 @@ jobs:
         # Example:
         # As of writing this I have 2 test projects and after running tests I will have one markdown file and one trx file per test project and framework. Let's consider the files for .net7.0:
         # - one md and trx file for DotNet.Sdk.Extensions.Tests.csproj and another md and trx file for DotNet.Sdk.Extensions.Testing.Tests.csproj. Which for this example let's assume would be named:
-        #    - framework_net7.0_20230226152259.md
-        #    - framework_net7.0_20230226152312.md
-        #    - framework_net7.0_20230226152259.trx
-        #    - framework_net7.0_20230226152312.trx
+        #   - framework_net7.0_20230226152259.md
+        #   - framework_net7.0_20230226152312.md
+        #   - framework_net7.0_20230226152259.trx
+        #   - framework_net7.0_20230226152312.trx
         #
         # The filenames contain only the framework and a timestamp. Unfortunately the assembly name is not part of the filename so it's not possible to know which test project the file belongs without viewing its content.
         # After renaming we would have the following filenames:
@@ -208,6 +208,7 @@ jobs:
         files: ${{ steps.dotnet-test.outputs.test-coverage-file }}
         fail_ci_if_error: true
     - name: Log Codecov info
+      if: matrix.os == 'ubuntu-latest'  # this job is on a matrix run but I only want to log this messages to the build summary once
       run: |
         $codeCoveUrl = "https://app.codecov.io/gh/${{ github.repository }}/"
         Write-Output "::notice title=Code coverage (${{ matrix.os }})::Code coverage has been uploaded to Codecov at $codeCoveUrl. You can download the code coverage report from the workflow artifact named: ${{ env.CODE_COVERAGE_ARTIFACT_NAME }}."
