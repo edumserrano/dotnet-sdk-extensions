@@ -27,14 +27,9 @@ jobs:
     runs-on: ${{ matrix.os }}
     env:
       SLN_FILEPATH: ${{github.workspace}}/DotNet.Sdk.Extensions.sln
-      EXTENSIONS_CSPROJ_FILEPATH : ${{ github.workspace }}/src/DotNet.Sdk.Extensions/DotNet.Sdk.Extensions.csproj
       EXTENSIONS_BIN_FOLDER : ${{ github.workspace }}/src/DotNet.Sdk.Extensions/bin/Release
-      TESTING_EXTENSIONS_CSPROJ_FILEPATH : ${{ github.workspace }}/src/DotNet.Sdk.Extensions.Testing/DotNet.Sdk.Extensions.Testing.csproj
       TESTING_EXTENSIONS_BIN_FOLDER : ${{ github.workspace }}/src/DotNet.Sdk.Extensions.Testing/bin/Release
-
-      TEST_COVERAGE_REPORT_DIR: tests/${{ matrix.os }}/coverage-results/report
       TEST_RESULTS_ARTIFACT_NAME: test-results-${{ matrix.os }}
-
       CODE_COVERAGE_ARTIFACT_NAME: code-coverage-report-${{ matrix.os }}
       NUGET_ARTIFACT_NAME : nuget-packages-and-symbols
     steps:
@@ -112,25 +107,8 @@ jobs:
         }
 
         Write-Output "::notice title=Tests (${{ matrix.os }})::Tests passed on ${{ matrix.os }}. $downloadArtifactMessage"
-    - name: Package DotNet.Sdk.Extensions
-      if: matrix.os == 'ubuntu-latest'  # this job is on a matrix run but I only want to build the NuGet once
-      run: dotnet pack ${{ env.EXTENSIONS_CSPROJ_FILEPATH }} -c Release --no-build
-    - name: Package DotNet.Sdk.Extensions.Testing
-      if: matrix.os == 'ubuntu-latest'  # this job is on a matrix run but I only want to build the NuGet once
-      run: dotnet pack ${{ env.TESTING_EXTENSIONS_CSPROJ_FILEPATH }} -c Release --no-build
-    - name: Upload NuGets and symbols to artifacts
-      id: upload-nuget-artifacts
-      uses: actions/upload-artifact@v3
-      if: matrix.os == 'ubuntu-latest'  # this job is on a matrix run but I only want to upload NuGets as artifacts once
-      with:
-        name: ${{ env.NUGET_ARTIFACT_NAME }}
-        path: |
-          ${{ env.EXTENSIONS_BIN_FOLDER }}/*.nupkg
-          ${{ env.EXTENSIONS_BIN_FOLDER }}/*.snupkg
-          ${{ env.TESTING_EXTENSIONS_BIN_FOLDER }}/*.nupkg
-          ${{ env.TESTING_EXTENSIONS_BIN_FOLDER }}/*.snupkg
-    - name: Set run even if fail conditions
-      id: even-if-fail
+    - name: Set run even if tests fail conditions
+      id: even-if-tests-fail
       if: always()
       run: |
         # Some of the steps below provide feedback on the test run and I want to run them even if
@@ -142,19 +120,12 @@ jobs:
         # As such, the output from this step is meant to be used on the 'if' property of steps as follows:
         # if: steps.even-if-tests-fail.outputs.condition == 'true' && always()
 
-        $testsCondition = '${{ (steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure') }}'
-        $nugetsCondition = '${{ (steps.upload-nuget-artifacts.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure') }}'
-        Write-Output "tests-condition=$testsCondition" >> $env:GITHUB_OUTPUT
-        Write-Output "nugets-condition=$nugetsCondition" >> $env:GITHUB_OUTPUT
-        Write-Output "tests-condition is set to $testsCondition"
-        Write-Output "nugets-condition is set to $nugetsCondition"
-    - name: Log NuGet artifacts info
-      if: steps.even-if-fail.outputs.nugets-condition == 'true' && always()
-      run: |
-        Write-Output "::notice title=NuGets::You can download the NuGet packages and symbols from the worfklow artifact named: ${{ env.NUGET_ARTIFACT_NAME }}."
+        $condition = '${{ (steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure') }}'
+        Write-Output "condition=$condition" >> $env:GITHUB_OUTPUT
+        Write-Output "condition is set to $condition"
     - name: Generate code coverage report
       id: code-coverage-report-generator
-      if: steps.even-if-fail.outputs.tests-condition == 'true' && always()
+      if: steps.even-if-tests-fail.outputs.condition == 'true' && always()
       run: |
         $testCoverageReportDir = $(Join-Path -Path ${{ steps.dotnet-test.outputs.test-coverage-dir }} -ChildPath "report")
         Write-Output "test-coverage-report-dir=$testCoverageReportDir" >> $env:GITHUB_OUTPUT
@@ -163,13 +134,13 @@ jobs:
           "-targetdir:$testCoverageReportDir" `
           -reportTypes:htmlInline
     - name: Upload code coverage report to artifacts
-      if: steps.even-if-fail.outputs.tests-condition == 'true' && always()
+      if: steps.even-if-tests-fail.outputs.condition == 'true' && always()
       uses: actions/upload-artifact@v3
       with:
         name: ${{ env.CODE_COVERAGE_ARTIFACT_NAME }}
         path: ${{ steps.code-coverage-report-generator.outputs.test-coverage-report-dir }}
     - name: Rename test results files
-      if: steps.even-if-fail.outputs.tests-condition == 'true' && always()
+      if: steps.even-if-tests-fail.outputs.condition == 'true' && always()
       run: |
         # When re-running a job it will upload the test results artifact multiple times.
         # The artifacts work as a share so if the files have the same name they get overwriten, if not they get added to.
@@ -182,8 +153,10 @@ jobs:
         {
             # for each framework group the files by extension. There will be .md and .trx file groups
             $frameworkFiles = Get-ChildItem -Path $testResultsDir -Recurse -Filter $frameworkFilter | Group-Object -Property Extension
+            Write-Output $frameworkFiles
             foreach($extensionFilesGroup in $frameworkFiles)
             {
+                Write-Output $extensionFilesGroup
                 # rename all the files in each group by adding a deterministic suffix. Since the count of the files in each group does not change
                 # between workflow runs we can use that as a deterministic suffix.
                 for ($i = 0; $i -lt $extensionFilesGroup.Count; $i++)
@@ -191,12 +164,14 @@ jobs:
                     $file = $extensionFilesGroup.Group[$i]
                     $extension = $file.Extension
                     $frameworkPrefix = $frameworkFilter -replace '\*', ''
+
+                    Write-Output "Renaming $file to $frameworkPrefix`_$i$extension"
                     Rename-Item -Path $file -NewName "$frameworkPrefix`_$i$extension"
                 }
             }
         }
     - name: Upload test results to artifacts
-      if: steps.even-if-fail.outputs.tests-condition == 'true' && always()
+      if: steps.even-if-tests-fail.outputs.condition == 'true' && always()
       uses: actions/upload-artifact@v3
       with:
         name: ${{ env.TEST_RESULTS_ARTIFACT_NAME }}
@@ -211,3 +186,24 @@ jobs:
       run: |
         $codeCoveUrl = "https://app.codecov.io/gh/${{ github.repository }}/"
         Write-Output "::notice title=Code coverage (${{ matrix.os }})::Code coverage has been uploaded to Codecov at $codeCoveUrl. You can download the code coverage report from the workflow artifact named: ${{ env.CODE_COVERAGE_ARTIFACT_NAME }}."
+    - name: Package DotNet.Sdk.Extensions
+      if: matrix.os == 'ubuntu-latest'  # this job is on a matrix run but I only want to build the NuGet once
+      run: dotnet pack src/DotNet.Sdk.Extensions/DotNet.Sdk.Extensions.csproj -c Release --no-build
+    - name: Package DotNet.Sdk.Extensions.Testing
+      if: matrix.os == 'ubuntu-latest'  # this job is on a matrix run but I only want to build the NuGet once
+      run: dotnet pack src/DotNet.Sdk.Extensions.Testing/DotNet.Sdk.Extensions.Testing.csproj -c Release --no-build
+    - name: Upload NuGets and symbols to artifacts
+      id: upload-nuget-artifacts
+      uses: actions/upload-artifact@v3
+      if: matrix.os == 'ubuntu-latest'  # this job is on a matrix run but I only want to upload NuGets as artifacts once
+      with:
+        name: ${{ env.NUGET_ARTIFACT_NAME }}
+        path: |
+          ${{ env.EXTENSIONS_BIN_FOLDER }}/*.nupkg
+          ${{ env.EXTENSIONS_BIN_FOLDER }}/*.snupkg
+          ${{ env.TESTING_EXTENSIONS_BIN_FOLDER }}/*.nupkg
+          ${{ env.TESTING_EXTENSIONS_BIN_FOLDER }}/*.snupkg
+    - name: Log NuGet artifacts info
+      if: matrix.os == 'ubuntu-latest' # this job is on a matrix run but I only want to log this messages to the build summary once
+      run: |
+        Write-Output "::notice title=NuGets::You can download the NuGet packages and symbols from the worfklow artifact named: ${{ env.NUGET_ARTIFACT_NAME }}."
