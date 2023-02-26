@@ -78,13 +78,18 @@ jobs:
         Write-Output "test-coverage-dir=$testCoverageDir" >> $env:GITHUB_OUTPUT
         Write-Output "test-coverage-file=$testCoverageFile" >> $env:GITHUB_OUTPUT
 
+        Write-Output "::group::Test output directories."
+        Write-Output "test-results-dir is set to $testResultsDir"
+        Write-Output "test-coverage-dir is set to $testCoverageDir"
+        Write-Output "test-coverage-file is set to $testCoverageFile"
+        Write-Output "::endgroup::"
+
         $downloadArtifactMessage = "You can inspect the test results by downloading the workflow artifact named: ${{ env.TEST_RESULTS_ARTIFACT_NAME }}."
         $frameworkMonikers = @('netcoreapp3.1','net5.0','net6.0','net7.0')
         foreach($frameworkMoniker in $frameworkMonikers)
         {
           Write-Output "::group::Running dotnet test for target framework $frameworkMoniker."
           $testCoverageMergeFile = $(Join-Path -Path $testCoverageDir -ChildPath "coverage.$frameworkMoniker.json")
-          Write-Output "testCoverageMergeFile=$testCoverageMergeFile"
           dotnet test ${{ env.SLN_FILEPATH }} `
             -c Release `
             --no-build `
@@ -98,20 +103,13 @@ jobs:
             /p:MergeWith="$testCoverageMergeFile" `
             /p:CoverletOutputFormat="json%2copencover" `
             -m:1
-
+          Write-Output "::endgroup::"
           if($LASTEXITCODE -ne 0)
           {
             Write-Output "::error title=Tests (${{ matrix.os }})::Tests failed on ${{ matrix.os }}. $downloadArtifactMessage"
+            Exit 1
           }
-
-          Write-Output "::endgroup::"
         }
-
-        Write-Output "::group::Test output directories."
-        Write-Output "test-results-dir is set to $testResultsDir"
-        Write-Output "test-coverage-dir is set to $testCoverageDir"
-        Write-Output "test-coverage-file is set to $testCoverageFile"
-        Write-Output "::endgroup::"
 
         Write-Output "::notice title=Tests (${{ matrix.os }})::Tests passed on ${{ matrix.os }}. $downloadArtifactMessage"
     - name: Package DotNet.Sdk.Extensions
