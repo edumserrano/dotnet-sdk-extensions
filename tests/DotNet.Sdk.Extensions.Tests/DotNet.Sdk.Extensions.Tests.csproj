@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFrameworks>netcoreapp3.1;net5.0;net6.0;net7.0</TargetFrameworks>
     <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject> <!-- This shouldn't be needed because it should be added by the Microsoft.NET.Test.Sdk package but for now it's required as explained here https://github.com/dotnet/sdk/issues/3790#issuecomment-1100773198 -->
   </PropertyGroup>
 
   <ItemGroup>
