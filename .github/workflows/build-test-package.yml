@@ -31,12 +31,10 @@ jobs:
       EXTENSIONS_BIN_FOLDER : ${{ github.workspace }}/src/DotNet.Sdk.Extensions/bin/Release
       TESTING_EXTENSIONS_CSPROJ_FILEPATH : ${{ github.workspace }}/src/DotNet.Sdk.Extensions.Testing/DotNet.Sdk.Extensions.Testing.csproj
       TESTING_EXTENSIONS_BIN_FOLDER : ${{ github.workspace }}/src/DotNet.Sdk.Extensions.Testing/bin/Release
-      TEST_RESULTS_DIR: tests/${{ matrix.os }}/test-results
-      TEST_COVERAGE_DIR: tests/${{ matrix.os }}/coverage-results
-      TEST_COVERAGE_MERGE_FILE: tests/${{ matrix.os }}/coverage-results/coverage.net6.0.json
-      TEST_COVERAGE_FILE: tests/${{ matrix.os }}/coverage-results/coverage.net6.0.opencover.xml
+
       TEST_COVERAGE_REPORT_DIR: tests/${{ matrix.os }}/coverage-results/report
       TEST_RESULTS_ARTIFACT_NAME: test-results-${{ matrix.os }}
+
       CODE_COVERAGE_ARTIFACT_NAME: code-coverage-report-${{ matrix.os }}
       NUGET_ARTIFACT_NAME : nuget-packages-and-symbols
     steps:
@@ -49,11 +47,12 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: |
-          3.1.x
-          5.0.x
-          6.0.x
-          7.0.x
+        global-json-file: ShareJobsData/global.json
+        # dotnet-version: |
+        #   3.1.x
+        #   5.0.x
+        #   6.0.x
+        #   7.0.x
     - name: Cache/Restore NuGets
       uses: actions/cache@v3
       with:
@@ -75,6 +74,15 @@ jobs:
         $testResultsDir = $(Join-Path -Path (Get-Location) -ChildPath "${{ env.TEST_RESULTS_DIR }}")
         Write-Output "test-results-dir=$testResultsDir" >> $env:GITHUB_OUTPUT
 
+
+        $testResultsDir = $(Join-Path -Path (Get-Location) -ChildPath "tests/${{ matrix.os }}/test-results")
+        $testCoverageDir = $(Join-Path -Path (Get-Location) -ChildPath "tests/${{ matrix.os }}/coverage-results/")
+        $testCoverageMergeFile = $(Join-Path -Path $testCoverageDir -ChildPath "coverage.net6.0.json")
+        $testCoverageFile = $(Join-Path -Path $testCoverageDir -ChildPath "coverage.net6.0.opencover.xml")
+        Write-Output "test-results-dir=$testResultsDir" >> $env:GITHUB_OUTPUT
+        Write-Output "test-coverage-dir=$testCoverageDir" >> $env:GITHUB_OUTPUT
+        Write-Output "test-coverage-file=$testCoverageFile" >> $env:GITHUB_OUTPUT
+
         #run tests
         dotnet test ${{ env.SLN_FILEPATH }} `
           -c Release `
@@ -84,10 +92,14 @@ jobs:
           --logger "liquid.custom;Template=${{github.workspace}}/tests/liquid-test-logger-template.md;runnerOS=${{ matrix.os }};os=$os;LogFilePrefix=framework" `
           --results-directory "$testResultsDir" `
           /p:CollectCoverage=true `
-          /p:CoverletOutput="$(Join-Path -Path (Get-Location) -ChildPath "${{ env.TEST_COVERAGE_DIR }}/")" `
-          /p:MergeWith="$(Join-Path -Path (Get-Location) -ChildPath "${{ env.TEST_COVERAGE_MERGE_FILE }}")" `
+          /p:CoverletOutput="$testCoverageDir" `
+          /p:MergeWith="$testCoverageMergeFile" `
           /p:CoverletOutputFormat="json%2copencover" `
           -m:1
+
+        Write-Output "test-results-dir is set to $testResultsDir"
+        Write-Output "test-coverage-dir is set to $testCoverageDir"
+        Write-Output "test-coverage-file is set to $testCoverageFile"
 
         $downloadArtifactMessage = "You can inspect the test results by downloading the workflow artifact named: ${{ env.TEST_RESULTS_ARTIFACT_NAME }}."
         if($LASTEXITCODE -eq 0) {
@@ -113,41 +125,47 @@ jobs:
           ${{ env.EXTENSIONS_BIN_FOLDER }}/*.snupkg
           ${{ env.TESTING_EXTENSIONS_BIN_FOLDER }}/*.nupkg
           ${{ env.TESTING_EXTENSIONS_BIN_FOLDER }}/*.snupkg
-    # Some of the steps below provide feedback on the test run and I want to run them even if some of the previous steps failed. For that
-    # I need:
-    # - the 'always()' condition: without it the step only runs if the job is successful, it's like the 'if' condition on any step always has a hidden '&& success()' clause.
-    # - the '(steps.<step-id>.conclusion == 'success' || steps.<step-id>.conclusion == 'failure')' condition: to run the steps only if the <step-id> step has ran, regardless
-    # if it failed or not. It won't run if the <step-id> step has been skipped or cancelled.
+    - name: Set run even if fail conditions
+      id: even-if-fail
+      if: always()
+      run: |
+        # Some of the steps below provide feedback on the test run and I want to run them even if
+        # some of the previous steps failed. For that I need:
+        # - the 'always()' condition: without it the step only runs if the job is successful, it's like the 'if' condition on any step always has a hidden '&& success()' clause.
+        # - the '(steps.<step-id>.conclusion == 'success' || steps.<step-id>.conclusion == 'failure')' condition: to run the steps only if the <step-id> step has ran, regardless
+        # if it failed or not. It won't run if the <step-id> step has been skipped or cancelled.
+        #
+        # As such, the output from this step is meant to be used on the 'if' property of steps as follows:
+        # if: steps.even-if-tests-fail.outputs.condition == 'true' && always()
+
+        $testsCondition = '${{ (steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure') }}'
+        $nugetsCondition = '${{ (steps.upload-nuget-artifacts.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure') }}'
+        Write-Output "tests-condition=$testsCondition" >> $env:GITHUB_OUTPUT
+        Write-Output "nugets-condition=$nugetsCondition" >> $env:GITHUB_OUTPUT
+        Write-Output "tests-condition is set to $testsCondition"
+        Write-Output "nugets-condition is set to $nugetsCondition"
     - name: Log NuGet artifacts info
-      if: (steps.upload-nuget-artifacts.conclusion == 'success' || steps.upload-nuget-artifacts.conclusion == 'failure') && always()
+      if: steps.even-if-fail.outputs.nugets-condition == 'true' && always()
       run: |
         Write-Output "::notice title=NuGets::You can download the NuGet packages and symbols from the worfklow artifact named: ${{ env.NUGET_ARTIFACT_NAME }}."
-    - name: Upload test coverage to Codecov
-      uses: codecov/codecov-action@v3
-      if: matrix.os == 'ubuntu-latest'  # this job is on a matrix run but I only want to upload code coverage to Codecov once
-      with:
-        files: ${{ env.TEST_COVERAGE_FILE }}
-        fail_ci_if_error: true
     - name: Generate code coverage report
-      if: (steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure') && always()
+      id: code-coverage-report-generator
+      if: steps.even-if-fail.outputs.tests-condition == 'true' && always()
       run: |
+        $testCoverageReportDir = $(Join-Path -Path ${{ steps.dotnet-test.outputs.test-coverage-dir }} -ChildPath "report")
+        Write-Output "test-coverage-report-dir=$testCoverageReportDir" >> $env:GITHUB_OUTPUT
         reportgenerator `
-          "-reports:${{ env.TEST_COVERAGE_FILE }}" `
-          "-targetdir:${{ env.TEST_COVERAGE_REPORT_DIR }}" `
+          "-reports:${{ steps.dotnet-test.outputs.test-coverage-file }}" `
+          "-targetdir:$testCoverageReportDir" `
           -reportTypes:htmlInline
     - name: Upload code coverage report to artifacts
-      if: (steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure') && always()
+      if: steps.even-if-fail.outputs.tests-condition == 'true' && always()
       uses: actions/upload-artifact@v3
       with:
         name: ${{ env.CODE_COVERAGE_ARTIFACT_NAME }}
-        path: ${{ env.TEST_COVERAGE_REPORT_DIR }}
-    - name: Log Codecov info
-      if: (steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure') && always()
-      run: |
-        $codeCoveUrl = "https://app.codecov.io/gh/${{ github.repository }}/"
-        Write-Output "::notice title=Code coverage (${{ matrix.os }})::Code coverage has been uploaded to Codecov at $codeCoveUrl. You can download the code coverage report from the workflow artifact named: ${{ env.CODE_COVERAGE_ARTIFACT_NAME }}."
+        path: ${{ steps.code-coverage-report-generator.outputs.test-coverage-report-dir }}
     - name: Rename test results files
-      if: (steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure') && always()
+      if: steps.even-if-fail.outputs.tests-condition == 'true' && always()
       run: |
         # When re-running a job it will upload the test results artifact multiple times.
         # The artifacts work as a share so if the files have the same name they get overwriten, if not they get added to.
@@ -155,7 +173,7 @@ jobs:
 
         $testResultsDir = '${{ steps.dotnet-test.outputs.test-results-dir }}'
         # rename test result files for all frameworks
-        $frameworkFilters = @('framework_netcoreapp3.1*','framework_net5.0*','framework_net6.0*')
+        $frameworkFilters = @('framework_netcoreapp3.1*','framework_net5.0*','framework_net6.0*','framework_net7.0*')
         foreach($frameworkFilter in $frameworkFilters) {
             # for each framework group the files by extension. There will be .md and .trx file groups
             $frameworkFiles = Get-ChildItem -Path $testResultsDir -Recurse -Filter $frameworkFilter | Group-Object -Property Extension
@@ -171,8 +189,18 @@ jobs:
             }
         }
     - name: Upload test results to artifacts
-      if: (steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure') && always()
+      if: steps.even-if-fail.outputs.tests-condition == 'true' && always()
       uses: actions/upload-artifact@v3
       with:
         name: ${{ env.TEST_RESULTS_ARTIFACT_NAME }}
         path: ${{ steps.dotnet-test.outputs.test-results-dir }}
+    - name: Upload test coverage to Codecov
+      uses: codecov/codecov-action@v3
+      if: matrix.os == 'ubuntu-latest'  # this job is on a matrix run but I only want to upload code coverage to Codecov once
+      with:
+        files: ${{ steps.dotnet-test.outputs.test-coverage-file }}
+        fail_ci_if_error: true
+    - name: Log Codecov info
+      run: |
+        $codeCoveUrl = "https://app.codecov.io/gh/${{ github.repository }}/"
+        Write-Output "::notice title=Code coverage (${{ matrix.os }})::Code coverage has been uploaded to Codecov at $codeCoveUrl. You can download the code coverage report from the workflow artifact named: ${{ env.CODE_COVERAGE_ARTIFACT_NAME }}."
