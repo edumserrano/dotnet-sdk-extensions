@@ -11,7 +11,7 @@ internal abstract class HttpMockServer : IHttpMockServer
 
     public IHost? Host { get; private set; }
 
-    public async Task<List<HttpMockServerUrl>> StartAsync()
+    public async Task<IList<HttpMockServerUrl>> StartAsync()
     {
         if (Host is not null)
         {

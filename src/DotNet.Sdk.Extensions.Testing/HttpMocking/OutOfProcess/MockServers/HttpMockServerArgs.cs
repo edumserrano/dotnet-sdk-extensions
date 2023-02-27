@@ -19,12 +19,12 @@ internal sealed class HttpMockServerArgs
 
     private static string[] CreateHostArgs(List<string> hostArgs, List<HttpMockServerUrlDescriptor> urlDescriptors)
     {
-        if (hostArgs.Contains("--urls") && urlDescriptors.Count > 0)
+        if (hostArgs.Contains("--urls", StringComparer.InvariantCulture) && urlDescriptors.Count > 0)
         {
             throw new InvalidOperationException($"Competing URLs configuration. URls defined via both {nameof(HttpMockServerBuilder)}.{nameof(HttpMockServerBuilder.UseUrl)} method and by defining an '--urls' arg via {nameof(HttpMockServerBuilder)}.{nameof(HttpMockServerBuilder.UseHostArgs)}. Use only one of these methods to configure the URLs.");
         }
 
-        if (hostArgs.Contains("--urls"))
+        if (hostArgs.Contains("--urls", StringComparer.InvariantCulture))
         {
             return hostArgs.ToArray();
         }

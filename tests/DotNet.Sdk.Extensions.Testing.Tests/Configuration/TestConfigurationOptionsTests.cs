@@ -10,7 +10,7 @@ public class TestConfigurationOptionsTests
     public void DefaultValues()
     {
         var options = new TestConfigurationOptions();
-        options.IsRelative.ShouldBe(true);
+        options.IsRelative.ShouldBeTrue();
         options.AppSettingsDir.ShouldBe("AppSettings");
     }
 }

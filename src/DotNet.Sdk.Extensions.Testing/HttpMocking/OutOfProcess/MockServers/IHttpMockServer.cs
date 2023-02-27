@@ -14,5 +14,5 @@ public interface IHttpMockServer : IAsyncDisposable
     /// Starts the server.
     /// </summary>
     /// <returns>The URLs where the server is listening for requests.</returns>
-    Task<List<HttpMockServerUrl>> StartAsync();
+    Task<IList<HttpMockServerUrl>> StartAsync();
 }

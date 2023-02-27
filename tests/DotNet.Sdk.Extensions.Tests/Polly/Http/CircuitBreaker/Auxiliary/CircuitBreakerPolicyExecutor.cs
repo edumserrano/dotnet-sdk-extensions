@@ -158,7 +158,7 @@ public sealed class CircuitBreakerPolicyExecutor : IAsyncDisposable
                 await WaitResetAsync();
                 break;
             default:
-                throw new ArgumentOutOfRangeException();
+                throw new InvalidOperationException($"Failed to dispose {nameof(CircuitBreakerPolicyExecutor)} because of unknown {nameof(CircuitBreakerPolicyExecutorResetTypes)}: {_resetType}. Can only handle {CircuitBreakerPolicyExecutorResetTypes.Normal} and {CircuitBreakerPolicyExecutorResetTypes.Quick}");
         }
     }
 }

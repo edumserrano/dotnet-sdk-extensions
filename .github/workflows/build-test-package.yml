@@ -22,6 +22,7 @@ jobs:
     permissions:
       contents: read
     strategy:
+      fail-fast: false # don't fail if one of the matrix jobs fails. Example: try to run the windows matrix even if the ubuntu matrix fails.
       matrix:
         os: [ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.os }}

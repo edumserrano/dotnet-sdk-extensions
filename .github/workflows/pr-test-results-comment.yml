@@ -19,6 +19,7 @@ jobs:
       contents: read
       pull-requests: write
     strategy:
+      fail-fast: false # don't fail if one of the matrix jobs fails. Example: try to add test results as comments for the ubuntu matrix even if the windows matrix fails.
       matrix:
        include:
          - test-results-artifact-name: "test-results-ubuntu-latest"

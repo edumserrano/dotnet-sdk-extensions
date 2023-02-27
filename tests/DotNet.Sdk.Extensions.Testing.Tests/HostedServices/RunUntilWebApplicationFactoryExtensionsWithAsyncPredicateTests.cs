@@ -81,17 +81,21 @@ public class RunUntilWebApplicationFactoryExtensionsWithAsyncPredicateTests
             .Returns(1)
             .AndDoes(_ => ++callCount);
 
-        using var webApplicationFactory = new HostedServicesWebApplicationFactory();
-        await webApplicationFactory
+        using var hostedServicesWebAppFactory = new HostedServicesWebApplicationFactory();
+#if NET6_0 || NET7_0
+        await using var webApplicationFactory = hostedServicesWebAppFactory
+#else
+        using var webApplicationFactory = hostedServicesWebAppFactory
+#endif
             .WithWebHostBuilder(builder =>
             {
                 builder.ConfigureTestServices(services =>
                 {
                     services.AddSingleton(calculator);
                 });
-            })
-            .RunUntilAsync(() => Task.FromResult(callCount >= 3));
+            });
 
+        await webApplicationFactory.RunUntilAsync(() => Task.FromResult(callCount >= 3));
         callCount.ShouldBeGreaterThanOrEqualTo(3);
     }
 
@@ -130,7 +134,11 @@ public class RunUntilWebApplicationFactoryExtensionsWithAsyncPredicateTests
             .AndDoes(_ => ++callCount);
 
         using var hostedServicesWebApplicationFactory = new HostedServicesWebApplicationFactory();
+#if NET6_0 || NET7_0
+        await using var webApplicationFactory = hostedServicesWebApplicationFactory
+#else
         using var webApplicationFactory = hostedServicesWebApplicationFactory
+#endif
             .WithWebHostBuilder(builder =>
             {
                 builder.ConfigureTestServices(services =>

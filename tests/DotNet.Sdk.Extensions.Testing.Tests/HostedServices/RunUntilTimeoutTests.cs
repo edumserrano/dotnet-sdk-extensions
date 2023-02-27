@@ -62,15 +62,19 @@ public class RunUntilTimeoutTests : IClassFixture<HostedServicesWebApplicationFa
             });
 
         var sw = Stopwatch.StartNew();
-        await _hostedServicesWebAppFactory
+#if NET6_0 || NET7_0
+        await using var hostedServicesWebAppFactory = _hostedServicesWebAppFactory
+#else
+        using var hostedServicesWebAppFactory = _hostedServicesWebAppFactory
+#endif
             .WithWebHostBuilder(builder =>
             {
                 builder.ConfigureTestServices(services =>
                 {
                     services.AddSingleton(calculator);
                 });
-            })
-            .RunUntilTimeoutAsync(TimeSpan.FromMilliseconds(2300));
+            });
+        await hostedServicesWebAppFactory.RunUntilTimeoutAsync(TimeSpan.FromMilliseconds(2300));
         sw.Stop();
 
         sw.Elapsed.ShouldBeGreaterThanOrEqualTo(TimeSpan.FromMilliseconds(2000));

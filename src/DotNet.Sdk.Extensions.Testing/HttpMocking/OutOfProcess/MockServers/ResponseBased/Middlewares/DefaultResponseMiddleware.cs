@@ -19,6 +19,6 @@ internal sealed class DefaultResponseMiddleware : IMiddleware
     public Task InvokeAsync(HttpContext context, RequestDelegate next)
     {
         context.Response.StatusCode = StatusCodes.Status501NotImplemented;
-        return context.Response.WriteAsync("Request did not match any of the provided mocks.");
+        return context.Response.WriteAsync("Request did not match any of the provided mocks.", context.RequestAborted);
     }
 }
