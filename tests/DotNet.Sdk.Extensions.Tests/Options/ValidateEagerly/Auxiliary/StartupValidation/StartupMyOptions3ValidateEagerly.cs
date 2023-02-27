@@ -31,7 +31,7 @@ public class StartupMyOptions3ValidateEagerly
                 endpoints.MapGet("/", async context =>
                 {
                     var myOptions = context.RequestServices.GetRequiredService<MyOptions3>();
-                    await context.Response.WriteAsync($"{myOptions.SomeOption}");
+                    await context.Response.WriteAsync($"{myOptions.SomeOption}", cancellationToken: context.RequestAborted);
                 });
             });
     }
