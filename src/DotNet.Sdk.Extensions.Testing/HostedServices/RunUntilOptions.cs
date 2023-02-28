@@ -22,7 +22,14 @@ public class RunUntilOptions
 
     /// <summary>
     /// Gets or sets interval of time to check the predicate for the to determine if the host running the hosted service
-    /// should be terminated. Defaults to 5 ms.
+    /// should be terminated. Defaults to 1s.
     /// </summary>
-    public TimeSpan PredicateCheckInterval { get; set; } = TimeSpan.FromMilliseconds(5);
+    /// <remarks>
+    /// Beware that setting very low values for this might result in unexpected variance depending
+    /// on available CPU resources. For instance, setting this value to 5ms and running with only
+    /// 2 CPU cores will mean that the CPUs might struggle to always do the check exactly at 5ms intervals,
+    /// specially if the CPU is already busy doing other things.
+    /// If possible being more relaxed with this value will usually result in more deterministic results.
+    /// </remarks>
+    public TimeSpan PredicateCheckInterval { get; set; } = TimeSpan.FromMilliseconds(1000);
 }

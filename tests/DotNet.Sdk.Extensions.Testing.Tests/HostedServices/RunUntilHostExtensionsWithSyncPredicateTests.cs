@@ -74,7 +74,7 @@ public class RunUntilHostExtensionsWithSyncPredicateTests
     /// <summary>
     /// Tests that <seealso cref="RunUntilExtensions.RunUntilAsync(IHost,RunUntilPredicate)"/>
     /// terminates the Host after the predicate is met.
-    /// The <seealso cref="MyBackgroundService"/> BackgroundService calls ICalculator.Sum once every 500 ms and the default
+    /// The <seealso cref="MyBackgroundService"/> BackgroundService calls ICalculator.Sum once every 1s and the default
     /// <seealso cref="RunUntilOptions.Timeout"/> is 5 seconds so the predicate should be met before the timeout.
     /// </summary>
     [Fact]
@@ -114,7 +114,7 @@ public class RunUntilHostExtensionsWithSyncPredicateTests
     /// <summary>
     /// Tests that <seealso cref="RunUntilExtensions.RunUntilAsync(IHost,RunUntilPredicate,Action{RunUntilOptions})"/>
     /// times out if the predicate is not met within the configured timeout.
-    /// The <seealso cref="MyBackgroundService"/> BackgroundService calls ICalculator.Sum once every 500 ms so if we set the timeout to 1s
+    /// The <seealso cref="MyBackgroundService"/> BackgroundService calls ICalculator.Sum once every 1s so if we set the timeout to 2s
     /// and the predicate to stop the Host after receiving at least 4 calls then the timeout should be triggered before the predicate is met.
     /// </summary>
     [Fact]
@@ -147,16 +147,16 @@ public class RunUntilHostExtensionsWithSyncPredicateTests
             })
             .Build();
 
-        var runUntilTask = host.RunUntilAsync(() => callCount >= 4, options => options.Timeout = TimeSpan.FromSeconds(1));
+        var runUntilTask = host.RunUntilAsync(() => callCount >= 4, options => options.Timeout = TimeSpan.FromSeconds(2));
         var exception = await Should.ThrowAsync<RunUntilException>(runUntilTask);
-        exception.Message.ShouldBe("RunUntilExtensions.RunUntilAsync timed out after 00:00:01. This means the Host was shutdown before the RunUntilExtensions.RunUntilAsync predicate returned true. If that's what you intended, meaning, if you want to run the Host for a set period of time, consider using RunUntilExtensions.RunUntilTimeoutAsync instead.");
+        exception.Message.ShouldBe("RunUntilExtensions.RunUntilAsync timed out after 00:00:02. This means the Host was shutdown before the RunUntilExtensions.RunUntilAsync predicate returned true. If that's what you intended, meaning, if you want to run the Host for a set period of time, consider using RunUntilExtensions.RunUntilTimeoutAsync instead.");
     }
 
     /// <summary>
     /// Tests that <seealso cref="RunUntilExtensions.RunUntilAsync(IHost,RunUntilPredicate,Action{RunUntilOptions})"/>
     /// checks the predicate using the <seealso cref="RunUntilOptions.PredicateCheckInterval"/> value.
     /// This test sets up the PredicateCheckInterval and Timeout options values so that the timeout occurs even before the first check is made.
-    /// The <seealso cref="MyBackgroundService"/> BackgroundService calls ICalculator.Sum once every 500 ms so if we set the timeout to 1s
+    /// The <seealso cref="MyBackgroundService"/> BackgroundService calls ICalculator.Sum once every 1s so if we set the timeout to 2s
     /// and the predicate to stop the Host after receiving at least 1 call then the timeout should NOT be triggered before the predicate is met.
     /// However, the timeout is indeed triggered before the predicate is met because this test sets up the PredicateCheckInterval and Timeout options values
     /// so that the timeout occurs even before the first check is made.
@@ -193,11 +193,11 @@ public class RunUntilHostExtensionsWithSyncPredicateTests
 
         var runUntilTask = host.RunUntilAsync(() => callCount >= 1, options =>
         {
-            options.PredicateCheckInterval = TimeSpan.FromSeconds(2);
-            options.Timeout = TimeSpan.FromSeconds(1);
+            options.PredicateCheckInterval = TimeSpan.FromSeconds(3);
+            options.Timeout = TimeSpan.FromSeconds(2);
         });
         var exception = await Should.ThrowAsync<RunUntilException>(runUntilTask);
-        exception.Message.ShouldBe("RunUntilExtensions.RunUntilAsync timed out after 00:00:01. This means the Host was shutdown before the RunUntilExtensions.RunUntilAsync predicate returned true. If that's what you intended, meaning, if you want to run the Host for a set period of time, consider using RunUntilExtensions.RunUntilTimeoutAsync instead.");
+        exception.Message.ShouldBe("RunUntilExtensions.RunUntilAsync timed out after 00:00:02. This means the Host was shutdown before the RunUntilExtensions.RunUntilAsync predicate returned true. If that's what you intended, meaning, if you want to run the Host for a set period of time, consider using RunUntilExtensions.RunUntilTimeoutAsync instead.");
         callCount.ShouldBeGreaterThanOrEqualTo(1); // this is true which means the RunUntilAsync predicate was met however it wasn't checked before the timeout was triggered
     }
 }

@@ -45,8 +45,8 @@ public class RunUntilTimeoutTests : IClassFixture<HostedServicesWebApplicationFa
     /// <summary>
     /// Tests that <seealso cref="RunUntilExtensions.RunUntilTimeoutAsync{T}(WebApplicationFactory{T},TimeSpan)"/>
     /// terminates the Host created by the WebApplicationFactory after the specified timeout.
-    /// Furthermore the <seealso cref="MyBackgroundService"/> BackgroundService calls ICalculator.Sum once every 500 ms so
-    /// we should also have at least 3 calls to that method. The 4th call may or may not happen.
+    /// Furthermore the <seealso cref="MyBackgroundService"/> BackgroundService calls ICalculator.Sum once every 1s so
+    /// we should also have 3 calls to that method.
     /// </summary>
     [Fact]
     public async Task WebApplicationFactoryRunUntilTimeout()
@@ -74,18 +74,18 @@ public class RunUntilTimeoutTests : IClassFixture<HostedServicesWebApplicationFa
                     services.AddSingleton(calculator);
                 });
             });
-        await hostedServicesWebAppFactory.RunUntilTimeoutAsync(TimeSpan.FromMilliseconds(2300));
+        await hostedServicesWebAppFactory.RunUntilTimeoutAsync(TimeSpan.FromMilliseconds(3300));
         sw.Stop();
 
-        sw.Elapsed.ShouldBeGreaterThanOrEqualTo(TimeSpan.FromMilliseconds(2000));
-        callCount.ShouldBeGreaterThanOrEqualTo(5);
+        sw.Elapsed.ShouldBeGreaterThanOrEqualTo(TimeSpan.FromMilliseconds(3000));
+        callCount.ShouldBe(3);
     }
 
     /// <summary>
     /// Tests that <seealso cref="RunUntilExtensions.RunUntilTimeoutAsync(IHost,TimeSpan)"/>
     /// terminates the Host after the specified timeout.
-    /// Furthermore the <seealso cref="MyBackgroundService"/> BackgroundService calls ICalculator.Sum once every 500 ms so
-    /// we should also have at least 3 calls to that method. The 4th call may or may not happen.
+    /// Furthermore the <seealso cref="MyBackgroundService"/> BackgroundService calls ICalculator.Sum once every 1s so
+    /// we should also have 3 calls to that method.
     /// </summary>
     [Fact]
     public async Task HostRunUntilTimeout()
@@ -121,10 +121,10 @@ public class RunUntilTimeoutTests : IClassFixture<HostedServicesWebApplicationFa
             .Build();
 
         var sw = Stopwatch.StartNew();
-        await host.RunUntilTimeoutAsync(TimeSpan.FromMilliseconds(2300));
+        await host.RunUntilTimeoutAsync(TimeSpan.FromMilliseconds(3300));
         sw.Stop();
 
-        sw.Elapsed.ShouldBeGreaterThanOrEqualTo(TimeSpan.FromMilliseconds(2000));
-        callCount.ShouldBeGreaterThanOrEqualTo(5);
+        sw.Elapsed.ShouldBeGreaterThanOrEqualTo(TimeSpan.FromMilliseconds(3000));
+        callCount.ShouldBe(3);
     }
 }
