@@ -48,9 +48,11 @@ public class RunUntilTimeoutTests : IClassFixture<HostedServicesWebApplicationFa
     /// Furthermore the <seealso cref="MyBackgroundService"/> BackgroundService calls ICalculator.Sum once every 1s so
     /// we should also have 3 calls to that method.
     /// </summary>
-    [Fact]
+    [RunOnlyOnDotnet6And7]
     public async Task WebApplicationFactoryRunUntilTimeout()
     {
+        var calculatorSumCallInfo = new List<(int CallCount, long ElapsedMilliseconds)>();
+        var sw = new Stopwatch();
         var callCount = 0;
         var calculator = Substitute.For<ICalculator>();
         calculator
@@ -74,12 +76,13 @@ public class RunUntilTimeoutTests : IClassFixture<HostedServicesWebApplicationFa
                 });
             });
 
-        var sw = Stopwatch.StartNew();
+        sw.Start();
         await hostedServicesWebAppFactory.RunUntilTimeoutAsync(TimeSpan.FromMilliseconds(3600));
         sw.Stop();
 
         sw.Elapsed.ShouldBeGreaterThanOrEqualTo(TimeSpan.FromMilliseconds(3000));
-        callCount.ShouldBe(3);
+        const int expectedCallCount = 3;
+        callCount.ShouldBe(expectedCallCount, GetCustomErrorMessage(calculatorSumCallInfo));
     }
 
     /// <summary>
@@ -88,7 +91,7 @@ public class RunUntilTimeoutTests : IClassFixture<HostedServicesWebApplicationFa
     /// Furthermore the <seealso cref="MyBackgroundService"/> BackgroundService calls ICalculator.Sum once every 1s so
     /// we should also have 3 calls to that method.
     /// </summary>
-    [Fact]
+    [RunOnlyOnDotnet6And7]
     public async Task HostRunUntilTimeout()
     {
         var calculatorSumCallInfo = new List<(int CallCount, long ElapsedMilliseconds)>();
@@ -131,19 +134,18 @@ public class RunUntilTimeoutTests : IClassFixture<HostedServicesWebApplicationFa
         sw.Elapsed.ShouldBeGreaterThanOrEqualTo(TimeSpan.FromMilliseconds(3000));
         const int expectedCallCount = 3;
         callCount.ShouldBe(expectedCallCount, GetCustomErrorMessage(calculatorSumCallInfo));
+    }
 
-        // this test has been historically flaky and this extra info when the test fails
-        // helps understand a bit what might be going on.
-        static string GetCustomErrorMessage(List<(int CallCount, long ElapsedMilliseconds)> calculatorSumCallInfo)
+    // the tests using this method have been historically flaky and this extra info when the test
+    // fails helps understand a bit what might be going on.
+    private static string GetCustomErrorMessage(List<(int CallCount, long ElapsedMilliseconds)> calculatorSumCallInfo)
+    {
+        var errorMessage = "ICalculator.Sum call info:";
+        foreach (var (callCount, elapsedMilliseconds) in calculatorSumCallInfo)
         {
-            var errorMessage = "ICalculator.Sum call info:";
-            var calculatorSumCallInfoMessage = string.Empty;
-            foreach (var (callCount, elapsedMilliseconds) in calculatorSumCallInfo)
-            {
-                errorMessage += $"{Environment.NewLine}{callCount} at {elapsedMilliseconds}";
-            }
-
-            return errorMessage;
+            errorMessage += $"{Environment.NewLine}{callCount} at {elapsedMilliseconds}";
         }
+
+        return errorMessage;
     }
 }
