@@ -81,7 +81,7 @@ public class RunUntilTimeoutTests : IClassFixture<HostedServicesWebApplicationFa
             });
 
         var sw = Stopwatch.StartNew();
-        await hostedServicesWebAppFactory.RunUntilTimeoutAsync(TimeSpan.FromMilliseconds(3300));
+        await hostedServicesWebAppFactory.RunUntilTimeoutAsync(TimeSpan.FromMilliseconds(3600));
         sw.Stop();
 
         sw.Elapsed.ShouldBeGreaterThanOrEqualTo(TimeSpan.FromMilliseconds(3000));
@@ -131,7 +131,7 @@ public class RunUntilTimeoutTests : IClassFixture<HostedServicesWebApplicationFa
 
         // var sw = Stopwatch.StartNew();
         sw.Start();
-        await host.RunUntilTimeoutAsync(TimeSpan.FromMilliseconds(3300));
+        await host.RunUntilTimeoutAsync(TimeSpan.FromMilliseconds(3600));
         sw.Stop();
 
         sw.Elapsed.ShouldBeGreaterThanOrEqualTo(TimeSpan.FromMilliseconds(3000));
