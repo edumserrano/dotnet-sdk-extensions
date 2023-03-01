@@ -129,7 +129,7 @@ public class RunUntilTimeoutTests : IClassFixture<HostedServicesWebApplicationFa
              })
             .Build();
 
-        //var sw = Stopwatch.StartNew();
+        // var sw = Stopwatch.StartNew();
         sw.Start();
         await host.RunUntilTimeoutAsync(TimeSpan.FromMilliseconds(3300));
         sw.Stop();
