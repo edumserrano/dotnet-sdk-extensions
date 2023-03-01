@@ -13,17 +13,31 @@ public class MyBackgroundService : BackgroundService
     {
         var interval = TimeSpan.FromMilliseconds(1000);
 #if NET6_0 || NET7_0
-        using var timer = new PeriodicTimer(interval);
-        while (!stoppingToken.IsCancellationRequested)
+        try
         {
-            await timer.WaitForNextTickAsync(stoppingToken);
-            _calculator.Sum(1, 1); // implement your logic, this doesn't make sense and is only for demo purposes
+            using var timer = new PeriodicTimer(interval);
+            while (!stoppingToken.IsCancellationRequested)
+            {
+                await timer.WaitForNextTickAsync(stoppingToken);
+                _calculator.Sum(1, 1); // implement your logic, this doesn't make sense and is only for demo purposes
+            }
+        }
+        catch(OperationCanceledException)
+        {
+            //ignore, do nothing if the timer.WaitForNextTickAsync throws exception because the host is being terminated
         }
 #else
-        while (!stoppingToken.IsCancellationRequested)
+        try
         {
-            await Task.Delay(interval, stoppingToken);
-            _calculator.Sum(1, 1); // implement your logic, this doesn't make sense and is only for demo purposes
+            while (!stoppingToken.IsCancellationRequested)
+            {
+                await Task.Delay(interval, stoppingToken);
+                _calculator.Sum(1, 1); // implement your logic, this doesn't make sense and is only for demo purposes
+            }
+        }
+        catch(OperationCanceledException) 
+        {
+            //ignore, do nothing if the Task.Delay throws exception because the host is being terminated
         }
 #endif
     }
