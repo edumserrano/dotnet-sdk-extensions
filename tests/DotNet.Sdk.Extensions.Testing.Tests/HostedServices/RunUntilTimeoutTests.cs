@@ -1,3 +1,5 @@
+using Xunit.Abstractions;
+
 namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices;
 
 /// <summary>
@@ -8,10 +10,14 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices;
 public class RunUntilTimeoutTests : IClassFixture<HostedServicesWebApplicationFactory>
 {
     private readonly HostedServicesWebApplicationFactory _hostedServicesWebAppFactory;
+    private readonly ITestOutputHelper _output;
 
-    public RunUntilTimeoutTests(HostedServicesWebApplicationFactory hostedServicesWebApplicationFactory)
+    public RunUntilTimeoutTests(
+        HostedServicesWebApplicationFactory hostedServicesWebApplicationFactory,
+        ITestOutputHelper output)
     {
         _hostedServicesWebAppFactory = hostedServicesWebApplicationFactory;
+        _output = output;
     }
 
     /// <summary>
@@ -61,7 +67,6 @@ public class RunUntilTimeoutTests : IClassFixture<HostedServicesWebApplicationFa
                 ++callCount;
             });
 
-        var sw = Stopwatch.StartNew();
 #if NET6_0 || NET7_0
         await using var hostedServicesWebAppFactory = _hostedServicesWebAppFactory
 #else
@@ -74,6 +79,8 @@ public class RunUntilTimeoutTests : IClassFixture<HostedServicesWebApplicationFa
                     services.AddSingleton(calculator);
                 });
             });
+
+        var sw = Stopwatch.StartNew();
         await hostedServicesWebAppFactory.RunUntilTimeoutAsync(TimeSpan.FromMilliseconds(3300));
         sw.Stop();
 
@@ -90,6 +97,7 @@ public class RunUntilTimeoutTests : IClassFixture<HostedServicesWebApplicationFa
     [Fact]
     public async Task HostRunUntilTimeout()
     {
+        var sw = new Stopwatch();
         var callCount = 0;
         var calculator = Substitute.For<ICalculator>();
         calculator
@@ -98,6 +106,7 @@ public class RunUntilTimeoutTests : IClassFixture<HostedServicesWebApplicationFa
             .AndDoes(_ =>
             {
                 ++callCount;
+                _output.WriteLine($"{callCount} at {sw.ElapsedMilliseconds}");
             });
 
         // This code creating the Host would exist somewhere in app being tested.
@@ -120,7 +129,8 @@ public class RunUntilTimeoutTests : IClassFixture<HostedServicesWebApplicationFa
              })
             .Build();
 
-        var sw = Stopwatch.StartNew();
+        //var sw = Stopwatch.StartNew();
+        sw.Start();
         await host.RunUntilTimeoutAsync(TimeSpan.FromMilliseconds(3300));
         sw.Stop();
 
