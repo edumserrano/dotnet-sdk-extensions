@@ -77,7 +77,7 @@ public class RunUntilTimeoutTests : IClassFixture<HostedServicesWebApplicationFa
             });
 
         sw.Start();
-        await hostedServicesWebAppFactory.RunUntilTimeoutAsync(TimeSpan.FromMilliseconds(3600));
+        await hostedServicesWebAppFactory.RunUntilTimeoutAsync(TimeSpan.FromMilliseconds(3300));
         sw.Stop();
 
         sw.Elapsed.ShouldBeGreaterThanOrEqualTo(TimeSpan.FromMilliseconds(3000));
@@ -128,7 +128,7 @@ public class RunUntilTimeoutTests : IClassFixture<HostedServicesWebApplicationFa
             .Build();
 
         sw.Start();
-        await host.RunUntilTimeoutAsync(TimeSpan.FromMilliseconds(3600));
+        await host.RunUntilTimeoutAsync(TimeSpan.FromMilliseconds(3300));
         sw.Stop();
 
         sw.Elapsed.ShouldBeGreaterThanOrEqualTo(TimeSpan.FromMilliseconds(3000));
