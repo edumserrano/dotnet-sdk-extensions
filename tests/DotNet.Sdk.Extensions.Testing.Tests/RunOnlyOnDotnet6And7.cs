@@ -1,4 +1,4 @@
-﻿namespace DotNet.Sdk.Extensions.Testing.Tests;
+namespace DotNet.Sdk.Extensions.Testing.Tests;
 
 internal sealed class RunOnTargetFrameworkMajorVersionAttribute : FactAttribute
 {
