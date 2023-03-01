@@ -61,6 +61,7 @@ public class RunUntilTimeoutTests : IClassFixture<HostedServicesWebApplicationFa
             .AndDoes(_ =>
             {
                 ++callCount;
+                calculatorSumCallInfo.Add((callCount, sw.ElapsedMilliseconds));
             });
 
 #if NET6_0 || NET7_0
