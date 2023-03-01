@@ -22,9 +22,9 @@ public class MyBackgroundService : BackgroundService
                 _calculator.Sum(1, 1); // implement your logic, this doesn't make sense and is only for demo purposes
             }
         }
-        catch(OperationCanceledException)
+        catch (OperationCanceledException)
         {
-            //ignore, do nothing if the timer.WaitForNextTickAsync throws exception because the host is being terminated
+            // ignore, do nothing if the timer.WaitForNextTickAsync throws exception because the host is being terminated
         }
 #else
         try
@@ -35,9 +35,9 @@ public class MyBackgroundService : BackgroundService
                 _calculator.Sum(1, 1); // implement your logic, this doesn't make sense and is only for demo purposes
             }
         }
-        catch(OperationCanceledException) 
+        catch (OperationCanceledException)
         {
-            //ignore, do nothing if the Task.Delay throws exception because the host is being terminated
+            // ignore, do nothing if the Task.Delay throws exception because the host is being terminated
         }
 #endif
     }
