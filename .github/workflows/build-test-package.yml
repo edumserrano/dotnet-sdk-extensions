@@ -62,6 +62,10 @@ jobs:
       run: dotnet restore ${{ env.SLN_FILEPATH }}
     - name: Build
       run: dotnet build ${{ env.SLN_FILEPATH }} -c Release -warnaserror --no-restore --no-incremental
+    - name: Temp check timer info
+      run: |
+        Write-Output "IsHighResolution $([system.diagnostics.stopwatch]::IsHighResolution)"
+        Write-Output "Frequency $([system.diagnostics.stopwatch]::Frequency)"
     - name: Test and code coverage
       id: dotnet-test
       run: |
