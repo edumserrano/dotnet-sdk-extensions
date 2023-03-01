@@ -1,11 +1,16 @@
 ﻿namespace DotNet.Sdk.Extensions.Testing.Tests;
 
-internal sealed class RunOnlyOnDotnet6And7Attribute : FactAttribute
+internal sealed class RunOnTargetFrameworkMajorVersionAttribute : FactAttribute
 {
-#if NET6_0 || NET7_0
-    public RunOnlyOnDotnet6And7Attribute()
+    public RunOnTargetFrameworkMajorVersionAttribute(params int[] targetFrameworkList)
     {
-        Skip = "Runs only on net6 and net7.";
+        TargetFrameworkList = targetFrameworkList;
+        var runtimeMajorVersion = Environment.Version.Major;
+        if (!targetFrameworkList.Contains(runtimeMajorVersion))
+        {
+            Skip = $"Skip on dotnet version {runtimeMajorVersion}. Allowed runtime major versions are: {string.Join(" or ", targetFrameworkList)}.";
+        }
     }
-#endif
+
+    public int[] TargetFrameworkList { get; }
 }

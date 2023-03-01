@@ -48,7 +48,7 @@ public class RunUntilTimeoutTests : IClassFixture<HostedServicesWebApplicationFa
     /// Furthermore the <seealso cref="MyBackgroundService"/> BackgroundService calls ICalculator.Sum once every 1s so
     /// we should also have 3 calls to that method.
     /// </summary>
-    [RunOnlyOnDotnet6And7]
+    [RunOnTargetFrameworkMajorVersion(6, 7)]
     public async Task WebApplicationFactoryRunUntilTimeout()
     {
         var calculatorSumCallInfo = new List<(int CallCount, long ElapsedMilliseconds)>();
@@ -91,7 +91,7 @@ public class RunUntilTimeoutTests : IClassFixture<HostedServicesWebApplicationFa
     /// Furthermore the <seealso cref="MyBackgroundService"/> BackgroundService calls ICalculator.Sum once every 1s so
     /// we should also have 3 calls to that method.
     /// </summary>
-    [RunOnlyOnDotnet6And7]
+    [RunOnTargetFrameworkMajorVersion(6, 7)]
     public async Task HostRunUntilTimeout()
     {
         var calculatorSumCallInfo = new List<(int CallCount, long ElapsedMilliseconds)>();
