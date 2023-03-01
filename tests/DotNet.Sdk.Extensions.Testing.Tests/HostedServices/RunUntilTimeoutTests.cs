@@ -1,5 +1,3 @@
-using Xunit.Abstractions;
-
 namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices;
 
 /// <summary>
@@ -10,14 +8,10 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices;
 public class RunUntilTimeoutTests : IClassFixture<HostedServicesWebApplicationFactory>
 {
     private readonly HostedServicesWebApplicationFactory _hostedServicesWebAppFactory;
-    private readonly ITestOutputHelper _output;
 
-    public RunUntilTimeoutTests(
-        HostedServicesWebApplicationFactory hostedServicesWebApplicationFactory,
-        ITestOutputHelper output)
+    public RunUntilTimeoutTests(HostedServicesWebApplicationFactory hostedServicesWebApplicationFactory)
     {
         _hostedServicesWebAppFactory = hostedServicesWebApplicationFactory;
-        _output = output;
     }
 
     /// <summary>
@@ -97,6 +91,7 @@ public class RunUntilTimeoutTests : IClassFixture<HostedServicesWebApplicationFa
     [Fact]
     public async Task HostRunUntilTimeout()
     {
+        var calculatorSumCallInfo = new List<(int CallCount, long ElapsedMilliseconds)>();
         var sw = new Stopwatch();
         var callCount = 0;
         var calculator = Substitute.For<ICalculator>();
@@ -106,7 +101,7 @@ public class RunUntilTimeoutTests : IClassFixture<HostedServicesWebApplicationFa
             .AndDoes(_ =>
             {
                 ++callCount;
-                _output.WriteLine($"{callCount} at {sw.ElapsedMilliseconds}");
+                calculatorSumCallInfo.Add((callCount, sw.ElapsedMilliseconds));
             });
 
         // This code creating the Host would exist somewhere in app being tested.
@@ -129,12 +124,27 @@ public class RunUntilTimeoutTests : IClassFixture<HostedServicesWebApplicationFa
              })
             .Build();
 
-        // var sw = Stopwatch.StartNew();
         sw.Start();
         await host.RunUntilTimeoutAsync(TimeSpan.FromMilliseconds(3600));
         sw.Stop();
 
         sw.Elapsed.ShouldBeGreaterThanOrEqualTo(TimeSpan.FromMilliseconds(3000));
-        callCount.ShouldBe(3);
+        const int expectedCallCount = 3;
+        callCount.ShouldBe(expectedCallCount, GetCustomErrorMessage(calculatorSumCallInfo));
+
+        // this test has been historically flaky and this extra info when the test fails
+        // helps understand a bit what might be going on.
+        static string GetCustomErrorMessage(List<(int CallCount, long ElapsedMilliseconds)> calculatorSumCallInfo)
+        {
+            var errorMessage = "ICalculator.Sum call info:";
+            var calculatorSumCallInfoMessage = string.Empty;
+            foreach (var (callCount, elapsedMilliseconds) in calculatorSumCallInfo)
+            {
+                errorMessage += $"{Environment.NewLine}{callCount} at {elapsedMilliseconds}";
+            }
+
+            return errorMessage;
+        }
     }
+
 }
