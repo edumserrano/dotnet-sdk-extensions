@@ -16,6 +16,25 @@ internal sealed class HostRunController
             throw new ArgumentNullException(nameof(predicateAsync));
         }
 
+#if NET6_0 || NET7_0
+        try
+        {
+            using var cts = new CancellationTokenSource(_options.Timeout);
+            using var timer = new PeriodicTimer(_options.PredicateCheckInterval);
+            do
+            {
+                // before checking the predicate, wait RunUntilOptions.PredicateLoopPeriod or abort if the RunUntilOptions.Timeout elapses
+                await timer.WaitForNextTickAsync(cts.Token);
+            }
+            while (!await predicateAsync());
+
+            return RunUntilResult.PredicateReturnedTrue;
+        }
+        catch (OperationCanceledException)
+        {
+            return RunUntilResult.TimedOut;
+        }
+#else
         try
         {
             using var cts = new CancellationTokenSource(_options.Timeout);
@@ -32,5 +51,6 @@ internal sealed class HostRunController
         {
             return RunUntilResult.TimedOut;
         }
+#endif
     }
 }

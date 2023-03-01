@@ -38,7 +38,7 @@ public static partial class RunUntilExtensions
     /// <param name="predicateAsync">The async predicate to determine when the host should be terminated.</param>
     /// <param name="configureOptions">Action to configure the option values for the host execution.</param>
     /// <returns>The <see cref="Task"/> that will execute the host until it's terminated.</returns>
-    public static Task RunUntilAsync<T>(
+    public static async Task RunUntilAsync<T>(
         this WebApplicationFactory<T> webApplicationFactory,
         RunUntilPredicateAsync predicateAsync,
         Action<RunUntilOptions> configureOptions)
@@ -56,7 +56,7 @@ public static partial class RunUntilExtensions
 
         var defaultOptions = new RunUntilOptions();
         configureOptions(defaultOptions);
-        var hostRunner = new WebApplicationFactoryHostRunner<T>(webApplicationFactory);
-        return hostRunner.RunUntilAsync(predicateAsync, defaultOptions);
+        await using var hostRunner = new WebApplicationFactoryHostRunner<T>(webApplicationFactory);
+        await hostRunner.RunUntilAsync(predicateAsync, defaultOptions);
     }
 }

@@ -1,12 +1,12 @@
 namespace DotNet.Sdk.Extensions.Testing.HostedServices;
 
-internal abstract class HostRunner : IDisposable
+internal abstract class HostRunner : IAsyncDisposable
 {
     public abstract Task StartAsync();
 
     public abstract Task StopAsync();
 
-    public abstract void Dispose();
+    public abstract ValueTask DisposeAsync();
 }
 
 internal sealed class DefaultHostRunner : HostRunner
@@ -28,9 +28,21 @@ internal sealed class DefaultHostRunner : HostRunner
         return _host.StopAsync();
     }
 
-    public override void Dispose()
+    public override async ValueTask DisposeAsync()
     {
+#if NET6_0 || NET7_0
+        if (_host is WebApplication webApp)
+        {
+            await webApp.DisposeAsync();
+            return;
+        }
+
         _host.Dispose();
+        await ValueTask.CompletedTask;
+#else
+        _host.Dispose();
+        await Task.CompletedTask;
+#endif
     }
 }
 
@@ -50,14 +62,18 @@ internal sealed class WebApplicationFactoryHostRunner<T> : HostRunner
         return Task.CompletedTask;
     }
 
-    public override Task StopAsync()
+    public override async Task StopAsync()
     {
-        Dispose();
-        return Task.CompletedTask;
+        await DisposeAsync();
     }
 
-    public override void Dispose()
+    public override async ValueTask DisposeAsync()
     {
+#if NET6_0 || NET7_0
+        await _webApplicationFactory.DisposeAsync();
+#else
         _webApplicationFactory.Dispose();
+        await Task.CompletedTask;
+#endif
     }
 }
