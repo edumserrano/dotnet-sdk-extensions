@@ -146,5 +146,4 @@ public class RunUntilTimeoutTests : IClassFixture<HostedServicesWebApplicationFa
             return errorMessage;
         }
     }
-
 }
