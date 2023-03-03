@@ -1,3 +1,6 @@
+using System.Reactive.Concurrency;
+using Microsoft.Reactive.Testing;
+
 namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices;
 
 /// <summary>
@@ -118,19 +121,20 @@ public class RunUntilTimeoutTests : IClassFixture<HostedServicesWebApplicationFa
             {
                 services.AddSingleton<ICalculator, Calculator>();
                 services.AddHostedService<MyBackgroundService>();
+                services.AddSingleton<IScheduler>(DefaultScheduler.Instance);
             });
 
         // This is for overriding services for test purposes.
+        var testScheduler = new TestScheduler();
         using var host = hostBuilder
             .ConfigureServices((_, services) =>
              {
                  services.AddSingleton(calculator);
+                 services.AddSingleton<IScheduler>(testScheduler);
              })
             .Build();
 
-        sw.Start();
         await host.RunUntilTimeoutAsync(TimeSpan.FromMilliseconds(3300));
-        sw.Stop();
 
         sw.Elapsed.ShouldBeGreaterThanOrEqualTo(TimeSpan.FromMilliseconds(3000));
         const int expectedCallCount = 3;

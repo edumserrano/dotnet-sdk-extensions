@@ -5,6 +5,11 @@
       "name": "WSL-Ubuntu-20.04",
       "type": "wsl",
       "wslDistribution": "Ubuntu-20.04"
+    },
+    {
+      "name": "docker-ubuntu-22.04",
+      "type": "docker",
+      "dockerImage": "my-test"
     }
   ]
 }

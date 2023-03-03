@@ -1,6 +1,6 @@
 {
   "$schema": "https://xunit.net/schema/current/xunit.runner.schema.json",
   "methodDisplay": "method",
-  "parallelizeAssembly": false,
-  "parallelizeTestCollections": false
+  "parallelizeAssembly": true,
+  "parallelizeTestCollections": true
 }
