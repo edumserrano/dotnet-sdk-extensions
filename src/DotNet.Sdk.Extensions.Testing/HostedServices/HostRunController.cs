@@ -18,25 +18,24 @@ internal sealed class HostRunController
             throw new ArgumentNullException(nameof(predicateAsync));
         }
 
-
         var a = Observable
             .Interval(_options.PredicateCheckInterval)
             .ToAsyncEnumerable();
 
-        //Observable
+        // Observable
         //    .Interval(_options.PredicateCheckInterval, _scheduler)
         //    .Subscribe(_ =>
         //    {
         //        await predicateAsync()
         //    }, stoppingToken);
-        //try
-        //{
+        // try
+        // {
         //    await Task.Delay(Timeout.Infinite, stoppingToken);
-        //}
-        //catch (OperationCanceledException)
-        //{
+        // }
+        // catch (OperationCanceledException)
+        // {
         //    // ignore, do nothing if when the Task.Delay throws exception because the host is being terminated
-        //}
+        // }
 
 #if NET6_0 || NET7_0
         try

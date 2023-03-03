@@ -1,4 +1,3 @@
-using System.Reactive.Concurrency;
 using Microsoft.Reactive.Testing;
 
 namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices;
