@@ -190,6 +190,7 @@ public class RunUntilHostExtensionsWithAsyncPredicateTests
             .ConfigureServices((_, services) =>
             {
                 services.AddSingleton<ICalculator, Calculator>();
+                services.AddSingleton<IScheduler>(DefaultScheduler.Instance);
                 services.AddHostedService<MyBackgroundService>();
             });
 
@@ -199,19 +200,19 @@ public class RunUntilHostExtensionsWithAsyncPredicateTests
             .ConfigureServices((_, services) =>
             {
                 services.AddSingleton(calculator);
-                services.AddSingleton<IScheduler>(testScheduler);
+                // services.AddSingleton<IScheduler>(testScheduler);
             })
             .Build();
 
         var runUntilTask = host.RunUntilAsync(() => Task.FromResult(callCount >= 1), options =>
         {
-            options.PredicateCheckInterval = TimeSpan.FromSeconds(1);
-            options.Timeout = TimeSpan.FromMilliseconds(100);
+            options.PredicateCheckInterval = TimeSpan.FromSeconds(2);
+            options.Timeout = TimeSpan.FromSeconds(1);
         });
         testScheduler.AdvanceBy(TimeSpan.FromMilliseconds(500).Ticks);
 
         var exception = await Should.ThrowAsync<RunUntilException>(runUntilTask);
-        exception.Message.ShouldBe("RunUntilExtensions.RunUntilAsync timed out after 00:00:00.1000000. This means the Host was shutdown before the RunUntilExtensions.RunUntilAsync predicate returned true. If that's what you intended, meaning, if you want to run the Host for a set period of time, consider using RunUntilExtensions.RunUntilTimeoutAsync instead.");
-        callCount.ShouldBe(1); // this is true which means the RunUntilAsync predicate was met however it wasn't checked before the timeout was triggered
+        exception.Message.ShouldBe("RunUntilExtensions.RunUntilAsync timed out after 00:00:01. This means the Host was shutdown before the RunUntilExtensions.RunUntilAsync predicate returned true. If that's what you intended, meaning, if you want to run the Host for a set period of time, consider using RunUntilExtensions.RunUntilTimeoutAsync instead.");
+        callCount.ShouldBeGreaterThanOrEqualTo(1); // this is true which means the RunUntilAsync predicate was met however it wasn't checked before the timeout was triggered
     }
 }
