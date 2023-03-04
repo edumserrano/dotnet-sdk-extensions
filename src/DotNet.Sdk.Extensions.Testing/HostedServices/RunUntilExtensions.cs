@@ -57,14 +57,20 @@ public static partial class RunUntilExtensions
             throw new ArgumentNullException(nameof(options));
         }
 
-        await hostRunner.StartAsync();
-        var hostRunController = new HostRunController(options);
-        var runUntilResult = await hostRunController.RunUntilAsync(predicateAsync);
-        await hostRunner.StopAsync();
-        await hostRunner.DisposeAsync();
-        if (runUntilResult != RunUntilResult.TimedOut)
+        try
         {
-            throw new RunUntilException($"{nameof(RunUntilExtensions)}.{nameof(RunUntilTimeoutAsync)} did NOT time out after {options.Timeout} as expected.");
+            await hostRunner.StartAsync();
+            var hostRunController = new HostRunController(options);
+            var runUntilResult = await hostRunController.RunUntilAsync(predicateAsync);
+            await hostRunner.StopAsync();
+            if (runUntilResult != RunUntilResult.TimedOut)
+            {
+                throw new RunUntilException($"{nameof(RunUntilExtensions)}.{nameof(RunUntilTimeoutAsync)} did NOT time out after {options.Timeout} as expected.");
+            }
+        }
+        finally
+        {
+            hostRunner.Dispose();
         }
     }
 
@@ -83,14 +89,20 @@ public static partial class RunUntilExtensions
             throw new ArgumentNullException(nameof(options));
         }
 
-        await hostRunner.StartAsync();
-        var hostRunController = new HostRunController(options);
-        var runUntilResult = await hostRunController.RunUntilAsync(predicateAsync);
-        await hostRunner.StopAsync();
-        await hostRunner.DisposeAsync();
-        if (runUntilResult == RunUntilResult.TimedOut)
+        try
         {
-            throw new RunUntilException($"{nameof(RunUntilExtensions)}.{nameof(RunUntilAsync)} timed out after {options.Timeout}. This means the Host was shutdown before the {nameof(RunUntilExtensions)}.{nameof(RunUntilAsync)} predicate returned true. If that's what you intended, meaning, if you want to run the Host for a set period of time, consider using {nameof(RunUntilExtensions)}.{nameof(RunUntilTimeoutAsync)} instead.");
+            await hostRunner.StartAsync();
+            var hostRunController = new HostRunController(options);
+            var runUntilResult = await hostRunController.RunUntilAsync(predicateAsync);
+            await hostRunner.StopAsync();
+            if (runUntilResult == RunUntilResult.TimedOut)
+            {
+                throw new RunUntilException($"{nameof(RunUntilExtensions)}.{nameof(RunUntilAsync)} timed out after {options.Timeout}. This means the Host was shutdown before the {nameof(RunUntilExtensions)}.{nameof(RunUntilAsync)} predicate returned true. If that's what you intended, meaning, if you want to run the Host for a set period of time, consider using {nameof(RunUntilExtensions)}.{nameof(RunUntilTimeoutAsync)} instead.");
+            }
+        }
+        finally
+        {
+            hostRunner.Dispose();
         }
     }
 }

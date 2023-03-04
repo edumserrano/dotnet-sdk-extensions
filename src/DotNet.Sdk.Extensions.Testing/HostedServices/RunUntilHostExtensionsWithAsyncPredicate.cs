@@ -52,7 +52,7 @@ public static partial class RunUntilExtensions
 
         var defaultOptions = new RunUntilOptions();
         configureOptions(defaultOptions);
-        await using var hostRunner = new DefaultHostRunner(host);
+        using var hostRunner = new DefaultHostRunner(host);
         await hostRunner.RunUntilAsync(predicateAsync, defaultOptions);
     }
 }

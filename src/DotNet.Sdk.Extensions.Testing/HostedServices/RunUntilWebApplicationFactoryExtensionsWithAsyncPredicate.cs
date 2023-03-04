@@ -56,7 +56,7 @@ public static partial class RunUntilExtensions
 
         var defaultOptions = new RunUntilOptions();
         configureOptions(defaultOptions);
-        await using var hostRunner = new WebApplicationFactoryHostRunner<T>(webApplicationFactory);
+        using var hostRunner = new WebApplicationFactoryHostRunner<T>(webApplicationFactory);
         await hostRunner.RunUntilAsync(predicateAsync, defaultOptions);
     }
 }
