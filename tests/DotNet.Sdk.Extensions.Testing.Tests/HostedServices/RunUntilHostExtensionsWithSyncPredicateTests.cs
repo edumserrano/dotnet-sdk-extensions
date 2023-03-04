@@ -200,7 +200,7 @@ public class RunUntilHostExtensionsWithSyncPredicateTests
             .ConfigureServices((_, services) =>
             {
                 services.AddSingleton(calculator);
-                // services.AddSingleton<IScheduler>(testScheduler);
+                services.AddSingleton<IScheduler>(testScheduler);
             })
             .Build();
 

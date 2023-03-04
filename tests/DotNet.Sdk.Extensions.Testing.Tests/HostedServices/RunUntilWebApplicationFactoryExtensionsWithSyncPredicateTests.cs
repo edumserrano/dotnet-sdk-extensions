@@ -173,7 +173,7 @@ public class RunUntilWebApplicationFactoryExtensionsWithSyncPredicateTests
                 builder.ConfigureTestServices(services =>
                 {
                     services.AddSingleton(calculator);
-                    // services.AddSingleton<IScheduler>(testScheduler);
+                    services.AddSingleton<IScheduler>(testScheduler);
                 });
             });
 
