@@ -1,8 +1,6 @@
 global using System.Diagnostics;
 global using System.Diagnostics.CodeAnalysis;
 global using System.Globalization;
-global using System.Reactive.Concurrency;
-global using System.Reactive.Linq;
 global using System.Text;
 global using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers;
 global using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.ResponseMocking;

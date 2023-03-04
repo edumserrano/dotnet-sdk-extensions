@@ -20,7 +20,7 @@ public static partial class RunUntilExtensions
         static Task<bool> NoOpPredicateAsync() => Task.FromResult(false);
         var options = new RunUntilOptions { Timeout = timeout };
         var hostRunner = new WebApplicationFactoryHostRunner<T>(webApplicationFactory);
-        return hostRunner.RunUntilTimeoutAsync(NoOpPredicateAsync, options, DefaultScheduler.Instance);
+        return hostRunner.RunUntilTimeoutAsync(NoOpPredicateAsync, options);
     }
 
     /// <summary>
@@ -39,14 +39,13 @@ public static partial class RunUntilExtensions
         static Task<bool> NoOpPredicateAsync() => Task.FromResult(false);
         var options = new RunUntilOptions { Timeout = timeout };
         var hostRunner = new DefaultHostRunner(host);
-        return hostRunner.RunUntilTimeoutAsync(NoOpPredicateAsync, options, DefaultScheduler.Instance);
+        return hostRunner.RunUntilTimeoutAsync(NoOpPredicateAsync, options);
     }
 
     internal static async Task RunUntilTimeoutAsync(
         this HostRunner hostRunner,
         RunUntilPredicateAsync predicateAsync,
-        RunUntilOptions options,
-        IScheduler scheduler)
+        RunUntilOptions options)
     {
         if (hostRunner is null)
         {
@@ -59,7 +58,7 @@ public static partial class RunUntilExtensions
         }
 
         await hostRunner.StartAsync();
-        var hostRunController = new HostRunController(options, scheduler);
+        var hostRunController = new HostRunController(options);
         var runUntilResult = await hostRunController.RunUntilAsync(predicateAsync);
         await hostRunner.StopAsync();
         await hostRunner.DisposeAsync();

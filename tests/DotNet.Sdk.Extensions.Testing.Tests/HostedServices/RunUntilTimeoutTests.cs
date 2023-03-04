@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Microsoft.Reactive.Testing;
 
 namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices;
@@ -50,11 +51,9 @@ public class RunUntilTimeoutTests : IClassFixture<HostedServicesWebApplicationFa
     /// Furthermore the <seealso cref="MyBackgroundService"/> BackgroundService calls ICalculator.Sum once every 1s so
     /// we should also have 3 calls to that method.
     /// </summary>
-    [RunOnTargetFrameworkMajorVersion(6, 7)]
+    [Fact]
     public async Task WebApplicationFactoryRunUntilTimeout()
     {
-        var calculatorSumCallInfo = new List<(int CallCount, long ElapsedMilliseconds)>();
-        var sw = new Stopwatch();
         var callCount = 0;
         var calculator = Substitute.For<ICalculator>();
         calculator
@@ -63,9 +62,9 @@ public class RunUntilTimeoutTests : IClassFixture<HostedServicesWebApplicationFa
             .AndDoes(_ =>
             {
                 ++callCount;
-                calculatorSumCallInfo.Add((callCount, sw.ElapsedMilliseconds));
             });
 
+        var testScheduler = new TestScheduler();
 #if NET6_0 || NET7_0
         await using var hostedServicesWebAppFactory = _hostedServicesWebAppFactory
 #else
@@ -76,16 +75,25 @@ public class RunUntilTimeoutTests : IClassFixture<HostedServicesWebApplicationFa
                 builder.ConfigureTestServices(services =>
                 {
                     services.AddSingleton(calculator);
+                    services.AddSingleton<IScheduler>(testScheduler);
                 });
             });
 
-        sw.Start();
-        await hostedServicesWebAppFactory.RunUntilTimeoutAsync(TimeSpan.FromMilliseconds(3300));
+        var sw = Stopwatch.StartNew();
+        var runUntilTimeout = TimeSpan.FromMilliseconds(100);
+        var runUntilTimeoutTask = hostedServicesWebAppFactory.RunUntilTimeoutAsync(runUntilTimeout);
+        callCount.ShouldBe(0);
+        testScheduler.AdvanceBy(TimeSpan.FromMilliseconds(500).Ticks);
+        callCount.ShouldBe(1);
+        testScheduler.AdvanceBy(TimeSpan.FromMilliseconds(500).Ticks);
+        callCount.ShouldBe(2);
+        testScheduler.AdvanceBy(TimeSpan.FromMilliseconds(500).Ticks);
+        callCount.ShouldBe(3);
+        await runUntilTimeoutTask;
         sw.Stop();
 
-        sw.Elapsed.ShouldBeGreaterThanOrEqualTo(TimeSpan.FromMilliseconds(3000));
-        const int expectedCallCount = 3;
-        callCount.ShouldBe(expectedCallCount, GetCustomErrorMessage(calculatorSumCallInfo));
+        sw.Elapsed.ShouldBeGreaterThanOrEqualTo(runUntilTimeout);
+        callCount.ShouldBe(3);
     }
 
     /// <summary>
@@ -94,11 +102,9 @@ public class RunUntilTimeoutTests : IClassFixture<HostedServicesWebApplicationFa
     /// Furthermore the <seealso cref="MyBackgroundService"/> BackgroundService calls ICalculator.Sum once every 1s so
     /// we should also have 3 calls to that method.
     /// </summary>
-    [RunOnTargetFrameworkMajorVersion(6, 7)]
+    [Fact]
     public async Task HostRunUntilTimeout()
     {
-        var calculatorSumCallInfo = new List<(int CallCount, long ElapsedMilliseconds)>();
-        var sw = new Stopwatch();
         var callCount = 0;
         var calculator = Substitute.For<ICalculator>();
         calculator
@@ -107,7 +113,6 @@ public class RunUntilTimeoutTests : IClassFixture<HostedServicesWebApplicationFa
             .AndDoes(_ =>
             {
                 ++callCount;
-                calculatorSumCallInfo.Add((callCount, sw.ElapsedMilliseconds));
             });
 
         // This code creating the Host would exist somewhere in app being tested.
@@ -120,7 +125,7 @@ public class RunUntilTimeoutTests : IClassFixture<HostedServicesWebApplicationFa
             {
                 services.AddSingleton<ICalculator, Calculator>();
                 services.AddHostedService<MyBackgroundService>();
-                services.AddSingleton<IScheduler>(DefaultScheduler.Instance);
+                services.AddSingleton<IScheduler>(DefaultScheduler.Instance); // required because I'm using RX on MyBackgroundService to timetravel 
             });
 
         // This is for overriding services for test purposes.
@@ -133,23 +138,20 @@ public class RunUntilTimeoutTests : IClassFixture<HostedServicesWebApplicationFa
              })
             .Build();
 
-        await host.RunUntilTimeoutAsync(TimeSpan.FromMilliseconds(3300));
+        var sw = Stopwatch.StartNew();
+        var runUntilTimeout = TimeSpan.FromMilliseconds(100);
+        var runUntilTimeoutTask = host.RunUntilTimeoutAsync(runUntilTimeout);
+        callCount.ShouldBe(0);
+        testScheduler.AdvanceBy(TimeSpan.FromMilliseconds(500).Ticks);
+        callCount.ShouldBe(1);
+        testScheduler.AdvanceBy(TimeSpan.FromMilliseconds(500).Ticks);
+        callCount.ShouldBe(2);
+        testScheduler.AdvanceBy(TimeSpan.FromMilliseconds(500).Ticks);
+        callCount.ShouldBe(3);
+        await runUntilTimeoutTask;
+        sw.Stop();
 
-        sw.Elapsed.ShouldBeGreaterThanOrEqualTo(TimeSpan.FromMilliseconds(3000));
-        const int expectedCallCount = 3;
-        callCount.ShouldBe(expectedCallCount, GetCustomErrorMessage(calculatorSumCallInfo));
-    }
-
-    // the tests using this method have been historically flaky and this extra info when the test
-    // fails helps understand a bit what might be going on.
-    private static string GetCustomErrorMessage(List<(int CallCount, long ElapsedMilliseconds)> calculatorSumCallInfo)
-    {
-        var errorMessage = "ICalculator.Sum call info:";
-        foreach (var (callCount, elapsedMilliseconds) in calculatorSumCallInfo)
-        {
-            errorMessage += $"{Environment.NewLine}{callCount} at {elapsedMilliseconds}";
-        }
-
-        return errorMessage;
+        sw.Elapsed.ShouldBeGreaterThanOrEqualTo(runUntilTimeout);
+        callCount.ShouldBe(3);
     }
 }

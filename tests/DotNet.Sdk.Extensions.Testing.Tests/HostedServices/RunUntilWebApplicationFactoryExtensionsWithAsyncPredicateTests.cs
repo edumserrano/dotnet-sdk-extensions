@@ -1,3 +1,5 @@
+using Microsoft.Reactive.Testing;
+
 namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices;
 
 /// <summary>
@@ -81,6 +83,7 @@ public class RunUntilWebApplicationFactoryExtensionsWithAsyncPredicateTests
             .Returns(1)
             .AndDoes(_ => ++callCount);
 
+        var testScheduler = new TestScheduler();
         using var hostedServicesWebAppFactory = new HostedServicesWebApplicationFactory();
 #if NET6_0 || NET7_0
         await using var webApplicationFactory = hostedServicesWebAppFactory
@@ -92,11 +95,16 @@ public class RunUntilWebApplicationFactoryExtensionsWithAsyncPredicateTests
                 builder.ConfigureTestServices(services =>
                 {
                     services.AddSingleton(calculator);
+                    services.AddSingleton<IScheduler>(testScheduler);
                 });
             });
 
-        await webApplicationFactory.RunUntilAsync(() => Task.FromResult(callCount >= 3));
-        callCount.ShouldBeGreaterThanOrEqualTo(3);
+        var runUntilTask = webApplicationFactory.RunUntilAsync(() => Task.FromResult(callCount == 3), options => options.PredicateCheckInterval = TimeSpan.FromMilliseconds(5));
+        testScheduler.AdvanceBy(TimeSpan.FromMilliseconds(500).Ticks);
+        testScheduler.AdvanceBy(TimeSpan.FromMilliseconds(500).Ticks);
+        testScheduler.AdvanceBy(TimeSpan.FromMilliseconds(500).Ticks);
+        await runUntilTask;
+        callCount.ShouldBe(3);
     }
 
     /// <summary>
@@ -115,6 +123,7 @@ public class RunUntilWebApplicationFactoryExtensionsWithAsyncPredicateTests
             .Returns(1)
             .AndDoes(_ => ++callCount);
 
+        var testScheduler = new TestScheduler();
         using var hostedServicesWebApplicationFactory = new HostedServicesWebApplicationFactory();
 #if NET6_0 || NET7_0
         await using var webApplicationFactory = hostedServicesWebApplicationFactory
@@ -126,12 +135,13 @@ public class RunUntilWebApplicationFactoryExtensionsWithAsyncPredicateTests
                 builder.ConfigureTestServices(services =>
                 {
                     services.AddSingleton(calculator);
+                    services.AddSingleton<IScheduler>(testScheduler);
                 });
             });
 
-        var runUntilTask = webApplicationFactory.RunUntilAsync(() => callCount >= 4, options => options.Timeout = TimeSpan.FromSeconds(2));
+        var runUntilTask = webApplicationFactory.RunUntilAsync(() => Task.FromResult(callCount >= 1), options => options.Timeout = TimeSpan.FromMilliseconds(50));
         var exception = await Should.ThrowAsync<RunUntilException>(runUntilTask);
-        exception.Message.ShouldBe("RunUntilExtensions.RunUntilAsync timed out after 00:00:02. This means the Host was shutdown before the RunUntilExtensions.RunUntilAsync predicate returned true. If that's what you intended, meaning, if you want to run the Host for a set period of time, consider using RunUntilExtensions.RunUntilTimeoutAsync instead.");
+        exception.Message.ShouldBe("RunUntilExtensions.RunUntilAsync timed out after 00:00:00.0500000. This means the Host was shutdown before the RunUntilExtensions.RunUntilAsync predicate returned true. If that's what you intended, meaning, if you want to run the Host for a set period of time, consider using RunUntilExtensions.RunUntilTimeoutAsync instead.");
     }
 
     /// <summary>
@@ -153,6 +163,7 @@ public class RunUntilWebApplicationFactoryExtensionsWithAsyncPredicateTests
             .Returns(1)
             .AndDoes(_ => ++callCount);
 
+        var testScheduler = new TestScheduler();
         using var hostedServicesWebApplicationFactory = new HostedServicesWebApplicationFactory();
 #if NET6_0 || NET7_0
         await using var webApplicationFactory = hostedServicesWebApplicationFactory
@@ -164,16 +175,19 @@ public class RunUntilWebApplicationFactoryExtensionsWithAsyncPredicateTests
                 builder.ConfigureTestServices(services =>
                 {
                     services.AddSingleton(calculator);
+                    services.AddSingleton<IScheduler>(testScheduler);
                 });
             });
 
         var runUntilTask = webApplicationFactory.RunUntilAsync(() => Task.FromResult(callCount >= 1), options =>
         {
-            options.PredicateCheckInterval = TimeSpan.FromSeconds(3);
-            options.Timeout = TimeSpan.FromSeconds(2);
+            options.PredicateCheckInterval = TimeSpan.FromMilliseconds(200);
+            options.Timeout = TimeSpan.FromMilliseconds(20);
         });
+        testScheduler.AdvanceBy(TimeSpan.FromMilliseconds(500).Ticks);
+
         var exception = await Should.ThrowAsync<RunUntilException>(runUntilTask);
-        exception.Message.ShouldBe("RunUntilExtensions.RunUntilAsync timed out after 00:00:02. This means the Host was shutdown before the RunUntilExtensions.RunUntilAsync predicate returned true. If that's what you intended, meaning, if you want to run the Host for a set period of time, consider using RunUntilExtensions.RunUntilTimeoutAsync instead.");
-        callCount.ShouldBeGreaterThanOrEqualTo(1); // this is true which means the RunUntilAsync predicate was met however it wasn't checked before the timeout was triggered
+        exception.Message.ShouldBe("RunUntilExtensions.RunUntilAsync timed out after 00:00:00.0200000. This means the Host was shutdown before the RunUntilExtensions.RunUntilAsync predicate returned true. If that's what you intended, meaning, if you want to run the Host for a set period of time, consider using RunUntilExtensions.RunUntilTimeoutAsync instead.");
+        callCount.ShouldBe(1); // this is true which means the RunUntilAsync predicate was met however it wasn't checked before the timeout was triggered
     }
 }

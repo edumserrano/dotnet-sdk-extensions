@@ -13,16 +13,16 @@ public class MyBackgroundService : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        var interval = TimeSpan.FromMilliseconds(500);
-        Observable
-            .Interval(interval, _scheduler)
-            .Subscribe(_ =>
-            {
-                _calculator.Sum(1, 1); // implement your logic, this doesn't make sense and is only for demo purposes
-            }, stoppingToken);
         try
         {
-            await Task.Delay(Timeout.Infinite, stoppingToken);
+            var interval = TimeSpan.FromMilliseconds(500);
+            var timer = new RxPeriodicTimer(interval, _scheduler);
+            do
+            {
+                await timer.WaitForNextTickAsync(stoppingToken);
+                _calculator.Sum(1, 1); // implement your logic, this doesn't make sense and is only for demo purposes
+            }
+            while (!stoppingToken.IsCancellationRequested);
         }
         catch (OperationCanceledException)
         {
