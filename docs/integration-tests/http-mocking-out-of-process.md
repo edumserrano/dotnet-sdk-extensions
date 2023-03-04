@@ -64,7 +64,7 @@ public class HttpMocksDemoTests : IClassFixture<WebApplicationFactory<Startup>>
 }
 ```
 
-For brevity, the above test does not show how to configure the `WebApplicationFactory` instance. For a full example see [the demos](#how-to-run-the-demo).
+For brevity, the above test does not show how to configure the `WebApplicationFactory` instance.
 
 ## Different ways to setup the `HttpMockServer`
 
@@ -132,9 +132,7 @@ public class MyMockStartup
 }
 ```
 
-You can configure the `Startup` class as you wish. For isntance you could even use controllers if that's what you prefer. In essence you can make the `HttpMockServer` behave just like a *real* `asp.net` application.
-
-For an example of a mock `Startup` using controllers see [the demos](#how-to-run-the-demo).
+You can configure the `Startup` class as you wish. For instance you could even use controllers if that's what you prefer. In essence you can make the `HttpMockServer` behave just like a *real* `asp.net` application.
 
 After you have a mock `Startup` class configure the `HttpMockServer` as follows:
 
