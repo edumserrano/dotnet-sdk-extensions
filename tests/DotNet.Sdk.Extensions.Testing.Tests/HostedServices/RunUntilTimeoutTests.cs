@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using Microsoft.Reactive.Testing;
 
 namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices;
@@ -125,7 +124,7 @@ public class RunUntilTimeoutTests : IClassFixture<HostedServicesWebApplicationFa
             {
                 services.AddSingleton<ICalculator, Calculator>();
                 services.AddHostedService<MyBackgroundService>();
-                services.AddSingleton<IScheduler>(DefaultScheduler.Instance); // required because I'm using RX on MyBackgroundService to timetravel 
+                services.AddSingleton<IScheduler>(DefaultScheduler.Instance); // required because I'm using RX on MyBackgroundService to timetravel
             });
 
         // This is for overriding services for test purposes.

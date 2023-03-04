@@ -3,10 +3,12 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices;
 internal sealed class HostRunController
 {
     private readonly RunUntilOptions _options;
+
     public HostRunController(RunUntilOptions options)
     {
         _options = options ?? throw new ArgumentNullException(nameof(options));
     }
+
     public async Task<RunUntilResult> RunUntilAsync(RunUntilPredicateAsync predicateAsync)
     {
         if (predicateAsync is null)
