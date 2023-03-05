@@ -57,7 +57,6 @@ public static partial class RunUntilExtensions
             throw new ArgumentNullException(nameof(options));
         }
 
-
         await hostRunner.StartAsync();
         var hostRunController = new HostRunController(options);
         var runUntilResult = await hostRunController.RunUntilAsync(predicateAsync);
