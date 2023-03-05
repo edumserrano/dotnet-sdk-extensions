@@ -11,7 +11,6 @@
 - [Source Link configuration](#source-link-configuration)
 - [Repository configuration](#repository-configuration)
 - [GitHub Workflows](#github-workflows)
-- [Other notes](#other-notes)
 
 ## Building
 
@@ -29,12 +28,24 @@
 
 The test projects run against multiple frameworks and the [workflow to build and test](/.github/workflows/nuget-publish.yml) the solution runs both on Linux and on Windows.
 
+> **Note**
+>
+> Some tests run a test server with an HTTPS URL so you have to run the following command to trust developer certificates:
+>
+> ```
+> dotnet dev-certs https --trust
+> ```
+>
+> For more info see [Generate self-signed certificates with the .NET CLI](https://docs.microsoft.com/en-us/dotnet/core/additional-tools/self-signed-certificates-guide).
+
 ### Run tests with Visual Studio
 
 1) Clone the repo and open the **DotNet.Sdk.Extensions.sln** solution file at the root.
 2) Go to the test explorer in Visual Studio and run tests.
 
-**Note:** [Remote testing](https://docs.microsoft.com/en-us/visualstudio/test/remote-testing?view=vs-2022) with WSL is configured on the solution which enables you to run the tests locally on Linux or on Windows. You can view the configuration file at [testenvironments.json](/testenvironments.json). To run the tests on Linux you need to have at least `Visual Studio 2022` and the Linux distro `Ubuntu-20.04` installed on [WSL](https://docs.microsoft.com/en-us/windows/wsl/install).
+**Note:** [Remote testing](https://docs.microsoft.com/en-us/visualstudio/test/remote-testing?view=vs-2022) with WSL is configured on the solution which enables you to run the tests locally on Linux via WSL or Docker. You can view the configuration file at [testenvironments.json](/testenvironments.json).
+
+To run tests via WSL you need to have at least `Visual Studio 2022` and the Linux distro `Ubuntu-20.04` installed on [WSL](https://docs.microsoft.com/en-us/windows/wsl/install).
 
 ### Run tests with dotnet CLI
 
@@ -84,13 +95,3 @@ From all the GitHub repository settings the configurations worth mentioning are:
 ## GitHub Workflows
 
 For more information about the GitHub workflows configured for this repo go [here](/docs/dev-notes/workflows/README.md).
-
-## Other notes
-
-If you have problems with SSL certificates when running the tests then make sure you have trusted dev certificates by executing the following command
-
-```
-dotnet dev-certs https --trust
-```
-
-For more info see [Generate self-signed certificates with the .NET CLI](https://docs.microsoft.com/en-us/dotnet/core/additional-tools/self-signed-certificates-guide).
