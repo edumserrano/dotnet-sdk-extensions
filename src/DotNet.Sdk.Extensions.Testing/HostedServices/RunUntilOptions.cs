@@ -24,6 +24,5 @@ public class RunUntilOptions
     /// Gets or sets interval of time to check the predicate for the to determine if the host running the hosted service
     /// should be terminated. Defaults to 1s.
     /// </summary>
-    /// <remarks>
     public TimeSpan PredicateCheckInterval { get; set; } = TimeSpan.FromMilliseconds(50);
 }
