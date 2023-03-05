@@ -50,10 +50,10 @@ internal sealed class WebApplicationFactoryHostRunner<T> : HostRunner
         return Task.CompletedTask;
     }
 
-    public override async Task StopAsync()
+    public override Task StopAsync()
     {
         Dispose();
-        await Task.CompletedTask;
+        return Task.CompletedTask;
     }
 
     public override void Dispose()

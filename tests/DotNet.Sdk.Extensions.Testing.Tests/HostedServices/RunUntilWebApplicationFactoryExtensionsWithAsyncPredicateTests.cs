@@ -175,7 +175,7 @@ public class RunUntilWebApplicationFactoryExtensionsWithAsyncPredicateTests
                 builder.ConfigureTestServices(services =>
                 {
                     services.AddSingleton(calculator);
-                    services.AddSingleton<IScheduler>(testScheduler);
+                    // services.AddSingleton<IScheduler>(testScheduler);
                 });
             });
 
@@ -184,7 +184,7 @@ public class RunUntilWebApplicationFactoryExtensionsWithAsyncPredicateTests
             options.PredicateCheckInterval = TimeSpan.FromSeconds(2);
             options.Timeout = TimeSpan.FromSeconds(1);
         });
-        testScheduler.AdvanceBy(TimeSpan.FromMilliseconds(200).Ticks);
+        // testScheduler.AdvanceBy(TimeSpan.FromMilliseconds(200).Ticks);
 
         var exception = await Should.ThrowAsync<RunUntilException>(runUntilTask);
         exception.Message.ShouldBe("RunUntilExtensions.RunUntilAsync timed out after 00:00:01. This means the Host was shutdown before the RunUntilExtensions.RunUntilAsync predicate returned true. If that's what you intended, meaning, if you want to run the Host for a set period of time, consider using RunUntilExtensions.RunUntilTimeoutAsync instead.");
