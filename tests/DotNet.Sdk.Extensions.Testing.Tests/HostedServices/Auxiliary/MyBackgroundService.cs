@@ -15,7 +15,7 @@ public class MyBackgroundService : BackgroundService
     {
         try
         {
-            var interval = TimeSpan.FromMilliseconds(200);
+            var interval = TimeSpan.FromMilliseconds(500);
             var timer = new RxPeriodicTimer(interval, _scheduler);
             do
             {
