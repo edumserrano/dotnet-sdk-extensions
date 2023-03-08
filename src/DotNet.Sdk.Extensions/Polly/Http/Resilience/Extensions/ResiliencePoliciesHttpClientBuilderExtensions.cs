@@ -238,11 +238,11 @@ public static class ResiliencePoliciesHttpClientBuilderExtensions
             }
 
             var policyEventHandler = eventHandlerFactory(provider);
-            var retryPolicy = CircuitBreakerPolicyFactory.CreateCircuitBreakerPolicy(
+            var circuitBreakerPolicy = CircuitBreakerPolicyFactory.CreateCircuitBreakerPolicy(
                 httpClientBuilder.Name,
                 resilienceOptions.CircuitBreaker,
                 policyEventHandler);
-            return new PolicyHttpMessageHandler(retryPolicy);
+            return new PolicyHttpMessageHandler(circuitBreakerPolicy);
         });
     }
 

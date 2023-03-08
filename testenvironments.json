@@ -5,6 +5,11 @@
       "name": "WSL-Ubuntu-20.04",
       "type": "wsl",
       "wslDistribution": "Ubuntu-20.04"
+    },
+    {
+      "name": "docker-dotnet7-ubuntu-22.04",
+      "type": "docker",
+      "dockerFile": "tests/remote-testing-environments/Dockerfile"
     }
   ]
 }

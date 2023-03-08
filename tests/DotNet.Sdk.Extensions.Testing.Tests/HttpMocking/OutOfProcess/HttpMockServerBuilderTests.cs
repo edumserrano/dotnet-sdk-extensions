@@ -42,7 +42,7 @@ public class HttpMockServerBuilderTests
 
     /// <summary>
     /// Tests that the <see cref="HttpMockServer.StartAsync"/> starts the server using the provided URLs
-    /// by <see cref="HttpMockServerBuilder.UseUrl"/>.
+    /// by <see cref="HttpMockServerBuilder.UseUrls"/>.
     /// </summary>
     [Fact]
     public async Task AllowsMultipleUrlsToBeConfigured()
@@ -50,10 +50,10 @@ public class HttpMockServerBuilderTests
         var runtimeMajorVersion = Environment.Version.Major;
         await using var httpMockServer = new HttpMockServerBuilder()
             .UseDefaultLogLevel(LogLevel.Critical)
-            .UseUrl(HttpScheme.Http, 9020 + runtimeMajorVersion)
-            .UseUrl(HttpScheme.Http, 9030 + runtimeMajorVersion)
-            .UseUrl(HttpScheme.Https, 9040 + runtimeMajorVersion)
-            .UseUrl(HttpScheme.Https, 9060 + runtimeMajorVersion)
+            .UseUrls(HttpScheme.Http, 9020 + runtimeMajorVersion)
+            .UseUrls(HttpScheme.Http, 9030 + runtimeMajorVersion)
+            .UseUrls(HttpScheme.Https, 9040 + runtimeMajorVersion)
+            .UseUrls(HttpScheme.Https, 9060 + runtimeMajorVersion)
             .UseHttpResponseMocks()
             .Build();
         var urls = await httpMockServer.StartAsync();
@@ -145,11 +145,11 @@ public class HttpMockServerBuilderTests
         var exception = Should.Throw<InvalidOperationException>(() =>
         {
             new HttpMockServerBuilder()
-                .UseUrl(HttpScheme.Http, 7777)
+                .UseUrls(HttpScheme.Http, 7777)
                 .UseHostArgs("--urls", $"http://*:{9080 + runtimeMajorVersion};https://*:{9090 + runtimeMajorVersion}")
                 .UseHttpResponseMocks()
                 .Build();
         });
-        exception.Message.ShouldBe("Competing URLs configuration. URls defined via both HttpMockServerBuilder.UseUrl method and by defining an '--urls' arg via HttpMockServerBuilder.UseHostArgs. Use only one of these methods to configure the URLs.");
+        exception.Message.ShouldBe("Competing URLs configuration. URls defined via both HttpMockServerBuilder.UseUrls method and by defining an '--urls' arg via HttpMockServerBuilder.UseHostArgs. Use only one of these methods to configure the URLs.");
     }
 }

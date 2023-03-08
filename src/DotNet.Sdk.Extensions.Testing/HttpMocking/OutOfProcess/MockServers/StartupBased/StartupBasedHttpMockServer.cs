@@ -14,7 +14,6 @@ internal sealed class StartupBasedHttpMockServer<T> : HttpMockServer
             .CreateDefaultBuilder(args)
             .ConfigureWebHostDefaults(webBuilder =>
             {
-                webBuilder.UseStartup(typeof(T));
                 webBuilder.UseStartup<T>();
             });
     }

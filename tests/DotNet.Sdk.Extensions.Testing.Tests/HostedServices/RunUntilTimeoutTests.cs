@@ -1,3 +1,5 @@
+using Microsoft.Reactive.Testing;
+
 namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices;
 
 /// <summary>
@@ -45,8 +47,11 @@ public class RunUntilTimeoutTests : IClassFixture<HostedServicesWebApplicationFa
     /// <summary>
     /// Tests that <seealso cref="RunUntilExtensions.RunUntilTimeoutAsync{T}(WebApplicationFactory{T},TimeSpan)"/>
     /// terminates the Host created by the WebApplicationFactory after the specified timeout.
-    /// Furthermore the <seealso cref="MyBackgroundService"/> BackgroundService calls ICalculator.Sum once every 500 ms so
-    /// we should also have at least 3 calls to that method. The 4th call may or may not happen.
+    /// The <seealso cref="MyBackgroundService"/> BackgroundService calls ICalculator.Sum once every
+    /// <see cref="MyBackgroundService.Period"/> which means that the when the host is terminated there should be
+    /// 3 calls to that method.
+    /// Furthermore I'm using the <see cref="TestScheduler"/> to control the passing of time on the
+    /// <seealso cref="MyBackgroundService"/>. This allows me to make the test more deterministic.
     /// </summary>
     [Fact]
     public async Task WebApplicationFactoryRunUntilTimeout()
@@ -61,7 +66,7 @@ public class RunUntilTimeoutTests : IClassFixture<HostedServicesWebApplicationFa
                 ++callCount;
             });
 
-        var sw = Stopwatch.StartNew();
+        var testScheduler = new TestScheduler();
 #if NET6_0 || NET7_0
         await using var hostedServicesWebAppFactory = _hostedServicesWebAppFactory
 #else
@@ -72,20 +77,35 @@ public class RunUntilTimeoutTests : IClassFixture<HostedServicesWebApplicationFa
                 builder.ConfigureTestServices(services =>
                 {
                     services.AddSingleton(calculator);
+                    services.AddSingleton<IScheduler>(testScheduler);
                 });
             });
-        await hostedServicesWebAppFactory.RunUntilTimeoutAsync(TimeSpan.FromMilliseconds(2300));
+
+        var sw = Stopwatch.StartNew();
+        var runUntilTimeout = TimeSpan.FromMilliseconds(100);
+        var runUntilTimeoutTask = hostedServicesWebAppFactory.RunUntilTimeoutAsync(runUntilTimeout);
+        callCount.ShouldBe(0);
+        testScheduler.AdvanceBy(MyBackgroundService.Period.Ticks);
+        callCount.ShouldBe(1);
+        testScheduler.AdvanceBy(MyBackgroundService.Period.Ticks);
+        callCount.ShouldBe(2);
+        testScheduler.AdvanceBy(MyBackgroundService.Period.Ticks);
+        callCount.ShouldBe(3);
+        await runUntilTimeoutTask;
         sw.Stop();
 
-        sw.Elapsed.ShouldBeGreaterThanOrEqualTo(TimeSpan.FromMilliseconds(2000));
-        callCount.ShouldBeGreaterThanOrEqualTo(5);
+        sw.Elapsed.ShouldBeGreaterThanOrEqualTo(runUntilTimeout);
+        callCount.ShouldBe(3);
     }
 
     /// <summary>
     /// Tests that <seealso cref="RunUntilExtensions.RunUntilTimeoutAsync(IHost,TimeSpan)"/>
     /// terminates the Host after the specified timeout.
-    /// Furthermore the <seealso cref="MyBackgroundService"/> BackgroundService calls ICalculator.Sum once every 500 ms so
-    /// we should also have at least 3 calls to that method. The 4th call may or may not happen.
+    /// The <seealso cref="MyBackgroundService"/> BackgroundService calls ICalculator.Sum once every
+    /// <see cref="MyBackgroundService.Period"/> which means that the when the host is terminated there should be
+    /// 3 calls to that method.
+    /// Furthermore I'm using the <see cref="TestScheduler"/> to control the passing of time on the
+    /// <seealso cref="MyBackgroundService"/>. This allows me to make the test more deterministic.
     /// </summary>
     [Fact]
     public async Task HostRunUntilTimeout()
@@ -110,21 +130,33 @@ public class RunUntilTimeoutTests : IClassFixture<HostedServicesWebApplicationFa
             {
                 services.AddSingleton<ICalculator, Calculator>();
                 services.AddHostedService<MyBackgroundService>();
+                services.AddSingleton<IScheduler>(DefaultScheduler.Instance); // required because I'm using RX on MyBackgroundService to timetravel
             });
 
         // This is for overriding services for test purposes.
+        var testScheduler = new TestScheduler();
         using var host = hostBuilder
             .ConfigureServices((_, services) =>
              {
                  services.AddSingleton(calculator);
+                 services.AddSingleton<IScheduler>(testScheduler);
              })
             .Build();
 
         var sw = Stopwatch.StartNew();
-        await host.RunUntilTimeoutAsync(TimeSpan.FromMilliseconds(2300));
+        var runUntilTimeout = TimeSpan.FromMilliseconds(100);
+        var runUntilTimeoutTask = host.RunUntilTimeoutAsync(runUntilTimeout);
+        callCount.ShouldBe(0);
+        testScheduler.AdvanceBy(MyBackgroundService.Period.Ticks);
+        callCount.ShouldBe(1);
+        testScheduler.AdvanceBy(MyBackgroundService.Period.Ticks);
+        callCount.ShouldBe(2);
+        testScheduler.AdvanceBy(MyBackgroundService.Period.Ticks);
+        callCount.ShouldBe(3);
+        await runUntilTimeoutTask;
         sw.Stop();
 
-        sw.Elapsed.ShouldBeGreaterThanOrEqualTo(TimeSpan.FromMilliseconds(2000));
-        callCount.ShouldBeGreaterThanOrEqualTo(5);
+        sw.Elapsed.ShouldBeGreaterThanOrEqualTo(runUntilTimeout);
+        callCount.ShouldBe(3);
     }
 }

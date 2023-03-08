@@ -2,6 +2,8 @@ global using System.Diagnostics;
 global using System.Diagnostics.CodeAnalysis;
 global using System.Net;
 global using System.Net.Mime;
+global using System.Reactive.Concurrency;
+global using System.Reactive.Linq;
 global using DotNet.Sdk.Extensions.Testing.Configuration;
 global using DotNet.Sdk.Extensions.Testing.HostedServices;
 global using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers;

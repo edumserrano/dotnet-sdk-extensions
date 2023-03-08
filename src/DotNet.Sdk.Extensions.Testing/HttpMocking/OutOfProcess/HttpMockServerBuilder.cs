@@ -19,7 +19,7 @@ public class HttpMockServerBuilder
     /// <param name="scheme">The scheme part of the URL.</param>
     /// <param name="port">The port part of the URL.</param>
     /// <returns>The <see cref="HttpMockServerBuilder"/> for chaining.</returns>
-    public HttpMockServerBuilder UseUrl(HttpScheme scheme, int port)
+    public HttpMockServerBuilder UseUrls(HttpScheme scheme, int port)
     {
         var urlDescriptor = new HttpMockServerUrlDescriptor(scheme, port);
         _hostUrls.Add(urlDescriptor);

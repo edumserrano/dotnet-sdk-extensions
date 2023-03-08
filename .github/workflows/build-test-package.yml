@@ -64,6 +64,12 @@ jobs:
       run: dotnet build ${{ env.SLN_FILEPATH }} -c Release -warnaserror --no-restore --no-incremental
     - name: Test and code coverage
       id: dotnet-test
+      env:
+        # default is 90 seconds. Increasing this because sometimes running on Windows I get:
+        # "vstest.console process failed to connect to testhost process after 90 seconds. This may occur due to machine slowness,
+        # please set environment variable VSTEST_CONNECTION_TIMEOUT to increase timeout."
+        # Don't know why this occurs though
+        VSTEST_CONNECTION_TIMEOUT: 270
       run: |
         $os = $PSVersionTable.OS
 

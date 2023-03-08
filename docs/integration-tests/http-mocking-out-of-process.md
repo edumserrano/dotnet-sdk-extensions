@@ -1,6 +1,6 @@
 ﻿# Mocking HttpClient's responses out-of-process
 
-This will allow mocking the HttpClient's response by launching an http server with predefined responses. The HttpClient(s) are then configured to send the requests to this http server. 
+This will allow mocking the HttpClient's response by launching an http server with predefined responses. The HttpClient(s) are then configured to send the requests to this http server.
 
 This is called out-of-process mocking because the mocked responses are returned by an http server which is not part of the test server running the integration test. The http calls will actually happen as opposed to the [in-process http response mocking method](./http-mocking-in-process.md).
 
@@ -58,13 +58,13 @@ public class HttpMocksDemoTests : IClassFixture<WebApplicationFactory<Startup>>
 
         // configure the _webApplicationFactory to start your app
         // and make sure the HttpClient base address you want to test
-        // is set to either the httpUrl or httpsUrl which is where 
+        // is set to either the httpUrl or httpsUrl which is where
         // the httpMockServer is listening for http requests
     }
 }
 ```
 
-For brevity, the above test does not show how to configure the `WebApplicationFactory` instance. For a full example see [the demos](#how-to-run-the-demo).
+For brevity, the above test does not show how to configure the `WebApplicationFactory` instance.
 
 ## Different ways to setup the `HttpMockServer`
 
@@ -99,7 +99,7 @@ var httpsUrl = urls.First(x => x.Scheme == HttpScheme.Https);
 
 ### Configuring the `HttpMockServer` via `HttpMockServerBuilder.UseStartup<T>`
 
-This way let's you move the configuration of the `HttpMockServer` into a separate `Startup` class. 
+This way let's you move the configuration of the `HttpMockServer` into a separate `Startup` class.
 
 Start by defining a `Startup` class as you see fit. The example below shows a very simple `Startup` where it will return `201` status code with a hello string body for any request to the `/hello` request path. Otherwise it returns a `500` status code.
 
@@ -132,9 +132,7 @@ public class MyMockStartup
 }
 ```
 
-You can configure the `Startup` class as you wish. For isntance you could even use controllers if that's what you prefer. In essence you can make the `HttpMockServer` behave just like a *real* `asp.net` application.
-
-For an example of a mock `Startup` using controllers see [the demos](#how-to-run-the-demo).
+You can configure the `Startup` class as you wish. For instance you could even use controllers if that's what you prefer. In essence you can make the `HttpMockServer` behave just like a *real* `asp.net` application.
 
 After you have a mock `Startup` class configure the `HttpMockServer` as follows:
 
@@ -147,7 +145,7 @@ var httpUrl = urls.First(x => x.Scheme == HttpScheme.Http);
 var httpsUrl = urls.First(x => x.Scheme == HttpScheme.Https);
 ```
 
-## `HttpMockServerBuilder.UseHostArgs` and `HttpMockServerBuilder.UseUrl`
+## `HttpMockServerBuilder.UseHostArgs` and `HttpMockServerBuilder.UseUrls`
 
 ### `HttpMockServerBuilder.UseHostArgs`
 
@@ -166,7 +164,7 @@ await using var httpMockServer = new HttpMockServerBuilder()
 
 You can pass in any number of host arguments. The arguments will be concatenated and passed in to the `IHostBuilder.CreateDefaultBuilder`.
 
-### `HttpMockServerBuilder.UseUrl`
+### `HttpMockServerBuilder.UseUrls`
 
 One of the most obvious configuration values you want to define for the `HttpMockServer` is the URL where the server is listening for requests. Although you could configure that by using the `HttpMockServerBuilder.UseHostArgs`:
 
@@ -177,14 +175,14 @@ await using var httpMockServer = new HttpMockServerBuilder()
     .Build();
 ```
 
-for convinience we also provide the the `HttpMockServerBuilder.UseUrl` method which you can use as follows:
+for convenience we also provide the the `HttpMockServerBuilder.UseUrls` method which you can use as follows:
 
 ```csharp
 await using var httpMockServer = new HttpMockServerBuilder()
-    .UseUrl(HttpScheme.Http, 6011)
-    .UseUrl(HttpScheme.Http, 6012)
-    .UseUrl(HttpScheme.Https, 7011)
-    .UseUrl(HttpScheme.Https, 7012)
+    .UseUrls(HttpScheme.Http, 6011)
+    .UseUrls(HttpScheme.Http, 6012)
+    .UseUrls(HttpScheme.Https, 7011)
+    .UseUrls(HttpScheme.Https, 7012)
     .UseHttpResponseMocks() // or use the HttpMockServerBuilder.UseStartup<T> method
     .Build();
 ```

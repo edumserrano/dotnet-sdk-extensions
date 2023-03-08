@@ -37,7 +37,11 @@ internal abstract class HttpMockServer : IHttpMockServer
     [SuppressMessage("Style", "VSTHRD200:Use \"Async\" suffix for async methods", Justification = "Following guidance from https://docs.microsoft.com/en-us/dotnet/standard/garbage-collection/implementing-disposeasync")]
     protected virtual async ValueTask DisposeAsyncCore()
     {
-        Host?.StopAsync();
+        if (Host is not null)
+        {
+            await Host.StopAsync();
+        }
+
         switch (Host)
         {
             case IAsyncDisposable asyncDisposable:
