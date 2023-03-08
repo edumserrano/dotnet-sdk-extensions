@@ -21,7 +21,7 @@ internal sealed class HttpMockServerArgs
     {
         if (hostArgs.Contains("--urls", StringComparer.InvariantCulture) && urlDescriptors.Count > 0)
         {
-            throw new InvalidOperationException($"Competing URLs configuration. URls defined via both {nameof(HttpMockServerBuilder)}.{nameof(HttpMockServerBuilder.UseUrl)} method and by defining an '--urls' arg via {nameof(HttpMockServerBuilder)}.{nameof(HttpMockServerBuilder.UseHostArgs)}. Use only one of these methods to configure the URLs.");
+            throw new InvalidOperationException($"Competing URLs configuration. URls defined via both {nameof(HttpMockServerBuilder)}.{nameof(HttpMockServerBuilder.UseUrls)} method and by defining an '--urls' arg via {nameof(HttpMockServerBuilder)}.{nameof(HttpMockServerBuilder.UseHostArgs)}. Use only one of these methods to configure the URLs.");
         }
 
         if (hostArgs.Contains("--urls", StringComparer.InvariantCulture))

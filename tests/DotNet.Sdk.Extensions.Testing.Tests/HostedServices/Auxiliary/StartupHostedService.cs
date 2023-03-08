@@ -6,6 +6,7 @@ public class StartupHostedService
     public void ConfigureServices(IServiceCollection services)
     {
         services.AddSingleton<ICalculator, Calculator>();
+        services.AddSingleton<IScheduler>(DefaultScheduler.Instance);
         services.AddHostedService<MyBackgroundService>();
     }
 

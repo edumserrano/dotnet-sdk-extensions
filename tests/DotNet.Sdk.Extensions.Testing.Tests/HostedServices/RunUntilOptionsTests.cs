@@ -10,7 +10,7 @@ public class RunUntilOptionsTests
     public void DefaultValues()
     {
         var options = new RunUntilOptions();
-        options.PredicateCheckInterval.ShouldBe(TimeSpan.FromMilliseconds(5));
+        options.PredicateCheckInterval.ShouldBe(TimeSpan.FromMilliseconds(50));
         options.Timeout.ShouldBe(TimeSpan.FromSeconds(5));
     }
 }
