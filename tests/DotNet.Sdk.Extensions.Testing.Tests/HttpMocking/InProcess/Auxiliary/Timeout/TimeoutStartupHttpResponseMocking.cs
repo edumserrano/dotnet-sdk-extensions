@@ -52,7 +52,7 @@ public class TimeoutStartupHttpResponseMocking
 
                     context.Response.StatusCode = StatusCodes.Status500InternalServerError;
                     context.Response.ContentType = MediaTypeNames.Text.Plain;
-                    await context.Response.WriteAsync("An exception was thrown.");
+                    await context.Response.WriteAsync("An exception was thrown.", context.RequestAborted);
                 });
             })
             .UseEndpoints(endpoints =>
@@ -61,29 +61,29 @@ public class TimeoutStartupHttpResponseMocking
                 {
                     var httpClientFactory = context.RequestServices.GetRequiredService<IHttpClientFactory>();
                     var namedClient = httpClientFactory.CreateClient("named-client-with-low-timeout");
-                    var response = await namedClient.GetAsync("https://named-client-with-timeout.com");
-                    await context.Response.WriteAsync($"Named http client (named-client-with-low-timeout) returned: {response.IsSuccessStatusCode}");
+                    var response = await namedClient.GetAsync("https://named-client-with-timeout.com", context.RequestAborted);
+                    await context.Response.WriteAsync($"Named http client (named-client-with-low-timeout) returned: {response.IsSuccessStatusCode}", context.RequestAborted);
                 });
                 endpoints.MapGet("/named-client-with-high-timeout", async context =>
                 {
                     var httpClientFactory = context.RequestServices.GetRequiredService<IHttpClientFactory>();
                     var namedClient = httpClientFactory.CreateClient("named-client-with-high-timeout");
-                    var response = await namedClient.GetAsync("https://named-client-with-timeout.com");
-                    await context.Response.WriteAsync($"Named http client (named-client-with-high-timeout) returned: {response.IsSuccessStatusCode}");
+                    var response = await namedClient.GetAsync("https://named-client-with-timeout.com", context.RequestAborted);
+                    await context.Response.WriteAsync($"Named http client (named-client-with-high-timeout) returned: {response.IsSuccessStatusCode}", context.RequestAborted);
                 });
                 endpoints.MapGet("/polly-named-client-with-low-timeout", async context =>
                 {
                     var httpClientFactory = context.RequestServices.GetRequiredService<IHttpClientFactory>();
                     var namedClient = httpClientFactory.CreateClient("polly-named-client-with-low-timeout");
-                    var response = await namedClient.GetAsync("https://polly-named-client.com");
-                    await context.Response.WriteAsync($"Named http client (polly-named-client-with-low-timeout) returned: {response.IsSuccessStatusCode}");
+                    var response = await namedClient.GetAsync("https://polly-named-client.com", context.RequestAborted);
+                    await context.Response.WriteAsync($"Named http client (polly-named-client-with-low-timeout) returned: {response.IsSuccessStatusCode}", context.RequestAborted);
                 });
                 endpoints.MapGet("/polly-named-client-with-high-timeout", async context =>
                 {
                     var httpClientFactory = context.RequestServices.GetRequiredService<IHttpClientFactory>();
                     var namedClient = httpClientFactory.CreateClient("polly-named-client-with-high-timeout");
-                    var response = await namedClient.GetAsync("https://polly-named-client.com");
-                    await context.Response.WriteAsync($"Named http client (polly-named-client-with-high-timeout) returned: {response.IsSuccessStatusCode}");
+                    var response = await namedClient.GetAsync("https://polly-named-client.com", context.RequestAborted);
+                    await context.Response.WriteAsync($"Named http client (polly-named-client-with-high-timeout) returned: {response.IsSuccessStatusCode}", context.RequestAborted);
                 });
             });
     }
