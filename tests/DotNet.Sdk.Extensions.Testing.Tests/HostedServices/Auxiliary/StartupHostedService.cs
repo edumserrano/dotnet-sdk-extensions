@@ -19,7 +19,7 @@ public class StartupHostedService
             {
                 endpoints.MapGet("/", async context =>
                 {
-                    await context.Response.WriteAsync("hi from asp.net core app with background service");
+                    await context.Response.WriteAsync("hi from asp.net core app with background service", context.RequestAborted);
                 });
             });
     }

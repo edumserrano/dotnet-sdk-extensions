@@ -54,7 +54,7 @@ public class StartupBasedHttpMockServerBuilderTests
                 }
 
                 httpContext.Response.StatusCode = StatusCodes.Status201Created;
-                await httpContext.Response.WriteAsync("hello");
+                await httpContext.Response.WriteAsync("hello", httpContext.RequestAborted);
             });
             app.Run(httpContext =>
             {

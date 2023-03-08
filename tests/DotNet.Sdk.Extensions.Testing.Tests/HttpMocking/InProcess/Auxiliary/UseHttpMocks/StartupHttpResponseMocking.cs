@@ -36,21 +36,21 @@ public class StartupHttpResponseMocking
                 {
                     var httpClientFactory = context.RequestServices.GetRequiredService<IHttpClientFactory>();
                     var basicClient = httpClientFactory.CreateClient();
-                    var response = await basicClient.GetAsync("https://basic-client.com");
-                    await context.Response.WriteAsync($"Basic http client returned: {response.IsSuccessStatusCode}");
+                    var response = await basicClient.GetAsync("https://basic-client.com", context.RequestAborted);
+                    await context.Response.WriteAsync($"Basic http client returned: {response.IsSuccessStatusCode}", context.RequestAborted);
                 });
                 endpoints.MapGet("/named-client", async context =>
                 {
                     var httpClientFactory = context.RequestServices.GetRequiredService<IHttpClientFactory>();
                     var namedClient = httpClientFactory.CreateClient("my-named-client");
-                    var response = await namedClient.GetAsync("https://named-client.com");
-                    await context.Response.WriteAsync($"Named http client (my-named-client) returned: {response.IsSuccessStatusCode}");
+                    var response = await namedClient.GetAsync("https://named-client.com", context.RequestAborted);
+                    await context.Response.WriteAsync($"Named http client (my-named-client) returned: {response.IsSuccessStatusCode}", context.RequestAborted);
                 });
                 endpoints.MapGet("/typed-client", async context =>
                 {
                     var typedClient = context.RequestServices.GetRequiredService<MyApiClient>();
                     var response = await typedClient.DoSomeHttpCall();
-                    await context.Response.WriteAsync($"MyApiClient typed http client returned: {response}");
+                    await context.Response.WriteAsync($"MyApiClient typed http client returned: {response}", context.RequestAborted);
                 });
                 endpoints.MapGet("/typed-client-with-custom-name", async context =>
                 {
@@ -59,7 +59,7 @@ public class StartupHttpResponseMocking
                     var typedHttpClientFactory = context.RequestServices.GetRequiredService<ITypedHttpClientFactory<MyApiClient>>();
                     var typedClientWithCustomName = typedHttpClientFactory.CreateClient(namedHttpClient);
                     var response = await typedClientWithCustomName.DoSomeHttpCall();
-                    await context.Response.WriteAsync($"MyApiClient typed http client with custom name my-typed-client returned: {response}");
+                    await context.Response.WriteAsync($"MyApiClient typed http client with custom name my-typed-client returned: {response}", context.RequestAborted);
                 });
                 endpoints.MapGet("/typed-client-with-custom-name-2", async context =>
                 {
@@ -68,7 +68,7 @@ public class StartupHttpResponseMocking
                     var typedHttpClientFactory = context.RequestServices.GetRequiredService<ITypedHttpClientFactory<MyApiClient>>();
                     var typedClientWithCustomName = typedHttpClientFactory.CreateClient(namedHttpClient);
                     var response = await typedClientWithCustomName.DoSomeHttpCall();
-                    await context.Response.WriteAsync($"MyApiClient typed http client with custom name my-typed-client-2 returned: {response}");
+                    await context.Response.WriteAsync($"MyApiClient typed http client with custom name my-typed-client-2 returned: {response}", context.RequestAborted);
                 });
             });
     }
