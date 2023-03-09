@@ -29,7 +29,7 @@ public class HttpMockServerBuilderExtensionTests
     }
 
     /// <summary>
-    /// Tests that the <seealso cref="HttpMockServerBuilderExtensions.UseDefaultLogLevel"/>
+    /// Tests that the <see cref="HttpMockServerBuilderExtensions.UseDefaultLogLevel"/>
     /// sets the default log level on the <see cref="IConfiguration"/>.
     /// </summary>
     [Fact]

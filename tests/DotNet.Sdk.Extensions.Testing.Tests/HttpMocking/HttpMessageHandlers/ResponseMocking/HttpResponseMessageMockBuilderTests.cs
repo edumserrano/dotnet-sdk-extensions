@@ -4,7 +4,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.HttpMessageHandlers.Re
 public class HttpResponseMessageMockBuilderTests
 {
     /// <summary>
-    /// Validates the arguments for the <seealso cref="HttpResponseMessageMockBuilder.Where(Func{HttpRequestMessage, bool})"/> method.
+    /// Validates the arguments for the <see cref="HttpResponseMessageMockBuilder.Where(Func{HttpRequestMessage, bool})"/> method.
     /// </summary>
     [Fact]
     public void Where1ValidateArguments()
@@ -15,7 +15,7 @@ public class HttpResponseMessageMockBuilderTests
     }
 
     /// <summary>
-    /// Validates the arguments for the <seealso cref="HttpResponseMessageMockBuilder.Where(HttpResponseMessageMockPredicateDelegate)"/> method.
+    /// Validates the arguments for the <see cref="HttpResponseMessageMockBuilder.Where(HttpResponseMessageMockPredicateDelegate)"/> method.
     /// </summary>
     [Fact]
     public void Where2ValidateArguments()
@@ -26,7 +26,7 @@ public class HttpResponseMessageMockBuilderTests
     }
 
     /// <summary>
-    /// Validates the arguments for the <seealso cref="HttpResponseMessageMockBuilder.RespondWith(HttpResponseMessage)"/> method.
+    /// Validates the arguments for the <see cref="HttpResponseMessageMockBuilder.RespondWith(HttpResponseMessage)"/> method.
     /// </summary>
     [Fact]
     public void Respond1WithValidateArguments()
@@ -37,7 +37,7 @@ public class HttpResponseMessageMockBuilderTests
     }
 
     /// <summary>
-    /// Validates the arguments for the <seealso cref="HttpResponseMessageMockBuilder.RespondWith(Func{HttpRequestMessage, HttpResponseMessage})"/> method.
+    /// Validates the arguments for the <see cref="HttpResponseMessageMockBuilder.RespondWith(Func{HttpRequestMessage, HttpResponseMessage})"/> method.
     /// </summary>
     [Fact]
     public void Respond2WithValidateArguments()
@@ -48,7 +48,7 @@ public class HttpResponseMessageMockBuilderTests
     }
 
     /// <summary>
-    /// Validates the arguments for the <seealso cref="HttpResponseMessageMockBuilder.RespondWith(HttpResponseMessageMockHandlerDelegate)"/> method.
+    /// Validates the arguments for the <see cref="HttpResponseMessageMockBuilder.RespondWith(HttpResponseMessageMockHandlerDelegate)"/> method.
     /// </summary>
     [Fact]
     public void Respond3WithValidateArguments()
@@ -71,7 +71,7 @@ public class HttpResponseMessageMockBuilderTests
     }
 
     /// <summary>
-    /// Validates that the <seealso cref="HttpResponseMessage"/> to be returned can only be set once.
+    /// Validates that the <see cref="HttpResponseMessage"/> to be returned can only be set once.
     /// </summary>
     [Fact]
     public void RespondWithCanOnlyBeDefinedOnce()

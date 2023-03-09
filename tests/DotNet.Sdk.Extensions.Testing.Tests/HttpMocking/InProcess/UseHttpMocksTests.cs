@@ -11,7 +11,7 @@ public sealed class UseHttpMocksTests : IClassFixture<HttpResponseMockingWebAppl
     }
 
     /// <summary>
-    /// Validates arguments for the <seealso cref="HttpMockingWebHostBuilderExtensions.UseHttpMocks(IWebHostBuilder, Action{HttpMessageHandlersReplacer})"/> extension method.
+    /// Validates arguments for the <see cref="HttpMockingWebHostBuilderExtensions.UseHttpMocks(IWebHostBuilder, Action{HttpMessageHandlersReplacer})"/> extension method.
     /// </summary>
     [Fact]
     public void ValidateArguments()
@@ -23,7 +23,7 @@ public sealed class UseHttpMocksTests : IClassFixture<HttpResponseMockingWebAppl
     }
 
     /// <summary>
-    /// Validates arguments for the <seealso cref="HttpMockingWebHostBuilderExtensions.UseHttpMocks(IWebHostBuilder, HttpResponseMessageMockDescriptorBuilder[])"/> extension method.
+    /// Validates arguments for the <see cref="HttpMockingWebHostBuilderExtensions.UseHttpMocks(IWebHostBuilder, HttpResponseMessageMockDescriptorBuilder[])"/> extension method.
     /// </summary>
     [Fact]
     public void ValidateArguments2()
@@ -35,7 +35,7 @@ public sealed class UseHttpMocksTests : IClassFixture<HttpResponseMockingWebAppl
     }
 
     /// <summary>
-    /// Tests that the <seealso cref="HttpMockingWebHostBuilderExtensions.UseHttpMocks(IWebHostBuilder, Action{HttpMessageHandlersReplacer})"/> returns the defined
+    /// Tests that the <see cref="HttpMockingWebHostBuilderExtensions.UseHttpMocks(IWebHostBuilder, Action{HttpMessageHandlersReplacer})"/> returns the defined
     /// mock for a basic http client mock.
     /// </summary>
     [Fact]
@@ -66,7 +66,7 @@ public sealed class UseHttpMocksTests : IClassFixture<HttpResponseMockingWebAppl
     }
 
     /// <summary>
-    /// Tests that the <seealso cref="HttpMockingWebHostBuilderExtensions.UseHttpMocks(IWebHostBuilder, Action{HttpMessageHandlersReplacer})"/> returns the defined
+    /// Tests that the <see cref="HttpMockingWebHostBuilderExtensions.UseHttpMocks(IWebHostBuilder, Action{HttpMessageHandlersReplacer})"/> returns the defined
     /// mock for a named http client mock.
     /// </summary>
     [Fact]
@@ -97,7 +97,7 @@ public sealed class UseHttpMocksTests : IClassFixture<HttpResponseMockingWebAppl
     }
 
     /// <summary>
-    /// Tests that the <seealso cref="HttpMockingWebHostBuilderExtensions.UseHttpMocks(IWebHostBuilder, Action{HttpMessageHandlersReplacer})"/> returns the defined
+    /// Tests that the <see cref="HttpMockingWebHostBuilderExtensions.UseHttpMocks(IWebHostBuilder, Action{HttpMessageHandlersReplacer})"/> returns the defined
     /// mock for a typed http client mock.
     /// </summary>
     [Fact]
@@ -128,7 +128,7 @@ public sealed class UseHttpMocksTests : IClassFixture<HttpResponseMockingWebAppl
     }
 
     /// <summary>
-    /// Tests that the <seealso cref="HttpMockingWebHostBuilderExtensions.UseHttpMocks(IWebHostBuilder, Action{HttpMessageHandlersReplacer})"/> returns the defined
+    /// Tests that the <see cref="HttpMockingWebHostBuilderExtensions.UseHttpMocks(IWebHostBuilder, Action{HttpMessageHandlersReplacer})"/> returns the defined
     /// mock for a typed http client with custom name mock.
     ///
     /// This tests typed clients with name registered on the Startup class such as:
@@ -163,7 +163,7 @@ public sealed class UseHttpMocksTests : IClassFixture<HttpResponseMockingWebAppl
     }
 
     /// <summary>
-    /// Tests that the <seealso cref="HttpMockingWebHostBuilderExtensions.UseHttpMocks(IWebHostBuilder, Action{HttpMessageHandlersReplacer})"/> returns the defined
+    /// Tests that the <see cref="HttpMockingWebHostBuilderExtensions.UseHttpMocks(IWebHostBuilder, Action{HttpMessageHandlersReplacer})"/> returns the defined
     /// mock for a typed http client with custom name mock.
     /// This test targets a slightly different way of registering a typed http client with custom than
     /// when compared with the <see cref="TypedHttpClientWithCustomName"/> test.
@@ -200,7 +200,7 @@ public sealed class UseHttpMocksTests : IClassFixture<HttpResponseMockingWebAppl
     }
 
     /// <summary>
-    /// Tests the <seealso cref="HttpMessageHandlersReplacer.MockHttpResponse(HttpResponseMessageMockDescriptorBuilder)"/> API where you
+    /// Tests the <see cref="HttpMessageHandlersReplacer.MockHttpResponse(HttpResponseMessageMockDescriptorBuilder)"/> API where you
     /// can define the mocks before hand instead of being inline.
     /// </summary>
     [Fact]
@@ -240,7 +240,7 @@ public sealed class UseHttpMocksTests : IClassFixture<HttpResponseMockingWebAppl
     }
 
     /// <summary>
-    /// Tests the <seealso cref="HttpMockingWebHostBuilderExtensions.UseHttpMocks(IWebHostBuilder, HttpResponseMessageMockDescriptorBuilder[])"/> API where you
+    /// Tests the <see cref="HttpMockingWebHostBuilderExtensions.UseHttpMocks(IWebHostBuilder, HttpResponseMessageMockDescriptorBuilder[])"/> API where you
     /// can define the mocks before hand instead of being inline.
     /// </summary>
     [Fact]
@@ -276,7 +276,7 @@ public sealed class UseHttpMocksTests : IClassFixture<HttpResponseMockingWebAppl
     }
 
     /// <summary>
-    /// Tests the overload <seealso cref="HttpMessageHandlersReplacer.MockHttpResponse(Action{IServiceProvider,HttpResponseMessageMockDescriptorBuilder})"/>
+    /// Tests the overload <see cref="HttpMessageHandlersReplacer.MockHttpResponse(Action{IServiceProvider,HttpResponseMessageMockDescriptorBuilder})"/>
     /// that provides access to the <see cref="IServiceProvider"/>.
     /// This test adds a configuration value which can then be retrieved by getting the <see cref="IConfiguration"/>
     /// from the <see cref="IServiceProvider"/>. The mock response is then configured to return OK if the value

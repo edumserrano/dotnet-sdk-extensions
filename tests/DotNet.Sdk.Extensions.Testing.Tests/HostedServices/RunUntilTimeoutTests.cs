@@ -17,7 +17,7 @@ public class RunUntilTimeoutTests : IClassFixture<HostedServicesWebApplicationFa
     }
 
     /// <summary>
-    /// Validates the arguments for the <seealso cref="RunUntilExtensions.RunUntilTimeoutAsync{T}(WebApplicationFactory{T},TimeSpan)"/>
+    /// Validates the arguments for the <see cref="RunUntilExtensions.RunUntilTimeoutAsync{T}(WebApplicationFactory{T},TimeSpan)"/>
     /// extension method.
     /// </summary>
     [Fact]
@@ -31,7 +31,7 @@ public class RunUntilTimeoutTests : IClassFixture<HostedServicesWebApplicationFa
     }
 
     /// <summary>
-    /// Validates the arguments for the <seealso cref="RunUntilExtensions.RunUntilTimeoutAsync(IHost,TimeSpan)"/>
+    /// Validates the arguments for the <see cref="RunUntilExtensions.RunUntilTimeoutAsync(IHost,TimeSpan)"/>
     /// extension method.
     /// </summary>
     [Fact]
@@ -45,13 +45,13 @@ public class RunUntilTimeoutTests : IClassFixture<HostedServicesWebApplicationFa
     }
 
     /// <summary>
-    /// Tests that <seealso cref="RunUntilExtensions.RunUntilTimeoutAsync{T}(WebApplicationFactory{T},TimeSpan)"/>
+    /// Tests that <see cref="RunUntilExtensions.RunUntilTimeoutAsync{T}(WebApplicationFactory{T},TimeSpan)"/>
     /// terminates the Host created by the WebApplicationFactory after the specified timeout.
-    /// The <seealso cref="MyBackgroundService"/> BackgroundService calls ICalculator.Sum once every
+    /// The <see cref="MyBackgroundService"/> BackgroundService calls ICalculator.Sum once every
     /// <see cref="MyBackgroundService.Period"/> which means that the when the host is terminated there should be
     /// 3 calls to that method.
     /// Furthermore I'm using the <see cref="TestScheduler"/> to control the passing of time on the
-    /// <seealso cref="MyBackgroundService"/>. This allows me to make the test more deterministic.
+    /// <see cref="MyBackgroundService"/>. This allows me to make the test more deterministic.
     /// </summary>
     [Fact]
     public async Task WebApplicationFactoryRunUntilTimeout()
@@ -99,13 +99,13 @@ public class RunUntilTimeoutTests : IClassFixture<HostedServicesWebApplicationFa
     }
 
     /// <summary>
-    /// Tests that <seealso cref="RunUntilExtensions.RunUntilTimeoutAsync(IHost,TimeSpan)"/>
+    /// Tests that <see cref="RunUntilExtensions.RunUntilTimeoutAsync(IHost,TimeSpan)"/>
     /// terminates the Host after the specified timeout.
-    /// The <seealso cref="MyBackgroundService"/> BackgroundService calls ICalculator.Sum once every
+    /// The <see cref="MyBackgroundService"/> BackgroundService calls ICalculator.Sum once every
     /// <see cref="MyBackgroundService.Period"/> which means that the when the host is terminated there should be
     /// 3 calls to that method.
     /// Furthermore I'm using the <see cref="TestScheduler"/> to control the passing of time on the
-    /// <seealso cref="MyBackgroundService"/>. This allows me to make the test more deterministic.
+    /// <see cref="MyBackgroundService"/>. This allows me to make the test more deterministic.
     /// </summary>
     [Fact]
     public async Task HostRunUntilTimeout()

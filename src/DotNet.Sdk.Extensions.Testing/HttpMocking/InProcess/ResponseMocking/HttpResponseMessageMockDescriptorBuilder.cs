@@ -3,7 +3,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.InProcess.ResponseMocking;
 /// <summary>
 /// Provides methods to mock an <see cref="HttpResponseMessage"/> for <see cref="HttpClient"/> calls
 /// when doing tests using <see cref="HttpMockingWebHostBuilderExtensions.UseHttpMocks(IWebHostBuilder, Action{HttpMessageHandlersReplacer})"/>
-/// or <seealso cref="HttpMockingWebHostBuilderExtensions.UseHttpMocks(IWebHostBuilder, HttpResponseMessageMockDescriptorBuilder[])"/>.
+/// or <see cref="HttpMockingWebHostBuilderExtensions.UseHttpMocks(IWebHostBuilder, HttpResponseMessageMockDescriptorBuilder[])"/>.
 /// </summary>
 /// <remarks>
 /// This requires that the <see cref="HttpClient"/> used on the app has been resolved via the <see cref="IHttpClientFactory"/>.

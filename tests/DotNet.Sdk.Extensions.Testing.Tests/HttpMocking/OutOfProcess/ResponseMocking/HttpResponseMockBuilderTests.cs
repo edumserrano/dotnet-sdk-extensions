@@ -4,7 +4,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.OutOfProcess.ResponseM
 public class HttpResponseMockBuilderTests
 {
     /// <summary>
-    /// Validates the arguments for the <seealso cref="HttpResponseMockBuilder.Where(Func{HttpRequest, bool})"/> method.
+    /// Validates the arguments for the <see cref="HttpResponseMockBuilder.Where(Func{HttpRequest, bool})"/> method.
     /// </summary>
     [Fact]
     public void Where1ValidateArguments()
@@ -15,7 +15,7 @@ public class HttpResponseMockBuilderTests
     }
 
     /// <summary>
-    /// Validates the arguments for the <seealso cref="HttpResponseMockBuilder.Where(HttpResponseMockPredicateAsyncDelegate)"/> method.
+    /// Validates the arguments for the <see cref="HttpResponseMockBuilder.Where(HttpResponseMockPredicateAsyncDelegate)"/> method.
     /// </summary>
     [Fact]
     public void Where2ValidateArguments()
@@ -26,7 +26,7 @@ public class HttpResponseMockBuilderTests
     }
 
     /// <summary>
-    /// Validates the arguments for the <seealso cref="HttpResponseMockBuilder.RespondWith(Action{HttpResponse})"/> method.
+    /// Validates the arguments for the <see cref="HttpResponseMockBuilder.RespondWith(Action{HttpResponse})"/> method.
     /// </summary>
     [Fact]
     public void Respond1WithValidateArguments()
@@ -37,7 +37,7 @@ public class HttpResponseMockBuilderTests
     }
 
     /// <summary>
-    /// Validates the arguments for the <seealso cref="HttpResponseMockBuilder.RespondWith(Action{HttpRequest, HttpResponse})"/> method.
+    /// Validates the arguments for the <see cref="HttpResponseMockBuilder.RespondWith(Action{HttpRequest, HttpResponse})"/> method.
     /// </summary>
     [Fact]
     public void Respond2WithValidateArguments()
@@ -48,7 +48,7 @@ public class HttpResponseMockBuilderTests
     }
 
     /// <summary>
-    /// Validates the arguments for the <seealso cref="HttpResponseMockBuilder.RespondWith(HttpResponseMockHandlerAsyncDelegate)"/> method.
+    /// Validates the arguments for the <see cref="HttpResponseMockBuilder.RespondWith(HttpResponseMockHandlerAsyncDelegate)"/> method.
     /// </summary>
     [Fact]
     public void Respond3WithValidateArguments()
@@ -71,7 +71,7 @@ public class HttpResponseMockBuilderTests
     }
 
     /// <summary>
-    /// Validates that the <seealso cref="HttpResponse"/> to be returned can only be configured once.
+    /// Validates that the <see cref="HttpResponse"/> to be returned can only be configured once.
     /// </summary>
     [Fact]
     public void RespondWithCanOnlyBeDefinedOnce()
@@ -83,7 +83,7 @@ public class HttpResponseMockBuilderTests
     }
 
     /// <summary>
-    /// Validates that you must at least specify the <seealso cref="HttpResponse"/> to be returned.
+    /// Validates that you must at least specify the <see cref="HttpResponse"/> to be returned.
     /// </summary>
     [Fact]
     public void RespondWithIsMandatory()

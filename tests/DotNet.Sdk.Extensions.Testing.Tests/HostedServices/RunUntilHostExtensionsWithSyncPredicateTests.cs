@@ -26,7 +26,7 @@ public class RunUntilHostExtensionsWithSyncPredicateTests
     }
 
     /// <summary>
-    /// Validates the arguments for the <seealso cref="RunUntilExtensions.RunUntilAsync(IHost,RunUntilPredicate)"/>
+    /// Validates the arguments for the <see cref="RunUntilExtensions.RunUntilAsync(IHost,RunUntilPredicate)"/>
     /// extension method.
     /// </summary>
     [Theory]
@@ -53,7 +53,7 @@ public class RunUntilHostExtensionsWithSyncPredicateTests
         };
 
     /// <summary>
-    /// Validates the arguments for the <seealso cref="RunUntilExtensions.RunUntilAsync(IHost,RunUntilPredicate,Action{RunUntilOptions})"/>
+    /// Validates the arguments for the <see cref="RunUntilExtensions.RunUntilAsync(IHost,RunUntilPredicate,Action{RunUntilOptions})"/>
     /// extension method.
     /// </summary>
     [Theory]
@@ -73,13 +73,13 @@ public class RunUntilHostExtensionsWithSyncPredicateTests
     }
 
     /// <summary>
-    /// Tests that <seealso cref="RunUntilExtensions.RunUntilAsync(IHost,RunUntilPredicate)"/>
+    /// Tests that <see cref="RunUntilExtensions.RunUntilAsync(IHost,RunUntilPredicate)"/>
     /// terminates the Host after the predicate is met.
-    /// The <seealso cref="MyBackgroundService"/> BackgroundService calls ICalculator.Sum once every
+    /// The <see cref="MyBackgroundService"/> BackgroundService calls ICalculator.Sum once every
     /// <see cref="MyBackgroundService.Period"/> which means that the predicate condition should be met
-    /// before the default <seealso cref="RunUntilOptions.Timeout"/>.
+    /// before the default <see cref="RunUntilOptions.Timeout"/>.
     /// Furthermore I'm using the <see cref="TestScheduler"/> to control the passing of time on the
-    /// <seealso cref="MyBackgroundService"/>. This allows me to make the test more deterministic.
+    /// <see cref="MyBackgroundService"/>. This allows me to make the test more deterministic.
     /// </summary>
     [Fact]
     public async Task RunUntil()
@@ -122,13 +122,13 @@ public class RunUntilHostExtensionsWithSyncPredicateTests
     }
 
     /// <summary>
-    /// Tests that <seealso cref="RunUntilExtensions.RunUntilAsync(IHost,RunUntilPredicate,Action{RunUntilOptions})"/>
+    /// Tests that <see cref="RunUntilExtensions.RunUntilAsync(IHost,RunUntilPredicate,Action{RunUntilOptions})"/>
     /// times out if the predicate is not met within the configured timeout.
-    /// The <seealso cref="MyBackgroundService"/> BackgroundService calls ICalculator.Sum once every
+    /// The <see cref="MyBackgroundService"/> BackgroundService calls ICalculator.Sum once every
     /// <see cref="MyBackgroundService.Period"/> and this test sets the predicate so that it won't be met
     /// before the timeout occurs.
     /// Furthermore I'm using the <see cref="TestScheduler"/> to control the passing of time on the
-    /// <seealso cref="MyBackgroundService"/>. This allows me to make the test more deterministic.
+    /// <see cref="MyBackgroundService"/>. This allows me to make the test more deterministic.
     /// </summary>
     [Fact]
     public async Task TimeoutOption()
@@ -168,15 +168,15 @@ public class RunUntilHostExtensionsWithSyncPredicateTests
     }
 
     /// <summary>
-    /// Tests that <seealso cref="RunUntilExtensions.RunUntilAsync(IHost,RunUntilPredicate,Action{RunUntilOptions})"/>
-    /// checks the predicate using the <seealso cref="RunUntilOptions.PredicateCheckInterval"/> value.
-    /// The <seealso cref="MyBackgroundService"/> BackgroundService calls ICalculator.Sum once every
+    /// Tests that <see cref="RunUntilExtensions.RunUntilAsync(IHost,RunUntilPredicate,Action{RunUntilOptions})"/>
+    /// checks the predicate using the <see cref="RunUntilOptions.PredicateCheckInterval"/> value.
+    /// The <see cref="MyBackgroundService"/> BackgroundService calls ICalculator.Sum once every
     /// <see cref="MyBackgroundService.Period"/> and this test sets the predicate so that it SHOULD be triggered
     /// before the timeout occurs. However, the timeout is indeed triggered before the predicate is met because this
     /// test sets up the PredicateCheckInterval and Timeout options values so that the timeout occurs even before the
     /// first predicate check is made.
     /// Furthermore I'm using the <see cref="TestScheduler"/> to control the passing of time on the
-    /// <seealso cref="MyBackgroundService"/>. This allows me to make the test more deterministic.
+    /// <see cref="MyBackgroundService"/>. This allows me to make the test more deterministic.
     /// </summary>
     [Fact]
     public async Task PredicateCheckIntervalOption()

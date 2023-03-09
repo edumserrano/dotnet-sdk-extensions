@@ -13,7 +13,7 @@ public class HttpMockServerBuilder
     /// Multiple URLs can be set. The host part of the URL is always localhost.
     /// </summary>
     /// <remarks>
-    /// If <seealso cref="UseHostArgs"/> is used and a '--urls' arg is provided then it will take
+    /// If <see cref="UseHostArgs"/> is used and a '--urls' arg is provided then it will take
     /// precedence over the URLs configured by this method.
     /// </remarks>
     /// <param name="scheme">The scheme part of the URL.</param>
@@ -55,7 +55,7 @@ public class HttpMockServerBuilder
     /// </summary>
     /// <remarks>
     /// This provides quick and easy configuration of the mock server. If you would like an alternative
-    /// check the <seealso cref="UseStartup{T}"/> method.
+    /// check the <see cref="UseStartup{T}"/> method.
     /// </remarks>
     /// <returns>The <see cref="ResponseBasedBuilder"/> for chaining.</returns>
     public ResponseBasedBuilder UseHttpResponseMocks()

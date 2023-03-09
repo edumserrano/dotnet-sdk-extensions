@@ -17,7 +17,7 @@ public class ResponseBasedBuilder
     /// Defines an <see cref="HttpResponseMock"/> to be returned by the server.
     /// </summary>
     /// <remarks>
-    /// The <seealso cref="HttpResponseMock"/>s are executed in the order of which they were added
+    /// The <see cref="HttpResponseMock"/>s are executed in the order of which they were added
     /// and only the first whose predicate matches will be executed.
     /// </remarks>
     /// <param name="httpResponseMock">The <see cref="HttpResponseMock"/> to be added to the server's possible response mocks.</param>
