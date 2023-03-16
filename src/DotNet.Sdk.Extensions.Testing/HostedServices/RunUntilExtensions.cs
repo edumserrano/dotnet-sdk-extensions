@@ -9,7 +9,16 @@ public static partial class RunUntilExtensions
     /// <param name="webApplicationFactory">The <see cref="WebApplicationFactory{T}"/> that creates the Host to terminate after the timeout.</param>
     /// <param name="timeout">Timeout value.</param>
     /// <returns>The <see cref="Task"/> that will execute the host until it's terminated.</returns>
-    public static async Task RunUntilTimeoutAsync<T>(this WebApplicationFactory<T> webApplicationFactory, TimeSpan timeout)
+    public static Task RunUntilTimeoutAsync<T>(this WebApplicationFactory<T> webApplicationFactory, TimeSpan timeout)
+        where T : class
+    {
+        return webApplicationFactory.RunUntilTimeoutAsync(timeout, DefaultScheduler.Instance);
+    }
+
+    internal static async Task RunUntilTimeoutAsync<T>(
+        this WebApplicationFactory<T> webApplicationFactory,
+        TimeSpan timeout,
+        IScheduler scheduler)
         where T : class
     {
         if (webApplicationFactory is null)
@@ -20,7 +29,7 @@ public static partial class RunUntilExtensions
         static Task<bool> NoOpPredicateAsync() => Task.FromResult(false);
         var options = new RunUntilOptions { Timeout = timeout };
         using var hostRunner = new WebApplicationFactoryHostRunner<T>(webApplicationFactory);
-        await hostRunner.RunUntilTimeoutAsync(NoOpPredicateAsync, options);
+        await hostRunner.RunUntilTimeoutAsync(NoOpPredicateAsync, options, scheduler);
     }
 
     /// <summary>
@@ -29,7 +38,15 @@ public static partial class RunUntilExtensions
     /// <param name="host">The <see cref="IHost"/> to terminate after the timeout.</param>
     /// <param name="timeout">Timeout value.</param>
     /// <returns>The <see cref="Task"/> that will execute the host until it's terminated.</returns>
-    public static async Task RunUntilTimeoutAsync(this IHost host, TimeSpan timeout)
+    public static Task RunUntilTimeoutAsync(this IHost host, TimeSpan timeout)
+    {
+        return host.RunUntilTimeoutAsync(timeout, DefaultScheduler.Instance);
+    }
+
+    internal static async Task RunUntilTimeoutAsync(
+        this IHost host,
+        TimeSpan timeout,
+        IScheduler scheduler)
     {
         if (host is null)
         {
@@ -39,13 +56,14 @@ public static partial class RunUntilExtensions
         static Task<bool> NoOpPredicateAsync() => Task.FromResult(false);
         var options = new RunUntilOptions { Timeout = timeout };
         using var hostRunner = new DefaultHostRunner(host);
-        await hostRunner.RunUntilTimeoutAsync(NoOpPredicateAsync, options);
+        await hostRunner.RunUntilTimeoutAsync(NoOpPredicateAsync, options, scheduler);
     }
 
     internal static async Task RunUntilTimeoutAsync(
         this HostRunner hostRunner,
         RunUntilPredicateAsync predicateAsync,
-        RunUntilOptions options)
+        RunUntilOptions options,
+        IScheduler scheduler)
     {
         if (hostRunner is null)
         {
@@ -58,7 +76,7 @@ public static partial class RunUntilExtensions
         }
 
         await hostRunner.StartAsync();
-        var hostRunController = new HostRunController(options);
+        var hostRunController = new HostRunController(options, scheduler);
         var runUntilResult = await hostRunController.RunUntilAsync(predicateAsync);
         await hostRunner.StopAsync();
         if (runUntilResult != RunUntilResult.TimedOut)
@@ -70,7 +88,8 @@ public static partial class RunUntilExtensions
     internal static async Task RunUntilAsync(
         this HostRunner hostRunner,
         RunUntilPredicateAsync predicateAsync,
-        RunUntilOptions options)
+        RunUntilOptions options,
+        IScheduler scheduler)
     {
         if (hostRunner is null)
         {
@@ -83,7 +102,7 @@ public static partial class RunUntilExtensions
         }
 
         await hostRunner.StartAsync();
-        var hostRunController = new HostRunController(options);
+        var hostRunController = new HostRunController(options, scheduler);
         var runUntilResult = await hostRunController.RunUntilAsync(predicateAsync);
         await hostRunner.StopAsync();
         if (runUntilResult == RunUntilResult.TimedOut)

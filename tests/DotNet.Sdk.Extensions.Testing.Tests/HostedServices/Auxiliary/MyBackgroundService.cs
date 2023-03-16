@@ -11,15 +11,12 @@ public class MyBackgroundService : BackgroundService
         _scheduler = scheduler;
     }
 
-    public static TimeSpan Period => TimeSpan.FromMilliseconds(500);
+    public static TimeSpan Period => TimeSpan.FromMilliseconds(100);
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         try
         {
-            // using RX so I can time travel on tests with the TestScheduler.
-            // with it I can simulate time passing quicker instead of having to wait
-            // for the defined interval.
             var timer = new RxPeriodicTimer(Period, _scheduler);
             do
             {

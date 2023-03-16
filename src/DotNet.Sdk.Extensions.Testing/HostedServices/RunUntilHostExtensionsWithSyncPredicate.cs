@@ -39,6 +39,15 @@ public static partial class RunUntilExtensions
         RunUntilPredicate predicate,
         Action<RunUntilOptions> configureOptions)
     {
+        return host.RunUntilAsync(predicate, configureOptions, DefaultScheduler.Instance);
+    }
+
+    internal static Task RunUntilAsync(
+        this IHost host,
+        RunUntilPredicate predicate,
+        Action<RunUntilOptions> configureOptions,
+        IScheduler scheduler)
+    {
         if (host is null)
         {
             throw new ArgumentNullException(nameof(host));
@@ -49,7 +58,12 @@ public static partial class RunUntilExtensions
             throw new ArgumentNullException(nameof(predicate));
         }
 
+        if (scheduler is null)
+        {
+            throw new ArgumentNullException(nameof(scheduler));
+        }
+
         Task<bool> PredicateAsync() => Task.FromResult(predicate());
-        return host.RunUntilAsync(PredicateAsync, configureOptions);
+        return host.RunUntilAsync(PredicateAsync, configureOptions, scheduler);
     }
 }

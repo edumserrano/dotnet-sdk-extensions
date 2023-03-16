@@ -1,5 +1,3 @@
-using Microsoft.Reactive.Testing;
-
 namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices;
 
 /// <summary>
@@ -73,10 +71,8 @@ public class RunUntilWebApplicationFactoryExtensionsWithAsyncPredicateTests
     /// The <see cref="MyBackgroundService"/> BackgroundService calls ICalculator.Sum once every
     /// <see cref="MyBackgroundService.Period"/> which means that the predicate condition should be met
     /// before the default <see cref="RunUntilOptions.Timeout"/>.
-    /// Furthermore I'm using the <see cref="TestScheduler"/> to control the passing of time on the
-    /// <see cref="MyBackgroundService"/>. This allows me to make the test more deterministic.
     /// </summary>
-    [Fact]
+    [Fact(Timeout = 3000)]
     public async Task RunUntil()
     {
         var callCount = 0;
@@ -102,10 +98,14 @@ public class RunUntilWebApplicationFactoryExtensionsWithAsyncPredicateTests
                 });
             });
 
-        var runUntilTask = webApplicationFactory.RunUntilAsync(() => Task.FromResult(callCount == 3), options => options.PredicateCheckInterval = TimeSpan.FromMilliseconds(5));
+        var runUntilTask = webApplicationFactory.RunUntilAsync(() => Task.FromResult(callCount == 3), _ => { }, testScheduler);
+        callCount.ShouldBe(0);
         testScheduler.AdvanceBy(MyBackgroundService.Period.Ticks);
+        callCount.ShouldBe(1);
         testScheduler.AdvanceBy(MyBackgroundService.Period.Ticks);
+        callCount.ShouldBe(2);
         testScheduler.AdvanceBy(MyBackgroundService.Period.Ticks);
+        callCount.ShouldBe(3);
         await runUntilTask;
         callCount.ShouldBe(3);
     }
@@ -116,10 +116,8 @@ public class RunUntilWebApplicationFactoryExtensionsWithAsyncPredicateTests
     /// The <see cref="MyBackgroundService"/> BackgroundService calls ICalculator.Sum once every
     /// <see cref="MyBackgroundService.Period"/> and this test sets the predicate so that it won't be met
     /// before the timeout occurs.
-    /// Furthermore I'm using the <see cref="TestScheduler"/> to control the passing of time on the
-    /// <see cref="MyBackgroundService"/>. This allows me to make the test more deterministic.
     /// </summary>
-    [Fact]
+    [Fact(Timeout = 3000)]
     public async Task TimeoutOption()
     {
         var callCount = 0;
@@ -145,7 +143,15 @@ public class RunUntilWebApplicationFactoryExtensionsWithAsyncPredicateTests
                 });
             });
 
-        var runUntilTask = webApplicationFactory.RunUntilAsync(() => Task.FromResult(callCount >= 1), options => options.Timeout = TimeSpan.FromMilliseconds(50));
+        var timeout = TimeSpan.FromMilliseconds(50);
+        var runUntilTask = webApplicationFactory.RunUntilAsync(
+                predicateAsync: () => Task.FromResult(callCount >= 1),
+                configureOptions: options =>
+                {
+                    options.Timeout = timeout;
+                },
+                scheduler: testScheduler);
+        testScheduler.AdvanceBy(timeout.Ticks);
         var exception = await Should.ThrowAsync<RunUntilException>(runUntilTask);
         exception.Message.ShouldBe("RunUntilExtensions.RunUntilAsync timed out after 00:00:00.0500000. This means the Host was shutdown before the RunUntilExtensions.RunUntilAsync predicate returned true. If that's what you intended, meaning, if you want to run the Host for a set period of time, consider using RunUntilExtensions.RunUntilTimeoutAsync instead.");
     }
@@ -158,10 +164,8 @@ public class RunUntilWebApplicationFactoryExtensionsWithAsyncPredicateTests
     /// before the timeout occurs. However, the timeout is indeed triggered before the predicate is met because this
     /// test sets up the PredicateCheckInterval and Timeout options values so that the timeout occurs even before the
     /// first predicate check is made.
-    /// Furthermore I'm using the <see cref="TestScheduler"/> to control the passing of time on the
-    /// <see cref="MyBackgroundService"/>. This allows me to make the test more deterministic.
     /// </summary>
-    [Fact]
+    [Fact(Timeout = 3000)]
     public async Task PredicateCheckIntervalOption()
     {
         var callCount = 0;
@@ -187,15 +191,22 @@ public class RunUntilWebApplicationFactoryExtensionsWithAsyncPredicateTests
                 });
             });
 
-        var runUntilTask = webApplicationFactory.RunUntilAsync(() => Task.FromResult(callCount >= 1), options =>
-        {
-            options.PredicateCheckInterval = TimeSpan.FromSeconds(3);
-            options.Timeout = TimeSpan.FromSeconds(1);
-        });
+        var timeoutMargin = MyBackgroundService.Period / 2;
+        var timeout = (MyBackgroundService.Period * 2) + timeoutMargin;
+        var runUntilTask = webApplicationFactory.RunUntilAsync(
+            predicateAsync: () => Task.FromResult(callCount >= 1),
+            configureOptions: options =>
+            {
+                options.PredicateCheckInterval = timeout * 2;
+                options.Timeout = timeout;
+            },
+            scheduler: testScheduler);
         testScheduler.AdvanceBy(MyBackgroundService.Period.Ticks);
+        testScheduler.AdvanceBy(MyBackgroundService.Period.Ticks);
+        testScheduler.AdvanceBy(timeoutMargin.Ticks);
 
         var exception = await Should.ThrowAsync<RunUntilException>(runUntilTask);
-        exception.Message.ShouldBe("RunUntilExtensions.RunUntilAsync timed out after 00:00:01. This means the Host was shutdown before the RunUntilExtensions.RunUntilAsync predicate returned true. If that's what you intended, meaning, if you want to run the Host for a set period of time, consider using RunUntilExtensions.RunUntilTimeoutAsync instead.");
+        exception.Message.ShouldBe("RunUntilExtensions.RunUntilAsync timed out after 00:00:00.2500000. This means the Host was shutdown before the RunUntilExtensions.RunUntilAsync predicate returned true. If that's what you intended, meaning, if you want to run the Host for a set period of time, consider using RunUntilExtensions.RunUntilTimeoutAsync instead.");
         callCount.ShouldBeGreaterThanOrEqualTo(1); // this is true which means the RunUntilAsync predicate was met however it wasn't checked before the timeout was triggered
     }
 }
