@@ -163,7 +163,7 @@ public class RunUntilHostExtensionsWithAsyncPredicateTests
         var timeout = TimeSpan.FromMilliseconds(50);
         var runUntilTask = host.RunUntilAsync(
                 predicateAsync: () => Task.FromResult(callCount >= 1),
-                configureOptions: options =>  options.Timeout = timeout,
+                configureOptions: options => options.Timeout = timeout,
                 scheduler: testScheduler);
         testScheduler.AdvanceBy(timeout.Ticks);
         var exception = await Should.ThrowAsync<RunUntilException>(runUntilTask);
