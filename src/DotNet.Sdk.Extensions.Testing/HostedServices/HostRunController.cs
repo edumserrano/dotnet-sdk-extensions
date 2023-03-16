@@ -3,10 +3,12 @@ namespace DotNet.Sdk.Extensions.Testing.HostedServices;
 internal sealed class HostRunController
 {
     private readonly RunUntilOptions _options;
+    private readonly IScheduler _scheduler;
 
-    public HostRunController(RunUntilOptions options)
+    public HostRunController(RunUntilOptions options, IScheduler scheduler)
     {
         _options = options ?? throw new ArgumentNullException(nameof(options));
+        _scheduler = scheduler ?? throw new ArgumentNullException(nameof(scheduler));
     }
 
     public async Task<RunUntilResult> RunUntilAsync(RunUntilPredicateAsync predicateAsync)
@@ -15,39 +17,24 @@ internal sealed class HostRunController
         {
             throw new ArgumentNullException(nameof(predicateAsync));
         }
-#if NET6_0 || NET7_0
+
         try
         {
-            using var cts = new CancellationTokenSource(_options.Timeout);
-            using var timer = new PeriodicTimer(_options.PredicateCheckInterval);
+            var timer = new RxPeriodicTimer(
+                _options.PredicateCheckInterval,
+                _options.Timeout,
+                _scheduler);
             do
             {
                 // before checking the predicate, wait RunUntilOptions.PredicateLoopPeriod or abort if the RunUntilOptions.Timeout elapses
-                await timer.WaitForNextTickAsync(cts.Token);
+                await timer.WaitForNextTickAsync();
             }
             while (!await predicateAsync());
             return RunUntilResult.PredicateReturnedTrue;
         }
-        catch (OperationCanceledException)
+        catch (TimeoutException)
         {
             return RunUntilResult.TimedOut;
         }
-#else
-        try
-        {
-            using var cts = new CancellationTokenSource(_options.Timeout);
-            do
-            {
-                // before checking the predicate, wait RunUntilOptions.PredicateLoopPeriod or abort if the RunUntilOptions.Timeout elapses
-                await Task.Delay(_options.PredicateCheckInterval, cts.Token);
-            }
-            while (!await predicateAsync());
-            return RunUntilResult.PredicateReturnedTrue;
-        }
-        catch (TaskCanceledException)
-        {
-            return RunUntilResult.TimedOut;
-        }
-#endif
     }
 }

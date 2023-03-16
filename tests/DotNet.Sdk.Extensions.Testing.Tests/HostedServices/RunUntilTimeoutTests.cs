@@ -1,5 +1,3 @@
-using Microsoft.Reactive.Testing;
-
 namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices;
 
 /// <summary>
@@ -50,10 +48,8 @@ public class RunUntilTimeoutTests : IClassFixture<HostedServicesWebApplicationFa
     /// The <see cref="MyBackgroundService"/> BackgroundService calls ICalculator.Sum once every
     /// <see cref="MyBackgroundService.Period"/> which means that the when the host is terminated there should be
     /// 3 calls to that method.
-    /// Furthermore I'm using the <see cref="TestScheduler"/> to control the passing of time on the
-    /// <see cref="MyBackgroundService"/>. This allows me to make the test more deterministic.
     /// </summary>
-    [Fact]
+    [Fact(Timeout = 3000)]
     public async Task WebApplicationFactoryRunUntilTimeout()
     {
         var callCount = 0;
@@ -81,9 +77,8 @@ public class RunUntilTimeoutTests : IClassFixture<HostedServicesWebApplicationFa
                 });
             });
 
-        var sw = Stopwatch.StartNew();
-        var runUntilTimeout = TimeSpan.FromMilliseconds(100);
-        var runUntilTimeoutTask = hostedServicesWebAppFactory.RunUntilTimeoutAsync(runUntilTimeout);
+        var runUntilTimeout = TimeSpan.FromMilliseconds(MyBackgroundService.Period.TotalMilliseconds * 3);
+        var runUntilTimeoutTask = hostedServicesWebAppFactory.RunUntilTimeoutAsync(runUntilTimeout, testScheduler);
         callCount.ShouldBe(0);
         testScheduler.AdvanceBy(MyBackgroundService.Period.Ticks);
         callCount.ShouldBe(1);
@@ -92,9 +87,6 @@ public class RunUntilTimeoutTests : IClassFixture<HostedServicesWebApplicationFa
         testScheduler.AdvanceBy(MyBackgroundService.Period.Ticks);
         callCount.ShouldBe(3);
         await runUntilTimeoutTask;
-        sw.Stop();
-
-        sw.Elapsed.ShouldBeGreaterThanOrEqualTo(runUntilTimeout);
         callCount.ShouldBe(3);
     }
 
@@ -104,10 +96,8 @@ public class RunUntilTimeoutTests : IClassFixture<HostedServicesWebApplicationFa
     /// The <see cref="MyBackgroundService"/> BackgroundService calls ICalculator.Sum once every
     /// <see cref="MyBackgroundService.Period"/> which means that the when the host is terminated there should be
     /// 3 calls to that method.
-    /// Furthermore I'm using the <see cref="TestScheduler"/> to control the passing of time on the
-    /// <see cref="MyBackgroundService"/>. This allows me to make the test more deterministic.
     /// </summary>
-    [Fact]
+    [Fact(Timeout = 3000)]
     public async Task HostRunUntilTimeout()
     {
         var callCount = 0;
@@ -143,9 +133,8 @@ public class RunUntilTimeoutTests : IClassFixture<HostedServicesWebApplicationFa
              })
             .Build();
 
-        var sw = Stopwatch.StartNew();
-        var runUntilTimeout = TimeSpan.FromMilliseconds(100);
-        var runUntilTimeoutTask = host.RunUntilTimeoutAsync(runUntilTimeout);
+        var runUntilTimeout = TimeSpan.FromMilliseconds(MyBackgroundService.Period.TotalMilliseconds * 3);
+        var runUntilTimeoutTask = host.RunUntilTimeoutAsync(runUntilTimeout, testScheduler);
         callCount.ShouldBe(0);
         testScheduler.AdvanceBy(MyBackgroundService.Period.Ticks);
         callCount.ShouldBe(1);
@@ -154,9 +143,6 @@ public class RunUntilTimeoutTests : IClassFixture<HostedServicesWebApplicationFa
         testScheduler.AdvanceBy(MyBackgroundService.Period.Ticks);
         callCount.ShouldBe(3);
         await runUntilTimeoutTask;
-        sw.Stop();
-
-        sw.Elapsed.ShouldBeGreaterThanOrEqualTo(runUntilTimeout);
         callCount.ShouldBe(3);
     }
 }

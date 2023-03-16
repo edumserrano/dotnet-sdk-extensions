@@ -38,10 +38,20 @@ public static partial class RunUntilExtensions
     /// <param name="predicateAsync">The async predicate to determine when the host should be terminated.</param>
     /// <param name="configureOptions">Action to configure the option values for the host execution.</param>
     /// <returns>The <see cref="Task"/> that will execute the host until it's terminated.</returns>
-    public static async Task RunUntilAsync<T>(
+    public static Task RunUntilAsync<T>(
         this WebApplicationFactory<T> webApplicationFactory,
         RunUntilPredicateAsync predicateAsync,
         Action<RunUntilOptions> configureOptions)
+        where T : class
+    {
+        return webApplicationFactory.RunUntilAsync(predicateAsync, configureOptions, DefaultScheduler.Instance);
+    }
+
+    internal static async Task RunUntilAsync<T>(
+        this WebApplicationFactory<T> webApplicationFactory,
+        RunUntilPredicateAsync predicateAsync,
+        Action<RunUntilOptions> configureOptions,
+        IScheduler scheduler)
         where T : class
     {
         if (webApplicationFactory is null)
@@ -54,9 +64,14 @@ public static partial class RunUntilExtensions
             throw new ArgumentNullException(nameof(configureOptions));
         }
 
+        if (scheduler is null)
+        {
+            throw new ArgumentNullException(nameof(scheduler));
+        }
+
         var defaultOptions = new RunUntilOptions();
         configureOptions(defaultOptions);
         using var hostRunner = new WebApplicationFactoryHostRunner<T>(webApplicationFactory);
-        await hostRunner.RunUntilAsync(predicateAsync, defaultOptions);
+        await hostRunner.RunUntilAsync(predicateAsync, defaultOptions, scheduler);
     }
 }

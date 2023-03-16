@@ -1,5 +1,3 @@
-using System.Reactive.Threading.Tasks;
-
 namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices.Auxiliary;
 
 internal sealed class RxPeriodicTimer
