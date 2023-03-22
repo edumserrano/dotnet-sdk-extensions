@@ -36,7 +36,7 @@ jobs:
         language: [ 'csharp' ]
     runs-on: ubuntu-latest
     env:
-      SLN_FILEPATH : ${{ github.workspace }}/DotNet.Sdk.Extensions.sln.
+      SLN_FILEPATH : ${{ github.workspace }}/DotNet.Sdk.Extensions.sln
     steps:
     - name: Dump github context for debug purposes
       env:
@@ -61,11 +61,6 @@ jobs:
       with:
         languages: ${{ matrix.language }}
         queries: security-and-quality
-    - name: test
-      run: |
-        ls
-        pwd
-        Write-Host '${{ github.workspace }}'
     - name: Restore dependencies
       run: dotnet restore ${{ env.SLN_FILEPATH }}
     - name: Build
