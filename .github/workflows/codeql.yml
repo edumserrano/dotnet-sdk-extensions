@@ -62,7 +62,7 @@ jobs:
         languages: ${{ matrix.language }}
         queries: security-and-quality
     - name: test
-      run: cat ${{ env.SLN_FILEPATH }}
+      run: ls
     - name: Restore dependencies
       run: dotnet restore ${{ env.SLN_FILEPATH }}
     - name: Build
