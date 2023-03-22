@@ -36,8 +36,7 @@ jobs:
         language: [ 'csharp' ]
     runs-on: ubuntu-latest
     env:
-      SLN_FILEPATH : ${{ github.workspace }}/DotNet.Sdk.Extensions.sln
-      DOTNET_VERSION : 7.0.x
+      SLN_FILEPATH : ${{ github.workspace }}/DotNet.Sdk.Extensions.sln.
     steps:
     - name: Dump github context for debug purposes
       env:
@@ -48,13 +47,13 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: ${{ env.DOTNET_VERSION }}
+        global-json-file: global.json
     - name: Cache/Restore NuGets
       uses: actions/cache@v3
       with:
         path:
           ~/.nuget/packages
-        key: ${{ runner.os }}-nuget-${{ env.DOTNET_VERSION }}
+        key: ${{ runner.os }}-nuget-
         restore-keys: |
           ${{ runner.os }}-nuget-
     - name: Initialize CodeQL
