@@ -62,7 +62,10 @@ jobs:
         languages: ${{ matrix.language }}
         queries: security-and-quality
     - name: test
-      run: ls
+      run: |
+        ls
+        pwd
+        Write-Host '${{ github.workspace }}'
     - name: Restore dependencies
       run: dotnet restore ${{ env.SLN_FILEPATH }}
     - name: Build
