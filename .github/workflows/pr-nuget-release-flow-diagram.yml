@@ -13,7 +13,6 @@ jobs:
   main:
     name: Create output artifacts
     if: contains(github.event.pull_request.labels.*.name, 'nuget-release')
-    environment: pr-nuget-release-flow-workflow
     permissions:
       contents: read
     runs-on: ubuntu-latest

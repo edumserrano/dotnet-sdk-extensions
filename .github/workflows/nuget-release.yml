@@ -14,7 +14,6 @@ jobs:
   workflow-args:
     name: Process workflow input data
     if: (github.event_name == 'issues' && contains(github.event.issue.labels.*.name, 'nuget-release')) || (github.event_name == 'repository_dispatch' && contains(github.event.client_payload.github.payload.issue.labels.*.name, 'nuget-release'))
-    environment: issue-nuget-release-workflow
     permissions:
       contents: read
     runs-on: ubuntu-latest
@@ -59,7 +58,6 @@ jobs:
   main:
     name: Parse issue and trigger NuGet release
     needs: [workflow-args]
-    environment: issue-nuget-release-workflow
     permissions:
       contents: read
       issues: write
@@ -115,7 +113,7 @@ jobs:
     - name: Trigger NuGet release command via repository dispatch
       uses: peter-evans/repository-dispatch@v2
       with:
-        token: ${{ secrets.REPOSITORY_DISPATCH_GH_TOKEN }}
+        token: ${{ secrets.PUBLIC_REPO_SCOPE_GH_TOKEN }}
         repository: ${{ github.repository}}
         event-type: nuget-release-command
         client-payload: '${{ steps.setup-client-payload.outputs.client-payload }}'
@@ -124,7 +122,6 @@ jobs:
     name: Create output artifacts
     needs: [ workflow-args, main ]
     if: always() && needs.main.result != 'skipped'
-    environment: issue-nuget-release-workflow
     permissions:
       contents: read
     runs-on: ubuntu-latest
@@ -161,4 +158,3 @@ jobs:
         nuget-release-badge-color: '${{ steps.set-nuget-release-flow-info.outputs.nuget-release-badge-color }}'
         issue-nuget-release-node-status: '${{ steps.set-nuget-release-flow-info.outputs.issue-nuget-release-node-status}}'
         issue-nuget-release-url: 'https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}'
-

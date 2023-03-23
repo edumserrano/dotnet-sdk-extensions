@@ -25,7 +25,6 @@ defaults:
 jobs:
   analyze:
     name: CodeQL analyze
-    environment: no-secrets-workflow
     permissions:
       actions: read
       contents: read

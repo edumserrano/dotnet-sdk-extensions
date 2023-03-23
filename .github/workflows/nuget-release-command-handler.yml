@@ -14,7 +14,6 @@ defaults:
 jobs:
   check-pr:
     name: Check for open NuGet release PR
-    environment: no-secrets-workflow
     permissions:
       contents: read
       pull-requests: read
@@ -53,7 +52,6 @@ jobs:
     name: Create NuGet release PR
     needs: [check-pr]
     if: needs.check-pr.outputs.can-create-pr == 'true'
-    environment: nuget-release-command-handler-workflow
     permissions:
       contents: write
       pull-requests: write
@@ -153,7 +151,7 @@ jobs:
     - name: Create NuGet release PR
       id: create-pr
       env:
-        GITHUB_TOKEN: ${{ secrets.CREATE_NUGET_RELEASE_PR_GH_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.PUBLIC_REPO_SCOPE_GH_TOKEN }}
       run: |
         $title = "Release NuGet ${{ steps.slash-command-args.outputs.nuget-id }} ${{ steps.slash-command-args.outputs.nuget-new-version }}"
         $body = @'
@@ -176,7 +174,6 @@ jobs:
   release-info:
     name: Upload release info
     needs: [create-pr]
-    environment: nuget-release-command-handler-workflow
     permissions:
       contents: read
       statuses: write
@@ -227,7 +224,6 @@ jobs:
   merge-pr:
     name: Set PR auto merge
     needs: [create-pr, release-info]
-    environment: nuget-release-command-handler-workflow
     permissions:
       contents: read
     runs-on: ubuntu-latest
@@ -236,7 +232,7 @@ jobs:
       uses: actions/checkout@v3
     - name: Set PR auto merge
       env:
-        GITHUB_TOKEN: ${{ secrets.REPOSITORY_DISPATCH_GH_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.PUBLIC_REPO_SCOPE_GH_TOKEN }}
       run: |
         gh pr merge --auto --squash --delete-branch ${{ needs.create-pr.outputs.pr-number }}
 
@@ -244,7 +240,6 @@ jobs:
     name: Create output artifacts
     needs: [create-pr, merge-pr]
     if: always()
-    environment: nuget-release-command-handler-workflow
     permissions:
       contents: read
     runs-on: ubuntu-latest

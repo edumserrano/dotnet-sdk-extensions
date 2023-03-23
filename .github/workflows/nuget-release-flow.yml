@@ -19,7 +19,6 @@ jobs:
   release-flow-args:
     name: Process NuGet release flow info artifact
     if: github.event.workflow_run.conclusion != 'skipped'
-    environment: nuget-release-flow-workflow
     permissions:
       contents: read
     runs-on: ubuntu-latest
@@ -61,7 +60,6 @@ jobs:
     name: Update NuGet release flow diagram
     needs: [release-flow-args]
     if: needs.release-flow-args.outputs.issue-number != '' # manually triggered workflows might not have an issue to update, example when using workflow_dispatch on the nuget-publish workflow
-    environment: nuget-release-flow-workflow
     permissions:
       contents: read
       issues: write
@@ -262,7 +260,6 @@ jobs:
     name: Close NuGet release issue
     needs: [update-release-flow-diagram]
     if: github.event.workflow_run.conclusion != 'skipped' && github.event.workflow_run.name == 'NuGet publish'
-    environment: nuget-release-flow-workflow
     permissions:
       contents: read
       issues: write
@@ -305,6 +302,6 @@ jobs:
         edit-mode: replace
     - name: Close NuGet release issue
       env:
-        GITHUB_TOKEN: ${{ secrets.REPOSITORY_DISPATCH_GH_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.PUBLIC_REPO_SCOPE_GH_TOKEN }}
       run: |
         gh issue close ${{ steps.github-release-info.outputs.issue-number }}

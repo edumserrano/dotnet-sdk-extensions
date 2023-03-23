@@ -11,7 +11,6 @@ defaults:
 jobs:
   main:
     name: Slash command dispatch
-    environment: slash-command-dispatch-workflow
     permissions:
       issues: write
     runs-on: ubuntu-latest
@@ -29,6 +28,6 @@ jobs:
         reactions: true
         dispatch-type: repository
         permission: write
-        token: ${{ secrets.DISPATCH_COMMANDS_GH_TOKEN }}
+        token: ${{ secrets.PUBLIC_REPO_SCOPE_GH_TOKEN }}
         commands: |
           retry-nuget-release

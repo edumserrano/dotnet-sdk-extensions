@@ -19,7 +19,6 @@ jobs:
 
   summary:
     name: Set workflow summary
-    environment: markdown-link-check-broken-links-workflow
     permissions:
       contents: read
     runs-on: ubuntu-latest
@@ -46,7 +45,6 @@ jobs:
 
   workflow-info:
     name: Read trigger workflow info
-    environment: markdown-link-check-broken-links-workflow
     permissions:
       contents: read
     runs-on: ubuntu-latest
@@ -93,7 +91,6 @@ jobs:
     name: Check for open issue
     needs: [workflow-info]
     if: github.event.workflow_run.event == 'push'
-    environment: no-secrets-workflow
     permissions:
       contents: read
       issues: read
@@ -144,7 +141,6 @@ jobs:
     name: Handle MLC on push
     needs: [workflow-info, on-push-check]
     if: needs.on-push-check.outputs.create-issue == 'true'
-    environment: markdown-link-check-broken-links-workflow
     permissions:
       contents: read
       issues: write
@@ -179,7 +175,7 @@ jobs:
     - name: Create markdown issue
       id: create-issue
       env:
-        GITHUB_TOKEN: ${{ secrets.MARKDOWN_LINK_CHECK_GH_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.PUBLIC_REPO_SCOPE_GH_TOKEN }}
       run: |
         $title = "Markdown link check found broken links"
         $body = @'
@@ -201,7 +197,6 @@ jobs:
     name: Handle MLC on PR
     needs: [workflow-info]
     if: github.event.workflow_run.event == 'pull_request' && needs.workflow-info.outputs.has-broken-links == 'true'
-    environment: markdown-link-check-broken-links-workflow
     permissions:
       pull-requests: write
     runs-on: ubuntu-latest
