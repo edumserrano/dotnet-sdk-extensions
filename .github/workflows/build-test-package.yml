@@ -212,6 +212,7 @@ jobs:
       uses: codecov/codecov-action@v3
       if: matrix.os == 'ubuntu-latest'  # this job is on a matrix run but I only want to upload code coverage to Codecov once
       with:
+        token: ${{ secrets.CODECOV_TOKEN }} # even though it's not required for public repos it helps with intermittent failures caused by https://community.codecov.com/t/upload-issues-unable-to-locate-build-via-github-actions-api/3954, https://github.com/codecov/codecov-action/issues/598,
         files: ${{ steps.dotnet-test.outputs.test-coverage-file }}
         fail_ci_if_error: true
     - name: Log Codecov info
