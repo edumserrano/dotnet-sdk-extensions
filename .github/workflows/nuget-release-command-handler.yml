@@ -14,7 +14,6 @@ defaults:
 jobs:
   check-pr:
     name: Check for open NuGet release PR
-    environment: no-secrets-workflow
     permissions:
       contents: read
       pull-requests: read

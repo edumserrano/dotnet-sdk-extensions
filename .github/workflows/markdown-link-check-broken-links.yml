@@ -93,7 +93,6 @@ jobs:
     name: Check for open issue
     needs: [workflow-info]
     if: github.event.workflow_run.event == 'push'
-    environment: no-secrets-workflow
     permissions:
       contents: read
       issues: read

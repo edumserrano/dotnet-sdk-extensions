@@ -16,7 +16,6 @@ defaults:
 jobs:
   main:
     name: Markdown link check
-    environment: no-secrets-workflow
     permissions:
       contents: read
     runs-on: ubuntu-latest
