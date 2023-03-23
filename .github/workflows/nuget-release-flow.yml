@@ -302,6 +302,6 @@ jobs:
         edit-mode: replace
     - name: Close NuGet release issue
       env:
-        GITHUB_TOKEN: ${{ secrets.REPOSITORY_DISPATCH_GH_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.PUBLIC_REPO_SCOPE_GH_TOKEN }}
       run: |
         gh issue close ${{ steps.github-release-info.outputs.issue-number }}

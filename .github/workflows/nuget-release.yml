@@ -113,7 +113,7 @@ jobs:
     - name: Trigger NuGet release command via repository dispatch
       uses: peter-evans/repository-dispatch@v2
       with:
-        token: ${{ secrets.REPOSITORY_DISPATCH_GH_TOKEN }}
+        token: ${{ secrets.PUBLIC_REPO_SCOPE_GH_TOKEN }}
         repository: ${{ github.repository}}
         event-type: nuget-release-command
         client-payload: '${{ steps.setup-client-payload.outputs.client-payload }}'

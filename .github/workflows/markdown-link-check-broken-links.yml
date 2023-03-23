@@ -175,7 +175,7 @@ jobs:
     - name: Create markdown issue
       id: create-issue
       env:
-        GITHUB_TOKEN: ${{ secrets.MARKDOWN_LINK_CHECK_GH_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.PUBLIC_REPO_SCOPE_GH_TOKEN }}
       run: |
         $title = "Markdown link check found broken links"
         $body = @'
