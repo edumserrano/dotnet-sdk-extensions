@@ -20,7 +20,6 @@ jobs:
   on-push-check:
     name: Check for dotnet format open PR
     if: github.event.workflow_run.event == 'push'
-    environment: dotnet-format-apply-changes-workflow
     permissions:
       contents: read
       pull-requests: read
@@ -94,7 +93,6 @@ jobs:
     name: Process dotnet format changes on push
     needs: [on-push-check]
     if: needs.on-push-check.outputs.can-apply-changes == 'true'
-    environment: dotnet-format-apply-changes-workflow
     permissions:
       contents: write
       pull-requests: write
@@ -164,7 +162,6 @@ jobs:
   on-pull-request-check:
     name: Check if there are dotnet format changes for the PR
     if: github.event.workflow_run.event == 'pull_request'
-    environment: dotnet-format-apply-changes-workflow
     permissions:
       contents: read
     runs-on: ubuntu-latest
@@ -216,7 +213,6 @@ jobs:
     name: Process dotnet format changes on PR
     needs: [on-pull-request-check]
     if: needs.on-pull-request-check.outputs.has-changes == 'true'
-    environment: dotnet-format-apply-changes-workflow
     permissions:
       pull-requests: write
     runs-on: ubuntu-latest
@@ -271,7 +267,6 @@ jobs:
     name: Update PR status check
     needs: [on-pull-request-check, on-pull-request-format]
     if: github.event.workflow_run.event == 'pull_request' && always() # only run on PRs but run even if the previous steps weren't all executed/sucessful
-    environment: dotnet-format-apply-changes-workflow
     permissions:
       statuses: write
     runs-on: ubuntu-latest

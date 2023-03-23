@@ -27,7 +27,6 @@ jobs:
   workflow-args:
     name: Process workflow input data
     if: github.event_name == 'workflow_dispatch' || (github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'nuget-release'))
-    environment: nuget-publish-workflow
     permissions:
       contents: read
     runs-on: ubuntu-latest
@@ -153,7 +152,6 @@ jobs:
   publish-nuget:
     name: Publish NuGet package and symbols
     needs: [workflow-args]
-    environment: nuget-publish-workflow
     permissions:
       contents: write
     runs-on: ubuntu-latest
@@ -240,7 +238,6 @@ jobs:
     name: Create output artifacts
     needs: [workflow-args, publish-nuget]
     if: always() && needs.publish-nuget.result != 'skipped'
-    environment: nuget-publish-workflow
     permissions:
       contents: read
     runs-on: ubuntu-latest
@@ -290,4 +287,3 @@ jobs:
       with:
         name: github-release-info
         path: github-release-info.md
-

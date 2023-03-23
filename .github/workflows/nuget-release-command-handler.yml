@@ -52,7 +52,6 @@ jobs:
     name: Create NuGet release PR
     needs: [check-pr]
     if: needs.check-pr.outputs.can-create-pr == 'true'
-    environment: nuget-release-command-handler-workflow
     permissions:
       contents: write
       pull-requests: write
@@ -175,7 +174,6 @@ jobs:
   release-info:
     name: Upload release info
     needs: [create-pr]
-    environment: nuget-release-command-handler-workflow
     permissions:
       contents: read
       statuses: write
@@ -226,7 +224,6 @@ jobs:
   merge-pr:
     name: Set PR auto merge
     needs: [create-pr, release-info]
-    environment: nuget-release-command-handler-workflow
     permissions:
       contents: read
     runs-on: ubuntu-latest
@@ -243,7 +240,6 @@ jobs:
     name: Create output artifacts
     needs: [create-pr, merge-pr]
     if: always()
-    environment: nuget-release-command-handler-workflow
     permissions:
       contents: read
     runs-on: ubuntu-latest

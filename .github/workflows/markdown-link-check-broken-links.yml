@@ -19,7 +19,6 @@ jobs:
 
   summary:
     name: Set workflow summary
-    environment: markdown-link-check-broken-links-workflow
     permissions:
       contents: read
     runs-on: ubuntu-latest
@@ -46,7 +45,6 @@ jobs:
 
   workflow-info:
     name: Read trigger workflow info
-    environment: markdown-link-check-broken-links-workflow
     permissions:
       contents: read
     runs-on: ubuntu-latest
@@ -143,7 +141,6 @@ jobs:
     name: Handle MLC on push
     needs: [workflow-info, on-push-check]
     if: needs.on-push-check.outputs.create-issue == 'true'
-    environment: markdown-link-check-broken-links-workflow
     permissions:
       contents: read
       issues: write
@@ -200,7 +197,6 @@ jobs:
     name: Handle MLC on PR
     needs: [workflow-info]
     if: github.event.workflow_run.event == 'pull_request' && needs.workflow-info.outputs.has-broken-links == 'true'
-    environment: markdown-link-check-broken-links-workflow
     permissions:
       pull-requests: write
     runs-on: ubuntu-latest
