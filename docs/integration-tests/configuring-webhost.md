@@ -10,7 +10,7 @@ The main configuration values I want to be able to control are the ones read fro
 
 ## Requirements
 
-You will have to add the [DotNet-Sdk-Extensions-Testing](https://www.nuget.org/packages/DotNet-Sdk-Extensions-Testing) nuget to your test project.
+You will have to add the [dotnet-sdk-extensions-testing](https://www.nuget.org/packages/dotnet-sdk-extensions-testing) nuget to your test project.
 
 ## How to use
 
@@ -79,7 +79,7 @@ This means that any appsettings file that would normally be loaded, the actual o
 
 This is done to avoid acidentally loading some configuration values. It has the small downside that you need to load appsettings files that between them have the required configuration values to run the given test scenario instead of relying on the appsettings used by your app and just overwriting the required bits.
 
-Also note that by default the appsettings that are loaded are based on the environment on which the WebHost is running. As an example, by default when debbuging the app the `ASPNETCORE_ENVIRONMENT` environment variable is set to `Development` and the appsettings that are loaded are `appsettings.json` and `appsettings.Development.json`. 
+Also note that by default the appsettings that are loaded are based on the environment on which the WebHost is running. As an example, by default when debbuging the app the `ASPNETCORE_ENVIRONMENT` environment variable is set to `Development` and the appsettings that are loaded are `appsettings.json` and `appsettings.Development.json`.
 
 The `IWebHostBuilder.AddTestConfiguration` extension method does not take the environment into consideration when loading test appsettings. Following the example in the [DemoTest](#how-to-use), when doing:
 

@@ -13,7 +13,7 @@ Plus, at times I want to have the values for configuring the policies read from 
 
 ## Requirements
 
-You will have to add the [DotNet-Sdk-Extensions](https://www.nuget.org/packages/DotNet-Sdk-Extensions) nuget to your project.
+You will have to add the [dotnet-sdk-extensions](https://www.nuget.org/packages/dotnet-sdk-extensions) nuget to your project.
 
 ## How to use
 
@@ -55,9 +55,9 @@ services
 The above example is the simplest way to use the extension method. Note that:
 
 - even though the example shows adding the resilience policies to a named `HttpClient` you can also add it to typed `HttpClient` because the extension method works on the `IHttpClientBuilder`.
-  
+
 - the configuration of the policies' options is done inline but the extension method is also integrated with the all the ecosystem around the [Options pattern](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/options?view=aspnetcore-5.0) in dotnet core, such as the possibility of binding the options values from the `appsettings`. See [Binding appsettings values to the resilience policies options](#binding-appsettings-values-to-the-resilience-policies-options).
-  
+
 - you can provide a class to handle the events produced by the resilience policies. See [Handling events from the resilience policies](#handling-events-from-the-resilience-policies).
 
 ### ResilienceOptions
@@ -196,7 +196,7 @@ public class MyResilienceEventHandler : IResiliencePoliciesEventHandler
             _logger.LogInformation($"Circuit state transitioned to closed for the HttpClient {resetEvent.HttpClientName}");
             return Task.CompletedTask;
         }
-        
+
         public Task OnHttpRequestExceptionFallbackAsync(FallbackEvent fallbackEvent)
         {
             //do something like logging

@@ -16,7 +16,7 @@ An alternative solution to mocking http calls in-process is to start an http ser
 
 ## Requirements
 
-You will have to add the [DotNet-Sdk-Extensions-Testing](https://www.nuget.org/packages/DotNet-Sdk-Extensions-Testing) nuget to your test project.
+You will have to add the [dotnet-sdk-extensions-testing](https://www.nuget.org/packages/dotnet-sdk-extensions-testing) nuget to your test project.
 
 ## How to use
 

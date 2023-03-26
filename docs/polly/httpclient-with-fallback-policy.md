@@ -12,7 +12,7 @@ When adding those policies I also end up adding a fallback policy to control wha
 
 ## Requirements
 
-You will have to add the [DotNet-Sdk-Extensions](https://www.nuget.org/packages/DotNet-Sdk-Extensions) nuget to your project.
+You will have to add the [dotnet-sdk-extensions](https://www.nuget.org/packages/dotnet-sdk-extensions) nuget to your project.
 
 ## How to use
 
@@ -24,7 +24,7 @@ The extension method provided `AddFallbackPolicy` is an extension to the `IHttpC
 - [Add a retry policy to an HttpClient](/docs/polly/httpclient-with-retry-policy.md)
 - [Add a circuit breaker policy to an HttpClient](/docs/polly/httpclient-with-circuit-breaker-policy.md)
 
-The fallback policy added is configured to handle exceptions and always return a type that derives from `HttpResponseMessage` and whose status code is `500`. Each derived type might contain further properties. 
+The fallback policy added is configured to handle exceptions and always return a type that derives from `HttpResponseMessage` and whose status code is `500`. Each derived type might contain further properties.
 
 The fallback policy is configured to handle the following exceptions:
 

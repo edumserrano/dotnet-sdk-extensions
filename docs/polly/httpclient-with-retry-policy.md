@@ -8,7 +8,7 @@ Plus, at times I want to have the values for configuring the retry policy read f
 
 ## Requirements
 
-You will have to add the [DotNet-Sdk-Extensions](https://www.nuget.org/packages/DotNet-Sdk-Extensions) nuget to your project.
+You will have to add the [dotnet-sdk-extensions](https://www.nuget.org/packages/dotnet-sdk-extensions) nuget to your project.
 
 ## How to use
 
@@ -37,9 +37,9 @@ services
 The above example is the simplest way to use the extension method. Note that:
 
 - even though the example shows adding a retry policy to a named `HttpClient` you can also add it to typed `HttpClient` because the extension method works on the `IHttpClientBuilder`.
-  
+
 - the configuration of the policy's options is done inline but the extension method is also integrated with the all the ecosystem around the [Options pattern](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/options?view=aspnetcore-5.0) in dotnet core, such as the possibility of binding the options values from the `appsettings`. See [Binding appsettings values to the retry policy options](#binding-appsettings-values-to-the-retry-policy-options).
-  
+
 - you can provide a class to handle the events produced by the retry policy. See [Handling events from the retry policy](#handling-events-from-the-retry-policy).
 
 ### RetryOptions
@@ -106,7 +106,7 @@ public class MyRetryEventHandler : IRetryPolicyEventHandler
     {
         _logger = logger;
     }
-    
+
     public Task OnRetryAsync(RetryEvent retryEvent)
     {
         //do something like logging

@@ -10,7 +10,7 @@ In [Providing test appsettings files to the test server](./configuring-webhost.m
 
 ## Requirements
 
-You will have to add the [DotNet-Sdk-Extensions-Testing](https://www.nuget.org/packages/DotNet-Sdk-Extensions-Testing) nuget to your test project.
+You will have to add the [dotnet-sdk-extensions-testing](https://www.nuget.org/packages/dotnet-sdk-extensions-testing) nuget to your test project.
 
 ## How to use
 
@@ -40,7 +40,7 @@ public class ConfigurationDemoTests : IClassFixture<WebApplicationFactory<Startu
                     });
             })
             .CreateClient();
-        
+
         // rest of test
     }
 }

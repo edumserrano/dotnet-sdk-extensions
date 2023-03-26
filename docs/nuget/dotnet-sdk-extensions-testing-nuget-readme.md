@@ -1,4 +1,4 @@
-# DotNet-Sdk-Extensions-Testing
+# dotnet-sdk-extensions-testing
 
 ## Description
 

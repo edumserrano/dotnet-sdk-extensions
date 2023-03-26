@@ -8,7 +8,7 @@ The idea came after reading [Reducing thrown exceptions when the circuit is brok
 
 ## Requirements
 
-You will have to add the [DotNet-Sdk-Extensions](https://www.nuget.org/packages/DotNet-Sdk-Extensions) nuget to your project.
+You will have to add the [dotnet-sdk-extensions](https://www.nuget.org/packages/dotnet-sdk-extensions) nuget to your project.
 
 ## How to use
 

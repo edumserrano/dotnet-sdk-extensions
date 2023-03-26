@@ -31,14 +31,14 @@ This repo provides two NuGet packages:
 
 | NuGet                                                                                         |                                                                               Version                                                                                |                                Downloads                                |
 | --------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------: |
-| [DotNet-Sdk-Extensions](https://www.nuget.org/packages/DotNet-Sdk-Extensions)                 |             [![Nuget DotNet-Sdk-Extensions](https://img.shields.io/nuget/v/DotNet-Sdk-Extensions)](https://www.nuget.org/packages/DotNet-Sdk-Extensions)             |     ![Nuget](https://img.shields.io/nuget/dt/DotNet-Sdk-Extensions)     |
-| [DotNet-Sdk-Extensions-Testing](https://www.nuget.org/packages/DotNet-Sdk-Extensions-Testing) | [![Nuget DotNet-Sdk-Extensions-Testing](https://img.shields.io/nuget/v/DotNet-Sdk-Extensions-Testing)](https://www.nuget.org/packages/DotNet-Sdk-Extensions-Testing) | ![Nuget](https://img.shields.io/nuget/dt/DotNet-Sdk-Extensions-Testing) |
+| [dotnet-sdk-extensions](https://www.nuget.org/packages/dotnet-sdk-extensions)                 |             [![Nuget dotnet-sdk-extensions](https://img.shields.io/nuget/v/dotnet-sdk-extensions)](https://www.nuget.org/packages/dotnet-sdk-extensions)             |     ![Nuget](https://img.shields.io/nuget/dt/dotnet-sdk-extensions)     |
+| [dotnet-sdk-extensions-testing](https://www.nuget.org/packages/dotnet-sdk-extensions-testing) | [![Nuget dotnet-sdk-extensions-testing](https://img.shields.io/nuget/v/dotnet-sdk-extensions-testing)](https://www.nuget.org/packages/dotnet-sdk-extensions-testing) | ![Nuget](https://img.shields.io/nuget/dt/dotnet-sdk-extensions-testing) |
 
 Installation is performed via NuGet and you can do it using the following commands:
 
 ```
-dotnet add package DotNet-Sdk-Extensions
-dotnet add package DotNet-Sdk-Extensions-Testing
+dotnet add package dotnet-sdk-extensions
+dotnet add package dotnet-sdk-extensions-testing
 ```
 
 ## Extensions list

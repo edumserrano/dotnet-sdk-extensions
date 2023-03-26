@@ -30,7 +30,7 @@ To be able to use this testing extension you should change it to:
 
 ```csharp
 public static IHostBuilder CreateHostBuilder(string[] args) =>
-    Host.CreateDefaultBuilder(args)		
+    Host.CreateDefaultBuilder(args)
         .ConfigureWebHostDefaults(webBuilder =>
         {
             webBuilder.UseStartup<Startup>();
@@ -77,7 +77,7 @@ The provided solution will let you do this on a custom condition or as well as o
 
 ## Requirements
 
-You will have to add the [DotNet-Sdk-Extensions-Testing](https://www.nuget.org/packages/DotNet-Sdk-Extensions-Testing) nuget to your test project.
+You will have to add the [dotnet-sdk-extensions-testing](https://www.nuget.org/packages/dotnet-sdk-extensions-testing) nuget to your test project.
 
 ## How to use
 
