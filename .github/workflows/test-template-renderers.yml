@@ -1,0 +1,28 @@
+name: Test template renderers
+
+on:
+  workflow_dispatch:
+
+defaults:
+  run:
+    shell: pwsh
+
+jobs:
+  main:
+    name: Test template renderers
+    runs-on: ubuntu-latest
+    steps:
+    - name: chuhlomin/render-template
+      id: chuhlomin-render-issue
+      uses: chuhlomin/render-template@v1
+      with:
+        template: .github/workflows/templates/nuget-release-flow/nuget-released-successfully-issue-comment.md
+        vars: |
+          nugetId: 'nuget-id'
+          nugetVersion: 'nuget-version'
+          nugetUrl: 'https://www.nuget.org/packages/nuget-id'
+          gitHubReleaseUrl: 'github-release-url'
+    - name: Dump outputs from previous step
+      env:
+        STEP_OUTPUT: ${{ toJSON(steps.chuhlomin-render-issue.outputs) }}
+      run: $env:STEP_OUTPUT
