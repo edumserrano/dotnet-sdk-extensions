@@ -12,6 +12,8 @@ jobs:
     name: Test template renderers
     runs-on: ubuntu-latest
     steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
     - name: chuhlomin/render-template
       id: chuhlomin-render-issue
       uses: chuhlomin/render-template@v1

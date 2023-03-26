@@ -1,5 +1,7 @@
 The NuGet package **{{ .nugetId }}** version **{{ .nugetVersion }}** has been released.
 
+<!-- test comment -->
+
 - [GitHub release]({{ .gitHubReleaseUrl }}).
 - [NuGet package]({{ .nugetUrl }}).
 
