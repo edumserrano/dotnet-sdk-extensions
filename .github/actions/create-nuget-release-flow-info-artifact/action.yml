@@ -61,7 +61,7 @@ runs:
         issue-number: '${{ inputs.issue-number }}'
         nuget-id: '${{ inputs.nuget-id }}'
         nuget-version: '${{ inputs.nuget-version }}'
-        nuget-releasestatus: '${{ inputs.nuget-release-status }}'
+        nuget-release-status: '${{ inputs.nuget-release-status }}'
         nuget-release-badge-color: '${{ inputs.nuget-release-badge-color }}'
         issue-nuget-release-node-status: '${{ inputs.issue-nuget-release-node-status }}'
         issue-nuget-release-url: '${{ inputs.issue-nuget-release-url }}'
