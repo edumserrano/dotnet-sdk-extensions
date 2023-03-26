@@ -36,6 +36,6 @@ jobs:
           --value "nugetVersion=nuget-version" \
           --value "nugetUrl=nuget-url" \
           --value "gitHubReleaseUrl=github-release" \
-          --output ./yukitsune-test.md
+          --output .
     - name: Cat yukitsune output
-      run: cat ./yukitsune-test
+      run: cat ./nuget-released-successfully-issue-comment.md
