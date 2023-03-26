@@ -53,4 +53,4 @@ jobs:
         STEP_OUTPUT: ${{ toJSON(steps.yukitsune.outputs) }}
       run: $env:STEP_OUTPUT
     - name: Dump outputs from previous step 2
-      run: Write-Output ${{ steps.yukitsune.outputs.my-var }}
+      run: Write-Output `${{ steps.yukitsune.outputs.my-var }}`
