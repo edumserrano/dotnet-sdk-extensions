@@ -39,3 +39,17 @@ jobs:
           --output .
     - name: Cat yukitsune output
       run: cat ./nuget-released-successfully-issue-comment.md
+          --output .
+    - name: Set yukitsune output
+      id: yukitsune
+      run: |
+        $fileOutput = Get-Content ./nuget-released-successfully-issue-comment.md
+        $random = Get-Random
+        $delimiter = "EOF_$random"
+        Write-Output "my-var<<$delimiter" >> $env:GITHUB_OUTPUT
+        Write-Output $fileOutput >> $env:GITHUB_OUTPUT
+        Write-Output $delimiter >> $env:GITHUB_OUTPUT
+    - name: Dump outputs from previous step
+      env:
+        STEP_OUTPUT: ${{ toJSON(steps.yukitsune.outputs) }}
+      run: $env:STEP_OUTPUT
