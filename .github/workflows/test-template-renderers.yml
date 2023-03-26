@@ -28,3 +28,14 @@ jobs:
       env:
         STEP_OUTPUT: ${{ toJSON(steps.chuhlomin-render-issue.outputs) }}
       run: $env:STEP_OUTPUT
+    - name: Render template files
+      uses: yukitsune/template-cli@v0.1.0
+      with:
+        args: --input .github/workflows/templates/nuget-release-flow/nuget-released-successfully-issue-comment.md \
+          --value "nugetId=nuget-id" \
+          --value "nugetVersion=nuget-version" \
+          --value "nugetUrl=nuget-url" \
+          --value "gitHubReleaseUrl=github-release" \
+          --output ./yukitsune-test
+    - name: Cat yukitsune output
+      run: cat ./yukitsune-test
