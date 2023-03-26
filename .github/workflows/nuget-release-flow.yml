@@ -296,8 +296,8 @@ jobs:
         args: --input .github/workflows/templates/nuget-release-flow/nuget-released-successfully-issue-comment.md \
           --value "nugetId=${{ steps.github-release-info.outputs.nuget-id }}" \
           --value "nugetVersion=${{ steps.github-release-info.outputs.nuget-version }}" \
-          --value "nugetUrl='https://www.nuget.org/packages/${{ steps.github-release-info.outputs.nuget-id }}'" \
-          --value "gitHubReleaseUrl='${{ steps.github-release-info.outputs.github-release-url }}'" \
+          --value "nugetUrl=https://www.nuget.org/packages/${{ steps.github-release-info.outputs.nuget-id }}" \
+          --value "gitHubReleaseUrl=${{ steps.github-release-info.outputs.github-release-url }}" \
           --output .
     - name: Set render close issue comment template as step output
       id: render-issue-comment-template

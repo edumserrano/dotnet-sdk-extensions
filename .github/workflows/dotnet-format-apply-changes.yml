@@ -258,7 +258,7 @@ jobs:
           --value "workflowUrl=${{ needs.on-pull-request-check.outputs.workflow-url }}" \
           --value "commitSha=${{ env.WORKFLOW_HEAD_SHA }}" \
           --value "pushedCommitSha=${{ steps.dotnet-format-commit.outputs.commit-sha }}" \
-          --value "pushWorkflowUrl='https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}'" \
+          --value "pushWorkflowUrl=https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
           --output .
     - name: Set render comment template as step output
       id: render-pr-comment-template

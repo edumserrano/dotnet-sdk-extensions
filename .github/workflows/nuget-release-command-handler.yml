@@ -144,7 +144,7 @@ jobs:
           --value "nugetId=${{ steps.slash-command-args.outputs.nuget-id }}" \
           --value "nugetCurrentVersion=${{ steps.slash-command-args.outputs.nuget-current-version }}" \
           --value "nugetNewVersion=${{ steps.slash-command-args.outputs.nuget-new-version }}" \
-          --value "nugetUrl='${{ steps.slash-command-args.outputs.nuget-url }}'" \
+          --value "nugetUrl=${{ steps.slash-command-args.outputs.nuget-url }}" \
           --value "issueNumber=${{ github.event.client_payload.issueNumber }}" \
           --output .
     - name: Set render PR body template as step output
