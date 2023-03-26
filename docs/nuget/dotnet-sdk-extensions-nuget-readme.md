@@ -1,4 +1,4 @@
-# DotNet-Sdk-Extensions
+# dotnet.sdk.extensions
 
 ## Description
 
