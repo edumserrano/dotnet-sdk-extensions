@@ -10,7 +10,7 @@
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <PackageId>dotnet.sdk.extensions</PackageId>
+    <PackageId>dotnet-sdk-extensions</PackageId>
     <Version>1.0.15-alpha</Version>
     <Owners>Eduardo Serrano</Owners>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
