@@ -230,23 +230,31 @@ jobs:
         STEP_OUTPUT: ${{ toJSON(steps.nuget-release-flow-info.outputs) }}
       run: $env:STEP_OUTPUT
     - name: Render issue comment template
-      id: render-issue-comment-template
-      uses: chuhlomin/render-template@v1
+      uses: yukitsune/template-cli@v0.1.0
       with:
-        template: .github/workflows/templates/nuget-release-flow/nuget-release-flow-issue-comment.md
-        vars: |
-          nugetId: '${{ steps.nuget-release-flow-info.outputs.nuget-id }}'
-          nugetVersion: '${{ steps.nuget-release-flow-info.outputs.nuget-version }}'
-          nugetReleaseStatus: '${{ steps.nuget-release-flow-info.outputs.nuget-release-status }}'
-          nugetReleaseBadgeColor: '${{ steps.nuget-release-flow-info.outputs.nuget-release-badge-color }}'
-          issueNugetReleaseNodeStatus: '${{ steps.nuget-release-flow-info.outputs.issue-nuget-release-node-status }}'
-          issueNugetReleaseUrl: '${{ steps.nuget-release-flow-info.outputs.issue-nuget-release-url }}'
-          nugetReleaseCommandHandlerNodeStatus: '${{ steps.nuget-release-flow-info.outputs.nuget-release-command-handler-node-status }}'
-          nugetReleaseCommandHandlerUrl: '${{ steps.nuget-release-flow-info.outputs.nuget-release-command-handler-url }}'
-          nugetReleasePullRequestNodeStatus: '${{ steps.nuget-release-flow-info.outputs.nuget-release-pull-request-node-status }}'
-          nugetReleasePullRequestUrl: '${{ steps.nuget-release-flow-info.outputs.nuget-release-pull-request-url }}'
-          publishNugetNodeStatus: '${{ steps.nuget-release-flow-info.outputs.publish-nuGet-node-status }}'
-          publishNugetUrl: '${{ steps.nuget-release-flow-info.outputs.publish-nuGet-url }}'
+        args: --input .github/workflows/templates/nuget-release-flow/nuget-release-flow-issue-comment.md \
+          --value "nugetId=${{ steps.nuget-release-flow-info.outputs.nuget-id }}" \
+          --value "nugetVersion=${{ steps.nuget-release-flow-info.outputs.nuget-version }}" \
+          --value "nugetReleaseStatus=${{ steps.nuget-release-flow-info.outputs.nuget-release-status }}" \
+          --value "nugetReleaseBadgeColor=${{ steps.nuget-release-flow-info.outputs.nuget-release-badge-color }}" \
+          --value "issueNugetReleaseNodeStatus=${{ steps.nuget-release-flow-info.outputs.issue-nuget-release-node-status }}" \
+          --value "issueNugetReleaseUrl=${{ steps.nuget-release-flow-info.outputs.issue-nuget-release-url }}" \
+          --value "nugetReleaseCommandHandlerNodeStatus=${{ steps.nuget-release-flow-info.outputs.nuget-release-command-handler-node-status }}" \
+          --value "nugetReleaseCommandHandlerUrl=${{ steps.nuget-release-flow-info.outputs.nuget-release-command-handler-url }}" \
+          --value "nugetReleasePullRequestNodeStatus=${{ steps.nuget-release-flow-info.outputs.nuget-release-pull-request-url }}" \
+          --value "nugetReleasePullRequestUrl=${{ steps.nuget-release-flow-info.outputs.nuget-release-pull-request-url }}" \
+          --value "publishNugetNodeStatus=${{ steps.nuget-release-flow-info.outputs.publish-nuGet-node-status }}" \
+          --value "publishNugetUrl=${{ steps.nuget-release-flow-info.outputs.publish-nuGet-url }}" \
+          --output .
+    - name: Set render issue comment template as step output
+      id: render-issue-comment-template
+      run: |
+        $fileContent = Get-Content ./nuget-release-flow-issue-comment.md
+        $random = Get-Random
+        $delimiter = "EOF_$random"
+        Write-Output "result<<$delimiter" >> $env:GITHUB_OUTPUT
+        Write-Output $fileContent >> $env:GITHUB_OUTPUT
+        Write-Output $delimiter >> $env:GITHUB_OUTPUT
     - name: Update issue with NuGet flow comment
       uses: edumserrano/find-create-or-update-comment@v1
       with:
@@ -283,15 +291,23 @@ jobs:
         Write-Output "nuget-version=$($githubReleaseInfo.nugetVersion)" >> $env:GITHUB_OUTPUT
         Write-Output "github-release-url=$($githubReleaseInfo.githubReleaseUrl)" >> $env:GITHUB_OUTPUT
     - name: Render close issue comment template
-      id: render-issue-comment-template
-      uses: chuhlomin/render-template@v1
+      uses: yukitsune/template-cli@v0.1.0
       with:
-        template: .github/workflows/templates/nuget-release-flow/nuget-released-successfully-issue-comment.md
-        vars: |
-          nugetId: '${{ steps.github-release-info.outputs.nuget-id }}'
-          nugetVersion: '${{ steps.github-release-info.outputs.nuget-version }}'
-          nugetUrl: 'https://www.nuget.org/packages/${{ steps.github-release-info.outputs.nuget-id }}'
-          gitHubReleaseUrl: '${{ steps.github-release-info.outputs.github-release-url }}'
+        args: --input .github/workflows/templates/nuget-release-flow/nuget-released-successfully-issue-comment.md \
+          --value "nugetId=${{ steps.github-release-info.outputs.nuget-id }}" \
+          --value "nugetVersion=${{ steps.github-release-info.outputs.nuget-version }}" \
+          --value "nugetUrl='https://www.nuget.org/packages/${{ steps.github-release-info.outputs.nuget-id }}'" \
+          --value "gitHubReleaseUrl='${{ steps.github-release-info.outputs.github-release-url }}'" \
+          --output .
+    - name: Set render close issue comment template as step output
+      id: render-issue-comment-template
+      run: |
+        $fileContent = Get-Content ./nuget-release-flow-issue-comment.md
+        $random = Get-Random
+        $delimiter = "EOF_$random"
+        Write-Output "result<<$delimiter" >> $env:GITHUB_OUTPUT
+        Write-Output $fileContent >> $env:GITHUB_OUTPUT
+        Write-Output $delimiter >> $env:GITHUB_OUTPUT
     - name: Update issue with NuGet released comment
       uses: edumserrano/find-create-or-update-comment@v1
       with:

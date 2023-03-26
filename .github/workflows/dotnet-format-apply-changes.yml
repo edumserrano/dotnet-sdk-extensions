@@ -131,23 +131,20 @@ jobs:
         commit_message: ${{ steps.commit-info.outputs.commit-message }}
         branch: ${{ steps.commit-info.outputs.branch-name }}
     - name: Render PR body template
-      id: render-pr-body-template
-      uses: chuhlomin/render-template@v1
+      uses: yukitsune/template-cli@v0.1.0
       with:
-        template: .github/workflows/templates/dotnet-format-apply-changes/dotnet-format-found-changes-pr-body.md
-        vars: |
-          workflow: ${{ env.WORKFLOW }}
-          workflowUrl: ${{ env.WORKFLOW_URL }}
-          commitSha: ${{ env.WORKFLOW_HEAD_SHA }}
+        args: --input .github/workflows/templates/dotnet-format-apply-changes/dotnet-format-found-changes-pr-body.md \
+          --value "workflow=${{ env.WORKFLOW }}" \
+          --value "workflowUrl=${{ env.WORKFLOW_URL }}" \
+          --value "commitSha=${{ env.WORKFLOW_HEAD_SHA }}" \
+          --output .
     - name: Create dotnet format PR
       id: create-pr
       env:
         GITHUB_TOKEN: ${{ secrets.PUBLIC_REPO_SCOPE_GH_TOKEN }}
       run: |
         $title = "${{ steps.commit-info.outputs.branch-name }}: fix code guidelines violations"
-        $body = @'
-        ${{ steps.render-pr-body-template.outputs.result }}
-        '@
+        $body = Get-Content ./dotnet-format-found-changes-pr-body.md
         $prUrl = gh pr create `
           --title $title `
           --body $body `
@@ -243,16 +240,24 @@ jobs:
           $commitSha = git rev-parse HEAD
           Write-Output "commit-sha=$commitSha" >> $env:GITHUB_OUTPUT
     - name: Render comment template
-      id: render-pr-comment-template
-      uses: chuhlomin/render-template@v1
+      uses: yukitsune/template-cli@v0.1.0
       with:
-        template: .github/workflows/templates/dotnet-format-apply-changes/dotnet-format-found-changes-pr-comment.md
-        vars: |
-          workflow: ${{ needs.on-pull-request-check.outputs.workflow }}
-          workflowUrl: ${{ needs.on-pull-request-check.outputs.workflow-url }}
-          commitSha: ${{ env.WORKFLOW_HEAD_SHA }}
-          pushedCommitSha: ${{ steps.dotnet-format-commit.outputs.commit-sha }}
-          pushWorkflowUrl: 'https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}'
+        args: --input .github/workflows/templates/dotnet-format-apply-changes/dotnet-format-found-changes-pr-comment.md \
+          --value "workflow=${{ needs.on-pull-request-check.outputs.workflow }}" \
+          --value "workflowUrl=${{ needs.on-pull-request-check.outputs.workflow-url }}" \
+          --value "commitSha=${{ env.WORKFLOW_HEAD_SHA }}" \
+          --value "pushedCommitSha=${{ steps.dotnet-format-commit.outputs.commit-sha }}" \
+          --value "pushWorkflowUrl='https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}'" \
+          --output .
+    - name: Set render comment template as step output
+      id: render-pr-comment-template
+      run: |
+        $fileContent = Get-Content ./dotnet-format-found-changes-pr-comment.md
+        $random = Get-Random
+        $delimiter = "EOF_$random"
+        Write-Output "result<<$delimiter" >> $env:GITHUB_OUTPUT
+        Write-Output $fileContent >> $env:GITHUB_OUTPUT
+        Write-Output $delimiter >> $env:GITHUB_OUTPUT
     - name: Update PR with dotnet format result
       uses: edumserrano/find-create-or-update-comment@v1
       with:

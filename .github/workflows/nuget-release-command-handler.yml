@@ -138,25 +138,22 @@ jobs:
         commit_message: ${{ steps.commit-info.outputs.commit-message }}
         branch: ${{ steps.commit-info.outputs.branch-name }}
     - name: Render PR body template
-      id: render-pr-body-template
-      uses: chuhlomin/render-template@v1
+      uses: yukitsune/template-cli@v0.1.0
       with:
-        template: .github/workflows/templates/nuget-release-command-handler/create-nuget-release-pr-body.md
-        vars: |
-          nugetId: ${{ steps.slash-command-args.outputs.nuget-id }}
-          nugetCurrentVersion: ${{ steps.slash-command-args.outputs.nuget-current-version }}
-          nugetNewVersion: ${{ steps.slash-command-args.outputs.nuget-new-version }}
-          nugetUrl: '${{ steps.slash-command-args.outputs.nuget-url }}'
-          issueNumber: ${{ github.event.client_payload.issueNumber }}
+        args: --input .github/workflows/templates/nuget-release-command-handler/create-nuget-release-pr-body.md \
+          --value "nugetId=${{ steps.slash-command-args.outputs.nuget-id }}" \
+          --value "nugetCurrentVersion=${{ steps.slash-command-args.outputs.nuget-current-version }}" \
+          --value "nugetNewVersion=${{ steps.slash-command-args.outputs.nuget-new-version }}" \
+          --value "nugetUrl='${{ steps.slash-command-args.outputs.nuget-url }}'" \
+          --value "issueNumber=${{ github.event.client_payload.issueNumber }}" \
+          --output .
     - name: Create NuGet release PR
       id: create-pr
       env:
         GITHUB_TOKEN: ${{ secrets.PUBLIC_REPO_SCOPE_GH_TOKEN }}
       run: |
         $title = "Release NuGet ${{ steps.slash-command-args.outputs.nuget-id }} ${{ steps.slash-command-args.outputs.nuget-new-version }}"
-        $body = @'
-        ${{ steps.render-pr-body-template.outputs.result }}
-        '@
+        $body = Get-Content ./create-nuget-release-pr-body.md
         $prUrl = gh pr create `
           --title $title `
           --body $body `

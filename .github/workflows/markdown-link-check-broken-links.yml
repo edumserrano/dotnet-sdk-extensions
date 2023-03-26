@@ -154,14 +154,22 @@ jobs:
       with:
         ref: ${{ env.WORKFLOW_HEAD_SHA }}
     - name: Render issue body template
-      id: render-issue-body-template
-      uses: chuhlomin/render-template@v1
+      uses: yukitsune/template-cli@v0.1.0
       with:
-        template: .github/workflows/templates/markdown-link-check-broken-links/broken-links-found-issue-body.md
-        vars: |
-          workflow: ${{ env.WORKFLOW }}
-          workflowUrl: ${{ env.WORKFLOW_URL }}
-          commitSha: ${{ env.WORKFLOW_HEAD_SHA }}
+        args: --input .github/workflows/templates/markdown-link-check-broken-links/broken-links-found-issue-body.md \
+          --value "workflow=${{ env.WORKFLOW }}" \
+          --value "workflowUrl=${{ env.WORKFLOW_URL }}" \
+          --value "commitSha=${{ env.WORKFLOW_HEAD_SHA }}" \
+          --output .
+    - name: Set render issue body template as step output
+      id: render-issue-body-template
+      run: |
+        $fileContent = Get-Content ./broken-links-found-issue-body.md
+        $random = Get-Random
+        $delimiter = "EOF_$random"
+        Write-Output "result<<$delimiter" >> $env:GITHUB_OUTPUT
+        Write-Output $fileContent >> $env:GITHUB_OUTPUT
+        Write-Output $delimiter >> $env:GITHUB_OUTPUT
     - name: Run markdown link check log parser
       id: mlc-log-parser
       uses: edumserrano/markdown-link-check-log-parser@v1
