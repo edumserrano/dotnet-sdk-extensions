@@ -138,13 +138,24 @@ jobs:
           --value "workflowUrl=${{ env.WORKFLOW_URL }}" \
           --value "commitSha=${{ env.WORKFLOW_HEAD_SHA }}" \
           --output .
+    - name: Set render PR body template as step output
+      id: render-pr-body-template
+      run: |
+        $fileContent = Get-Content ./dotnet-format-found-changes-pr-body.md
+        $random = Get-Random
+        $delimiter = "EOF_$random"
+        Write-Output "result<<$delimiter" >> $env:GITHUB_OUTPUT
+        Write-Output $fileContent >> $env:GITHUB_OUTPUT
+        Write-Output $delimiter >> $env:GITHUB_OUTPUT
     - name: Create dotnet format PR
       id: create-pr
       env:
         GITHUB_TOKEN: ${{ secrets.PUBLIC_REPO_SCOPE_GH_TOKEN }}
       run: |
         $title = "${{ steps.commit-info.outputs.branch-name }}: fix code guidelines violations"
-        $body = Get-Content ./dotnet-format-found-changes-pr-body.md
+        $body = @'
+        ${{ steps.render-pr-body-template.outputs.result }}
+        '@
         $prUrl = gh pr create `
           --title $title `
           --body $body `

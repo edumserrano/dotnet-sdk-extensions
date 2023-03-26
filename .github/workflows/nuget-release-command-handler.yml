@@ -147,13 +147,24 @@ jobs:
           --value "nugetUrl='${{ steps.slash-command-args.outputs.nuget-url }}'" \
           --value "issueNumber=${{ github.event.client_payload.issueNumber }}" \
           --output .
+    - name: Set render PR body template as step output
+      id: render-pr-body-template
+      run: |
+        $fileContent = Get-Content ./create-nuget-release-pr-body.md
+        $random = Get-Random
+        $delimiter = "EOF_$random"
+        Write-Output "result<<$delimiter" >> $env:GITHUB_OUTPUT
+        Write-Output $fileContent >> $env:GITHUB_OUTPUT
+        Write-Output $delimiter >> $env:GITHUB_OUTPUT
     - name: Create NuGet release PR
       id: create-pr
       env:
         GITHUB_TOKEN: ${{ secrets.PUBLIC_REPO_SCOPE_GH_TOKEN }}
       run: |
         $title = "Release NuGet ${{ steps.slash-command-args.outputs.nuget-id }} ${{ steps.slash-command-args.outputs.nuget-new-version }}"
-        $body = Get-Content ./create-nuget-release-pr-body.md
+        $body = @'
+        ${{ steps.render-pr-body-template.outputs.result }}
+        '@
         $prUrl = gh pr create `
           --title $title `
           --body $body `
