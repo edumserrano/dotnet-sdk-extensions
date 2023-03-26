@@ -302,7 +302,7 @@ jobs:
     - name: Set render close issue comment template as step output
       id: render-issue-comment-template
       run: |
-        $fileContent = Get-Content ./nuget-release-flow-issue-comment.md
+        $fileContent = Get-Content ./nuget-released-successfully-issue-comment.md
         $random = Get-Random
         $delimiter = "EOF_$random"
         Write-Output "result<<$delimiter" >> $env:GITHUB_OUTPUT
