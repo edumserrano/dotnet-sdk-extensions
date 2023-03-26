@@ -241,10 +241,10 @@ jobs:
           --value "issueNugetReleaseUrl=${{ steps.nuget-release-flow-info.outputs.issue-nuget-release-url }}" \
           --value "nugetReleaseCommandHandlerNodeStatus=${{ steps.nuget-release-flow-info.outputs.nuget-release-command-handler-node-status }}" \
           --value "nugetReleaseCommandHandlerUrl=${{ steps.nuget-release-flow-info.outputs.nuget-release-command-handler-url }}" \
-          --value "nugetReleasePullRequestNodeStatus=${{ steps.nuget-release-flow-info.outputs.nuget-release-pull-request-url }}" \
+          --value "nugetReleasePullRequestNodeStatus=${{ steps.nuget-release-flow-info.outputs.nuget-release-pull-request-node-status }}" \
           --value "nugetReleasePullRequestUrl=${{ steps.nuget-release-flow-info.outputs.nuget-release-pull-request-url }}" \
-          --value "publishNugetNodeStatus=${{ steps.nuget-release-flow-info.outputs.publish-nuGet-node-status }}" \
-          --value "publishNugetUrl=${{ steps.nuget-release-flow-info.outputs.publish-nuGet-url }}" \
+          --value "publishNugetNodeStatus=${{ steps.nuget-release-flow-info.outputs.publish-nuget-node-status }}" \
+          --value "publishNugetUrl=${{ steps.nuget-release-flow-info.outputs.publish-nuget-url }}" \
           --output .
     - name: Set render issue comment template as step output
       id: render-issue-comment-template
