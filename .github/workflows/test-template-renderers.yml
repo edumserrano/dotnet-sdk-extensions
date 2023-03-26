@@ -39,7 +39,6 @@ jobs:
           --output .
     - name: Cat yukitsune output
       run: cat ./nuget-released-successfully-issue-comment.md
-          --output .
     - name: Set yukitsune output
       id: yukitsune
       run: |
