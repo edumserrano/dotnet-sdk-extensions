@@ -25,7 +25,7 @@ public sealed class HttpResponseMessageMockResult
         {
             if (Status != HttpResponseMessageMockResults.Executed)
             {
-                throw new InvalidOperationException($"Cannot retrieve {nameof(HttpResponseMessage)} unless Status is {HttpResponseMockResults.Executed}. Status is {Status}.");
+                throw new InvalidOperationException($"Cannot retrieve {nameof(HttpResponseMessage)} unless Status is {nameof(HttpResponseMockResults.Executed)}. Status is {Status}.");
             }
 
             return _httpResponseMessage!;
