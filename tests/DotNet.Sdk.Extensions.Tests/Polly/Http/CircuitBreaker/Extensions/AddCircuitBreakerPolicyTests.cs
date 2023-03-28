@@ -431,7 +431,7 @@ public class AddCircuitBreakerPolicyTests
         // circuit breaker policy, would throw a BrokenCircuitException/IsolatedCircuitException; however,
         // because we wrapped the circuit breaker policy with a CircuitBreakerCheckerAsyncPolicy what we get
         // instead is a CircuitBrokenHttpResponseMessage instance
-        var response = await httpClient.GetAsync($"/circuit-breaker/transient-http-status-code/{HttpStatusCode.ServiceUnavailable}");
+        var response = await httpClient.GetAsync($"/circuit-breaker/transient-http-status-code/{nameof(HttpStatusCode.ServiceUnavailable)}");
         var circuitBrokenHttpResponseMessage = response as CircuitBrokenHttpResponseMessage;
         circuitBrokenHttpResponseMessage.ShouldNotBeNull();
         circuitBrokenHttpResponseMessage.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);

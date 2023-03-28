@@ -76,7 +76,7 @@ public sealed class CircuitBreakerPolicyExecutor : IAsyncDisposable
         var response = await _httpClient.GetAsync(_resetRequestPath);
         if (response.StatusCode != HttpStatusCode.OK)
         {
-            throw new InvalidOperationException($"Unexpected status code from closed circuit. Got {response.StatusCode} but expected {HttpStatusCode.OK}.");
+            throw new InvalidOperationException($"Unexpected status code from closed circuit. Got {response.StatusCode} but expected {nameof(HttpStatusCode.OK)}.");
         }
 
         // make sure we transition to a new sampling window or else requests would still fall
@@ -94,7 +94,7 @@ public sealed class CircuitBreakerPolicyExecutor : IAsyncDisposable
 
         if (circuitBrokenHttpResponseMessage.StatusCode != HttpStatusCode.InternalServerError)
         {
-            throw new InvalidOperationException($"Unexpected status code from open circuit. Got {response.StatusCode} but expected {HttpStatusCode.InternalServerError} from requestPath: {requestPath}");
+            throw new InvalidOperationException($"Unexpected status code from open circuit. Got {response.StatusCode} but expected {nameof(HttpStatusCode.InternalServerError)} from requestPath: {requestPath}");
         }
     }
 
@@ -158,7 +158,7 @@ public sealed class CircuitBreakerPolicyExecutor : IAsyncDisposable
                 await WaitResetAsync();
                 break;
             default:
-                throw new InvalidOperationException($"Failed to dispose {nameof(CircuitBreakerPolicyExecutor)} because of unknown {nameof(CircuitBreakerPolicyExecutorResetTypes)}: {_resetType}. Can only handle {CircuitBreakerPolicyExecutorResetTypes.Normal} and {CircuitBreakerPolicyExecutorResetTypes.Quick}");
+                throw new InvalidOperationException($"Failed to dispose {nameof(CircuitBreakerPolicyExecutor)} because of unknown {nameof(CircuitBreakerPolicyExecutorResetTypes)}: {_resetType}. Can only handle {nameof(CircuitBreakerPolicyExecutorResetTypes.Normal)} and {nameof(CircuitBreakerPolicyExecutorResetTypes.Quick)}");
         }
     }
 }
