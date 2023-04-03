@@ -8,9 +8,9 @@ When the workflow completes, it uploads a workflow info artifact that contains a
 
 > **Note**
 >
-> The reason to have this workflow in two, one that looks for broken links and one that processes the results is due to security. On GitHub, workflows that run on PRs from forks of the repo run in a restricted context without access to secrets and where the `GITHUB_TOKEN` has read-only permissions. The main purpose for this is to protect from the threat of malicious pull requests.
+> The reason to split this workflow in two, one that looks for broken links and one that processes the results is due to security. On GitHub, workflows that run on PRs from forks of the repo run in a restricted context without access to secrets and where the `GITHUB_TOKEN` has read-only permissions. The main purpose for this is to protect from the threat of malicious pull requests.
 >
-> Without doing it like this, even if security wasn't an issue, the PRs from forked repos would fail when the workflow tried to add a comment to a PR or create an issue. Both of these actions are part of the flow to detect broken markdown links which are executed by the [markdown-link-check-broken-links workflow](/docs/dev-notes/workflows/markdown-link-check-broken-links-workflow.md) running on a priviliged context.
+> Without doing this, even if security wasn't an issue, the PRs from forked repos would fail when the workflow tried to add a comment to a PR or create an issue. Both of these actions are part of the flow to detect broken markdown links and are executed by the [markdown-link-check-broken-links workflow](/docs/dev-notes/workflows/markdown-link-check-broken-links-workflow.md) running on a priviliged context.
 >
 > For more information see:
 >

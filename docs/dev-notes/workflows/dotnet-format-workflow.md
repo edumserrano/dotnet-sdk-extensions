@@ -11,7 +11,11 @@ The `dotnet format` will report violations based on the [.editorconfig](/.editor
 
 > **Note**
 >
-> The reason to split this workflow in two, one that runs `dotnet format` and one that applies the results of the `dotnet format` workflow is security. Workflows that require priviliged context are separated from the ones that could potentially executed malicious code. The main purpose is to protect from the threat of malicious pull requests. For more information see:
+> The reason to split this workflow in two, one that runs `dotnet format` and one that applies the results of the `dotnet format` workflow is due to security. On GitHub, workflows that run on PRs from forks of the repo run in a restricted context without access to secrets and where the `GITHUB_TOKEN` has read-only permissions. The main purpose for this is to protect from the threat of malicious pull requests.
+>
+> Without doing this, even if security wasn't an issue, the PRs from forked repos would fail when the workflow tried to create a PR or push a commit to a PR. Both of these actions are part of the `dotnet format` flow and are executed by the [dotnet-format-apply-changes workflow](/docs/dev-notes/workflows/dotnet-format-apply-changes-workflow.md) running on a priviliged context.
+>
+> For more information see:
 >
 > - [Security considerations on GitHub workflows](/docs/dev-notes/workflows/security-considerations.md)
 > - [Security considerations on GitHub workflows regarding dotnet CLI](/docs/dev-notes/workflows/security-considerations-and-dotnet.md)
