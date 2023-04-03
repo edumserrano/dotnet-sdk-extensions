@@ -229,7 +229,7 @@ jobs:
         Write-Output "pr-comment-body<<$delimiter" >> $env:GITHUB_OUTPUT
         Write-Output $commentBody >> $env:GITHUB_OUTPUT
         Write-Output $delimiter >> $env:GITHUB_OUTPUT
-    - name: Update PR with dotnet format result
+    - name: Update PR with markdown link check result
       uses: edumserrano/find-create-or-update-comment@v1
       with:
         issue-number: ${{ needs.workflow-info.outputs.pr-number }}
