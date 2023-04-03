@@ -22,9 +22,6 @@ jobs:
     permissions:
       contents: read
     runs-on: ubuntu-latest
-    env:
-      WORKFLOW: ${{ needs.on-push-check.outputs.workflow }}
-      WORKFLOW_URL: ${{ needs.on-push-check.outputs.workflow-url }}
     steps:
     - name: Run markdown link check log parser
       id: mlc-log-parser
@@ -183,7 +180,7 @@ jobs:
     - name: Create markdown issue
       id: create-issue
       env:
-        GITHUB_TOKEN: ${{ secrets.PUBLIC_REPO_SCOPE_GH_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         $title = "Markdown link check found broken links"
         $body = @'
@@ -232,7 +229,6 @@ jobs:
         Write-Output "pr-comment-body<<$delimiter" >> $env:GITHUB_OUTPUT
         Write-Output $commentBody >> $env:GITHUB_OUTPUT
         Write-Output $delimiter >> $env:GITHUB_OUTPUT
-
     - name: Update PR with dotnet format result
       uses: edumserrano/find-create-or-update-comment@v1
       with:
