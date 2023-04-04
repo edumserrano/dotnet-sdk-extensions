@@ -8,60 +8,59 @@ name: 'Read NuGet release flow info artifact'
 description: 'Uploads an artifact with information to update the NuGet release flow diagram'
 
 inputs:
+  source:
+    description: 'The source of the NuGet release flow artifact. Possible values are: different-workflow, current-workflow'
+    required: true
+    default: 'different-workflow'
   workflow-id:
-    description: 'The id of the workflow that contains the NuGet release flow info artifact.'
-    required: true
+    description: 'The id of the workflow that contains the NuGet release flow info artifact. Required if the source is different-workflow.'
+    required: false
   workflow-run-id:
-    description: 'The id of the workflow run that contains the NuGet release flow info artifact.'
-    required: true
+    description: 'The id of the workflow run that contains the NuGet release flow info artifact. Required if the source is different-workflow.'
+    required: false
 
 outputs:
   issue-number:
     description: 'The number of the issue for the NuGet release.'
-    value: ${{ steps.nuget-release-flow-info.outputs.issue-number }}
+    value: ${{ steps.set-action-outputs.outputs.issue-number }}
   nuget-id:
     description: 'The NuGet ID.'
-    value: ${{ steps.nuget-release-flow-info.outputs.nuget-id }}
+    value: ${{ steps.set-action-outputs.outputs.nuget-id }}
   nuget-version:
     description: 'The NuGet version.'
-    value: ${{ steps.nuget-release-flow-info.outputs.nuget-version }}
+    value: ${{ steps.set-action-outputs.outputs.nuget-version }}
   nuget-release-status:
     description: 'The status of the NuGet release flow.'
-    value: ${{ steps.nuget-release-flow-info.outputs.nuget-release-status }}
+    value: ${{ steps.set-action-outputs.outputs.nuget-release-status }}
   nuget-release-badge-color:
     description: 'The color to use for the badge on the NuGet release flow.'
-    value: ${{ steps.nuget-release-flow-info.outputs.nuget-release-badge-color }}
+    value: ${{ steps.set-action-outputs.outputs.nuget-release-badge-color }}
   issue-nuget-release-node-status:
     description: 'The status of the NuGet release flow node for the NuGet release GitHub issue action.'
-    value: ${{ steps.nuget-release-flow-info.outputs.issue-nuget-release-node-status }}
+    value: ${{ steps.set-action-outputs.outputs.issue-nuget-release-node-status }}
   issue-nuget-release-url:
     description: 'The URL for the NuGet release GitHub issue action.'
-    value: ${{ steps.nuget-release-flow-info.outputs.issue-nuget-release-url }}
-  nuget-release-command-handler-node-status:
-    description: 'The status of the NuGet release flow node for the NuGet release command handler action.'
-    value: ${{ steps.nuget-release-flow-info.outputs.nuget-release-command-handler-node-status }}
-  nuget-release-command-handler-url:
-    description: 'The URL for the NuGet release command handler action.'
-    value: ${{ steps.nuget-release-flow-info.outputs.nuget-release-command-handler-url }}
+    value: ${{ steps.set-action-outputs.outputs.issue-nuget-release-url }}
   nuget-release-pull-request-node-status:
     description: 'The status of the NuGet release flow node for the NuGet release pull request.'
-    value: ${{ steps.nuget-release-flow-info.outputs.nuget-release-pull-request-node-status }}
+    value: ${{ steps.set-action-outputs.outputs.nuget-release-pull-request-node-status }}
   nuget-release-pull-request-url:
     description: 'The URL for the NuGet release pull request.'
-    value: ${{ steps.nuget-release-flow-info.outputs.nuget-release-pull-request-url }}
+    value: ${{ steps.set-action-outputs.outputs.nuget-release-pull-request-url }}
   publish-nuget-node-status:
     description: 'The status of the NuGet release flow node for the NuGet release publish action.'
-    value: ${{ steps.nuget-release-flow-info.outputs.publish-nuget-node-status }}
+    value: ${{ steps.set-action-outputs.outputs.publish-nuget-node-status }}
   publish-nuget-url:
     description: 'The URL for the NuGet release publish action.'
-    value: ${{ steps.nuget-release-flow-info.outputs.publish-nuget-url }}
+    value: ${{ steps.set-action-outputs.outputs.publish-nuget-url }}
 
 runs:
   using: "composite"
   steps:
   - name: Read NuGet release flow info data
-    id: nuget-release-flow-info
+    id: nuget-release-flow-info-from-different-workflow
     uses: edumserrano/share-jobs-data@v1
+    if: inputs.type == 'different-workflow'
     with:
       command: read-data-different-workflow
       artifact-name: nuget-release-flow-info
@@ -69,7 +68,79 @@ runs:
       run-id: ${{ inputs.workflow-run-id }}
       output: github-step-json
   - name: Dump outputs from previous step
+    if: inputs.type == 'different-workflow'
     shell: pwsh
     env:
-      STEP_OUTPUT: ${{ toJSON(steps.nuget-release-flow-info.outputs) }}
+      STEP_OUTPUT: ${{ toJSON(steps.nuget-release-flow-info-from-different-workflow.outputs) }}
+    run: $env:STEP_OUTPUT
+  - name: Read NuGet release flow info data
+    id: nuget-release-flow-info-from-current-workflow
+    uses: edumserrano/share-jobs-data@v1
+    if: inputs.type == 'current-workflow'
+    with:
+      command: read-data-different-workflow
+      artifact-name: nuget-release-flow-info
+      data-filename: nuget-release-flow-info.json
+      run-id: ${{ inputs.workflow-run-id }}
+      output: github-step-json
+  - name: Dump outputs from previous step
+    if: inputs.type == 'current-workflow'
+    shell: pwsh
+    env:
+      STEP_OUTPUT: ${{ toJSON(steps.nuget-release-flow-info-from-current-workflow.outputs) }}
+    run: $env:STEP_OUTPUT
+  - name: Set action outputs
+    id: set-action-outputs
+    shell: pwsh
+    run: |
+      $type = '${{ inputs.type }}'
+      if($type -eq "current-workflow")
+      {
+        $issueNumber = '${{ steps.nuget-release-flow-info-from-current-workflow.outputs.issue-number }}'
+        $nugetId = '${{ steps.nuget-release-flow-info-from-current-workflow.outputs.nuget-id }}'
+        $nugetVersion = '${{ steps.nuget-release-flow-info-from-current-workflow.outputs.nuget-version }}'
+        $nugetReleaseStatus = '${{ steps.nuget-release-flow-info-from-current-workflow.outputs.nuget-release-status }}'
+        $nugetReleaseBadgeColor = '${{ steps.nuget-release-flow-info-from-current-workflow.outputs.nuget-release-badge-color }}'
+        $issueNugetReleaseNodeStatus = '${{ steps.nuget-release-flow-info-from-current-workflow.outputs.issue-nuget-release-node-status }}'
+        $issueNugetReleaseUrl = '${{ steps.nuget-release-flow-info-from-current-workflow.outputs.issue-nuget-release-url }}'
+        $nugetReleasePullRequestNodeStatus = '${{ steps.nuget-release-flow-info-from-current-workflow.outputs.nuget-release-pull-request-node-status }}'
+        $nugetReleasePullRequestUrl = '${{ steps.nuget-release-flow-info-from-current-workflow.outputs.nuget-release-pull-request-url }}'
+        $publishNugetNodeStatus = '${{ steps.nuget-release-flow-info-from-current-workflow.outputs.publish-nuget-node-status }}'
+        $publishNugetUrl = '${{ steps.nuget-release-flow-info-from-current-workflow.outputs.publish-nuget-url }}'
+      }
+      elseif($type -eq "different-workflow")
+      {
+        $issueNumber = '${{ steps.nuget-release-flow-info-from-current-workflow.outputs.issue-number }}'
+        $nugetId = '${{ steps.nuget-release-flow-info-from-different-workflow.outputs.nuget-id }}'
+        $nugetVersion = '${{ steps.nuget-release-flow-info-from-different-workflow.outputs.nuget-version }}'
+        $nugetReleaseStatus = '${{ steps.nuget-release-flow-info-from-different-workflow.outputs.nuget-release-status }}'
+        $nugetReleaseBadgeColor = '${{ steps.nuget-release-flow-info-from-different-workflow.outputs.nuget-release-badge-color }}'
+        $issueNugetReleaseNodeStatus = '${{ steps.nuget-release-flow-info-from-different-workflow.outputs.issue-nuget-release-node-status }}'
+        $issueNugetReleaseUrl = '${{ steps.nuget-release-flow-info-from-different-workflow.outputs.issue-nuget-release-url }}'
+        $nugetReleasePullRequestNodeStatus = '${{ steps.nuget-release-flow-info-from-different-workflow.outputs.nuget-release-pull-request-node-status }}'
+        $nugetReleasePullRequestUrl = '${{ steps.nuget-release-flow-info-from-different-workflow.outputs.nuget-release-pull-request-url }}'
+        $publishNugetNodeStatus = '${{ steps.nuget-release-flow-info-from-different-workflow.outputs.publish-nuget-node-status }}'
+        $publishNugetUrl = '${{ steps.nuget-release-flow-info-from-different-workflow.outputs.publish-nuget-url }}'
+      }
+      else
+      {
+        Write-Output "::error::Unknown 'Read NuGet release flow info artifact' action input. Input 'type' can only be 'current-workflow' or 'different-workflow' but got '$type'"
+        Exit 1
+      }
+
+      Write-Output "issue-number=$issueNumber" >> $env:GITHUB_OUTPUT
+      Write-Output "nuget-id=$nugetId" >> $env:GITHUB_OUTPUT
+      Write-Output "nuget-version=$nugetVersion" >> $env:GITHUB_OUTPUT
+      Write-Output "nuget-release-status=$nugetReleaseStatus" >> $env:GITHUB_OUTPUT
+      Write-Output "nuget-release-badge-color=$nugetReleaseBadgeColor" >> $env:GITHUB_OUTPUT
+      Write-Output "issue-nuget-release-node-status=$issueNugetReleaseNodeStatus" >> $env:GITHUB_OUTPUT
+      Write-Output "issue-nuget-release-url=$issueNugetReleaseUrl" >> $env:GITHUB_OUTPUT
+      Write-Output "nuget-release-pull-request-node-status=$nugetReleasePullRequestNodeStatus" >> $env:GITHUB_OUTPUT
+      Write-Output "nuget-release-pull-request-url=$nugetReleasePullRequestUrl" >> $env:GITHUB_OUTPUT
+      Write-Output "publish-nuget-node-status=$publishNugetNodeStatus" >> $env:GITHUB_OUTPUT
+      Write-Output "publish-nuget-url=$publishNugetUrl" >> $env:GITHUB_OUTPUT
+  - name: Dump outputs from previous step
+    shell: pwsh
+    env:
+      STEP_OUTPUT: ${{ toJSON(steps.set-action-outputs.outputs) }}
     run: $env:STEP_OUTPUT
