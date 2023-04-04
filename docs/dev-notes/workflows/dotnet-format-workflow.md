@@ -2,11 +2,20 @@
 
 [![dotnet format](https://github.com/edumserrano/dotnet-sdk-extensions/actions/workflows/dotnet-format.yml/badge.svg)](https://github.com/edumserrano/dotnet-sdk-extensions/actions/workflows/dotnet-format.yml)
 
-[This workflow](/.github/workflows/dotnet-format.yml) runs [dotnet format](https://github.com/dotnet/format) on pushes to the main branch and creates a pull request when changes are required. The PR is created with a label `dotnet-format`. To avoid creating multiple pull requests about formatting issues, this workflow will only create a pull request if there is no open pull request with the `dotnet-format` label.
+[This workflow](/.github/workflows/dotnet-format.yml) runs [dotnet format](https://github.com/dotnet/format) on pushes to the main branch and on pull requests. It also uploads two artifacts:
 
-The dotnet format will report violations based on the [.editorconfig](/.editorconfig) file and the analyzers included in each project. Note that in addition to the analyzers each `csproj` has, the [Directory.Build.props](/docs/dev-notes/README.md#projects-wide-configuration) files also add several analyzers added to the projects.
+- an artifact containing all the files changed by `dotnet format`. The folder structure for the changed files is kept on this artifact.
+- a workflow info artifact that contains a summary `json` file which indicates if the `dotnet format` produced any changed files as well as some other required info that will be used by the [dotnet-format-apply-changes workflow](/docs/dev-notes/workflows/dotnet-format-apply-changes-workflow.md) to apply the changed files.
 
-## Secrets
+The `dotnet format` will report violations based on the [.editorconfig](/.editorconfig) file and the analyzers included in each project. Note that in addition to the analyzers each `csproj` has, the [Directory.Build.props](/docs/dev-notes/README.md#projects-wide-configuration) file also adds several analyzers to the projects.
 
-This workflow uses a custom secret `DOTNET_FORMAT_GH_TOKEN`. This secret contains a GitHub token with permissions to push to the repo and has no expiration date. Without using a custom GitHub token the PR would be created but no checks would be executed because no workflows would be triggered. For more information read the [docs](https://docs.github.com/en/actions/reference/authentication-in-a-workflow#using-the-github_token-in-a-workflow):
-> When you use the repository's GITHUB_TOKEN to perform tasks on behalf of the GitHub Actions app, events triggered by the GITHUB_TOKEN will not create a new workflow run.
+> **Note**
+>
+> The reason to split this workflow in two, this one that runs dotnet format `(dotnet-format)` and one that applies the results `(dotnet-format-apply-changes)` is due to security. On GitHub, workflows that run on PRs from forks of the repo run in a restricted context without access to secrets and where the `GITHUB_TOKEN` has read-only permissions. The main purpose for this is to protect from the threat of malicious pull requests.
+>
+> Without doing this, even if security wasn't an issue, the PRs from forked repos would fail when the `dotnet-format` workflow tried to create a PR or push a commit to a PR. Both of these actions are part of the `dotnet format` flow and are executed by the [dotnet-format-apply-changes workflow](/docs/dev-notes/workflows/dotnet-format-apply-changes-workflow.md) running on a priviliged context.
+>
+> For more information see:
+>
+> - [Security considerations on GitHub workflows](/docs/dev-notes/workflows/security-considerations.md)
+> - [Security considerations on GitHub workflows regarding dotnet CLI](/docs/dev-notes/workflows/security-considerations-and-dotnet.md)
