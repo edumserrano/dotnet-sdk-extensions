@@ -48,7 +48,7 @@
     <PackageReference Include="Shouldly" Version="4.2.1" />
     <PackageReference Include="xunit.analyzers" Version="1.1.0" />
     <PackageReference Include="NSubstitute.Analyzers.CSharp" Version="1.0.16" />
-    <PackageReference Include="GitHubActionsTestLogger" Version="2.0.1" />
+    <PackageReference Include="GitHubActionsTestLogger" Version="2.0.2" />
     <PackageReference Include="LiquidTestReports.Custom" Version="1.0.9" />
   </ItemGroup>
 
