@@ -110,7 +110,7 @@ runs:
       }
       elseif($source -eq "different-workflow")
       {
-        $issueNumber = '${{ steps..nuget-release-flow-info-from-different-workflow.outputs.issue-number }}'
+        $issueNumber = '${{ steps.nuget-release-flow-info-from-different-workflow.outputs.issue-number }}'
         $nugetId = '${{ steps.nuget-release-flow-info-from-different-workflow.outputs.nuget-id }}'
         $nugetVersion = '${{ steps.nuget-release-flow-info-from-different-workflow.outputs.nuget-version }}'
         $nugetReleaseStatus = '${{ steps.nuget-release-flow-info-from-different-workflow.outputs.nuget-release-status }}'
