@@ -60,7 +60,7 @@ runs:
   - name: Read NuGet release flow info data
     id: nuget-release-flow-info-from-different-workflow
     uses: edumserrano/share-jobs-data@v1
-    if: inputs.type == 'different-workflow'
+    if: inputs.source == 'different-workflow'
     with:
       command: read-data-different-workflow
       artifact-name: nuget-release-flow-info
@@ -68,7 +68,7 @@ runs:
       run-id: ${{ inputs.workflow-run-id }}
       output: github-step-json
   - name: Dump outputs from previous step
-    if: inputs.type == 'different-workflow'
+    if: inputs.source == 'different-workflow'
     shell: pwsh
     env:
       STEP_OUTPUT: ${{ toJSON(steps.nuget-release-flow-info-from-different-workflow.outputs) }}
@@ -76,7 +76,7 @@ runs:
   - name: Read NuGet release flow info data
     id: nuget-release-flow-info-from-current-workflow
     uses: edumserrano/share-jobs-data@v1
-    if: inputs.type == 'current-workflow'
+    if: inputs.source == 'current-workflow'
     with:
       command: read-data-different-workflow
       artifact-name: nuget-release-flow-info
@@ -84,7 +84,7 @@ runs:
       run-id: ${{ inputs.workflow-run-id }}
       output: github-step-json
   - name: Dump outputs from previous step
-    if: inputs.type == 'current-workflow'
+    if: inputs.source == 'current-workflow'
     shell: pwsh
     env:
       STEP_OUTPUT: ${{ toJSON(steps.nuget-release-flow-info-from-current-workflow.outputs) }}
@@ -93,8 +93,8 @@ runs:
     id: set-action-outputs
     shell: pwsh
     run: |
-      $type = '${{ inputs.type }}'
-      if($type -eq "current-workflow")
+      $source = '${{ inputs.source }}'
+      if($source -eq "current-workflow")
       {
         $issueNumber = '${{ steps.nuget-release-flow-info-from-current-workflow.outputs.issue-number }}'
         $nugetId = '${{ steps.nuget-release-flow-info-from-current-workflow.outputs.nuget-id }}'
@@ -108,7 +108,7 @@ runs:
         $publishNugetNodeStatus = '${{ steps.nuget-release-flow-info-from-current-workflow.outputs.publish-nuget-node-status }}'
         $publishNugetUrl = '${{ steps.nuget-release-flow-info-from-current-workflow.outputs.publish-nuget-url }}'
       }
-      elseif($type -eq "different-workflow")
+      elseif($source -eq "different-workflow")
       {
         $issueNumber = '${{ steps.nuget-release-flow-info-from-current-workflow.outputs.issue-number }}'
         $nugetId = '${{ steps.nuget-release-flow-info-from-different-workflow.outputs.nuget-id }}'
@@ -124,7 +124,7 @@ runs:
       }
       else
       {
-        Write-Output "::error::Unknown 'Read NuGet release flow info artifact' action input. Input 'type' can only be 'current-workflow' or 'different-workflow' but got '$type'"
+        Write-Output "::error::Unknown 'Read NuGet release flow info artifact' action input. Input 'source' can only be 'current-workflow' or 'different-workflow' but got '$source'"
         Exit 1
       }
 

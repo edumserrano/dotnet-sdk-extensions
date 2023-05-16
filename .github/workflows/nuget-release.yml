@@ -327,7 +327,7 @@ jobs:
       uses: ./.github/actions/create-gh-status # this status check will be used by the pr-nuget-release-flow-diagram workflow to be able to access the nuget release info artifact uploaded by this workflow
       with:
         repo: ${{ github.repository }}
-        pr-num: ${{ needs.create-pr.outputs.pr-number }}
+        pr-num: ${{ steps.create-pr.outputs.pr-number }}
         context: '${{ github.workflow }} / NuGet release info (${{ github.event_name }})' # mimic format from github
         state: success
         description: Successful
