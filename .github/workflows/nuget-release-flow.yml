@@ -133,6 +133,11 @@ jobs:
         source: ${{ steps.nuget-release-flow-artifact.outputs.source }}
         workflow-id: ${{ github.event.workflow_run.workflow_id }} # on github.event_name == pull_request this will be empty and it's ok
         workflow-run-id: ${{ github.event.workflow_run.id }}      # on github.event_name == pull_request this will be empty and it's ok
+    - name: Dump outputs from previous step
+      shell: pwsh
+      env:
+        STEP_OUTPUT: ${{ toJSON(steps.nuget-flow-info.outputs) }}
+      run: $env:STEP_OUTPUT
 
   update-release-flow-diagram:
     name: Update NuGet release flow diagram
