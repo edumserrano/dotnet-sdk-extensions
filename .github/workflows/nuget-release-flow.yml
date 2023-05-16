@@ -16,6 +16,11 @@ defaults:
   run:
     shell: pwsh
 
+# Because the way that I structured this workflow the on-pr is always the first job and might be skipped
+# If it's skipped then all subsquent jobs need to have a check with 'always()' as described in https://github.com/actions/runner/issues/2205#issuecomment-1381988186
+# "Once a job in the workflow is failed or skipped, you need to overwrite the conditional for all subsequent jobs"
+# That's why all the jobs after on-pr have the always() check.
+
 jobs:
   on-pr:
     name: Create output artifacts
@@ -133,16 +138,11 @@ jobs:
         source: ${{ steps.nuget-release-flow-artifact.outputs.source }}
         workflow-id: ${{ github.event.workflow_run.workflow_id }} # on github.event_name == pull_request this will be empty and it's ok
         workflow-run-id: ${{ github.event.workflow_run.id }}      # on github.event_name == pull_request this will be empty and it's ok
-    - name: Dump outputs from previous step
-      shell: pwsh
-      env:
-        STEP_OUTPUT: ${{ toJSON(steps.nuget-flow-info.outputs) }}
-      run: $env:STEP_OUTPUT
 
   update-release-flow-diagram:
-    name: 2 Update NuGet release flow diagram
+    name: Update NuGet release flow diagram
     needs: [release-flow-args]
-    # if: needs.release-flow-args.outputs.issue-number != '' # manually triggered workflows might not have an issue to update, example when using workflow_dispatch on the nuget-publish workflow
+    if: always() && needs.release-flow-args.result == 'success' && needs.release-flow-args.outputs.issue-number != '' # manually triggered workflows might not have an issue to update, example when using workflow_dispatch on the nuget-publish workflow
     permissions:
       contents: read
       issues: write
@@ -320,7 +320,7 @@ jobs:
   close-release-issue:
     name: Close NuGet release issue
     needs: [update-release-flow-diagram]
-    if: github.event.workflow_run.conclusion != 'skipped' && github.event.workflow_run.name == 'NuGet publish'
+    if: always() && needs.update-release-flow-diagram.result == 'success' && github.event.workflow_run.conclusion != 'skipped' && github.event.workflow_run.name == 'NuGet publish'
     permissions:
       contents: read
       issues: write
