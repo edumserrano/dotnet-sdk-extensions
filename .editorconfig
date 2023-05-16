@@ -304,7 +304,7 @@ dotnet_naming_rule.stylecop_constant_fields_must_be_pascal_case_rule.severity   
 
 # All static readonly fields must be PascalCase
 # https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1311.md
-dotnet_naming_symbols.stylecop_static_readonly_fields_group.applicable_accessibilities = public, internal, protected_internal, protected, private_protected, private
+dotnet_naming_symbols.stylecop_static_readonly_fields_group.applicable_accessibilities = public, internal, protected_internal, protected
 dotnet_naming_symbols.stylecop_static_readonly_fields_group.required_modifiers         = static, readonly
 dotnet_naming_symbols.stylecop_static_readonly_fields_group.applicable_kinds           = field
 dotnet_naming_rule.stylecop_static_readonly_fields_must_be_pascal_case_rule.symbols    = stylecop_static_readonly_fields_group
@@ -522,6 +522,7 @@ dotnet_diagnostic.SA1116.severity = none        # SA1116: The parameters should 
 dotnet_diagnostic.SA1200.severity = none        # SA1200: Using directive should appear within a namespace declaration
 dotnet_diagnostic.SA1201.severity = none        # SA1201: A property should not follow a method
 dotnet_diagnostic.SA1202.severity = none        # SA1202: 'public' members should come before 'private' members
+dotnet_diagnostic.SA1204.severity = none        # SA1204: Static members should appear before non-static members
 dotnet_diagnostic.SA1214.severity = none        # SA1214: Readonly fields should appear before non-readonly fields
 # Naming Rules (SA1300-)
 dotnet_diagnostic.SA1309.severity = none        # SA1309: Field should not begin with an underscore

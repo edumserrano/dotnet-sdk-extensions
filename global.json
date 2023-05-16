@@ -1,6 +1,12 @@
 {
+
   "sdk": {
-      "version": "7.0.103",
+      "note0-about-version": "using a set of note-about-version props that don't exist in global.json to be able to leave comments on this json.",
+      "note1-about-version": "for now the version can't be 7.0.x because I get errors on dotnet format.",
+      "note2-about-version": "perhaps these errors will stop on a future version but I've tested 7.0.302 and was still getting errors.",
+      "note3-about-version": "perhaps these errors will also be gone when I stop supporting older TFMs.",
+      "note4-about-version": "when not needed anymore, delete all the note-about-version props.",
+      "version": "7.0.105",
       "rollForward": "disable",
       "allowPrerelease": false
   }
