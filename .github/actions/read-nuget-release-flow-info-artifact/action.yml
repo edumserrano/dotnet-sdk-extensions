@@ -78,10 +78,9 @@ runs:
     uses: edumserrano/share-jobs-data@v1
     if: inputs.source == 'current-workflow'
     with:
-      command: read-data-different-workflow
+      command: read-data-current-workflow
       artifact-name: nuget-release-flow-info
       data-filename: nuget-release-flow-info.json
-      run-id: ${{ inputs.workflow-run-id }}
       output: github-step-json
   - name: Dump outputs from previous step
     if: inputs.source == 'current-workflow'
