@@ -202,6 +202,7 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
+      statuses: write
     runs-on: ubuntu-latest
     outputs:
       pr-number: ${{ steps.create-pr.outputs.pr-number }}
