@@ -1,8 +1,8 @@
-# markdown-link-check-broken-links workflow
+# markdown-link-check-handle-result workflow
 
-[![Markdown link check - broken links](https://github.com/edumserrano/dotnet-sdk-extensions/actions/workflows/markdown-link-check-broken-links.yml/badge.svg)](https://github.com/edumserrano/dotnet-sdk-extensions/actions/workflows/markdown-link-check-broken-links.yml)
+[![Markdown link check - broken links](https://github.com/edumserrano/dotnet-sdk-extensions/actions/workflows/markdown-link-check-handle-result.yml/badge.svg)](https://github.com/edumserrano/dotnet-sdk-extensions/actions/workflows/markdown-link-check-handle-result.yml)
 
-[This workflow](/.github/workflows/markdown-link-check-broken-links.yml):
+[This workflow](/.github/workflows/markdown-link-check-handle-result.yml):
 
 - Processes the result of the [markdown-link-check workflow](/docs/dev-notes/workflows/markdown-link-check-workflow.md).
 - Run a report on the markdown link check executed by the markdown-link-check workflow and display the result on this workflow summary.
@@ -21,7 +21,7 @@ If the markdown-link-check workflow was executed on a pull request branch:
 
 > **Note**
 >
-> The reason to split this workflow in two, one that looks for broken links `(markdown-link-check)` and this one that processes the results `(markdown-link-check-broken-links)` is due to security. On GitHub, workflows that run on PRs from forks of the repo run in a restricted context without access to secrets and where the `GITHUB_TOKEN` has read-only permissions. The main purpose for this is to protect from the threat of malicious pull requests.
+> The reason to split this workflow in two, one that looks for broken links `(markdown-link-check)` and this one that processes the results `(markdown-link-check-handle-result)` is due to security. On GitHub, workflows that run on PRs from forks of the repo run in a restricted context without access to secrets and where the `GITHUB_TOKEN` has read-only permissions. The main purpose for this is to protect from the threat of malicious pull requests.
 >
 > Without doing this, even if security wasn't an issue, the PRs from forked repos would fail when the `markdown-link-check` workflow tried to add a comment to a PR or create an issue. Both of these actions are part of the flow to detect broken markdown links and are executed by this workflow running on a priviliged context.
 >

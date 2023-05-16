@@ -1,4 +1,4 @@
-name: Markdown link check - broken links
+name: Markdown link check - handle result
 
 on:
   workflow_run:
@@ -153,7 +153,7 @@ jobs:
     - name: Render issue body template
       uses: yukitsune/template-cli@v0.1.0
       with:
-        args: --input .github/workflows/templates/markdown-link-check-broken-links/broken-links-found-issue-body.md \
+        args: --input .github/workflows/templates/markdown-link-check-handle-result/broken-links-found-issue-body.md \
           --value "workflow=${{ env.WORKFLOW }}" \
           --value "workflowUrl=${{ env.WORKFLOW_URL }}" \
           --value "commitSha=${{ env.WORKFLOW_HEAD_SHA }}" \
