@@ -45,7 +45,7 @@ jobs:
     - name: Download NuGet release info artifact
       uses: dawidd6/action-download-artifact@v2
       with:
-        workflow: nuget-release-command-handler.yml
+        workflow: nuget-release.yml
         name:  nuget-release-info
         run_id: ${{ steps.release-info.outputs.run-id }}
     - name: Set NuGet release flow info
@@ -95,8 +95,6 @@ jobs:
       nuget-release-badge-color: ${{ steps.nuget-flow-info.outputs.nuget-release-badge-color }}
       issue-nuget-release-node-status: ${{ steps.nuget-flow-info.outputs.issue-nuget-release-node-status }}
       issue-nuget-release-url: ${{ steps.nuget-flow-info.outputs.issue-nuget-release-url }}
-      nuget-release-command-handler-node-status: ${{ steps.nuget-flow-info.outputs.nuget-release-command-handler-node-status }}
-      nuget-release-command-handler-url: ${{ steps.nuget-flow-info.outputs.nuget-release-command-handler-url }}
       nuget-release-pull-request-node-status: ${{ steps.nuget-flow-info.outputs.nuget-release-pull-request-node-status }}
       nuget-release-pull-request-url: ${{ steps.nuget-flow-info.outputs.nuget-release-pull-request-url }}
       publish-nuget-node-status: ${{ steps.nuget-flow-info.outputs.publish-nuget-node-status }}
@@ -172,12 +170,6 @@ jobs:
         $commentBody -match '<!-- issue-nuget-release-url: (?<IssueNugetReleaseUrl>.+) -->'
         $issueNugetReleaseUrl = $Matches.IssueNugetReleaseUrl
 
-        $commentBody -match '<!-- nuget-release-command-handler-node-status: (?<NugetReleaseCommandHandlerNodeStatus>.+) -->'
-        $nugetReleaseCommandHandlerNodeStatus = $Matches.NugetReleaseCommandHandlerNodeStatus
-
-        $commentBody -match '<!-- nuget-release-command-handler-url: (?<NugetReleaseCommandHandlerUrl>.+) -->'
-        $nugetReleaseCommandHandlerUrl = $Matches.NugetReleaseCommandHandlerUrl
-
         $commentBody -match '<!-- nuget-release-pull-request-node-status: (?<NugetReleasePullRequestNodeStatus>.+) -->'
         $nugetReleasePullRequestNodeStatus = $Matches.NugetReleasePullRequestNodeStatus
 
@@ -188,8 +180,6 @@ jobs:
         Write-Output "issue-nuget-version=$nugetVersion" >> $env:GITHUB_OUTPUT
         Write-Output "issue-nuget-release-node-status=$issueNugetReleaseNodeStatus" >> $env:GITHUB_OUTPUT
         Write-Output "issue-nuget-release-url=$issueNugetReleaseUrl" >> $env:GITHUB_OUTPUT
-        Write-Output "nuget-release-command-handler-node-status=$nugetReleaseCommandHandlerNodeStatus" >> $env:GITHUB_OUTPUT
-        Write-Output "nuget-release-command-handler-url=$nugetReleaseCommandHandlerUrl" >> $env:GITHUB_OUTPUT
         Write-Output "nuget-release-pull-request-node-status=$nugetReleasePullRequestNodeStatus" >> $env:GITHUB_OUTPUT
         Write-Output "nuget-release-pull-request-url=$nugetReleasePullRequestUrl" >> $env:GITHUB_OUTPUT
     - name: Dump outputs from previous step
@@ -208,8 +198,6 @@ jobs:
         # default values
         $issueNugetReleaseNodeStatus = 'default'
         $issueNugetReleaseUrl = 'empty'
-        $nugetReleaseCommandHandlerNodeStatus = 'default'
-        $nugetReleaseCommandHandlerUrl = 'empty'
         $nugetReleasePullRequestNodeStatus = 'default'
         $nugetReleasePullRequestUrl = 'empty'
         $publishNugetNodeStatus = 'default'
@@ -222,12 +210,6 @@ jobs:
         $issueNugetReleaseUrl = [string]::IsNullOrWhiteSpace('${{ steps.parse-nuget-flow-data.outputs.issue-nuget-release-url }}') `
           ? $issueNugetReleaseUrl `
           : '${{ steps.parse-nuget-flow-data.outputs.issue-nuget-release-url }}'
-        $nugetReleaseCommandHandlerNodeStatus = [string]::IsNullOrWhiteSpace('${{ steps.parse-nuget-flow-data.outputs.nuget-release-command-handler-node-status }}') `
-          ? $nugetReleaseCommandHandlerNodeStatus `
-          : '${{ steps.parse-nuget-flow-data.outputs.nuget-release-command-handler-node-status }}'
-        $nugetReleaseCommandHandlerUrl = [string]::IsNullOrWhiteSpace('${{ steps.parse-nuget-flow-data.outputs.nuget-release-command-handler-url }}') `
-          ? $nugetReleaseCommandHandlerUrl `
-          : '${{ steps.parse-nuget-flow-data.outputs.nuget-release-command-handler-url }}'
         $nugetReleasePullRequestNodeStatus = [string]::IsNullOrWhiteSpace('${{ steps.parse-nuget-flow-data.outputs.nuget-release-pull-request-node-status }}') `
           ? $nugetReleasePullRequestNodeStatus `
           : '${{ steps.parse-nuget-flow-data.outputs.nuget-release-pull-request-node-status }}'
@@ -242,12 +224,6 @@ jobs:
         $issueNugetReleaseUrl = [string]::IsNullOrWhiteSpace('${{ needs.release-flow-args.outputs.issue-nuget-release-url }}') `
           ? $issueNugetReleaseUrl `
           : '${{ needs.release-flow-args.outputs.issue-nuget-release-url }}'
-        $nugetReleaseCommandHandlerNodeStatus = [string]::IsNullOrWhiteSpace('${{ needs.release-flow-args.outputs.nuget-release-command-handler-node-status }}') `
-          ? $nugetReleaseCommandHandlerNodeStatus `
-          : '${{ needs.release-flow-args.outputs.nuget-release-command-handler-node-status }}'
-        $nugetReleaseCommandHandlerUrl = [string]::IsNullOrWhiteSpace('${{ needs.release-flow-args.outputs.nuget-release-command-handler-url }}') `
-          ? $nugetReleaseCommandHandlerUrl `
-          : '${{ needs.release-flow-args.outputs.nuget-release-command-handler-url }}'
         $nugetReleasePullRequestNodeStatus = [string]::IsNullOrWhiteSpace('${{ needs.release-flow-args.outputs.nuget-release-pull-request-node-status }}') `
           ? $nugetReleasePullRequestNodeStatus `
           : '${{ needs.release-flow-args.outputs.nuget-release-pull-request-node-status }}'
@@ -263,17 +239,8 @@ jobs:
 
         # reset nodes to default if the NuGet release flow info artifact node is an ancestor node
         $isIssueNugetReleaseNode = ![string]::IsNullOrWhiteSpace('${{ needs.release-flow-args.outputs.issue-nuget-release-node-status }}')
-        $isNugetReleaseCommandHandlerNode = ![string]::IsNullOrWhiteSpace('${{ needs.release-flow-args.outputs.nuget-release-command-handler-node-status }}')
         $isNugetReleasePullRequestNode = ![string]::IsNullOrWhiteSpace('${{ needs.release-flow-args.outputs.nuget-release-pull-request-node-status }}')
         if($isIssueNugetReleaseNode) {
-          $nugetReleaseCommandHandlerNodeStatus = 'default'
-          $nugetReleaseCommandHandlerUrl = 'empty'
-          $nugetReleasePullRequestNodeStatus = 'default'
-          $nugetReleasePullRequestUrl = 'empty'
-          $publishNugetNodeStatus = 'default'
-          $publishNugetUrl = 'empty'
-        }
-        elseif($isNugetReleaseCommandHandlerNode) {
           $nugetReleasePullRequestNodeStatus = 'default'
           $nugetReleasePullRequestUrl = 'empty'
           $publishNugetNodeStatus = 'default'
@@ -299,8 +266,6 @@ jobs:
         Write-Output "nuget-release-badge-color=${{ needs.release-flow-args.outputs.nuget-release-badge-color }}" >> $env:GITHUB_OUTPUT
         Write-Output "issue-nuget-release-node-status=$issueNugetReleaseNodeStatus" >> $env:GITHUB_OUTPUT
         Write-Output "issue-nuget-release-url=$issueNugetReleaseUrl" >> $env:GITHUB_OUTPUT
-        Write-Output "nuget-release-command-handler-node-status=$nugetReleaseCommandHandlerNodeStatus" >> $env:GITHUB_OUTPUT
-        Write-Output "nuget-release-command-handler-url=$nugetReleaseCommandHandlerUrl" >> $env:GITHUB_OUTPUT
         Write-Output "nuget-release-pull-request-node-status=$nugetReleasePullRequestNodeStatus" >> $env:GITHUB_OUTPUT
         Write-Output "nuget-release-pull-request-url=$nugetReleasePullRequestUrl" >> $env:GITHUB_OUTPUT
         Write-Output "publish-nuget-node-status=$publishNugetNodeStatus" >> $env:GITHUB_OUTPUT
@@ -319,8 +284,6 @@ jobs:
           --value "nugetReleaseBadgeColor=${{ steps.nuget-release-flow-info.outputs.nuget-release-badge-color }}" \
           --value "issueNugetReleaseNodeStatus=${{ steps.nuget-release-flow-info.outputs.issue-nuget-release-node-status }}" \
           --value "issueNugetReleaseUrl=${{ steps.nuget-release-flow-info.outputs.issue-nuget-release-url }}" \
-          --value "nugetReleaseCommandHandlerNodeStatus=${{ steps.nuget-release-flow-info.outputs.nuget-release-command-handler-node-status }}" \
-          --value "nugetReleaseCommandHandlerUrl=${{ steps.nuget-release-flow-info.outputs.nuget-release-command-handler-url }}" \
           --value "nugetReleasePullRequestNodeStatus=${{ steps.nuget-release-flow-info.outputs.nuget-release-pull-request-node-status }}" \
           --value "nugetReleasePullRequestUrl=${{ steps.nuget-release-flow-info.outputs.nuget-release-pull-request-url }}" \
           --value "publishNugetNodeStatus=${{ steps.nuget-release-flow-info.outputs.publish-nuget-node-status }}" \

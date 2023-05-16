@@ -7,15 +7,13 @@
   graph TD
       A([Create NuGet release issue]):::ok --> B
       B[Action: NuGet release]:::{{ .issueNugetReleaseNodeStatus }} --> C
-      C[Action: NuGet release command handler]:::{{ .nugetReleaseCommandHandlerNodeStatus }} --> D
-      D[Pull Request: Release NuGet {{ .nugetId }} {{ .nugetVersion }}]:::{{ .nugetReleasePullRequestNodeStatus }} --> E
-      E[Action: NuGet publish]:::{{ .publishNugetNodeStatus }} --> F([NuGet released]):::{{ .publishNugetNodeStatus }}
+      C[Pull Request: Release NuGet {{ .nugetId }} {{ .nugetVersion }}]:::{{ .nugetReleasePullRequestNodeStatus }} --> D
+      D[Action: NuGet publish]:::{{ .publishNugetNodeStatus }} --> E([NuGet released]):::{{ .publishNugetNodeStatus }}
   classDef ok stroke:#a5e16e
   classDef error stroke:#ff1355
   click B "{{ .issueNugetReleaseUrl }}" _blank
-  click C "{{ .nugetReleaseCommandHandlerUrl }}" _blank
-  click D "{{ .nugetReleasePullRequestUrl }}" _blank
-  click E "{{ .publishNugetUrl }}" _blank
+  click C "{{ .nugetReleasePullRequestUrl }}" _blank
+  click D "{{ .publishNugetUrl }}" _blank
 ``````
 
 - This shows the overall progress of the NuGet release flow. It might take some time for the diagram state to update, please be patient.
@@ -26,7 +24,5 @@
 <!-- nuget-version: {{ .nugetVersion}} -->
 <!-- issue-nuget-release-node-status: {{ .issueNugetReleaseNodeStatus }} -->
 <!-- issue-nuget-release-url: {{ .issueNugetReleaseUrl }} -->
-<!-- nuget-release-command-handler-node-status: {{ .nugetReleaseCommandHandlerNodeStatus }} -->
-<!-- nuget-release-command-handler-url: {{ .nugetReleaseCommandHandlerUrl }} -->
 <!-- nuget-release-pull-request-node-status: {{ .nugetReleasePullRequestNodeStatus }} -->
 <!-- nuget-release-pull-request-url: {{ .nugetReleasePullRequestUrl }} -->
