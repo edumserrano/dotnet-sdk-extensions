@@ -56,7 +56,7 @@ jobs:
       run: |
         $statuses = gh api repos/${{ github.repository }}/commits/${{ github.event.pull_request.head.sha }}/statuses | ConvertFrom-Json
         Write-Output $statuses
-        $nugetReleaseInfoStatus = $statuses | Where-Object {$_.context -eq "NuGet release command handler / NuGet release info (repository_dispatch)"}
+        $nugetReleaseInfoStatus = $statuses | Where-Object {$_.context -eq "NuGet release / NuGet release info (repository_dispatch)"}
         $nugetReleaseInfoWorkflowUrl = $nugetReleaseInfoStatus.target_url
         $runId = $nugetReleaseInfoWorkflowUrl.Split("/")[-1]
         Write-Output "run-id=$runId"
