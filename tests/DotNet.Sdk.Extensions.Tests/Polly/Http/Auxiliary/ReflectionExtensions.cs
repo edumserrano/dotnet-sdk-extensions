@@ -54,12 +54,7 @@ public static class ReflectionExtensions
             | BindingFlags.Public
             | BindingFlags.NonPublic
             | BindingFlags.Static;
-        var field = type.GetField(fieldName, bindFlags);
-        if (field is null)
-        {
-            throw new InvalidOperationException($"GetInstanceField: field {fieldName} does not exist.");
-        }
-
+        var field = type.GetField(fieldName, bindFlags) ?? throw new InvalidOperationException($"GetInstanceField: field {fieldName} does not exist.");
         return field.GetValue(instance);
     }
 
@@ -110,12 +105,7 @@ public static class ReflectionExtensions
             | BindingFlags.Public
             | BindingFlags.NonPublic
             | BindingFlags.Static;
-        var property = type.GetProperty(propertyName, bindFlags);
-        if (property is null)
-        {
-            throw new InvalidOperationException($"GetInstanceProperty: property {propertyName} does not exist.");
-        }
-
+        var property = type.GetProperty(propertyName, bindFlags) ?? throw new InvalidOperationException($"GetInstanceProperty: property {propertyName} does not exist.");
         return property.GetValue(instance);
     }
 }
