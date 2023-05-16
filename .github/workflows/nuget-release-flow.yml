@@ -140,7 +140,7 @@ jobs:
       run: $env:STEP_OUTPUT
 
   update-release-flow-diagram:
-    name: Update NuGet release flow diagram
+    name: 2 Update NuGet release flow diagram
     needs: [release-flow-args]
     # if: needs.release-flow-args.outputs.issue-number != '' # manually triggered workflows might not have an issue to update, example when using workflow_dispatch on the nuget-publish workflow
     permissions:
