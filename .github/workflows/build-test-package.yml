@@ -130,7 +130,7 @@ jobs:
         Write-Output "condition=$condition" >> $env:GITHUB_OUTPUT
         Write-Output "condition is set to $condition"
     - name: Upload opencover test coverage file to artifacts
-      if: steps.even-if-tests-fail.outputs.condition == 'true' && always()
+      if: matrix.os == 'ubuntu-latest'
       uses: actions/upload-artifact@v3
       with:
         name: opencover-test-coverage-file
