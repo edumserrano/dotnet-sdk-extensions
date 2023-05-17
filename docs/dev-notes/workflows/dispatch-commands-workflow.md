@@ -8,7 +8,7 @@ This workflow only dispatches repository/workflow events, other workflows will h
 
 The commands handled by this workflow are:
 
-- `retry-nuget-release` comment on GitHub issues. This will be handled by the [nuget-release workflow](/docs/dev-notes/workflows/nuget-release-workflow.md). It restarts the [NuGet package release process](/docs/dev-notes/workflows/nuget-release-flow.md). If the issue is not tagged with `nuget-release` then the command will not do anything.
+- `retry-nuget-release` comment on GitHub issues. This will be handled by the [nuget-release workflow](/docs/dev-notes/workflows/nuget-release-workflow.md). It restarts the [NuGet package release process](/docs/dev-notes/workflows/nuget-release-flow.md). If the issue is not tagged with `nuget-release` or the user does not have write access to the repo then the command is ignored.
 
 ## Secrets
 

@@ -14,3 +14,10 @@ During this flow the [nuget-release-flow workflow](/docs/dev-notes/workflows/nug
 
 If something fails during the release flow, the NuGet release issue diagram is updated accordingly and you can choose to restart the process by adding the following comment to the issue:
 > /retry-nuget-release
+
+## Security considerations
+
+Only users with write access to the repo will be release a NuGet package version. If a user without write access:
+
+- creates a `Release NuGet package` issue then the issue will be automaticallyu closed without doing the release.
+- tries to restart a NuGet package release by using the `/retry-nuget-release` command then the [workflow processing the command](/docs/dev-notes//workflows/dispatch-commands-workflow.md) will ignore it.
