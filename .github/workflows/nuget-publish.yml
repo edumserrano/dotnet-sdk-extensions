@@ -138,7 +138,6 @@ jobs:
         Write-Output "auto-generate-release-notes=$autoGenerateReleaseNotes" >> $env:GITHUB_OUTPUT
         Write-Output "nuget-package-run-id=$nugetPackageRunId" >> $env:GITHUB_OUTPUT
         Write-Output "github-release-sha=$githubReleaseSha" >> $env:GITHUB_OUTPUT
-
     - name: Dump outputs from previous step
       env:
         STEP_OUTPUT: ${{ toJSON(steps.nuget-publish-info.outputs) }}

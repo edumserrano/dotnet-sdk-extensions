@@ -33,6 +33,10 @@ jobs:
       with:
         username: '${{ github.triggering_actor }}'
         require: 'write'
+    - name: Dump outputs from previous step
+      env:
+        STEP_OUTPUT: ${{ toJSON(steps.check-user.outputs) }}
+      run: $env:STEP_OUTPUT
 
   test:
     name: test
