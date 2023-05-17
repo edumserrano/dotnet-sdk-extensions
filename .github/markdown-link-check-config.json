@@ -3,6 +3,10 @@
     {
       "pattern": "^https://www.linkedin.com/in/eduardomserrano/",
       "description": "Linkedin returns 999, can't figure out how to make this work past Linkedin's 'are you a human?' check."
+    },
+    {
+      "pattern": "^https://github.com/edumserrano/dotnet-sdk-extensions/security/code-scanning",
+      "description": "This link is only accessible with an authenticated user with the right access to the edumserrano/dotnet-sdk-extensions repo."
     }
   ],
   "replacementPatterns": [
