@@ -1,0 +1,38 @@
+name: Upload coverage to Codecov
+
+on:
+  workflow_run:
+    workflows: ["Build, test and package"]
+    types:
+    - completed
+
+defaults:
+  run:
+    shell: pwsh
+
+jobs:
+  main:
+    name: Build, test and package
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+    - name: Dump github context for debug purposes
+      env:
+        GITHUB_CONTEXT: ${{ toJSON(github) }}
+      run: $env:GITHUB_CONTEXT
+    - name: Download test coverage file
+      uses: dawidd6/action-download-artifact@v2
+      with:
+        name:  opencover-test-coverage-file
+        run_id: ${{ github.event.workflow_run.id }}
+    - name: Upload test coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }} # even though it's not required for public repos it helps with intermittent failures caused by https://community.codecov.com/t/upload-issues-unable-to-locate-build-via-github-actions-api/3954, https://github.com/codecov/codecov-action/issues/598,
+        files: ./coverage.net7.0.opencover.xml
+        fail_ci_if_error: true
+    - name: Log Codecov info
+      run: |
+        $codeCoveUrl = "https://app.codecov.io/gh/${{ github.repository }}/"
+        Write-Output "::notice title=Code coverage::Code coverage has been uploaded to Codecov at $codeCoveUrl."

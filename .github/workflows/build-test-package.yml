@@ -213,18 +213,6 @@ jobs:
       with:
         name: ${{ env.TEST_RESULTS_ARTIFACT_NAME }}
         path: ${{ steps.dotnet-test.outputs.test-results-dir }}
-    - name: Upload test coverage to Codecov
-      uses: codecov/codecov-action@v3
-      if: matrix.os == 'ubuntu-latest'  # this job is on a matrix run but I only want to upload code coverage to Codecov once
-      with:
-        token: ${{ secrets.CODECOV_TOKEN }} # even though it's not required for public repos it helps with intermittent failures caused by https://community.codecov.com/t/upload-issues-unable-to-locate-build-via-github-actions-api/3954, https://github.com/codecov/codecov-action/issues/598,
-        files: ${{ steps.dotnet-test.outputs.test-coverage-file }}
-        fail_ci_if_error: true
-    - name: Log Codecov info
-      if: matrix.os == 'ubuntu-latest'  # this job is on a matrix run but I only want to log this messages to the build summary once
-      run: |
-        $codeCoveUrl = "https://app.codecov.io/gh/${{ github.repository }}/"
-        Write-Output "::notice title=Code coverage (${{ matrix.os }})::Code coverage has been uploaded to Codecov at $codeCoveUrl. You can download the code coverage report from the workflow artifact named: ${{ env.CODE_COVERAGE_ARTIFACT_NAME }}."
     - name: Package DotNet.Sdk.Extensions
       if: matrix.os == 'ubuntu-latest'  # this job is on a matrix run but I only want to build the NuGet once
       run: dotnet pack src/DotNet.Sdk.Extensions/DotNet.Sdk.Extensions.csproj -c Release --no-build
@@ -242,7 +230,8 @@ jobs:
           ${{ env.EXTENSIONS_BIN_FOLDER }}/*.snupkg
           ${{ env.TESTING_EXTENSIONS_BIN_FOLDER }}/*.nupkg
           ${{ env.TESTING_EXTENSIONS_BIN_FOLDER }}/*.snupkg
-    - name: Log NuGet artifacts info
+    - name: Log artifacts info
       if: matrix.os == 'ubuntu-latest' # this job is on a matrix run but I only want to log this messages to the build summary once
       run: |
+        Write-Output "::notice title=Code coverage report::You can download the code coverage report from the workflow artifact named: ${{ env.CODE_COVERAGE_ARTIFACT_NAME }}."
         Write-Output "::notice title=NuGets::You can download the NuGet packages and symbols from the worfklow artifact named: ${{ env.NUGET_ARTIFACT_NAME }}."
