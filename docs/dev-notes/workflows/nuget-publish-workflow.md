@@ -7,7 +7,7 @@
 - Downloads the  appropriate NuGet package from the [build-test-package](/docs/dev-notes/workflows/build-test-package-workflow.md) workflow and publishes them to [nuget.org](https://www.nuget.org/).
 - Creates a GitHub release for the published NuGet package.
 
-This workflow can be manually triggered but usually it gets invoked as part of the [NuGet release process](TODO).
+This workflow can be manually triggered but usually it gets invoked as part of the [NuGet release process](/docs/dev-notes/workflows/nuget-release-flow.md).
 
 ## Secrets
 

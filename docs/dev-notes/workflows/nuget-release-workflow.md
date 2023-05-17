@@ -4,7 +4,7 @@
 
 [This workflow](/.github/workflows/nuget-release.yml):
 
-- Parses the data created from the NuGet release Github issue form.
+- Parses the data created from the [NuGet release Github issue form](/docs/dev-notes/workflows/nuget-release-flow.md).
 - Handles retries triggered from the Nuget release issue. Adding a comment on the NuGet release issue with the value `/retry-nuget-release` is handled via the [dispatch-commands workflow](/docs/dev-notes/workflows/dispatch-commands-workflow.md) which will in turn trigger this workflow.
 - Uploads a nuget release info artifact which contains information about the NuGet release. This will later be used by the [nuget-publish workflow](/docs/dev-notes/workflows/nuget-publish-workflow.md) to publish the NuGet to [nuget.org](https://www.nuget.org/) and create a GitHub release.
 - Checks if there is any open PR for NuGet release. PRs for NuGet release have the `nuget-release` label and a label with the NuGet id.

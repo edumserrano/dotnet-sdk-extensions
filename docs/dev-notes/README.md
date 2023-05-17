@@ -11,6 +11,7 @@
 - [Source Link configuration](#source-link-configuration)
 - [Repository configuration](#repository-configuration)
 - [GitHub Workflows](#github-workflows)
+- [Release NuGet package](#release-nuget-package)
 
 ## Building
 
@@ -95,3 +96,7 @@ From all the GitHub repository settings the configurations worth mentioning are:
 ## GitHub Workflows
 
 For more information about the GitHub workflows configured for this repo go [here](/docs/dev-notes/workflows/README.md).
+
+## Release NuGet package
+
+To release a new version of the NuGet packages follow the process described in [NuGet release flow](/docs/dev-notes/workflows/nuget-release-flow.md).
