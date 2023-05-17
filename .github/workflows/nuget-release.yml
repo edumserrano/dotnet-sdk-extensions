@@ -14,9 +14,29 @@ defaults:
     shell: pwsh
 
 jobs:
-  workflow-args:
+  user-permissions-check:
     name: Process workflow input data
     if: (github.event_name == 'issues' && contains(github.event.issue.labels.*.name, 'nuget-release')) || (github.event_name == 'repository_dispatch' && contains(github.event.client_payload.github.payload.issue.labels.*.name, 'nuget-release'))
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    outputs:
+      allowed: ${{ steps.check-user.outputs.check-result }}
+    steps:
+    - name: Dump github context for debug purposes
+      env:
+        GITHUB_CONTEXT: ${{ toJSON(github) }}
+      run: $env:GITHUB_CONTEXT
+    - uses: actions-cool/check-user-permission@v2
+      id: check-user
+      with:
+        username: '${{ github.triggering_actor }}'
+        require: 'write'
+
+  workflow-args:
+    name: Process workflow input data
+    needs: [user-permissions-check]
+    if: needs.user-permissions-check.outputs.check-result == 'true' && ((github.event_name == 'issues' && contains(github.event.issue.labels.*.name, 'nuget-release')) || (github.event_name == 'repository_dispatch' && contains(github.event.client_payload.github.payload.issue.labels.*.name, 'nuget-release')))
     permissions:
       contents: read
     runs-on: ubuntu-latest
