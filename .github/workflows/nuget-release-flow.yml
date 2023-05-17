@@ -321,7 +321,7 @@ jobs:
   on-permission-check-fail:
     name: Update NuGet release flow diagram
     needs: [release-flow-args, update-release-flow-diagram]
-    if: always() && update-release-flow-diagram.result == 'success' && needs.release-flow-args.outputs.is-user-allowed-to-release-nuget == 'false'
+    if: always() && needs.update-release-flow-diagram.result == 'success' && needs.release-flow-args.outputs.is-user-allowed-to-release-nuget == 'false'
     permissions:
       contents: read
       issues: write
