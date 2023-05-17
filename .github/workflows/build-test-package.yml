@@ -129,6 +129,12 @@ jobs:
         $condition = '${{ (steps.dotnet-test.conclusion == 'success' || steps.dotnet-test.conclusion == 'failure') }}'
         Write-Output "condition=$condition" >> $env:GITHUB_OUTPUT
         Write-Output "condition is set to $condition"
+    - name: Upload opencover test coverage file to artifacts
+      if: steps.even-if-tests-fail.outputs.condition == 'true' && always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: opencover-test-coverage-file
+        path: ${{ steps.dotnet-test.outputs.test-coverage-file }}
     - name: Generate code coverage report
       id: code-coverage-report-generator
       if: steps.even-if-tests-fail.outputs.condition == 'true' && always()
