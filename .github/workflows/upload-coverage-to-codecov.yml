@@ -21,7 +21,10 @@ jobs:
       env:
         GITHUB_CONTEXT: ${{ toJSON(github) }}
       run: $env:GITHUB_CONTEXT
-    - name: Checkout repository # checking out the repo seems to be necessary for the codecov/codecov-action@v3 to work properly. Otherwise the upload step works but Codecov site displays an error for the upload: "unusable report".
+      # Checking out the repo is necessary for the codecov/codecov-action@v3 to work properly. Codecov requires
+      # the source code to be able to process the coverage file and generate coverage reports.
+      # Otherwise the upload step works but the processing of the coverage files fails with the error: "unusable report".
+    - name: Checkout repository
       uses: actions/checkout@v3
       with:
         ref: ${{ github.event.workflow_run.head_sha }}
