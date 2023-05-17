@@ -179,6 +179,7 @@ jobs:
   check-pr:
     name: Check for open NuGet release PR
     needs: [parse-issue]
+    if: needs.user-permissions-check.outputs.allowed == 'true'
     permissions:
       contents: read
       pull-requests: read
@@ -402,6 +403,7 @@ jobs:
   merge-pr:
     name: Set PR auto merge
     needs: [create-pr, output-artifacts]
+    if: always() && needs.create-pr.result == 'success' && needs.output-artifacts.result == 'success'
     permissions:
       contents: read
     runs-on: ubuntu-latest
