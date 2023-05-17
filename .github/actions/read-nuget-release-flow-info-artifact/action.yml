@@ -53,6 +53,9 @@ outputs:
   publish-nuget-url:
     description: 'The URL for the NuGet release publish action.'
     value: ${{ steps.set-action-outputs.outputs.publish-nuget-url }}
+  is-user-allowed-to-release-nuget:
+    description: 'Whether the user is allowed to create a NuGet release or not.'
+    value: ${{ steps.set-action-outputs.outputs.is-user-allowed-to-release-nuget }}
 
 runs:
   using: "composite"
@@ -106,6 +109,7 @@ runs:
         $nugetReleasePullRequestUrl = '${{ steps.nuget-release-flow-info-from-current-workflow.outputs.nuget-release-pull-request-url }}'
         $publishNugetNodeStatus = '${{ steps.nuget-release-flow-info-from-current-workflow.outputs.publish-nuget-node-status }}'
         $publishNugetUrl = '${{ steps.nuget-release-flow-info-from-current-workflow.outputs.publish-nuget-url }}'
+        $isUserAllowedToReleaseNuget = '${{ steps.nuget-release-flow-info-from-current-workflow.outputs.is-user-allowed-to-release-nuget }}'
       }
       elseif($source -eq "different-workflow")
       {
@@ -120,6 +124,7 @@ runs:
         $nugetReleasePullRequestUrl = '${{ steps.nuget-release-flow-info-from-different-workflow.outputs.nuget-release-pull-request-url }}'
         $publishNugetNodeStatus = '${{ steps.nuget-release-flow-info-from-different-workflow.outputs.publish-nuget-node-status }}'
         $publishNugetUrl = '${{ steps.nuget-release-flow-info-from-different-workflow.outputs.publish-nuget-url }}'
+        $isUserAllowedToReleaseNuget = '${{ steps.nuget-release-flow-info-from-different-workflow.outputs.is-user-allowed-to-release-nuget }}'
       }
       else
       {
@@ -138,6 +143,7 @@ runs:
       Write-Output "nuget-release-pull-request-url=$nugetReleasePullRequestUrl" >> $env:GITHUB_OUTPUT
       Write-Output "publish-nuget-node-status=$publishNugetNodeStatus" >> $env:GITHUB_OUTPUT
       Write-Output "publish-nuget-url=$publishNugetUrl" >> $env:GITHUB_OUTPUT
+      Write-Output "is-user-allowed-to-release-nuget=$isUserAllowedToReleaseNuget" >> $env:GITHUB_OUTPUT
   - name: Dump outputs from previous step
     shell: pwsh
     env:

@@ -16,7 +16,6 @@ defaults:
 jobs:
   user-permissions-check:
     name: User permissions check
-    if: (github.event_name == 'issues' && contains(github.event.issue.labels.*.name, 'nuget-release')) || (github.event_name == 'repository_dispatch' && contains(github.event.client_payload.github.payload.issue.labels.*.name, 'nuget-release'))
     permissions:
       contents: read
     runs-on: ubuntu-latest
@@ -36,8 +35,7 @@ jobs:
 
   workflow-args:
     name: Process workflow input data
-    needs: [user-permissions-check]
-    if: needs.user-permissions-check.outputs.allowed == 'true' && ((github.event_name == 'issues' && contains(github.event.issue.labels.*.name, 'nuget-release')) || (github.event_name == 'repository_dispatch' && contains(github.event.client_payload.github.payload.issue.labels.*.name, 'nuget-release')))
+    if: (github.event_name == 'issues' && contains(github.event.issue.labels.*.name, 'nuget-release')) || (github.event_name == 'repository_dispatch' && contains(github.event.client_payload.github.payload.issue.labels.*.name, 'nuget-release'))
     permissions:
       contents: read
     runs-on: ubuntu-latest
@@ -139,7 +137,8 @@ jobs:
 
   release-info:
     name: Upload release info
-    needs: [workflow-args, parse-issue]
+    needs: [workflow-args, parse-issue, user-permissions-check]
+    if: needs.user-permissions-check.outputs.allowed == 'true'
     permissions:
       contents: read
       statuses: write
@@ -358,7 +357,7 @@ jobs:
 
   output-artifacts:
     name: Create output artifacts
-    needs: [ workflow-args, parse-issue ]
+    needs: [ workflow-args, parse-issue, user-permissions-check ]
     if: always() && needs.parse-issue.result != 'skipped'
     permissions:
       contents: read
@@ -369,8 +368,9 @@ jobs:
     - name: Setup NuGet release flow info
       id: set-nuget-release-flow-info
       run: |
+        $isUserAllowedToReleaseNuget = [System.Convert]::ToBoolean("${{ needs.user-permissions-check.outputs.allowed }}")
         $workflowResult = '${{ needs.parse-issue.result }}'
-        if($workflowResult -eq 'success')
+        if($workflowResult -eq 'success' && $isUserAllowedToReleaseNuget)
         {
           $workflowStatus = "ok"
           $releaseStatus = "in%20progress"
@@ -386,6 +386,7 @@ jobs:
         Write-Output "nuget-release-status=$releaseStatus" >> $env:GITHUB_OUTPUT
         Write-Output "nuget-release-badge-color=$releaseBadgeColor" >> $env:GITHUB_OUTPUT
         Write-Output "issue-nuget-release-node-status=$workflowStatus" >> $env:GITHUB_OUTPUT
+        Write-Output "is-user-allowed-to-release-nuget=$isUserAllowedToReleaseNuget" >> $env:GITHUB_OUTPUT
     - name: Upload NuGet release flow info artifact
       uses: ./.github/actions/create-nuget-release-flow-info-artifact
       with:
@@ -396,6 +397,7 @@ jobs:
         nuget-release-badge-color: '${{ steps.set-nuget-release-flow-info.outputs.nuget-release-badge-color }}'
         issue-nuget-release-node-status: '${{ steps.set-nuget-release-flow-info.outputs.issue-nuget-release-node-status}}'
         issue-nuget-release-url: 'https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}'
+        is-user-allowed-to-release-nuget: '${{ steps.set-nuget-release-flow-info.outputs.is-user-allowed-to-release-nuget }}'
 
   merge-pr:
     name: Set PR auto merge

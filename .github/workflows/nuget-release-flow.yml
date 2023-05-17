@@ -104,6 +104,7 @@ jobs:
       nuget-release-pull-request-url: ${{ steps.nuget-flow-info.outputs.nuget-release-pull-request-url }}
       publish-nuget-node-status: ${{ steps.nuget-flow-info.outputs.publish-nuget-node-status }}
       publish-nuget-url: ${{ steps.nuget-flow-info.outputs.publish-nuget-url }}
+      is-user-allowed-to-release-nuget: ${{ steps.nuget-flow-info.outputs.is-user-allowed-to-release-nuget }}
     steps:
     - name: Dump github context for debug purposes
       env:
@@ -316,6 +317,50 @@ jobs:
         comment-author: github-actions[bot]
         body: ${{ steps.render-issue-comment-template.outputs.result }}
         edit-mode: replace
+
+  on-permission-check-fail:
+    name: Update NuGet release flow diagram
+    needs: [release-flow-args, update-release-flow-diagram]
+    if: always() && update-release-flow-diagram.result == 'success' && needs.release-flow-args.outputs.is-user-allowed-to-release-nuget == 'false'
+    permissions:
+      contents: read
+      issues: write
+    runs-on: ubuntu-latest
+    steps:
+    - name: Dump github context for debug purposes
+      env:
+        GITHUB_CONTEXT: ${{ toJSON(github) }}
+      run: $env:GITHUB_CONTEXT
+    - name: Checkout repository
+      uses: actions/checkout@v3
+    - name: Render close issue comment template
+      uses: yukitsune/template-cli@v0.1.0
+      with:
+        args: --input .github/workflows/templates/nuget-release-flow/permission-denied-for-nuget-release.md \
+          --value "user=${{ github.triggering_actor }}" \
+          --output .
+    - name: Set render close issue comment template as step output
+      id: render-issue-comment-template
+      run: |
+        $fileContent = Get-Content ./permission-denied-for-nuget-release.md
+        $random = Get-Random
+        $delimiter = "EOF_$random"
+        Write-Output "result<<$delimiter" >> $env:GITHUB_OUTPUT
+        Write-Output $fileContent >> $env:GITHUB_OUTPUT
+        Write-Output $delimiter >> $env:GITHUB_OUTPUT
+    - name: Update issue with permission denied for NuGet release comment
+      uses: edumserrano/find-create-or-update-comment@v1
+      with:
+        issue-number: ${{ needs.release-flow-args.outputs.issue-number }}
+        body-includes: '<!-- permission-denied-for-nuget-release -->'
+        comment-author: github-actions[bot]
+        body: ${{ steps.render-issue-comment-template.outputs.result }}
+        edit-mode: replace
+    - name: Close NuGet release issue
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        gh issue close ${{ needs.release-flow-args.outputs.issue-number }}
 
   close-release-issue:
     name: Close NuGet release issue

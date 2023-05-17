@@ -46,6 +46,9 @@ inputs:
   publish-nuget-url:
     description: 'The URL for the NuGet release publish action.'
     required: false
+  is-user-allowed-to-release-nuget:
+    description: 'Whether the user is allowed to create a NuGet release or not.'
+    required: false
 
 runs:
   using: "composite"
@@ -71,3 +74,4 @@ runs:
         nuget-release-pull-request-url: '${{ inputs.nuget-release-pull-request-url }}'
         publish-nuget-node-status: '${{ inputs.publish-nuget-node-status }}'
         publish-nuget-url: '${{ inputs.publish-nuget-url }}'
+        is-user-allowed-to-release-nuget: '${{ inputs.is-user-allowed-to-release-nuget }}'
