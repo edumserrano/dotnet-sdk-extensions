@@ -28,12 +28,6 @@ inputs:
   issue-nuget-release-url:
     description: 'The URL for the NuGet release GitHub issue action.'
     required: false
-  nuget-release-command-handler-node-status:
-    description: 'The status of the NuGet release flow node for the NuGet release command handler action.'
-    required: false
-  nuget-release-command-handler-url:
-    description: 'The URL for the NuGet release command handler action.'
-    required: false
   nuget-release-pull-request-node-status:
     description: 'The status of the NuGet release flow node for the NuGet release pull request.'
     required: false
@@ -68,8 +62,6 @@ runs:
         nuget-release-badge-color: '${{ inputs.nuget-release-badge-color }}'
         issue-nuget-release-node-status: '${{ inputs.issue-nuget-release-node-status }}'
         issue-nuget-release-url: '${{ inputs.issue-nuget-release-url }}'
-        nuget-release-command-handler-node-status: '${{ inputs.nuget-release-command-handler-node-status }}'
-        nuget-release-command-handler-url: '${{ inputs.nuget-release-command-handler-url }}'
         nuget-release-pull-request-node-status: '${{ inputs.nuget-release-pull-request-node-status }}'
         nuget-release-pull-request-url: '${{ inputs.nuget-release-pull-request-url }}'
         publish-nuget-node-status: '${{ inputs.publish-nuget-node-status }}'

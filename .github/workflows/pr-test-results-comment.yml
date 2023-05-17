@@ -36,7 +36,6 @@ jobs:
     - name: Download artifact
       uses: dawidd6/action-download-artifact@v2
       with:
-        workflow: ${{ github.event.workflow_run.workflow_id }}
         name:  ${{ env.TEST_RESULTS_ARTIFACT_NAME }}
         run_id: ${{ github.event.workflow_run.id }}
         path: ${{ env.TEST_RESULTS_ARTIFACT_NAME }}

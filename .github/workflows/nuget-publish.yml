@@ -65,7 +65,6 @@ jobs:
       uses: dawidd6/action-download-artifact@v2
       if: github.event_name == 'pull_request'
       with:
-        workflow: nuget-release-command-handler.yml
         name:  nuget-release-info
         run_id: ${{ steps.release-info.outputs.run-id }}
     - name: Download NuGet release notes artifact from PR
@@ -73,7 +72,6 @@ jobs:
       if: github.event_name == 'pull_request'
       uses: dawidd6/action-download-artifact@v2
       with:
-        workflow: nuget-release-command-handler.yml
         name:  ${{ env.CUSTOM_RELEASE_NOTES_ARTIFACT_NAME }}
         run_id: ${{ steps.release-info.outputs.run-id }}
     - name: Prepare NuGet publish info
@@ -163,7 +161,6 @@ jobs:
     - name: Download NuGet package artifact
       uses: dawidd6/action-download-artifact@v2
       with:
-        workflow: build-test-package.yml
         name:  nuget-packages-and-symbols
         run_id: ${{ needs.workflow-args.outputs.nuget-package-run-id }}
     - name: Download custom release notes artifact

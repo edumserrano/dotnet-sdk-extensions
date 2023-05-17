@@ -307,7 +307,7 @@ jobs:
     - name: Render PR body template
       uses: yukitsune/template-cli@v0.1.0
       with:
-        args: --input .github/workflows/templates/nuget-release-command-handler/create-nuget-release-pr-body.md \
+        args: --input .github/workflows/templates/nuget-release/create-nuget-release-pr-body.md \
           --value "nugetId=${{ steps.nuget-release-pr-data.outputs.nuget-id }}" \
           --value "nugetCurrentVersion=${{ steps.nuget-release-pr-data.outputs.nuget-current-version }}" \
           --value "nugetNewVersion=${{ steps.nuget-release-pr-data.outputs.nuget-new-version }}" \
@@ -371,7 +371,7 @@ jobs:
       run: |
         $isUserAllowedToReleaseNuget = [System.Convert]::ToBoolean("${{ needs.user-permissions-check.outputs.allowed }}")
         $workflowResult = '${{ needs.parse-issue.result }}'
-        if($workflowResult -eq 'success' && $isUserAllowedToReleaseNuget)
+        if($workflowResult -eq 'success' -and $isUserAllowedToReleaseNuget)
         {
           $workflowStatus = "ok"
           $releaseStatus = "in%20progress"

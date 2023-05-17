@@ -58,7 +58,6 @@ jobs:
     - name: Download markdown link check workflow info artifact
       uses: dawidd6/action-download-artifact@v2
       with:
-        workflow: ${{ github.event.workflow_run.workflow_id }}
         name:  ${{ env.MLC_WORKFLOW_INFO_ARTIFACT }}
         run_id: ${{ github.event.workflow_run.id }}
     - name: Read markdown link check workflow info

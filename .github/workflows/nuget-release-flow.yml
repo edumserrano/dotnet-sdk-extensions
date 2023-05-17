@@ -50,7 +50,6 @@ jobs:
     - name: Download NuGet release info artifact
       uses: dawidd6/action-download-artifact@v2
       with:
-        workflow: nuget-release.yml
         name:  nuget-release-info
         run_id: ${{ steps.release-info.outputs.run-id }}
     - name: Set NuGet release flow info
@@ -319,7 +318,7 @@ jobs:
         edit-mode: replace
 
   on-permission-check-fail:
-    name: Update NuGet release flow diagram
+    name: Handle permission denied for NuGet release
     needs: [release-flow-args, update-release-flow-diagram]
     if: always() && needs.update-release-flow-diagram.result == 'success' && needs.release-flow-args.outputs.is-user-allowed-to-release-nuget == 'false'
     permissions:
@@ -376,7 +375,6 @@ jobs:
     - name: Download GitHub release info artifact
       uses: dawidd6/action-download-artifact@v2
       with:
-        workflow: ${{ github.event.workflow_run.workflow_id }}
         name:  github-release-info
         run_id: ${{ github.event.workflow_run.id }}
     - name: Read GitHub release info artifact
