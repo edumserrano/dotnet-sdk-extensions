@@ -7,6 +7,7 @@ on:
       "NuGet publish"
     ]
     types:
+    - in_progress
     - completed
   pull_request:
     branches: [ main ]
@@ -22,6 +23,15 @@ defaults:
 # That's why all the jobs after on-pr have the always() check.
 
 jobs:
+  test:
+    name: test
+    runs-on: ubuntu-latest
+    steps:
+    - name: Dump github context for debug purposes
+      env:
+        GITHUB_CONTEXT: ${{ toJSON(github) }}
+      run: $env:GITHUB_CONTEXT
+
   on-pr:
     name: Create output artifacts
     if: github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'nuget-release')
