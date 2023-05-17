@@ -34,10 +34,26 @@ jobs:
         username: '${{ github.triggering_actor }}'
         require: 'write'
 
+  test:
+    name: test
+    needs: [user-permissions-check]
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    outputs:
+      allowed: ${{ steps.check-user.outputs.check-result }}
+    steps:
+    - name: Dump outputs from previous job
+      shell: pwsh
+      env:
+        STEP_OUTPUT: ${{ toJSON(needs.user-permissions-check.outputs) }}
+      run: $env:STEP_OUTPUT
+
   workflow-args:
     name: Process workflow input data
     needs: [user-permissions-check]
-    if: needs.user-permissions-check.outputs.allowed == 'true' && ((github.event_name == 'issues' && contains(github.event.issue.labels.*.name, 'nuget-release')) || (github.event_name == 'repository_dispatch' && contains(github.event.client_payload.github.payload.issue.labels.*.name, 'nuget-release')))
+    if: needs.user-permissions-check.outputs.allowed == 'true'
+    # if: needs.user-permissions-check.outputs.allowed == 'true' && ((github.event_name == 'issues' && contains(github.event.issue.labels.*.name, 'nuget-release')) || (github.event_name == 'repository_dispatch' && contains(github.event.client_payload.github.payload.issue.labels.*.name, 'nuget-release')))
     permissions:
       contents: read
     runs-on: ubuntu-latest
