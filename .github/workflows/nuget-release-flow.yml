@@ -7,7 +7,6 @@ on:
       "NuGet publish"
     ]
     types:
-    - requested
     - completed
   pull_request:
     branches: [ main ]
@@ -85,51 +84,6 @@ jobs:
         nuget-release-badge-color: '${{ steps.set-nuget-release-flow-info.outputs.nuget-release-badge-color }}'
         nuget-release-pull-request-node-status: '${{ steps.set-nuget-release-flow-info.outputs.nuget-release-pull-request-node-status }}'
         nuget-release-pull-request-url: '${{ github.event.pull_request.html_url }}'
-
-  on-nuget-release-requested:
-    name: Create output artifacts
-    if: github.event_name == 'workflow_run' && github.event.action == 'requested' && github.event.workflow_run.name == 'NuGet release'
-    permissions:
-      contents: read
-    runs-on: ubuntu-latest
-    steps:
-    - name: Dump github context for debug purposes
-      env:
-        GITHUB_CONTEXT: ${{ toJSON(github) }}
-      run: $env:GITHUB_CONTEXT
-    # - name: Checkout repository
-    #   uses: actions/checkout@v3
-    # - name: Set NuGet release flow info
-    #   id: set-nuget-release-flow-info
-    #   run: |
-    #     $prMerged = [System.Convert]::ToBoolean('${{ github.event.pull_request.merged }}')
-    #     if($prMerged) {
-    #       $workflowStatus = "ok"
-    #       $releaseStatus = "in%20progress"
-    #       $releaseBadgeColor = "blue"
-    #     }
-    #     else {
-    #       $workflowStatus = "error"
-    #       $releaseStatus = "failed"
-    #       $releaseBadgeColor = "red"
-    #     }
-
-    #     $nugetInfoJson = Get-Content ./nuget-release-info.md
-    #     $nugetInfo = $nugetInfoJson | ConvertFrom-Json
-    #     $issueNumber = $nugetInfo.issueNumber
-
-    #     Write-Output "issue-number=$issueNumber" >> $env:GITHUB_OUTPUT
-    #     Write-Output "nuget-release-status=$releaseStatus" >> $env:GITHUB_OUTPUT
-    #     Write-Output "nuget-release-badge-color=$releaseBadgeColor" >> $env:GITHUB_OUTPUT
-    #     Write-Output "nuget-release-pull-request-node-status=$workflowStatus" >> $env:GITHUB_OUTPUT
-    # - name: Upload NuGet release flow info artifact
-    #   uses: ./.github/actions/create-nuget-release-flow-info-artifact
-    #   with:
-    #     issue-number: '${{ steps.set-nuget-release-flow-info.outputs.issue-number }}'
-    #     nuget-release-status: '${{ steps.set-nuget-release-flow-info.outputs.nuget-release-status }}'
-    #     nuget-release-badge-color: '${{ steps.set-nuget-release-flow-info.outputs.nuget-release-badge-color }}'
-    #     nuget-release-pull-request-node-status: '${{ steps.set-nuget-release-flow-info.outputs.nuget-release-pull-request-node-status }}'
-    #     nuget-release-pull-request-url: '${{ github.event.pull_request.html_url }}'
 
   release-flow-args:
     name: Process NuGet release flow info artifact

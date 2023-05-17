@@ -193,46 +193,46 @@ jobs:
         Write-Output "nuget-gh-release-artifacts=$nugetArtifacts" >> $env:GITHUB_OUTPUT
         Write-Output "nuget-package=$nugetPackage" >> $env:GITHUB_OUTPUT
         Write-Output "nuget-symbols=$nugetSymbols" >> $env:GITHUB_OUTPUT
-    # - name: Create GitHub release
-    #   id: create-gh-release
-    #   uses: ncipollo/release-action@v1
-    #   with:
-    #     commit: ${{ needs.workflow-args.outputs.github-release-sha }}
-    #     tag: ${{ needs.workflow-args.outputs.nuget-id }}-${{ needs.workflow-args.outputs.nuget-version }}
-    #     artifacts: '${{ steps.nuget-publish-info.outputs.nuget-gh-release-artifacts }}'
-    #     bodyFile: ${{ steps.nuget-publish-info.outputs.nuget-release-notes-file-path }}
-    #     generateReleaseNotes: ${{ needs.workflow-args.outputs.auto-generate-release-notes }}
-    #     token: ${{ secrets.GITHUB_TOKEN }}
-    # - name: Publish NuGet and symbols
-    #   id: nuget-push
-    #   uses: edumserrano/nuget-push@v1
-    #   with:
-    #     api-key: ${{ secrets.NUGET_PUSH_API_KEY }}
-    #     nuget-package: '${{ steps.nuget-publish-info.outputs.nuget-package }}'
-    #     symbols-package: '${{ steps.nuget-publish-info.outputs.nuget-symbols }}'
-    # - name: Log NuGet push info
-    #   if: steps.nuget-push.conclusion != 'skipped' && always()
-    #   run: |
-    #     $nugetId = '${{ needs.workflow-args.outputs.nuget-id }}'
-    #     $nugetUrl = "https://www.nuget.org/packages/$nugetId"
-    #     $nugetPushResult = '${{ steps.nuget-push.outputs.push-result }}' | ConvertFrom-Json
-    #     $package = $nugetPushResult.packages[0] # we are only using the nuget push action to push one package so I don't need to iterate the packages list, I can just get the first
+    - name: Create GitHub release
+      id: create-gh-release
+      uses: ncipollo/release-action@v1
+      with:
+        commit: ${{ needs.workflow-args.outputs.github-release-sha }}
+        tag: ${{ needs.workflow-args.outputs.nuget-id }}-${{ needs.workflow-args.outputs.nuget-version }}
+        artifacts: '${{ steps.nuget-publish-info.outputs.nuget-gh-release-artifacts }}'
+        bodyFile: ${{ steps.nuget-publish-info.outputs.nuget-release-notes-file-path }}
+        generateReleaseNotes: ${{ needs.workflow-args.outputs.auto-generate-release-notes }}
+        token: ${{ secrets.GITHUB_TOKEN }}
+    - name: Publish NuGet and symbols
+      id: nuget-push
+      uses: edumserrano/nuget-push@v1
+      with:
+        api-key: ${{ secrets.NUGET_PUSH_API_KEY }}
+        nuget-package: '${{ steps.nuget-publish-info.outputs.nuget-package }}'
+        symbols-package: '${{ steps.nuget-publish-info.outputs.nuget-symbols }}'
+    - name: Log NuGet push info
+      if: steps.nuget-push.conclusion != 'skipped' && always()
+      run: |
+        $nugetId = '${{ needs.workflow-args.outputs.nuget-id }}'
+        $nugetUrl = "https://www.nuget.org/packages/$nugetId"
+        $nugetPushResult = '${{ steps.nuget-push.outputs.push-result }}' | ConvertFrom-Json
+        $package = $nugetPushResult.packages[0] # we are only using the nuget push action to push one package so I don't need to iterate the packages list, I can just get the first
 
-    #     if($package.status -eq 'ok') {
-    #       Write-Output "::notice title=$nugetId NuGet::Successfully pushed $nugetId NuGet and symbols to nuget.org. You can find the package at: $nugetUrl."
-    #     }
-    #     elseif($package.status -eq 'nuget-already-exists') {
-    #       Write-Output "::notice title=$nugetId NuGet::$nugetId NuGet was NOT published to nuget.org because the version to be pushed already exists."
-    #     }
-    #     elseif($package.status -eq 'nuget-push-failed') {
-    #       Write-Output "::error title=$nugetIdNuGet::Failed to push NuGet $nugetId."
-    #     }
-    #     elseif($package.status -eq 'symbols-push-failed') {
-    #       Write-Output "::error title=$nugetIdNuGet::Failed to push symbols for $nugetId."
-    #     }
-    #     else{
-    #       Write-Output "::error title=$nugetIdNuGet::Unexpected nuget push result status: $($package.status)."
-    #     }
+        if($package.status -eq 'ok') {
+          Write-Output "::notice title=$nugetId NuGet::Successfully pushed $nugetId NuGet and symbols to nuget.org. You can find the package at: $nugetUrl."
+        }
+        elseif($package.status -eq 'nuget-already-exists') {
+          Write-Output "::notice title=$nugetId NuGet::$nugetId NuGet was NOT published to nuget.org because the version to be pushed already exists."
+        }
+        elseif($package.status -eq 'nuget-push-failed') {
+          Write-Output "::error title=$nugetIdNuGet::Failed to push NuGet $nugetId."
+        }
+        elseif($package.status -eq 'symbols-push-failed') {
+          Write-Output "::error title=$nugetIdNuGet::Failed to push symbols for $nugetId."
+        }
+        else{
+          Write-Output "::error title=$nugetIdNuGet::Unexpected nuget push result status: $($package.status)."
+        }
 
   output-artifacts:
     name: Create output artifacts
