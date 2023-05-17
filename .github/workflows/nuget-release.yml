@@ -15,7 +15,7 @@ defaults:
 
 jobs:
   user-permissions-check:
-    name: Process workflow input data
+    name: User permissions check
     if: (github.event_name == 'issues' && contains(github.event.issue.labels.*.name, 'nuget-release')) || (github.event_name == 'repository_dispatch' && contains(github.event.client_payload.github.payload.issue.labels.*.name, 'nuget-release'))
     permissions:
       contents: read
@@ -27,7 +27,8 @@ jobs:
       env:
         GITHUB_CONTEXT: ${{ toJSON(github) }}
       run: $env:GITHUB_CONTEXT
-    - uses: actions-cool/check-user-permission@v2
+    - name: Check user permissions
+      uses: actions-cool/check-user-permission@v2
       id: check-user
       with:
         username: '${{ github.triggering_actor }}'
@@ -36,7 +37,7 @@ jobs:
   workflow-args:
     name: Process workflow input data
     needs: [user-permissions-check]
-    if: needs.user-permissions-check.outputs.check-result == 'true' && ((github.event_name == 'issues' && contains(github.event.issue.labels.*.name, 'nuget-release')) || (github.event_name == 'repository_dispatch' && contains(github.event.client_payload.github.payload.issue.labels.*.name, 'nuget-release')))
+    if: needs.user-permissions-check.outputs.allowed == 'true' && ((github.event_name == 'issues' && contains(github.event.issue.labels.*.name, 'nuget-release')) || (github.event_name == 'repository_dispatch' && contains(github.event.client_payload.github.payload.issue.labels.*.name, 'nuget-release')))
     permissions:
       contents: read
     runs-on: ubuntu-latest
