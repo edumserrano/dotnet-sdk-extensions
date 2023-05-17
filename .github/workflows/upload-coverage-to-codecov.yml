@@ -21,7 +21,7 @@ jobs:
       env:
         GITHUB_CONTEXT: ${{ toJSON(github) }}
       run: $env:GITHUB_CONTEXT
-    - name: Checkout repository
+    - name: Checkout repository # checking out the repo seems to be necessary for the codecov/codecov-action@v3 to work properly. Otherwise the upload step works but Codecov site displays an error for the upload: "unusable report".
       uses: actions/checkout@v3
       with:
         ref: ${{ github.event.workflow_run.head_sha }}
