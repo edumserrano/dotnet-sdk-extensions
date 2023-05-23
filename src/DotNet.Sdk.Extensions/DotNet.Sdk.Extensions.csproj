@@ -41,10 +41,10 @@
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' OR '$(TargetFramework)' == 'net5.0'">
-    <PackageReference Include="Microsoft.Extensions.Http.Polly" Version="6.0.15" />
+    <PackageReference Include="Microsoft.Extensions.Http.Polly" Version="6.0.16" />
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' OR '$(TargetFramework)' == 'net7.0'">
-    <PackageReference Include="Microsoft.Extensions.Http.Polly" Version="7.0.4" />
+    <PackageReference Include="Microsoft.Extensions.Http.Polly" Version="7.0.5" />
   </ItemGroup>
 
 </Project>
