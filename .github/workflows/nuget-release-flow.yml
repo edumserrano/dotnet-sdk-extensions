@@ -87,7 +87,7 @@ jobs:
   release-flow-args:
     name: Process NuGet release flow info artifact
     needs: [on-pr]
-    if: always() && (github.event_name == 'pull_request' || (github.event_name == 'workflow_run' && github.event.action == 'completed' && github.event.workflow_run.conclusion != 'skipped'))
+    if: always() && ( (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'nuget-release')) || (github.event_name == 'workflow_run' && github.event.action == 'completed' && github.event.workflow_run.conclusion != 'skipped'))
     permissions:
       contents: read
     runs-on: ubuntu-latest
