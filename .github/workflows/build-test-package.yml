@@ -95,6 +95,7 @@ jobs:
             -c Release `
             --no-build `
             --framework $frameworkMoniker `
+            -- RunConfiguration.TreatNoTestsAsError=true `
             --logger "trx;LogFilePrefix=framework" `
             --logger GitHubActions `
             --logger "liquid.custom;Template=${{github.workspace}}/tests/liquid-test-logger-template.md;runnerOS=${{ matrix.os }};os=$os;LogFilePrefix=framework" `
