@@ -58,7 +58,7 @@ jobs:
     - name: Install reportgenerator dotnet tool
       run:  dotnet tool install --global dotnet-reportgenerator-globaltool
     - name: Restore dependencies
-      run: dotnet restore ${{ env.SLN_FILEPATH }}
+      run: dotnet restore ${{ env.SLN_FILEPATH }} -warnaserror
     - name: Build
       run: dotnet build ${{ env.SLN_FILEPATH }} -c Release -warnaserror --no-restore --no-incremental
     - name: Test and code coverage
