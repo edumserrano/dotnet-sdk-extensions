@@ -95,7 +95,6 @@ jobs:
             -c Release `
             --no-build `
             --framework $frameworkMoniker `
-            -- RunConfiguration.TreatNoTestsAsError=true `
             --logger "trx;LogFilePrefix=framework" `
             --logger GitHubActions `
             --logger "liquid.custom;Template=${{github.workspace}}/tests/liquid-test-logger-template.md;runnerOS=${{ matrix.os }};os=$os;LogFilePrefix=framework" `
@@ -104,7 +103,8 @@ jobs:
             /p:CoverletOutput="$testCoverageDir" `
             /p:MergeWith="$testCoverageMergeFile" `
             /p:CoverletOutputFormat="json%2copencover" `
-            -m:1
+            -m:1 `
+            -- RunConfiguration.TreatNoTestsAsError=true
           Write-Output "::endgroup::"
           if($LASTEXITCODE -ne 0)
           {
