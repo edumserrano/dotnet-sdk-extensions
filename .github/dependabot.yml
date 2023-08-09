@@ -11,11 +11,22 @@ updates:
       - 'dependabot'
       - 'bot:robot:'
       - 'nuget'
-    ignore:
-      # Ignored because the csproj using this  NuGet supports multiple target frameworks and dependabot does not handle this well.
-      # This NuGet needs to be manually updated for each target framework
-      - dependency-name: "Microsoft.AspNetCore.Mvc.Testing"
-      - dependency-name: "Microsoft.Extensions.Http.Polly"
+    # I've decided to comment out the `ignore` block because otherwise I just forget to check these dependencies for updates.
+    # What I will test by commenting this out is that:
+    # 1) Dependabot will create PRs to update these dependencies
+    # 2) These PRs should fail on the build workflow due to updating the dependencies on the older TFMs to latest version of these nuget packages.
+    # This happens because the latest versions of the packages are only supported on newer TFMs.
+    # 3) I'll close the dependabot PRs but now I'll be aware that there is a new version and I'll manually do the PR to update the version on the
+    # new TFMs and hopefully remember to check if there is an update for the versions used on the older TFMs.
+    # ignore:
+    #   # Ignored because the csproj using this  NuGet supports multiple target frameworks and dependabot does not handle this well.
+    #   # This NuGet needs to be manually updated for each target framework
+    #   #
+    #   - dependency-name: "Microsoft.AspNetCore.Mvc.Testing"
+    #   - dependency-name: "Microsoft.Extensions.Http.Polly"
+    #   - dependency-name: "xunit"
+    #   - dependency-name: "xunit.extensibility.core"
+    #   - dependency-name: "xunit.runner.visualstudio"
   - package-ecosystem: github-actions
     # Workflow files stored in the
     # default location of `.github/workflows`
