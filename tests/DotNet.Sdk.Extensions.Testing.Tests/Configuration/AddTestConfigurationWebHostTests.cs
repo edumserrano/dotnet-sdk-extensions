@@ -16,6 +16,8 @@ public class AddTestConfigurationWebHostTests
     // cref attribute because it sees it on the global usings.
     //
     // For now I'm working around this problem by NOT using cref for this case.
+    // UPDATE: I created a console app to try and replicate this issue on a console app targetting net6.0
+    // and net7.0 and couldn't. This issue might go away when I remove support for netcoreapp3.1 and net5.0.
 
     /// <summary>
     /// Tests that WebHost.CreateDefaultBuilder() adds two <see cref="JsonConfigurationProvider"/>
