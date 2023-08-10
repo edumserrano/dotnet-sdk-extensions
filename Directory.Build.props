@@ -13,6 +13,33 @@
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <!-- Temporarily ignore warnings from dotnet target framework being out of support. When I decide to stop supporting older frameworks I need to remove this setting. For more info see https://andrewlock.net/fixing-build-warning-netsdk1138-when-building-end-of-life-projects-with-dotnet-5/ -->
     <CheckEolTargetFramework>false</CheckEolTargetFramework>
+    <!--
+      GenerateDocumentationFile is something I wanted enabled for the projects under /src that produce the NuGet packages.
+      For tests I thought I didn't need this enabled but without it I won't get warnings about 'unused usings' (IDE0005)
+      when building with the dotnet CLI, I'll only get them when using Visual Studio or when running dotnet format.
+
+      For more info see:
+      - Compiler does not report unused imports when XML doc comments are disabled: https://github.com/dotnet/roslyn/issues/41640
+      - And this comment for the first workaround presented: https://github.com/dotnet/roslyn/issues/41640#issuecomment-985780130
+
+      NOTE:
+      1) Even if GenerateDocumentationFile is not required anymore to get IDE0005 to work via the dotnet CLI, I found that I might still
+      want to have GenerateDocumentationFile enabled even for my test projects. This is because I've chosen to use to add a summary documentation
+      tag to all my tests to explain what they do and by enabling GenerateDocumentationFile I "seem" get some extra checks on what I write on
+      those summary tags. For instance, on build I get warned if I have incorrect cref values.
+      When reviewing if I still need GenerateDocumentationFile for test projects I should test having an invalid cref and see if it I get
+      warnings on build.
+
+      2) Hopefully, when https://github.com/dotnet/roslyn/issues/41640 gets closed, I can tidy up this huge comment block
+
+      3) Some of the proposed fixes also add some exclusions to NoWarn like: <NoWarn>$(NoWarn);CS1573;CS1591;CS1712</NoWarn>
+      but I've found I didn't need them, yet at least.
+
+      CS1573: Parameter 'parameter' has no matching param tag in the XML comment for 'parameter' (but other parameters do)
+      CS1591: Missing XML comment for publicly visible type or member 'Type_or_Member'
+      CS1712: Type parameter 'type_parameter' has no matching typeparam tag in the XML comment on 'type_or_member' (but other type parameters do)
+    -->
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

@@ -26,7 +26,7 @@ public class HttpResponseMessageMockBuilderTests
     }
 
     /// <summary>
-    /// Validates the arguments for the <see cref="HttpResponseMessageMockBuilder.RespondWith(HttpResponseMessage)"/> method.
+    /// Validates the arguments for the <see cref="HttpResponseMessageMockBuilder.RespondWith(Func{HttpResponseMessage})"/> method.
     /// </summary>
     [Fact]
     public void Respond1WithValidateArguments()
