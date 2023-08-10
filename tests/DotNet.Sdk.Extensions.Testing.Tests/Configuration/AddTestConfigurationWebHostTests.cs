@@ -3,13 +3,27 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration;
 [Trait("Category", XUnitCategories.Configuration)]
 public class AddTestConfigurationWebHostTests
 {
+    // I have to disable CS1574 because for some reason the cref to WebHost.CreateDefaultBuilder() only
+    // works if I have the full namespace:
+    // - works: <see cref="Microsoft.AspNetCore.WebHost.CreateDefaultBuilder()"/>
+    // - doesn't work: <see cref="WebHost.CreateDefaultBuilder()"/>
+    //
+    // EVEN THOUGH I have a global using for Microsoft.AspNetCore. This might be some weird bug on the dotnet
+    // sdk or some analyzer.
+    //
+    // I need this ignored because otherwise my dotnet format GitHub workflow will attempt to remove the
+    // Microsoft.AspNetCore from the cref, which makes sense since I have the global using, but then
+    // the build fails because I get a CS1574 saying the <see cref="WebHost.CreateDefaultBuilder()"/> is
+    // invalid.
+#pragma warning disable CS1574 // XML comment has cref attribute that could not be resolved
     /// <summary>
-    /// Tests that <see cref="WebHost.CreateDefaultBuilder()"/> adds two <see cref="JsonConfigurationProvider"/>
+    /// Tests that <see cref="Microsoft.AspNetCore.WebHost.CreateDefaultBuilder()"/> adds two <see cref="JsonConfigurationProvider"/>
     /// to the app configuration.
-    /// This test serves as a control test because all the tests use the <see cref="WebHost.CreateDefaultBuilder()"/> as a way
+    /// This test serves as a control test because all the tests use the <see cref="Microsoft.AspNetCore.WebHost.CreateDefaultBuilder()"/> as a way
     /// to setup a <see cref="IWebHost"/> with several <see cref="ConfigurationProvider"/> and at least two <see cref="JsonConfigurationProvider"/>.
     /// If this changes in the future then I could start having false positives on the other tests.
     /// </summary>
+#pragma warning restore CS1574 // XML comment has cref attribute that could not be resolved
     [Fact]
     public void ControlTest()
     {
