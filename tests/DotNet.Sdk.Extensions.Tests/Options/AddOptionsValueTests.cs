@@ -1,4 +1,4 @@
-namespace DotNet.Sdk.Extensions.Tests.Options.AddOptionsValue;
+namespace DotNet.Sdk.Extensions.Tests.Options;
 
 [Trait("Category", XUnitCategories.Options)]
 public class AddOptionsValueTests
@@ -14,7 +14,7 @@ public class AddOptionsValueTests
         var serviceCollection = new ServiceCollection();
         serviceCollection.AddOptionsValue<MyOptions>(configuration);
         var serviceProvider = serviceCollection.BuildServiceProvider();
-        var myOptions = serviceProvider.GetService<MyOptions>();
+        var myOptions = serviceProvider.GetRequiredService<MyOptions>();
         myOptions.ShouldNotBeNull();
     }
 
@@ -93,7 +93,7 @@ public class AddOptionsValueTests
             .Bind(configuration)
             .AddOptionsValue();
         var serviceProvider = serviceCollection.BuildServiceProvider();
-        var myOptions = serviceProvider.GetService<MyOptions>();
+        var myOptions = serviceProvider.GetRequiredService<MyOptions>();
         myOptions.ShouldNotBeNull();
     }
 
