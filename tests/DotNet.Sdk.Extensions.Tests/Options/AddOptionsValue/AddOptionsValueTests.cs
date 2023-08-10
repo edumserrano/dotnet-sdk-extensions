@@ -1,4 +1,9 @@
-namespace DotNet.Sdk.Extensions.Tests.Options;
+using Microsoft.AspNetCore;
+using Microsoft.AspNetCore.DataProtection.KeyManagement;
+using Microsoft.AspNetCore.TestHost;
+using Newtonsoft.Json.Linq;
+
+namespace DotNet.Sdk.Extensions.Tests.Options.AddOptionsValue;
 
 [Trait("Category", XUnitCategories.Options)]
 public class AddOptionsValueTests
@@ -14,7 +19,7 @@ public class AddOptionsValueTests
         var serviceCollection = new ServiceCollection();
         serviceCollection.AddOptionsValue<MyOptions>(configuration);
         var serviceProvider = serviceCollection.BuildServiceProvider();
-        var myOptions = serviceProvider.GetRequiredService<MyOptions>();
+        var myOptions = serviceProvider.GetService<MyOptions>();
         myOptions.ShouldNotBeNull();
     }
 
@@ -93,7 +98,7 @@ public class AddOptionsValueTests
             .Bind(configuration)
             .AddOptionsValue();
         var serviceProvider = serviceCollection.BuildServiceProvider();
-        var myOptions = serviceProvider.GetRequiredService<MyOptions>();
+        var myOptions = serviceProvider.GetService<MyOptions>();
         myOptions.ShouldNotBeNull();
     }
 
@@ -109,6 +114,39 @@ public class AddOptionsValueTests
             OptionsBuilderExtensions.AddOptionsValue<MyOptions>(optionsBuilder: null!);
         });
         optionsBuilderArgumentNullException.Message.ShouldBe("Value cannot be null. (Parameter 'optionsBuilder')");
+    }
+
+    [Fact]
+    public void AddsOptionsType4()
+    {
+        using var webHost = WebHost
+            .CreateDefaultBuilder()
+            .Configure((_, _) =>
+            {
+                // this is required just to provide a configuration for the webhost
+                // or else it fails when calling webHostBuilder.Build()
+            })
+            .ConfigureAppConfiguration(config =>
+            {
+                var memoryConfigurationSource = new MemoryConfigurationSource
+                {
+                    InitialData = new List<KeyValuePair<string, string?>>
+                    {
+                        new KeyValuePair<string, string?>("MyOptionsSection:SomeOption", "original-value"),
+                    },
+                };
+                config.Add(memoryConfigurationSource);
+            })
+            .ConfigureServices((context, services) =>
+            {
+                var namedConfigSection = context.Configuration.GetSection("MyOptionsSection");
+                services.Configure<MyOptions>(context.Configuration.GetSection("MyOptionsSection"));
+            })
+            .UseConfigurationValue("MyOptionsSection:SomeOption", "test-value")
+            .Build();
+
+        var myOptions = webHost.Services.GetService<IOptions<MyOptions>>();
+        myOptions.ShouldNotBeNull();
     }
 
     private sealed class MyOptions

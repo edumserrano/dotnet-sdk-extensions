@@ -6,7 +6,7 @@
       "note2-about-version": "perhaps these errors will stop on a future version but I've tested 7.0.302 and was still getting errors.",
       "note3-about-version": "perhaps these errors will also be gone when I stop supporting older TFMs.",
       "note4-about-version": "when not needed anymore, delete all the note-about-version props.",
-      "version": "7.0.105",
+      "version": "7.0.400",
       "rollForward": "disable",
       "allowPrerelease": false
   }
