@@ -40,8 +40,4 @@
     </None>
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Options\AddOptionsValue\Auxiliary\" />
-  </ItemGroup>
-
 </Project>
