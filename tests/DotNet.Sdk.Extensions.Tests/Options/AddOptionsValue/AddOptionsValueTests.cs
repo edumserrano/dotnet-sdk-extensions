@@ -1,7 +1,4 @@
 using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.DataProtection.KeyManagement;
-using Microsoft.AspNetCore.TestHost;
-using Newtonsoft.Json.Linq;
 
 namespace DotNet.Sdk.Extensions.Tests.Options.AddOptionsValue;
 
