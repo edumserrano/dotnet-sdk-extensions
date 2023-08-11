@@ -362,9 +362,25 @@ jobs:
         target-url: 'https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}'
         token: ${{ secrets.GITHUB_TOKEN }}
 
+  merge-pr:
+    name: Set PR auto merge
+    needs: [create-pr]
+    if: always() && needs.create-pr.result == 'success'
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+    - name: Set PR auto merge
+      env:
+        GITHUB_TOKEN: ${{ secrets.PUBLIC_REPO_SCOPE_GH_TOKEN }}
+      run: |
+        gh pr merge --auto --squash --delete-branch ${{ needs.create-pr.outputs.pr-number }}
+
   output-artifacts:
     name: Create output artifacts
-    needs: [ workflow-args, parse-issue, user-permissions-check ]
+    needs: [ workflow-args, parse-issue, user-permissions-check, merge-pr ]
     if: always() && needs.parse-issue.result != 'skipped'
     permissions:
       contents: read
@@ -405,19 +421,3 @@ jobs:
         issue-nuget-release-node-status: '${{ steps.set-nuget-release-flow-info.outputs.issue-nuget-release-node-status}}'
         issue-nuget-release-url: 'https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}'
         is-user-allowed-to-release-nuget: '${{ steps.set-nuget-release-flow-info.outputs.is-user-allowed-to-release-nuget }}'
-
-  merge-pr:
-    name: Set PR auto merge
-    needs: [create-pr, output-artifacts]
-    if: always() && needs.create-pr.result == 'success' && needs.output-artifacts.result == 'success'
-    permissions:
-      contents: read
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
-    - name: Set PR auto merge
-      env:
-        GITHUB_TOKEN: ${{ secrets.PUBLIC_REPO_SCOPE_GH_TOKEN }}
-      run: |
-        gh pr merge --auto --squash --delete-branch ${{ needs.create-pr.outputs.pr-number }}
