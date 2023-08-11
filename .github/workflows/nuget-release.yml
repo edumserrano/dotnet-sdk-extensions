@@ -55,11 +55,15 @@ jobs:
 
         if($isIssueEvent) {
           $issueNumber = '${{ github.event.issue.number }}'
-          $issueBody = '${{ github.event.issue.body }}'
+          $issueBody = @"
+          ${{ github.event.issue.body }}
+          "@
         }
         elseif($isRepositoryDispatchEvent) {
           $issueNumber = '${{ github.event.client_payload.github.payload.issue.number }}'
-          $issueBody = '${{ github.event.client_payload.github.payload.issue.body }}'
+          $issueBody = @"
+          ${{ github.event.client_payload.github.payload.issue.body }}
+          "@
         }
         else {
           Write-Output "::error::Invalid GitHub event: ${{ github.event_name }}. Valid options are: issues or repository_dispatch"
