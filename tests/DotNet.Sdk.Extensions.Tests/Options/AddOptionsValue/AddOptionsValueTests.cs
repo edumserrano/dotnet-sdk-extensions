@@ -1,4 +1,4 @@
-namespace DotNet.Sdk.Extensions.Tests.Options;
+namespace DotNet.Sdk.Extensions.Tests.Options.AddOptionsValue;
 
 [Trait("Category", XUnitCategories.Options)]
 public class AddOptionsValueTests
@@ -109,10 +109,5 @@ public class AddOptionsValueTests
             OptionsBuilderExtensions.AddOptionsValue<MyOptions>(optionsBuilder: null!);
         });
         optionsBuilderArgumentNullException.Message.ShouldBe("Value cannot be null. (Parameter 'optionsBuilder')");
-    }
-
-    private sealed class MyOptions
-    {
-        public string? SomeOption { get; set; }
     }
 }
