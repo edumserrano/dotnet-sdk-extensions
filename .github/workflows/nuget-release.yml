@@ -35,7 +35,8 @@ jobs:
 
   workflow-args:
     name: Process workflow input data
-    if: (github.event_name == 'issues' && contains(github.event.issue.labels.*.name, 'nuget-release')) || (github.event_name == 'repository_dispatch' && contains(github.event.client_payload.github.payload.issue.labels.*.name, 'nuget-release'))
+    needs: [user-permissions-check]
+    if: needs.user-permissions-check.outputs.allowed == 'true' && ((github.event_name == 'issues' && contains(github.event.issue.labels.*.name, 'nuget-release')) || (github.event_name == 'repository_dispatch' && contains(github.event.client_payload.github.payload.issue.labels.*.name, 'nuget-release')))
     permissions:
       contents: read
     runs-on: ubuntu-latest
@@ -141,8 +142,7 @@ jobs:
 
   release-info:
     name: Upload release info
-    needs: [workflow-args, parse-issue, user-permissions-check]
-    if: needs.user-permissions-check.outputs.allowed == 'true'
+    needs: [workflow-args, parse-issue]
     permissions:
       contents: read
       statuses: write
@@ -185,7 +185,6 @@ jobs:
   check-pr:
     name: Check for open NuGet release PR
     needs: [parse-issue]
-    if: needs.user-permissions-check.outputs.allowed == 'true'
     permissions:
       contents: read
       pull-requests: read
@@ -381,7 +380,7 @@ jobs:
   output-artifacts:
     name: Create output artifacts
     needs: [ workflow-args, parse-issue, user-permissions-check, merge-pr ]
-    if: always() && needs.merge-pr.result != 'skipped'
+    if: always()
     permissions:
       contents: read
     runs-on: ubuntu-latest
@@ -391,9 +390,8 @@ jobs:
     - name: Setup NuGet release flow info
       id: set-nuget-release-flow-info
       run: |
-        $isUserAllowedToReleaseNuget = [System.Convert]::ToBoolean("${{ needs.user-permissions-check.outputs.allowed }}")
         $workflowResult = '${{ needs.merge-pr.result }}'
-        if($workflowResult -eq 'success' -and $isUserAllowedToReleaseNuget)
+        if($workflowResult -eq 'success')
         {
           $workflowStatus = "ok"
           $releaseStatus = "in%20progress"
