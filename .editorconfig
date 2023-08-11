@@ -395,7 +395,10 @@ dotnet_naming_rule.parameters_rule.severity             = warning
 ##########################################
 [*.cs]
 dotnet_diagnostic.MA0004.severity = none    # MA0004 Use Task.ConfigureAwait(false)
+dotnet_diagnostic.MA0011.severity = none    # MA0011 IFormatProvider is missing
 dotnet_diagnostic.MA0048.severity = none    # MA0048 File name must match type name
+dotnet_diagnostic.MA0076.severity = none    # MA0076 Do not use implicit culture-sensitive ToString in interpolated strings
+dotnet_diagnostic.MA0101.severity = none    # MA0101 String contains an implicit end of line character
 
 ##########################################
 # Rules for Microsoft.VisualStudio.Threading.Analyzers
@@ -409,13 +412,13 @@ dotnet_diagnostic.VSTHRD111.severity = none         # VSTHRD111 Use .ConfigureAw
 # See https://github.com/JosefPihrt/Roslynator/blob/master/src/Analyzers/README.md
 ##########################################
 [*.cs]
-dotnet_diagnostic.RCS1090.severity = none   # RCS1090: Add call to 'ConfigureAwait' (or vice versa)
-dotnet_diagnostic.RCS1194.severity = none   # RCS1194: Implement exception constructors
-dotnet_diagnostic.RCS1224.severity = none   # RCS1224: Make method an extension method
-dotnet_diagnostic.RCS1181.severity = none   # RCS1181: Convert comment to documentation comment
-dotnet_diagnostic.RCS1140.severity = none   # RCS1140: Add exception to documentation comment
-dotnet_diagnostic.RCS1161.severity = none   # RCS1161: Enum should declare explicit values
-dotnet_diagnostic.RCS1238.severity = none   # RCS1238: Avoid nested ?: operators
+dotnet_diagnostic.RCS1090.severity = none           # RCS1090: Add call to 'ConfigureAwait' (or vice versa)
+dotnet_diagnostic.RCS1194.severity = none           # RCS1194: Implement exception constructors
+dotnet_diagnostic.RCS1224.severity = none           # RCS1224: Make method an extension method
+dotnet_diagnostic.RCS1181.severity = none           # RCS1181: Convert comment to documentation comment
+dotnet_diagnostic.RCS1140.severity = none           # RCS1140: Add exception to documentation comment
+dotnet_diagnostic.RCS1161.severity = none           # RCS1161: Enum should declare explicit values
+dotnet_diagnostic.RCS1238.severity = none           # RCS1238: Avoid nested ?: operators
 dotnet_diagnostic.RCS1031.severity = suggestion     # RCS1031: Remove unnecessary braces
 dotnet_diagnostic.RCS1032.severity = suggestion     # RCS1032: Remove redundant parentheses
 dotnet_diagnostic.RCS1035.severity = none           # RCS1035: Remove redundant comma in initializer
@@ -423,8 +426,8 @@ dotnet_diagnostic.RCS1036.severity = suggestion     # RCS1036: Remove redundant 
 dotnet_diagnostic.RCS1037.severity = suggestion     # RCS1037: Remove trailing white-space
 dotnet_diagnostic.RCS1039.severity = suggestion     # RCS1039: Remove argument list from attribute
 dotnet_diagnostic.RCS1070.severity = none           # RCS1070: Remove redundant default switch section	Redundancy	Hidden
-dotnet_diagnostic.RCS1021.severity = none   # RCS1021: Convert lambda expression body to expression-body
-dotnet_diagnostic.RCS1201.severity = none   # RCS1201: Use method chaining
+dotnet_diagnostic.RCS1021.severity = none           # RCS1021: Convert lambda expression body to expression-body
+dotnet_diagnostic.RCS1201.severity = none           # RCS1201: Use method chaining
 dotnet_diagnostic.RCS1001.severity = suggestion     # RCS1001: Add braces (when expression spans over multiple lines)
 dotnet_diagnostic.RCS1002.severity = none           # RCS1002: Remove braces
 dotnet_diagnostic.RCS1003.severity = suggestion     # RCS1003: Add braces to if-else (when expression spans over multiple lines)
@@ -526,7 +529,8 @@ dotnet_diagnostic.SA1204.severity = none        # SA1204: Static members should 
 dotnet_diagnostic.SA1214.severity = none        # SA1214: Readonly fields should appear before non-readonly fields
 # Naming Rules (SA1300-)
 dotnet_diagnostic.SA1309.severity = none        # SA1309: Field should not begin with an underscore
-dotnet_diagnostic.SA1313.severity = none        # SA1313: Parameter '_' should begin with lower-case letter. Covered by IDE1006 and this one triggers false warnings when using discard symbol.
+dotnet_diagnostic.SA1312.severity = none        # SA1312: The name of a variable in C# does not begin with a lower-case letter. Covered by IDE1006 and this one triggers false warnings when using discard symbol for variables.
+dotnet_diagnostic.SA1313.severity = none        # SA1313: Parameter '_' should begin with lower-case letter. Covered by IDE1006 and this one triggers false warnings when using discard symbol for parameters.
 # Maintainability Rules (SA1400-)
 dotnet_diagnostic.SA1402.severity = none        # SA1402: File may only contain a single type
 # Layout Rules (SA1500-)
@@ -611,8 +615,6 @@ dotnet_diagnostic.SA1651.severity = suggestion      # SA1651: Do not use placeho
 ##########################################
 [*.cs]
 dotnet_diagnostic.MA0051.severity = none    # MA0051 Method is too long
-dotnet_diagnostic.MA0076.severity = none    # MA0076 Do not use implicit culture-sensitive ToString in interpolated strings
-dotnet_diagnostic.MA0101.severity = none    # MA0101 String contains an implicit end of line character
 
 ##########################################
 # Rules for Microsoft.VisualStudio.Threading.Analyzers
