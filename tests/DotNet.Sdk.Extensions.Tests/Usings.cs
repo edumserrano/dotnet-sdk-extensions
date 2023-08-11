@@ -22,6 +22,7 @@ global using DotNet.Sdk.Extensions.Polly.Policies;
 global using DotNet.Sdk.Extensions.Testing.Configuration;
 global using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers;
 global using DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.ResponseMocking;
+global using DotNet.Sdk.Extensions.Tests.Options.AddOptionsValue.Auxiliary;
 global using DotNet.Sdk.Extensions.Tests.Options.ValidateEagerly.Auxiliary;
 global using DotNet.Sdk.Extensions.Tests.Options.ValidateEagerly.Auxiliary.DataAnnotations;
 global using DotNet.Sdk.Extensions.Tests.Options.ValidateEagerly.Auxiliary.IValidateOptions;
