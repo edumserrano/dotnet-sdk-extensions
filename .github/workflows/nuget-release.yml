@@ -381,7 +381,7 @@ jobs:
   output-artifacts:
     name: Create output artifacts
     needs: [ workflow-args, parse-issue, user-permissions-check, merge-pr ]
-    if: always() && needs.parse-issue.result != 'skipped'
+    if: always() && needs.merge-pr.result != 'skipped'
     permissions:
       contents: read
     runs-on: ubuntu-latest
@@ -392,7 +392,7 @@ jobs:
       id: set-nuget-release-flow-info
       run: |
         $isUserAllowedToReleaseNuget = [System.Convert]::ToBoolean("${{ needs.user-permissions-check.outputs.allowed }}")
-        $workflowResult = '${{ needs.parse-issue.result }}'
+        $workflowResult = '${{ needs.merge-pr.result }}'
         if($workflowResult -eq 'success' -and $isUserAllowedToReleaseNuget)
         {
           $workflowStatus = "ok"
