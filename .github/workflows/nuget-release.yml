@@ -157,7 +157,7 @@ jobs:
       run: |
         $releaseNotes = @'
         ${{ needs.parse-issue.outputs.custom-release-notes }}
-        @'
+        '@
         $releaseNotes > ${{ env.RELEASE_NOTES_ARTIFACT_FILEPATH }}
         cat ${{ env.RELEASE_NOTES_ARTIFACT_FILEPATH }}
     - name: Upload release notes
