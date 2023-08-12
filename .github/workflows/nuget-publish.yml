@@ -87,7 +87,7 @@ jobs:
           $issueNumber = $nugetInfo.issueNumber
           $nugetId = $nugetInfo.nugetId
           $nugetVersion = $nugetInfo.nugetVersion
-          $autoGenerateReleaseNotes = $nugetInfo.autoGenerateReleaseNotes
+          $autoGenerateReleaseNotes = $nugetInfo.autoGenerateReleaseNotes.ToString().ToLower() # otherwise the ncipollo/release-action@v1 receives "True" and process it as false. Must be "true"
           $githubReleaseSha = '${{ github.event.pull_request.merge_commit_sha }}'
 
           # get the workflow run id that was executed for the PR
@@ -105,7 +105,7 @@ jobs:
         else { # on workflow_dispatch event
           $nugetId = '${{ github.event.inputs.nuget-id }}'
           $nugetVersion = '${{ github.event.inputs.nuget-version }}'
-          $autoGenerateReleaseNotes = '${{ github.event.inputs.generate-github-release-notes }}'
+          $autoGenerateReleaseNotes = '${{ github.event.inputs.generate-github-release-notes }}'.ToLower() # otherwise the ncipollo/release-action@v1 receives "True" and process it as false. Must be "true"
           $nugetPackageRunId = '${{ github.event.inputs.nuget-package-workflow-run-id }}'
 
           # there's no NuGet release issue when using workflow dispatch
@@ -163,72 +163,72 @@ jobs:
       with:
         name:  nuget-packages-and-symbols
         run_id: ${{ needs.workflow-args.outputs.nuget-package-run-id }}
-    - name: Download custom release notes artifact
-      uses: actions/download-artifact@v3
-      with:
-        name: ${{ needs.workflow-args.outputs.custom-release-notes-artifact-name }}
-    - name: Prepare NuGet publish info
-      id: nuget-publish-info
-      run: |
-        $releaseNotesFile = './nuget-release-notes.md'
-        $nugetId = '${{ needs.workflow-args.outputs.nuget-id }}'
+    # - name: Download custom release notes artifact
+    #   uses: actions/download-artifact@v3
+    #   with:
+    #     name: ${{ needs.workflow-args.outputs.custom-release-notes-artifact-name }}
+    # - name: Prepare NuGet publish info
+    #   id: nuget-publish-info
+    #   run: |
+    #     $releaseNotesFile = './nuget-release-notes.md'
+    #     $nugetId = '${{ needs.workflow-args.outputs.nuget-id }}'
 
-        if($nugetId -eq 'dotnet-sdk-extensions') {
-          $baseDir = '${{ env.EXTENSIONS_NUGET_BIN_FOLDER }}'
-        }
-        elseif($nugetId -eq "dotnet-sdk-extensions-testing") {
-          $baseDir = '${{ env.TESTING_EXTENSIONS_NUGET_BIN_FOLDER }}'
-        }
+    #     if($nugetId -eq 'dotnet-sdk-extensions') {
+    #       $baseDir = '${{ env.EXTENSIONS_NUGET_BIN_FOLDER }}'
+    #     }
+    #     elseif($nugetId -eq "dotnet-sdk-extensions-testing") {
+    #       $baseDir = '${{ env.TESTING_EXTENSIONS_NUGET_BIN_FOLDER }}'
+    #     }
 
-        $nugetPushWorkingDir = $baseDir
-        $nugetPackage =  Get-ChildItem $baseDir | Where-Object {$_.Extension -eq '.nupkg' } | Select-Object -First 1
-        $nugetSymbols =  Get-ChildItem $baseDir | Where-Object {$_.Extension -eq '.snupkg' } | Select-Object -First 1
-        $nugetArtifacts = "$nugetPackage,$nugetSymbols"
+    #     $nugetPushWorkingDir = $baseDir
+    #     $nugetPackage =  Get-ChildItem $baseDir | Where-Object {$_.Extension -eq '.nupkg' } | Select-Object -First 1
+    #     $nugetSymbols =  Get-ChildItem $baseDir | Where-Object {$_.Extension -eq '.snupkg' } | Select-Object -First 1
+    #     $nugetArtifacts = "$nugetPackage,$nugetSymbols"
 
-        Write-Output "nuget-release-notes-file-path=$releaseNotesFile" >> $env:GITHUB_OUTPUT
-        Write-Output "nuget-gh-release-artifacts=$nugetArtifacts" >> $env:GITHUB_OUTPUT
-        Write-Output "nuget-package=$nugetPackage" >> $env:GITHUB_OUTPUT
-        Write-Output "nuget-symbols=$nugetSymbols" >> $env:GITHUB_OUTPUT
-    - name: Create GitHub release
-      id: create-gh-release
-      uses: ncipollo/release-action@v1
-      with:
-        commit: ${{ needs.workflow-args.outputs.github-release-sha }}
-        tag: ${{ needs.workflow-args.outputs.nuget-id }}-${{ needs.workflow-args.outputs.nuget-version }}
-        artifacts: '${{ steps.nuget-publish-info.outputs.nuget-gh-release-artifacts }}'
-        bodyFile: ${{ steps.nuget-publish-info.outputs.nuget-release-notes-file-path }}
-        generateReleaseNotes: ${{ needs.workflow-args.outputs.auto-generate-release-notes }}
-        token: ${{ secrets.GITHUB_TOKEN }}
-    - name: Publish NuGet and symbols
-      id: nuget-push
-      uses: edumserrano/nuget-push@v1
-      with:
-        api-key: ${{ secrets.NUGET_PUSH_API_KEY }}
-        nuget-package: '${{ steps.nuget-publish-info.outputs.nuget-package }}'
-        symbols-package: '${{ steps.nuget-publish-info.outputs.nuget-symbols }}'
-    - name: Log NuGet push info
-      if: steps.nuget-push.conclusion != 'skipped' && always()
-      run: |
-        $nugetId = '${{ needs.workflow-args.outputs.nuget-id }}'
-        $nugetUrl = "https://www.nuget.org/packages/$nugetId"
-        $nugetPushResult = '${{ steps.nuget-push.outputs.push-result }}' | ConvertFrom-Json
-        $package = $nugetPushResult.packages[0] # we are only using the nuget push action to push one package so I don't need to iterate the packages list, I can just get the first
+    #     Write-Output "nuget-release-notes-file-path=$releaseNotesFile" >> $env:GITHUB_OUTPUT
+    #     Write-Output "nuget-gh-release-artifacts=$nugetArtifacts" >> $env:GITHUB_OUTPUT
+    #     Write-Output "nuget-package=$nugetPackage" >> $env:GITHUB_OUTPUT
+    #     Write-Output "nuget-symbols=$nugetSymbols" >> $env:GITHUB_OUTPUT
+    # - name: Create GitHub release
+    #   id: create-gh-release
+    #   uses: ncipollo/release-action@v1
+    #   with:
+    #     commit: ${{ needs.workflow-args.outputs.github-release-sha }}
+    #     tag: ${{ needs.workflow-args.outputs.nuget-id }}-${{ needs.workflow-args.outputs.nuget-version }}
+    #     artifacts: '${{ steps.nuget-publish-info.outputs.nuget-gh-release-artifacts }}'
+    #     bodyFile: ${{ steps.nuget-publish-info.outputs.nuget-release-notes-file-path }}
+    #     generateReleaseNotes: ${{ needs.workflow-args.outputs.auto-generate-release-notes }}
+    #     token: ${{ secrets.GITHUB_TOKEN }}
+    # - name: Publish NuGet and symbols
+    #   id: nuget-push
+    #   uses: edumserrano/nuget-push@v1
+    #   with:
+    #     api-key: ${{ secrets.NUGET_PUSH_API_KEY }}
+    #     nuget-package: '${{ steps.nuget-publish-info.outputs.nuget-package }}'
+    #     symbols-package: '${{ steps.nuget-publish-info.outputs.nuget-symbols }}'
+    # - name: Log NuGet push info
+    #   if: steps.nuget-push.conclusion != 'skipped' && always()
+    #   run: |
+    #     $nugetId = '${{ needs.workflow-args.outputs.nuget-id }}'
+    #     $nugetUrl = "https://www.nuget.org/packages/$nugetId"
+    #     $nugetPushResult = '${{ steps.nuget-push.outputs.push-result }}' | ConvertFrom-Json
+    #     $package = $nugetPushResult.packages[0] # we are only using the nuget push action to push one package so I don't need to iterate the packages list, I can just get the first
 
-        if($package.status -eq 'ok') {
-          Write-Output "::notice title=$nugetId NuGet::Successfully pushed $nugetId NuGet and symbols to nuget.org. You can find the package at: $nugetUrl."
-        }
-        elseif($package.status -eq 'nuget-already-exists') {
-          Write-Output "::notice title=$nugetId NuGet::$nugetId NuGet was NOT published to nuget.org because the version to be pushed already exists."
-        }
-        elseif($package.status -eq 'nuget-push-failed') {
-          Write-Output "::error title=$nugetIdNuGet::Failed to push NuGet $nugetId."
-        }
-        elseif($package.status -eq 'symbols-push-failed') {
-          Write-Output "::error title=$nugetIdNuGet::Failed to push symbols for $nugetId."
-        }
-        else{
-          Write-Output "::error title=$nugetIdNuGet::Unexpected nuget push result status: $($package.status)."
-        }
+    #     if($package.status -eq 'ok') {
+    #       Write-Output "::notice title=$nugetId NuGet::Successfully pushed $nugetId NuGet and symbols to nuget.org. You can find the package at: $nugetUrl."
+    #     }
+    #     elseif($package.status -eq 'nuget-already-exists') {
+    #       Write-Output "::notice title=$nugetId NuGet::$nugetId NuGet was NOT published to nuget.org because the version to be pushed already exists."
+    #     }
+    #     elseif($package.status -eq 'nuget-push-failed') {
+    #       Write-Output "::error title=$nugetIdNuGet::Failed to push NuGet $nugetId."
+    #     }
+    #     elseif($package.status -eq 'symbols-push-failed') {
+    #       Write-Output "::error title=$nugetIdNuGet::Failed to push symbols for $nugetId."
+    #     }
+    #     else{
+    #       Write-Output "::error title=$nugetIdNuGet::Unexpected nuget push result status: $($package.status)."
+    #     }
 
   output-artifacts:
     name: Create output artifacts
