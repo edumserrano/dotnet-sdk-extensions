@@ -198,11 +198,11 @@ jobs:
           # finally, concatenate the auto generated release notes with custom release notes
           if($finalReleaseNotes -ne '')
           {
-            finalReleaseNotes += "`n"; # add new line between custom notes and generated notes
+            $finalReleaseNotes += "`n"; # add new line between custom notes and generated notes
 
           }
 
-          finalReleaseNotes += $generatedReleaseNotes.body
+          $finalReleaseNotes += $generatedReleaseNotes.body
         }
 
         $finalReleaseNotes > $finalNuGetReleaseNotesFilepath
