@@ -183,7 +183,7 @@ jobs:
           $nugetId = '${{ needs.workflow-args.outputs.nuget-id }}'
           $nugetVersion = '${{ needs.workflow-args.outputs.nuget-version }}'
           $releases = gh api repos/${{ github.repository }}/releases | ConvertFrom-Json
-          $lastRelease = $releases | where-Object {$_.tag_name -match "^$$nugetId-\d+"} | Select-Object -First 1
+          $lastRelease = $releases | where-Object {$_.tag_name -match "^$nugetId-\d+"} | Select-Object -First 1
           $lastReleaseTag = $lastRelease.tag_name
 
           # now call the generate release notes endpoint with the new and previous tags
@@ -193,6 +193,7 @@ jobs:
               previous_tag_name = "$lastReleaseTag"
           }
           $generateReleaseNotesBody | ConvertTo-Json -Compress > generateReleaseNotesBody.json
+          cat generateReleaseNotesBody.json
           $generatedReleaseNotes = gh api repos/${{ github.repository }}/releases/generate-notes --input ./generateReleaseNotesBody.json | ConvertFrom-Json
 
           # finally, concatenate the auto generated release notes with custom release notes
