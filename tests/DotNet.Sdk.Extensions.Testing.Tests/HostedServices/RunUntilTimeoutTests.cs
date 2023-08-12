@@ -63,11 +63,7 @@ public class RunUntilTimeoutTests : IClassFixture<HostedServicesWebApplicationFa
             });
 
         var testScheduler = new TestScheduler();
-#if NET6_0 || NET7_0
         await using var hostedServicesWebAppFactory = _hostedServicesWebAppFactory
-#else
-        using var hostedServicesWebAppFactory = _hostedServicesWebAppFactory
-#endif
             .WithWebHostBuilder(builder =>
             {
                 builder.ConfigureTestServices(services =>

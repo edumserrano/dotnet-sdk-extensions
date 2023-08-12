@@ -16,9 +16,9 @@ If this happens, just delete the comments added. Otherwise, consider incorporati
 Example:
 
 ```csharp
-#if NET5_0
+#if NET6_0
     ...
-#elif NETCOREAPP3_1
+#elif NET7_0
     ...
 #endif
 ```

@@ -41,11 +41,7 @@ public sealed class UseHttpMocksTests : IClassFixture<HttpResponseMockingWebAppl
     [Fact]
     public async Task BasicClient()
     {
-#if NET6_0 || NET7_0
         await using var webAppFactory = _webApplicationFactory
-#else
-        using var webAppFactory = _webApplicationFactory
-#endif
             .WithWebHostBuilder(webHostBuilder =>
             {
                 webHostBuilder.UseHttpMocks(handlers =>
@@ -72,11 +68,7 @@ public sealed class UseHttpMocksTests : IClassFixture<HttpResponseMockingWebAppl
     [Fact]
     public async Task NamedHttpClient()
     {
-#if NET6_0 || NET7_0
         await using var webAppFactory = _webApplicationFactory
-#else
-        using var webAppFactory = _webApplicationFactory
-#endif
             .WithWebHostBuilder(builder =>
             {
                 builder.UseHttpMocks(handlers =>
@@ -103,11 +95,7 @@ public sealed class UseHttpMocksTests : IClassFixture<HttpResponseMockingWebAppl
     [Fact]
     public async Task TypedHttpClient()
     {
-#if NET6_0 || NET7_0
         await using var webAppFactory = _webApplicationFactory
-#else
-        using var webAppFactory = _webApplicationFactory
-#endif
             .WithWebHostBuilder(builder =>
             {
                 builder.UseHttpMocks(handlers =>
@@ -138,11 +126,7 @@ public sealed class UseHttpMocksTests : IClassFixture<HttpResponseMockingWebAppl
     [Fact]
     public async Task TypedHttpClientWithCustomName()
     {
-#if NET6_0 || NET7_0
         await using var webAppFactory = _webApplicationFactory
-#else
-        using var webAppFactory = _webApplicationFactory
-#endif
             .WithWebHostBuilder(builder =>
             {
                 builder.UseHttpMocks(handlers =>
@@ -175,11 +159,7 @@ public sealed class UseHttpMocksTests : IClassFixture<HttpResponseMockingWebAppl
     [Fact]
     public async Task TypedHttpClientWithCustomName2()
     {
-#if NET6_0 || NET7_0
         await using var webAppFactory = _webApplicationFactory
-#else
-        using var webAppFactory = _webApplicationFactory
-#endif
             .WithWebHostBuilder(builder =>
             {
                 builder.UseHttpMocks(handlers =>
@@ -215,11 +195,7 @@ public sealed class UseHttpMocksTests : IClassFixture<HttpResponseMockingWebAppl
             .ForNamedClient("my-named-client")
             .RespondWith(() => new HttpResponseMessage(HttpStatusCode.OK));
 
-#if NET6_0 || NET7_0
         await using var webAppFactory = _webApplicationFactory
-#else
-        using var webAppFactory = _webApplicationFactory
-#endif
             .WithWebHostBuilder(webHostBuilder =>
             {
                 webHostBuilder.UseHttpMocks(handlers =>
@@ -255,11 +231,7 @@ public sealed class UseHttpMocksTests : IClassFixture<HttpResponseMockingWebAppl
             .ForNamedClient("my-named-client")
             .RespondWith(() => new HttpResponseMessage(HttpStatusCode.OK));
 
-#if NET6_0 || NET7_0
         await using var webAppFactory = _webApplicationFactory
-#else
-        using var webAppFactory = _webApplicationFactory
-#endif
             .WithWebHostBuilder(webHostBuilder =>
             {
                 webHostBuilder.UseHttpMocks(httpResponseMock1, httpResponseMock2);
@@ -289,11 +261,7 @@ public sealed class UseHttpMocksTests : IClassFixture<HttpResponseMockingWebAppl
     [Fact]
     public async Task MockHttpResponseOverloadWithServiceProvider()
     {
-#if NET6_0 || NET7_0
         await using var webAppFactory = _webApplicationFactory
-#else
-        using var webAppFactory = _webApplicationFactory
-#endif
             .WithWebHostBuilder(webHostBuilder =>
             {
                 // Add a test setting to have something to retrieve from the service provider below.

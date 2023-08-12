@@ -22,11 +22,7 @@ public sealed class TimeoutTests : IClassFixture<TimeoutHttpResponseMockingWebAp
     [Fact]
     public async Task TimeoutOnHttpClientWithTimeoutConfigured1()
     {
-#if NET6_0 || NET7_0
         await using var webAppFactory = _webApplicationFactory
-#else
-        using var webAppFactory = _webApplicationFactory
-#endif
             .WithWebHostBuilder(webHostBuilder =>
             {
                 webHostBuilder.UseHttpMocks(handlers =>
@@ -64,11 +60,7 @@ public sealed class TimeoutTests : IClassFixture<TimeoutHttpResponseMockingWebAp
     [Fact]
     public async Task TimeoutOnHttpClientWithTimeoutConfigured2()
     {
-#if NET6_0 || NET7_0
         await using var webAppFactory = _webApplicationFactory
-#else
-        using var webAppFactory = _webApplicationFactory
-#endif
             .WithWebHostBuilder(webHostBuilder =>
             {
                 webHostBuilder.UseHttpMocks(handlers =>
@@ -105,11 +97,7 @@ public sealed class TimeoutTests : IClassFixture<TimeoutHttpResponseMockingWebAp
     [Fact]
     public async Task TimeoutWithPolly1()
     {
-#if NET6_0 || NET7_0
         await using var webAppFactory = _webApplicationFactory
-#else
-        using var webAppFactory = _webApplicationFactory
-#endif
             .WithWebHostBuilder(webHostBuilder =>
             {
                 webHostBuilder.UseHttpMocks(handlers =>
@@ -145,11 +133,7 @@ public sealed class TimeoutTests : IClassFixture<TimeoutHttpResponseMockingWebAp
     [Fact]
     public async Task TimeoutWithPolly2()
     {
-#if NET6_0 || NET7_0
         await using var webAppFactory = _webApplicationFactory
-#else
-        using var webAppFactory = _webApplicationFactory
-#endif
             .WithWebHostBuilder(webHostBuilder =>
             {
                 webHostBuilder.UseHttpMocks(handlers =>

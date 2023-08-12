@@ -159,7 +159,6 @@ public static partial class TestConfigurationBuilderExtensions
         });
     }
 
-#pragma warning disable MA0051 // Method is too long
     private static IConfigurationBuilder AddTestAppSettings(
         this IConfigurationBuilder config,
         TestConfigurationOptions options,
@@ -235,7 +234,7 @@ public static partial class TestConfigurationBuilderExtensions
                     Path = configPath,
                     Optional = false,
                 };
-                configSource.ResolveFileProvider(); // this is needed because no file provider is explicitly set on the JsonConfigurationSource
+                configSource.ResolveFileProvider(); // this is needed because no file provider is explicitly set on the JsonConfigurationSource. This is also only required for absolute paths and the configSource.Path will always be one.
                 return configSource;
             });
         foreach (var testAppSettingsJsonConfigurationSource in testAppSettingsJsonConfigurationSources)
@@ -245,5 +244,4 @@ public static partial class TestConfigurationBuilderExtensions
 
         return config;
     }
-#pragma warning restore MA0051 // Method is too long
 }

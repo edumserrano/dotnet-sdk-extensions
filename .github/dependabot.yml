@@ -23,10 +23,6 @@ updates:
     #   # This NuGet needs to be manually updated for each target framework
     #   #
     #   - dependency-name: "Microsoft.AspNetCore.Mvc.Testing"
-    #   - dependency-name: "Microsoft.Extensions.Http.Polly"
-    #   - dependency-name: "xunit"
-    #   - dependency-name: "xunit.extensibility.core"
-    #   - dependency-name: "xunit.runner.visualstudio"
   - package-ecosystem: github-actions
     # Workflow files stored in the
     # default location of `.github/workflows`
