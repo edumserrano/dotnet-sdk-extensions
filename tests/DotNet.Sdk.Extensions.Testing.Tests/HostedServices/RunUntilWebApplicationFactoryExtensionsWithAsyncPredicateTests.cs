@@ -84,11 +84,7 @@ public class RunUntilWebApplicationFactoryExtensionsWithAsyncPredicateTests
 
         var testScheduler = new TestScheduler();
         using var hostedServicesWebAppFactory = new HostedServicesWebApplicationFactory();
-#if NET6_0 || NET7_0
         await using var webApplicationFactory = hostedServicesWebAppFactory
-#else
-        using var webApplicationFactory = hostedServicesWebAppFactory
-#endif
             .WithWebHostBuilder(builder =>
             {
                 builder.ConfigureTestServices(services =>
@@ -129,11 +125,7 @@ public class RunUntilWebApplicationFactoryExtensionsWithAsyncPredicateTests
 
         var testScheduler = new TestScheduler();
         using var hostedServicesWebApplicationFactory = new HostedServicesWebApplicationFactory();
-#if NET6_0 || NET7_0
         await using var webApplicationFactory = hostedServicesWebApplicationFactory
-#else
-        using var webApplicationFactory = hostedServicesWebApplicationFactory
-#endif
             .WithWebHostBuilder(builder =>
             {
                 builder.ConfigureTestServices(services =>
@@ -177,11 +169,7 @@ public class RunUntilWebApplicationFactoryExtensionsWithAsyncPredicateTests
 
         var testScheduler = new TestScheduler();
         using var hostedServicesWebApplicationFactory = new HostedServicesWebApplicationFactory();
-#if NET6_0 || NET7_0
         await using var webApplicationFactory = hostedServicesWebApplicationFactory
-#else
-        using var webApplicationFactory = hostedServicesWebApplicationFactory
-#endif
             .WithWebHostBuilder(builder =>
             {
                 builder.ConfigureTestServices(services =>

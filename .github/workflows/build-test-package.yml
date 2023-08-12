@@ -43,7 +43,6 @@ jobs:
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: |
-          5.0.x
           6.0.x
         global-json-file: global.json
     - name: Cache/Restore NuGets
@@ -85,7 +84,7 @@ jobs:
         Write-Output "::endgroup::"
 
         $downloadArtifactMessage = "You can inspect the test results by downloading the workflow artifact named: ${{ env.TEST_RESULTS_ARTIFACT_NAME }}."
-        $frameworkMonikers = @('net5.0','net6.0','net7.0')
+        $frameworkMonikers = @('net6.0','net7.0')
         foreach($frameworkMoniker in $frameworkMonikers)
         {
           Write-Output "::group::Running dotnet test for target framework $frameworkMoniker."
@@ -187,7 +186,7 @@ jobs:
 
         $testResultsDir = '${{ steps.dotnet-test.outputs.test-results-dir }}'
         # rename test result files for all frameworks
-        $frameworkFilters = @('framework_net5.0*','framework_net6.0*','framework_net7.0*')
+        $frameworkFilters = @('framework_net6.0*','framework_net7.0*')
         foreach($frameworkFilter in $frameworkFilters)
         {
             # for each framework group the files by extension. There will be .md and .trx file groups

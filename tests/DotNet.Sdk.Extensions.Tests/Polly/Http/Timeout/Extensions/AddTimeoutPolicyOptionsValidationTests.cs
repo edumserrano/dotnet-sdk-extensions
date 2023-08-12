@@ -33,11 +33,7 @@ public class AddTimeoutPolicyOptionsValidationTests
         {
             serviceProvider.InstantiateNamedHttpClient(httpClientName);
         });
-#if NET6_0 || NET7_0
         exception.Message.ShouldBe($"DataAnnotation validation failed for 'TimeoutOptions' members: 'TimeoutInSecs' with the error: 'The field TimeoutInSecs must be between {double.Epsilon} and {double.MaxValue}.'.");
-#else
-        exception.Message.ShouldBe($"DataAnnotation validation failed for members: 'TimeoutInSecs' with the error: 'The field TimeoutInSecs must be between {double.Epsilon} and {double.MaxValue}.'.");
-#endif
     }
 
     /// <summary>
@@ -106,10 +102,6 @@ public class AddTimeoutPolicyOptionsValidationTests
         {
             serviceProvider.InstantiateNamedHttpClient(httpClientName);
         });
-#if NET6_0 || NET7_0
         exception.Message.ShouldBe($"A validation error has occurred.; DataAnnotation validation failed for 'TimeoutOptions' members: 'TimeoutInSecs' with the error: 'The field TimeoutInSecs must be between {double.Epsilon} and {double.MaxValue}.'.");
-#else
-        exception.Message.ShouldBe($"A validation error has occurred.; DataAnnotation validation failed for members: 'TimeoutInSecs' with the error: 'The field TimeoutInSecs must be between {double.Epsilon} and {double.MaxValue}.'.");
-#endif
     }
 }

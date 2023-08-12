@@ -3,26 +3,10 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.Configuration;
 [Trait("Category", XUnitCategories.Configuration)]
 public class AddTestConfigurationWebHostTests
 {
-    // On the below summary I'm not using a <see cref=""/> tag for WebHost.CreateDefaultBuilder()
-    // because the static WebHost exists on both Microsoft.AspNetCore and Microsoft.AspNetCore.Hosting
-    // and I have both of then as global usings.
-    // Now in terms of code there's no clash and need to use full namespaces to disambiguate because
-    // the Microsoft.AspNetCore.Hosting.WebHost is internal and Microsoft.AspNetCore.WebHost is public,
-    // so it always picks the public one.
-    //
-    // HOWEVER, in code comments you can reference internal types so there's no way to know which one should
-    // be used without doing <see cref="Microsoft.AspNetCore.WebHost.CreateDefaultBuilder()"/>.
-    // The problem occurs when I run dotnet format and it says that I should remove Microsoft.AspNetCore from the
-    // cref attribute because it sees it on the global usings.
-    //
-    // For now I'm working around this problem by NOT using cref for this case.
-    // UPDATE: I created a console app to try and replicate this issue on a console app targetting net6.0
-    // and net7.0 and couldn't. This issue might go away when I remove support for net5.0.
-
     /// <summary>
-    /// Tests that WebHost.CreateDefaultBuilder() adds two <see cref="JsonConfigurationProvider"/>
+    /// Tests that <see cref="Microsoft.AspNetCore.WebHost.CreateDefaultBuilder()"/> adds two <see cref="JsonConfigurationProvider"/>
     /// to the app configuration.
-    /// This test serves as a control test because all the tests use the WebHost.CreateDefaultBuilder() as a way
+    /// This test serves as a control test because all the tests use the <see cref="Microsoft.AspNetCore.WebHost.CreateDefaultBuilder()"/> as a way
     /// to setup a <see cref="IWebHost"/> with several <see cref="ConfigurationProvider"/> and at least two <see cref="JsonConfigurationProvider"/>.
     /// If this changes in the future then I could start having false positives on the other tests.
     /// </summary>

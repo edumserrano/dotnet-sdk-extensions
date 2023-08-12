@@ -21,11 +21,7 @@ public class OptionsValidateEagerlyWithValidateDataAnnotationsTests
             })
             .Build();
         var validationException = await Should.ThrowAsync<OptionsValidationException>(host.StartAsync());
-#if NET6_0 || NET7_0
         validationException.Message.ShouldBe("DataAnnotation validation failed for 'MyOptions2' members: 'SomeOption' with the error: 'The SomeOption field is required.'.");
-#else
-        validationException.Message.ShouldBe("DataAnnotation validation failed for members: 'SomeOption' with the error: 'The SomeOption field is required.'.");
-#endif
     }
 
     /// <summary>
