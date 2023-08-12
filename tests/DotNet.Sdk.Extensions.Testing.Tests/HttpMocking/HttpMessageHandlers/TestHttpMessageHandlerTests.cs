@@ -185,8 +185,6 @@ public class TestHttpMessageHandlerTests
         {
             exception.ShouldNotBeNull("Expected TaskCanceledException but didn't get any.");
             exception.ShouldBeOfType<TaskCanceledException>();
-            exception.Message.ShouldBe("A task was canceled.");
-            exception.InnerException.ShouldBeNull();
             exception.Message.ShouldBe("The request was canceled due to the configured HttpClient.Timeout of 0.25 seconds elapsing.");
             exception.InnerException.ShouldBeOfType<TimeoutException>();
             exception.InnerException.Message.ShouldBe("A task was canceled.");
