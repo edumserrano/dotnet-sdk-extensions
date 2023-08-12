@@ -163,42 +163,42 @@ jobs:
       with:
         name:  nuget-packages-and-symbols
         run_id: ${{ needs.workflow-args.outputs.nuget-package-run-id }}
-    # - name: Download custom release notes artifact
-    #   uses: actions/download-artifact@v3
-    #   with:
-    #     name: ${{ needs.workflow-args.outputs.custom-release-notes-artifact-name }}
-    # - name: Prepare NuGet publish info
-    #   id: nuget-publish-info
-    #   run: |
-    #     $releaseNotesFile = './nuget-release-notes.md'
-    #     $nugetId = '${{ needs.workflow-args.outputs.nuget-id }}'
+    - name: Download custom release notes artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: ${{ needs.workflow-args.outputs.custom-release-notes-artifact-name }}
+    - name: Prepare NuGet publish info
+      id: nuget-publish-info
+      run: |
+        $releaseNotesFile = './nuget-release-notes.md'
+        $nugetId = '${{ needs.workflow-args.outputs.nuget-id }}'
 
-    #     if($nugetId -eq 'dotnet-sdk-extensions') {
-    #       $baseDir = '${{ env.EXTENSIONS_NUGET_BIN_FOLDER }}'
-    #     }
-    #     elseif($nugetId -eq "dotnet-sdk-extensions-testing") {
-    #       $baseDir = '${{ env.TESTING_EXTENSIONS_NUGET_BIN_FOLDER }}'
-    #     }
+        if($nugetId -eq 'dotnet-sdk-extensions') {
+          $baseDir = '${{ env.EXTENSIONS_NUGET_BIN_FOLDER }}'
+        }
+        elseif($nugetId -eq "dotnet-sdk-extensions-testing") {
+          $baseDir = '${{ env.TESTING_EXTENSIONS_NUGET_BIN_FOLDER }}'
+        }
 
-    #     $nugetPushWorkingDir = $baseDir
-    #     $nugetPackage =  Get-ChildItem $baseDir | Where-Object {$_.Extension -eq '.nupkg' } | Select-Object -First 1
-    #     $nugetSymbols =  Get-ChildItem $baseDir | Where-Object {$_.Extension -eq '.snupkg' } | Select-Object -First 1
-    #     $nugetArtifacts = "$nugetPackage,$nugetSymbols"
+        $nugetPushWorkingDir = $baseDir
+        $nugetPackage =  Get-ChildItem $baseDir | Where-Object {$_.Extension -eq '.nupkg' } | Select-Object -First 1
+        $nugetSymbols =  Get-ChildItem $baseDir | Where-Object {$_.Extension -eq '.snupkg' } | Select-Object -First 1
+        $nugetArtifacts = "$nugetPackage,$nugetSymbols"
 
-    #     Write-Output "nuget-release-notes-file-path=$releaseNotesFile" >> $env:GITHUB_OUTPUT
-    #     Write-Output "nuget-gh-release-artifacts=$nugetArtifacts" >> $env:GITHUB_OUTPUT
-    #     Write-Output "nuget-package=$nugetPackage" >> $env:GITHUB_OUTPUT
-    #     Write-Output "nuget-symbols=$nugetSymbols" >> $env:GITHUB_OUTPUT
-    # - name: Create GitHub release
-    #   id: create-gh-release
-    #   uses: ncipollo/release-action@v1
-    #   with:
-    #     commit: ${{ needs.workflow-args.outputs.github-release-sha }}
-    #     tag: ${{ needs.workflow-args.outputs.nuget-id }}-${{ needs.workflow-args.outputs.nuget-version }}
-    #     artifacts: '${{ steps.nuget-publish-info.outputs.nuget-gh-release-artifacts }}'
-    #     bodyFile: ${{ steps.nuget-publish-info.outputs.nuget-release-notes-file-path }}
-    #     generateReleaseNotes: ${{ needs.workflow-args.outputs.auto-generate-release-notes }}
-    #     token: ${{ secrets.GITHUB_TOKEN }}
+        Write-Output "nuget-release-notes-file-path=$releaseNotesFile" >> $env:GITHUB_OUTPUT
+        Write-Output "nuget-gh-release-artifacts=$nugetArtifacts" >> $env:GITHUB_OUTPUT
+        Write-Output "nuget-package=$nugetPackage" >> $env:GITHUB_OUTPUT
+        Write-Output "nuget-symbols=$nugetSymbols" >> $env:GITHUB_OUTPUT
+    - name: Create GitHub release
+      id: create-gh-release
+      uses: ncipollo/release-action@v1
+      with:
+        commit: ${{ needs.workflow-args.outputs.github-release-sha }}
+        tag: ${{ needs.workflow-args.outputs.nuget-id }}-${{ needs.workflow-args.outputs.nuget-version }}
+        artifacts: '${{ steps.nuget-publish-info.outputs.nuget-gh-release-artifacts }}'
+        bodyFile: ${{ steps.nuget-publish-info.outputs.nuget-release-notes-file-path }}
+        generateReleaseNotes: ${{ needs.workflow-args.outputs.auto-generate-release-notes }}
+        token: ${{ secrets.GITHUB_TOKEN }}
     # - name: Publish NuGet and symbols
     #   id: nuget-push
     #   uses: edumserrano/nuget-push@v1
