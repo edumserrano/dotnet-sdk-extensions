@@ -52,7 +52,6 @@ For more information about each extension check its docs. You can find the link 
 
 ### For apps
 
-* [Eagerly validating options](/docs/configuration/options-eagerly-validation.md)
 * [Using `T` options classes instead of `IOptions<T>`](/docs/configuration/options-without-IOptions.md)
 * Extending [Polly](https://github.com/App-vNext/Polly)
   * [Circuit breaker checker policy](/docs/polly/circuit-breaker-checker-policy.md)

@@ -6,7 +6,6 @@ This package provides extensions to help build .NET applications, using .net cor
 
 The extensions provided by this package are:
 
-* [Eagerly validating options](https://github.com/edumserrano/dotnet-sdk-extensions/blob/dotnet-sdk-extensions-3.0.0/docs/configuration/options-eagerly-validation.md)
 * [Using `T` options classes instead of `IOptions<T>`](https://github.com/edumserrano/dotnet-sdk-extensions/blob/dotnet-sdk-extensions-3.0.0/docs/configuration/options-without-IOptions.md)
 * Extending [Polly](https://github.com/App-vNext/Polly)
   * [Circuit breaker checker policy](https://github.com/edumserrano/dotnet-sdk-extensions/blob/dotnet-sdk-extensions-3.0.0/docs/polly/circuit-breaker-checker-policy.md)

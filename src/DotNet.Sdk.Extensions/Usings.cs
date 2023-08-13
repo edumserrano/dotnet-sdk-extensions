@@ -12,8 +12,6 @@ global using DotNet.Sdk.Extensions.Polly.Http.Retry.Events;
 global using DotNet.Sdk.Extensions.Polly.Http.Timeout;
 global using DotNet.Sdk.Extensions.Polly.Http.Timeout.Events;
 global using DotNet.Sdk.Extensions.Polly.Policies;
-global using Microsoft.AspNetCore.Builder;
-global using Microsoft.AspNetCore.Hosting;
 global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.DependencyInjection.Extensions;

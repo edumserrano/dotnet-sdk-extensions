@@ -81,28 +81,6 @@ public static class OptionsBuilderExtensions
         return optionsBuilder;
     }
 
-    /// <summary>
-    /// Force options validation at application startup.
-    /// </summary>
-    /// <remarks>
-    /// At the moment there is no built-in mechanism to force eager validation on options so I've followed
-    /// the advice from https://github.com/dotnet/extensions/issues/459.
-    /// </remarks>
-    /// <typeparam name="T">The <see cref="Type"/>  of the options to be eagerly validated.</typeparam>
-    /// <param name="optionsBuilder">The <see cref="OptionsBuilder{T}"/> for the options to add eager validation to.</param>
-    /// <returns>The <see cref="OptionsBuilder{T}"/> for chaining.</returns>
-    public static OptionsBuilder<T> ValidateEagerly<T>(this OptionsBuilder<T> optionsBuilder)
-        where T : class
-    {
-        if (optionsBuilder is null)
-        {
-            throw new ArgumentNullException(nameof(optionsBuilder));
-        }
-
-        optionsBuilder.Services.AddTransient<IStartupFilter, StartupOptionsValidation<T>>();
-        return optionsBuilder;
-    }
-
     private static void AddOptionsValue<T>(this IServiceCollection services)
         where T : class, new()
     {
