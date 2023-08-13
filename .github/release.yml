@@ -1,0 +1,31 @@
+# See documentation at https://docs.github.com/en/repositories/releasing-projects-on-github/automatically-generated-release-notes#configuring-automatically-generated-release-notes
+
+changelog:
+  exclude:
+    labels:
+      - github-custom-action
+      - github-workflows
+  categories:
+    - title: What's changed
+      labels:
+        - '*'
+      exclude:
+        labels:
+          - dependabot
+    - title: NuGet package dependencies updated
+      labels:
+        - dependabot
+
+
+# Could consider adding a few categories example:
+#
+# - title: Breaking Changes 🛠
+#   labels:
+#     - Semver-Major
+#     - breaking-change
+# - title: Exciting New Features 🎉
+#   labels:
+#     - Semver-Minor
+#     - enhancement
+
+# I could also consider excluding the label used for NuGet releases which is 'nuget-release'
