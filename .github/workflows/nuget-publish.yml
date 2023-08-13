@@ -200,7 +200,6 @@ jobs:
           if($finalReleaseNotes -ne '')
           {
             $finalReleaseNotes += "`n"; # add new line between custom notes and generated notes
-
           }
 
           $finalReleaseNotes += $generatedReleaseNotes.body
