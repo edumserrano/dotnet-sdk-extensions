@@ -16,6 +16,15 @@ The extension method provided `AddTimeoutPolicy` is an extension to the `IHttpCl
 
 This extension will add a [timeout policy](https://github.com/App-vNext/Polly#timeout) to the `HttpClient`.
 
+> **Note**
+>
+> the variable `services` in the examples below is of type `IServiceCollection`. On the default template
+> for a Web API you can access it via `builder.services`. Example:
+>
+> var builder = WebApplication.CreateBuilder(args); </br>
+> builder.Services.AddControllers();
+>
+
 ### Basic example
 
 You can add a timeout policy by doing the following:
@@ -110,7 +119,7 @@ public class MyTimeoutEventHandler : ITimeoutPolicyEventHandler
 
 With the above whenever a timeout occurs on the `my-http-client` `HttpClient` there will be a log message for it.
 
-There are overloads that enable you to have more control on how the instance that will handle the events is created. For this specic example it doesn't make much sense but could use the overload as follows:
+There are overloads that enable you to have more control on how the instance that will handle the events is created. For instance:
 
 ```csharp
 services
@@ -122,6 +131,9 @@ services
         },
         eventHandlerFactory: provider =>
         {
+            // This would be the same as using the `AddTimeoutPolicy<MyTimeoutEventHandler>`.
+            // It's just an example of how you can control the creaton of the object handling the
+            // policy events.
             var loggerFactory = provider.GetRequiredService<ILoggerFactory>();
             var logger = loggerFactory.CreateLogger<MyTimeoutEventHandler>();
             return new MyTimeoutEventHandler(logger);

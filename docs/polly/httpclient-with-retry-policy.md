@@ -20,6 +20,15 @@ This policy was chosen because of its more advanced jitter support. For more inf
 - [Retry with jitter](https://github.com/App-vNext/Polly/wiki/Retry-with-jitter)
 - [Wait and Retry with Jittered Back-off](https://github.com/Polly-Contrib/Polly.Contrib.WaitAndRetry#wait-and-retry-with-jittered-back-off)
 
+> **Note**
+>
+> the variable `services` in the examples below is of type `IServiceCollection`. On the default template
+> for a Web API you can access it via `builder.services`. Example:
+>
+> var builder = WebApplication.CreateBuilder(args); </br>
+> builder.Services.AddControllers();
+>
+
 ### Basic example
 
 You can add a retry policy by doing the following:
@@ -118,7 +127,7 @@ public class MyRetryEventHandler : IRetryPolicyEventHandler
 
 With the above whenever a retry occurs on the `my-http-client` `HttpClient` there will be a log message for it.
 
-There are overloads that enable you to have more control on how the instance that will handle the events is created. For this specic example it doesn't make much sense but could use the overload as follows:
+There are overloads that enable you to have more control on how the instance that will handle the events is created. For instance:
 
 ```csharp
 services
@@ -131,6 +140,9 @@ services
         },
         eventHandlerFactory: provider =>
         {
+            // This would be the same as using the `AddRetryPolicy<MyRetryEventHandler>`.
+            // It's just an example of how you can control the creaton of the object handling the
+            // policy events.
             var loggerFactory = provider.GetRequiredService<ILoggerFactory>();
             var logger = loggerFactory.CreateLogger<MyRetryEventHandler>();
             return new MyRetryEventHandler(logger);

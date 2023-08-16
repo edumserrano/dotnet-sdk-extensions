@@ -12,6 +12,15 @@ You will have to add the [dotnet-sdk-extensions](https://www.nuget.org/packages/
 
 ## How to use
 
+> **Note**
+>
+> the variable `services` in the examples below is of type `IServiceCollection`. On the default template
+> for a Web API you can access it via `builder.services`. Example:
+>
+> var builder = WebApplication.CreateBuilder(args); </br>
+> builder.Services.AddControllers();
+>
+
 ### Simple example
 
 You can augment the circuit breaker policy with the circuit breaker checker policy as follows:
@@ -90,6 +99,7 @@ In this example we populate the `PolicyRegistry` with the circuit breaker checke
 Polly is a fantastic library and there are many ways to use it on your application. The above examples were just to show how the `CircuitBreakerCheckerAsyncPolicy` could be applied.
 
 To find out more see Polly's docs:
+
 - [Readme](https://github.com/App-vNext/Polly)
 - [Wiki](https://github.com/App-vNext/Polly/wiki)
 - [Polly and HttpClientFactory](https://github.com/App-vNext/Polly/wiki/Polly-and-HttpClientFactory)

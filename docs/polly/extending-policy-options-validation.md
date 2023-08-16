@@ -8,6 +8,15 @@ All of the options from the following extension methods have a default validatio
 
 Let's see how we can extend the validation of the `TimeoutOptions` from the [`AddTimeoutPolicy` extension method](/docs/polly/httpclient-with-timeout-policy.md). The same can be applied to the options of any of the other extension methods.
 
+> **Note**
+>
+> the variable `services` in the examples below is of type `IServiceCollection`. On the default template
+> for a Web API you can access it via `builder.services`. Example:
+>
+> var builder = WebApplication.CreateBuilder(args); </br>
+> builder.Services.AddControllers();
+>
+
 ## Extend validation inline
 
 The `TimeoutOptions` has a default validation but you can extend it as follows:
@@ -49,7 +58,7 @@ Then you add the validation to the `IServiceCollection`:
 
 ```csharp
 // with this when an instance of TimeoutOptions is requested the MyTimeoutOptionsValidation.Validate method will execute
-services.AddSingleton<IValidateOptions<TimeoutOptions>, MyTimeoutOptionsValidation>();  
+services.AddSingleton<IValidateOptions<TimeoutOptions>, MyTimeoutOptionsValidation>();
 ```
 
 And finally you add the timeout policy:

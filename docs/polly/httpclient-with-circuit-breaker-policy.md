@@ -12,9 +12,18 @@ You will have to add the [dotnet-sdk-extensions](https://www.nuget.org/packages/
 
 ## How to use
 
-The extension method provided `AddCircuitBreakerPolicy` is an extension to the `IHttpClientBuilder` which is what you use when [configuring an HttpClient](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/http-requests?view=aspnetcore-5.0).
+The `AddCircuitBreakerPolicy` method is an extension method to the `IHttpClientBuilder` which is what you use when [configuring an HttpClient](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/http-requests?view=aspnetcore-5.0).
 
 This extension will add a [circuit breaker policy](https://github.com/App-vNext/Polly#advanced-circuit-breaker) wrapped with a [circuit breaker checker policy](/docs/polly/circuit-breaker-checker-policy.md) to the `HttpClient`.
+
+> **Note**
+>
+> the variable `services` in the examples below is of type `IServiceCollection`. On the default template
+> for a Web API you can access it via `builder.services`. Example:
+>
+> var builder = WebApplication.CreateBuilder(args); </br>
+> builder.Services.AddControllers();
+>
 
 ### Basic example
 
@@ -136,7 +145,7 @@ public class MyCircuitBreakerEventHandler : ICircuitBreakerPolicyEventHandler
 
 With the above whenever a circuit breaker event occurs on the `my-http-client` `HttpClient` there will be a log message for it.
 
-There are overloads that enable you to have more control on how the instance that will handle the events is created. For this specic example it doesn't make much sense but could use the overload as follows:
+There are overloads that enable you to have more control on how the instance that will handle the events is created. For instance:
 
 ```csharp
 services
@@ -151,6 +160,9 @@ services
         },
         eventHandlerFactory: provider =>
         {
+            // This would be the same as using the `AddCircuitBreakerPolicy<MyCircuitBreakerEventHandler>`.
+            // It's just an example of how you can control the creaton of the object handling the
+            // policy events.
             var loggerFactory = provider.GetRequiredService<ILoggerFactory>();
             var logger = loggerFactory.CreateLogger<MyCircuitBreakerEventHandler>();
             return new MyCircuitBreakerEventHandler(logger);
@@ -164,3 +176,23 @@ For the majority of the cases the overload that accepts a genericy type `AddCirc
 The `AddCircuitBreakerPolicy` extension method adds a [circuit breaker checker policy](/docs/polly/circuit-breaker-checker-policy.md) that is evaluated before the circuit breaker policy.
 
 When the circuit's state is open/isolated the circuit breaker checker policy avoids an exception being thrown and returns a instance of `CircuitBrokenHttpResponseMessage` which derives from `HttpResponseMessage` and has a status code 500.
+
+If you want to handle the `CircuitBrokenHttpResponseMessage` type returned, here's an example you can consider:
+
+```csharp
+//httpClient is an HttpClient with a circuit breaker and a circuit breaker check policies applied
+var response = await httpClient.GetAsync("/some-path");
+if(response is CircuitBrokenHttpResponseMessage circuitBrokenHttpResponseMessage)
+{
+    // do something because the request failed due to the circuit being broken
+}
+
+if (response.IsSuccessStatusCode)
+{
+    // do something because the request was successful
+}
+else
+{
+    // do something because the request failed
+}
+```

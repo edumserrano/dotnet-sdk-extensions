@@ -33,6 +33,15 @@ The fallback policy is configured to handle the following exceptions:
 - `BrokenCircuitException` and `IsolatedCircuitException`: the fallback response is a `CircuitBrokenHttpResponseMessage`.
 - `TaskCanceledException`: the fallback response is a `AbortedHttpResponseMessage` or a `TimeoutHttpResponseMessage` if the inner exception is `TimeoutException`.
 
+> **Note**
+>
+> the variable `services` in the examples below is of type `IServiceCollection`. On the default template
+> for a Web API you can access it via `builder.services`. Example:
+>
+> var builder = WebApplication.CreateBuilder(args); </br>
+> builder.Services.AddControllers();
+>
+
 ### Basic example
 
 You can add a fallback policy by doing the following:

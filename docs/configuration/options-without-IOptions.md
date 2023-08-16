@@ -12,6 +12,15 @@ You will have to add the [dotnet-sdk-extensions](https://www.nuget.org/packages/
 
 ## How to use
 
+> **Note**
+>
+> the variable `services` in the examples below is of type `IServiceCollection`. On the default template
+> for a Web API you can access it via `builder.services`. Example:
+>
+> var builder = WebApplication.CreateBuilder(args); </br>
+> builder.Services.AddControllers();
+>
+
 Imagine that you have an appsettings file with the following:
 
 ```json
@@ -42,16 +51,6 @@ public class SomeClass
 ```
 
 To be able to do the above you can use the `OptionsBuilder.AddOptionsValue` extension method:
-
-> **Note**
->
-> the variable `services` in the examples below is of type `IServiceCollection`. On the default template
-> for a WebAPI you can access it via `builder.services`. Example:
->
-> var builder = WebApplication.CreateBuilder(args); </br>
-> builder.Services.AddControllers();
->
-
 
 ```csharp
 services
