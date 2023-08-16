@@ -74,4 +74,7 @@ services
     .ValidateDataAnnotations();
 ```
 
-Also note that this extension method just added the ability to take a dependency on `SomeOption`, it didn't remove the ability to take a dependency on `IOptions<SomeOption>`.
+> **Note**
+>
+> The `AddOptionsValue` extension methods add the ability to take a dependency on `SomeOption`, they don't remove remove the ability to take a dependency on `IOptions<SomeOption>`.
+>
