@@ -23,7 +23,7 @@
 
 ## Descriptiom
 
-This repo contains extensions to help build .NET applications, as well as extensions for unit and [integration tests](https://docs.microsoft.com/en-us/aspnet/core/test/integration-tests?#introduction-to-integration-tests). It supports applications targeting .NET Core 3.1 and .NET 5.0 or higher.
+This repo contains extensions to help build .NET applications, as well as extensions for unit and [integration tests](https://docs.microsoft.com/en-us/aspnet/core/test/integration-tests?#introduction-to-integration-tests). It supports applications targeting .NET 6.0 or higher.
 
 ## Installing
 
