@@ -43,6 +43,16 @@ public class SomeClass
 
 To be able to do the above you can use the `OptionsBuilder.AddOptionsValue` extension method:
 
+> **Note**
+>
+> the variable `services` in the examples below is of type `IServiceCollection`. On the default template
+> for a WebAPI you can access it via `builder.services`. Example:
+>
+> var builder = WebApplication.CreateBuilder(args); </br>
+> builder.Services.AddControllers();
+>
+
+
 ```csharp
 services
     .AddOptions<MyOptions>()
