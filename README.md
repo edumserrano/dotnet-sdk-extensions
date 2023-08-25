@@ -11,7 +11,7 @@
 [![GitHub Sponsors](https://img.shields.io/github/sponsors/edumserrano)](https://github.com/sponsors/edumserrano)
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-Eduardo%20Serrano-blue.svg)](https://www.linkedin.com/in/eduardomserrano/)
 
-- [Descriptiom](#descriptiom)
+- [Description](#description)
 - [Installing](#installing)
 - [Extensions list](#extensions-list)
   - [For apps](#for-apps)
@@ -21,7 +21,7 @@
 - [Debugging](#debugging)
 - [Dev notes](#dev-notes)
 
-## Descriptiom
+## Description
 
 This repo contains extensions to help build .NET applications, as well as extensions for unit and [integration tests](https://docs.microsoft.com/en-us/aspnet/core/test/integration-tests?#introduction-to-integration-tests). It supports applications targeting .NET 6.0 or higher.
 
