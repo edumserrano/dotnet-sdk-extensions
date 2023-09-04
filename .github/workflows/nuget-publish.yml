@@ -54,6 +54,17 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
+        # This step only works if no extra commits are pushed to the release PR
+        # The problem is that the status that is carrying the NuGet release info is only added to the commit that opens the PR.
+        # This status is added by the NuGet Release workflow, see nuget-release.yml at the step with description 'Set PR status'
+        #
+        # If more commits are pushed to the NuGet release PR then this step will fail to find the status because it looks only
+        # at ${{ github.event.pull_request.head.sha }}, not the original commit.
+        #
+        # Passing information to the PR by means of adding a status to it is not ideal and I should rethink how this is done to properly
+        # fix this step
+        #
+
         $statuses = gh api repos/${{ github.repository }}/commits/${{ github.event.pull_request.head.sha }}/statuses | ConvertFrom-Json
         Write-Output $statuses
         $nugetReleaseInfoStatus = $statuses | Where-Object {$_.context.startsWith("NuGet release / NuGet release info")}
