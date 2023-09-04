@@ -7,14 +7,6 @@
     {
       "pattern": "^https://github.com/edumserrano/dotnet-sdk-extensions/security/code-scanning",
       "description": "This link is only accessible with an authenticated user with the right access to the edumserrano/dotnet-sdk-extensions repo."
-    },
-    {
-      "pattern": "^https://github.com/edumserrano/dotnet-sdk-extensions/blob/dotnet-sdk-extensions-.*.md",
-      "description": "These type of links are currently only used on the NuGet package readme files. They are excluded because the PR for the NuGet release contains updated links to a new tag that has not been created yet. Excluding for now, can consider revisit the NuGet release process to remove this exclusion."
-    },
-    {
-      "pattern": "^https://github.com/edumserrano/dotnet-sdk-extensions/blob/dotnet-sdk-extensions-testing-.*.md",
-      "description": "These type of links are currently only used on the NuGet package readme files. They are excluded because the PR for the NuGet release contains updated links to a new tag that has not been created yet. Excluding for now, can consider revisit the NuGet release process to remove this exclusion."
     }
   ],
   "replacementPatterns": [
@@ -26,9 +18,7 @@
   ],
   "httpHeaders": [
     {
-      "urls": [
-        "https://docs.github.com"
-      ],
+      "urls": ["https://docs.github.com"],
       "headers": {
         "Accept-Encoding": "gzip, deflate, br"
       },
