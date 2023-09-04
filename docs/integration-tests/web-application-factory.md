@@ -2,7 +2,7 @@
 
 ## Motivation
 
-There are some details when using [WebApplicationFactory\<T>](https://docs.microsoft.com/en-us/aspnet/core/test/integration-tests?#basic-tests-with-the-default-webapplicationfactory) that are a bit obscure but require understanding when you want to use it slighlty differently from it's basic use case.
+There are some details when using [WebApplicationFactory\<T>](https://docs.microsoft.com/en-us/aspnet/core/test/integration-tests?#basic-tests-with-the-default-webapplicationfactory) that are a bit obscure but require understanding when you want to use it slightly differently from it's basic use case.
 
 ## Basic use case
 
@@ -124,7 +124,7 @@ public class CustomWebApplicationFactory : WebApplicationFactory<SomeTypeInMyTes
         return Host.CreateDefaultBuilder()
             .ConfigureWebHostDefaults(webBuilder =>
             {
-                
+
             });
     }
 }
