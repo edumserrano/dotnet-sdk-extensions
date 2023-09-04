@@ -17,9 +17,10 @@ You will have to add the [dotnet-sdk-extensions](https://www.nuget.org/packages/
 > the variable `services` in the examples below is of type `IServiceCollection`. On the default template
 > for a Web API you can access it via `builder.services`. Example:
 >
+> ```csharp
 > var builder = WebApplication.CreateBuilder(args); </br>
 > builder.Services.AddControllers();
->
+>```
 
 Imagine that you have an appsettings file with the following:
 
