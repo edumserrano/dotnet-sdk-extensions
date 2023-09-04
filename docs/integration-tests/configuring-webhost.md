@@ -1,5 +1,15 @@
 ﻿# Providing test appsettings files to the test server
 
+- [Summary](#summary)
+- [Motivation](#motivation)
+- [Requirements](#requirements)
+- [How to use](#how-to-use)
+- [Configure the location of the test appsettings files](#configure-the-location-of-the-test-appsettings-files)
+- [How does it work with the appsettings files outside the test project (ie the real ones on the main project)](#how-does-it-work-with-the-appsettings-files-outside-the-test-project-ie-the-real-ones-on-the-main-project)
+- [Notes](#notes)
+
+## Summary
+
 This extension allows you to pass configuration files to use during integration tests.
 
 ## Motivation
@@ -26,11 +36,11 @@ Let's say that you create a directory in the root of the test project named *App
 Given this you can do a test as shown by the DemoTest method below:
 
 ```csharp
-public class ConfigurationDemoTests : IClassFixture<WebApplicationFactory<Startup>>
+public class ConfigurationDemoTests : IClassFixture<WebApplicationFactory<Progam>>
 {
-    private readonly WebApplicationFactory<Startup> _webApplicationFactory;
+    private readonly WebApplicationFactory<Progam> _webApplicationFactory;
 
-    public ConfigurationDemoTests(WebApplicationFactory<Startup> webApplicationFactory)
+    public ConfigurationDemoTests(WebApplicationFactory<Progam> webApplicationFactory)
     {
         _webApplicationFactory = webApplicationFactory;
     }

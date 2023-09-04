@@ -1,5 +1,13 @@
 ﻿# Add a timeout policy to an HttpClient
 
+- [Motivation](#motivation)
+- [Requirements](#requirements)
+- [How to use](#how-to-use)
+  - [Basic example](#basic-example)
+  - [TimeoutOptions](#timeoutoptions)
+  - [Binding appsettings values to the timeout policy options](#binding-appsettings-values-to-the-timeout-policy-options)
+  - [Handling events from the timeout policy](#handling-events-from-the-timeout-policy)
+
 ## Motivation
 
 Every time I use an `HttpClient` I end up repeating the same [Polly](https://github.com/App-vNext/Polly) usage pattern in my projects to add a timeout policy.
@@ -15,6 +23,17 @@ You will have to add the [dotnet-sdk-extensions](https://www.nuget.org/packages/
 The extension method provided `AddTimeoutPolicy` is an extension to the `IHttpClientBuilder` which is what you use when [configuring an HttpClient](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/http-requests?view=aspnetcore-5.0).
 
 This extension will add a [timeout policy](https://github.com/App-vNext/Polly#timeout) to the `HttpClient`.
+
+> **Note**
+>
+> the variable `services` in the examples below is of type `IServiceCollection`. On the default template
+> for a Web API you can access it via `builder.services`. Example:
+>
+> ```csharp
+> var builder = WebApplication.CreateBuilder(args);
+> builder.Services.AddControllers();
+> ```
+>
 
 ### Basic example
 
@@ -110,7 +129,7 @@ public class MyTimeoutEventHandler : ITimeoutPolicyEventHandler
 
 With the above whenever a timeout occurs on the `my-http-client` `HttpClient` there will be a log message for it.
 
-There are overloads that enable you to have more control on how the instance that will handle the events is created. For this specic example it doesn't make much sense but could use the overload as follows:
+There are overloads that enable you to have more control on how the instance that will handle the events is created. For instance:
 
 ```csharp
 services
@@ -122,6 +141,9 @@ services
         },
         eventHandlerFactory: provider =>
         {
+            // This would be the same as using the `AddTimeoutPolicy<MyTimeoutEventHandler>`.
+            // It's just an example of how you can control the creaton of the object handling the
+            // policy events.
             var loggerFactory = provider.GetRequiredService<ILoggerFactory>();
             var logger = loggerFactory.CreateLogger<MyTimeoutEventHandler>();
             return new MyTimeoutEventHandler(logger);

@@ -26,6 +26,7 @@ internal abstract class HttpMockServer : IHttpMockServer
             .ToList();
     }
 
+    // Implemented following guidance from https://docs.microsoft.com/en-us/dotnet/standard/garbage-collection/implementing-disposeasync
     public async ValueTask DisposeAsync()
     {
         await DisposeAsyncCore();
@@ -34,7 +35,6 @@ internal abstract class HttpMockServer : IHttpMockServer
 
     protected abstract IHostBuilder CreateHostBuilder(string[] args);
 
-    [SuppressMessage("Style", "VSTHRD200:Use \"Async\" suffix for async methods", Justification = "Following guidance from https://docs.microsoft.com/en-us/dotnet/standard/garbage-collection/implementing-disposeasync")]
     protected virtual async ValueTask DisposeAsyncCore()
     {
         if (Host is not null)

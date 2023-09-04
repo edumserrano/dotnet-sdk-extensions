@@ -51,7 +51,7 @@ To run tests via WSL you need to have at least `Visual Studio 2022` and the Linu
 ### Run tests with dotnet CLI
 
 1) Clone the repo and browse to the root directory of the repo using your favorite shell.
-2) Run **`dotnet test DotNet.Sdk.Extensions.sln`** to runb tests.
+2) Run **`dotnet test DotNet.Sdk.Extensions.sln`** to run tests.
 
 ## Projects wide configuration
 

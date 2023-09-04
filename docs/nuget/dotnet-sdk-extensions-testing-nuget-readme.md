@@ -2,7 +2,7 @@
 
 ## Description
 
-This package provides extensions to help test .NET applications, using .net core 3.1 and higher.
+This package provides extensions to help test .NET applications, using .NET 6.0 or higher.
 
 The extensions provided by this package are:
 

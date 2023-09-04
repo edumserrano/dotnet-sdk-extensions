@@ -245,6 +245,20 @@ jobs:
         $nugetOutput = nuget list PackageId:$nugetId -Source nuget.org -PreRelease
         $nugetCurrentVersion = $nugetOutput.Split(" ")[-1]
 
+        if($nugetId -eq 'dotnet-sdk-extensions')
+        {
+          $projFilePath = "${{ github.workspace }}/src/DotNet.Sdk.Extensions/DotNet.Sdk.Extensions.csproj"
+        }
+        elseif($nugetId -eq 'dotnet-sdk-extensions-testing')
+        {
+          $projFilePath = "${{ github.workspace }}/src/DotNet.Sdk.Extensions.Testing/DotNet.Sdk.Extensions.Testing.csproj"
+        }
+        else
+        {
+          Write-Output "::error::Invalid NuGet ID: $nugetId. Valid options are: dotnet-sdk-extensions or dotnet-sdk-extensions-testing"
+          Exit 1
+        }
+
         Write-Output "nuget-id=$nugetId"
         Write-Output "nuget-new-version=$nugetNewVersion"
         Write-Output "nuget-url=$nugetUrl"
@@ -253,6 +267,7 @@ jobs:
         Write-Output "nuget-new-version=$nugetNewVersion" >> $env:GITHUB_OUTPUT
         Write-Output "nuget-url=$nugetUrl" >> $env:GITHUB_OUTPUT
         Write-Output "nuget-current-version=$nugetCurrentVersion" >> $env:GITHUB_OUTPUT
+        Write-Output "proj-filepath=$projFilePath" >> $env:GITHUB_OUTPUT
     - name: Prepare commit info
       id: commit-info
       run: |
@@ -267,10 +282,10 @@ jobs:
     - name: Git checkout new branch
       run: |
         git checkout -b ${{ steps.commit-info.outputs.branch-name }}
-    - name: Set DotNet.Sdk.Extensions version
-      if: steps.nuget-release-pr-data.outputs.nuget-id == 'dotnet-sdk-extensions'
+    - name: Update Nuget package version
       run: |
-        $projFilePath = "${{ github.workspace }}/src/DotNet.Sdk.Extensions/DotNet.Sdk.Extensions.csproj"
+        $projFilePath = '${{ steps.nuget-release-pr-data.outputs.proj-filepath }}'
+        $nugetNewVersion = '${{ steps.nuget-release-pr-data.outputs.nuget-new-version }}'
 
         Write-Output "::group::csproj before updating version"
         cat $projFilePath
@@ -279,30 +294,20 @@ jobs:
         $xml=New-Object XML
         $xml.PreserveWhitespace = $true
         $xml.Load($projFilePath)
-        $xml.Project.PropertyGroup.Version = "${{ steps.nuget-release-pr-data.outputs.nuget-new-version }}"
+        $xml.Project.PropertyGroup.Version = $nugetNewVersion
         $xml.Save($projFilePath)
 
         Write-Output "::group::csproj after updating version"
         cat $projFilePath
         Write-Output "::endgroup::"
-    - name: Set DotNet.Sdk.Extensions.Testing version
-      if: steps.nuget-release-pr-data.outputs.nuget-id == 'dotnet-sdk-extensions-testing'
+    - name: Update NuGet package README
       run: |
-        $projFilePath = "${{ github.workspace }}/src/DotNet.Sdk.Extensions.Testing/DotNet.Sdk.Extensions.Testing.csproj"
-
-        Write-Output "::group::csproj before updating version"
-        cat $projFilePath
-        Write-Output "::endgroup::"
-
-        $xml=New-Object XML
-        $xml.PreserveWhitespace = $true
-        $xml.Load($projFilePath)
-        $xml.Project.PropertyGroup.Version = "${{ steps.nuget-release-pr-data.outputs.nuget-new-version }}"
-        $xml.Save($projFilePath)
-
-        Write-Output "::group::csproj after updating version"
-        cat $projFilePath
-        Write-Output "::endgroup::"
+        $nugetId = '${{ steps.nuget-release-pr-data.outputs.nuget-id }}'
+        $nugetNewVersion = '${{ steps.nuget-release-pr-data.outputs.nuget-new-version }}''
+        $nugetReadmeFilepath = "./docs/nuget/$nugetId-nuget-readme.md"
+        $nugetReadme = Get-Content -path $nugetReadmeFilepath
+        $nugetReadme = $nugetReadme -replace "$nugetId-(\d+\.\d+\.\d+)", "$nugetId-$nugetNewVersion"
+        Set-Content -Path $nugetReadmeFilepath -Value $nugetReadme
     - name: Push changes to branch
       id: auto-commit-action
       uses: stefanzweifel/git-auto-commit-action@v4

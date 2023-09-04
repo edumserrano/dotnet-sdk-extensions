@@ -1,5 +1,19 @@
 ﻿# Mocking HttpClient's responses out-of-process
 
+- [Summary](#summary)
+- [Motivation](#motivation)
+- [Requirements](#requirements)
+- [How to use](#how-to-use)
+- [Different ways to setup the `HttpMockServer`](#different-ways-to-setup-the-httpmockserver)
+  - [Configuring the `HttpMockServer` via `HttpMockServerBuilder.UseHttpResponseMocks`](#configuring-the-httpmockserver-via-httpmockserverbuilderusehttpresponsemocks)
+  - [Configuring the `HttpMockServer` via `HttpMockServerBuilder.UseStartup<T>`](#configuring-the-httpmockserver-via-httpmockserverbuilderusestartupt)
+- [`HttpMockServerBuilder.UseHostArgs` and `HttpMockServerBuilder.UseUrls`](#httpmockserverbuilderusehostargs-and-httpmockserverbuilderuseurls)
+  - [`HttpMockServerBuilder.UseHostArgs`](#httpmockserverbuilderusehostargs)
+  - [`HttpMockServerBuilder.UseUrls`](#httpmockserverbuilderuseurls)
+- [Disable logs produced by the `HttpMockServer`](#disable-logs-produced-by-the-httpmockserver)
+
+## Summary
+
 This will allow mocking the HttpClient's response by launching an http server with predefined responses. The HttpClient(s) are then configured to send the requests to this http server.
 
 This is called out-of-process mocking because the mocked responses are returned by an http server which is not part of the test server running the integration test. The http calls will actually happen as opposed to the [in-process http response mocking method](./http-mocking-in-process.md).
@@ -25,11 +39,11 @@ Start by creating an integration test as shown in [introduction to integration t
 After, setup the `HttpMockServer` and configure the `WebApplicationFactory` so that the `HttpClient(s)` required for the test send their requests to the `HttpMockServer` by having their base address set to the `HttpMockServer's` listening URL. See example DemoTest:
 
 ```csharp
-public class HttpMocksDemoTests : IClassFixture<WebApplicationFactory<Startup>>
+public class HttpMocksDemoTests : IClassFixture<WebApplicationFactory<Progam>>
 {
-    private readonly WebApplicationFactory<Startup> _webApplicationFactory;
+    private readonly WebApplicationFactory<Progam> _webApplicationFactory;
 
-    public HttpMocksDemoTests(WebApplicationFactory<Startup> webApplicationFactory)
+    public HttpMocksDemoTests(WebApplicationFactory<Progam> webApplicationFactory)
     {
         _webApplicationFactory = webApplicationFactory;
     }
@@ -138,8 +152,8 @@ After you have a mock `Startup` class configure the `HttpMockServer` as follows:
 
 ```csharp
 await using var httpMockServer = new HttpMockServerBuilder()
-	.UseStartup<MyMockStartup>()
-	.Build();
+    .UseStartup<MyMockStartup>()
+    .Build();
 var urls = await httpMockServer.StartAsync();
 var httpUrl = urls.First(x => x.Scheme == HttpScheme.Http);
 var httpsUrl = urls.First(x => x.Scheme == HttpScheme.Https);

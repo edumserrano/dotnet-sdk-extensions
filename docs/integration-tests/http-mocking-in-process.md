@@ -1,6 +1,20 @@
 ﻿# Mocking HttpClient's responses in-process
 
-This will allow mocking the HttpClient's response by taking control of the HttpMessageHandler(s) that is(are) used by the HttpClient(s) registered on the Startup.
+- [Summary](#summary)
+- [Motivation](#motivation)
+  - [Issues with mocking the typed client](#issues-with-mocking-the-typed-client)
+  - [Issues with mocking the IHttpClientFactory.CreateClient](#issues-with-mocking-the-ihttpclientfactorycreateclient)
+- [Requirements](#requirements)
+- [How to use](#how-to-use)
+- [Mock different types of HttpClients](#mock-different-types-of-httpclients)
+- [Mock responses conditionally](#mock-responses-conditionally)
+- [Mock several responses](#mock-several-responses)
+- [Different ways to mock the HttpClient response](#different-ways-to-mock-the-httpclient-response)
+- [Configure the http response mocks with access to the `IServiceProvider`](#configure-the-http-response-mocks-with-access-to-the-iserviceprovider)
+
+## Summary
+
+This will allow mocking the HttpClient's response by taking control of the HttpMessageHandler(s) that is(are) used by the HttpClient(s) registered on the Progam.
 
 The mocking of the http response happens within the test server, without any outgoing http call actually happening, and that's why this method was named in process as oposed to the [out-of-process http response mocking method](http-mocking-out-of-process.md).
 
@@ -22,9 +36,9 @@ In the end, in addition to integration tests, we would also have to implement so
 
 ### Issues with mocking the IHttpClientFactory.CreateClient
 
-The problem with mocking the `IHttpClientFactory.CreateClient` is that any configuration that is set for the HttpClient as part of the `Startup` won't take effect. For instance, after calling `IServiceCollection.AddHttpClient` you can configure properties/behaviour of the `HttpClient` by following that call with a `IHttpClientBuilder.ConfigureHttpClient`.
+The problem with mocking the `IHttpClientFactory.CreateClient` is that any configuration that is set for the `HttpClient` as part of the `IServiceCollection.AddHttpClient` won't take effect.
 
-Imagine that you want to configure a base address or a timeout for the `HttpClient`. If we mock the `IHttpClientFactory.CreateClient` then the call to `IHttpClientBuilder.ConfigureHttpClient` where you define the base address or a timeout won't take effect during tests because we aren't using the 'real' `IHttpClientFactory`.
+For instance, after calling `IServiceCollection.AddHttpClient` you can configure properties/behaviour of the `HttpClient` by following that call with a `IHttpClientBuilder.ConfigureHttpClient`. Imagine that you want to configure a base address or a timeout for the `HttpClient`. If we mock the `IHttpClientFactory.CreateClient` then the call to `IHttpClientBuilder.ConfigureHttpClient` where you define the base address or a timeout won't take effect during tests because we aren't using the 'real' `IHttpClientFactory`.
 
 As another example, if you use the [Polly library](https://github.com/App-vNext/Polly) to add resilience and transient-fault-handling to the `HttpClient` then those policies will also not take effect on your tests leaving a gap in testing.
 
@@ -39,11 +53,11 @@ Start by creating an integration test as shown in [introduction to integration t
 After, configure the responses of the HttpClient by using the `IWebHostBuilder.UseHttpMocks` extension method. See example DemoTest:
 
 ```csharp
-public class HttpMocksDemoTests : IClassFixture<WebApplicationFactory<Startup>>
+public class HttpMocksDemoTests : IClassFixture<WebApplicationFactory<Progam>>
 {
-    private readonly WebApplicationFactory<Startup> _webApplicationFactory;
+    private readonly WebApplicationFactory<Progam> _webApplicationFactory;
 
-    public HttpMocksDemoTests(WebApplicationFactory<Startup> webApplicationFactory)
+    public HttpMocksDemoTests(WebApplicationFactory<Progam> webApplicationFactory)
     {
         _webApplicationFactory = webApplicationFactory;
     }
@@ -79,7 +93,7 @@ public class HttpMocksDemoTests : IClassFixture<WebApplicationFactory<Startup>>
 }
 ```
 
-**Note**: the above test assumes that there is a typed client, represented by the type `IMyApiClient`, added to the `IServiceCollection` of the `Startup` class through the `IServiceCollection.AddHttpClient` method.
+**Note**: the above test assumes that there is a typed client, represented by the type `IMyApiClient`, added to the `IServiceCollection` of the `Progam` class through the `IServiceCollection.AddHttpClient` method.
 
 ## Mock different types of HttpClients
 
@@ -203,11 +217,11 @@ Let's see some examples:
 1) Configuring the http response mocks inline with the `HttpMessageHandlersReplacer.MockHttpResponse` method:
 
 ```csharp
-public class HttpMocksDemoTests : IClassFixture<WebApplicationFactory<Startup>>
+public class HttpMocksDemoTests : IClassFixture<WebApplicationFactory<Progam>>
 {
-    private readonly WebApplicationFactory<Startup> _webApplicationFactory;
+    private readonly WebApplicationFactory<Progam> _webApplicationFactory;
 
-    public HttpMocksDemoTests(WebApplicationFactory<Startup> webApplicationFactory)
+    public HttpMocksDemoTests(WebApplicationFactory<Progam> webApplicationFactory)
     {
         _webApplicationFactory = webApplicationFactory;
     }
@@ -245,11 +259,11 @@ public class HttpMocksDemoTests : IClassFixture<WebApplicationFactory<Startup>>
 2) Configuring the http response mocks before hand and using them with `IWebHostBuilder.UseHttpMocks` inline:
 
 ```csharp
-public class HttpMocksDemoTests : IClassFixture<WebApplicationFactory<Startup>>
+public class HttpMocksDemoTests : IClassFixture<WebApplicationFactory<Progam>>
 {
-    private readonly WebApplicationFactory<Startup> _webApplicationFactory;
+    private readonly WebApplicationFactory<Progam> _webApplicationFactory;
 
-    public HttpMocksDemoTests(WebApplicationFactory<Startup> webApplicationFactory)
+    public HttpMocksDemoTests(WebApplicationFactory<Progam> webApplicationFactory)
     {
         _webApplicationFactory = webApplicationFactory;
     }
@@ -304,11 +318,11 @@ public class HttpMocksDemoTests : IClassFixture<WebApplicationFactory<Startup>>
 3) Configuring the http response mocks before hand and using them with `IWebHostBuilder.UseHttpMocks` non inline:
 
 ```csharp
-public class HttpMocksDemoTests : IClassFixture<WebApplicationFactory<Startup>>
+public class HttpMocksDemoTests : IClassFixture<WebApplicationFactory<Progam>>
 {
-    private readonly WebApplicationFactory<Startup> _webApplicationFactory;
+    private readonly WebApplicationFactory<Progam> _webApplicationFactory;
 
-    public HttpMocksDemoTests(WebApplicationFactory<Startup> webApplicationFactory)
+    public HttpMocksDemoTests(WebApplicationFactory<Progam> webApplicationFactory)
     {
         _webApplicationFactory = webApplicationFactory;
     }
@@ -361,11 +375,11 @@ public class HttpMocksDemoTests : IClassFixture<WebApplicationFactory<Startup>>
 If you need to configure the http response mock based on data that depends on what is present on the `IServiceCollection` then you can use the overload that gives you access to the `IServiceProvider` to retrieve what you require. For instance:
 
 ```csharp
-public class HttpMocksDemoTests : IClassFixture<WebApplicationFactory<Startup>>
+public class HttpMocksDemoTests : IClassFixture<WebApplicationFactory<Progam>>
 {
-    private readonly WebApplicationFactory<Startup> _webApplicationFactory;
+    private readonly WebApplicationFactory<Progam> _webApplicationFactory;
 
-    public HttpMocksDemoTests(WebApplicationFactory<Startup> webApplicationFactory)
+    public HttpMocksDemoTests(WebApplicationFactory<Progam> webApplicationFactory)
     {
         _webApplicationFactory = webApplicationFactory;
     }
@@ -406,5 +420,3 @@ public class HttpMocksDemoTests : IClassFixture<WebApplicationFactory<Startup>>
 ```
 
 In the above example we are retrieving the configuration value for the key `SomeOption` from the `IConfiguration` instance that we got from the `IServiceProvider` and setting it as the value of the header `some-header` for the mocked response.
-
-The above code is just for example. In reality you will probably want to retrieve some data from the `IServiceProvider` that was added to the `IServiceCollection` by the `Startup` class that is used by the `WebApplicationFactory<Startup>`.

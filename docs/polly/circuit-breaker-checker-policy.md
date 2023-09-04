@@ -1,5 +1,13 @@
 ﻿# Circuit breaker checker policy
 
+- [Motivation](#motivation)
+- [Requirements](#requirements)
+- [How to use](#how-to-use)
+  - [Simple example](#simple-example)
+  - [Example with HttpClient](#example-with-httpclient)
+  - [Example with HttpClient and PolicyRegistry](#example-with-httpclient-and-policyregistry)
+  - [About Polly](#about-polly)
+
 ## Motivation
 
 I want to use a [Polly circuit breaker policy](https://github.com/App-vNext/Polly#circuit-breaker) or [advanced circuit breaker policy](https://github.com/App-vNext/Polly#advanced-circuit-breaker) but don't want the circuit to throw an exception when its state is open/isolated.
@@ -11,6 +19,17 @@ The idea came after reading [Reducing thrown exceptions when the circuit is brok
 You will have to add the [dotnet-sdk-extensions](https://www.nuget.org/packages/dotnet-sdk-extensions) nuget to your project.
 
 ## How to use
+
+> **Note**
+>
+> the variable `services` in the examples below is of type `IServiceCollection`. On the default template
+> for a Web API you can access it via `builder.services`. Example:
+>
+> ```csharp
+> var builder = WebApplication.CreateBuilder(args);
+> builder.Services.AddControllers();
+> ```
+>
 
 ### Simple example
 
@@ -90,6 +109,7 @@ In this example we populate the `PolicyRegistry` with the circuit breaker checke
 Polly is a fantastic library and there are many ways to use it on your application. The above examples were just to show how the `CircuitBreakerCheckerAsyncPolicy` could be applied.
 
 To find out more see Polly's docs:
+
 - [Readme](https://github.com/App-vNext/Polly)
 - [Wiki](https://github.com/App-vNext/Polly/wiki)
 - [Polly and HttpClientFactory](https://github.com/App-vNext/Polly/wiki/Polly-and-HttpClientFactory)

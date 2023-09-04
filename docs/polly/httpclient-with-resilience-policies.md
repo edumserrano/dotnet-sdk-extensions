@@ -1,5 +1,17 @@
 ﻿# Add a set of resilience policies to an HttpClient
 
+- [Motivation](#motivation)
+- [Requirements](#requirements)
+- [How to use](#how-to-use)
+  - [Basic example](#basic-example)
+  - [ResilienceOptions](#resilienceoptions)
+    - [For the timeout policy options](#for-the-timeout-policy-options)
+    - [For the retry policy options](#for-the-retry-policy-options)
+    - [For the circuit breaker policy options](#for-the-circuit-breaker-policy-options)
+    - [Policy control options](#policy-control-options)
+  - [Binding appsettings values to the resilience policies options](#binding-appsettings-values-to-the-resilience-policies-options)
+  - [Handling events from the resilience policies](#handling-events-from-the-resilience-policies)
+
 ## Motivation
 
 Every time I use an `HttpClient` I end up repeating the same [Polly](https://github.com/App-vNext/Polly) usage pattern in my projects to a set of resilience polices such as:
@@ -30,6 +42,17 @@ From the documentation of the above 4 extension methods it is usefull to read th
 
 - The intro of the [`How to use`](/docs/polly/httpclient-with-fallback-policy.md#how-to-use) section of the AddFallbackPolicy extension method: it explains what the fallback policy is configured to handle and which fallback responses are returned. The same applies to the fallback policy added by the  `AddResiliencePolicies` extension.
 - The section [`Differentiate different fallback response types`](/docs/polly/httpclient-with-fallback-policy.md#distinguish-different-fallback-response-types) from the AddFallbackPolicy extension method: the same applies to a response returned by an `HttpClient` configured with the `AddResiliencePolicies` extension.
+
+> **Note**
+>
+> the variable `services` in the examples below is of type `IServiceCollection`. On the default template
+> for a Web API you can access it via `builder.services`. Example:
+>
+> ```csharp
+> var builder = WebApplication.CreateBuilder(args);
+> builder.Services.AddControllers();
+> ```
+>
 
 ### Basic example
 
@@ -154,82 +177,82 @@ The `MyResilienceEventHandler` must implement the `IResiliencePoliciesEventHandl
 
 ```csharp
 public class MyResilienceEventHandler : IResiliencePoliciesEventHandler
+{
+    private readonly ILogger<MyResilienceEventHandler> _logger;
+
+    public MyResilienceEventHandler(ILogger<MyResilienceEventHandler> logger)
     {
-        private readonly ILogger<MyResilienceEventHandler> _logger;
-
-        public MyResilienceEventHandler(ILogger<MyResilienceEventHandler> logger)
-        {
-            _logger = logger;
-        }
-
-        public Task OnTimeoutAsync(TimeoutEvent timeoutEvent)
-        {
-            //do something like logging
-            _logger.LogInformation($"A timeout has occurred on the HttpClient {timeoutEvent.HttpClientName}");
-            return Task.CompletedTask;
-        }
-
-        public Task OnRetryAsync(RetryEvent retryEvent)
-        {
-            //do something like logging
-            _logger.LogInformation($"Retry {retryEvent.RetryNumber} out of {retryEvent.RetryOptions.RetryCount} for HttpClient {retryEvent.HttpClientName}");
-            return Task.CompletedTask;
-        }
-
-        public Task OnBreakAsync(BreakEvent breakEvent)
-        {
-            //do something like logging
-            _logger.LogInformation($"Circuit state transitioned from {breakEvent.PreviousState} to open/isolated for the HttpClient {breakEvent.HttpClientName}. Break will last for {breakEvent.DurationOfBreak}");
-            return Task.CompletedTask;
-        }
-
-        public Task OnHalfOpenAsync(HalfOpenEvent halfOpenEvent)
-        {
-            //do something like logging
-            _logger.LogInformation($"Circuit state transitioned to half open for the HttpClient {halfOpenEvent.HttpClientName}");
-            return Task.CompletedTask;
-        }
-
-        public Task OnResetAsync(ResetEvent resetEvent)
-        {
-            //do something like logging
-            _logger.LogInformation($"Circuit state transitioned to closed for the HttpClient {resetEvent.HttpClientName}");
-            return Task.CompletedTask;
-        }
-
-        public Task OnHttpRequestExceptionFallbackAsync(FallbackEvent fallbackEvent)
-        {
-            //do something like logging
-            _logger.LogInformation($"Fallback response returned due to HttpRequestException for the HttpClient {fallbackEvent.HttpClientName}");
-            return Task.CompletedTask;
-        }
-
-        public Task OnTimeoutFallbackAsync(FallbackEvent fallbackEvent)
-        {
-            //do something like logging
-            _logger.LogInformation($"Fallback response returned due to timeout for the HttpClient {fallbackEvent.HttpClientName}");
-            return Task.CompletedTask;
-        }
-
-        public Task OnBrokenCircuitFallbackAsync(FallbackEvent fallbackEvent)
-        {
-            //do something like logging
-            _logger.LogInformation($"Fallback response returned due to broken circuit for the HttpClient {fallbackEvent.HttpClientName}");
-            return Task.CompletedTask;
-        }
-
-        public Task OnTaskCancelledFallbackAsync(FallbackEvent fallbackEvent)
-        {
-            //do something like logging
-            _logger.LogInformation($"Fallback response returned due to TaskCancelledException for the HttpClient {fallbackEvent.HttpClientName}");
-            return Task.CompletedTask;
-        }
+        _logger = logger;
     }
+
+    public Task OnTimeoutAsync(TimeoutEvent timeoutEvent)
+    {
+        //do something like logging
+        _logger.LogInformation($"A timeout has occurred on the HttpClient {timeoutEvent.HttpClientName}");
+        return Task.CompletedTask;
+    }
+
+    public Task OnRetryAsync(RetryEvent retryEvent)
+    {
+        //do something like logging
+        _logger.LogInformation($"Retry {retryEvent.RetryNumber} out of {retryEvent.RetryOptions.RetryCount} for HttpClient {retryEvent.HttpClientName}");
+        return Task.CompletedTask;
+    }
+
+    public Task OnBreakAsync(BreakEvent breakEvent)
+    {
+        //do something like logging
+        _logger.LogInformation($"Circuit state transitioned from {breakEvent.PreviousState} to open/isolated for the HttpClient {breakEvent.HttpClientName}. Break will last for {breakEvent.DurationOfBreak}");
+        return Task.CompletedTask;
+    }
+
+    public Task OnHalfOpenAsync(HalfOpenEvent halfOpenEvent)
+    {
+        //do something like logging
+        _logger.LogInformation($"Circuit state transitioned to half open for the HttpClient {halfOpenEvent.HttpClientName}");
+        return Task.CompletedTask;
+    }
+
+    public Task OnResetAsync(ResetEvent resetEvent)
+    {
+        //do something like logging
+        _logger.LogInformation($"Circuit state transitioned to closed for the HttpClient {resetEvent.HttpClientName}");
+        return Task.CompletedTask;
+    }
+
+    public Task OnHttpRequestExceptionFallbackAsync(FallbackEvent fallbackEvent)
+    {
+        //do something like logging
+        _logger.LogInformation($"Fallback response returned due to HttpRequestException for the HttpClient {fallbackEvent.HttpClientName}");
+        return Task.CompletedTask;
+    }
+
+    public Task OnTimeoutFallbackAsync(FallbackEvent fallbackEvent)
+    {
+        //do something like logging
+        _logger.LogInformation($"Fallback response returned due to timeout for the HttpClient {fallbackEvent.HttpClientName}");
+        return Task.CompletedTask;
+    }
+
+    public Task OnBrokenCircuitFallbackAsync(FallbackEvent fallbackEvent)
+    {
+        //do something like logging
+        _logger.LogInformation($"Fallback response returned due to broken circuit for the HttpClient {fallbackEvent.HttpClientName}");
+        return Task.CompletedTask;
+    }
+
+    public Task OnTaskCancelledFallbackAsync(FallbackEvent fallbackEvent)
+    {
+        //do something like logging
+        _logger.LogInformation($"Fallback response returned due to TaskCancelledException for the HttpClient {fallbackEvent.HttpClientName}");
+        return Task.CompletedTask;
+    }
+}
 ```
 
 With the above whenever an event is triggered from any of the resilience policies on the `my-http-client` `HttpClient` there will be a log message for it.
 
-There are overloads that enable you to have more control on how the instance that will handle the events is created. For this specic example it doesn't make much sense but could use the overload as follows:
+There are overloads that enable you to have more control on how the instance that will handle the events is created. For instance:
 
 ```csharp
 services
@@ -247,6 +270,9 @@ services
         },
         eventHandlerFactory: provider =>
         {
+            // This would be the same as using the `AddResiliencePolicies<MyResilienceEventHandler>`.
+            // It's just an example of how you can control the creaton of the object handling the
+            // policy events.
             var loggerFactory = provider.GetRequiredService<ILoggerFactory>();
             var logger = loggerFactory.CreateLogger<MyResilienceEventHandler>();
             return new MyResilienceEventHandler(logger);

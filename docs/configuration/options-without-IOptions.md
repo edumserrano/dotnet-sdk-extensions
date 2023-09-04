@@ -1,5 +1,9 @@
 ﻿# Using `T` options classes instead of `IOptions<T>`
 
+- [Motivation](#motivation)
+- [Requirements](#requirements)
+- [How to use](#how-to-use)
+
 ## Motivation
 
 I want to be able inject the options type `T` as a dependency instead of `IOptions<T>`.
@@ -11,6 +15,17 @@ The [docs for the options pattern](https://docs.microsoft.com/en-us/aspnet/core/
 You will have to add the [dotnet-sdk-extensions](https://www.nuget.org/packages/dotnet-sdk-extensions) nuget to your project.
 
 ## How to use
+
+> **Note**
+>
+> the variable `services` in the examples below is of type `IServiceCollection`. On the default template
+> for a Web API you can access it via `builder.services`. Example:
+>
+> ```csharp
+> var builder = WebApplication.CreateBuilder(args);
+> builder.Services.AddControllers();
+> ```
+>
 
 Imagine that you have an appsettings file with the following:
 
@@ -64,4 +79,7 @@ services
     .ValidateDataAnnotations();
 ```
 
-Also note that this extension method just added the ability to take a dependency on `SomeOption`, it didn't remove the ability to take a dependency on `IOptions<SomeOption>`.
+> **Note**
+>
+> The `AddOptionsValue` extension methods add the ability to take a dependency on `SomeOption`, they don't remove remove the ability to take a dependency on `IOptions<SomeOption>`.
+>

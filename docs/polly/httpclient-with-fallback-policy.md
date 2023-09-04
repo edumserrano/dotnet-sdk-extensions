@@ -1,5 +1,12 @@
 ﻿# Add a fallback policy to an HttpClient
 
+- [Motivation](#motivation)
+- [Requirements](#requirements)
+- [How to use](#how-to-use)
+  - [Basic example](#basic-example)
+  - [Handling events from the fallback policy](#handling-events-from-the-fallback-policy)
+- [Distinguish different fallback response types](#distinguish-different-fallback-response-types)
+
 ## Motivation
 
 Every time I use an `HttpClient` I end up repeating the same [Polly](https://github.com/App-vNext/Polly) usage pattern in my projects to a set of resilience polices such as:
@@ -32,6 +39,17 @@ The fallback policy is configured to handle the following exceptions:
 - `TimeoutRejectedException`: the fallback response is a `TimeoutHttpResponseMessage`.
 - `BrokenCircuitException` and `IsolatedCircuitException`: the fallback response is a `CircuitBrokenHttpResponseMessage`.
 - `TaskCanceledException`: the fallback response is a `AbortedHttpResponseMessage` or a `TimeoutHttpResponseMessage` if the inner exception is `TimeoutException`.
+
+> **Note**
+>
+> the variable `services` in the examples below is of type `IServiceCollection`. On the default template
+> for a Web API you can access it via `builder.services`. Example:
+>
+> ```csharp
+> var builder = WebApplication.CreateBuilder(args);
+> builder.Services.AddControllers();
+> ```
+>
 
 ### Basic example
 
