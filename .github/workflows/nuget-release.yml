@@ -303,7 +303,7 @@ jobs:
     - name: Update NuGet package README
       run: |
         $nugetId = '${{ steps.nuget-release-pr-data.outputs.nuget-id }}'
-        $nugetNewVersion = '${{ steps.nuget-release-pr-data.outputs.nuget-new-version }}''
+        $nugetNewVersion = '${{ steps.nuget-release-pr-data.outputs.nuget-new-version }}'
         $nugetReadmeFilepath = "./docs/nuget/$nugetId-nuget-readme.md"
         $nugetReadme = Get-Content -path $nugetReadmeFilepath
         $nugetReadme = $nugetReadme -replace "$nugetId-(\d+\.\d+\.\d+)", "$nugetId-$nugetNewVersion"
