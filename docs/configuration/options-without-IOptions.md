@@ -18,7 +18,7 @@ You will have to add the [dotnet-sdk-extensions](https://www.nuget.org/packages/
 > for a Web API you can access it via `builder.services`. Example:
 >
 > ```csharp
-> var builder = WebApplication.CreateBuilder(args); </br>
+> var builder = WebApplication.CreateBuilder(args);
 > builder.Services.AddControllers();
 >```
 
