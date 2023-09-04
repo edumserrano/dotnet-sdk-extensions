@@ -1,5 +1,14 @@
 ﻿# Add a circuit breaker policy to an HttpClient
 
+- [Motivation](#motivation)
+- [Requirements](#requirements)
+- [How to use](#how-to-use)
+  - [Basic example](#basic-example)
+  - [CircuitBreakerOptions](#circuitbreakeroptions)
+  - [Binding appsettings values to the circuit breaker policy options](#binding-appsettings-values-to-the-circuit-breaker-policy-options)
+  - [Handling events from the circuit breaker policy](#handling-events-from-the-circuit-breaker-policy)
+  - [Note about the circuit breaker checker policy](#note-about-the-circuit-breaker-checker-policy)
+
 ## Motivation
 
 Every time I use an `HttpClient` I end up repeating the same [Polly](https://github.com/App-vNext/Polly) usage pattern in my projects to add a circuit breaker policy.

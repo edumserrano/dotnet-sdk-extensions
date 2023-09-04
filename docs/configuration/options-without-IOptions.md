@@ -1,5 +1,9 @@
 ﻿# Using `T` options classes instead of `IOptions<T>`
 
+- [Motivation](#motivation)
+- [Requirements](#requirements)
+- [How to use](#how-to-use)
+
 ## Motivation
 
 I want to be able inject the options type `T` as a dependency instead of `IOptions<T>`.

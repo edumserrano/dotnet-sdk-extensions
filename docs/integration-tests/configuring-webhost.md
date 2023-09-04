@@ -1,4 +1,14 @@
-﻿# Providing test appsettings files to the test server
+# Providing test appsettings files to the test server
+
+- [Summary](#summary)
+- [Motivation](#motivation)
+- [Requirements](#requirements)
+- [How to use](#how-to-use)
+- [Configure the location of the test appsettings files](#configure-the-location-of-the-test-appsettings-files)
+- [How does it work with the appsettings files outside the test project (ie the real ones on the main project)](#how-does-it-work-with-the-appsettings-files-outside-the-test-project-ie-the-real-ones-on-the-main-project)
+- [Notes](#notes)
+
+## Summary
 
 This extension allows you to pass configuration files to use during integration tests.
 

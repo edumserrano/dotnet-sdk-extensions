@@ -1,6 +1,20 @@
-﻿# Mocking HttpClient's responses in-process
+# Mocking HttpClient's responses in-process
 
-This will allow mocking the HttpClient's response by taking control of the HttpMessageHandler(s) that is(are) used by the HttpClient(s) registered on the Startup.
+- [Summary](#summary)
+- [Motivation](#motivation)
+  - [Issues with mocking the typed client](#issues-with-mocking-the-typed-client)
+  - [Issues with mocking the IHttpClientFactory.CreateClient](#issues-with-mocking-the-ihttpclientfactorycreateclient)
+- [Requirements](#requirements)
+- [How to use](#how-to-use)
+- [Mock different types of HttpClients](#mock-different-types-of-httpclients)
+- [Mock responses conditionally](#mock-responses-conditionally)
+- [Mock several responses](#mock-several-responses)
+- [Different ways to mock the HttpClient response](#different-ways-to-mock-the-httpclient-response)
+- [Configure the http response mocks with access to the `IServiceProvider`](#configure-the-http-response-mocks-with-access-to-the-iserviceprovider)
+
+## Summary
+
+This will allow mocking the HttpClient's response by taking control of the HttpMessageHandler(s) that is(are) used by the HttpClient(s) registered on the Progam.
 
 The mocking of the http response happens within the test server, without any outgoing http call actually happening, and that's why this method was named in process as oposed to the [out-of-process http response mocking method](http-mocking-out-of-process.md).
 

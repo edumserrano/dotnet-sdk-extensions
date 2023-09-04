@@ -1,5 +1,12 @@
 ﻿# Add a fallback policy to an HttpClient
 
+- [Motivation](#motivation)
+- [Requirements](#requirements)
+- [How to use](#how-to-use)
+  - [Basic example](#basic-example)
+  - [Handling events from the fallback policy](#handling-events-from-the-fallback-policy)
+- [Distinguish different fallback response types](#distinguish-different-fallback-response-types)
+
 ## Motivation
 
 Every time I use an `HttpClient` I end up repeating the same [Polly](https://github.com/App-vNext/Polly) usage pattern in my projects to a set of resilience polices such as:

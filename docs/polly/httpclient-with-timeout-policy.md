@@ -1,5 +1,13 @@
 ﻿# Add a timeout policy to an HttpClient
 
+- [Motivation](#motivation)
+- [Requirements](#requirements)
+- [How to use](#how-to-use)
+  - [Basic example](#basic-example)
+  - [TimeoutOptions](#timeoutoptions)
+  - [Binding appsettings values to the timeout policy options](#binding-appsettings-values-to-the-timeout-policy-options)
+  - [Handling events from the timeout policy](#handling-events-from-the-timeout-policy)
+
 ## Motivation
 
 Every time I use an `HttpClient` I end up repeating the same [Polly](https://github.com/App-vNext/Polly) usage pattern in my projects to add a timeout policy.

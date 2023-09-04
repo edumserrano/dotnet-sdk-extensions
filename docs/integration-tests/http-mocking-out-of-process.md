@@ -1,4 +1,18 @@
-﻿# Mocking HttpClient's responses out-of-process
+# Mocking HttpClient's responses out-of-process
+
+- [Summary](#summary)
+- [Motivation](#motivation)
+- [Requirements](#requirements)
+- [How to use](#how-to-use)
+- [Different ways to setup the `HttpMockServer`](#different-ways-to-setup-the-httpmockserver)
+  - [Configuring the `HttpMockServer` via `HttpMockServerBuilder.UseHttpResponseMocks`](#configuring-the-httpmockserver-via-httpmockserverbuilderusehttpresponsemocks)
+  - [Configuring the `HttpMockServer` via `HttpMockServerBuilder.UseProgam<T>`](#configuring-the-httpmockserver-via-httpmockserverbuilderuseprogamt)
+- [`HttpMockServerBuilder.UseHostArgs` and `HttpMockServerBuilder.UseUrls`](#httpmockserverbuilderusehostargs-and-httpmockserverbuilderuseurls)
+  - [`HttpMockServerBuilder.UseHostArgs`](#httpmockserverbuilderusehostargs)
+  - [`HttpMockServerBuilder.UseUrls`](#httpmockserverbuilderuseurls)
+- [Disable logs produced by the `HttpMockServer`](#disable-logs-produced-by-the-httpmockserver)
+
+## Summary
 
 This will allow mocking the HttpClient's response by launching an http server with predefined responses. The HttpClient(s) are then configured to send the requests to this http server.
 

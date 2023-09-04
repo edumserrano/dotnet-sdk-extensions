@@ -1,5 +1,11 @@
 ﻿# Extending the policy options validation
 
+- [Summary](#summary)
+- [Extend validation inline](#extend-validation-inline)
+- [Extend validation with the `IValidateOptions` interface](#extend-validation-with-the-ivalidateoptions-interface)
+
+## Summary
+
 All of the options from the following extension methods have a default validation that can be extended:
 
 - [Add a timeout policy to an HttpClient](/docs/polly/httpclient-with-timeout-policy.md#timeoutoptions)

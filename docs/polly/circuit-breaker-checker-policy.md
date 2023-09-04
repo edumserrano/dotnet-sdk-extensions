@@ -1,5 +1,13 @@
 ﻿# Circuit breaker checker policy
 
+- [Motivation](#motivation)
+- [Requirements](#requirements)
+- [How to use](#how-to-use)
+  - [Simple example](#simple-example)
+  - [Example with HttpClient](#example-with-httpclient)
+  - [Example with HttpClient and PolicyRegistry](#example-with-httpclient-and-policyregistry)
+  - [About Polly](#about-polly)
+
 ## Motivation
 
 I want to use a [Polly circuit breaker policy](https://github.com/App-vNext/Polly#circuit-breaker) or [advanced circuit breaker policy](https://github.com/App-vNext/Polly#advanced-circuit-breaker) but don't want the circuit to throw an exception when its state is open/isolated.

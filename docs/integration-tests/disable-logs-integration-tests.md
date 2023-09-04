@@ -1,4 +1,11 @@
-﻿# Disable logs when doing integration tests
+# Disable logs when doing integration tests
+
+- [Summary](#summary)
+- [Motivation](#motivation)
+- [Requirements](#requirements)
+- [How to use](#how-to-use)
+
+## Summary
 
 This extension allows you to configure the log level when running integration tests.
 

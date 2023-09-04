@@ -1,6 +1,17 @@
-﻿# Override configuration values on the test server
+# Override configuration values on the test server
 
-This extension allows you to do set configuration values for integration tests.
+- [Summary](#summary)
+- [Motivation](#motivation)
+- [Requirements](#requirements)
+- [How to use](#how-to-use)
+- [Hierarchical configuration values](#hierarchical-configuration-values)
+- [Alternatives](#alternatives)
+- [`IWebHostBuilder.SetSetting`](#iwebhostbuildersetsetting)
+- [`IServiceCollection.PostConfigure`](#iservicecollectionpostconfigure)
+
+## Summary
+
+This extension allows you to do set configuration values for integration tests. It works for both `IWebHostBuilder` and `IHostBuilder`.
 
 ## Motivation
 

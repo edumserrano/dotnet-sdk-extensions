@@ -1,5 +1,17 @@
 ﻿# Add a set of resilience policies to an HttpClient
 
+- [Motivation](#motivation)
+- [Requirements](#requirements)
+- [How to use](#how-to-use)
+  - [Basic example](#basic-example)
+  - [ResilienceOptions](#resilienceoptions)
+    - [For the timeout policy options](#for-the-timeout-policy-options)
+    - [For the retry policy options](#for-the-retry-policy-options)
+    - [For the circuit breaker policy options](#for-the-circuit-breaker-policy-options)
+    - [Policy control options](#policy-control-options)
+  - [Binding appsettings values to the resilience policies options](#binding-appsettings-values-to-the-resilience-policies-options)
+  - [Handling events from the resilience policies](#handling-events-from-the-resilience-policies)
+
 ## Motivation
 
 Every time I use an `HttpClient` I end up repeating the same [Polly](https://github.com/App-vNext/Polly) usage pattern in my projects to a set of resilience polices such as:

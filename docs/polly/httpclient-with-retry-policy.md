@@ -1,5 +1,13 @@
 ﻿# Add a retry policy to an HttpClient
 
+- [Motivation](#motivation)
+- [Requirements](#requirements)
+- [How to use](#how-to-use)
+  - [Basic example](#basic-example)
+  - [RetryOptions](#retryoptions)
+  - [Binding appsettings values to the retry policy options](#binding-appsettings-values-to-the-retry-policy-options)
+  - [Handling events from the retry policy](#handling-events-from-the-retry-policy)
+
 ## Motivation
 
 Every time I use an `HttpClient` I end up repeating the same [Polly](https://github.com/App-vNext/Polly) usage pattern in my projects to add a retry policy.

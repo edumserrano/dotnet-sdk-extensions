@@ -1,8 +1,17 @@
 ﻿# Mocking HttpClient's responses for unit testing
 
-This will allow mocking the HttpClient's response by taking replacing the HttpMessageHandler used by the HttpClient.
+- [Summary](#summary)
+- [Motivation](#motivation)
+- [Requirements](#requirements)
+- [How to use](#how-to-use)
+- [Mock several responses](#mock-several-responses)
+- [Different ways to mock the HttpClient response](#different-ways-to-mock-the-httpclient-response)
+- [Timeouts](#timeouts)
+- [Notes](#notes)
 
-This is useful when doing unit tests on classes that take in an `HttpClient` as a dependency.
+## Summary
+
+This will allow mocking the HttpClient's response by taking replacing the HttpMessageHandler used by the HttpClient. This is useful when doing unit tests on classes that take in an `HttpClient` as a dependency.
 
 ## Motivation
 
@@ -23,7 +32,7 @@ Let's assume that the class that you want to unit test is a class called `MyAwes
 For us to unit test the `MyAwesomeOutboundDependency` we now need to be able to control the responses from the `HttpClient`. We can do that as follows:
 
 ```csharp
-public class HttpClientMocksDemoTests : IClassFixture<WebApplicationFactory<Startup>>
+public class HttpClientMocksDemoTests
 {
     [Fact]
     public void DemoTest()

@@ -1,5 +1,10 @@
 ﻿# Notes on WebApplicationFactory\<T>
 
+- [Motivation](#motivation)
+- [Basic use case](#basic-use-case)
+- [Problem with convention based implementation of WebApplicationFactory\<T\>](#problem-with-convention-based-implementation-of-webapplicationfactoryt)
+  - [Example](#example)
+
 ## Motivation
 
 There are some details when using [WebApplicationFactory\<T>](https://docs.microsoft.com/en-us/aspnet/core/test/integration-tests?#basic-tests-with-the-default-webapplicationfactory) that are a bit obscure but require understanding when you want to use it slightly differently from it's basic use case.
