@@ -19,11 +19,11 @@ By default on the Worker Service template, the `IHost` instance is created as fo
 
 ```csharp
 public static IHostBuilder CreateHostBuilder(string[] args) =>
-Host.CreateDefaultBuilder(args)
-    .ConfigureServices((hostContext, services) =>
-    {
-        services.AddHostedService<Worker>();
-    });
+    Host.CreateDefaultBuilder(args)
+        .ConfigureServices((hostContext, services) =>
+        {
+            services.AddHostedService<Worker>();
+        });
 ```
 
 To be able to use this testing extension you should change it to:
