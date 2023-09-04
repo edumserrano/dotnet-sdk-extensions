@@ -96,7 +96,7 @@ jobs:
       create-issue: ${{ steps.needs-issue-check.outputs.create-issue }}
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         ref: ${{ env.WORKFLOW_HEAD_SHA }}
     - name: Check for open markdown link check issues
@@ -146,7 +146,7 @@ jobs:
       WORKFLOW_URL: ${{ needs.workflow-info.outputs.workflow-url }}
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         ref: ${{ env.WORKFLOW_HEAD_SHA }}
     - name: Render issue body template
