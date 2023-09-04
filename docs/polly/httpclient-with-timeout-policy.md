@@ -21,8 +21,10 @@ This extension will add a [timeout policy](https://github.com/App-vNext/Polly#ti
 > the variable `services` in the examples below is of type `IServiceCollection`. On the default template
 > for a Web API you can access it via `builder.services`. Example:
 >
-> var builder = WebApplication.CreateBuilder(args); </br>
+> ```csharp
+> var builder = WebApplication.CreateBuilder(args);
 > builder.Services.AddControllers();
+> ```
 >
 
 ### Basic example

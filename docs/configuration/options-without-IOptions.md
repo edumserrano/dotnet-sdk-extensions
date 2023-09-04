@@ -20,7 +20,8 @@ You will have to add the [dotnet-sdk-extensions](https://www.nuget.org/packages/
 > ```csharp
 > var builder = WebApplication.CreateBuilder(args);
 > builder.Services.AddControllers();
->```
+> ```
+>
 
 Imagine that you have an appsettings file with the following:
 

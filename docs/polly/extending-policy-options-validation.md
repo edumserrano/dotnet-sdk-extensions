@@ -13,8 +13,10 @@ Let's see how we can extend the validation of the `TimeoutOptions` from the [`Ad
 > the variable `services` in the examples below is of type `IServiceCollection`. On the default template
 > for a Web API you can access it via `builder.services`. Example:
 >
-> var builder = WebApplication.CreateBuilder(args); </br>
+> ```csharp
+> var builder = WebApplication.CreateBuilder(args);
 > builder.Services.AddControllers();
+> ```
 >
 
 ## Extend validation inline

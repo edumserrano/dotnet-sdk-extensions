@@ -25,8 +25,10 @@ This policy was chosen because of its more advanced jitter support. For more inf
 > the variable `services` in the examples below is of type `IServiceCollection`. On the default template
 > for a Web API you can access it via `builder.services`. Example:
 >
-> var builder = WebApplication.CreateBuilder(args); </br>
+> ```csharp
+> var builder = WebApplication.CreateBuilder(args);
 > builder.Services.AddControllers();
+> ```
 >
 
 ### Basic example
