@@ -1,4 +1,4 @@
-# Override configuration values on the test server
+﻿# Override configuration values on the test server
 
 - [Summary](#summary)
 - [Motivation](#motivation)
@@ -28,11 +28,11 @@ You will have to add the [dotnet-sdk-extensions-testing](https://www.nuget.org/p
 Start by creating an integration test as shown in [introduction to integration tests](https://docs.microsoft.com/en-us/aspnet/core/test/integration-tests?#introduction-to-integration-tests). After you can set configuration values as follows:
 
 ```csharp
-public class ConfigurationDemoTests : IClassFixture<WebApplicationFactory<Startup>>
+public class ConfigurationDemoTests : IClassFixture<WebApplicationFactory<Progam>>
 {
-    private readonly WebApplicationFactory<Startup> _webApplicationFactory;
+    private readonly WebApplicationFactory<Progam> _webApplicationFactory;
 
-    public ConfigurationDemoTests(WebApplicationFactory<Startup> webApplicationFactory)
+    public ConfigurationDemoTests(WebApplicationFactory<Progam> webApplicationFactory)
     {
         _webApplicationFactory = webApplicationFactory;
     }
@@ -62,11 +62,11 @@ You can call the method several times to configure multiple values.
 Optionally you can use the method provided in [Providing test appsettings files to the test server](./configuring-webhost.md) and then override some configuration values:
 
 ```csharp
-public class ConfigurationDemoTests : IClassFixture<WebApplicationFactory<Startup>>
+public class ConfigurationDemoTests : IClassFixture<WebApplicationFactory<Progam>>
 {
-    private readonly WebApplicationFactory<Startup> _webApplicationFactory;
+    private readonly WebApplicationFactory<Progam> _webApplicationFactory;
 
-    public ConfigurationDemoTests(WebApplicationFactory<Startup> webApplicationFactory)
+    public ConfigurationDemoTests(WebApplicationFactory<Progam> webApplicationFactory)
     {
         _webApplicationFactory = webApplicationFactory;
     }
@@ -117,11 +117,11 @@ builder.UseConfigurationValue(key: "MyOptionsSection:SomeOption", value: "some-o
 If you are using a `IWebHostBuilder` then you can make use of the `IWebHostBuilder.SetSetting` as follows:
 
 ```csharp
-public class ConfigurationDemoTests : IClassFixture<WebApplicationFactory<Startup>>
+public class ConfigurationDemoTests : IClassFixture<WebApplicationFactory<Progam>>
 {
-    private readonly WebApplicationFactory<Startup> _webApplicationFactory;
+    private readonly WebApplicationFactory<Progam> _webApplicationFactory;
 
-    public ConfigurationDemoTests(WebApplicationFactory<Startup> webApplicationFactory)
+    public ConfigurationDemoTests(WebApplicationFactory<Progam> webApplicationFactory)
     {
         _webApplicationFactory = webApplicationFactory;
     }
@@ -160,15 +160,15 @@ public class MyOptions
 }
 ```
 
-And that you are [binding the `MyOptions` type in the `Startup` class](https://docs.microsoft.com/en-us/dotnet/core/extensions/options). If you want to set the value of the `MyOptions.SomeOption` for an integration test you can do as follows:
+And that you are [binding the `MyOptions` type in the service collection](https://docs.microsoft.com/en-us/dotnet/core/extensions/options). If you want to set the value of the `MyOptions.SomeOption` for an integration test you can do as follows:
 
 
 ```csharp
-public class ConfigurationDemoTests : IClassFixture<WebApplicationFactory<Startup>>
+public class ConfigurationDemoTests : IClassFixture<WebApplicationFactory<Progam>>
 {
-    private readonly WebApplicationFactory<Startup> _webApplicationFactory;
+    private readonly WebApplicationFactory<Progam> _webApplicationFactory;
 
-    public ConfigurationDemoTests(WebApplicationFactory<Startup> webApplicationFactory)
+    public ConfigurationDemoTests(WebApplicationFactory<Progam> webApplicationFactory)
     {
         _webApplicationFactory = webApplicationFactory;
     }
@@ -194,7 +194,3 @@ public class ConfigurationDemoTests : IClassFixture<WebApplicationFactory<Startu
     }
 }
 ```
-
-## Notes
-
-This extension method works for both `IWebHostBuilder` and `IHostBuilder`.

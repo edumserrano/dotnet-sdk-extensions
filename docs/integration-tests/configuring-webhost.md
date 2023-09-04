@@ -1,4 +1,4 @@
-# Providing test appsettings files to the test server
+﻿# Providing test appsettings files to the test server
 
 - [Summary](#summary)
 - [Motivation](#motivation)
@@ -36,11 +36,11 @@ Let's say that you create a directory in the root of the test project named *App
 Given this you can do a test as shown by the DemoTest method below:
 
 ```csharp
-public class ConfigurationDemoTests : IClassFixture<WebApplicationFactory<Startup>>
+public class ConfigurationDemoTests : IClassFixture<WebApplicationFactory<Progam>>
 {
-    private readonly WebApplicationFactory<Startup> _webApplicationFactory;
+    private readonly WebApplicationFactory<Progam> _webApplicationFactory;
 
-    public ConfigurationDemoTests(WebApplicationFactory<Startup> webApplicationFactory)
+    public ConfigurationDemoTests(WebApplicationFactory<Progam> webApplicationFactory)
     {
         _webApplicationFactory = webApplicationFactory;
     }

@@ -1,4 +1,4 @@
-# Disable logs when doing integration tests
+﻿# Disable logs when doing integration tests
 
 - [Summary](#summary)
 - [Motivation](#motivation)
@@ -24,11 +24,11 @@ You will have to add the [dotnet-sdk-extensions-testing](https://www.nuget.org/p
 Start by creating an integration test as shown in [introduction to integration tests](https://docs.microsoft.com/en-us/aspnet/core/test/integration-tests?#introduction-to-integration-tests). After you can disable logs as follows:
 
 ```csharp
-public class ConfigurationDemoTests : IClassFixture<WebApplicationFactory<Startup>>
+public class ConfigurationDemoTests : IClassFixture<WebApplicationFactory<Progam>>
 {
-    private readonly WebApplicationFactory<Startup> _webApplicationFactory;
+    private readonly WebApplicationFactory<Progam> _webApplicationFactory;
 
-    public ConfigurationDemoTests(WebApplicationFactory<Startup> webApplicationFactory)
+    public ConfigurationDemoTests(WebApplicationFactory<Progam> webApplicationFactory)
     {
         _webApplicationFactory = webApplicationFactory;
     }

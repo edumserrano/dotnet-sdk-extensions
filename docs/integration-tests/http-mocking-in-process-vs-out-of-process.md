@@ -4,8 +4,8 @@ Both the [in-process http response mocking method](./http-mocking-in-process.md)
 
 Which one to use is really up to your preference. I will however point some differences:
 
-- When using out-of-process you can keep the configuration code for your HttpMockServer more cleanly separated from your tests. This however comes at the cost of creating one or more `Startup` classes for your tests.
-  
+- When using out-of-process you can keep the configuration code for your HttpMockServer more cleanly separated from your tests. This however comes at the cost of creating a `Startup` class for your tests.
+
 - If you require more complex configuration for `HttpMockServer` you should use the out-of-process mocking because it gives you access to the full power of `asp.net` when configuring the server.
 
 - When using in-process mocking you HAVE to know if the outgoing request you are mocking is going to be performed by a basic, named or typed instance of the `HttpClient` as each one requires a different kind of mocking. If you are using out-of-process you don't have to care about that.
