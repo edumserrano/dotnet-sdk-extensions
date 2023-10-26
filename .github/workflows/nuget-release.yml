@@ -310,7 +310,7 @@ jobs:
         Set-Content -Path $nugetReadmeFilepath -Value $nugetReadme
     - name: Push changes to branch
       id: auto-commit-action
-      uses: stefanzweifel/git-auto-commit-action@v4
+      uses: stefanzweifel/git-auto-commit-action@v5
       with:
         commit_message: ${{ steps.commit-info.outputs.commit-message }}
         branch: ${{ steps.commit-info.outputs.branch-name }}
