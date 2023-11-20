@@ -5,8 +5,8 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess;
 /// </summary>
 public class HttpMockServerBuilder
 {
-    private readonly List<string> _hostArgs = [];
-    private readonly List<HttpMockServerUrlDescriptor> _hostUrls = [];
+    private readonly List<string> _hostArgs =[];
+    private readonly List<HttpMockServerUrlDescriptor> _hostUrls =[];
 
     /// <summary>
     /// Defines an URL for the <see cref="HttpMockServer"/> to be listening on.

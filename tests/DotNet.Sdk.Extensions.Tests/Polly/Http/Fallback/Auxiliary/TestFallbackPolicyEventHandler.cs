@@ -1,6 +1,6 @@
 namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Fallback.Auxiliary;
 
-public class TestFallbackPolicyEventHandler(FallbackPolicyEventHandlerCalls fallbackPolicyEventHandlerCalls) : IFallbackPolicyEventHandler
+public class TestFallbackPolicyEventHandler(FallbackPolicyEventHandlerCalls fallbackPolicyEventHandlerCalls): IFallbackPolicyEventHandler
 {
     private readonly FallbackPolicyEventHandlerCalls _fallbackPolicyEventHandlerCalls = fallbackPolicyEventHandlerCalls;
 

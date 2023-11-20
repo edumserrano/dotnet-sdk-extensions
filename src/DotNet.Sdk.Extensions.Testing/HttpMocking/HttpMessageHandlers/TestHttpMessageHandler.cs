@@ -5,7 +5,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers;
 /// </summary>
 public class TestHttpMessageHandler : DelegatingHandler
 {
-    private readonly List<HttpResponseMessageMock> _httpResponseMocks = [];
+    private readonly List<HttpResponseMessageMock> _httpResponseMocks =[];
 
     /// <summary>
     /// Configure an <see cref="HttpResponseMessage"/> to be returned when executing an HTTP call via

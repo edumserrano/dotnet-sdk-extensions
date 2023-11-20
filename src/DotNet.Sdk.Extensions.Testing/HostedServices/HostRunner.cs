@@ -9,7 +9,7 @@ internal abstract class HostRunner : IDisposable
     public abstract void Dispose();
 }
 
-internal sealed class DefaultHostRunner(IHost host) : HostRunner
+internal sealed class DefaultHostRunner(IHost host): HostRunner
 {
     private readonly IHost _host = host ?? throw new ArgumentNullException(nameof(host));
 
@@ -29,7 +29,7 @@ internal sealed class DefaultHostRunner(IHost host) : HostRunner
     }
 }
 
-internal sealed class WebApplicationFactoryHostRunner<T>(WebApplicationFactory<T> webApplicationFactory) : HostRunner
+internal sealed class WebApplicationFactoryHostRunner<T>(WebApplicationFactory<T> webApplicationFactory): HostRunner
     where T : class
 {
     private readonly WebApplicationFactory<T> _webApplicationFactory = webApplicationFactory ?? throw new ArgumentNullException(nameof(webApplicationFactory));

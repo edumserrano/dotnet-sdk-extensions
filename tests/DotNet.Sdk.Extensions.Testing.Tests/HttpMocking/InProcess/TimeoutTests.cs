@@ -1,7 +1,7 @@
 namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess;
 
 [Trait("Category", XUnitCategories.HttpMockingInProcess)]
-public sealed class TimeoutTests(TimeoutHttpResponseMockingWebApplicationFactory webApplicationFactory) : IClassFixture<TimeoutHttpResponseMockingWebApplicationFactory>
+public sealed class TimeoutTests(TimeoutHttpResponseMockingWebApplicationFactory webApplicationFactory): IClassFixture<TimeoutHttpResponseMockingWebApplicationFactory>
 {
     private readonly TimeoutHttpResponseMockingWebApplicationFactory _webApplicationFactory = webApplicationFactory;
 

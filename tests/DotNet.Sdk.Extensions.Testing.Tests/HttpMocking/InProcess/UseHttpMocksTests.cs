@@ -1,7 +1,7 @@
 namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess;
 
 [Trait("Category", XUnitCategories.HttpMockingInProcess)]
-public sealed class UseHttpMocksTests(HttpResponseMockingWebApplicationFactory webApplicationFactory) : IClassFixture<HttpResponseMockingWebApplicationFactory>
+public sealed class UseHttpMocksTests(HttpResponseMockingWebApplicationFactory webApplicationFactory): IClassFixture<HttpResponseMockingWebApplicationFactory>
 {
     private readonly HttpResponseMockingWebApplicationFactory _webApplicationFactory = webApplicationFactory;
 

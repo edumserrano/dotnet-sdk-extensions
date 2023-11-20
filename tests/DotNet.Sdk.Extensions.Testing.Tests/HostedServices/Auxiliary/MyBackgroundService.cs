@@ -1,6 +1,6 @@
 namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices.Auxiliary;
 
-public class MyBackgroundService(ICalculator calculator, IScheduler scheduler) : BackgroundService
+public class MyBackgroundService(ICalculator calculator, IScheduler scheduler): BackgroundService
 {
     private readonly ICalculator _calculator = calculator;
     private readonly IScheduler _scheduler = scheduler;

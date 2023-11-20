@@ -5,7 +5,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices;
 /// For more info see <see cref="StartupHostedService"/> and <see cref="HostedServicesWebApplicationFactory"/>.
 /// </summary>
 [Trait("Category", XUnitCategories.HostedServices)]
-public class RunUntilTimeoutTests(HostedServicesWebApplicationFactory hostedServicesWebApplicationFactory) : IClassFixture<HostedServicesWebApplicationFactory>
+public class RunUntilTimeoutTests(HostedServicesWebApplicationFactory hostedServicesWebApplicationFactory): IClassFixture<HostedServicesWebApplicationFactory>
 {
     private readonly HostedServicesWebApplicationFactory _hostedServicesWebAppFactory = hostedServicesWebApplicationFactory;
 

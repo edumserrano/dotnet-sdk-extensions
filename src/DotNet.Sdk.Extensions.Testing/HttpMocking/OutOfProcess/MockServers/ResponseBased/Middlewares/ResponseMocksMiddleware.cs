@@ -14,7 +14,7 @@ internal static class ResponseMocksMiddlewareExtensions
 }
 
 [SuppressMessage("Performance", "CA1812:Avoid uninstantiated internal classes", Justification = "Ignore for IMiddleware implementations. Used as generic type param.")]
-internal sealed class ResponseMocksMiddleware(HttpResponseMocksProvider httpResponseMocksProvider) : IMiddleware
+internal sealed class ResponseMocksMiddleware(HttpResponseMocksProvider httpResponseMocksProvider): IMiddleware
 {
     private readonly HttpResponseMocksProvider _httpResponseMocksProvider = httpResponseMocksProvider ?? throw new ArgumentNullException(nameof(httpResponseMocksProvider));
 

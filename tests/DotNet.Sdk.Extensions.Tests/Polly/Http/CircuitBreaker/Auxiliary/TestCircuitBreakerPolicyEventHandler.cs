@@ -1,6 +1,6 @@
 namespace DotNet.Sdk.Extensions.Tests.Polly.Http.CircuitBreaker.Auxiliary;
 
-public class TestCircuitBreakerPolicyEventHandler(CircuitBreakerPolicyEventHandlerCalls circuitBreakerPolicyEventHandlerCalls) : ICircuitBreakerPolicyEventHandler
+public class TestCircuitBreakerPolicyEventHandler(CircuitBreakerPolicyEventHandlerCalls circuitBreakerPolicyEventHandlerCalls): ICircuitBreakerPolicyEventHandler
 {
     private readonly CircuitBreakerPolicyEventHandlerCalls _circuitBreakerPolicyEventHandlerCalls = circuitBreakerPolicyEventHandlerCalls;
 
