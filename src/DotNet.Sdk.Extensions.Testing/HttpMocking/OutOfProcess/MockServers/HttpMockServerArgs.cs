@@ -26,14 +26,13 @@ internal sealed class HttpMockServerArgs
 
         if (hostArgs.Contains("--urls", StringComparer.InvariantCulture))
         {
-            return hostArgs.ToArray();
+            return [.. hostArgs];
         }
 
         // if the argument --urls wasn't given then make sure the URLs are defined
         var urls = BuildUrls(urlDescriptors);
-        return hostArgs
-            .Concat(new List<string> { "--urls", urls })
-            .ToArray();
+        return [.. hostArgs,
+            .. new List<string> { "--urls", urls }];
     }
 
     private static string BuildUrls(List<HttpMockServerUrlDescriptor> urlDescriptors)

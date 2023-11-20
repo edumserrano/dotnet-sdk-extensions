@@ -1,14 +1,8 @@
 namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers.ResponseBased;
 
-internal sealed class ResponseBasedHttpMockServer : HttpMockServer
+internal sealed class ResponseBasedHttpMockServer(HttpMockServerArgs mockServerArgs, IReadOnlyCollection<HttpResponseMock> httpResponseMocks) : HttpMockServer(mockServerArgs)
 {
-    private readonly HttpResponseMocksProvider _httpResponseMocksProvider;
-
-    public ResponseBasedHttpMockServer(HttpMockServerArgs mockServerArgs, IReadOnlyCollection<HttpResponseMock> httpResponseMocks)
-        : base(mockServerArgs)
-    {
-        _httpResponseMocksProvider = new HttpResponseMocksProvider(httpResponseMocks);
-    }
+    private readonly HttpResponseMocksProvider _httpResponseMocksProvider = new HttpResponseMocksProvider(httpResponseMocks);
 
     protected override IHostBuilder CreateHostBuilder(string[] args)
     {

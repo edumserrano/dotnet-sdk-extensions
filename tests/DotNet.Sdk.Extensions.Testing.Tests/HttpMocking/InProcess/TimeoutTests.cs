@@ -1,14 +1,9 @@
 namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess;
 
 [Trait("Category", XUnitCategories.HttpMockingInProcess)]
-public sealed class TimeoutTests : IClassFixture<TimeoutHttpResponseMockingWebApplicationFactory>
+public sealed class TimeoutTests(TimeoutHttpResponseMockingWebApplicationFactory webApplicationFactory) : IClassFixture<TimeoutHttpResponseMockingWebApplicationFactory>
 {
-    private readonly TimeoutHttpResponseMockingWebApplicationFactory _webApplicationFactory;
-
-    public TimeoutTests(TimeoutHttpResponseMockingWebApplicationFactory webApplicationFactory)
-    {
-        _webApplicationFactory = webApplicationFactory;
-    }
+    private readonly TimeoutHttpResponseMockingWebApplicationFactory _webApplicationFactory = webApplicationFactory;
 
     /// <summary>
     /// The setup for this test sets up a named HttpClient "named-client-with-low-timeout" and with a configured timeout of 250ms,

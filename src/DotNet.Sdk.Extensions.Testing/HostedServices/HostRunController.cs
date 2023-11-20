@@ -1,15 +1,9 @@
 namespace DotNet.Sdk.Extensions.Testing.HostedServices;
 
-internal sealed class HostRunController
+internal sealed class HostRunController(RunUntilOptions options, IScheduler scheduler)
 {
-    private readonly RunUntilOptions _options;
-    private readonly IScheduler _scheduler;
-
-    public HostRunController(RunUntilOptions options, IScheduler scheduler)
-    {
-        _options = options ?? throw new ArgumentNullException(nameof(options));
-        _scheduler = scheduler ?? throw new ArgumentNullException(nameof(scheduler));
-    }
+    private readonly RunUntilOptions _options = options ?? throw new ArgumentNullException(nameof(options));
+    private readonly IScheduler _scheduler = scheduler ?? throw new ArgumentNullException(nameof(scheduler));
 
     public async Task<RunUntilResult> RunUntilAsync(RunUntilPredicateAsync predicateAsync)
     {

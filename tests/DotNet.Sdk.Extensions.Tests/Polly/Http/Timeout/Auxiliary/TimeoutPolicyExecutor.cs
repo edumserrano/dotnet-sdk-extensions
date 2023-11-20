@@ -1,20 +1,13 @@
 namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Auxiliary;
 
-public class TimeoutPolicyExecutor
+public class TimeoutPolicyExecutor(
+    HttpClient httpClient,
+    TimeoutOptions timeoutOptions,
+    TestHttpMessageHandler testHttpMessageHandler)
 {
-    private readonly HttpClient _httpClient;
-    private readonly TimeoutOptions _timeoutOptions;
-    private readonly TestHttpMessageHandler _testHttpMessageHandler;
-
-    public TimeoutPolicyExecutor(
-        HttpClient httpClient,
-        TimeoutOptions timeoutOptions,
-        TestHttpMessageHandler testHttpMessageHandler)
-    {
-        _httpClient = httpClient;
-        _timeoutOptions = timeoutOptions;
-        _testHttpMessageHandler = testHttpMessageHandler;
-    }
+    private readonly HttpClient _httpClient = httpClient;
+    private readonly TimeoutOptions _timeoutOptions = timeoutOptions;
+    private readonly TestHttpMessageHandler _testHttpMessageHandler = testHttpMessageHandler;
 
     public Task<HttpResponseMessage> TriggerTimeoutPolicyAsync()
     {

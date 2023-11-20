@@ -1,15 +1,9 @@
 namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices.Auxiliary;
 
-public class MyBackgroundService : BackgroundService
+public class MyBackgroundService(ICalculator calculator, IScheduler scheduler) : BackgroundService
 {
-    private readonly ICalculator _calculator;
-    private readonly IScheduler _scheduler;
-
-    public MyBackgroundService(ICalculator calculator, IScheduler scheduler)
-    {
-        _calculator = calculator;
-        _scheduler = scheduler;
-    }
+    private readonly ICalculator _calculator = calculator;
+    private readonly IScheduler _scheduler = scheduler;
 
     public static TimeSpan Period => TimeSpan.FromMilliseconds(100);
 

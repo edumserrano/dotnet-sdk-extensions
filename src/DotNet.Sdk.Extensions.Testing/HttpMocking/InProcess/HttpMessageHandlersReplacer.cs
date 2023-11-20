@@ -11,7 +11,7 @@ public class HttpMessageHandlersReplacer
     internal HttpMessageHandlersReplacer(IServiceCollection services)
     {
         _services = services ?? throw new ArgumentNullException(nameof(services));
-        _httpResponseMockBuilders = new List<HttpResponseMessageMockDescriptorBuilder>();
+        _httpResponseMockBuilders = [];
     }
 
     /// <summary>

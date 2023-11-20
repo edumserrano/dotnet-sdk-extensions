@@ -1,13 +1,8 @@
 namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess.Auxiliary.UseHttpMocks;
 
-public class MyApiClient
+public class MyApiClient(HttpClient httpClient)
 {
-    private readonly HttpClient _httpClient;
-
-    public MyApiClient(HttpClient httpClient)
-    {
-        _httpClient = httpClient;
-    }
+    private readonly HttpClient _httpClient = httpClient;
 
     public async Task<bool> DoSomeHttpCall()
     {

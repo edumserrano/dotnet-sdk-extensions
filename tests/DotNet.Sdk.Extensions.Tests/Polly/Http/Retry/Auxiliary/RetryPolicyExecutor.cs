@@ -1,17 +1,10 @@
 namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Retry.Auxiliary;
 
-public class RetryPolicyExecutor
+public class RetryPolicyExecutor(HttpClient httpClient, TestHttpMessageHandler testHttpMessageHandler)
 {
-    private readonly HttpClient _httpClient;
-    private readonly TestHttpMessageHandler _testHttpMessageHandler;
-    private readonly List<HttpStatusCode> _transientHttpStatusCodes;
-
-    public RetryPolicyExecutor(HttpClient httpClient, TestHttpMessageHandler testHttpMessageHandler)
-    {
-        _httpClient = httpClient;
-        _testHttpMessageHandler = testHttpMessageHandler;
-        _transientHttpStatusCodes = HttpStatusCodesExtensions.GetTransientHttpStatusCodes().ToList();
-    }
+    private readonly HttpClient _httpClient = httpClient;
+    private readonly TestHttpMessageHandler _testHttpMessageHandler = testHttpMessageHandler;
+    private readonly List<HttpStatusCode> _transientHttpStatusCodes = HttpStatusCodesExtensions.GetTransientHttpStatusCodes().ToList();
 
     public Task<HttpResponseMessage> TriggerFromExceptionAsync(Exception exception)
     {

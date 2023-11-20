@@ -11,21 +11,14 @@ internal static class RetryPolicyAsserterExtensions
     }
 }
 
-internal sealed class RetryPolicyAsserter
+internal sealed class RetryPolicyAsserter(
+    HttpClient httpClient,
+    RetryOptions options,
+    TestHttpMessageHandler testHttpMessageHandler)
 {
-    private readonly HttpClient _httpClient;
-    private readonly RetryOptions _options;
-    private readonly TestHttpMessageHandler _testHttpMessageHandler;
-
-    public RetryPolicyAsserter(
-        HttpClient httpClient,
-        RetryOptions options,
-        TestHttpMessageHandler testHttpMessageHandler)
-    {
-        _httpClient = httpClient;
-        _options = options;
-        _testHttpMessageHandler = testHttpMessageHandler;
-    }
+    private readonly HttpClient _httpClient = httpClient;
+    private readonly RetryOptions _options = options;
+    private readonly TestHttpMessageHandler _testHttpMessageHandler = testHttpMessageHandler;
 
     public async Task HttpClientShouldContainRetryPolicyAsync(NumberOfCallsDelegatingHandler numberOfCallsDelegatingHandler)
     {

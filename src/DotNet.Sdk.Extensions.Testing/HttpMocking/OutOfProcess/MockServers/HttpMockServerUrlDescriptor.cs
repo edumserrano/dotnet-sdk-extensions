@@ -3,17 +3,11 @@ using System.Runtime.InteropServices;
 namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.MockServers;
 
 [StructLayout(LayoutKind.Auto)]
-internal readonly struct HttpMockServerUrlDescriptor
+internal readonly struct HttpMockServerUrlDescriptor(HttpScheme scheme, int port)
 {
-    public HttpMockServerUrlDescriptor(HttpScheme scheme, int port)
-    {
-        Scheme = scheme;
-        Port = port;
-    }
+    public HttpScheme Scheme { get; } = scheme;
 
-    public HttpScheme Scheme { get; }
-
-    public int Port { get; }
+    public int Port { get; } = port;
 
     public override string ToString()
     {

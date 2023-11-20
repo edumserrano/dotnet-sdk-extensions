@@ -1,13 +1,8 @@
 namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Auxiliary;
 
-public class TestResiliencePoliciesEventHandler : IResiliencePoliciesEventHandler
+public class TestResiliencePoliciesEventHandler(ResiliencePoliciesEventHandlerCalls resiliencePoliciesEventHandlerCalls) : IResiliencePoliciesEventHandler
 {
-    private readonly ResiliencePoliciesEventHandlerCalls _resiliencePoliciesEventHandlerCalls;
-
-    public TestResiliencePoliciesEventHandler(ResiliencePoliciesEventHandlerCalls resiliencePoliciesEventHandlerCalls)
-    {
-        _resiliencePoliciesEventHandlerCalls = resiliencePoliciesEventHandlerCalls;
-    }
+    private readonly ResiliencePoliciesEventHandlerCalls _resiliencePoliciesEventHandlerCalls = resiliencePoliciesEventHandlerCalls;
 
     public Task OnTimeoutAsync(TimeoutEvent timeoutEvent)
     {

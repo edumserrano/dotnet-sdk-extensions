@@ -6,7 +6,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess;
 public class ResponseBasedBuilder
 {
     private readonly HttpMockServerArgs _mockServerArgs;
-    private readonly List<HttpResponseMock> _httpResponseMocks = new List<HttpResponseMock>();
+    private readonly List<HttpResponseMock> _httpResponseMocks = [];
 
     internal ResponseBasedBuilder(HttpMockServerArgs args)
     {

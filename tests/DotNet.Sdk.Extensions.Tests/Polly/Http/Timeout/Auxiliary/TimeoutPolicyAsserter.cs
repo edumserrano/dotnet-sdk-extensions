@@ -11,21 +11,14 @@ internal static class TimeoutPolicyAsserterExtensions
     }
 }
 
-internal sealed class TimeoutPolicyAsserter
+internal sealed class TimeoutPolicyAsserter(
+    HttpClient httpClient,
+    TimeoutOptions options,
+    TestHttpMessageHandler testHttpMessageHandler)
 {
-    private readonly HttpClient _httpClient;
-    private readonly TimeoutOptions _options;
-    private readonly TestHttpMessageHandler _testHttpMessageHandler;
-
-    public TimeoutPolicyAsserter(
-        HttpClient httpClient,
-        TimeoutOptions options,
-        TestHttpMessageHandler testHttpMessageHandler)
-    {
-        _httpClient = httpClient;
-        _options = options;
-        _testHttpMessageHandler = testHttpMessageHandler;
-    }
+    private readonly HttpClient _httpClient = httpClient;
+    private readonly TimeoutOptions _options = options;
+    private readonly TestHttpMessageHandler _testHttpMessageHandler = testHttpMessageHandler;
 
     public Task HttpClientShouldContainTimeoutPolicyAsync()
     {

@@ -10,16 +10,10 @@ internal static class FallbackPolicyAsserterExtensions
     }
 }
 
-internal sealed class FallbackPolicyAsserter
+internal sealed class FallbackPolicyAsserter(HttpClient httpClient, TestHttpMessageHandler testHttpMessageHandler)
 {
-    private readonly HttpClient _httpClient;
-    private readonly TestHttpMessageHandler _testHttpMessageHandler;
-
-    public FallbackPolicyAsserter(HttpClient httpClient, TestHttpMessageHandler testHttpMessageHandler)
-    {
-        _httpClient = httpClient;
-        _testHttpMessageHandler = testHttpMessageHandler;
-    }
+    private readonly HttpClient _httpClient = httpClient;
+    private readonly TestHttpMessageHandler _testHttpMessageHandler = testHttpMessageHandler;
 
     public async Task HttpClientShouldContainFallbackPolicyAsync()
     {

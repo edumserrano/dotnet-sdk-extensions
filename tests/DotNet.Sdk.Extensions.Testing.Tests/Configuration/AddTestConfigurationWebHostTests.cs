@@ -214,7 +214,7 @@ public class AddTestConfigurationWebHostTests
             {
                 // The default builder will add an EnvironmentVariablesConfigurationProvider.
                 // For this test I also need to have a CommandLineConfigurationProvider so the next line takes care of that.
-                builder.AddCommandLine(Array.Empty<string>());
+                builder.AddCommandLine([]);
             })
             .Configure((_, _) =>
             {
@@ -246,7 +246,7 @@ public class AddTestConfigurationWebHostTests
             {
                 // The default builder will add an EnvironmentVariablesConfigurationProvider.
                 // For this test I also need to have a CommandLineConfigurationProvider so the next line takes care of that.
-                builder.AddCommandLine(Array.Empty<string>());
+                builder.AddCommandLine([]);
                 builder.Sources
                     .OfType<JsonConfigurationSource>()
                     .ToList()
@@ -282,7 +282,7 @@ public class AddTestConfigurationWebHostTests
             {
                 // The default builder will add an EnvironmentVariablesConfigurationProvider.
                 // For this test I also need to have a CommandLineConfigurationProvider so the next line takes care of that.
-                builder.AddCommandLine(Array.Empty<string>());
+                builder.AddCommandLine([]);
                 builder.Sources
                     .OfType<JsonConfigurationSource>()
                     .ToList()

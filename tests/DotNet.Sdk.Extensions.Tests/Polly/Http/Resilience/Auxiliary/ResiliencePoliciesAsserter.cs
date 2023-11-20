@@ -18,35 +18,27 @@ internal static class ResiliencePoliciesAsserterExtensions
 /// This is done in this way because the Resilience Policies is a wrapped policy for several policies
 /// that have their own tests so we can re-use the assertion logic from those tests.
 /// </summary>
-internal sealed class ResiliencePoliciesAsserter
+internal sealed class ResiliencePoliciesAsserter(
+    HttpClient httpClient,
+    ResilienceOptions resilienceOptions,
+    TestHttpMessageHandler testHttpMessageHandler)
 {
-    public ResiliencePoliciesAsserter(
-        HttpClient httpClient,
-        ResilienceOptions resilienceOptions,
-        TestHttpMessageHandler testHttpMessageHandler)
-    {
-        Retry = new RetryPolicyAsserter(
+    public FallbackPolicyAsserter Fallback { get; } = new FallbackPolicyAsserter(
             httpClient,
-            resilienceOptions.Retry,
             testHttpMessageHandler);
-        Timeout = new TimeoutPolicyAsserter(
+
+    public TimeoutPolicyAsserter Timeout { get; } = new TimeoutPolicyAsserter(
             httpClient,
             resilienceOptions.Timeout,
             testHttpMessageHandler);
-        CircuitBreaker = new CircuitBreakerPolicyAsserter(
+
+    public RetryPolicyAsserter Retry { get; } = new RetryPolicyAsserter(
+            httpClient,
+            resilienceOptions.Retry,
+            testHttpMessageHandler);
+
+    public CircuitBreakerPolicyAsserter CircuitBreaker { get; } = new CircuitBreakerPolicyAsserter(
             httpClient,
             resilienceOptions.CircuitBreaker,
             testHttpMessageHandler);
-        Fallback = new FallbackPolicyAsserter(
-            httpClient,
-            testHttpMessageHandler);
-    }
-
-    public FallbackPolicyAsserter Fallback { get; }
-
-    public TimeoutPolicyAsserter Timeout { get; }
-
-    public RetryPolicyAsserter Retry { get; }
-
-    public CircuitBreakerPolicyAsserter CircuitBreaker { get; }
 }

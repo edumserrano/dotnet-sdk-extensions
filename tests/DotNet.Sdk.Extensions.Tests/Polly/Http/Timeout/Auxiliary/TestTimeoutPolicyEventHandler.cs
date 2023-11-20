@@ -1,13 +1,8 @@
 namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Auxiliary;
 
-public class TestTimeoutPolicyEventHandler : ITimeoutPolicyEventHandler
+public class TestTimeoutPolicyEventHandler(TimeoutPolicyEventHandlerCalls timeoutPolicyEventHandlerCalls) : ITimeoutPolicyEventHandler
 {
-    private readonly TimeoutPolicyEventHandlerCalls _timeoutPolicyEventHandlerCalls;
-
-    public TestTimeoutPolicyEventHandler(TimeoutPolicyEventHandlerCalls timeoutPolicyEventHandlerCalls)
-    {
-        _timeoutPolicyEventHandlerCalls = timeoutPolicyEventHandlerCalls;
-    }
+    private readonly TimeoutPolicyEventHandlerCalls _timeoutPolicyEventHandlerCalls = timeoutPolicyEventHandlerCalls;
 
     public Task OnTimeoutAsync(TimeoutEvent timeoutEvent)
     {

@@ -1,20 +1,13 @@
 namespace DotNet.Sdk.Extensions.Testing.HostedServices;
 
-internal sealed class RxPeriodicTimer
+internal sealed class RxPeriodicTimer(
+    TimeSpan period,
+    TimeSpan timeout,
+    IScheduler scheduler)
 {
-    private readonly TimeSpan _period;
-    private readonly DateTimeOffset _timeoutTime;
-    private readonly IScheduler _scheduler;
-
-    public RxPeriodicTimer(
-        TimeSpan period,
-        TimeSpan timeout,
-        IScheduler scheduler)
-    {
-        _period = period;
-        _timeoutTime = scheduler.Now.Add(timeout);
-        _scheduler = scheduler;
-    }
+    private readonly TimeSpan _period = period;
+    private readonly DateTimeOffset _timeoutTime = scheduler.Now.Add(timeout);
+    private readonly IScheduler _scheduler = scheduler;
 
     public Task WaitForNextTickAsync()
     {

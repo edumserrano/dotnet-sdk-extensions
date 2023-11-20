@@ -1,15 +1,9 @@
 namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Fallback.Auxiliary;
 
-public class FallbackPolicyExecutor
+public class FallbackPolicyExecutor(HttpClient httpClient, TestHttpMessageHandler testHttpMessageHandler)
 {
-    private readonly HttpClient _httpClient;
-    private readonly TestHttpMessageHandler _testHttpMessageHandler;
-
-    public FallbackPolicyExecutor(HttpClient httpClient, TestHttpMessageHandler testHttpMessageHandler)
-    {
-        _httpClient = httpClient;
-        _testHttpMessageHandler = testHttpMessageHandler;
-    }
+    private readonly HttpClient _httpClient = httpClient;
+    private readonly TestHttpMessageHandler _testHttpMessageHandler = testHttpMessageHandler;
 
     public Task<HttpResponseMessage> TriggerFromExceptionAsync(Exception exception)
     {

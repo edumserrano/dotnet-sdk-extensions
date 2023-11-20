@@ -9,14 +9,9 @@ internal abstract class HostRunner : IDisposable
     public abstract void Dispose();
 }
 
-internal sealed class DefaultHostRunner : HostRunner
+internal sealed class DefaultHostRunner(IHost host) : HostRunner
 {
-    private readonly IHost _host;
-
-    public DefaultHostRunner(IHost host)
-    {
-        _host = host ?? throw new ArgumentNullException(nameof(host));
-    }
+    private readonly IHost _host = host ?? throw new ArgumentNullException(nameof(host));
 
     public override Task StartAsync()
     {
@@ -34,15 +29,10 @@ internal sealed class DefaultHostRunner : HostRunner
     }
 }
 
-internal sealed class WebApplicationFactoryHostRunner<T> : HostRunner
+internal sealed class WebApplicationFactoryHostRunner<T>(WebApplicationFactory<T> webApplicationFactory) : HostRunner
     where T : class
 {
-    private readonly WebApplicationFactory<T> _webApplicationFactory;
-
-    public WebApplicationFactoryHostRunner(WebApplicationFactory<T> webApplicationFactory)
-    {
-        _webApplicationFactory = webApplicationFactory ?? throw new ArgumentNullException(nameof(webApplicationFactory));
-    }
+    private readonly WebApplicationFactory<T> _webApplicationFactory = webApplicationFactory ?? throw new ArgumentNullException(nameof(webApplicationFactory));
 
     public override Task StartAsync()
     {

@@ -1,14 +1,9 @@
 namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess;
 
 [Trait("Category", XUnitCategories.HttpMockingInProcess)]
-public sealed class UseHttpMocksTests : IClassFixture<HttpResponseMockingWebApplicationFactory>
+public sealed class UseHttpMocksTests(HttpResponseMockingWebApplicationFactory webApplicationFactory) : IClassFixture<HttpResponseMockingWebApplicationFactory>
 {
-    private readonly HttpResponseMockingWebApplicationFactory _webApplicationFactory;
-
-    public UseHttpMocksTests(HttpResponseMockingWebApplicationFactory webApplicationFactory)
-    {
-        _webApplicationFactory = webApplicationFactory;
-    }
+    private readonly HttpResponseMockingWebApplicationFactory _webApplicationFactory = webApplicationFactory;
 
     /// <summary>
     /// Validates arguments for the <see cref="HttpMockingWebHostBuilderExtensions.UseHttpMocks(IWebHostBuilder, Action{HttpMessageHandlersReplacer})"/> extension method.

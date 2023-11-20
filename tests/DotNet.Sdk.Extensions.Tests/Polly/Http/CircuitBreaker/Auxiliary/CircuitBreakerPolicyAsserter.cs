@@ -11,23 +11,15 @@ internal static class CircuitBreakerPolicyAsserterExtensions
     }
 }
 
-internal sealed class CircuitBreakerPolicyAsserter
+internal sealed class CircuitBreakerPolicyAsserter(
+    HttpClient httpClient,
+    CircuitBreakerOptions options,
+    TestHttpMessageHandler testHttpMessageHandler)
 {
-    private readonly HttpClient _httpClient;
-    private readonly CircuitBreakerOptions _options;
-    private readonly TestHttpMessageHandler _testHttpMessageHandler;
-    private CircuitBreakerPolicyExecutorResetTypes _resetType;
-
-    public CircuitBreakerPolicyAsserter(
-        HttpClient httpClient,
-        CircuitBreakerOptions options,
-        TestHttpMessageHandler testHttpMessageHandler)
-    {
-        _httpClient = httpClient;
-        _options = options;
-        _testHttpMessageHandler = testHttpMessageHandler;
-        _resetType = CircuitBreakerPolicyExecutorResetTypes.Quick;
-    }
+    private readonly HttpClient _httpClient = httpClient;
+    private readonly CircuitBreakerOptions _options = options;
+    private readonly TestHttpMessageHandler _testHttpMessageHandler = testHttpMessageHandler;
+    private CircuitBreakerPolicyExecutorResetTypes _resetType = CircuitBreakerPolicyExecutorResetTypes.Quick;
 
     public CircuitBreakerPolicyAsserter WithReset(CircuitBreakerPolicyExecutorResetTypes resetType)
     {
