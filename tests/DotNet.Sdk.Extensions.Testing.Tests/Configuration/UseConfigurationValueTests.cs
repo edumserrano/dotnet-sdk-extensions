@@ -11,7 +11,7 @@ public class UseConfigurationValueTests
     [InlineData("", "value1", "Cannot be null or empty. (Parameter 'key')")]
     [InlineData("some-key", null, "Cannot be null or empty. (Parameter 'value')")]
     [InlineData("some-key", "", "Cannot be null or empty. (Parameter 'value')")]
-    public void HostValidateArguments(string key, string value, string exceptionMessage)
+    public void HostValidateArguments(string? key, string? value, string exceptionMessage)
     {
         var exception = Should.Throw<ArgumentException>(() =>
         {
@@ -30,7 +30,7 @@ public class UseConfigurationValueTests
     [InlineData("", "value1", "Cannot be null or empty. (Parameter 'key')")]
     [InlineData("some-key", null, "Cannot be null or empty. (Parameter 'value')")]
     [InlineData("some-key", "", "Cannot be null or empty. (Parameter 'value')")]
-    public void WebHostValidateArguments(string key, string value, string exceptionMessage)
+    public void WebHostValidateArguments(string? key, string? value, string exceptionMessage)
     {
         var exception = Should.Throw<ArgumentException>(() =>
         {
