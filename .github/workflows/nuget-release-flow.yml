@@ -320,7 +320,7 @@ jobs:
         Write-Output $fileContent >> $env:GITHUB_OUTPUT
         Write-Output $delimiter >> $env:GITHUB_OUTPUT
     - name: Update issue with NuGet flow comment
-      uses: edumserrano/find-create-or-update-comment@v1
+      uses: edumserrano/find-create-or-update-comment@v2
       with:
         issue-number: ${{ needs.release-flow-args.outputs.issue-number }}
         body-includes: '<!-- nuget-release-flow -->'
@@ -359,7 +359,7 @@ jobs:
         Write-Output $fileContent >> $env:GITHUB_OUTPUT
         Write-Output $delimiter >> $env:GITHUB_OUTPUT
     - name: Update issue with permission denied for NuGet release comment
-      uses: edumserrano/find-create-or-update-comment@v1
+      uses: edumserrano/find-create-or-update-comment@v2
       with:
         issue-number: ${{ needs.release-flow-args.outputs.issue-number }}
         body-includes: '<!-- permission-denied-for-nuget-release -->'
@@ -416,7 +416,7 @@ jobs:
         Write-Output $fileContent >> $env:GITHUB_OUTPUT
         Write-Output $delimiter >> $env:GITHUB_OUTPUT
     - name: Update issue with NuGet released comment
-      uses: edumserrano/find-create-or-update-comment@v1
+      uses: edumserrano/find-create-or-update-comment@v2
       with:
         issue-number: ${{ steps.github-release-info.outputs.issue-number }}
         body-includes: '<!-- nuget-released -->'

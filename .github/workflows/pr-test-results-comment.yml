@@ -51,7 +51,7 @@ jobs:
         Write-Output $commentBody >> $env:GITHUB_OUTPUT
         Write-Output $delimiter >> $env:GITHUB_OUTPUT
     - name: Update PR with test results
-      uses: edumserrano/find-create-or-update-comment@v1
+      uses: edumserrano/find-create-or-update-comment@v2
       with:
         issue-number: ${{ github.event.workflow_run.pull_requests[0].number }}
         body-includes: '<!-- on-pr-test-results-${{ matrix.os }} -->'

@@ -266,7 +266,7 @@ jobs:
         Write-Output $fileContent >> $env:GITHUB_OUTPUT
         Write-Output $delimiter >> $env:GITHUB_OUTPUT
     - name: Update PR with dotnet format result
-      uses: edumserrano/find-create-or-update-comment@v1
+      uses: edumserrano/find-create-or-update-comment@v2
       with:
         issue-number: ${{ needs.on-pull-request-check.outputs.pr-number }}
         body-includes: '<!-- on-pr-dotnet-format -->'
