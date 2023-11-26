@@ -49,10 +49,7 @@ public sealed class CircuitBreakerPolicyExecutor : IAsyncDisposable
     public Task TriggerFromExceptionAsync<TException>(Exception exception)
         where TException : Exception
     {
-        if (exception is null)
-        {
-            throw new ArgumentNullException(nameof(exception));
-        }
+        ArgumentNullException.ThrowIfNull(exception);
 
         var requestPath = $"/circuit-breaker/exception/{exception.GetType().Name}";
         _testHttpMessageHandler.HandleException(requestPath, exception);

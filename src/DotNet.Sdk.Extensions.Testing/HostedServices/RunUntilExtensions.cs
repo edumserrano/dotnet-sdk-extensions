@@ -21,10 +21,7 @@ public static partial class RunUntilExtensions
         IScheduler scheduler)
         where T : class
     {
-        if (webApplicationFactory is null)
-        {
-            throw new ArgumentNullException(nameof(webApplicationFactory));
-        }
+        ArgumentNullException.ThrowIfNull(webApplicationFactory);
 
         static Task<bool> NoOpPredicateAsync() => Task.FromResult(false);
         var options = new RunUntilOptions { Timeout = timeout };
@@ -48,10 +45,7 @@ public static partial class RunUntilExtensions
         TimeSpan timeout,
         IScheduler scheduler)
     {
-        if (host is null)
-        {
-            throw new ArgumentNullException(nameof(host));
-        }
+        ArgumentNullException.ThrowIfNull(host);
 
         static Task<bool> NoOpPredicateAsync() => Task.FromResult(false);
         var options = new RunUntilOptions { Timeout = timeout };
@@ -65,15 +59,8 @@ public static partial class RunUntilExtensions
         RunUntilOptions options,
         IScheduler scheduler)
     {
-        if (hostRunner is null)
-        {
-            throw new ArgumentNullException(nameof(hostRunner));
-        }
-
-        if (options is null)
-        {
-            throw new ArgumentNullException(nameof(options));
-        }
+        ArgumentNullException.ThrowIfNull(hostRunner);
+        ArgumentNullException.ThrowIfNull(options);
 
         await hostRunner.StartAsync();
         var hostRunController = new HostRunController(options, scheduler);
@@ -91,15 +78,8 @@ public static partial class RunUntilExtensions
         RunUntilOptions options,
         IScheduler scheduler)
     {
-        if (hostRunner is null)
-        {
-            throw new ArgumentNullException(nameof(hostRunner));
-        }
-
-        if (options is null)
-        {
-            throw new ArgumentNullException(nameof(options));
-        }
+        ArgumentNullException.ThrowIfNull(hostRunner);
+        ArgumentNullException.ThrowIfNull(options);
 
         await hostRunner.StartAsync();
         var hostRunController = new HostRunController(options, scheduler);

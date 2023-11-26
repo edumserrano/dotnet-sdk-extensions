@@ -4,10 +4,7 @@ internal static class ResponseMocksMiddlewareExtensions
 {
     public static IApplicationBuilder UseResponseMocks(this IApplicationBuilder builder)
     {
-        if (builder is null)
-        {
-            throw new ArgumentNullException(nameof(builder));
-        }
+        ArgumentNullException.ThrowIfNull(builder);
 
         return builder.UseMiddleware<ResponseMocksMiddleware>();
     }

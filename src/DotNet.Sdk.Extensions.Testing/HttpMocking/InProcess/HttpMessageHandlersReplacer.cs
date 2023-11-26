@@ -11,7 +11,7 @@ public class HttpMessageHandlersReplacer
     internal HttpMessageHandlersReplacer(IServiceCollection services)
     {
         _services = services ?? throw new ArgumentNullException(nameof(services));
-        _httpResponseMockBuilders = new List<HttpResponseMessageMockDescriptorBuilder>();
+        _httpResponseMockBuilders = [];
     }
 
     /// <summary>
@@ -21,10 +21,7 @@ public class HttpMessageHandlersReplacer
     /// <returns>The <see cref="HttpMessageHandlersReplacer"/> for chaining.</returns>
     public HttpMessageHandlersReplacer MockHttpResponse(Action<IServiceProvider, HttpResponseMessageMockDescriptorBuilder> configure)
     {
-        if (configure is null)
-        {
-            throw new ArgumentNullException(nameof(configure));
-        }
+        ArgumentNullException.ThrowIfNull(configure);
 
         var serviceProvider = _services.BuildServiceProvider();
         var builder = new HttpResponseMessageMockDescriptorBuilder();
@@ -40,10 +37,7 @@ public class HttpMessageHandlersReplacer
     /// <returns>The <see cref="HttpMessageHandlersReplacer"/> for chaining.</returns>
     public HttpMessageHandlersReplacer MockHttpResponse(Action<HttpResponseMessageMockDescriptorBuilder> configure)
     {
-        if (configure is null)
-        {
-            throw new ArgumentNullException(nameof(configure));
-        }
+        ArgumentNullException.ThrowIfNull(configure);
 
         var builder = new HttpResponseMessageMockDescriptorBuilder();
         configure(builder);
@@ -58,10 +52,7 @@ public class HttpMessageHandlersReplacer
     /// <returns>The <see cref="HttpMessageHandlersReplacer"/> for chaining.</returns>
     public HttpMessageHandlersReplacer MockHttpResponse(HttpResponseMessageMockDescriptorBuilder httpResponseMessageMockDescriptorBuilder)
     {
-        if (httpResponseMessageMockDescriptorBuilder is null)
-        {
-            throw new ArgumentNullException(nameof(httpResponseMessageMockDescriptorBuilder));
-        }
+        ArgumentNullException.ThrowIfNull(httpResponseMessageMockDescriptorBuilder);
 
         _httpResponseMockBuilders.Add(httpResponseMessageMockDescriptorBuilder);
         return this;
@@ -108,10 +99,7 @@ public class HttpMessageHandlersReplacer
 
     private static TestHttpMessageHandlerDescriptor CreateTestHttpMessageHandlers(IGrouping<string, HttpResponseMessageMockDescriptor> httpResponseMockDescriptorsGrouping)
     {
-        if (httpResponseMockDescriptorsGrouping is null)
-        {
-            throw new ArgumentNullException(nameof(httpResponseMockDescriptorsGrouping));
-        }
+        ArgumentNullException.ThrowIfNull(httpResponseMockDescriptorsGrouping);
 
         var httpClientName = httpResponseMockDescriptorsGrouping.Key;
         var httpResponseMockDescriptors = httpResponseMockDescriptorsGrouping.ToList();

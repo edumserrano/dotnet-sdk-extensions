@@ -16,10 +16,7 @@ public static class OptionsBuilderExtensions
     public static OptionsBuilder<T> AddOptionsValue<T>(this IServiceCollection services, IConfiguration configuration)
         where T : class, new()
     {
-        if (services is null)
-        {
-            throw new ArgumentNullException(nameof(services));
-        }
+        ArgumentNullException.ThrowIfNull(services);
 
         return services
             .AddOptions<T>()
@@ -42,15 +39,8 @@ public static class OptionsBuilderExtensions
         string sectionName)
         where T : class, new()
     {
-        if (services is null)
-        {
-            throw new ArgumentNullException(nameof(services));
-        }
-
-        if (configuration is null)
-        {
-            throw new ArgumentNullException(nameof(configuration));
-        }
+        ArgumentNullException.ThrowIfNull(services);
+        ArgumentNullException.ThrowIfNull(configuration);
 
         return services
             .AddOptions<T>()
@@ -72,10 +62,7 @@ public static class OptionsBuilderExtensions
     public static OptionsBuilder<T> AddOptionsValue<T>(this OptionsBuilder<T> optionsBuilder)
         where T : class, new()
     {
-        if (optionsBuilder is null)
-        {
-            throw new ArgumentNullException(nameof(optionsBuilder));
-        }
+        ArgumentNullException.ThrowIfNull(optionsBuilder);
 
         optionsBuilder.Services.AddOptionsValue<T>();
         return optionsBuilder;
@@ -84,10 +71,7 @@ public static class OptionsBuilderExtensions
     private static void AddOptionsValue<T>(this IServiceCollection services)
         where T : class, new()
     {
-        if (services is null)
-        {
-            throw new ArgumentNullException(nameof(services));
-        }
+        ArgumentNullException.ThrowIfNull(services);
 
         services.AddSingleton(serviceProvider =>
         {

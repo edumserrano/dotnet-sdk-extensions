@@ -19,10 +19,7 @@ public static class ResiliencePoliciesHttpClientBuilderExtensions
         this IHttpClientBuilder httpClientBuilder,
         string optionsName)
     {
-        if (httpClientBuilder is null)
-        {
-            throw new ArgumentNullException(nameof(httpClientBuilder));
-        }
+        ArgumentNullException.ThrowIfNull(httpClientBuilder);
 
         return httpClientBuilder.AddResiliencePoliciesCore(
             optionsName: optionsName,
@@ -42,10 +39,7 @@ public static class ResiliencePoliciesHttpClientBuilderExtensions
         this IHttpClientBuilder httpClientBuilder,
         Action<ResilienceOptions> configureOptions)
     {
-        if (httpClientBuilder is null)
-        {
-            throw new ArgumentNullException(nameof(httpClientBuilder));
-        }
+        ArgumentNullException.ThrowIfNull(httpClientBuilder);
 
         return httpClientBuilder.AddResiliencePoliciesCore(
             optionsName: null,
@@ -67,10 +61,7 @@ public static class ResiliencePoliciesHttpClientBuilderExtensions
         string optionsName)
         where TPolicyEventHandler : class, IResiliencePoliciesEventHandler
     {
-        if (httpClientBuilder is null)
-        {
-            throw new ArgumentNullException(nameof(httpClientBuilder));
-        }
+        ArgumentNullException.ThrowIfNull(httpClientBuilder);
 
         httpClientBuilder.Services.TryAddSingleton<TPolicyEventHandler>();
         return httpClientBuilder.AddResiliencePoliciesCore(
@@ -93,10 +84,7 @@ public static class ResiliencePoliciesHttpClientBuilderExtensions
         Action<ResilienceOptions> configureOptions)
         where TPolicyEventHandler : class, IResiliencePoliciesEventHandler
     {
-        if (httpClientBuilder is null)
-        {
-            throw new ArgumentNullException(nameof(httpClientBuilder));
-        }
+        ArgumentNullException.ThrowIfNull(httpClientBuilder);
 
         httpClientBuilder.Services.TryAddSingleton<TPolicyEventHandler>();
         return httpClientBuilder.AddResiliencePoliciesCore(
@@ -119,10 +107,7 @@ public static class ResiliencePoliciesHttpClientBuilderExtensions
         string optionsName,
         Func<IServiceProvider, IResiliencePoliciesEventHandler> eventHandlerFactory)
     {
-        if (httpClientBuilder is null)
-        {
-            throw new ArgumentNullException(nameof(httpClientBuilder));
-        }
+        ArgumentNullException.ThrowIfNull(httpClientBuilder);
 
         return httpClientBuilder.AddResiliencePoliciesCore(
             optionsName: optionsName,
@@ -142,10 +127,7 @@ public static class ResiliencePoliciesHttpClientBuilderExtensions
         Action<ResilienceOptions> configureOptions,
         Func<IServiceProvider, IResiliencePoliciesEventHandler> eventHandlerFactory)
     {
-        if (httpClientBuilder is null)
-        {
-            throw new ArgumentNullException(nameof(httpClientBuilder));
-        }
+        ArgumentNullException.ThrowIfNull(httpClientBuilder);
 
         return httpClientBuilder.AddResiliencePoliciesCore(
             optionsName: null,

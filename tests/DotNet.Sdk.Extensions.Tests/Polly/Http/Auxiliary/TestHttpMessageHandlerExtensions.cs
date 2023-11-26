@@ -7,10 +7,7 @@ public static class TestHttpMessageHandlerExtensions
         string requestPath,
         HttpStatusCode responseHttpStatusCode)
     {
-        if (testHttpMessageHandler is null)
-        {
-            throw new ArgumentNullException(nameof(testHttpMessageHandler));
-        }
+        ArgumentNullException.ThrowIfNull(testHttpMessageHandler);
 
         var handledRequestPath = $"{requestPath}/{responseHttpStatusCode}";
         testHttpMessageHandler.MockHttpResponse(builder =>
@@ -27,10 +24,7 @@ public static class TestHttpMessageHandlerExtensions
         string requestPath,
         Exception exception)
     {
-        if (testHttpMessageHandler is null)
-        {
-            throw new ArgumentNullException(nameof(testHttpMessageHandler));
-        }
+        ArgumentNullException.ThrowIfNull(testHttpMessageHandler);
 
         testHttpMessageHandler.MockHttpResponse(builder =>
         {
@@ -45,10 +39,7 @@ public static class TestHttpMessageHandlerExtensions
         string requestPath,
         TimeSpan timeout)
     {
-        if (testHttpMessageHandler is null)
-        {
-            throw new ArgumentNullException(nameof(testHttpMessageHandler));
-        }
+        ArgumentNullException.ThrowIfNull(testHttpMessageHandler);
 
         testHttpMessageHandler.MockHttpResponse(builder =>
         {

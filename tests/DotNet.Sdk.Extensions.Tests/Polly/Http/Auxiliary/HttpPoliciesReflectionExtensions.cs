@@ -11,10 +11,7 @@ public static class HttpPoliciesReflectionExtensions
 
     public static IEnumerable<IsPolicy> GetPolicies(this HttpMessageHandlerBuilder httpMessageHandlerBuilder)
     {
-        if (httpMessageHandlerBuilder is null)
-        {
-            throw new ArgumentNullException(nameof(httpMessageHandlerBuilder));
-        }
+        ArgumentNullException.ThrowIfNull(httpMessageHandlerBuilder);
 
         return httpMessageHandlerBuilder.AdditionalHandlers
             .OfType<PolicyHttpMessageHandler>()

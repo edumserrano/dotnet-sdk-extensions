@@ -15,10 +15,7 @@ public static class TimeoutPolicyHttpClientBuilderExtensions
         this IHttpClientBuilder httpClientBuilder,
         string optionsName)
     {
-        if (httpClientBuilder is null)
-        {
-            throw new ArgumentNullException(nameof(httpClientBuilder));
-        }
+        ArgumentNullException.ThrowIfNull(httpClientBuilder);
 
         static ITimeoutPolicyEventHandler EventHandlerFactory(IServiceProvider _) => new DefaultTimeoutPolicyEventHandler();
         return httpClientBuilder.AddTimeoutPolicyCore(
@@ -37,10 +34,7 @@ public static class TimeoutPolicyHttpClientBuilderExtensions
         this IHttpClientBuilder httpClientBuilder,
         Action<TimeoutOptions> configureOptions)
     {
-        if (httpClientBuilder is null)
-        {
-            throw new ArgumentNullException(nameof(httpClientBuilder));
-        }
+        ArgumentNullException.ThrowIfNull(httpClientBuilder);
 
         static ITimeoutPolicyEventHandler EventHandlerFactory(IServiceProvider _) => new DefaultTimeoutPolicyEventHandler();
         return httpClientBuilder.AddTimeoutPolicyCore(
@@ -61,10 +55,7 @@ public static class TimeoutPolicyHttpClientBuilderExtensions
         string optionsName)
         where TPolicyEventHandler : class, ITimeoutPolicyEventHandler
     {
-        if (httpClientBuilder is null)
-        {
-            throw new ArgumentNullException(nameof(httpClientBuilder));
-        }
+        ArgumentNullException.ThrowIfNull(httpClientBuilder);
 
         httpClientBuilder.Services.TryAddSingleton<TPolicyEventHandler>();
         static ITimeoutPolicyEventHandler EventHandlerFactory(IServiceProvider provider) => provider.GetRequiredService<TPolicyEventHandler>();
@@ -86,10 +77,7 @@ public static class TimeoutPolicyHttpClientBuilderExtensions
         Action<TimeoutOptions> configureOptions)
         where TPolicyEventHandler : class, ITimeoutPolicyEventHandler
     {
-        if (httpClientBuilder is null)
-        {
-            throw new ArgumentNullException(nameof(httpClientBuilder));
-        }
+        ArgumentNullException.ThrowIfNull(httpClientBuilder);
 
         httpClientBuilder.Services.TryAddSingleton<TPolicyEventHandler>();
         static ITimeoutPolicyEventHandler EventHandlerFactory(IServiceProvider provider) => provider.GetRequiredService<TPolicyEventHandler>();
@@ -111,10 +99,7 @@ public static class TimeoutPolicyHttpClientBuilderExtensions
         string optionsName,
         Func<IServiceProvider, ITimeoutPolicyEventHandler> eventHandlerFactory)
     {
-        if (httpClientBuilder is null)
-        {
-            throw new ArgumentNullException(nameof(httpClientBuilder));
-        }
+        ArgumentNullException.ThrowIfNull(httpClientBuilder);
 
         return httpClientBuilder.AddTimeoutPolicyCore(
             optionsName: optionsName,
@@ -134,10 +119,7 @@ public static class TimeoutPolicyHttpClientBuilderExtensions
         Action<TimeoutOptions> configureOptions,
         Func<IServiceProvider, ITimeoutPolicyEventHandler> eventHandlerFactory)
     {
-        if (httpClientBuilder is null)
-        {
-            throw new ArgumentNullException(nameof(httpClientBuilder));
-        }
+        ArgumentNullException.ThrowIfNull(httpClientBuilder);
 
         return httpClientBuilder.AddTimeoutPolicyCore(
             optionsName: null,

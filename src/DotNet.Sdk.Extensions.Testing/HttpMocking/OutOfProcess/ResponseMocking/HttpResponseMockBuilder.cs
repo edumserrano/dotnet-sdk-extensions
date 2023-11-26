@@ -16,10 +16,7 @@ public class HttpResponseMockBuilder
     /// <returns>The <see cref="HttpResponseMockBuilder"/> for chaining.</returns>
     public HttpResponseMockBuilder Where(Func<HttpRequest, bool> predicate)
     {
-        if (predicate is null)
-        {
-            throw new ArgumentNullException(nameof(predicate));
-        }
+        ArgumentNullException.ThrowIfNull(predicate);
 
         // convert to 'async' predicate
         return Where((httpRequest, _) => Task.FromResult(predicate(httpRequest)));
@@ -48,10 +45,7 @@ public class HttpResponseMockBuilder
     /// <returns>The <see cref="HttpResponseMockBuilder"/> for chaining.</returns>
     public HttpResponseMockBuilder RespondWith(Action<HttpResponse> configureHttpResponse)
     {
-        if (configureHttpResponse is null)
-        {
-            throw new ArgumentNullException(nameof(configureHttpResponse));
-        }
+        ArgumentNullException.ThrowIfNull(configureHttpResponse);
 
         return RespondWith((_, httpResponse) =>
         {
@@ -66,10 +60,7 @@ public class HttpResponseMockBuilder
     /// <returns>The <see cref="HttpResponseMockBuilder"/> for chaining.</returns>
     public HttpResponseMockBuilder RespondWith(Action<HttpRequest, HttpResponse> handler)
     {
-        if (handler is null)
-        {
-            throw new ArgumentNullException(nameof(handler));
-        }
+        ArgumentNullException.ThrowIfNull(handler);
 
         // convert to 'async' handler
         return RespondWith((httpRequest, httpResponse, _) =>

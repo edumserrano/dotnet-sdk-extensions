@@ -15,10 +15,7 @@ public class RetryPolicyExecutor
 
     public Task<HttpResponseMessage> TriggerFromExceptionAsync(Exception exception)
     {
-        if (exception is null)
-        {
-            throw new ArgumentNullException(nameof(exception));
-        }
+        ArgumentNullException.ThrowIfNull(exception);
 
         var requestPath = $"/retry/exception/{exception.GetType().Name}";
         _testHttpMessageHandler.HandleException(requestPath, exception);

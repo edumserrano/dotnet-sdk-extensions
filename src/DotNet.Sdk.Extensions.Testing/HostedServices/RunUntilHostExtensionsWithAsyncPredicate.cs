@@ -44,20 +44,9 @@ public static partial class RunUntilExtensions
         Action<RunUntilOptions> configureOptions,
         IScheduler scheduler)
     {
-        if (host is null)
-        {
-            throw new ArgumentNullException(nameof(host));
-        }
-
-        if (configureOptions is null)
-        {
-            throw new ArgumentNullException(nameof(configureOptions));
-        }
-
-        if (scheduler is null)
-        {
-            throw new ArgumentNullException(nameof(scheduler));
-        }
+        ArgumentNullException.ThrowIfNull(host);
+        ArgumentNullException.ThrowIfNull(configureOptions);
+        ArgumentNullException.ThrowIfNull(scheduler);
 
         var defaultOptions = new RunUntilOptions();
         configureOptions(defaultOptions);

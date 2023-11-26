@@ -15,15 +15,8 @@ public static partial class RunUntilExtensions
     public static Task RunUntilAsync<T>(this WebApplicationFactory<T> webApplicationFactory, RunUntilPredicate predicate)
         where T : class
     {
-        if (webApplicationFactory is null)
-        {
-            throw new ArgumentNullException(nameof(webApplicationFactory));
-        }
-
-        if (predicate is null)
-        {
-            throw new ArgumentNullException(nameof(predicate));
-        }
+        ArgumentNullException.ThrowIfNull(webApplicationFactory);
+        ArgumentNullException.ThrowIfNull(predicate);
 
         Task<bool> PredicateAsync() => Task.FromResult(predicate());
         return webApplicationFactory.RunUntilAsync(PredicateAsync);
@@ -53,20 +46,9 @@ public static partial class RunUntilExtensions
         IScheduler scheduler)
         where T : class
     {
-        if (webApplicationFactory is null)
-        {
-            throw new ArgumentNullException(nameof(webApplicationFactory));
-        }
-
-        if (predicate is null)
-        {
-            throw new ArgumentNullException(nameof(predicate));
-        }
-
-        if (scheduler is null)
-        {
-            throw new ArgumentNullException(nameof(scheduler));
-        }
+        ArgumentNullException.ThrowIfNull(webApplicationFactory);
+        ArgumentNullException.ThrowIfNull(predicate);
+        ArgumentNullException.ThrowIfNull(scheduler);
 
         Task<bool> PredicateAsync() => Task.FromResult(predicate());
         return webApplicationFactory.RunUntilAsync(PredicateAsync, configureOptions, scheduler);

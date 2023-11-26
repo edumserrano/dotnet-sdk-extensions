@@ -13,15 +13,8 @@ public static class HttpMockingWebHostBuilderExtensions
     /// <returns>The <see cref="IWebHostBuilder"/> for chaining.</returns>
     public static IWebHostBuilder UseHttpMocks(this IWebHostBuilder webHostBuilder, Action<HttpMessageHandlersReplacer> configure)
     {
-        if (webHostBuilder is null)
-        {
-            throw new ArgumentNullException(nameof(webHostBuilder));
-        }
-
-        if (configure is null)
-        {
-            throw new ArgumentNullException(nameof(configure));
-        }
+        ArgumentNullException.ThrowIfNull(webHostBuilder);
+        ArgumentNullException.ThrowIfNull(configure);
 
         webHostBuilder.ConfigureTestServices(services =>
         {
@@ -40,15 +33,8 @@ public static class HttpMockingWebHostBuilderExtensions
     /// <returns>The <see cref="IWebHostBuilder"/> for chaining.</returns>
     public static IWebHostBuilder UseHttpMocks(this IWebHostBuilder webHostBuilder, params HttpResponseMessageMockDescriptorBuilder[] httpResponseMessageMockDescriptorBuilders)
     {
-        if (webHostBuilder is null)
-        {
-            throw new ArgumentNullException(nameof(webHostBuilder));
-        }
-
-        if (httpResponseMessageMockDescriptorBuilders is null)
-        {
-            throw new ArgumentNullException(nameof(httpResponseMessageMockDescriptorBuilders));
-        }
+        ArgumentNullException.ThrowIfNull(webHostBuilder);
+        ArgumentNullException.ThrowIfNull(httpResponseMessageMockDescriptorBuilders);
 
         webHostBuilder.ConfigureTestServices(services =>
         {

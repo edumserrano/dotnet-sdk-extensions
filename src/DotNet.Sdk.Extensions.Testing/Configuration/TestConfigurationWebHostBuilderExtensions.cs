@@ -15,10 +15,7 @@ public static partial class TestConfigurationBuilderExtensions
     /// <returns>The <see cref="IWebHostBuilder"/> for chaining.</returns>
     public static IWebHostBuilder UseConfigurationValue(this IWebHostBuilder builder, string key, string value)
     {
-        if (builder is null)
-        {
-            throw new ArgumentNullException(nameof(builder));
-        }
+        ArgumentNullException.ThrowIfNull(builder);
 
         if (string.IsNullOrEmpty(key))
         {
@@ -75,10 +72,7 @@ public static partial class TestConfigurationBuilderExtensions
         string appSettingsFilename,
         params string[] otherAppsettingsFilenames)
     {
-        if (builder is null)
-        {
-            throw new ArgumentNullException(nameof(builder));
-        }
+        ArgumentNullException.ThrowIfNull(builder);
 
         var options = new TestConfigurationOptions();
         return builder.AddTestAppSettings(options, appSettingsFilename, otherAppsettingsFilenames);
@@ -107,15 +101,8 @@ public static partial class TestConfigurationBuilderExtensions
         string appSettingsFilename,
         params string[] otherAppsettingsFilenames)
     {
-        if (builder is null)
-        {
-            throw new ArgumentNullException(nameof(builder));
-        }
-
-        if (configureOptions is null)
-        {
-            throw new ArgumentNullException(nameof(configureOptions));
-        }
+        ArgumentNullException.ThrowIfNull(builder);
+        ArgumentNullException.ThrowIfNull(configureOptions);
 
         var options = new TestConfigurationOptions();
         configureOptions(options);
@@ -128,25 +115,15 @@ public static partial class TestConfigurationBuilderExtensions
         string appSettingsFilename,
         params string[] otherAppsettingsFilenames)
     {
-        if (builder is null)
-        {
-            throw new ArgumentNullException(nameof(builder));
-        }
-
-        if (options is null)
-        {
-            throw new ArgumentNullException(nameof(options));
-        }
+        ArgumentNullException.ThrowIfNull(builder);
+        ArgumentNullException.ThrowIfNull(options);
 
         if (string.IsNullOrWhiteSpace(appSettingsFilename))
         {
             throw new ArgumentException("Cannot be null or white space.", nameof(appSettingsFilename));
         }
 
-        if (otherAppsettingsFilenames is null)
-        {
-            throw new ArgumentNullException(nameof(otherAppsettingsFilenames));
-        }
+        ArgumentNullException.ThrowIfNull(otherAppsettingsFilenames);
 
         if (otherAppsettingsFilenames.Any(string.IsNullOrWhiteSpace))
         {

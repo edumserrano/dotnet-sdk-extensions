@@ -18,10 +18,7 @@ public class HttpResponseMock
 
     internal async Task<HttpResponseMockResults> ExecuteAsync(HttpContext httpContext)
     {
-        if (httpContext is null)
-        {
-            throw new ArgumentNullException(nameof(httpContext));
-        }
+        ArgumentNullException.ThrowIfNull(httpContext);
 
         var shouldExecute = await _predicateAsync(httpContext.Request, httpContext.RequestAborted);
         if (!shouldExecute)

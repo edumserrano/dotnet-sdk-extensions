@@ -60,10 +60,7 @@ public sealed class CircuitBreakerCheckerAsyncPolicy<T> : AsyncPolicy<T>
         CancellationToken cancellationToken,
         bool continueOnCapturedContext)
     {
-        if (action is null)
-        {
-            throw new ArgumentNullException(nameof(action));
-        }
+        ArgumentNullException.ThrowIfNull(action);
 
         // No point in trying to make the request because the circuit breaker will throw an exception.
         // Avoid exception as indicated by https://github.com/App-vNext/Polly/wiki/Circuit-Breaker#reducing-thrown-exceptions-when-the-circuit-is-broken

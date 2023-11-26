@@ -24,14 +24,14 @@ public class AddTestConfigurationHostTests
     public static TheoryData<IHostBuilder, string, string[], Type, string> ValidateArguments1Data =>
         new TheoryData<IHostBuilder, string, string[], Type, string>
         {
-            { null!, "some-appsettings", Array.Empty<string>(), typeof(ArgumentNullException), "Value cannot be null. (Parameter 'builder')" },
-            { new HostBuilder(), null!, Array.Empty<string>(), typeof(ArgumentException), "Cannot be null or white space. (Parameter 'appSettingsFilename')" },
-            { new HostBuilder(), string.Empty, Array.Empty<string>(), typeof(ArgumentException), "Cannot be null or white space. (Parameter 'appSettingsFilename')" },
-            { new HostBuilder(), " ", Array.Empty<string>(), typeof(ArgumentException), "Cannot be null or white space. (Parameter 'appSettingsFilename')" },
+            { null!, "some-appsettings", [], typeof(ArgumentNullException), "Value cannot be null. (Parameter 'builder')" },
+            { new HostBuilder(), null!, [], typeof(ArgumentException), "Cannot be null or white space. (Parameter 'appSettingsFilename')" },
+            { new HostBuilder(), string.Empty, [], typeof(ArgumentException), "Cannot be null or white space. (Parameter 'appSettingsFilename')" },
+            { new HostBuilder(), " ", [], typeof(ArgumentException), "Cannot be null or white space. (Parameter 'appSettingsFilename')" },
             { new HostBuilder(), "some-appsettings", null!, typeof(ArgumentNullException), "Value cannot be null. (Parameter 'otherAppsettingsFilenames')" },
-            { new HostBuilder(), "some-appsettings", new[] { string.Empty }, typeof(ArgumentException), "Cannot have an element that is null or white space. (Parameter 'otherAppsettingsFilenames')" },
-            { new HostBuilder(), "some-appsettings", new[] { " " }, typeof(ArgumentException), "Cannot have an element that is null or white space. (Parameter 'otherAppsettingsFilenames')" },
-            { new HostBuilder(), "some-appsettings", new[] { "something", string.Empty }, typeof(ArgumentException), "Cannot have an element that is null or white space. (Parameter 'otherAppsettingsFilenames')" },
+            { new HostBuilder(), "some-appsettings", [string.Empty], typeof(ArgumentException), "Cannot have an element that is null or white space. (Parameter 'otherAppsettingsFilenames')" },
+            { new HostBuilder(), "some-appsettings", [" "], typeof(ArgumentException), "Cannot have an element that is null or white space. (Parameter 'otherAppsettingsFilenames')" },
+            { new HostBuilder(), "some-appsettings", ["something", string.Empty], typeof(ArgumentException), "Cannot have an element that is null or white space. (Parameter 'otherAppsettingsFilenames')" },
         };
 
     /// <summary>
@@ -61,8 +61,8 @@ public class AddTestConfigurationHostTests
     public static TheoryData<IHostBuilder, Action<TestConfigurationOptions>, string, string[], Type, string> ValidateArguments2Data =>
         new TheoryData<IHostBuilder, Action<TestConfigurationOptions>, string, string[], Type, string>
         {
-            { null!, _ => { }, "some-appsettings", Array.Empty<string>(), typeof(ArgumentNullException), "Value cannot be null. (Parameter 'builder')" },
-            { new HostBuilder(), null!, "some-appsettings", Array.Empty<string>(), typeof(ArgumentNullException), "Value cannot be null. (Parameter 'configureOptions')" },
+            { null!, _ => { }, "some-appsettings", [], typeof(ArgumentNullException), "Value cannot be null. (Parameter 'builder')" },
+            { new HostBuilder(), null!, "some-appsettings", [], typeof(ArgumentNullException), "Value cannot be null. (Parameter 'configureOptions')" },
         };
 
     /// <summary>
@@ -187,7 +187,7 @@ public class AddTestConfigurationHostTests
             {
                 // The default builder will add an EnvironmentVariablesConfigurationProvider.
                 // For this test I also need to have a CommandLineConfigurationProvider so the next line takes care of that.
-                builder.AddCommandLine(Array.Empty<string>());
+                builder.AddCommandLine([]);
             })
             .AddTestAppSettings("appsettings.test.json", "appsettings.test2.json", "appsettings.test3.json")
             .Build();
@@ -214,7 +214,7 @@ public class AddTestConfigurationHostTests
             {
                 // The default builder will add an EnvironmentVariablesConfigurationProvider.
                 // For this test I also need to have a CommandLineConfigurationProvider so the next line takes care of that.
-                builder.AddCommandLine(Array.Empty<string>());
+                builder.AddCommandLine([]);
                 builder.Sources
                     .OfType<JsonConfigurationSource>()
                     .ToList()
@@ -245,7 +245,7 @@ public class AddTestConfigurationHostTests
             {
                 // The default builder will add an EnvironmentVariablesConfigurationProvider.
                 // For this test I also need to have a CommandLineConfigurationProvider so the next line takes care of that.
-                builder.AddCommandLine(Array.Empty<string>());
+                builder.AddCommandLine([]);
                 builder.Sources
                     .OfType<JsonConfigurationSource>()
                     .ToList()

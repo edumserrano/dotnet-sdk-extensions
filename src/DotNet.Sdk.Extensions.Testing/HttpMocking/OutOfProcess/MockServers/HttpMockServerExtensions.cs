@@ -4,10 +4,7 @@ internal static class HttpMockServerExtensions
 {
     public static ICollection<string> GetServerAddresses(this IHost host)
     {
-        if (host is null)
-        {
-            throw new ArgumentNullException(nameof(host));
-        }
+        ArgumentNullException.ThrowIfNull(host);
 
         var server = host.Services.GetRequiredService<IServer>();
         var addressFeature = server.Features.Get<IServerAddressesFeature>();
@@ -24,10 +21,7 @@ internal static class HttpMockServerExtensions
          * - https://[::]
          *
          */
-        if (address is null)
-        {
-            throw new ArgumentNullException(nameof(address));
-        }
+        ArgumentNullException.ThrowIfNull(address);
 
         var split1 = address.Split("://");
         var httpScheme = Enum.Parse<HttpScheme>(split1[0], ignoreCase: true);

@@ -45,7 +45,7 @@ internal sealed class TimeoutPolicyAsserter
         }
     }
 
-    private Task TimeoutPolicyTriggersOnTimeout()
+    private Task<TimeoutRejectedException> TimeoutPolicyTriggersOnTimeout()
     {
         return Should.ThrowAsync<TimeoutRejectedException>(() =>
          {

@@ -15,10 +15,7 @@ public static class RetryPolicyHttpClientBuilderExtensions
         this IHttpClientBuilder httpClientBuilder,
         string optionsName)
     {
-        if (httpClientBuilder is null)
-        {
-            throw new ArgumentNullException(nameof(httpClientBuilder));
-        }
+        ArgumentNullException.ThrowIfNull(httpClientBuilder);
 
         return httpClientBuilder.AddRetryPolicyCore(
             optionsName: optionsName,
@@ -38,10 +35,7 @@ public static class RetryPolicyHttpClientBuilderExtensions
         this IHttpClientBuilder httpClientBuilder,
         Action<RetryOptions> configureOptions)
     {
-        if (httpClientBuilder is null)
-        {
-            throw new ArgumentNullException(nameof(httpClientBuilder));
-        }
+        ArgumentNullException.ThrowIfNull(httpClientBuilder);
 
         return httpClientBuilder.AddRetryPolicyCore(
             optionsName: null,
@@ -63,10 +57,7 @@ public static class RetryPolicyHttpClientBuilderExtensions
         string optionsName)
         where TPolicyEventHandler : class, IRetryPolicyEventHandler
     {
-        if (httpClientBuilder is null)
-        {
-            throw new ArgumentNullException(nameof(httpClientBuilder));
-        }
+        ArgumentNullException.ThrowIfNull(httpClientBuilder);
 
         httpClientBuilder.Services.TryAddSingleton<TPolicyEventHandler>();
         return httpClientBuilder.AddRetryPolicyCore(
@@ -89,10 +80,7 @@ public static class RetryPolicyHttpClientBuilderExtensions
         Action<RetryOptions> configureOptions)
         where TPolicyEventHandler : class, IRetryPolicyEventHandler
     {
-        if (httpClientBuilder is null)
-        {
-            throw new ArgumentNullException(nameof(httpClientBuilder));
-        }
+        ArgumentNullException.ThrowIfNull(httpClientBuilder);
 
         httpClientBuilder.Services.TryAddSingleton<TPolicyEventHandler>();
         return httpClientBuilder.AddRetryPolicyCore(
@@ -115,10 +103,7 @@ public static class RetryPolicyHttpClientBuilderExtensions
         string optionsName,
         Func<IServiceProvider, IRetryPolicyEventHandler> eventHandlerFactory)
     {
-        if (httpClientBuilder is null)
-        {
-            throw new ArgumentNullException(nameof(httpClientBuilder));
-        }
+        ArgumentNullException.ThrowIfNull(httpClientBuilder);
 
         return httpClientBuilder.AddRetryPolicyCore(
             optionsName: optionsName,
@@ -138,10 +123,7 @@ public static class RetryPolicyHttpClientBuilderExtensions
         Action<RetryOptions> configureOptions,
         Func<IServiceProvider, IRetryPolicyEventHandler> eventHandlerFactory)
     {
-        if (httpClientBuilder is null)
-        {
-            throw new ArgumentNullException(nameof(httpClientBuilder));
-        }
+        ArgumentNullException.ThrowIfNull(httpClientBuilder);
 
         return httpClientBuilder.AddRetryPolicyCore(
             optionsName: null,

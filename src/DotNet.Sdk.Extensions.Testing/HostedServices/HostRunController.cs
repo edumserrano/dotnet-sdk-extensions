@@ -13,10 +13,7 @@ internal sealed class HostRunController
 
     public async Task<RunUntilResult> RunUntilAsync(RunUntilPredicateAsync predicateAsync)
     {
-        if (predicateAsync is null)
-        {
-            throw new ArgumentNullException(nameof(predicateAsync));
-        }
+        ArgumentNullException.ThrowIfNull(predicateAsync);
 
         try
         {
