@@ -1,10 +1,8 @@
 namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Resilience.Extensions;
 
-#if NET8_0_OR_GREATER
 // For now, temporarily ignore the error about using the obsolete `HttpClientBuilderExtensions.ConfigureHttpMessageHandlerBuilder`
 // method. I'm likely to drop support for most of the HttpClient resilience extensions since .net 8 has that built in.
 #pragma warning disable CS0618 // Type or member is obsolete
-#endif
 
 /// <summary>
 /// Tests for the <see cref="ResiliencePoliciesHttpClientBuilderExtensions"/> class.
@@ -423,6 +421,4 @@ public class AddResiliencePoliciesTests
     }
 }
 
-#if NET8_0_OR_GREATER
 #pragma warning restore CS0618 // Type or member is obsolete
-#endif
