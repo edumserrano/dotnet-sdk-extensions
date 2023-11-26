@@ -113,6 +113,7 @@ public class AddFallbackPolicyTests
     /// the policy it would trigger for all.
     /// </summary>
     [Fact]
+    [Obsolete]
     public void AddFallbackPolicyUniquePolicyPerHttpClient()
     {
         AsyncPolicyWrap<HttpResponseMessage>? fallbackPolicy1 = null;

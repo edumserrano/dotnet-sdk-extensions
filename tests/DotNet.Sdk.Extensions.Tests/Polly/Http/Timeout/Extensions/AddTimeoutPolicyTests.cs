@@ -241,6 +241,7 @@ public class AddTimeoutPolicyTests
     /// the policy it would trigger for all.
     /// </summary>
     [Fact]
+    [Obsolete]
     public void AddTimeoutPolicyUniquePolicyPerHttpClient()
     {
         AsyncTimeoutPolicy<HttpResponseMessage>? timeoutPolicy1 = null;

@@ -17,6 +17,7 @@ public class AddResiliencePoliciesTests
     /// overload method adds all the policy handlers in the expected order.
     /// </summary>
     [Fact]
+    [Obsolete]
     public void AddResiliencePoliciesAddsPoliciesInOrder1()
     {
         var policyHttpMessageHandlers = new List<PolicyHttpMessageHandler>();
@@ -68,6 +69,7 @@ public class AddResiliencePoliciesTests
     /// overload method adds all the policy handlers in the expected order.
     /// </summary>
     [Fact]
+    [Obsolete]
     public void AddResiliencePoliciesAddsPoliciesInOrder2()
     {
         var policyHttpMessageHandlers = new List<PolicyHttpMessageHandler>();
@@ -123,6 +125,7 @@ public class AddResiliencePoliciesTests
     /// overload method adds all the policy handlers in the expected order.
     /// </summary>
     [Fact]
+    [Obsolete]
     public void AddResiliencePoliciesAddsPoliciesInOrder3()
     {
         var resiliencePoliciesEventHandlerCalls = new ResiliencePoliciesEventHandlerCalls();
@@ -176,6 +179,7 @@ public class AddResiliencePoliciesTests
     /// overload method adds all the policy handlers in the expected order.
     /// </summary>
     [Fact]
+    [Obsolete]
     public void AddResiliencePoliciesAddsPoliciesInOrder4()
     {
         var resiliencePoliciesEventHandlerCalls = new ResiliencePoliciesEventHandlerCalls();
@@ -233,6 +237,7 @@ public class AddResiliencePoliciesTests
     /// overload method adds all the policy handlers in the expected order.
     /// </summary>
     [Fact]
+    [Obsolete]
     public void AddResiliencePoliciesAddsPoliciesInOrder5()
     {
         var resiliencePoliciesEventHandlerCalls = new ResiliencePoliciesEventHandlerCalls();
@@ -292,6 +297,7 @@ public class AddResiliencePoliciesTests
     /// overload method adds all the policy handlers in the expected order.
     /// </summary>
     [Fact]
+    [Obsolete]
     public void AddResiliencePoliciesAddsPoliciesInOrder6()
     {
         var resiliencePoliciesEventHandlerCalls = new ResiliencePoliciesEventHandlerCalls();
@@ -352,6 +358,7 @@ public class AddResiliencePoliciesTests
     /// the policy it would trigger for all.
     /// </summary>
     [Fact]
+    [Obsolete]
     public void AddResiliencePoliciesUniquePolicyPerHttpClient()
     {
         var policyHttpMessageHandlers1 = new List<PolicyHttpMessageHandler>();

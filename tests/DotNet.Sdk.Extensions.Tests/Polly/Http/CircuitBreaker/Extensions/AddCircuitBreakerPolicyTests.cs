@@ -339,6 +339,7 @@ public class AddCircuitBreakerPolicyTests
     /// the policy it would trigger for all.
     /// </summary>
     [Fact]
+    [Obsolete]
     public void AddCircuitBreakerPolicyUniquePolicyPerHttpClient()
     {
         AsyncPolicyWrap<HttpResponseMessage>? circuitBreakerPolicy1 = null;

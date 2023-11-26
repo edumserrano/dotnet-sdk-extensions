@@ -270,6 +270,7 @@ public class AddRetryPolicyTests
     /// the policy it would trigger for all.
     /// </summary>
     [Fact]
+    [Obsolete]
     public void AddRetryPolicyUniquePolicyPerHttpClient()
     {
         AsyncRetryPolicy<HttpResponseMessage>? retryPolicy1 = null;
