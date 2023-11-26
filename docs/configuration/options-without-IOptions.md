@@ -16,7 +16,7 @@ You will have to add the [dotnet-sdk-extensions](https://www.nuget.org/packages/
 
 ## How to use
 
-> **Note**
+> [!NOTE]
 >
 > the variable `services` in the examples below is of type `IServiceCollection`. On the default template
 > for a Web API you can access it via `builder.services`. Example:
@@ -79,7 +79,7 @@ services
     .ValidateDataAnnotations();
 ```
 
-> **Note**
+> [!NOTE]
 >
 > The `AddOptionsValue` extension methods add the ability to take a dependency on `SomeOption`, they don't remove remove the ability to take a dependency on `IOptions<SomeOption>`.
 >

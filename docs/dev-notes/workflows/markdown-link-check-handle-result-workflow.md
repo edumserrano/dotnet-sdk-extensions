@@ -19,7 +19,7 @@ If the markdown-link-check workflow was executed on a pull request branch:
 - If there aren't any broken markdown links then the workflow stops.
 - If there are broken markdown links then a comment with information about the broken links will be added to the Pull Request.
 
-> **Note**
+> [!NOTE]
 >
 > The reason to split this workflow in two, one that looks for broken links `(markdown-link-check)` and this one that processes the results `(markdown-link-check-handle-result)` is due to security. On GitHub, workflows that run on PRs from forks of the repo run in a restricted context without access to secrets and where the `GITHUB_TOKEN` has read-only permissions. The main purpose for this is to protect from the threat of malicious pull requests.
 >

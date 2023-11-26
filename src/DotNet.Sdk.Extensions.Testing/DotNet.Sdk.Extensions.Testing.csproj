@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
+    <TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
     <PackageReadmeFileName>dotnet-sdk-extensions-testing-nuget-readme.md</PackageReadmeFileName>
 
     <!--nuget package info-->
@@ -43,11 +43,14 @@
     </PackageReference>
     <PackageReference Include="System.Reactive" Version="6.0.0" />
   </ItemGroup>
-  
+
   <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="6.0.21" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="6.0.25" />
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net7.0' ">
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="7.0.10" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="7.0.14" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net8.0' ">
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.0" />
   </ItemGroup>
 </Project>

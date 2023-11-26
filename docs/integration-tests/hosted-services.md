@@ -248,7 +248,7 @@ public async Task DemoTest2()
 
 The above is a very simple example that hopefully gives you an idea on how you can do the integratin style tests for Hosted Services.
 
-> **Note**
+> [!NOTE]
 >
 > You can also consider converting your project to start a web application and follow the instructions at [Test hosted service using WebApplicationFactory](#test-hosted-service-using-webapplicationfactory).
 >
@@ -354,7 +354,7 @@ The above is a very simple example that hopefully gives you an idea on how you c
 
 The main difference from the integration test examples shown in [introduction to integration tests](https://docs.microsoft.com/en-us/aspnet/core/test/integration-tests?#introduction-to-integration-tests) is that you do not use the `WebApplicationFactory.CreateClient()` and then use the returned HttpClient do to calls into the test server but instead you use the `WebApplicationFactory.RunUntilAsync` extension method with a custom conditions that will control the lifetime of the test server when using Hosted Services.
 
-> **Note**
+> [!NOTE]
 >
 > When thinking about your test scenario understand that your code running on your Hosted Service won't immediatly stop when the test condition is reached. In reality, the set condition is checked periodically to understand if the test server should be stopped.
 >
@@ -436,4 +436,4 @@ Setting the `RunUntilOptions.PredicateCheckInterval` to high values might mean y
 
 So if for your test it will take X time to meet the condition and the `RunUntilOptions.PredicateCheckInterval` is represented by Y than in the worst case scenario the time to run your test will be close to X + Y.
 
-**Note**: when debugging it might be useful to set the `RunUntilOptions.PredicateCheckInterval` to a larger period to allow you to step through your code more easily before the check for the condition kicks in and, if evaluates to true, shuts down the test server and ends the test.
+[!NOTE]: when debugging it might be useful to set the `RunUntilOptions.PredicateCheckInterval` to a larger period to allow you to step through your code more easily before the check for the condition kicks in and, if evaluates to true, shuts down the test server and ends the test.

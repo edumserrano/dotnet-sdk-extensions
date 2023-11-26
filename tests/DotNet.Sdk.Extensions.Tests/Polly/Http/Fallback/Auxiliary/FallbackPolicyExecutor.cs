@@ -13,10 +13,7 @@ public class FallbackPolicyExecutor
 
     public Task<HttpResponseMessage> TriggerFromExceptionAsync(Exception exception)
     {
-        if (exception is null)
-        {
-            throw new ArgumentNullException(nameof(exception));
-        }
+        ArgumentNullException.ThrowIfNull(exception);
 
         var requestPath = $"/fallback/exception/{exception.GetHashCode()}";
         _testHttpMessageHandler.HandleException(requestPath, exception);

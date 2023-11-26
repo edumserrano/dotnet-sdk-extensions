@@ -7,6 +7,12 @@
   - [Handling events from the fallback policy](#handling-events-from-the-fallback-policy)
 - [Distinguish different fallback response types](#distinguish-different-fallback-response-types)
 
+> [!IMPORTANT]
+>
+> `.NET 8` now brings better support for adding resilience to `HttpClient`. See [Add resilience to an HTTP client](https://learn.microsoft.com/en-us/dotnet/core/resilience/http-resilience?tabs=dotnet-cli#add-resilience-to-an-http-client) and [Building resilient cloud services with .NET 8 | .NET Conf 2023](https://www.youtube.com/watch?v=BDZpuFI8mMM&list=PLdo4fOcmZ0oULyHSPBx-tQzePOYlhvrAU&index=16).
+>
+> You should consider adopting the new `.NET 8` API instead of using the one presented here.
+
 ## Motivation
 
 Every time I use an `HttpClient` I end up repeating the same [Polly](https://github.com/App-vNext/Polly) usage pattern in my projects to a set of resilience polices such as:
@@ -25,7 +31,7 @@ You will have to add the [dotnet-sdk-extensions](https://www.nuget.org/packages/
 
 The extension method provided `AddFallbackPolicy` is an extension to the `IHttpClientBuilder` which is what you use when [configuring an HttpClient](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/http-requests?view=aspnetcore-5.0). This extension will adds a [fallback policy](https://github.com/App-vNext/Polly#fallback) to the `HttpClient`.
 
-**Note** that the `AddFallbackPolicy` adds an opinionated fallback policy which is mainly meant to be used as a fallback for the policies added by the following extension methods:
+[!NOTE] that the `AddFallbackPolicy` adds an opinionated fallback policy which is mainly meant to be used as a fallback for the policies added by the following extension methods:
 
 - [Add a timeout policy to an HttpClient](/docs/polly/httpclient-with-timeout-policy.md)
 - [Add a retry policy to an HttpClient](/docs/polly/httpclient-with-retry-policy.md)
@@ -40,7 +46,7 @@ The fallback policy is configured to handle the following exceptions:
 - `BrokenCircuitException` and `IsolatedCircuitException`: the fallback response is a `CircuitBrokenHttpResponseMessage`.
 - `TaskCanceledException`: the fallback response is a `AbortedHttpResponseMessage` or a `TimeoutHttpResponseMessage` if the inner exception is `TimeoutException`.
 
-> **Note**
+> [!NOTE]
 >
 > the variable `services` in the examples below is of type `IServiceCollection`. On the default template
 > for a Web API you can access it via `builder.services`. Example:

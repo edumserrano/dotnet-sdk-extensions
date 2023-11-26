@@ -5,7 +5,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers;
 /// </summary>
 public class TestHttpMessageHandler : DelegatingHandler
 {
-    private readonly List<HttpResponseMessageMock> _httpResponseMocks = new List<HttpResponseMessageMock>();
+    private readonly List<HttpResponseMessageMock> _httpResponseMocks = [];
 
     /// <summary>
     /// Configure an <see cref="HttpResponseMessage"/> to be returned when executing an HTTP call via
@@ -15,10 +15,7 @@ public class TestHttpMessageHandler : DelegatingHandler
     /// <returns>The <see cref="TestHttpMessageHandler"/> for chaining.</returns>
     public TestHttpMessageHandler MockHttpResponse(Action<HttpResponseMessageMockBuilder> configure)
     {
-        if (configure is null)
-        {
-            throw new ArgumentNullException(nameof(configure));
-        }
+        ArgumentNullException.ThrowIfNull(configure);
 
         var httpResponseMockBuilder = new HttpResponseMessageMockBuilder();
         configure(httpResponseMockBuilder);
@@ -35,10 +32,7 @@ public class TestHttpMessageHandler : DelegatingHandler
     /// <returns>The <see cref="TestHttpMessageHandler"/> for chaining.</returns>
     public TestHttpMessageHandler MockHttpResponse(HttpResponseMessageMock httpResponseMock)
     {
-        if (httpResponseMock is null)
-        {
-            throw new ArgumentNullException(nameof(httpResponseMock));
-        }
+        ArgumentNullException.ThrowIfNull(httpResponseMock);
 
         _httpResponseMocks.Add(httpResponseMock);
         return this;
@@ -47,10 +41,7 @@ public class TestHttpMessageHandler : DelegatingHandler
     /// <inheritdoc />
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {
-        if (request is null)
-        {
-            throw new ArgumentNullException(nameof(request));
-        }
+        ArgumentNullException.ThrowIfNull(request);
 
         foreach (var httpResponseMock in _httpResponseMocks)
         {

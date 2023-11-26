@@ -27,7 +27,7 @@ This workflow requires the following labels to be configured on the repo:
 
 - `dotnet-format`: Pull requests created by the dotnet-format-apply-changes workflow.
 
-> **Note**
+> [!NOTE]
 >
 > The reason to split this workflow in two, one that runs dotnet format `(dotnet-format)` and this one that applies the results `(dotnet-format-apply-changes)` is due to security. On GitHub, workflows that run on PRs from forks of the repo run in a restricted context without access to secrets and where the `GITHUB_TOKEN` has read-only permissions. The main purpose for this is to protect from the threat of malicious pull requests.
 >

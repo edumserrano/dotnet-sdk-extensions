@@ -8,7 +8,7 @@
 
 Because this workflow requires a `GITHUB_TOKEN` with some write permissions this workflow has been separated from the [nuget-publish workflow](/docs/dev-notes/workflows/nuget-publish-workflow.md). The main intent is to protect from the threat of malicious pull requests. For more information see [Security considerations on GitHub workflows](/docs/dev-notes/workflows/security-considerations.md).
 
-> **Note**
+> [!NOTE]
 >
 > The reason to split this workflow in two, one that produces the test results `(build-test-package)` and this one which uploads them to the pull request, is due to security. On GitHub, workflows that run on PRs from forks of the repo run in a restricted context without access to secrets and where the `GITHUB_TOKEN` has read-only permissions. The main purpose for this is to protect from the threat of malicious pull requests.
 >

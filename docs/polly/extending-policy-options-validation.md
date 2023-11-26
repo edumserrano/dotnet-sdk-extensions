@@ -14,7 +14,7 @@ All of the options from the following extension methods have a default validatio
 
 Let's see how we can extend the validation of the `TimeoutOptions` from the [`AddTimeoutPolicy` extension method](/docs/polly/httpclient-with-timeout-policy.md). The same can be applied to the options of any of the other extension methods.
 
-> **Note**
+> [!NOTE]
 >
 > the variable `services` in the examples below is of type `IServiceCollection`. On the default template
 > for a Web API you can access it via `builder.services`. Example:

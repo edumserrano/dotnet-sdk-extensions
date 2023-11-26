@@ -6,7 +6,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess;
 public class ResponseBasedBuilder
 {
     private readonly HttpMockServerArgs _mockServerArgs;
-    private readonly List<HttpResponseMock> _httpResponseMocks = new List<HttpResponseMock>();
+    private readonly List<HttpResponseMock> _httpResponseMocks = [];
 
     internal ResponseBasedBuilder(HttpMockServerArgs args)
     {
@@ -24,10 +24,7 @@ public class ResponseBasedBuilder
     /// <returns>The <see cref="ResponseBasedBuilder"/> for chaining.</returns>
     public ResponseBasedBuilder MockHttpResponse(HttpResponseMock httpResponseMock)
     {
-        if (httpResponseMock is null)
-        {
-            throw new ArgumentNullException(nameof(httpResponseMock));
-        }
+        ArgumentNullException.ThrowIfNull(httpResponseMock);
 
         _httpResponseMocks.Add(httpResponseMock);
         return this;
@@ -40,10 +37,7 @@ public class ResponseBasedBuilder
     /// <returns>The <see cref="ResponseBasedBuilder"/> for chaining.</returns>
     public ResponseBasedBuilder MockHttpResponse(Action<HttpResponseMockBuilder> configureHttpResponseMock)
     {
-        if (configureHttpResponseMock is null)
-        {
-            throw new ArgumentNullException(nameof(configureHttpResponseMock));
-        }
+        ArgumentNullException.ThrowIfNull(configureHttpResponseMock);
 
         var httpResponseMockBuilder = new HttpResponseMockBuilder();
         configureHttpResponseMock(httpResponseMockBuilder);

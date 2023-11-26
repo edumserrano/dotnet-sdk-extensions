@@ -13,10 +13,7 @@ public static class HttpMockServerBuilderExtensions
     /// <returns>The <see cref="HttpMockServerBuilder"/> for chaining.</returns>
     public static HttpMockServerBuilder UseDefaultLogLevel(this HttpMockServerBuilder httpMockServerBuilder, LogLevel logLevel)
     {
-        if (httpMockServerBuilder is null)
-        {
-            throw new ArgumentNullException(nameof(httpMockServerBuilder));
-        }
+        ArgumentNullException.ThrowIfNull(httpMockServerBuilder);
 
         return httpMockServerBuilder.UseHostArgs("--Logging:LogLevel:Default", $"{logLevel}");
     }

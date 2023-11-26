@@ -104,32 +104,22 @@ dotnet_diagnostic.CA2007.severity = none        # CA2007: Do not directly await 
 dotnet_diagnostic.CA2234.severity = silent      # CA2234: Pass System.Uri objects instead of strings
 
 ##########################################
-# Language Rules
-# https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/language-rules
+# .NET code refactoring options
+# https://learn.microsoft.com/en-us/visualstudio/ide/reference/code-styles-refactoring-options?view=vs-2022
 ##########################################
-# .NET Style Rules
-# https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/language-rules#net-style-rules
 [*.cs]
-# Parentheses preferences
-dotnet_style_parentheses_in_other_operators = never_if_unnecessary:suggestion
-# Expression-level preferences
-dotnet_diagnostic.IDE0010.severity = silent     # Add missing cases to switch statement (IDE0010)
-dotnet_style_prefer_conditional_expression_over_assignment = true:silent
-dotnet_diagnostic.IDE0045.severity = suggestion # Use conditional expression for assignment (IDE0045)
-dotnet_style_prefer_conditional_expression_over_return = true:silent
-dotnet_diagnostic.IDE0046.severity = none       # Use conditional expression for return (IDE0046)
-# Undocumented
 dotnet_style_operator_placement_when_wrapping = beginning_of_line
 
-# C# Style Rules
-# https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/language-rules#c-style-rules
+##########################################
+# Language and unnecessary rules
+# https://learn.microsoft.com/en-gb/dotnet/fundamentals/code-analysis/style-rules/language-rules
+##########################################
 [*.cs]
-# 'var' preferences
-dotnet_diagnostic.IDE0008.severity = none               # IDE0008: Use explicit type instead of 'var'
-csharp_style_var_for_built_in_types = true:warning
-csharp_style_var_when_type_is_apparent = true:warning
-csharp_style_var_elsewhere = true:warning
-# Expression-bodied members
+
+# Code-block preferences https://learn.microsoft.com/en-gb/dotnet/fundamentals/code-analysis/style-rules/language-rules#code-block-preferences
+dotnet_diagnostic.IDE0290.severity = silent             # Use primary constructor (IDE0290)
+
+# Expression-bodied members https://learn.microsoft.com/en-gb/dotnet/fundamentals/code-analysis/style-rules/language-rules#expression-bodied-members
 csharp_style_expression_bodied_methods = true:silent
 dotnet_diagnostic.IDE0022.severity = silent             # Use expression body for methods (IDE0022)
 csharp_style_expression_bodied_operators = true:silent
@@ -144,18 +134,27 @@ csharp_style_expression_bodied_lambdas = true:silent
 dotnet_diagnostic.IDE0053.severity = silent             # Use expression body for lambdas (IDE0053)
 csharp_style_expression_bodied_local_functions = true:silent
 dotnet_diagnostic.IDE0061.severity = silent             # Use expression body for local functions (IDE0061)
-# Expression-level preferences
+
+# Expression-level preferences https://learn.microsoft.com/en-gb/dotnet/fundamentals/code-analysis/style-rules/language-rules#expression-level-preferences
+dotnet_diagnostic.IDE0010.severity = silent     # Add missing cases to switch statement (IDE0010)
+dotnet_style_prefer_conditional_expression_over_assignment = true:silent
+dotnet_diagnostic.IDE0045.severity = suggestion # Use conditional expression for assignment (IDE0045)
+dotnet_style_prefer_conditional_expression_over_return = true:silent
+dotnet_diagnostic.IDE0046.severity = none       # Use conditional expression for return (IDE0046)
 dotnet_diagnostic.IDE0057.severity = none                # Use range operator (IDE0057)
+csharp_style_unused_value_expression_statement_preference = discard_variable:silent
+dotnet_diagnostic.IDE0058.severity = silent     # Remove unnecessary expression value (IDE0058)
 csharp_style_implicit_object_creation_when_type_is_apparent = false:silent
 dotnet_diagnostic.IDE0090.severity = suggestion          # Simplify new expression (IDE0090)
 
-##########################################
-# Unnecessary Code Rules
-# https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/unnecessary-code-rules
-##########################################
-[*.cs]
-csharp_style_unused_value_expression_statement_preference = discard_variable:silent
-dotnet_diagnostic.IDE0058.severity = silent     # Remove unnecessary expression value (IDE0058)
+# Parentheses preferences https://learn.microsoft.com/en-gb/dotnet/fundamentals/code-analysis/style-rules/language-rules#parentheses-preferences
+dotnet_style_parentheses_in_other_operators = never_if_unnecessary:suggestion
+
+# 'var' preferences https://learn.microsoft.com/en-gb/dotnet/fundamentals/code-analysis/style-rules/language-rules#var-preferences
+dotnet_diagnostic.IDE0008.severity = none               # IDE0008: Use explicit type instead of 'var'
+csharp_style_var_for_built_in_types = true:warning
+csharp_style_var_when_type_is_apparent = true:warning
+csharp_style_var_elsewhere = true:warning
 
 ##########################################
 # Formatting Rules
@@ -498,7 +497,7 @@ dotnet_diagnostic.SA1006.severity = suggestion  # SA1006: Preprocessor keywords 
 dotnet_diagnostic.SA1007.severity = suggestion  # SA1007: Operator keyword should be followed by space
 dotnet_diagnostic.SA1008.severity = suggestion  # SA1008: Opening parenthesis should be spaced correctly
 dotnet_diagnostic.SA1009.severity = suggestion  # SA1009: Closing parenthesis should be spaced correctly
-dotnet_diagnostic.SA1010.severity = suggestion  # SA1010: Opening square brackets should be spaced correctly
+dotnet_diagnostic.SA1010.severity = none        # SA1010: Opening square brackets should be spaced correctly # TODO review this, temporarily disabled until https://github.com/DotNetAnalyzers/StyleCopAnalyzers/issues/3687 is resolved. Hopefully soon by merging https://github.com/DotNetAnalyzers/StyleCopAnalyzers/pull/3729
 dotnet_diagnostic.SA1011.severity = suggestion  # SA1011: Closing square brackets should be spaced correctly
 dotnet_diagnostic.SA1012.severity = suggestion  # SA1012: Opening braces should be spaced correctly
 dotnet_diagnostic.SA1013.severity = suggestion  # SA1013: Closing braces should be spaced correctly

@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
+    <TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>    <!-- This shouldn't be needed because it should be added by the Microsoft.NET.Test.Sdk package but for now it's required as explained here https://github.com/dotnet/sdk/issues/3790#issuecomment-1100773198 -->
   </PropertyGroup>
@@ -23,12 +23,15 @@
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="6.0.21" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="6.0.25" />
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net7.0' ">
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="7.0.10" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="7.0.14" />
   </ItemGroup>
-  
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net8.0' ">
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.0" />
+  </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\..\src\DotNet.Sdk.Extensions.Testing\DotNet.Sdk.Extensions.Testing.csproj" />
   </ItemGroup>

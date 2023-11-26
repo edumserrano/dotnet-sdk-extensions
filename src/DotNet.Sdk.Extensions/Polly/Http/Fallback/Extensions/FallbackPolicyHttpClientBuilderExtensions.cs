@@ -12,10 +12,7 @@ public static class FallbackPolicyHttpClientBuilderExtensions
     /// <returns>The <see cref="IHttpClientBuilder"/> for chaining.</returns>
     public static IHttpClientBuilder AddFallbackPolicy(this IHttpClientBuilder httpClientBuilder)
     {
-        if (httpClientBuilder is null)
-        {
-            throw new ArgumentNullException(nameof(httpClientBuilder));
-        }
+        ArgumentNullException.ThrowIfNull(httpClientBuilder);
 
         return httpClientBuilder.AddFallbackPolicy(EventHandlerFactory);
 
@@ -31,10 +28,7 @@ public static class FallbackPolicyHttpClientBuilderExtensions
     public static IHttpClientBuilder AddFallbackPolicy<TPolicyEventHandler>(this IHttpClientBuilder httpClientBuilder)
         where TPolicyEventHandler : class, IFallbackPolicyEventHandler
     {
-        if (httpClientBuilder is null)
-        {
-            throw new ArgumentNullException(nameof(httpClientBuilder));
-        }
+        ArgumentNullException.ThrowIfNull(httpClientBuilder);
 
         httpClientBuilder.Services.TryAddSingleton<TPolicyEventHandler>();
         return httpClientBuilder.AddFallbackPolicy(EventHandlerFactory);
@@ -52,10 +46,7 @@ public static class FallbackPolicyHttpClientBuilderExtensions
         this IHttpClientBuilder httpClientBuilder,
         Func<IServiceProvider, IFallbackPolicyEventHandler> eventHandlerFactory)
     {
-        if (httpClientBuilder is null)
-        {
-            throw new ArgumentNullException(nameof(httpClientBuilder));
-        }
+        ArgumentNullException.ThrowIfNull(httpClientBuilder);
 
         var httpClientName = httpClientBuilder.Name;
         return httpClientBuilder.AddHttpMessageHandler(provider =>

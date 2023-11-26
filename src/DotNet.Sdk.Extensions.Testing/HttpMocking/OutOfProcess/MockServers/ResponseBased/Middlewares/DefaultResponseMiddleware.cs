@@ -4,10 +4,7 @@ internal static class DefaultResponseMiddlewareExtensions
 {
     public static IApplicationBuilder RunDefaultResponse(this IApplicationBuilder builder)
     {
-        if (builder is null)
-        {
-            throw new ArgumentNullException(nameof(builder));
-        }
+        ArgumentNullException.ThrowIfNull(builder);
 
         return builder.UseMiddleware<DefaultResponseMiddleware>();
     }

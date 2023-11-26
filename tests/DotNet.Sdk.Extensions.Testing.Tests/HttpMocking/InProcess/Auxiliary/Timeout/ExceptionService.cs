@@ -3,7 +3,7 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HttpMocking.InProcess.Auxiliary.Ti
 [SuppressMessage("Performance", "CA1812:Avoid uninstantiated internal classes", Justification = "Used as generic type param.")]
 internal sealed class ExceptionService
 {
-    private readonly List<Exception> _exceptions = new List<Exception>();
+    private readonly List<Exception> _exceptions = [];
 
     public IReadOnlyCollection<Exception> Exceptions
     {

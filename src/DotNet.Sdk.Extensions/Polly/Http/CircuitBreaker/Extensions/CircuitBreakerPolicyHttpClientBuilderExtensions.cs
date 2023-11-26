@@ -15,10 +15,7 @@ public static class CircuitBreakerPolicyHttpClientBuilderExtensions
         this IHttpClientBuilder httpClientBuilder,
         string optionsName)
     {
-        if (httpClientBuilder is null)
-        {
-            throw new ArgumentNullException(nameof(httpClientBuilder));
-        }
+        ArgumentNullException.ThrowIfNull(httpClientBuilder);
 
         static ICircuitBreakerPolicyEventHandler EventHandlerFactory(IServiceProvider _) => new DefaultCircuitBreakerPolicyEventHandler();
         return httpClientBuilder.AddCircuitBreakerPolicyCore(
@@ -37,10 +34,7 @@ public static class CircuitBreakerPolicyHttpClientBuilderExtensions
         this IHttpClientBuilder httpClientBuilder,
         Action<CircuitBreakerOptions> configureOptions)
     {
-        if (httpClientBuilder is null)
-        {
-            throw new ArgumentNullException(nameof(httpClientBuilder));
-        }
+        ArgumentNullException.ThrowIfNull(httpClientBuilder);
 
         static ICircuitBreakerPolicyEventHandler EventHandlerFactory(IServiceProvider _) => new DefaultCircuitBreakerPolicyEventHandler();
         return httpClientBuilder.AddCircuitBreakerPolicyCore(
@@ -61,10 +55,7 @@ public static class CircuitBreakerPolicyHttpClientBuilderExtensions
         string optionsName)
         where TPolicyEventHandler : class, ICircuitBreakerPolicyEventHandler
     {
-        if (httpClientBuilder is null)
-        {
-            throw new ArgumentNullException(nameof(httpClientBuilder));
-        }
+        ArgumentNullException.ThrowIfNull(httpClientBuilder);
 
         httpClientBuilder.Services.TryAddSingleton<TPolicyEventHandler>();
         static ICircuitBreakerPolicyEventHandler EventHandlerFactory(IServiceProvider provider) => provider.GetRequiredService<TPolicyEventHandler>();
@@ -86,10 +77,7 @@ public static class CircuitBreakerPolicyHttpClientBuilderExtensions
         Action<CircuitBreakerOptions> configureOptions)
         where TPolicyEventHandler : class, ICircuitBreakerPolicyEventHandler
     {
-        if (httpClientBuilder is null)
-        {
-            throw new ArgumentNullException(nameof(httpClientBuilder));
-        }
+        ArgumentNullException.ThrowIfNull(httpClientBuilder);
 
         httpClientBuilder.Services.TryAddSingleton<TPolicyEventHandler>();
         static ICircuitBreakerPolicyEventHandler EventHandlerFactory(IServiceProvider provider) => provider.GetRequiredService<TPolicyEventHandler>();
@@ -111,10 +99,7 @@ public static class CircuitBreakerPolicyHttpClientBuilderExtensions
         string optionsName,
         Func<IServiceProvider, ICircuitBreakerPolicyEventHandler> eventHandlerFactory)
     {
-        if (httpClientBuilder is null)
-        {
-            throw new ArgumentNullException(nameof(httpClientBuilder));
-        }
+        ArgumentNullException.ThrowIfNull(httpClientBuilder);
 
         return httpClientBuilder.AddCircuitBreakerPolicyCore(
             optionsName: optionsName,
@@ -134,10 +119,7 @@ public static class CircuitBreakerPolicyHttpClientBuilderExtensions
         Action<CircuitBreakerOptions> configureOptions,
         Func<IServiceProvider, ICircuitBreakerPolicyEventHandler> eventHandlerFactory)
     {
-        if (httpClientBuilder is null)
-        {
-            throw new ArgumentNullException(nameof(httpClientBuilder));
-        }
+        ArgumentNullException.ThrowIfNull(httpClientBuilder);
 
         return httpClientBuilder.AddCircuitBreakerPolicyCore(
             optionsName: null,

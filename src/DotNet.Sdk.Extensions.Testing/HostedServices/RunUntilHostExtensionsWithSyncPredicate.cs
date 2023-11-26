@@ -13,15 +13,8 @@ public static partial class RunUntilExtensions
     /// <returns>The <see cref="Task"/> that will execute the host until it's terminated.</returns>
     public static Task RunUntilAsync(this IHost host, RunUntilPredicate predicate)
     {
-        if (host is null)
-        {
-            throw new ArgumentNullException(nameof(host));
-        }
-
-        if (predicate is null)
-        {
-            throw new ArgumentNullException(nameof(predicate));
-        }
+        ArgumentNullException.ThrowIfNull(host);
+        ArgumentNullException.ThrowIfNull(predicate);
 
         Task<bool> PredicateAsync() => Task.FromResult(predicate());
         return host.RunUntilAsync(PredicateAsync);
@@ -48,20 +41,9 @@ public static partial class RunUntilExtensions
         Action<RunUntilOptions> configureOptions,
         IScheduler scheduler)
     {
-        if (host is null)
-        {
-            throw new ArgumentNullException(nameof(host));
-        }
-
-        if (predicate is null)
-        {
-            throw new ArgumentNullException(nameof(predicate));
-        }
-
-        if (scheduler is null)
-        {
-            throw new ArgumentNullException(nameof(scheduler));
-        }
+        ArgumentNullException.ThrowIfNull(host);
+        ArgumentNullException.ThrowIfNull(predicate);
+        ArgumentNullException.ThrowIfNull(scheduler);
 
         Task<bool> PredicateAsync() => Task.FromResult(predicate());
         return host.RunUntilAsync(PredicateAsync, configureOptions, scheduler);

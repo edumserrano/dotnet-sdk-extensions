@@ -16,10 +16,7 @@ public class HttpResponseMessageMockBuilder
     /// <returns>The <see cref="HttpResponseMessageMockBuilder"/> for chaining.</returns>
     public HttpResponseMessageMockBuilder Where(Func<HttpRequestMessage, bool> predicate)
     {
-        if (predicate is null)
-        {
-            throw new ArgumentNullException(nameof(predicate));
-        }
+        ArgumentNullException.ThrowIfNull(predicate);
 
         // convert to 'async' predicate
         return Where((httpRequestMessage, _) => Task.FromResult(predicate(httpRequestMessage)));
@@ -48,10 +45,7 @@ public class HttpResponseMessageMockBuilder
     /// <returns>The <see cref="HttpResponseMessageMockBuilder"/> for chaining.</returns>
     public HttpResponseMessageMockBuilder RespondWith(Func<HttpResponseMessage> handler)
     {
-        if (handler is null)
-        {
-            throw new ArgumentNullException(nameof(handler));
-        }
+        ArgumentNullException.ThrowIfNull(handler);
 
         // convert to 'async' handler
         return RespondWith((_, _) => Task.FromResult(handler()));
@@ -64,10 +58,7 @@ public class HttpResponseMessageMockBuilder
     /// <returns>The <see cref="HttpResponseMessageMockBuilder"/> for chaining.</returns>
     public HttpResponseMessageMockBuilder RespondWith(Func<HttpRequestMessage, HttpResponseMessage> handler)
     {
-        if (handler is null)
-        {
-            throw new ArgumentNullException(nameof(handler));
-        }
+        ArgumentNullException.ThrowIfNull(handler);
 
         // convert to 'async' handler
         return RespondWith((httpRequestMessage, _) => Task.FromResult(handler(httpRequestMessage)));

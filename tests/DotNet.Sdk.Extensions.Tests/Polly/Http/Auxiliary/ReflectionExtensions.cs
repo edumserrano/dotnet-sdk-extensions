@@ -4,10 +4,7 @@ public static class ReflectionExtensions
 {
     public static object? GetInstanceField(this object instance, string fieldName)
     {
-        if (instance is null)
-        {
-            throw new ArgumentNullException(nameof(instance));
-        }
+        ArgumentNullException.ThrowIfNull(instance);
 
         var type = instance.GetType();
         return instance.GetInstanceField(type, fieldName);
@@ -22,10 +19,7 @@ public static class ReflectionExtensions
 
     public static T? GetInstanceField<T>(this object instance, string fieldName)
     {
-        if (instance is null)
-        {
-            throw new ArgumentNullException(nameof(instance));
-        }
+        ArgumentNullException.ThrowIfNull(instance);
 
         var type = instance.GetType();
         return instance.GetInstanceField<T>(type, fieldName);
@@ -35,20 +29,14 @@ public static class ReflectionExtensions
     // but from the base/derived class for instance
     public static T? GetInstanceField<T>(this object instance, Type type, string fieldName)
     {
-        if (instance is null)
-        {
-            throw new ArgumentNullException(nameof(instance));
-        }
+        ArgumentNullException.ThrowIfNull(instance);
 
         return (T?)GetInstanceField(type, instance, fieldName);
     }
 
     public static object? GetInstanceField(Type type, object instance, string fieldName)
     {
-        if (type is null)
-        {
-            throw new ArgumentNullException(nameof(type));
-        }
+        ArgumentNullException.ThrowIfNull(type);
 
         const BindingFlags bindFlags = BindingFlags.Instance
             | BindingFlags.Public
@@ -60,10 +48,7 @@ public static class ReflectionExtensions
 
     public static object? GetInstanceProperty(this object instance, string propertyName)
     {
-        if (instance is null)
-        {
-            throw new ArgumentNullException(nameof(instance));
-        }
+        ArgumentNullException.ThrowIfNull(instance);
 
         var type = instance.GetType();
         return instance.GetInstanceProperty(type, propertyName);
@@ -78,10 +63,7 @@ public static class ReflectionExtensions
 
     public static T? GetInstanceProperty<T>(this object instance, string propertyName)
     {
-        if (instance is null)
-        {
-            throw new ArgumentNullException(nameof(instance));
-        }
+        ArgumentNullException.ThrowIfNull(instance);
 
         var type = instance.GetType();
         return instance.GetInstanceProperty<T>(type, propertyName);
@@ -96,10 +78,7 @@ public static class ReflectionExtensions
 
     public static object? GetInstanceProperty(Type type, object instance, string propertyName)
     {
-        if (type is null)
-        {
-            throw new ArgumentNullException(nameof(type));
-        }
+        ArgumentNullException.ThrowIfNull(type);
 
         const BindingFlags bindFlags = BindingFlags.Instance
             | BindingFlags.Public

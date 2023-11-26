@@ -1,5 +1,11 @@
 namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Timeout.Extensions;
 
+#if NET8_0_OR_GREATER
+// For now, temporarily ignore the error about using the obsolete `HttpClientBuilderExtensions.ConfigureHttpMessageHandlerBuilder`
+// method. I'm likely to drop support for most of the HttpClient resilience extensions since .net 8 has that built in.
+#pragma warning disable CS0618 // Type or member is obsolete
+#endif
+
 /// <summary>
 /// Tests for the <see cref="TimeoutPolicyHttpClientBuilderExtensions"/> class.
 /// Specifically for the TimeoutPolicyHttpClientBuilderExtensions.AddTimeoutPolicy overloads.
@@ -275,3 +281,7 @@ public class AddTimeoutPolicyTests
         timeoutPolicy1.PolicyKey.ShouldNotBe(timeoutPolicy2.PolicyKey);
     }
 }
+
+#if NET8_0_OR_GREATER
+#pragma warning restore CS0618 // Type or member is obsolete
+#endif

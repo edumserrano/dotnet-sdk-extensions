@@ -7,10 +7,7 @@ internal sealed class HttpResponseMessageMockDescriptor
         string httpClientName,
         InProcessHttpResponseMessageMockBuilder httpResponseMessageMockBuilder)
     {
-        if (httpResponseMessageMockBuilder is null)
-        {
-            throw new ArgumentNullException(nameof(httpResponseMessageMockBuilder));
-        }
+        ArgumentNullException.ThrowIfNull(httpResponseMessageMockBuilder);
 
         HttpResponseMockType = httpResponseMockType;
         HttpClientName = httpClientName;

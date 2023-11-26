@@ -9,7 +9,7 @@
 
 The `dotnet format` will report violations based on the [.editorconfig](/.editorconfig) file and the analyzers included in each project. Note that in addition to the analyzers each `csproj` has, the [Directory.Build.props](/docs/dev-notes/README.md#projects-wide-configuration) file also adds several analyzers to the projects.
 
-> **Note**
+> [!NOTE]
 >
 > The reason to split this workflow in two, this one that runs dotnet format `(dotnet-format)` and one that applies the results `(dotnet-format-apply-changes)` is due to security. On GitHub, workflows that run on PRs from forks of the repo run in a restricted context without access to secrets and where the `GITHUB_TOKEN` has read-only permissions. The main purpose for this is to protect from the threat of malicious pull requests.
 >

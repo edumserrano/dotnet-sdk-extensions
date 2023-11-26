@@ -5,8 +5,8 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess;
 /// </summary>
 public class HttpMockServerBuilder
 {
-    private readonly List<string> _hostArgs = new List<string>();
-    private readonly List<HttpMockServerUrlDescriptor> _hostUrls = new List<HttpMockServerUrlDescriptor>();
+    private readonly List<string> _hostArgs = [];
+    private readonly List<HttpMockServerUrlDescriptor> _hostUrls = [];
 
     /// <summary>
     /// Defines an URL for the <see cref="HttpMockServer"/> to be listening on.
@@ -36,10 +36,7 @@ public class HttpMockServerBuilder
     /// <returns>The <see cref="HttpMockServerBuilder"/> for chaining.</returns>
     public HttpMockServerBuilder UseHostArgs(params string[] hostArgs)
     {
-        if (hostArgs is null)
-        {
-            throw new ArgumentNullException(nameof(hostArgs));
-        }
+        ArgumentNullException.ThrowIfNull(hostArgs);
 
         if (hostArgs.Length == 0)
         {

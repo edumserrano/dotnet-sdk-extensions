@@ -12,6 +12,12 @@
   - [Binding appsettings values to the resilience policies options](#binding-appsettings-values-to-the-resilience-policies-options)
   - [Handling events from the resilience policies](#handling-events-from-the-resilience-policies)
 
+> [!IMPORTANT]
+>
+> `.NET 8` now brings better support for adding resilience to `HttpClient`. See [Add resilience to an HTTP client](https://learn.microsoft.com/en-us/dotnet/core/resilience/http-resilience?tabs=dotnet-cli#add-resilience-to-an-http-client) and [Building resilient cloud services with .NET 8 | .NET Conf 2023](https://www.youtube.com/watch?v=BDZpuFI8mMM&list=PLdo4fOcmZ0oULyHSPBx-tQzePOYlhvrAU&index=16).
+>
+> You should consider adopting the new `.NET 8` API instead of using the one presented here.
+
 ## Motivation
 
 Every time I use an `HttpClient` I end up repeating the same [Polly](https://github.com/App-vNext/Polly) usage pattern in my projects to a set of resilience polices such as:
@@ -43,7 +49,7 @@ From the documentation of the above 4 extension methods it is usefull to read th
 - The intro of the [`How to use`](/docs/polly/httpclient-with-fallback-policy.md#how-to-use) section of the AddFallbackPolicy extension method: it explains what the fallback policy is configured to handle and which fallback responses are returned. The same applies to the fallback policy added by the  `AddResiliencePolicies` extension.
 - The section [`Differentiate different fallback response types`](/docs/polly/httpclient-with-fallback-policy.md#distinguish-different-fallback-response-types) from the AddFallbackPolicy extension method: the same applies to a response returned by an `HttpClient` configured with the `AddResiliencePolicies` extension.
 
-> **Note**
+> [!NOTE]
 >
 > the variable `services` in the examples below is of type `IServiceCollection`. On the default template
 > for a Web API you can access it via `builder.services`. Example:
