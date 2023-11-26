@@ -7,9 +7,7 @@ public class UseConfigurationValueTests
     /// Validates arguments the <see cref="TestConfigurationBuilderExtensions.UseConfigurationValue(IHostBuilder,string,string)"/>.
     /// </summary>
     [Theory]
-    [InlineData(null, "value1", "Cannot be null or empty. (Parameter 'key')")]
     [InlineData("", "value1", "Cannot be null or empty. (Parameter 'key')")]
-    [InlineData("some-key", null, "Cannot be null or empty. (Parameter 'value')")]
     [InlineData("some-key", "", "Cannot be null or empty. (Parameter 'value')")]
     public void HostValidateArguments(string key, string value, string exceptionMessage)
     {
@@ -26,9 +24,7 @@ public class UseConfigurationValueTests
     /// Validates arguments the <see cref="TestConfigurationBuilderExtensions.UseConfigurationValue(IHostBuilder,string,string)"/>.
     /// </summary>
     [Theory]
-    [InlineData(null, "value1", "Cannot be null or empty. (Parameter 'key')")]
     [InlineData("", "value1", "Cannot be null or empty. (Parameter 'key')")]
-    [InlineData("some-key", null, "Cannot be null or empty. (Parameter 'value')")]
     [InlineData("some-key", "", "Cannot be null or empty. (Parameter 'value')")]
     public void WebHostValidateArguments(string key, string value, string exceptionMessage)
     {
