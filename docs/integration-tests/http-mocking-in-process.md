@@ -93,7 +93,7 @@ public class HttpMocksDemoTests : IClassFixture<WebApplicationFactory<Progam>>
 }
 ```
 
-**Note**: the above test assumes that there is a typed client, represented by the type `IMyApiClient`, added to the `IServiceCollection` of the `Progam` class through the `IServiceCollection.AddHttpClient` method.
+[!NOTE]: the above test assumes that there is a typed client, represented by the type `IMyApiClient`, added to the `IServiceCollection` of the `Progam` class through the `IServiceCollection.AddHttpClient` method.
 
 ## Mock different types of HttpClients
 

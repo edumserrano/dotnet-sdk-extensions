@@ -29,7 +29,7 @@
 
 The test projects run against multiple frameworks and the [workflow to build and test](/.github/workflows/nuget-publish.yml) the solution runs both on Linux and on Windows.
 
-> **Note**
+> [!NOTE]
 >
 > Some tests run a test server with an HTTPS URL so you have to run the following command to trust developer certificates:
 >

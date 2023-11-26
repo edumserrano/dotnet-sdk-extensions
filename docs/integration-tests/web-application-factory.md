@@ -135,4 +135,4 @@ public class CustomWebApplicationFactory : WebApplicationFactory<SomeTypeInMyTes
 }
 ```
 
-**Note**: the call to `ConfigureWebHostDefaults` in the method `CreateHostBuilder` is likely required if you're testing web apps because it will register default services usually required by web apps. For example: `IServiceCollection.AddRouting`.
+[!NOTE]: the call to `ConfigureWebHostDefaults` in the method `CreateHostBuilder` is likely required if you're testing web apps because it will register default services usually required by web apps. For example: `IServiceCollection.AddRouting`.

@@ -6,7 +6,7 @@
 
 When the workflow completes, it uploads a workflow info artifact that contains a summary `json` file which indicates if the there are any broken links as well as some other required info that will be further processed by the [markdown-link-check-handle-result workflow](/docs/dev-notes/workflows/markdown-link-check-handle-result-workflow.md).
 
-> **Note**
+> [!NOTE]
 >
 > The reason to split this workflow in two, this one that looks for broken links `(markdown-link-check)` and one that processes the results `(markdown-link-check-handle-result)` is due to security. On GitHub, workflows that run on PRs from forks of the repo run in a restricted context without access to secrets and where the `GITHUB_TOKEN` has read-only permissions. The main purpose for this is to protect from the threat of malicious pull requests.
 >

@@ -8,6 +8,12 @@
   - [Binding appsettings values to the retry policy options](#binding-appsettings-values-to-the-retry-policy-options)
   - [Handling events from the retry policy](#handling-events-from-the-retry-policy)
 
+> [!IMPORTANT]
+>
+> `.NET 8` now brings better support for adding resilience to `HttpClient`. See [Add resilience to an HTTP client](https://learn.microsoft.com/en-us/dotnet/core/resilience/http-resilience?tabs=dotnet-cli#add-resilience-to-an-http-client) and [Building resilient cloud services with .NET 8 | .NET Conf 2023](https://www.youtube.com/watch?v=BDZpuFI8mMM&list=PLdo4fOcmZ0oULyHSPBx-tQzePOYlhvrAU&index=16).
+>
+> You should consider adopting the new `.NET 8` API instead of using the one presented here.
+
 ## Motivation
 
 Every time I use an `HttpClient` I end up repeating the same [Polly](https://github.com/App-vNext/Polly) usage pattern in my projects to add a retry policy.
@@ -28,7 +34,7 @@ This policy was chosen because of its more advanced jitter support. For more inf
 - [Retry with jitter](https://github.com/App-vNext/Polly/wiki/Retry-with-jitter)
 - [Wait and Retry with Jittered Back-off](https://github.com/Polly-Contrib/Polly.Contrib.WaitAndRetry#wait-and-retry-with-jittered-back-off)
 
-> **Note**
+> [!NOTE]
 >
 > the variable `services` in the examples below is of type `IServiceCollection`. On the default template
 > for a Web API you can access it via `builder.services`. Example:
