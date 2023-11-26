@@ -38,6 +38,7 @@ jobs:
       with:
         dotnet-version: |
           6.0.x
+          7.0.x
         global-json-file: global.json
     - name: Cache/Restore NuGets
       uses: actions/cache@v3
