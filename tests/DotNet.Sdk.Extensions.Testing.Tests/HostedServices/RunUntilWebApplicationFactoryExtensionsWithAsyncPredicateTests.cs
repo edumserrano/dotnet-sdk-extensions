@@ -83,7 +83,7 @@ public class RunUntilWebApplicationFactoryExtensionsWithAsyncPredicateTests
             .AndDoes(_ => ++callCount);
 
         var testScheduler = new TestScheduler();
-        using var hostedServicesWebAppFactory = new HostedServicesWebApplicationFactory();
+        await using var hostedServicesWebAppFactory = new HostedServicesWebApplicationFactory();
         await using var webApplicationFactory = hostedServicesWebAppFactory
             .WithWebHostBuilder(builder =>
             {
@@ -124,7 +124,7 @@ public class RunUntilWebApplicationFactoryExtensionsWithAsyncPredicateTests
             .AndDoes(_ => ++callCount);
 
         var testScheduler = new TestScheduler();
-        using var hostedServicesWebApplicationFactory = new HostedServicesWebApplicationFactory();
+        await using var hostedServicesWebApplicationFactory = new HostedServicesWebApplicationFactory();
         await using var webApplicationFactory = hostedServicesWebApplicationFactory
             .WithWebHostBuilder(builder =>
             {
@@ -168,7 +168,7 @@ public class RunUntilWebApplicationFactoryExtensionsWithAsyncPredicateTests
             .AndDoes(_ => ++callCount);
 
         var testScheduler = new TestScheduler();
-        using var hostedServicesWebApplicationFactory = new HostedServicesWebApplicationFactory();
+        await using var hostedServicesWebApplicationFactory = new HostedServicesWebApplicationFactory();
         await using var webApplicationFactory = hostedServicesWebApplicationFactory
             .WithWebHostBuilder(builder =>
             {
