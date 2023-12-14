@@ -131,7 +131,7 @@ jobs:
         Write-Output "condition is set to $condition"
     - name: Upload opencover test coverage file to artifacts
       if: matrix.os == 'ubuntu-latest'
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: opencover-test-coverage-file
         path: ${{ steps.dotnet-test.outputs.test-coverage-file }}
@@ -147,7 +147,7 @@ jobs:
           -reportTypes:htmlInline
     - name: Upload code coverage report to artifacts
       if: steps.even-if-tests-fail.outputs.condition == 'true' && always()
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: ${{ env.CODE_COVERAGE_ARTIFACT_NAME }}
         path: ${{ steps.code-coverage-report-generator.outputs.test-coverage-report-dir }}
@@ -209,7 +209,7 @@ jobs:
         }
     - name: Upload test results to artifacts
       if: steps.even-if-tests-fail.outputs.condition == 'true' && always()
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: ${{ env.TEST_RESULTS_ARTIFACT_NAME }}
         path: ${{ steps.dotnet-test.outputs.test-results-dir }}
@@ -221,7 +221,7 @@ jobs:
       run: dotnet pack src/DotNet.Sdk.Extensions.Testing/DotNet.Sdk.Extensions.Testing.csproj -c Release --no-build
     - name: Upload NuGets and symbols to artifacts
       id: upload-nuget-artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: matrix.os == 'ubuntu-latest'  # this job is on a matrix run but I only want to upload NuGets as artifacts once
       with:
         name: ${{ env.NUGET_ARTIFACT_NAME }}

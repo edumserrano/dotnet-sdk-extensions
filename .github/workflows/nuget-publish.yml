@@ -152,7 +152,7 @@ jobs:
         STEP_OUTPUT: ${{ toJSON(steps.nuget-publish-info.outputs) }}
       run: $env:STEP_OUTPUT
     - name: Upload custom release notes
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: ${{ env.CUSTOM_RELEASE_NOTES_ARTIFACT_NAME }}
         path: ${{ env.CUSTOM_RELEASE_NOTES_FILEPATH }}
@@ -329,7 +329,7 @@ jobs:
         $githubReleaseAsJson | Out-File github-release-info.md
         Get-Content github-release-info.md
     - name: Upload GitHub release info
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: github-release-info
         path: github-release-info.md
