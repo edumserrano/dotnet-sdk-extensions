@@ -59,7 +59,7 @@ jobs:
         Write-Output "run-id=$runId"
         Write-Output "run-id=$runId" >> $env:GITHUB_OUTPUT
     - name: Download NuGet release info artifact
-      uses: dawidd6/action-download-artifact@v2
+      uses: dawidd6/action-download-artifact@v3
       with:
         name:  nuget-release-info
         run_id: ${{ steps.release-info.outputs.run-id }}
@@ -384,7 +384,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
     - name: Download GitHub release info artifact
-      uses: dawidd6/action-download-artifact@v2
+      uses: dawidd6/action-download-artifact@v3
       with:
         name:  github-release-info
         run_id: ${{ github.event.workflow_run.id }}
