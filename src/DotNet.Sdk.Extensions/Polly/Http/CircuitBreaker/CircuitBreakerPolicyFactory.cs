@@ -16,6 +16,7 @@ internal static class CircuitBreakerPolicyFactory
                 samplingDuration: TimeSpan.FromSeconds(options.SamplingDurationInSecs),
                 minimumThroughput: options.MinimumThroughput,
                 durationOfBreak: TimeSpan.FromSeconds(options.DurationOfBreakInSecs),
+#pragma warning disable MA0147 // Avoid async void method for delegate
 #pragma warning disable VSTHRD101 // Avoid unsupported async delegates
                 onBreak: async (lastOutcome, previousState, breakDuration, context) =>
                 {
@@ -38,6 +39,7 @@ internal static class CircuitBreakerPolicyFactory
                     var halfOpenEvent = new HalfOpenEvent(httpClientName, options);
                     await policyEventHandler.OnHalfOpenAsync(halfOpenEvent);
                 });
+#pragma warning restore MA0147 // Avoid async void method for delegate
 #pragma warning restore VSTHRD101 // Avoid unsupported async delegates
         var circuitBreakerCheckerPolicy = CircuitBreakerCheckerAsyncPolicy.Create(
             circuitBreakerPolicy: circuitBreakerPolicy,
