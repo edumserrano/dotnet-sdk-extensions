@@ -5,7 +5,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Resilience.Extensions;
 /// </summary>
 public static class ResiliencePoliciesHttpClientBuilderExtensions
 {
-    private sealed class BlankHttpMessageHandler : DelegatingHandler
+    private sealed class BlankHttpMessageHandler : DelegatingHandler;
 
     /// <summary>
     /// Adds resilience policies to the <see cref="HttpClient"/>.
