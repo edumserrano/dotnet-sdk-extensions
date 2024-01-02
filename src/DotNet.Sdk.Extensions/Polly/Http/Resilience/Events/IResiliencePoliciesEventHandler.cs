@@ -7,6 +7,4 @@ public interface IResiliencePoliciesEventHandler :
     ITimeoutPolicyEventHandler,
     IRetryPolicyEventHandler,
     ICircuitBreakerPolicyEventHandler,
-    IFallbackPolicyEventHandler
-{
-}
+    IFallbackPolicyEventHandler;
