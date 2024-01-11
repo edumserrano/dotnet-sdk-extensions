@@ -11,6 +11,10 @@ updates:
       - 'dependabot'
       - 'bot:robot:'
       - 'nuget'
+    groups:
+      nuget:
+        patterns:
+          - "*"
     # I've decided to comment out the `ignore` block because otherwise I just forget to check these dependencies for updates.
     # What I will test by commenting this out is that:
     # 1) Dependabot will create PRs to update these dependencies
@@ -33,6 +37,10 @@ updates:
       - 'dependabot'
       - 'bot:robot:'
       - 'github-workflows'
+    groups:
+      github-actions:
+        patterns:
+          - "*"
   - package-ecosystem: github-actions
     directory: '.github/actions/create-gh-status'
     schedule:
@@ -41,6 +49,10 @@ updates:
       - 'dependabot'
       - 'bot:robot:'
       - 'github-custom-action'
+    groups:
+      create-gh-status:
+        patterns:
+          - "*"
   - package-ecosystem: github-actions
     directory: '.github/actions/create-nuget-release-flow-info-artifact'
     schedule:
@@ -49,6 +61,10 @@ updates:
       - 'dependabot'
       - 'bot:robot:'
       - 'github-custom-action'
+    groups:
+      create-gh-status:
+        patterns:
+          - "*"
   - package-ecosystem: github-actions
     directory: '.github/actions/read-nuget-release-flow-info-artifact'
     schedule:
@@ -57,4 +73,8 @@ updates:
       - 'dependabot'
       - 'bot:robot:'
       - 'github-custom-action'
+    groups:
+      read-nuget-release-flow-info-artifact:
+        patterns:
+          - "*"
 
