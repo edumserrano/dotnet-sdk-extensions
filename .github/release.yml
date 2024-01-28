@@ -6,15 +6,19 @@ changelog:
       - github-custom-action
       - github-workflows
   categories:
-    - title: What's changed
+    - title: Main
       labels:
         - '*'
       exclude:
         labels:
           - dependabot
+          - nuget-release
     - title: NuGet package dependencies updated
       labels:
-        - dependabot
+        - dependabot 
+    - title: Others
+      labels:
+        - nuget-release
 
 
 # Could consider adding a few categories example:
