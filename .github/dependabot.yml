@@ -6,7 +6,8 @@ updates:
   - package-ecosystem: "nuget"
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: "weekly"
+      day: "saturday"
     labels:
       - 'dependabot'
       - 'bot:robot:'
@@ -32,7 +33,8 @@ updates:
     # default location of `.github/workflows`
     directory: '/'
     schedule:
-      interval: "daily"
+      interval: "weekly"
+      day: "saturday"
     labels:
       - 'dependabot'
       - 'bot:robot:'
@@ -44,7 +46,8 @@ updates:
   - package-ecosystem: github-actions
     directory: '.github/actions/create-gh-status'
     schedule:
-      interval: "daily"
+      interval: "weekly"
+      day: "saturday"
     labels:
       - 'dependabot'
       - 'bot:robot:'
@@ -56,7 +59,8 @@ updates:
   - package-ecosystem: github-actions
     directory: '.github/actions/create-nuget-release-flow-info-artifact'
     schedule:
-      interval: "daily"
+      interval: "weekly"
+      day: "saturday"
     labels:
       - 'dependabot'
       - 'bot:robot:'
@@ -68,7 +72,8 @@ updates:
   - package-ecosystem: github-actions
     directory: '.github/actions/read-nuget-release-flow-info-artifact'
     schedule:
-      interval: "daily"
+      interval: "weekly"
+      day: "saturday"
     labels:
       - 'dependabot'
       - 'bot:robot:'
