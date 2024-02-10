@@ -229,7 +229,7 @@ jobs:
         Write-Output $commentBody >> $env:GITHUB_OUTPUT
         Write-Output $delimiter >> $env:GITHUB_OUTPUT
     - name: Update PR with markdown link check result
-      uses: edumserrano/find-create-or-update-comment@v2
+      uses: edumserrano/find-create-or-update-comment@v3
       with:
         issue-number: ${{ needs.workflow-info.outputs.pr-number }}
         body-includes: '<!-- on-pr-markdown-link-check -->'
