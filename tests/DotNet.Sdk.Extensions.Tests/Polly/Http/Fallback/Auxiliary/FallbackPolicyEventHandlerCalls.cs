@@ -2,13 +2,13 @@ namespace DotNet.Sdk.Extensions.Tests.Polly.Http.Fallback.Auxiliary;
 
 public class FallbackPolicyEventHandlerCalls
 {
-    public IList<FallbackEvent> OnHttpRequestExceptionFallbackAsyncCalls { get; } = new List<FallbackEvent>();
+    public IList<FallbackEvent> OnHttpRequestExceptionFallbackAsyncCalls { get; } = [];
 
-    public IList<FallbackEvent> OnTimeoutFallbackAsyncCalls { get; } = new List<FallbackEvent>();
+    public IList<FallbackEvent> OnTimeoutFallbackAsyncCalls { get; } = [];
 
-    public IList<FallbackEvent> OnBrokenCircuitFallbackAsyncCalls { get; } = new List<FallbackEvent>();
+    public IList<FallbackEvent> OnBrokenCircuitFallbackAsyncCalls { get; } = [];
 
-    public IList<FallbackEvent> OnTaskCancelledFallbackAsyncCalls { get; } = new List<FallbackEvent>();
+    public IList<FallbackEvent> OnTaskCancelledFallbackAsyncCalls { get; } = [];
 
     public void AddOnHttpRequestExceptionFallback(FallbackEvent fallbackEvent)
     {

@@ -6,14 +6,12 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices;
 [Trait("Category", XUnitCategories.HostedServices)]
 public class RunUntilHostExtensionsWithAsyncPredicateTests
 {
-#pragma warning disable CA2000 // Dispose objects before losing scope - the test method will do the dispose
     public static TheoryData<IHost, RunUntilPredicateAsync, Type, string> ValidateArgumentsData =>
         new TheoryData<IHost, RunUntilPredicateAsync, Type, string>
         {
             { null!, () => Task.FromResult(true), typeof(ArgumentNullException), "Value cannot be null. (Parameter 'host')" },
             { CreateHost(), null!, typeof(ArgumentNullException), "Value cannot be null. (Parameter 'predicateAsync')" },
         };
-#pragma warning disable CA2000 // Dispose objects before losing scope - the test method will do the dispose
 
     private static IHost CreateHost()
     {

@@ -9,7 +9,7 @@ internal static class HttpMockServerExtensions
         var server = host.Services.GetRequiredService<IServer>();
         var addressFeature = server.Features.Get<IServerAddressesFeature>();
         return addressFeature is null
-            ? new List<string>()
+            ? []
             : addressFeature.Addresses;
     }
 
