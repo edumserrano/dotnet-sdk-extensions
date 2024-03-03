@@ -7,14 +7,12 @@ namespace DotNet.Sdk.Extensions.Testing.Tests.HostedServices;
 [Trait("Category", XUnitCategories.HostedServices)]
 public class RunUntilWebApplicationFactoryExtensionsWithAsyncPredicateTests
 {
-#pragma warning disable CA2000 // Dispose objects before losing scope - the test method will do the dispose
     public static TheoryData<HostedServicesWebApplicationFactory, RunUntilPredicateAsync, Type, string> ValidateArgumentsData =>
         new TheoryData<HostedServicesWebApplicationFactory, RunUntilPredicateAsync, Type, string>
         {
             { null!, () => Task.FromResult(true), typeof(ArgumentNullException), "Value cannot be null. (Parameter 'webApplicationFactory')" },
             { new HostedServicesWebApplicationFactory(), null!, typeof(ArgumentNullException), "Value cannot be null. (Parameter 'predicateAsync')" },
         };
-#pragma warning restore CA2000 // Dispose objects before losing scope - the test method will do the dispose
 
     /// <summary>
     /// Validates the arguments for the <see cref="RunUntilExtensions.RunUntilAsync{T}(WebApplicationFactory{T},RunUntilPredicateAsync)"/>
@@ -35,7 +33,6 @@ public class RunUntilWebApplicationFactoryExtensionsWithAsyncPredicateTests
         webApplicationFactory?.Dispose();
     }
 
-#pragma warning disable CA2000 // Dispose objects before losing scope - the test method will do the dispose
     public static TheoryData<HostedServicesWebApplicationFactory, RunUntilPredicateAsync, Action<RunUntilOptions>, Type, string> ValidateArgumentsWithOptionsData =>
         new TheoryData<HostedServicesWebApplicationFactory, RunUntilPredicateAsync, Action<RunUntilOptions>, Type, string>
         {
@@ -43,7 +40,6 @@ public class RunUntilWebApplicationFactoryExtensionsWithAsyncPredicateTests
             { new HostedServicesWebApplicationFactory(), null!, _ => { }, typeof(ArgumentNullException), "Value cannot be null. (Parameter 'predicateAsync')" },
             { new HostedServicesWebApplicationFactory(), () => Task.FromResult(true), null!, typeof(ArgumentNullException), "Value cannot be null. (Parameter 'configureOptions')" },
         };
-#pragma warning restore CA2000 // Dispose objects before losing scope - the test method will do the dispose
 
     /// <summary>
     /// Validates the arguments for the <see cref="RunUntilExtensions.RunUntilAsync{T}(WebApplicationFactory{T},RunUntilPredicateAsync,Action{RunUntilOptions})"/>

@@ -10,7 +10,7 @@ public class AddOptionsValueTests
     [Fact]
     public void AddsOptionsType1()
     {
-        using var configuration = new ConfigurationRoot(new List<IConfigurationProvider>());
+        using var configuration = new ConfigurationRoot([]);
         var serviceCollection = new ServiceCollection();
         serviceCollection.AddOptionsValue<MyOptions>(configuration);
         var serviceProvider = serviceCollection.BuildServiceProvider();
@@ -25,7 +25,7 @@ public class AddOptionsValueTests
     [Fact]
     public void ValidatesArguments1()
     {
-        using var configuration = new ConfigurationRoot(new List<IConfigurationProvider>());
+        using var configuration = new ConfigurationRoot([]);
         var servicesArgumentNullException = Should.Throw<ArgumentNullException>(() =>
         {
             OptionsBuilderExtensions.AddOptionsValue<MyOptions>(services: null!, configuration);
@@ -42,10 +42,10 @@ public class AddOptionsValueTests
     {
         var memoryConfigurationSource = new MemoryConfigurationSource
         {
-            InitialData = new List<KeyValuePair<string, string?>>
-            {
+            InitialData =
+            [
                 new KeyValuePair<string, string?>("MyOptionsSection:SomeOption", "some value"),
-            },
+            ],
         };
         var memoryConfigurationProvider = new MemoryConfigurationProvider(memoryConfigurationSource);
         var configurationProviders = new List<IConfigurationProvider> { memoryConfigurationProvider };
@@ -65,7 +65,7 @@ public class AddOptionsValueTests
     [Fact]
     public void ValidatesArguments2()
     {
-        using var configuration = new ConfigurationRoot(new List<IConfigurationProvider>());
+        using var configuration = new ConfigurationRoot([]);
         var serviceCollection = new ServiceCollection();
         var servicesArgumentNullException = Should.Throw<ArgumentNullException>(() =>
         {
@@ -86,7 +86,7 @@ public class AddOptionsValueTests
     [Fact]
     public void AddsOptionsType3()
     {
-        using var configuration = new ConfigurationRoot(new List<IConfigurationProvider>());
+        using var configuration = new ConfigurationRoot([]);
         var serviceCollection = new ServiceCollection();
         serviceCollection
             .AddOptions<MyOptions>()

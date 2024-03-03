@@ -31,10 +31,10 @@ public static partial class TestConfigurationBuilderExtensions
         {
             var memoryConfigurationSource = new MemoryConfigurationSource
             {
-                InitialData = new List<KeyValuePair<string, string?>>
-                {
+                InitialData =
+                [
                     new KeyValuePair<string, string?>(key, value),
-                },
+                ],
             };
             appConfigBuilder.Add(memoryConfigurationSource);
         });
