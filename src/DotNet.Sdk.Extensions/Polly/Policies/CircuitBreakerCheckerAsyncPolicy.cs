@@ -69,7 +69,7 @@ public sealed class CircuitBreakerCheckerAsyncPolicy<T> : AsyncPolicy<T>
             CircuitState.Isolated => ExecuteFallbackValueFactoryAsync(CircuitBreakerState.Isolated),
             CircuitState.Open => ExecuteFallbackValueFactoryAsync(CircuitBreakerState.Open),
             CircuitState.Closed or CircuitState.HalfOpen => ExecutePolicyActionAsync(),
-            _ => throw new InvalidOperationException($"Unexpected circuit state: {_circuitBreakerPolicy.CircuitState}.")
+            _ => throw new InvalidOperationException($"Unexpected circuit state: {_circuitBreakerPolicy.CircuitState}."),
         };
 
         async Task<T> ExecuteFallbackValueFactoryAsync(CircuitBreakerState circuitBreakerState)

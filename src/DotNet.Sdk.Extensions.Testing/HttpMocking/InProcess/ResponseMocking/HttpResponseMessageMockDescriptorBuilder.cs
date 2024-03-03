@@ -84,7 +84,7 @@ public class HttpResponseMessageMockDescriptorBuilder
             HttpClientMockTypes.Typed => HttpResponseMessageMockDescriptor.Typed(_httpClientType!, _httpClientName!, _httpResponseMessageMockBuilder),
             HttpClientMockTypes.Named => HttpResponseMessageMockDescriptor.Named(_httpClientName!, _httpResponseMessageMockBuilder),
             HttpClientMockTypes.Basic => HttpResponseMessageMockDescriptor.Basic(_httpResponseMessageMockBuilder),
-            _ => throw new InvalidOperationException($"Unexpected value for {typeof(HttpClientMockTypes)}: {_httpClientMockType}")
+            _ => throw new InvalidOperationException($"Unexpected value for {typeof(HttpClientMockTypes)}: {_httpClientMockType}"),
         };
     }
 

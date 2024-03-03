@@ -48,10 +48,9 @@ public class AddTestConfigurationHostTests
         Type exceptionType,
         string exceptionMessage)
     {
-        var exception = Should.Throw(() =>
-        {
-            hostBuilder.AddTestAppSettings(appSettingsFilename, otherAppSettingsFilenames);
-        }, exceptionType);
+        var exception = Should.Throw(
+            () => hostBuilder.AddTestAppSettings(appSettingsFilename, otherAppSettingsFilenames),
+            exceptionType);
         exception.Message.ShouldBe(exceptionMessage);
     }
 
@@ -80,10 +79,9 @@ public class AddTestConfigurationHostTests
         Type exceptionType,
         string exceptionMessage)
     {
-        var exception = Should.Throw(() =>
-        {
-            hostBuilder.AddTestAppSettings(configureOptions, appSettingsFilename, otherAppSettingsFilenames);
-        }, exceptionType);
+        var exception = Should.Throw(
+            () => hostBuilder.AddTestAppSettings(configureOptions, appSettingsFilename, otherAppSettingsFilenames),
+            exceptionType);
         exception.Message.ShouldBe(exceptionMessage);
     }
 
@@ -163,7 +161,8 @@ public class AddTestConfigurationHostTests
             {
                 options.AppSettingsDir = Path.Combine(Directory.GetCurrentDirectory(), "Configuration");
                 options.IsRelative = false;
-            }, "appsettings.test.json")
+            },
+            "appsettings.test.json")
             .Build();
         var configuration = (ConfigurationRoot)host.Services.GetRequiredService<IConfiguration>();
         var jsonConfigurationProviders = configuration.Providers

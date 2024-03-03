@@ -5,14 +5,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Resilience.Extensions;
 /// </summary>
 public static class ResiliencePoliciesHttpClientBuilderExtensions
 {
-    // Shouldn't have to disable RCS1251 but if I fix it then the StyleCopAnalyzers starts
-    // crashing. For now I'm ignoring RCS1251 hoping the StyleCopAnalyzers get updated
-    // soon, if not, consider removing the StyleCopAnalyzers
-#pragma warning disable RCS1251 // Remove unnecessary braces from record declaration
-    private sealed class BlankHttpMessageHandler : DelegatingHandler
-    {
-    }
-#pragma warning restore RCS1251 // Remove unnecessary braces from record declaration
+    private sealed class BlankHttpMessageHandler : DelegatingHandler;
 
     /// <summary>
     /// Adds resilience policies to the <see cref="HttpClient"/>.

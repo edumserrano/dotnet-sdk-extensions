@@ -31,7 +31,7 @@ internal static class FallbackPolicyFactory
                     return exception switch
                     {
                         { InnerException: TimeoutException } => Task.FromResult<HttpResponseMessage>(new TimeoutHttpResponseMessage(exception)),
-                        _ => Task.FromResult<HttpResponseMessage>(new AbortedHttpResponseMessage(exception))
+                        _ => Task.FromResult<HttpResponseMessage>(new AbortedHttpResponseMessage(exception)),
                     };
                 },
                 onFallbackAsync: (outcome, context) =>
@@ -55,7 +55,7 @@ internal static class FallbackPolicyFactory
                     {
                         IsolatedCircuitException => new CircuitBrokenHttpResponseMessage(CircuitBreakerState.Isolated, exception),
                         BrokenCircuitException => new CircuitBrokenHttpResponseMessage(CircuitBreakerState.Open, exception),
-                        _ => throw new InvalidOperationException($"Unexpected circuit breaker exception type: {delegateResult.Exception.GetType()}")
+                        _ => throw new InvalidOperationException($"Unexpected circuit breaker exception type: {delegateResult.Exception.GetType()}"),
                     };
                     return Task.FromResult<HttpResponseMessage>(response);
                 },
