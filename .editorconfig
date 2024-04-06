@@ -395,6 +395,7 @@ dotnet_naming_rule.parameters_rule.severity             = warning
 [*.cs]
 dotnet_diagnostic.MA0004.severity = none    # MA0004 Use Task.ConfigureAwait(false)
 dotnet_diagnostic.MA0011.severity = none    # MA0011 IFormatProvider is missing
+dotnet_diagnostic.MA0032.severity = warning # MA0032 Use an overload with a CancellationToken argument
 dotnet_diagnostic.MA0048.severity = none    # MA0048 File name must match type name
 dotnet_diagnostic.MA0076.severity = none    # MA0076 Do not use implicit culture-sensitive ToString in interpolated strings
 dotnet_diagnostic.MA0101.severity = none    # MA0101 String contains an implicit end of line character
@@ -613,6 +614,7 @@ dotnet_diagnostic.SA1651.severity = suggestion      # SA1651: Do not use placeho
 # See https://github.com/meziantou/Meziantou.Analyzer/tree/main/docs
 ##########################################
 [*.cs]
+dotnet_diagnostic.MA0032.severity = none    # MA0032 Use an overload with a CancellationToken argument
 dotnet_diagnostic.MA0051.severity = none    # MA0051 Method is too long
 
 ##########################################
