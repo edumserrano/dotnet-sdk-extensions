@@ -23,11 +23,14 @@ updates:
     # This happens because the latest versions of the packages are only supported on newer TFMs.
     # 3) I'll close the dependabot PRs but now I'll be aware that there is a new version and I'll manually do the PR to update the version on the
     # new TFMs and hopefully remember to check if there is an update for the versions used on the older TFMs.
-    # ignore:
-    #   # Ignored because the csproj using this  NuGet supports multiple target frameworks and dependabot does not handle this well.
-    #   # This NuGet needs to be manually updated for each target framework
-    #   #
-    #   - dependency-name: "Microsoft.AspNetCore.Mvc.Testing"
+    # 4) UPDATE: I had disabled the ignore rule because I wanted to see the PRs anyway, even if they failed as explained above but recently dependabot
+    # started to fail and doesn't generate any PR. It fails with "Unhandled exception: System.ArgumentException: An item with the same key has already been added.
+    # Key: Microsoft.AspNetCore.Mvc.Testing". So I'm enabling the ignore below again to avoid Dependabot failing.
+    ignore:
+      # Ignored because the csproj using this  NuGet supports multiple target frameworks and dependabot does not handle this well.
+      # This NuGet needs to be manually updated for each target framework
+      #
+      - dependency-name: "Microsoft.AspNetCore.Mvc.Testing"
   - package-ecosystem: github-actions
     # Workflow files stored in the
     # default location of `.github/workflows`
