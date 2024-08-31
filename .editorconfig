@@ -648,3 +648,5 @@ dotnet_diagnostic.SA1615.severity = none        # SA1615: Element return value s
 # See https://xunit.net/xunit.analyzers/rules/
 ##########################################
 dotnet_diagnostic.xUnit1004.severity = none     # xUnit1004: Test methods should not be skipped
+dotnet_diagnostic.xUnit1044.severity = none     # xUnit1044: Avoid using TheoryData type arguments that are not serializable
+dotnet_diagnostic.xUnit1045.severity = none     # xUnit1045: Avoid using TheoryData type arguments that might not be serializable
