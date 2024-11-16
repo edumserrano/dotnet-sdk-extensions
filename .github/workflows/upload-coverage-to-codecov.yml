@@ -21,7 +21,7 @@ jobs:
       env:
         GITHUB_CONTEXT: ${{ toJSON(github) }}
       run: $env:GITHUB_CONTEXT
-      # Checking out the repo is necessary for the codecov/codecov-action@v4 to work properly. Codecov requires
+      # Checking out the repo is necessary for the codecov/codecov-action@v5 to work properly. Codecov requires
       # the source code to be able to process the coverage file and generate coverage reports.
       # Otherwise the upload step works but the processing of the coverage files fails with the error: "unusable report".
     - name: Checkout repository
@@ -33,7 +33,7 @@ jobs:
       with:
         name:  opencover-test-coverage-file
         run_id: ${{ github.event.workflow_run.id }}
-    # On the codecov/codecov-action@v4 steps below I'm using the override_commit, override_branch
+    # On the codecov/codecov-action@v5 steps below I'm using the override_commit, override_branch
     # and override_pr options to make sure the right information is sent to Codecov.
     #
     # If this wasn't done in a separate workflow from the `Build, test and package` workflow then
@@ -45,7 +45,7 @@ jobs:
     # incorrect for pull requests and one of the issues that it causes is, for instance, the status checks
     # aren't set on PRs because the SHA used for the code coverage upload doesn't point to the PR's SHA.
     - name: Upload test coverage to Codecov
-      uses: codecov/codecov-action@v4
+      uses: codecov/codecov-action@v5
       if: github.event.workflow_run.event != 'pull_request'
       with:
         token: ${{ secrets.CODECOV_TOKEN }} # even though it's not required for public repos it helps with intermittent failures caused by https://community.codecov.com/t/upload-issues-unable-to-locate-build-via-github-actions-api/3954, https://github.com/codecov/codecov-action/issues/598,
@@ -55,7 +55,7 @@ jobs:
         override_commit: '${{ github.event.workflow_run.head_sha }}'
         override_branch: '${{ github.event.workflow_run.head_branch }}'
     - name: Upload test coverage to Codecov
-      uses: codecov/codecov-action@v4
+      uses: codecov/codecov-action@v5
       if: github.event.workflow_run.event == 'pull_request'
       with:
         token: ${{ secrets.CODECOV_TOKEN }} # even though it's not required for public repos it helps with intermittent failures caused by https://community.codecov.com/t/upload-issues-unable-to-locate-build-via-github-actions-api/3954, https://github.com/codecov/codecov-action/issues/598,
