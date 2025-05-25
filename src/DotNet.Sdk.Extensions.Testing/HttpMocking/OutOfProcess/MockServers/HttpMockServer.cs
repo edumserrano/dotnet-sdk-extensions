@@ -20,10 +20,10 @@ internal abstract class HttpMockServer : IHttpMockServer
 
         Host = CreateHostBuilder(_mockServerArgs.HostArgs).Build();
         await Host.StartAsync();
-        return Host
+        var httpMockServerUrls = Host
             .GetServerAddresses()
-            .Select(x => x.ToHttpMockServerUrl())
-            .ToList();
+            .Select(x => x.ToHttpMockServerUrl());
+        return [.. httpMockServerUrls];
     }
 
     // Implemented following guidance from https://docs.microsoft.com/en-us/dotnet/standard/garbage-collection/implementing-disposeasync
