@@ -50,7 +50,7 @@ jobs:
     - name: dotnet format
       run: |
         Write-Output "::group::Running dotnet format"
-        dotnet format ${{ github.workspace }}/DotNet.Sdk.Extensions.sln `
+        dotnet format ${{ github.workspace }}/DotNet.Sdk.Extensions.slnx `
           --severity info `
           --verbosity diagnostic `
           --report ${{ env.DOTNET_FORMAT_REPORT_FILEPATH }}

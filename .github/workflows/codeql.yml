@@ -35,7 +35,7 @@ jobs:
         language: [ 'csharp' ]
     runs-on: ubuntu-latest
     env:
-      SLN_FILEPATH : ${{ github.workspace }}/DotNet.Sdk.Extensions.sln
+      SLN_FILEPATH : ${{ github.workspace }}/DotNet.Sdk.Extensions.slnx
     steps:
     - name: Dump github context for debug purposes
       env:
