@@ -7,6 +7,7 @@ public class HttpResponseMockingWebApplicationFactory : WebApplicationFactory<St
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder
+            //.UseSolutionRelativeContentRoot(".", "*.slnx")
             .UseContentRoot(".")
             .UseStartup<StartupHttpResponseMocking>();
     }

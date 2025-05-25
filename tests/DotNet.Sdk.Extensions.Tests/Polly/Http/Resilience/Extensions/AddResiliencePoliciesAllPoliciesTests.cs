@@ -93,11 +93,11 @@ public class AddResiliencePoliciesAllPoliciesTests
             var maxIndexBeforeCircuitGetsOpen = resilienceOptions.CircuitBreaker.MinimumThroughput / (resilienceOptions.Retry.RetryCount + 1);
             if (i < maxIndexBeforeCircuitGetsOpen)
             {
-                response.ShouldBeOfType(typeof(HttpResponseMessage));
+                response.ShouldBeOfType<HttpResponseMessage>();
             }
             else
             {
-                response.ShouldBeOfType(typeof(CircuitBrokenHttpResponseMessage));
+                response.ShouldBeOfType<CircuitBrokenHttpResponseMessage>();
             }
         }
 
@@ -210,11 +210,11 @@ public class AddResiliencePoliciesAllPoliciesTests
             var maxIndexBeforeCircuitGetsOpen = resilienceOptions.CircuitBreaker.MinimumThroughput / (resilienceOptions.Retry.RetryCount + 1);
             if (i < maxIndexBeforeCircuitGetsOpen)
             {
-                response.ShouldBeOfType(typeof(TimeoutHttpResponseMessage));
+                response.ShouldBeOfType<TimeoutHttpResponseMessage>();
             }
             else
             {
-                response.ShouldBeOfType(typeof(CircuitBrokenHttpResponseMessage));
+                response.ShouldBeOfType<CircuitBrokenHttpResponseMessage>();
             }
         }
 

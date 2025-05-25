@@ -100,6 +100,7 @@ dotnet_diagnostic.CA1303.severity = none        # CA1303: Do not pass literals a
 dotnet_diagnostic.CA1308.severity = none        # CA1308: Normalize strings to uppercase
 # Maintainability rules https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/maintainability-warnings
 dotnet_diagnostic.CA1508.severity = none        # CA1508: Avoid dead conditional code # This one seems to flag false positives in some cases
+dotnet_diagnostic.CA1515.severity = none        # CA1515: Consider making public types internal # As of writing this there are several open issues about this rule but this one seems to sum the problem https://github.com/dotnet/roslyn-analyzers/issues/7192. Other issues: https://github.com/dotnet/roslyn-analyzers/issues?q=ca1515
 # Naming rules https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/naming-warnings
 dotnet_diagnostic.CA1711.severity = none        # CA1711: Identifiers should not have incorrect suffix
 # Reliability rules https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/reliability-warnings
@@ -403,6 +404,7 @@ dotnet_diagnostic.MA0032.severity = warning # MA0032 Use an overload with a Canc
 dotnet_diagnostic.MA0048.severity = none    # MA0048 File name must match type name
 dotnet_diagnostic.MA0076.severity = none    # MA0076 Do not use implicit culture-sensitive ToString in interpolated strings
 dotnet_diagnostic.MA0101.severity = none    # MA0101 String contains an implicit end of line character
+dotnet_diagnostic.MA0165.severity = none    # MA0165 Make interpolated string. See https://github.com/meziantou/Meziantou.Analyzer/issues/764
 
 ##########################################
 # Rules for Microsoft.VisualStudio.Threading.Analyzers
