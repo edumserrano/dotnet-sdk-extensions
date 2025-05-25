@@ -33,10 +33,10 @@ public class AddResiliencePoliciesTests
             })
             .ConfigureHttpMessageHandlerBuilder(httpMessageHandlerBuilder =>
             {
-                policyHttpMessageHandlers = httpMessageHandlerBuilder
+                var policyHttpMessageHandlersEnumerable = httpMessageHandlerBuilder
                     .AdditionalHandlers
-                    .OfType<PolicyHttpMessageHandler>()
-                    .ToList();
+                    .OfType<PolicyHttpMessageHandler>();
+                policyHttpMessageHandlers = [.. policyHttpMessageHandlersEnumerable];
             });
 
         var serviceProvider = services.BuildServiceProvider();
@@ -88,10 +88,10 @@ public class AddResiliencePoliciesTests
             .AddResiliencePolicies(optionsName)
             .ConfigureHttpMessageHandlerBuilder(httpMessageHandlerBuilder =>
             {
-                policyHttpMessageHandlers = httpMessageHandlerBuilder
+                var policyHttpMessageHandlersEnumerable = httpMessageHandlerBuilder
                     .AdditionalHandlers
-                    .OfType<PolicyHttpMessageHandler>()
-                    .ToList();
+                    .OfType<PolicyHttpMessageHandler>();
+                policyHttpMessageHandlers = [.. policyHttpMessageHandlersEnumerable];
             });
 
         var serviceProvider = services.BuildServiceProvider();
@@ -141,10 +141,10 @@ public class AddResiliencePoliciesTests
             })
             .ConfigureHttpMessageHandlerBuilder(httpMessageHandlerBuilder =>
             {
-                policyHttpMessageHandlers = httpMessageHandlerBuilder
+                var policyHttpMessageHandlersEnumerable = httpMessageHandlerBuilder
                     .AdditionalHandlers
-                    .OfType<PolicyHttpMessageHandler>()
-                    .ToList();
+                    .OfType<PolicyHttpMessageHandler>();
+                policyHttpMessageHandlers = [.. policyHttpMessageHandlersEnumerable];
             });
 
         var serviceProvider = services.BuildServiceProvider();
@@ -198,10 +198,10 @@ public class AddResiliencePoliciesTests
             .AddResiliencePolicies<TestResiliencePoliciesEventHandler>(optionsName)
             .ConfigureHttpMessageHandlerBuilder(httpMessageHandlerBuilder =>
             {
-                policyHttpMessageHandlers = httpMessageHandlerBuilder
+                var policyHttpMessageHandlersEnumerable = httpMessageHandlerBuilder
                     .AdditionalHandlers
-                    .OfType<PolicyHttpMessageHandler>()
-                    .ToList();
+                    .OfType<PolicyHttpMessageHandler>();
+                policyHttpMessageHandlers = [.. policyHttpMessageHandlersEnumerable];
             });
 
         var serviceProvider = services.BuildServiceProvider();
@@ -257,10 +257,10 @@ public class AddResiliencePoliciesTests
             })
             .ConfigureHttpMessageHandlerBuilder(httpMessageHandlerBuilder =>
             {
-                policyHttpMessageHandlers = httpMessageHandlerBuilder
+                var policyHttpMessageHandlersEnumerable = httpMessageHandlerBuilder
                     .AdditionalHandlers
-                    .OfType<PolicyHttpMessageHandler>()
-                    .ToList();
+                    .OfType<PolicyHttpMessageHandler>();
+                policyHttpMessageHandlers = [.. policyHttpMessageHandlersEnumerable];
             });
 
         var serviceProvider = services.BuildServiceProvider();
@@ -314,10 +314,10 @@ public class AddResiliencePoliciesTests
                 })
             .ConfigureHttpMessageHandlerBuilder(httpMessageHandlerBuilder =>
             {
-                policyHttpMessageHandlers = httpMessageHandlerBuilder
+                var policyHttpMessageHandlersEnumerable = httpMessageHandlerBuilder
                     .AdditionalHandlers
-                    .OfType<PolicyHttpMessageHandler>()
-                    .ToList();
+                    .OfType<PolicyHttpMessageHandler>();
+                policyHttpMessageHandlers = [.. policyHttpMessageHandlersEnumerable];
             });
 
         var serviceProvider = services.BuildServiceProvider();
@@ -369,10 +369,10 @@ public class AddResiliencePoliciesTests
             })
             .ConfigureHttpMessageHandlerBuilder(httpMessageHandlerBuilder =>
             {
-                policyHttpMessageHandlers1 = httpMessageHandlerBuilder
+                var policyHttpMessageHandlersEnumerable = httpMessageHandlerBuilder
                     .AdditionalHandlers
-                    .OfType<PolicyHttpMessageHandler>()
-                    .ToList();
+                    .OfType<PolicyHttpMessageHandler>();
+                policyHttpMessageHandlers1 = [.. policyHttpMessageHandlersEnumerable];
             });
         services
             .AddHttpClient("Microsoft")
@@ -388,10 +388,10 @@ public class AddResiliencePoliciesTests
             })
             .ConfigureHttpMessageHandlerBuilder(httpMessageHandlerBuilder =>
             {
-                policyHttpMessageHandlers2 = httpMessageHandlerBuilder
+                var policyHttpMessageHandlersEnumerable = httpMessageHandlerBuilder
                     .AdditionalHandlers
-                    .OfType<PolicyHttpMessageHandler>()
-                    .ToList();
+                    .OfType<PolicyHttpMessageHandler>();
+                policyHttpMessageHandlers2 = [.. policyHttpMessageHandlersEnumerable];
             });
 
         var serviceProvider = services.BuildServiceProvider();

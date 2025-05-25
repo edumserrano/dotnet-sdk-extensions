@@ -8,7 +8,7 @@ public interface IHttpMockServer : IAsyncDisposable
     /// <summary>
     /// Gets the <see cref="IHost"/> used by the <see cref="HttpMockServer"/>.
     /// </summary>
-    public IHost? Host { get; }
+    IHost? Host { get; }
 
     /// <summary>
     /// Starts the server.

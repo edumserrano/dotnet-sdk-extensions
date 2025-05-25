@@ -43,9 +43,8 @@ jobs:
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: |
-          6.0.x
-          7.0.x
-        global-json-file: global.json
+          8.x
+          9.x
     - name: Cache/Restore NuGets
       uses: actions/cache@v4
       with:
@@ -73,7 +72,7 @@ jobs:
 
         $testResultsDir = $(Join-Path -Path (Get-Location) -ChildPath "tests/${{ matrix.os }}/test-results")
         $testCoverageDir = $(Join-Path -Path (Get-Location) -ChildPath "tests/${{ matrix.os }}/coverage-results/")
-        $testCoverageFile = $(Join-Path -Path $testCoverageDir -ChildPath "coverage.net8.0.opencover.xml")
+        $testCoverageFile = $(Join-Path -Path $testCoverageDir -ChildPath "coverage.net9.0.opencover.xml")
         Write-Output "test-results-dir=$testResultsDir" >> $env:GITHUB_OUTPUT
         Write-Output "test-coverage-dir=$testCoverageDir" >> $env:GITHUB_OUTPUT
         Write-Output "test-coverage-file=$testCoverageFile" >> $env:GITHUB_OUTPUT
@@ -85,7 +84,7 @@ jobs:
         Write-Output "::endgroup::"
 
         $downloadArtifactMessage = "You can inspect the test results by downloading the workflow artifact named: ${{ env.TEST_RESULTS_ARTIFACT_NAME }}."
-        $frameworkMonikers = @('net6.0','net7.0','net8.0')
+        $frameworkMonikers = @('net8.0','net9.0')
         foreach($frameworkMoniker in $frameworkMonikers)
         {
           Write-Output "::group::Running dotnet test for target framework $frameworkMoniker."
@@ -167,19 +166,19 @@ jobs:
         #
         # By running this step, I make sure the test result filenames are deterministic so that on job reruns I will only get the latest test results on the the artifact with name env.TEST_RESULTS_ARTIFACT_NAME.
         # Example:
-        # As of writing this I have 2 test projects and after running tests I will have one markdown file and one trx file per test project and framework. Let's consider the files for .net7.0:
+        # As of writing this I have 2 test projects and after running tests I will have one markdown file and one trx file per test project and framework. Let's consider the files for .net9.0:
         # - one md and trx file for DotNet.Sdk.Extensions.Tests.csproj and another md and trx file for DotNet.Sdk.Extensions.Testing.Tests.csproj. Which for this example let's assume would be named:
-        #   - framework_net7.0_20230226152259.md
-        #   - framework_net7.0_20230226152312.md
-        #   - framework_net7.0_20230226152259.trx
-        #   - framework_net7.0_20230226152312.trx
+        #   - framework_net9.0_20230226152259.md
+        #   - framework_net9.0_20230226152312.md
+        #   - framework_net9.0_20230226152259.trx
+        #   - framework_net9.0_20230226152312.trx
         #
         # The filenames contain only the framework and a timestamp. Unfortunately the assembly name is not part of the filename so it's not possible to know which test project the file belongs without viewing its content.
         # After renaming we would have the following filenames:
-        # - framework_net7.0_0.md
-        # - framework_net7.0_1.md
-        # - framework_net7.0_0.trx
-        # - framework_net7.0_1.trx
+        # - framework_net9.0_0.md
+        # - framework_net9.0_1.md
+        # - framework_net9.0_0.trx
+        # - framework_net9.0_1.trx
         #
         # This way when re-running the job the test result filenames are deterministic and will always override existing files in the artifact with name env.TEST_RESULTS_ARTIFACT_NAME.
         # This does mean that the artifact with name env.TEST_RESULTS_ARTIFACT_NAME will always only contain the test results from the latest run.
@@ -187,7 +186,7 @@ jobs:
 
         $testResultsDir = '${{ steps.dotnet-test.outputs.test-results-dir }}'
         # rename test result files for all frameworks
-        $frameworkFilters = @('framework_net6.0*','framework_net7.0*','framework_net8.0*')
+        $frameworkFilters = @('framework_net8.0*','framework_net9.0*')
         foreach($frameworkFilter in $frameworkFilters)
         {
             # for each framework group the files by extension. There will be .md and .trx file groups

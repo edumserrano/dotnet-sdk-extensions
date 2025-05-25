@@ -5,7 +5,7 @@ public static class HttpStatusCodesExtensions
     public static IEnumerable<HttpStatusCode> GetTransientHttpStatusCodes()
     {
         return Enum
-            .GetValues(typeof(HttpStatusCode))
+            .GetValues<HttpStatusCode>()
             .Cast<HttpStatusCode>()
             .Where(x => x is >= HttpStatusCode.InternalServerError or HttpStatusCode.RequestTimeout);
     }

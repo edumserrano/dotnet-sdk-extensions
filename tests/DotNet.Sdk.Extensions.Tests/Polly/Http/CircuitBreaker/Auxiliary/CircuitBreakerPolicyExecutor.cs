@@ -36,7 +36,7 @@ public sealed class CircuitBreakerPolicyExecutor : IAsyncDisposable
         _circuitBreakerOptions = circuitBreakerOptions;
         _testHttpMessageHandler = testHttpMessageHandler;
         _resetRequestPath = HandleResetRequest();
-        _transientHttpStatusCodes = HttpStatusCodesExtensions.GetTransientHttpStatusCodes().ToList();
+        _transientHttpStatusCodes = [.. HttpStatusCodesExtensions.GetTransientHttpStatusCodes()];
         _resetType = CircuitBreakerPolicyExecutorResetTypes.Quick;
     }
 

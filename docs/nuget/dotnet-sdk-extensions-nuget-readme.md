@@ -2,7 +2,7 @@
 
 ## Description
 
-This package provides extensions to help build .NET applications, using .NET 6.0 or higher.
+This package provides extensions to help build .NET applications, using .NET 8.0 or higher.
 
 The extensions provided by this package are:
 

@@ -10,7 +10,7 @@ public class RetryPolicyExecutor
     {
         _httpClient = httpClient;
         _testHttpMessageHandler = testHttpMessageHandler;
-        _transientHttpStatusCodes = HttpStatusCodesExtensions.GetTransientHttpStatusCodes().ToList();
+        _transientHttpStatusCodes = [.. HttpStatusCodesExtensions.GetTransientHttpStatusCodes()];
     }
 
     public Task<HttpResponseMessage> TriggerFromExceptionAsync(Exception exception)
