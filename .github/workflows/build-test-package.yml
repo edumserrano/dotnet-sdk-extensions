@@ -26,7 +26,7 @@ jobs:
         os: [ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     env:
-      SLN_FILEPATH: ${{github.workspace}}/DotNet.Sdk.Extensions.slnx
+      SLN_FILEPATH: ${{github.workspace}}/DotNet.Sdk.Extensions.sln
       EXTENSIONS_BIN_FOLDER : ${{ github.workspace }}/src/DotNet.Sdk.Extensions/bin/Release
       TESTING_EXTENSIONS_BIN_FOLDER : ${{ github.workspace }}/src/DotNet.Sdk.Extensions.Testing/bin/Release
       TEST_RESULTS_ARTIFACT_NAME: test-results-${{ matrix.os }}

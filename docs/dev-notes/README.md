@@ -17,13 +17,13 @@
 
 ### Building with Visual Studio
 
-1) Clone the repo and open the **DotNet.Sdk.Extensions.slnx** solution file at the root.
+1) Clone the repo and open the **DotNet.Sdk.Extensions.sln** solution file at the root.
 2) Press build on Visual Studio.
 
 ### Building with dotnet CLI
 
 1) Clone the repo and browse to the root directory of the repo using your favorite shell.
-2) Run **`dotnet build DotNet.Sdk.Extensions.slnx`** to build the source for the extensions.
+2) Run **`dotnet build DotNet.Sdk.Extensions.sln`** to build the source for the extensions.
 
 ## Running tests
 
@@ -41,7 +41,7 @@ The test projects run against multiple frameworks and the [workflow to build and
 
 ### Run tests with Visual Studio
 
-1) Clone the repo and open the **DotNet.Sdk.Extensions.slnx** solution file at the root.
+1) Clone the repo and open the **DotNet.Sdk.Extensions.sln** solution file at the root.
 2) Go to the test explorer in Visual Studio and run tests.
 
 **Note:** [Remote testing](https://docs.microsoft.com/en-us/visualstudio/test/remote-testing?view=vs-2022) with WSL is configured on the solution which enables you to run the tests locally on Linux via WSL or Docker. You can view the configuration file at [testenvironments.json](/testenvironments.json).
@@ -51,7 +51,7 @@ To run tests via WSL you need to have at least `Visual Studio 2022` and the Linu
 ### Run tests with dotnet CLI
 
 1) Clone the repo and browse to the root directory of the repo using your favorite shell.
-2) Run **`dotnet test DotNet.Sdk.Extensions.slnx`** to run tests.
+2) Run **`dotnet test DotNet.Sdk.Extensions.sln`** to run tests.
 
 ## Projects wide configuration
 

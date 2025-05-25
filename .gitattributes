@@ -14,4 +14,3 @@
 
 *.csproj text=auto
 *.sln text=auto eol=crlf
-*.slnx text=auto eol=crlf
