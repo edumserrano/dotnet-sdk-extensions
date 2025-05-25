@@ -7,13 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.0" />
-    <PackageReference Include="coverlet.collector" Version="6.0.4">
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="coverlet.collector">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="xunit" Version="2.9.3" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="3.1.0">
+    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.runner.visualstudio">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -29,19 +29,4 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Update="coverlet.msbuild" Version="6.0.4" />
-    <PackageReference Update="Meziantou.Analyzer" Version="2.0.201" />
-    <PackageReference Update="Microsoft.VisualStudio.Threading.Analyzers" Version="17.14.15" />
-    <PackageReference Update="NSubstitute" Version="5.3.0" />
-    <PackageReference Update="Roslynator.Analyzers" Version="4.13.1" />
-    <PackageReference Update="Roslynator.CodeAnalysis.Analyzers" Version="4.13.1" />
-    <PackageReference Update="Roslynator.Formatting.Analyzers" Version="4.13.1" />
-    <PackageReference Update="xunit.analyzers" Version="1.21.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
-
 </Project>

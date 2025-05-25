@@ -11,7 +11,7 @@
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <PackageId>dotnet-sdk-extensions-testing</PackageId>
-    <Version>3.1.0</Version>
+    <Version>3.0.2</Version>
     <Owners>Eduardo Serrano</Owners>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -37,24 +37,12 @@
 
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0">
+    <PackageReference Include="Microsoft.SourceLink.GitHub">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="System.Reactive" Version="6.0.1" />
+    <PackageReference Include="System.Reactive" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net8.0' ">
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.16" />
-  </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net9.0' ">
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="9.0.5" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Update="Meziantou.Analyzer" Version="2.0.201" />
-    <PackageReference Update="Microsoft.VisualStudio.Threading.Analyzers" Version="17.14.15" />
-    <PackageReference Update="Roslynator.Analyzers" Version="4.13.1" />
-    <PackageReference Update="Roslynator.CodeAnalysis.Analyzers" Version="4.13.1" />
-    <PackageReference Update="Roslynator.Formatting.Analyzers" Version="4.13.1" />
-  </ItemGroup>
 </Project>
