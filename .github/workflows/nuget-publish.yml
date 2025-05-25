@@ -73,7 +73,7 @@ jobs:
         Write-Output "run-id=$runId"
         Write-Output "run-id=$runId" >> $env:GITHUB_OUTPUT
     - name: Download NuGet release info artifact from PR
-      uses: dawidd6/action-download-artifact@v6
+      uses: dawidd6/action-download-artifact@v7
       if: github.event_name == 'pull_request'
       with:
         name:  nuget-release-info
@@ -81,7 +81,7 @@ jobs:
     - name: Download NuGet release notes artifact from PR
       id: download-release-notes
       if: github.event_name == 'pull_request'
-      uses: dawidd6/action-download-artifact@v6
+      uses: dawidd6/action-download-artifact@v7
       with:
         name:  ${{ env.CUSTOM_RELEASE_NOTES_ARTIFACT_NAME }}
         run_id: ${{ steps.release-info.outputs.run-id }}
@@ -170,7 +170,7 @@ jobs:
       TESTING_EXTENSIONS_NUGET_BIN_FOLDER : ${{ github.workspace }}/DotNet.Sdk.Extensions.Testing/bin/Release
     steps:
     - name: Download NuGet package artifact
-      uses: dawidd6/action-download-artifact@v6
+      uses: dawidd6/action-download-artifact@v7
       with:
         name:  nuget-packages-and-symbols
         run_id: ${{ needs.workflow-args.outputs.nuget-package-run-id }}
