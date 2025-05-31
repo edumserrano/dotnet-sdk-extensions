@@ -315,7 +315,7 @@ jobs:
         commit_message: ${{ steps.commit-info.outputs.commit-message }}
         branch: ${{ steps.commit-info.outputs.branch-name }}
     - name: Render PR body template
-      uses: yukitsune/template-cli@v0.1.0
+      uses: yukitsune/template-cli@v0.1.1
       with:
         args: --input .github/workflows/templates/nuget-release/create-nuget-release-pr-body.md \
           --value "nugetId=${{ steps.nuget-release-pr-data.outputs.nuget-id }}" \

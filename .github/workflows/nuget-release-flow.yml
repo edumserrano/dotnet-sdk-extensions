@@ -59,7 +59,7 @@ jobs:
         Write-Output "run-id=$runId"
         Write-Output "run-id=$runId" >> $env:GITHUB_OUTPUT
     - name: Download NuGet release info artifact
-      uses: dawidd6/action-download-artifact@v7
+      uses: dawidd6/action-download-artifact@v9
       with:
         name:  nuget-release-info
         run_id: ${{ steps.release-info.outputs.run-id }}
@@ -296,7 +296,7 @@ jobs:
         STEP_OUTPUT: ${{ toJSON(steps.nuget-release-flow-info.outputs) }}
       run: $env:STEP_OUTPUT
     - name: Render issue comment template
-      uses: yukitsune/template-cli@v0.1.0
+      uses: yukitsune/template-cli@v0.1.1
       with:
         args: --input .github/workflows/templates/nuget-release-flow/nuget-release-flow-issue-comment.md \
           --value "nugetId=${{ steps.nuget-release-flow-info.outputs.nuget-id }}" \
@@ -344,7 +344,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
     - name: Render close issue comment template
-      uses: yukitsune/template-cli@v0.1.0
+      uses: yukitsune/template-cli@v0.1.1
       with:
         args: --input .github/workflows/templates/nuget-release-flow/permission-denied-for-nuget-release.md \
           --value "user=${{ github.triggering_actor }}" \
@@ -384,7 +384,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
     - name: Download GitHub release info artifact
-      uses: dawidd6/action-download-artifact@v7
+      uses: dawidd6/action-download-artifact@v9
       with:
         name:  github-release-info
         run_id: ${{ github.event.workflow_run.id }}
@@ -398,7 +398,7 @@ jobs:
         Write-Output "nuget-version=$($githubReleaseInfo.nugetVersion)" >> $env:GITHUB_OUTPUT
         Write-Output "github-release-url=$($githubReleaseInfo.githubReleaseUrl)" >> $env:GITHUB_OUTPUT
     - name: Render close issue comment template
-      uses: yukitsune/template-cli@v0.1.0
+      uses: yukitsune/template-cli@v0.1.1
       with:
         args: --input .github/workflows/templates/nuget-release-flow/nuget-released-successfully-issue-comment.md \
           --value "nugetId=${{ steps.github-release-info.outputs.nuget-id }}" \
