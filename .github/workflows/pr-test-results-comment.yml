@@ -34,7 +34,7 @@ jobs:
         GITHUB_CONTEXT: ${{ toJSON(github) }}
       run: $env:GITHUB_CONTEXT
     - name: Download artifact
-      uses: dawidd6/action-download-artifact@v7
+      uses: dawidd6/action-download-artifact@v9
       with:
         name:  ${{ env.TEST_RESULTS_ARTIFACT_NAME }}
         run_id: ${{ github.event.workflow_run.id }}

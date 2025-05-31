@@ -56,7 +56,7 @@ jobs:
         GITHUB_CONTEXT: ${{ toJSON(github) }}
       run: $env:GITHUB_CONTEXT
     - name: Download markdown link check workflow info artifact
-      uses: dawidd6/action-download-artifact@v7
+      uses: dawidd6/action-download-artifact@v9
       with:
         name:  ${{ env.MLC_WORKFLOW_INFO_ARTIFACT }}
         run_id: ${{ github.event.workflow_run.id }}
@@ -150,7 +150,7 @@ jobs:
       with:
         ref: ${{ env.WORKFLOW_HEAD_SHA }}
     - name: Render issue body template
-      uses: yukitsune/template-cli@v0.1.0
+      uses: yukitsune/template-cli@v0.1.1
       with:
         args: --input .github/workflows/templates/markdown-link-check-handle-result/broken-links-found-issue-body.md \
           --value "workflow=${{ env.WORKFLOW }}" \
