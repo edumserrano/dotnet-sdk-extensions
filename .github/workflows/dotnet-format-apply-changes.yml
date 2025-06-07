@@ -40,7 +40,7 @@ jobs:
       with:
         ref: ${{ env.WORKFLOW_HEAD_SHA }}
     - name: Download dotnet format workflow info artifact
-      uses: dawidd6/action-download-artifact@v9
+      uses: dawidd6/action-download-artifact@v10
       with:
         name:  ${{ env.DOTNET_FORMAT_WORKFLOW_INFO_ARTIFACT }}
         run_id: ${{ github.event.workflow_run.id }}
@@ -118,7 +118,7 @@ jobs:
       run: |
         git checkout -b ${{ steps.commit-info.outputs.branch-name }}
     - name: Download dotnet format changed files
-      uses: dawidd6/action-download-artifact@v9
+      uses: dawidd6/action-download-artifact@v10
       with:
         name:  ${{ env.DOTNET_FORMAT_FILES_ARTIFACT }}
         run_id: ${{ github.event.workflow_run.id }}
@@ -183,7 +183,7 @@ jobs:
         GITHUB_CONTEXT: ${{ toJSON(github) }}
       run: $env:GITHUB_CONTEXT
     - name: Download dotnet format workflow info artifact
-      uses: dawidd6/action-download-artifact@v9
+      uses: dawidd6/action-download-artifact@v10
       with:
         name:  ${{ env.DOTNET_FORMAT_WORKFLOW_INFO_ARTIFACT }}
         run_id: ${{ github.event.workflow_run.id }}
@@ -231,7 +231,7 @@ jobs:
         # PR triggers aren't executed again. See https://docs.github.com/en/actions/using-workflows/triggering-a-workflow#triggering-a-workflow-from-a-workflow
         token: ${{ secrets.PUBLIC_REPO_SCOPE_GH_TOKEN }}
     - name: Download dotnet format changed files
-      uses: dawidd6/action-download-artifact@v9
+      uses: dawidd6/action-download-artifact@v10
       with:
         name:  ${{ env.DOTNET_FORMAT_FILES_ARTIFACT }}
         run_id: ${{ github.event.workflow_run.id }}
