@@ -3,7 +3,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Timeout.Events;
 /// <summary>
 /// Contains the event data when a timeout is triggered via Polly's timeout policy.
 /// </summary>
-public class TimeoutEvent
+public sealed class TimeoutEvent
 {
     internal TimeoutEvent(
         string httpClientName,
