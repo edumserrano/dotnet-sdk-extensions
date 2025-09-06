@@ -3,7 +3,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess.ResponseMocking
 /// <summary>
 /// Represents the mock for an <see cref="HttpResponse"/>.
 /// </summary>
-public class HttpResponseMock
+public sealed class HttpResponseMock
 {
     private readonly HttpResponseMockPredicateAsyncDelegate _predicateAsync;
     private readonly HttpResponseMockHandlerAsyncDelegate _handlerAsync;
