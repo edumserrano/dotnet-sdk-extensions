@@ -36,7 +36,7 @@ jobs:
         GITHUB_CONTEXT: ${{ toJSON(github) }}
       run: $env:GITHUB_CONTEXT
     - name: Checkout repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
       with:
         ref: ${{ env.WORKFLOW_HEAD_SHA }}
     - name: Download dotnet format workflow info artifact
@@ -101,7 +101,7 @@ jobs:
       WORKFLOW_URL: ${{ needs.on-push-check.outputs.workflow-url }}
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
       with:
         ref: ${{ env.WORKFLOW_HEAD_SHA }}
     - name: Prepare commit info
@@ -223,7 +223,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
       with:
         ref: ${{ env.WORKFLOW_HEAD_SHA }}
         # The token gets saved and further git commands will use this token. See https://github.com/marketplace/actions/checkout#usage.
@@ -287,7 +287,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
       with:
         ref: ${{ env.WORKFLOW_HEAD_SHA }}
     - name: Set status check data
