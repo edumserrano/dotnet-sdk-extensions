@@ -96,7 +96,7 @@ jobs:
       custom-release-notes: ${{ steps.parse-issue.outputs.custom-release-notes }}
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
     - uses: edumserrano/github-issue-forms-parser@v1
       id: issue-parser
       with:
@@ -152,7 +152,7 @@ jobs:
       RELEASE_INFO_ARTIFACT_FILEPATH: ${{github.workspace}}/nuget-release-info.md
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
     - name: Save release notes to file
       run: |
         $releaseNotes = @'
@@ -197,7 +197,7 @@ jobs:
         GITHUB_CONTEXT: ${{ toJSON(github) }}
       run: $env:GITHUB_CONTEXT
     - name: Checkout repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
     - name: Check for open dotnet format PRs
       id: open-pr-check
       env:
@@ -234,7 +234,7 @@ jobs:
       pr-number: ${{ steps.create-pr.outputs.pr-number }}
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
     - name: Setup NuGet release PR data
       id: nuget-release-pr-data
       run: |
@@ -375,7 +375,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
     - name: Set PR auto merge
       env:
         GITHUB_TOKEN: ${{ secrets.PUBLIC_REPO_SCOPE_GH_TOKEN }}
@@ -391,7 +391,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
     - name: Setup NuGet release flow info
       id: set-nuget-release-flow-info
       run: |
