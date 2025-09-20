@@ -3,7 +3,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.InProcess;
 /// <summary>
 /// Provides methods to mock an <see cref="HttpResponseMessage"/>.
 /// </summary>
-public class HttpMessageHandlersReplacer
+public sealed class HttpMessageHandlersReplacer
 {
     private readonly IServiceCollection _services;
     private readonly List<HttpResponseMessageMockDescriptorBuilder> _httpResponseMockBuilders;
