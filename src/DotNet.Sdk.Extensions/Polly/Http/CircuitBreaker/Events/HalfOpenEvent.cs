@@ -3,7 +3,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker.Events;
 /// <summary>
 /// Contains the event data when the circuit transitions to <see cref="CircuitState.HalfOpen"/> state, ready to try action executions again.
 /// </summary>
-public class HalfOpenEvent
+public sealed class HalfOpenEvent
 {
     internal HalfOpenEvent(string httpClientName, CircuitBreakerOptions circuitBreakerOptions)
     {
