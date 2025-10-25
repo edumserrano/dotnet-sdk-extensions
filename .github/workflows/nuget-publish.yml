@@ -152,7 +152,7 @@ jobs:
         STEP_OUTPUT: ${{ toJSON(steps.nuget-publish-info.outputs) }}
       run: $env:STEP_OUTPUT
     - name: Upload custom release notes
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: ${{ env.CUSTOM_RELEASE_NOTES_ARTIFACT_NAME }}
         path: ${{ env.CUSTOM_RELEASE_NOTES_FILEPATH }}
@@ -175,7 +175,7 @@ jobs:
         name:  nuget-packages-and-symbols
         run_id: ${{ needs.workflow-args.outputs.nuget-package-run-id }}
     - name: Download custom release notes artifact
-      uses: actions/download-artifact@v5
+      uses: actions/download-artifact@v6
       with:
         name: ${{ needs.workflow-args.outputs.custom-release-notes-artifact-name }}
     - name: Create release notes file
@@ -329,7 +329,7 @@ jobs:
         $githubReleaseAsJson | Out-File github-release-info.md
         Get-Content github-release-info.md
     - name: Upload GitHub release info
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: github-release-info
         path: github-release-info.md
