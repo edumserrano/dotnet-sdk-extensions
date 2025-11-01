@@ -3,7 +3,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.OutOfProcess;
 /// <summary>
 /// Provides methods to configure and create an <see cref="HttpMockServer"/> when based on a request/response mocking.
 /// </summary>
-public class ResponseBasedBuilder
+public sealed class ResponseBasedBuilder
 {
     private readonly HttpMockServerArgs _mockServerArgs;
     private readonly List<HttpResponseMock> _httpResponseMocks = [];
