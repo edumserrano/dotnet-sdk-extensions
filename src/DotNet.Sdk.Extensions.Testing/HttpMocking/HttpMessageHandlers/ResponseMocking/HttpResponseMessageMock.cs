@@ -3,7 +3,7 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.Response
 /// <summary>
 /// Represents a mock of an <see cref="HttpResponseMessage"/>.
 /// </summary>
-public class HttpResponseMessageMock
+public sealed class HttpResponseMessageMock
 {
     private readonly HttpResponseMessageMockPredicateDelegate _predicate;
     private readonly HttpResponseMessageMockHandlerDelegate _handler;

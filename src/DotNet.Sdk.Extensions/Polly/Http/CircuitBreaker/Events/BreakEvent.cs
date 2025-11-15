@@ -3,7 +3,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker.Events;
 /// <summary>
 /// Contains the event data when the circuit transitions to an <see cref="CircuitState.Open"/> state.
 /// </summary>
-public class BreakEvent
+public sealed class BreakEvent
 {
     internal BreakEvent(
         string httpClientName,
