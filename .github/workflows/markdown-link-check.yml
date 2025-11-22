@@ -28,7 +28,7 @@ jobs:
         GITHUB_CONTEXT: ${{ toJSON(github) }}
       run: $env:GITHUB_CONTEXT
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
     - name: Markdown link check
       id: mlc-push
       uses: gaurav-nelson/github-action-markdown-link-check@1.0.17

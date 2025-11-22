@@ -34,7 +34,7 @@ jobs:
         GITHUB_CONTEXT: ${{ toJSON(github) }}
       run: $env:GITHUB_CONTEXT
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
     - name: Get release info run id
       id: release-info
       env:
@@ -127,7 +127,7 @@ jobs:
         $headBranch = '${{ github.event.workflow_run.head_branch }}'
         Write-Output "::notice::This workflows was triggered by the completion of '$workflowRunName' with run id '$workflowRunId' on the branch '$headBranch'."
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
     - name: Set NuGet release flow info artifact source
       id: nuget-release-flow-artifact
       run: |
@@ -165,7 +165,7 @@ jobs:
         STEP_OUTPUT: ${{ toJSON(needs.release-flow-args.outputs) }}
       run: $env:STEP_OUTPUT
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
     - name: Find NuGet release flow comment
       uses: peter-evans/find-comment@v4
       id: find-nuget-release-flow-comment
@@ -342,7 +342,7 @@ jobs:
         GITHUB_CONTEXT: ${{ toJSON(github) }}
       run: $env:GITHUB_CONTEXT
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
     - name: Render close issue comment template
       uses: yukitsune/template-cli@v0.1.1
       with:
@@ -382,7 +382,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
     - name: Download GitHub release info artifact
       uses: dawidd6/action-download-artifact@v11
       with:
