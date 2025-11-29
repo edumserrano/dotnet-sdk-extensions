@@ -3,7 +3,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.CircuitBreaker.Events;
 /// <summary>
 /// Contains the event data when the circuit resets to a <see cref="CircuitState.Closed"/> state.
 /// </summary>
-public class ResetEvent
+public sealed class ResetEvent
 {
     internal ResetEvent(
         string httpClientName,
