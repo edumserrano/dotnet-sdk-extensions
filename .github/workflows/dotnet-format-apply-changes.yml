@@ -36,11 +36,11 @@ jobs:
         GITHUB_CONTEXT: ${{ toJSON(github) }}
       run: $env:GITHUB_CONTEXT
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
       with:
         ref: ${{ env.WORKFLOW_HEAD_SHA }}
     - name: Download dotnet format workflow info artifact
-      uses: dawidd6/action-download-artifact@v11
+      uses: dawidd6/action-download-artifact@v12
       with:
         name:  ${{ env.DOTNET_FORMAT_WORKFLOW_INFO_ARTIFACT }}
         run_id: ${{ github.event.workflow_run.id }}
@@ -101,7 +101,7 @@ jobs:
       WORKFLOW_URL: ${{ needs.on-push-check.outputs.workflow-url }}
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
       with:
         ref: ${{ env.WORKFLOW_HEAD_SHA }}
     - name: Prepare commit info
@@ -118,7 +118,7 @@ jobs:
       run: |
         git checkout -b ${{ steps.commit-info.outputs.branch-name }}
     - name: Download dotnet format changed files
-      uses: dawidd6/action-download-artifact@v11
+      uses: dawidd6/action-download-artifact@v12
       with:
         name:  ${{ env.DOTNET_FORMAT_FILES_ARTIFACT }}
         run_id: ${{ github.event.workflow_run.id }}
@@ -183,7 +183,7 @@ jobs:
         GITHUB_CONTEXT: ${{ toJSON(github) }}
       run: $env:GITHUB_CONTEXT
     - name: Download dotnet format workflow info artifact
-      uses: dawidd6/action-download-artifact@v11
+      uses: dawidd6/action-download-artifact@v12
       with:
         name:  ${{ env.DOTNET_FORMAT_WORKFLOW_INFO_ARTIFACT }}
         run_id: ${{ github.event.workflow_run.id }}
@@ -223,7 +223,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
       with:
         ref: ${{ env.WORKFLOW_HEAD_SHA }}
         # The token gets saved and further git commands will use this token. See https://github.com/marketplace/actions/checkout#usage.
@@ -231,7 +231,7 @@ jobs:
         # PR triggers aren't executed again. See https://docs.github.com/en/actions/using-workflows/triggering-a-workflow#triggering-a-workflow-from-a-workflow
         token: ${{ secrets.PUBLIC_REPO_SCOPE_GH_TOKEN }}
     - name: Download dotnet format changed files
-      uses: dawidd6/action-download-artifact@v11
+      uses: dawidd6/action-download-artifact@v12
       with:
         name:  ${{ env.DOTNET_FORMAT_FILES_ARTIFACT }}
         run_id: ${{ github.event.workflow_run.id }}
@@ -287,7 +287,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
       with:
         ref: ${{ env.WORKFLOW_HEAD_SHA }}
     - name: Set status check data

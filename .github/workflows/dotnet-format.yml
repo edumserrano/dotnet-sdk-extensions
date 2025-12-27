@@ -32,7 +32,7 @@ jobs:
         GITHUB_CONTEXT: ${{ toJSON(github) }}
       run: $env:GITHUB_CONTEXT
     - name: Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
     - name: Setup .NET
       uses: actions/setup-dotnet@v5
       with:
@@ -40,7 +40,7 @@ jobs:
           8.x
           9.x
     - name: Cache/Restore NuGets
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path:
           ~/.nuget/packages
@@ -87,7 +87,7 @@ jobs:
             Remove-Item -Force
     - name: Upload files changed by dotnet format
       if: steps.dotnet-format-parse.outputs.has-changes == 'true'
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v6
       with:
         name: dotnet-format-files
         path: ${{ github.workspace }}
@@ -117,7 +117,7 @@ jobs:
         $bodyAsJson > ${{ env.WORKFLOW_INFO_ARTIFACT_FILEPATH }}
         cat ${{ env.WORKFLOW_INFO_ARTIFACT_FILEPATH }}
     - name: Upload workflow info
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v6
       with:
         name: dotnet-format-workflow-info
         path: ${{ env.WORKFLOW_INFO_ARTIFACT_FILEPATH }}
