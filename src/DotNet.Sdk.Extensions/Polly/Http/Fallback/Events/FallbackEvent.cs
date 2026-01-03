@@ -3,7 +3,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Fallback.Events;
 /// <summary>
 /// Contains the event data when a fallback <see cref="HttpResponseMessage"/> is returned via Polly's fallback policy.
 /// </summary>
-public class FallbackEvent
+public sealed class FallbackEvent
 {
     internal FallbackEvent(
         string httpClientName,
