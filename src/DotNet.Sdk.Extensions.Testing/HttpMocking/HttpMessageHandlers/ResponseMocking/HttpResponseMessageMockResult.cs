@@ -5,8 +5,6 @@ namespace DotNet.Sdk.Extensions.Testing.HttpMocking.HttpMessageHandlers.Response
 /// </summary>
 public sealed class HttpResponseMessageMockResult
 {
-    private HttpResponseMessage? _httpResponseMessage;
-
     private HttpResponseMessageMockResult()
     {
     }
@@ -28,9 +26,9 @@ public sealed class HttpResponseMessageMockResult
                 throw new InvalidOperationException($"Cannot retrieve {nameof(HttpResponseMessage)} unless Status is {nameof(HttpResponseMockResults.Executed)}. Status is {Status}.");
             }
 
-            return _httpResponseMessage!;
+            return field!;
         }
-        private set => _httpResponseMessage = value;
+        private set;
     }
 
     internal static HttpResponseMessageMockResult Executed(HttpResponseMessage httpResponseMessage)
