@@ -3,7 +3,7 @@ namespace DotNet.Sdk.Extensions.Polly.Http.Retry.Events;
 /// <summary>
 /// Contains the event data when a retry is triggered via Polly's timeout policy.
 /// </summary>
-public class RetryEvent
+public sealed class RetryEvent
 {
     internal RetryEvent(
         string httpClientName,
